@@ -10,6 +10,7 @@ struct JettonWalletData {
     balance: Int as coins;
     owner: Address;
     minter: Address;
+    code: Cell;
 }
 
 message(4) JettonUpdateContent {
@@ -107,25 +108,42 @@ message ClaimTON {
     receiver: Address;
 }
 
-inline fun calculateJettonWalletAddress(owner: Address, minter: Address, code: Cell): Address {
-    let initData = JettonWalletData { balance: 0, owner, minter };
-    return contractAddress(StateInit { code: code, data: initData.toCell() });
+struct TactJettonWalletInitData {
+    balance: Int as coins;
+    owner: Address;
+    minter: Address;
 }
 
-inline fun calculateJettonBasechainWalletAddress(owner: Address, minter: Address, code: Cell): BasechainAddress {
-    let initData = JettonWalletData { balance: 0, owner, minter };
-    return contractBasechainAddress(StateInit { code: code, data: initData.toCell() });
+trait JettonResolver {
+    minterAddress: Address;
+    jettonWalletCode: Cell;
+
+    virtual fun createJettonWalletInitData(owner: Address): Cell {
+        return TactJettonWalletInitData {
+            balance: 0,
+            owner,
+            minter: self.minterAddress,
+        }.toCell();
+    }
+
+    inline fun calculateJettonWalletAddress(owner: Address): Address {
+        let initData = self.createJettonWalletInitData(owner);
+        return contractAddress(StateInit { code: self.jettonWalletCode, data: initData });
+    }
+
+    inline fun calculateJettonBasechainWalletAddress(owner: Address): BasechainAddress {
+        let initData = self.createJettonWalletInitData(owner);
+        return contractBasechainAddress(StateInit { code: self.jettonWalletCode, data: initData });
+    }
 }
 
-trait JettonReceiver {
+trait JettonReceiver with JettonResolver {
     minterAddress: Address;
     jettonWalletCode: Cell;
 
     receive(msg: JettonNotification) {
-        let thisContractJettonWallet = calculateJettonBasechainWalletAddress(
+        let thisContractJettonWallet = self.calculateJettonBasechainWalletAddress(
             myAddress(),
-            self.minterAddress,
-            self.jettonWalletCode,
         );
         let sender = parseStdAddress(sender().asSlice());
 
@@ -137,15 +155,13 @@ trait JettonReceiver {
     abstract fun fetchIncomingJettons(msg: JettonNotification);
 }
 
-trait JettonSender {
+trait JettonSender with JettonResolver {
     minterAddress: Address;
     jettonWalletCode: Cell;
 
     fun sendJettons(receiver: Address, amount: Int) {
-        let thisContractJettonWallet = calculateJettonWalletAddress(
+        let thisContractJettonWallet = self.calculateJettonWalletAddress(
             myAddress(),
-            self.minterAddress,
-            self.jettonWalletCode,
         );
 
         message(MessageParameters {
@@ -165,10 +181,8 @@ trait JettonSender {
     }
 
     fun sendJettonsExtended(receiver: Address, amount: Int, forwardTonAmount: Int, forwardPayload: Slice, customPayload: Cell?) {
-        let thisContractJettonWallet = calculateJettonWalletAddress(
+        let thisContractJettonWallet = self.calculateJettonWalletAddress(
             myAddress(),
-            self.minterAddress,
-            self.jettonWalletCode,
         );
 
         message(MessageParameters {

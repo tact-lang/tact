@@ -5,15 +5,28 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import type { JettonUpdateContent } from "../../benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 import { JettonMinter } from "../../benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
-import { sendMintRaw, sendTransferRaw } from "../../benchmarks/utils/jetton";
-import { JettonTester } from "./contracts/output/jetton_JettonTester";
+import {
+    deployFuncJettonMinter,
+    getJettonWalletRaw,
+    loadFunCJettonsBoc,
+    sendMintRaw,
+    sendTransferRaw,
+} from "../../benchmarks/utils/jetton";
+import type { JettonNotification } from "./contracts/output/jetton_JettonTester";
+import {
+    JettonTester,
+    storeJettonNotification,
+} from "./contracts/output/jetton_JettonTester";
 import { JettonWallet } from "../../benchmarks/contracts/output/jetton-minter-discoverable_JettonWallet";
+import { JettonResolverOverridenTester } from "./contracts/output/jetton_JettonResolverOverridenTester";
 
-describe("Jetton", () => {
+describe("Jetton stdlib", () => {
     let blockchain: Blockchain;
 
     let jettonMinter: SandboxContract<JettonMinter>;
-    let jettonTester: SandboxContract<JettonTester>;
+    let jettonMinterFuncAddress: Address;
+    let jettonReceiverTester: SandboxContract<JettonTester>;
+    let jettonResolverOverridenTester: SandboxContract<JettonResolverOverridenTester>;
 
     let deployer: SandboxContract<TreasuryContract>;
     // let notDeployer: SandboxContract<TreasuryContract>;
@@ -24,7 +37,7 @@ describe("Jetton", () => {
         address: Address,
     ) => Promise<SandboxContract<JettonWallet>>;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         blockchain = await Blockchain.create();
 
         deployer = await blockchain.treasury("deployer");
@@ -61,7 +74,7 @@ describe("Jetton", () => {
             ),
         );
         jettonWalletCode = jettonWallet.init!.code;
-        jettonTester = blockchain.openContract(
+        jettonReceiverTester = blockchain.openContract(
             await JettonTester.fromInit(
                 jettonMinter.address,
                 jettonWalletCode,
@@ -70,7 +83,7 @@ describe("Jetton", () => {
             ),
         );
 
-        const testerDeployResult = await jettonTester.send(
+        const testerDeployResult = await jettonReceiverTester.send(
             deployer.getSender(),
             { value: toNano("0.1") },
             null,
@@ -78,9 +91,42 @@ describe("Jetton", () => {
 
         expect(testerDeployResult.transactions).toHaveTransaction({
             from: deployer.address,
-            to: jettonTester.address,
+            to: jettonReceiverTester.address,
             deploy: true,
             success: true,
+        });
+
+        const { bocWallet } = loadFunCJettonsBoc();
+
+        const { minterAddress, result } =
+            await deployFuncJettonMinter(deployer);
+
+        expect(result.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: minterAddress,
+            deploy: true,
+        });
+
+        jettonMinterFuncAddress = minterAddress;
+
+        // since we want to test FunC resolve, we need FunC jetton wallet code
+        jettonResolverOverridenTester = blockchain.openContract(
+            await JettonResolverOverridenTester.fromInit(
+                jettonMinterFuncAddress,
+                Cell.fromBoc(bocWallet)[0]!,
+            ),
+        );
+
+        const deployResolverResult = await jettonResolverOverridenTester.send(
+            deployer.getSender(),
+            { value: toNano("0.1") },
+            null,
+        );
+
+        expect(deployResolverResult.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: jettonResolverOverridenTester.address,
+            deploy: true,
         });
 
         userWallet = async (address: Address) => {
@@ -92,7 +138,7 @@ describe("Jetton", () => {
         };
     });
 
-    it("jetton receiver successfull", async () => {
+    it("jetton receiver should accept correct transfer notification", async () => {
         const mintResult = await sendMintRaw(
             jettonMinter.address,
             deployer,
@@ -103,7 +149,9 @@ describe("Jetton", () => {
         );
 
         const deployerJettonWallet = await userWallet(deployer.address);
-        const testerJettonWallet = await userWallet(jettonTester.address);
+        const testerJettonWallet = await userWallet(
+            jettonReceiverTester.address,
+        );
 
         expect(mintResult.transactions).toHaveTransaction({
             from: jettonMinter.address,
@@ -124,7 +172,7 @@ describe("Jetton", () => {
             deployer,
             toNano(2),
             jettonTransferAmount,
-            jettonTester.address,
+            jettonReceiverTester.address,
             deployer.address,
             null,
             toNano(1),
@@ -143,7 +191,7 @@ describe("Jetton", () => {
 
         expect(transferResult.transactions).toHaveTransaction({
             from: testerJettonWallet.address,
-            to: jettonTester.address,
+            to: jettonReceiverTester.address,
             success: true,
             exitCode: 0,
             outMessagesCount: 1, // cashback
@@ -151,10 +199,61 @@ describe("Jetton", () => {
         });
 
         // getters to ensure we successfully received notification and executed overriden fetch method
-        const getAmount = await jettonTester.getAmount();
+        const getAmount = await jettonReceiverTester.getAmount();
         expect(getAmount).toEqual(jettonTransferAmount);
 
-        const getPayload = await jettonTester.getPayload();
+        const getPayload = await jettonReceiverTester.getPayload();
         expect(getPayload).toEqualSlice(jettonTransferForwardPayload.asSlice());
+    });
+
+    it("jetton receiver should reject malicious transfer notification", async () => {
+        const msg: JettonNotification = {
+            $$type: "JettonNotification",
+            queryId: 0n,
+            amount: toNano(1),
+            forwardPayload: beginCell().storeUint(239, 32).asSlice(),
+            sender: deployer.address,
+        };
+
+        const msgCell = beginCell()
+            .store(storeJettonNotification(msg))
+            .endCell();
+
+        const maliciousSendResult = await deployer.send({
+            to: jettonReceiverTester.address,
+            value: toNano(1),
+            body: msgCell,
+        });
+
+        expect(maliciousSendResult.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: jettonReceiverTester.address,
+            success: false,
+            exitCode: JettonTester.errors["Incorrect sender"],
+        });
+
+        const getAmount = await jettonReceiverTester.getAmount();
+        expect(getAmount).toEqual(0n);
+
+        const getPayload = await jettonReceiverTester.getPayload();
+        expect(getPayload).toEqualSlice(beginCell().asSlice());
+    });
+
+    it("jetton resolver should correctly resolve FunC jetton wallet", async () => {
+        const deployerFunCJettonWalletAddressFromMinter =
+            await getJettonWalletRaw(
+                jettonMinterFuncAddress,
+                blockchain,
+                deployer.address,
+            );
+
+        const deployerFunCJettonWalletAddressFromResolver =
+            await jettonResolverOverridenTester.getJettonWallet(
+                deployer.address,
+            );
+
+        expect(deployerFunCJettonWalletAddressFromMinter).toEqualAddress(
+            deployerFunCJettonWalletAddressFromResolver,
+        );
     });
 });
