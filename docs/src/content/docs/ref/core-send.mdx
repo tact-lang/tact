@@ -92,7 +92,7 @@ Field    | Type                          | Description
 :------- | :---------------------------- | :----------
 `mode`   | [`Int{:tact}`][int]           | An 8-bit value that configures how to send a message, defaults to $0$. See: [Message `mode`](/book/message-mode).
 `body`   | [`Cell?{:tact}`][cell]        | [Optional][opt] message body as a [`Cell{:tact}`][cell].
-`value`  | [`Int{:tact}`][int]           | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee] unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
+`value`  | [`Int{:tact}`][int]           | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee] unless the optional flag [`SendPayFwdFeesSeparately{:tact}`](/book/message-mode#optional-flags) is used.
 `bounce` | [`Bool{:tact}`][p]            | When set to `true` (default), the message bounces back to the sender if the recipient contract doesn't exist or isn't able to process the message.
 `init`   | [`StateInit{:tact}`][initpkg] | [Initial package][initpkg] of the contract (initial code and initial data). See: [`initOf{:tact}`][initpkg].
 

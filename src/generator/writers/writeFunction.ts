@@ -63,16 +63,22 @@ function unwrapExternal(
 export function writeStatement(
     f: Ast.Statement,
     self: string | null,
-    returns: TypeRef | null,
+    returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
     switch (f.kind) {
         case "statement_return": {
             if (f.expression) {
+                if (typeof returns === "string" || returns === null) {
+                    throwInternalCompilerError(
+                        `Void return statement is not allowed in this context`,
+                        f.loc,
+                    );
+                }
                 // Format expression
                 const result = writeCastedExpression(
                     f.expression,
-                    returns!,
+                    returns,
                     ctx,
                 );
 
@@ -93,6 +99,10 @@ export function writeStatement(
                 if (self) {
                     ctx.append(`return (${self}, ());`);
                 } else {
+                    if (typeof returns === "string" && returns !== "") {
+                        // save contract state
+                        ctx.append(returns);
+                    }
                     ctx.append(`return ();`);
                 }
             }
@@ -172,9 +182,19 @@ export function writeStatement(
             }
             const path = writePathExpression(lvaluePath);
             const t = getExpType(ctx.ctx, f.path);
-            const op = f.op === "&&" ? "&" : f.op === "||" ? "|" : f.op;
+
+            if (f.op === "&&=" || f.op === "||=") {
+                const rendered =
+                    f.op === "&&="
+                        ? `(${path} ? ${writeExpression(f.expression, ctx)} : (false))`
+                        : `(${path} ? (true) : ${writeExpression(f.expression, ctx)})`;
+
+                ctx.append(`${path} = ${cast(t, t, rendered, ctx)};`);
+                return;
+            }
+
             ctx.append(
-                `${path} = ${cast(t, t, `${path} ${op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
+                `${path} = ${cast(t, t, `${path} ${f.op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
             );
             return;
         }
@@ -528,11 +548,13 @@ export function writeStatement(
     throw Error("Unknown statement kind");
 }
 
+// HACK ALERT: if `returns` is a string, it contains the code to invoke before returning from a receiver
+// this is used to save the contract state before returning
 function writeCondition(
     f: Ast.StatementCondition,
     self: string | null,
     elseif: boolean,
-    returns: TypeRef | null,
+    returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
     ctx.append(
