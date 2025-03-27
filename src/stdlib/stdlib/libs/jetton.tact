@@ -7,10 +7,9 @@ struct JettonMinterData {
 }
 
 struct JettonWalletData {
-    balance: Int;
+    balance: Int as coins;
     owner: Address;
     minter: Address;
-    code: Cell;
 }
 
 message(4) JettonUpdateContent {
@@ -109,12 +108,12 @@ message ClaimTON {
 }
 
 inline fun calculateJettonWalletAddress(owner: Address, minter: Address, code: Cell): Address {
-    let initData = JettonWalletData { balance: 0, owner, minter, code };
+    let initData = JettonWalletData { balance: 0, owner, minter };
     return contractAddress(StateInit { code: code, data: initData.toCell() });
 }
 
 inline fun calculateJettonBasechainWalletAddress(owner: Address, minter: Address, code: Cell): BasechainAddress {
-    let initData = JettonWalletData { balance: 0, owner, minter, code };
+    let initData = JettonWalletData { balance: 0, owner, minter };
     return contractBasechainAddress(StateInit { code: code, data: initData.toCell() });
 }
 
@@ -122,7 +121,7 @@ trait JettonReceiver {
     minterAddress: Address;
     jettonWalletCode: Cell;
 
-    receive(msg: JettonTransferInternal) {
+    receive(msg: JettonNotification) {
         let thisContractJettonWallet = calculateJettonBasechainWalletAddress(
             myAddress(),
             self.minterAddress,
@@ -135,7 +134,7 @@ trait JettonReceiver {
         self.fetchIncomingJettons(msg);
     }
 
-    abstract fun fetchIncomingJettons(msg: JettonTransferInternal);
+    abstract fun fetchIncomingJettons(msg: JettonNotification);
 }
 
 trait JettonSender {
