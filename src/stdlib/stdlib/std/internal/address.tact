@@ -94,7 +94,7 @@ asm extends fun asSlice(self: Address): Slice {}
 ///
 /// This function tries to resolve constant values in compile-time whenever possible.
 ///
-/// Attempts to specify an invalid `chain` ID (not -1 or 0) that can be detected in compile-time will result in a compilation error.
+/// Attempts to specify an uncommon `chain` ID (not -1 or 0) that can be detected in compile-time will result in a compilation error.
 ///
 /// ```tact
 /// fun example() {
