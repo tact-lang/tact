@@ -1,3 +1,4 @@
+// TEP-74
 struct JettonMinterData {
     totalSupply: Int;
     mintable: Bool;
@@ -11,11 +12,6 @@ struct JettonWalletData {
     owner: Address;
     minter: Address;
     code: Cell;
-}
-
-message(4) JettonUpdateContent {
-    queryId: Int as uint64;
-    content: Cell;
 }
 
 message(0xf8a7ea5) JettonTransfer {
@@ -62,6 +58,7 @@ message(0xd53276db) JettonExcesses {
     queryId: Int as uint64;
 }
 
+// TEP-89
 message(0x2c76b973) ProvideWalletAddress {
     queryId: Int as uint64;
     ownerAddress: Address;
@@ -72,6 +69,12 @@ message(0xd1735400) TakeWalletAddress {
     queryId: Int as uint64;
     walletAddress: Address;
     ownerAddress: Cell?;
+}
+
+// implementation details
+message(4) JettonUpdateContent {
+    queryId: Int as uint64;
+    content: Cell;
 }
 
 message(21) Mint {
@@ -88,7 +91,8 @@ message(3) ChangeOwner {
     newOwner: Address;
 }
 
-message ProvideWalletBalance {
+// Tact Jetton Add-ons
+message(0x7ac8d559) ProvideWalletBalance {
     receiver: Address;
     includeVerifyInfo: Bool;
 }
@@ -99,27 +103,31 @@ struct VerifyInfo {
     code: Cell;
 }
 
-message TakeWalletBalance {
+message(0xca77fdc2) TakeWalletBalance {
     balance: Int as coins;
     verifyInfo: VerifyInfo?;
 }
 
-message ClaimTON {
+message(0x0393b1ce) ClaimTON {
     receiver: Address;
 }
 
-struct TactJettonWalletInitData {
+struct TactJettonWalletStorage {
     balance: Int as coins;
     owner: Address;
     minter: Address;
 }
 
+// basic trait that allows to calculate jetton wallet addresses
 trait JettonResolver {
     minterAddress: Address;
     jettonWalletCode: Cell;
 
+    // since different implementations have different storage, we allow to override this;
+    // example that resolves FunC jettons could be
+    // found at src/test/e2e-emulated/contracts/jetton.tact:JettonResolverOverridenTester
     virtual fun createJettonWalletInitData(owner: Address): Cell {
-        return TactJettonWalletInitData {
+        return TactJettonWalletStorage {
             balance: 0,
             owner,
             minter: self.minterAddress,
@@ -137,6 +145,7 @@ trait JettonResolver {
     }
 }
 
+// trait that allows to handle jettons receiving
 trait JettonReceiver with JettonResolver {
     minterAddress: Address;
     jettonWalletCode: Cell;
@@ -152,13 +161,17 @@ trait JettonReceiver with JettonResolver {
         self.fetchIncomingJettons(msg);
     }
 
+    // force to define how to actually handle incoming jettons after verification checks
     abstract fun fetchIncomingJettons(msg: JettonNotification);
 }
 
+// trait that allows to send jettons
 trait JettonSender with JettonResolver {
     minterAddress: Address;
     jettonWalletCode: Cell;
 
+    // a lot of the time devs just want to send jettons to someone
+    // without thinking about all the other parameters
     fun sendJettons(receiver: Address, amount: Int) {
         let thisContractJettonWallet = self.calculateJettonWalletAddress(
             myAddress(),
@@ -181,6 +194,7 @@ trait JettonSender with JettonResolver {
         });
     }
 
+    // extended version with full control over the parameters
     fun sendJettonsExtended(receiver: Address, amount: Int, forwardTonAmount: Int, forwardPayload: Slice, customPayload: Cell?) {
         let thisContractJettonWallet = self.calculateJettonWalletAddress(
             myAddress(),
