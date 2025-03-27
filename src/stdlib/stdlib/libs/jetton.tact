@@ -174,7 +174,8 @@ trait JettonSender with JettonResolver {
                 responseDestination: myAddress(),
                 customPayload: null,
                 forwardTonAmount: 0,
-                forwardPayload: emptySlice(),
+                // to bypass the check in the wallet
+                forwardPayload: beginCell().storeBool(true).asSlice(),
             }.toCell(),
             mode: SendRemainingValue,
         });

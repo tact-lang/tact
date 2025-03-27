@@ -19,6 +19,7 @@ import {
 } from "./contracts/output/jetton_JettonTester";
 import { JettonWallet } from "../../benchmarks/contracts/output/jetton-minter-discoverable_JettonWallet";
 import { JettonResolverOverridenTester } from "./contracts/output/jetton_JettonResolverOverridenTester";
+import { JettonSenderTester } from "./contracts/output/jetton_JettonSenderTester";
 
 describe("Jetton stdlib", () => {
     let blockchain: Blockchain;
@@ -27,9 +28,9 @@ describe("Jetton stdlib", () => {
     let jettonMinterFuncAddress: Address;
     let jettonReceiverTester: SandboxContract<JettonTester>;
     let jettonResolverOverridenTester: SandboxContract<JettonResolverOverridenTester>;
+    let jettonSenderTester: SandboxContract<JettonSenderTester>;
 
     let deployer: SandboxContract<TreasuryContract>;
-    // let notDeployer: SandboxContract<TreasuryContract>;
 
     let defaultContent: Cell;
     let jettonWalletCode: Cell;
@@ -41,7 +42,6 @@ describe("Jetton stdlib", () => {
         blockchain = await Blockchain.create();
 
         deployer = await blockchain.treasury("deployer");
-        // notDeployer = await blockchain.treasury("notDeployer");
 
         defaultContent = beginCell().endCell();
         const msg: JettonUpdateContent = {
@@ -126,6 +126,25 @@ describe("Jetton stdlib", () => {
         expect(deployResolverResult.transactions).toHaveTransaction({
             from: deployer.address,
             to: jettonResolverOverridenTester.address,
+            deploy: true,
+        });
+
+        jettonSenderTester = blockchain.openContract(
+            await JettonSenderTester.fromInit(
+                jettonMinter.address,
+                jettonWalletCode,
+            ),
+        );
+
+        const deploySenderResult = await jettonSenderTester.send(
+            deployer.getSender(),
+            { value: toNano("0.1") },
+            null,
+        );
+
+        expect(deploySenderResult.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: jettonSenderTester.address,
             deploy: true,
         });
 
@@ -255,5 +274,56 @@ describe("Jetton stdlib", () => {
         expect(deployerFunCJettonWalletAddressFromMinter).toEqualAddress(
             deployerFunCJettonWalletAddressFromResolver,
         );
+    });
+
+    it("jetton sender should correctly send jettons in basic mode", async () => {
+        const testerJettonWallet = await userWallet(jettonSenderTester.address);
+
+        const mintResult = await sendMintRaw(
+            jettonMinter.address,
+            deployer,
+            jettonSenderTester.address,
+            toNano(100000),
+            toNano("0.05"),
+            toNano("1"),
+        );
+
+        const deployerJettonWallet = await userWallet(deployer.address);
+
+        expect(mintResult.transactions).toHaveTransaction({
+            from: jettonMinter.address,
+            to: testerJettonWallet.address,
+            success: true,
+            endStatus: "active",
+        });
+
+        const jettonTransferAmount = toNano(1);
+
+        // -(external)-> deployer -(send jettons fast)-> tester contract --
+        // -(transfer)-> tester jetton wallet -(internal transfer)-> deployer jetton wallet
+        const jettonSendResult = await jettonSenderTester.send(
+            deployer.getSender(),
+            {
+                value: toNano(2),
+            },
+            {
+                $$type: "SendJettonsFast",
+                amount: jettonTransferAmount,
+                destination: deployer.address,
+            },
+        );
+
+        expect(jettonSendResult.transactions).toHaveTransaction({
+            from: jettonSenderTester.address,
+            to: testerJettonWallet.address,
+            success: true,
+            exitCode: 0,
+            outMessagesCount: 1, // internal transfer
+            op: JettonWallet.opcodes.JettonTransfer,
+        });
+
+        const jettonDataAfter = await deployerJettonWallet.getGetWalletData();
+
+        expect(jettonDataAfter.balance).toEqual(jettonTransferAmount);
     });
 });
