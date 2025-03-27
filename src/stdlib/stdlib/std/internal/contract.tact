@@ -272,7 +272,7 @@ asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEES
 ///
 /// Note, that specifying values of `cells` and `bits` higher than their maximum values listed in account state limits (`max_msg_cells` and `max_msg_bits`) will have the same result as with specifying the exact limits.
 ///
-/// However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of `lump_price`. See the example for [`getSimpleForwardFee()`](#getsimpleforwardfee) to derive it. In addition, make sure you take into account the deduplication of cells with the same hash, since for example the root cell and its data bits don't count towards the forward fee and are covered by the `lump_price`.
+/// However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of `lump_price`. See the example for `getSimpleForwardFee()` to derive it. In addition, make sure you take into account the deduplication of cells with the same hash, since for example the root cell and its data bits don't count towards the forward fee and are covered by the `lump_price`.
 ///
 /// Attempts to specify negative number of `cells` or `bits` throw an exception with exit code 5: `Integer out of expected range`.
 ///
