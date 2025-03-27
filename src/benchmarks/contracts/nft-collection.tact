@@ -107,7 +107,7 @@ contract NFTCollection {
     }
 
     get fun get_nft_address_by_index(index: Int): Address {
-        let stateInit = initOf NFTItem(InitNFTData{itemIndex: index, collectionAddress: myAddress()});
+        let stateInit = initOf NFTItem(InitNFTData { itemIndex: index, collectionAddress: myAddress() });
         return contractAddress(stateInit);
     }
 

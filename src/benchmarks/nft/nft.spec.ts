@@ -199,7 +199,7 @@ describe("itemNFT", () => {
 
         // ITEM
         {
-            const initNFTData: InitNFTData = { 
+            const initNFTData: InitNFTData = {
                 $$type: "InitNFTData",
                 itemIndex: 0n,
                 collectionAddress: owner.address,
@@ -427,7 +427,7 @@ describe("itemNFT", () => {
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
-            
+
             // at least 1 deploy
             expect(sendResult.transactions).not.toHaveTransaction({
                 from: scopeCollectionNFT.address,
@@ -506,7 +506,7 @@ describe("itemNFT", () => {
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
-            
+
             // at least 1 deploy
             expect(sendResult.transactions).not.toHaveTransaction({
                 from: scopeCollectionNFT.address,
