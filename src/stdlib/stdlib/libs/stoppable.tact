@@ -34,8 +34,15 @@ trait Stoppable with Ownable {
     owner: Address;
 
     /// Requires the contract to be not stopped.
+    /// 
+    /// #### Exit codes
+    /// 
+    /// * 133: [Contract stopped] — if the contract is stopped.
+    /// 
+    /// [Contract stopped]: https://docs.tact-lang.org/book/exit-codes#133
+    /// 
     fun requireNotStopped() {
-        require(!self.stopped, "Contract stopped");
+        throwUnless(133, !self.stopped);
     }
 
     /// Requires the contract to be stopped.

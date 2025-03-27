@@ -137,6 +137,11 @@ export function writeAccessors(
         ctx.flag("inline");
         ctx.context("type:" + type.name);
         ctx.body(() => {
+            if (type.fields.length === 0) {
+                ctx.append(`return empty_tuple();`);
+                return;
+            }
+
             ctx.append(
                 `var (${type.fields.map((v) => `v'${v.name}`).join(", ")}) = v;`,
             );
@@ -275,6 +280,11 @@ export function writeAccessors(
         ctx.flag("inline");
         ctx.context("type:" + type.name);
         ctx.body(() => {
+            if (type.fields.length === 0) {
+                ctx.append(`return ();`);
+                return;
+            }
+
             ctx.append(
                 `var (${type.fields.map((v) => `v'${v.name}`).join(", ")}) = v; `,
             );
