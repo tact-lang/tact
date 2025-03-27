@@ -21,7 +21,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/2479"
     },
     {
-      "label": "1.6.4 with with constructor instead of lazy bit",
+      "label": "1.6.4 with constructor instead of lazy bit",
       "pr": "https://github.com/tact-lang/tact/pull/2479",
       "gas": {
         "transfer": "7936",
@@ -31,7 +31,7 @@
       }
     },
     {
-      "label": "1.6.4 with with lazy bit",
+      "label": "1.6.4 with lazy bit",
       "pr": "https://github.com/tact-lang/tact/pull/2479",
       "gas": {
         "transfer": "8059",
