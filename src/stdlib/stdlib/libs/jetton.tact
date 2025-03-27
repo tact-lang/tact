@@ -125,7 +125,7 @@ trait JettonResolver {
 
     // since different implementations have different storage, we allow to override this;
     // example that resolves FunC jettons could be
-    // found at src/test/e2e-emulated/contracts/jetton.tact:JettonResolverOverridenTester
+    // found at src/test/e2e-emulated/contracts/jetton.tact:JettonResolverOverriddenTester
     virtual fun createJettonWalletInitData(owner: Address): Cell {
         return TactJettonWalletStorage {
             balance: 0,

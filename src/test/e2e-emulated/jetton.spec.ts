@@ -19,7 +19,7 @@ import {
 } from "./contracts/output/jetton_JettonTester";
 import { JettonWallet } from "../../benchmarks/contracts/output/jetton-minter-discoverable_JettonWallet";
 import { JettonSenderTester } from "./contracts/output/jetton_JettonSenderTester";
-import type { JettonResolverOverriddenTester } from "./contracts/output/jetton_JettonResolverOverriddenTester";
+import { JettonResolverOverriddenTester } from "./contracts/output/jetton_JettonResolverOverriddenTester";
 
 describe("Jetton stdlib", () => {
     let blockchain: Blockchain;
@@ -111,7 +111,7 @@ describe("Jetton stdlib", () => {
 
         // since we want to test FunC resolve, we need FunC jetton wallet code
         jettonResolverOverriddenTester = blockchain.openContract(
-            await JettonResolverOverridenTester.fromInit(
+            await JettonResolverOverriddenTester.fromInit(
                 jettonMinterFuncAddress,
                 Cell.fromBoc(bocWallet)[0]!,
             ),
