@@ -61,7 +61,7 @@ native throwIf(code: Int, condition: Bool);
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Similar to `throw()`, but throws an error `code` only if `condition` does **not** hold, i.e. `condition` is equal to `true{:tact}`. Doesn't throw otherwise.
+/// Similar to `throw()`, but throws an error `code` only if `condition` does **not** hold, i.e. `condition` is equal to `true`. Doesn't throw otherwise.
 ///
 /// This function is also similar to `require()`, but uses the specified `code` directly instead of generating one based on the given error message `String`.
 ///
