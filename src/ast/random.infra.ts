@@ -145,7 +145,8 @@ function randomAstId(): fc.Arbitrary<Ast.Id> {
                     (i) =>
                         !reservedWords.includes(i) &&
                         !i.startsWith("__gen") &&
-                        !i.startsWith("__tact"),
+                        !i.startsWith("__tact") &&
+                        i !== "_",
                 ),
         }),
     );
