@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Always show an error when calling the `dump()` function with an argument of the unsupported `StringBuilder` type: PR [#2491](https://github.com/tact-lang/tact/pull/2491)
 - [fix] The grammar now disallows the augmented assignment operators with whitespace between the operator and the equals sign: PR [#2492](https://github.com/tact-lang/tact/pull/2492)
 - [fix] Generated code now short-circuits `&&=` and `||=` operators: PR [#2494](https://github.com/tact-lang/tact/pull/2494)
+- [fix] Get methods that return optional contract state now work correctly: PR [#2512](https://github.com/tact-lang/tact/pull/2512)
+- [fix] Get methods that return contract state for empty contracts now work correctly: PR [#2517](https://github.com/tact-lang/tact/pull/2517)
 
 ### Standard Library
 
@@ -36,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed description of the `dump()` function, which does not support values of `StringBuilder` type: PR [#2463](https://github.com/tact-lang/tact/pull/2463)
 - Explicitly stated that structs cannot be empty, while message structs can: PR [#2464](https://github.com/tact-lang/tact/pull/2464)
 - Fixed description of the `contractAddressExt()` function, which currently does not resolve constant values at compile-time and allows specifying arbitrary `chain` IDs: PR [#2497](https://github.com/tact-lang/tact/pull/2497)
+- Fixed description of `getOriginalFwdFee()` and `Context.readForwardFee()` functions, where the latter calls the former at the end of its execution: PR [#2521](https://github.com/tact-lang/tact/pull/2521)
 
 ### Release contributors
 

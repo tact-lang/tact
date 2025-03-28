@@ -24,6 +24,7 @@ Cheatsheet
 cheatsheets
 Cheatsheets
 cleanall
+CNFT
 codegen
 compilables
 Compilables
