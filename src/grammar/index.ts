@@ -46,6 +46,24 @@ const parseId =
         if (name.startsWith("__tact")) {
             ctx.err.reservedVarPrefix("__tact")(loc);
         }
+        if (name === "_") {
+            return ctx.err.noWildcard()(loc);
+        }
+        return ctx.ast.Id(name, loc);
+    };
+
+const parseOptionalId =
+    ({ name, loc }: $ast.Id | $ast.TypeId): Handler<Ast.OptionalId> =>
+    (ctx) => {
+        if (name.startsWith("__gen")) {
+            ctx.err.reservedVarPrefix("__gen")(loc);
+        }
+        if (name.startsWith("__tact")) {
+            ctx.err.reservedVarPrefix("__tact")(loc);
+        }
+        if (name === "_") {
+            return ctx.ast.Wildcard(loc);
+        }
         return ctx.ast.Id(name, loc);
     };
 
@@ -418,7 +436,7 @@ const parseStatementLet =
     ({ name, type, init, loc }: $ast.StatementLet): Handler<Ast.StatementLet> =>
     (ctx) => {
         return ctx.ast.StatementLet(
-            parseId(name)(ctx),
+            parseOptionalId(name)(ctx),
             type ? parseType(type)(ctx) : undefined,
             parseExpression(init)(ctx),
             loc,
@@ -432,14 +450,17 @@ const parsePunnedField =
     };
 
 const parseRegularField =
-    ({ fieldName, varName }: $ast.RegularField): Handler<[Ast.Id, Ast.Id]> =>
+    ({
+        fieldName,
+        varName,
+    }: $ast.RegularField): Handler<[Ast.Id, Ast.OptionalId]> =>
     (ctx) => {
-        return [parseId(fieldName)(ctx), parseId(varName)(ctx)];
+        return [parseId(fieldName)(ctx), parseOptionalId(varName)(ctx)];
     };
 
 const parseDestructItem: (
     node: $ast.destructItem,
-) => Handler<[Ast.Id, Ast.Id]> = makeVisitor<$ast.destructItem>()({
+) => Handler<[Ast.Id, Ast.OptionalId]> = makeVisitor<$ast.destructItem>()({
     PunnedField: parsePunnedField,
     RegularField: parseRegularField,
 });
@@ -453,7 +474,7 @@ const parseStatementDestruct =
         loc,
     }: $ast.StatementDestruct): Handler<Ast.StatementDestruct> =>
     (ctx) => {
-        const ids: Map<string, [Ast.Id, Ast.Id]> = new Map();
+        const ids: Map<string, [Ast.Id, Ast.OptionalId]> = new Map();
         for (const param of parseList(fields)) {
             const pair = parseDestructItem(param)(ctx);
             const [field] = pair;
@@ -567,7 +588,7 @@ const parseStatementTry =
     (ctx) => {
         if (handler) {
             return ctx.ast.StatementTry(parseStatements(body)(ctx), loc, {
-                catchName: parseId(handler.name)(ctx),
+                catchName: parseOptionalId(handler.name)(ctx),
                 catchStatements: parseStatements(handler.body)(ctx),
             });
         } else {
@@ -589,8 +610,8 @@ const parseStatementForEach =
     }: $ast.StatementForEach): Handler<Ast.StatementForEach> =>
     (ctx) => {
         return ctx.ast.StatementForEach(
-            parseId(key)(ctx),
-            parseId(value)(ctx),
+            parseOptionalId(key)(ctx),
+            parseOptionalId(value)(ctx),
             parseExpression(expression)(ctx),
             parseStatements(body)(ctx),
             loc,
@@ -738,7 +759,7 @@ const parseParameter =
     ({ name, type, loc }: $ast.Parameter): Handler<Ast.TypedParameter> =>
     (ctx) => {
         return ctx.ast.TypedParameter(
-            parseId(name)(ctx),
+            parseOptionalId(name)(ctx),
             parseType(type)(ctx),
             loc,
         );

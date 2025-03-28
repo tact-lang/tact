@@ -23,7 +23,7 @@ import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
 import type { Effect } from "../../types/effects";
 import { enabledAlwaysSaveContractData } from "../../config/features";
-import { getAstFactory, idText, isWildcard } from "../../ast/ast-helpers";
+import { getAstFactory, idText } from "../../ast/ast-helpers";
 import { evalConstantExpression } from "../../optimizer/constEval";
 import { getAstUtil } from "../../ast/util";
 
@@ -439,7 +439,7 @@ function fallbackReceiverKind(
             }
         }
     }
-    if (isWildcard(fallback.selector.name)) {
+    if (fallback.selector.name.kind === "wildcard") {
         return { kind: "wildcard-parameter" };
     }
     return { kind: "unknown" };
@@ -610,7 +610,7 @@ function writeFallbackReceiver(
     inMsg: string,
     wCtx: WriterContext,
 ): void {
-    if (!isWildcard(fbRcv.selector.name) && fbRcv.ast.statements.length != 0) {
+    if (fbRcv.selector.name.kind === "id" && fbRcv.ast.statements.length != 0) {
         wCtx.append(`slice ${funcIdOf(fbRcv.selector.name)} = ${inMsg};`);
     }
     for (const stmt of fbRcv.ast.statements) {

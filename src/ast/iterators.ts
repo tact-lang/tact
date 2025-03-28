@@ -319,6 +319,7 @@ export function traverseAndCheck(
             traverseAndCheck(node.thenBranch, callback);
             traverseAndCheck(node.elseBranch, callback);
             break;
+        case "wildcard":
         case "id":
         case "func_id":
         case "number":

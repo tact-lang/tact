@@ -1570,8 +1570,8 @@ export class Interpreter {
         // Evaluate the arguments in the current environment
         const argValues = args.map(this.interpretExpressionInternal, this);
         // Extract the parameter names
-        const paramNames = functionCode.params.map((param) =>
-            idText(param.name),
+        const paramNames = functionCode.params.flatMap((param) =>
+            param.name.kind === "id" ? [idText(param.name)] : [],
         );
         // Check parameter names do not shadow constants
         if (
@@ -1672,23 +1672,32 @@ export class Interpreter {
     }
 
     private interpretLetStatement(ast: Ast.StatementLet) {
-        if (hasStaticConstant(this.context, idText(ast.name))) {
+        if (ast.name.kind === "wildcard") {
+            this.interpretExpressionInternal(ast.expression);
+            return;
+        }
+        const id = idText(ast.name);
+        if (hasStaticConstant(this.context, id)) {
             // Attempt of shadowing a constant in a let declaration
             throwInternalCompilerError(
-                `declaration of ${idText(ast.name)} shadows a constant with the same name`,
+                `declaration of ${id} shadows a constant with the same name`,
                 ast.loc,
             );
         }
         const val = this.interpretExpressionInternal(ast.expression);
-        this.envStack.setNewBinding(idText(ast.name), val);
+        this.envStack.setNewBinding(id, val);
     }
 
     private interpretDestructStatement(ast: Ast.StatementDestruct) {
         for (const [_, name] of ast.identifiers.values()) {
-            if (hasStaticConstant(this.context, idText(name))) {
+            if (name.kind !== "id") {
+                continue;
+            }
+            const id = idText(name);
+            if (hasStaticConstant(this.context, id)) {
                 // Attempt of shadowing a constant in a destructuring declaration
                 throwInternalCompilerError(
-                    `declaration of ${idText(name)} shadows a constant with the same name`,
+                    `declaration of ${id} shadows a constant with the same name`,
                     ast.loc,
                 );
             }
@@ -1708,7 +1717,7 @@ export class Interpreter {
         val.args.forEach((f) => valAsMap.set(idText(f.field), f.initializer));
 
         for (const [field, name] of ast.identifiers.values()) {
-            if (name.text === "_") {
+            if (name.kind === "wildcard") {
                 continue;
             }
             const v = valAsMap.get(idText(field));

@@ -79,12 +79,8 @@ export function isStringBuilder(ident: Ast.TypeId): boolean {
     return ident.text === "StringBuilder";
 }
 
-export function isSelfId(ident: Ast.Id): boolean {
-    return ident.text === "self";
-}
-
-export function isWildcard(ident: Ast.Id): boolean {
-    return ident.text === "_";
+export function isSelfId(ident: Ast.OptionalId): boolean {
+    return ident.kind === "id" && ident.text === "self";
 }
 
 export function isRequire(ident: Ast.Id): boolean {
