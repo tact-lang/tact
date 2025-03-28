@@ -82,8 +82,10 @@ describe("writeSerialization", () => {
                     writeAccessors(t, "user", wCtx);
                 }
             }
+            const type = getType(ctx, s);
             writeParser(
-                getType(ctx, s).name,
+                type,
+                type.name,
                 false,
                 "with-opcode",
                 getAllocation(ctx, s),
