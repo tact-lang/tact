@@ -1,0 +1,197 @@
+---
+title: "@stdlib/jetton"
+description: "Provides utilities for working with the TON Jetton standard"
+---
+
+The `@stdlib/jetton` module provides utilities for working with the [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md) on the TON Blockchain. Jettons are fungible tokens similar to ERC-20 tokens on Ethereum, implemented as smart contracts.
+
+To use this library, import `@stdlib/jetton`:
+
+```tact
+import "@stdlib/jetton";
+```
+
+## Structs
+
+### JettonMinterData
+
+```tact
+struct JettonMinterData {
+    totalSupply: Int as coins;
+    mintable: Bool;
+    owner: Address;
+    content: Cell;
+    jettonWalletCode: Cell;
+}
+```
+
+Describes the data returned by the Jetton Minter getter function `get_jetton_data`, as defined in [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods-1).
+
+### JettonWalletData
+
+```tact
+struct JettonWalletData {
+    balance: Int as coins;
+    owner: Address;
+    minter: Address;
+    code: Cell;
+}
+```
+
+Describes the data returned by the Jetton Wallet getter function `get_wallet_data`, as defined in [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods).
+
+## Messages
+
+### JettonTransfer
+
+```tact
+message(0xf8a7ea5) JettonTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Slice as remaining;
+}
+```
+
+Represents a transfer message sent to the Jetton Wallet contract to transfer Jettons to another account. See [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer).
+
+### JettonTransferInternal
+
+```tact
+message(0x178d4519) JettonTransferInternal {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    responseDestination: Address?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Slice as remaining;
+}
+```
+
+Represents an internal transfer message sent by the sender's Jetton Wallet contract to the recipient's Jetton Wallet contract. See [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#tl-b-schema).
+
+### JettonTransferNotification
+
+```tact
+message(0x7362d09c) JettonTransferNotification {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    forwardPayload: Slice as remaining;
+}
+```
+
+Represents a notification message sent by the recipient's Jetton Wallet contract to its owner contract after a successful transfer. See [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer).
+
+### JettonBurn
+
+```tact
+message(0x595f07bc) JettonBurn {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    responseDestination: Address?;
+    customPayload: Cell?;
+}
+```
+
+Represents a burn message sent to the Jetton Wallet contract to permanently remove Jettons from circulation. See [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#2-burn).
+
+### JettonBurnNotification
+
+```tact
+message(0x7bdd97de) JettonBurnNotification {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    responseDestination: Address?;
+}
+```
+
+Represents a notification message sent by the Jetton Wallet contract to the Jetton Minter contract after a successful burn. See [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#tl-b-schema).
+
+### JettonExcesses
+
+```tact
+message(0xd53276db) JettonExcesses {
+    queryId: Int as uint64;
+}
+```
+
+Represents a message sent by the Jetton Wallet contract to return excess funds to the sender. See [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer).
+
+### ProvideWalletAddress
+
+```tact
+message(0x2c76b973) ProvideWalletAddress {
+    queryId: Int as uint64;
+    ownerAddress: Address;
+    includeAddress: Bool;
+}
+```
+
+Represents a message sent to the Jetton Minter contract to request the Jetton Wallet address for a specific owner. See [TEP-89](https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md#scheme).
+
+### TakeWalletAddress
+
+```tact
+message(0xd1735400) TakeWalletAddress {
+    queryId: Int as uint64;
+    walletAddress: Address;
+    ownerAddress: Cell?;
+}
+```
+
+Represents a response message sent by the Jetton Minter contract with the requested Jetton Wallet address. See [TEP-89](https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md#scheme).
+
+### JettonUpdateContent
+
+```tact
+message(4) JettonUpdateContent {
+    queryId: Int as uint64;
+    newContent: Cell;
+}
+```
+
+Represents a message sent to the Jetton Minter contract to update the Jetton content. See [TEP-64](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md).
+
+### Mint
+
+```tact
+message(21) Mint {
+    queryId: Int as uint64;
+    receiver: Address;
+    tonAmount: Int as coins;
+    mintMessage: JettonTransferInternal;
+}
+```
+
+Represents a message sent to the Jetton Minter contract to mint new Jettons for a specific receiver.
+
+### CloseMinting
+
+```tact
+message(22) CloseMinting {}
+```
+
+Represents a message sent to the Jetton Minter contract to disable minting of new Jettons.
+
+### ChangeOwner
+
+```tact
+message(3) ChangeOwner {
+    queryId: Int as uint64;
+    newOwner: Address;
+}
+```
+
+Represents a message sent to the Jetton Minter contract to change its owner.
+
+## Sources
+
+* [jetton.tact](https://github.com/tact-lang/tact/blob/main/stdlib/libs/jetton.tact)
+* [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md)
+* [TEP-89](https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md)
+* [TEP-64](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md)
