@@ -2,10 +2,15 @@
 ///
 /// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods-1
 struct JettonMinterData {
+    /// Total supply of the jettons in elementary units.
     totalSupply: Int as coins;
+    /// Flag that indicates whether the jettons are mintable.
     mintable: Bool;
+    /// Address of the owner of the Jetton Minter contract.
     owner: Address;
+    /// Jetton content.
     content: Cell;
+    /// Code of the Jetton Wallet contract.
     jettonWalletCode: Cell;
 }
 
@@ -13,9 +18,13 @@ struct JettonMinterData {
 ///
 /// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods
 struct JettonWalletData {
+    /// Balance of the Jetton Wallet in elementary units.
     balance: Int as coins;
+    /// Address of the owner of the Jetton Wallet contract.
     owner: Address;
+    /// Address of the Jetton Minter contract.
     minter: Address;
+    /// Code of the Jetton Wallet contract.
     code: Cell;
 }
 
@@ -160,8 +169,8 @@ message(0xd53276db) JettonExcesses {
 /// #### TLB
 ///
 /// ```tlb
-/// provide_wallet_address#2c76b973 query_id:uint64 
-///     owner_address:MsgAddress include_address:Bool 
+/// provide_wallet_address#2c76b973 query_id:uint64
+///     owner_address:MsgAddress include_address:Bool
 ///     = InternalMsgBody;
 /// ```
 ///
@@ -180,7 +189,7 @@ message(0x2c76b973) ProvideWalletAddress {
 /// #### TLB
 ///
 /// ```tlb
-/// take_wallet_address#d1735400 query_id:uint64 
+/// take_wallet_address#d1735400 query_id:uint64
 ///     wallet_address:MsgAddress owner_address:(Maybe ^MsgAddress)
 ///     = InternalMsgBody;
 /// ```
@@ -195,22 +204,35 @@ message(0xd1735400) TakeWalletAddress {
     ownerAddress: Cell?;
 }
 
-// implementation details
+/// Message, oftenly used in jetton implementations, that is sent to the Jetton Minter contract by its owner to update the jetton content.
+///
+/// See also: https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md
 message(4) JettonUpdateContent {
+    /// Arbitrary request number.
     queryId: Int as uint64;
+    /// New jetton content.
     content: Cell;
 }
 
+/// Message, oftenly used in jetton implementations, that is sent to the Jetton Minter contract to mint `mintMessage.amount` of jettons for the `receiver`.
 message(21) Mint {
+    /// Arbitrary request number.
     queryId: Int as uint64;
+    /// Address of the receiver of the minted jettons.
     receiver: Address;
+    /// The amount of nanotons to be sent to the `receiver` in `transfer` message.
     tonAmount: Int as coins;
+    /// Message that would be sent to the `receiver` Jetton Wallet to handle the minting.
     mintMessage: JettonTransferInternal;
 }
 
+/// Message, oftenly used in jetton implementations, that is sent to the Jetton Minter contract to close the ability to mint new jettons.
 message(22) CloseMinting {}
 
+/// Message, oftenly used in jetton implementations, that is sent to the Jetton Minter contract to change the owner to the `newOwner`. Should be fetched only if send by the current owner.
 message(3) ChangeOwner {
+    /// Arbitrary request number.
     queryId: Int as uint64;
+    /// New owner of the Jetton Minter contract.
     newOwner: Address;
 }
