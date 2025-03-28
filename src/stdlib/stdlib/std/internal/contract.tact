@@ -329,11 +329,11 @@ asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { G
 
 /// Global function. Available since Tact 1.5.0.
 ///
-/// Calculates and returns the so-called _original_ forward fee in nanoToncoin `Int` for an outgoing message based on the given `fwdFee`, which can be obtained from the incoming message. If both the source and the destination addresses are in the basechain, specify `isMasterchain` as `false`. Otherwise, specify `true`.
+/// Calculates and returns the so-called _original_ forward fee in nanoToncoin `Int` for a message based on the given `fwdFee` of this message, which can be obtained by calling `getForwardFee()`. If both the source and the destination addresses are in the basechain, specify `isMasterchain` as `false`. Otherwise, specify `true`.
 ///
 /// The result is computed using the `first_frac` value, which is obtained from config param 24 for the masterchain and config param 25 for the basechain of TON Blockchain. Due to the current value of `first_frac` for all workchains, this function performs a cheaper equivalent calculation of `fwdFee * 3 / 2`. This ratio might change, so it is better not to hardcode it and use this function instead.
 ///
-/// This function can be useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using `getForwardFee()` alone. Even if you could, calculating the exact fee with nanoToncoin-level precision can be very expensive, so the approximate value given by this function is often good enough.
+/// This function can be useful when the outgoing message depends heavily on the structure of the incoming message, so you can try to approximate the forward fee for your outgoing message based on the fee the sender paid. Calculating the exact fee with nanoToncoin-level precision can be very expensive, so the approximation given by this function is often good enough.
 ///
 /// ```tact
 /// fun example() {
