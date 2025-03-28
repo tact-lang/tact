@@ -133,12 +133,12 @@ extends fun readForwardFee(self: Context): Int;
 
 Extension function for the [`Context{:tact}`](#context) [struct][struct].
 
-Reads the [forward fee][forward-fee] and returns it as an [`Int{:tact}`][int] amount of [nanoToncoin][nano].
+Reads the [forward fee][forward-fee] provided in the incoming message and applies the [`getOriginalFwdFee(){:tact}`](/ref/core-gas#getoriginalfwdfee) to it to calculate its approximate original value. Returns this value as an [`Int{:tact}`][int] amount of [nanoToncoin][nano].
 
 Usage example:
 
 ```tact
-let fwdFee: Int = context().readForwardFee();
+let origFwdFee: Int = context().readForwardFee();
 ```
 
 :::note[Useful links:]
