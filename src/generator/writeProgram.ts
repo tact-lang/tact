@@ -346,6 +346,7 @@ function writeAll(
             );
             writeOptionalSerializer(t.name, t.origin, wCtx);
             writeParser(
+                t,
                 t.name,
                 t.kind === "contract",
                 "with-opcode",
@@ -353,6 +354,7 @@ function writeAll(
                 wCtx,
             );
             writeParser(
+                t,
                 t.name,
                 t.kind === "contract",
                 "no-opcode",
@@ -389,6 +391,7 @@ function writeAll(
                 wCtx,
             );
             writeParser(
+                t,
                 funcInitIdOf(t.name),
                 false,
                 "with-opcode",

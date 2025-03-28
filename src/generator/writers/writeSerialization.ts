@@ -12,6 +12,7 @@ import { ops } from "./ops";
 import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import type { ItemOrigin } from "../../imports/source";
+import type { TypeDescription } from "../../types/types";
 
 const SMALL_STRUCT_MAX_FIELDS = 10;
 
@@ -321,6 +322,7 @@ function writeSerializerField(
 //
 
 export function writeParser(
+    type: TypeDescription,
     name: string,
     forceInline: boolean,
     opcode: "with-opcode" | "no-opcode",
@@ -379,7 +381,17 @@ export function writeParser(
             ctx.context("type:" + name);
             ctx.body(() => {
                 ctx.append(`var r = sc_0~${ops.reader(name, opcode, ctx)}();`);
-                ctx.append(`sc_0.end_parse();`);
+
+                // When we parse a message with an `as remaining` field, we don't advance the original slice,
+                // we just store it in that message field.
+                // `end_parse()` on the original slice in this case will generate exit code 9 (extra data remaining in cell),
+                // so we need to skip generation of the `end_parse()` call in this case.
+                const lastField = type.fields.at(-1);
+                const skipEndParse = lastField?.as === "remaining";
+
+                if (!skipEndParse) {
+                    ctx.append(`sc_0.end_parse();`);
+                }
                 ctx.append(`return r;`);
             });
         });
