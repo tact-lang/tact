@@ -91,7 +91,7 @@ contract Escrow(
         self.jettonWalletCode = msg.newJettonWalletCode;
     }
 
-    receive(msg: JettonNotification) {
+    receive(msg: JettonTransferNotification) {
         throwUnless(400, !self.isFunded);
         throwUnless(400, self.assetAddress != null);
 

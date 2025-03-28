@@ -53,7 +53,7 @@ contract JettonMinter(
 
     receive(msg: JettonUpdateContent) {
         throwUnless(73, sender() == self.owner);
-        self.jettonContent = msg.content;
+        self.jettonContent = msg.newContent;
     }
 
     receive(msg: Mint) {

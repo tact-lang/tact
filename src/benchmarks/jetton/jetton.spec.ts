@@ -74,7 +74,7 @@ describe("Jetton", () => {
         const msg: JettonUpdateContent = {
             $$type: "JettonUpdateContent",
             queryId: 0n,
-            content: new Cell(),
+            newContent: new Cell(),
         };
 
         jettonMinter = blockchain.openContract(

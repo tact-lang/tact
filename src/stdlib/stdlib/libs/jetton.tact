@@ -204,17 +204,17 @@ message(0xd1735400) TakeWalletAddress {
     ownerAddress: Cell?;
 }
 
-/// Message, oftenly used in jetton implementations, that is sent to the Jetton Minter contract by its owner to update the jetton content.
+/// Message, often used in jetton implementations, that is sent to the Jetton Minter contract by its owner to update the jetton content.
 ///
 /// See also: https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md
 message(4) JettonUpdateContent {
     /// Arbitrary request number.
     queryId: Int as uint64;
     /// New jetton content.
-    content: Cell;
+    newContent: Cell;
 }
 
-/// Message, oftenly used in jetton implementations, that is sent to the Jetton Minter contract to mint `mintMessage.amount` of jettons for the `receiver`.
+/// Message, often used in jetton implementations, that is sent to the Jetton Minter contract to mint `mintMessage.amount` of jettons for the `receiver`.
 message(21) Mint {
     /// Arbitrary request number.
     queryId: Int as uint64;
@@ -226,10 +226,10 @@ message(21) Mint {
     mintMessage: JettonTransferInternal;
 }
 
-/// Message, oftenly used in jetton implementations, that is sent to the Jetton Minter contract to close the ability to mint new jettons.
+/// Message, often used in jetton implementations, that is sent to the Jetton Minter contract to close the ability to mint new jettons.
 message(22) CloseMinting {}
 
-/// Message, oftenly used in jetton implementations, that is sent to the Jetton Minter contract to change the owner to the `newOwner`. Should be fetched only if send by the current owner.
+/// Message, often used in jetton implementations, that is sent to the Jetton Minter contract to change the owner to the `newOwner`. Should be fetched only if send by the current owner.
 message(3) ChangeOwner {
     /// Arbitrary request number.
     queryId: Int as uint64;

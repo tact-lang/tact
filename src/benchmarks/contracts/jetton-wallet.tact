@@ -23,22 +23,21 @@ contract JettonWallet(
         let fwdCount = 1 + sign(msg.forwardTonAmount); // msg.forwardTonAmount is coins, so it's not negative
 
         throwUnless(709, ctx.value >
-            msg.forwardTonAmount +
-            fwdCount * ctx.readForwardFee() +
-            (2 * self.gasConsumption + self.minTonsForStorage)
-        );
+                         msg.forwardTonAmount +
+                         fwdCount * ctx.readForwardFee() +
+                         (2 * self.gasConsumption + self.minTonsForStorage));
 
-        deploy(DeployParameters{
+        deploy(DeployParameters {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: JettonTransferInternal{
+            body: JettonTransferInternal {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
                 responseDestination: msg.responseDestination,
                 forwardTonAmount: msg.forwardTonAmount,
-                forwardPayload: msg.forwardPayload
+                forwardPayload: msg.forwardPayload,
             }.toCell(),
             init: initOf JettonWallet(0, msg.destination, self.minter),
         });
@@ -62,12 +61,12 @@ contract JettonWallet(
         if (msg.forwardTonAmount > 0) {
             let fwdFee: Int = ctx.readForwardFee();
             msgValue -= msg.forwardTonAmount + fwdFee;
-            message(MessageParameters{
+            message(MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayFwdFeesSeparately,
                 bounce: false,
-                body: JettonNotification{ // 0x7362d09c -- Remind the new Owner
+                body: JettonTransferNotification { // 0x7362d09c -- Remind the new Owner
                     queryId: msg.queryId,
                     amount: msg.amount,
                     sender: msg.sender,
@@ -78,12 +77,12 @@ contract JettonWallet(
 
         // 0xd53276db -- Cashback to the original Sender
         if (msg.responseDestination != null && msgValue > 0) {
-            message(MessageParameters{
+            message(MessageParameters {
                 to: msg.responseDestination!!,
                 value: msgValue,
                 mode: SendIgnoreErrors,
                 bounce: false,
-                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                body: JettonExcesses { queryId: msg.queryId }.toCell(),
             });
         }
     }
@@ -98,12 +97,12 @@ contract JettonWallet(
         let fwdFee: Int = ctx.readForwardFee();
         throwUnless(707, ctx.value > (fwdFee + 2 * self.gasConsumption));
 
-        message(MessageParameters{
+        message(MessageParameters {
             to: self.minter,
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: JettonBurnNotification{
+            body: JettonBurnNotification {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
@@ -123,11 +122,11 @@ contract JettonWallet(
     }
 
     get fun get_wallet_data(): JettonWalletData {
-        return JettonWalletData{
+        return JettonWalletData {
             balance: self.balance,
             owner: self.owner,
             minter: self.minter,
-            code: myCode()
+            code: myCode(),
         };
     }
 }
