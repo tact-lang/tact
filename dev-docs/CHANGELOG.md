@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deprecated the `SendPayGasSeparately` constant in favor of `SendPayFwdFeesSeparately`: PR [#2483](https://github.com/tact-lang/tact/pull/2483)
 - Time related functions are now located in the `std/internal/time.tact` file: PR [#2507](https://github.com/tact-lang/tact/pull/2507)
 - [fix] The `Stoppable` trait now uses `throwUnless` with exit code 133 instead of `require` with "Contract stopped" message: PR [#2503](https://github.com/tact-lang/tact/pull/2503)
+- Fixed description of `getOriginalFwdFee()` and `Context.readForwardFee()` functions, where the latter calls the former at the end of its execution: PR [#2521](https://github.com/tact-lang/tact/pull/2521)
 
 ### Code generation
 
