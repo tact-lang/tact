@@ -230,7 +230,7 @@ asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 /// * 8: [Cell overflow] — Thrown when attempting to skip an `Address` when `Slice` doesn't contain it.
 /// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceskipaddress
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
