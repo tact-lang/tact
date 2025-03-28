@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Generated code now short-circuits `&&=` and `||=` operators: PR [#2494](https://github.com/tact-lang/tact/pull/2494)
 - [fix] Get methods that return optional contract state now work correctly: PR [#2512](https://github.com/tact-lang/tact/pull/2512)
 - [fix] Get methods that return contract state for empty contracts now work correctly: PR [#2517](https://github.com/tact-lang/tact/pull/2517)
-- [fix] Compiler now don't generate `end_parse()` for `Message.fromSlice()` if last field of message is `as remaining`: PR [#2524](https://github.com/tact-lang/tact/pull/2524)
+- [fix] Skip checking if the slice has been parsed completely when parsing a message (`Message.fromSlice()`) with the last field of the type `Slice as remaining`: PR [#2524](https://github.com/tact-lang/tact/pull/2524)
 
 ### Standard Library
 
