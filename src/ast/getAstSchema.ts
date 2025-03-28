@@ -277,7 +277,7 @@ export const getAstSchema = (
             }),
         StatementDestruct: (
             type: Ast.TypeId,
-            identifiers: Map<string, [Ast.Id, Ast.Id | Ast.Wildcard]>,
+            identifiers: Map<string, [Ast.Id, Ast.OptionalId]>,
             ignoreUnspecifiedFields: boolean,
             expression: Ast.Expression,
             loc: Loc,
@@ -382,7 +382,7 @@ export const getAstSchema = (
             statements: Ast.Statement[],
             loc: Loc,
             catchBlock?: {
-                catchName: Ast.Id | Ast.Wildcard;
+                catchName: Ast.OptionalId;
                 catchStatements: Ast.Statement[];
             },
         ): Ast.StatementTry =>
