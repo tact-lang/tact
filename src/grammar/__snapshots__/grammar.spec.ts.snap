@@ -651,6 +651,15 @@ exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
 "
 `;
 
+exports[`grammar should fail stmt-destructuring-fields-non-existing-underscore 1`] = `
+"<unknown>:15:12: Wildcard not allowed here
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S {_, b, c} =  s;
+                  ^
+  16 |     return b + c;
+"
+`;
+
 exports[`grammar should fail string-bounced-receiver 1`] = `
 "<unknown>:2:5: bounced() receiver can only accept a Message, bounced<Message> or Slice
   1 | contract Test {
@@ -752,6 +761,33 @@ exports[`grammar should fail type-ident-struct-should-be-capitalized 1`] = `
 > 1 | struct lowercaseIdForType {
              ^
   2 |     a: Int;
+"
+`;
+
+exports[`grammar should fail var-underscore-name-access 1`] = `
+"<unknown>:6:16: Wildcard not allowed here
+  5 |     foreach (_, _ in m) {
+> 6 |         return _;
+                     ^
+  7 |     }
+"
+`;
+
+exports[`grammar should fail var-underscore-name-access2 1`] = `
+"<unknown>:7:14: Wildcard not allowed here
+  6 |     foreach (_, v in m) {
+> 7 |         x += _;
+                   ^
+  8 |     }
+"
+`;
+
+exports[`grammar should fail var-underscore-name-access3 1`] = `
+"<unknown>:9:12: Wildcard not allowed here
+   8 |     let _: Int = someImpureFunction();
+>  9 |     return _;
+                  ^
+  10 | }
 "
 `;
 

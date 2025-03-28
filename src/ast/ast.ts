@@ -509,7 +509,7 @@ export type Conditional = {
     readonly loc: SrcInfo;
 };
 
-export type OptionalId = Id | Wildcard
+export type OptionalId = Id | Wildcard;
 
 export type Id = {
     readonly kind: "id";

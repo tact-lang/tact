@@ -53,7 +53,7 @@ function ensureVariableDoesNotExist(
     sctx: StatementContext,
     name: Ast.OptionalId,
 ): void {
-    if (name.kind !== 'id') {
+    if (name.kind !== "id") {
         return;
     }
     if (sctx.vars.has(idText(name))) {
@@ -119,7 +119,7 @@ export function addVariable(
     sctx: StatementContext,
 ): StatementContext {
     ensureVariableDoesNotExist(ctx, sctx, name); // Should happen earlier
-    if (name.kind === 'wildcard') {
+    if (name.kind === "wildcard") {
         return sctx;
     }
     return {
@@ -257,7 +257,7 @@ function processStatements(
                         // Here it's fine to display _ as variable name, because
                         // let can have only one wildcard. In other cases it's not,
                         // so we must not do it in `idTextErr`
-                        const name = s.name.kind === 'id' ? s.name : '_';
+                        const name = s.name.kind === "id" ? s.name : "_";
                         if (expressionType.kind === "null") {
                             throwCompilationError(
                                 `Cannot infer type for ${idTextErr(name)}`,
@@ -633,7 +633,7 @@ function processStatements(
                 let foreachSctx = sctx;
 
                 // Add key and value to statement context
-                if (s.keyName.kind === 'id') {
+                if (s.keyName.kind === "id") {
                     ensureVariableDoesNotExist(ctx, initialSctx, s.keyName);
                     foreachSctx = addVariable(
                         s.keyName,
@@ -642,7 +642,7 @@ function processStatements(
                         initialSctx,
                     );
                 }
-                if (s.valueName.kind === 'id') {
+                if (s.valueName.kind === "id") {
                     ensureVariableDoesNotExist(ctx, foreachSctx, s.valueName);
                     foreachSctx = addVariable(
                         s.valueName,
@@ -737,7 +737,7 @@ function processStatements(
                             field.loc,
                         );
                     }
-                    if (name.kind === 'id') {
+                    if (name.kind === "id") {
                         sctx = addVariable(name, f.type, ctx, sctx);
                     }
                 });

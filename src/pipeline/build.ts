@@ -380,7 +380,7 @@ export async function build(args: {
             init.kind !== "contract-params"
                 ? init.params.map((v) => ({
                       // FIXME: wildcards in ABI?
-                      name: v.name.kind === 'id' ? v.name.text : '_',
+                      name: v.name.kind === "id" ? v.name.text : "_",
                       type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
                   }))
                 : (init.contract.params ?? []).map((v) => ({

@@ -80,7 +80,7 @@ export function isStringBuilder(ident: Ast.TypeId): boolean {
 }
 
 export function isSelfId(ident: Ast.OptionalId): boolean {
-    return ident.kind === 'id' && ident.text === "self";
+    return ident.kind === "id" && ident.text === "self";
 }
 
 export function isRequire(ident: Ast.Id): boolean {

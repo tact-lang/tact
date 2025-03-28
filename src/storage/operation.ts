@@ -1,5 +1,4 @@
 import type { ABITypeRef } from "@ton/core";
-import type * as Ast from "../ast/ast";
 
 export type AllocationCell = {
     ops: AllocationOperation[];
@@ -8,7 +7,7 @@ export type AllocationCell = {
 };
 
 export type AllocationOperation = {
-    name: Ast.OptionalId;
+    name: string;
     type: ABITypeRef;
     op: AllocationOperationType;
 };

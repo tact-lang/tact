@@ -439,7 +439,7 @@ function fallbackReceiverKind(
             }
         }
     }
-    if (fallback.selector.name.kind === 'wildcard') {
+    if (fallback.selector.name.kind === "wildcard") {
         return { kind: "wildcard-parameter" };
     }
     return { kind: "unknown" };
@@ -610,7 +610,7 @@ function writeFallbackReceiver(
     inMsg: string,
     wCtx: WriterContext,
 ): void {
-    if (fbRcv.selector.name.kind === 'id' && fbRcv.ast.statements.length != 0) {
+    if (fbRcv.selector.name.kind === "id" && fbRcv.ast.statements.length != 0) {
         wCtx.append(`slice ${funcIdOf(fbRcv.selector.name)} = ${inMsg};`);
     }
     for (const stmt of fbRcv.ast.statements) {

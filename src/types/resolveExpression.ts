@@ -511,7 +511,7 @@ function checkParameterType(
     const t = getExpType(ctx, expression);
     if (!isAssignable(t, parameter.type)) {
         // FIXME: this is non-descriptive of parameter name
-        const name = parameter.name.kind === 'id' ? parameter.name : '_';
+        const name = parameter.name.kind === "id" ? parameter.name : "_";
         throwCompilationError(
             `Cannot pass an expression of type "${printTypeRef(t)}" to the parameter ${idTextErr(name)} of type "${printTypeRef(parameter.type)}"`,
             expression.loc,

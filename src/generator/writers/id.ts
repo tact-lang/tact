@@ -5,7 +5,7 @@ export function funcIdOf(ident: Ast.Id | Ast.Wildcard | string): string {
     if (typeof ident === "string") {
         return "$" + ident;
     }
-    if (ident.kind === 'wildcard') {
+    if (ident.kind === "wildcard") {
         return "$_";
     }
     return "$" + idText(ident);

@@ -13,8 +13,6 @@ import {
 import { funcInitIdOf } from "../generator/writers/id";
 import { throwInternalCompilerError } from "../error/errors";
 
-import { idText } from "../ast/ast-helpers";
-
 const store = createContextStore<StorageAllocation>();
 
 export function getAllocation(
@@ -161,7 +159,7 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
                         f.loc,
                     );
                     ops.push({
-                        name: f.name,
+                        name: f.name.kind === "id" ? f.name.text : "_",
                         type: abiType,
                         op: getAllocationOperationFromField(
                             abiType,
@@ -173,7 +171,7 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
                 for (const f of s.init.contract.params ?? []) {
                     const abiType = resolveABIType(f);
                     ops.push({
-                        name: f.name,
+                        name: f.name.text,
                         type: abiType,
                         op: getAllocationOperationFromField(
                             abiType,

@@ -125,7 +125,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                 methodId: f.methodId,
                 arguments: f.params.map((v) => ({
                     // FIXME: wildcards in ABI?
-                    name: v.name.kind === 'id' ? v.name.text : '_',
+                    name: v.name.kind === "id" ? v.name.text : "_",
                     type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
                 })),
                 returnType:

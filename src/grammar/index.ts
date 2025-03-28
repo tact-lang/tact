@@ -46,13 +46,14 @@ const parseId =
         if (name.startsWith("__tact")) {
             ctx.err.reservedVarPrefix("__tact")(loc);
         }
-        if (name === '_') {
+        if (name === "_") {
             return ctx.err.noWildcard()(loc);
         }
         return ctx.ast.Id(name, loc);
     };
 
-const parseOptionalId = ({ name, loc }: $ast.Id | $ast.TypeId): Handler<Ast.OptionalId> =>
+const parseOptionalId =
+    ({ name, loc }: $ast.Id | $ast.TypeId): Handler<Ast.OptionalId> =>
     (ctx) => {
         if (name.startsWith("__gen")) {
             ctx.err.reservedVarPrefix("__gen")(loc);
@@ -60,7 +61,7 @@ const parseOptionalId = ({ name, loc }: $ast.Id | $ast.TypeId): Handler<Ast.Opti
         if (name.startsWith("__tact")) {
             ctx.err.reservedVarPrefix("__tact")(loc);
         }
-        if (name === '_') {
+        if (name === "_") {
             return ctx.ast.Wildcard(loc);
         }
         return ctx.ast.Id(name, loc);
@@ -449,7 +450,10 @@ const parsePunnedField =
     };
 
 const parseRegularField =
-    ({ fieldName, varName }: $ast.RegularField): Handler<[Ast.Id, Ast.OptionalId]> =>
+    ({
+        fieldName,
+        varName,
+    }: $ast.RegularField): Handler<[Ast.Id, Ast.OptionalId]> =>
     (ctx) => {
         return [parseId(fieldName)(ctx), parseOptionalId(varName)(ctx)];
     };

@@ -190,7 +190,8 @@ export const ppAstCodeOf = ({ contract }: Ast.CodeOf) =>
 export const ppAstNumber = astNumToString;
 export const ppAstBoolean = ({ value }: Ast.Boolean) => value.toString();
 export const ppAstId = ({ text }: Ast.Id) => text;
-export const ppAstOptionalId = (node: Ast.OptionalId) => node.kind === 'id' ? ppAstId(node) : '_';
+export const ppAstOptionalId = (node: Ast.OptionalId) =>
+    node.kind === "id" ? ppAstId(node) : "_";
 export const ppAstNull = (_expr: Ast.Null) => "null";
 export const ppAstString = ({ value }: Ast.String) => `"${value}"`;
 export const ppAstSimplifiedString = ({ value }: Ast.SimplifiedString) =>
@@ -515,7 +516,10 @@ export const ppAstNativeFunction: Printer<Ast.NativeFunctionDecl> =
     (c) => {
         const attrs = attributes.map(({ type }) => type + " ").join("");
         const argsCode = params
-            .map(({ name, type }) => `${ppAstOptionalId(name)}: ${ppAstType(type)}`)
+            .map(
+                ({ name, type }) =>
+                    `${ppAstOptionalId(name)}: ${ppAstType(type)}`,
+            )
             .join(", ");
         const returnType = retTy ? `: ${ppAstType(retTy)}` : "";
         return c.block([
@@ -630,7 +634,10 @@ export const ppAstInitFunction: Printer<Ast.ContractInit> =
     ({ params, statements }) =>
     (c) => {
         const argsCode = params
-            .map(({ name, type }) => `${ppAstOptionalId(name)}: ${ppAstType(type)}`)
+            .map(
+                ({ name, type }) =>
+                    `${ppAstOptionalId(name)}: ${ppAstType(type)}`,
+            )
             .join(", ");
         if (statements.length === 0) {
             return c.row(`init(${argsCode}) {}`);
@@ -809,7 +816,9 @@ export const ppAstStatementTry: Printer<Ast.StatementTry> =
         const catchBlocks =
             catchBlock !== undefined
                 ? [
-                      c.row(` catch (${ppAstOptionalId(catchBlock.catchName)}) `),
+                      c.row(
+                          ` catch (${ppAstOptionalId(catchBlock.catchName)}) `,
+                      ),
                       ppStatementBlock(catchBlock.catchStatements)(c),
                   ]
                 : [];
@@ -827,7 +836,7 @@ export const ppAstStatementDestruct: Printer<Ast.StatementDestruct> =
         const ids: string[] = [];
         for (const [field, name] of identifiers.values()) {
             const id =
-                name.kind === 'id' && field.text === name.text
+                name.kind === "id" && field.text === name.text
                     ? ppAstId(name)
                     : `${ppAstId(field)}: ${ppAstOptionalId(name)}`;
             ids.push(id);
@@ -912,7 +921,7 @@ export const ppAstNode: Printer<Ast.AstNode> = makeVisitor<Ast.AstNode>()({
     external: exprNode(ppAstReceiverKind),
 
     wildcard: exprNode(ppAstWildcard),
-    
+
     module: ppAstModule,
     struct_decl: ppAstStruct,
     constant_def: ppAstConstant,

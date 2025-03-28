@@ -1,12 +1,6 @@
 import type * as Ast from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
-import {
-    eqNames,
-    idText,
-    isSelfId,
-    isSlice,
-    selfId,
-} from "../ast/ast-helpers";
+import { eqNames, idText, isSelfId, isSlice, selfId } from "../ast/ast-helpers";
 import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
     idTextErr,
@@ -883,7 +877,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 );
             }
             const firstParam = params[0]!;
-            if (firstParam.name.kind !== 'id' || firstParam.name.text !== "self") {
+            if (
+                firstParam.name.kind !== "id" ||
+                firstParam.name.text !== "self"
+            ) {
                 throwCompilationError(
                     'Extend function must have first parameter named "self"',
                     firstParam.loc,
@@ -930,7 +927,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         }
 
         for (const param of params) {
-            if (param.name.kind !== 'id') {
+            if (param.name.kind !== "id") {
                 continue;
             }
             if (parameterNameSet.has(param.name.text)) {
@@ -983,7 +980,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }
                 const paramsArray: string[] = [];
                 for (const typedId of a.params) {
-                    if (typedId.name.kind === 'wildcard') {
+                    if (typedId.name.kind === "wildcard") {
                         throwCompilationError(
                             "cannot use wildcards with argument rearrangement",
                             a.loc,

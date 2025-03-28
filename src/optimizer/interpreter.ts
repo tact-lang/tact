@@ -1571,7 +1571,7 @@ export class Interpreter {
         const argValues = args.map(this.interpretExpressionInternal, this);
         // Extract the parameter names
         const paramNames = functionCode.params.flatMap((param) =>
-            param.name.kind === 'id' ? [idText(param.name)] : [],
+            param.name.kind === "id" ? [idText(param.name)] : [],
         );
         // Check parameter names do not shadow constants
         if (
@@ -1672,7 +1672,7 @@ export class Interpreter {
     }
 
     private interpretLetStatement(ast: Ast.StatementLet) {
-        if (ast.name.kind === 'wildcard') {
+        if (ast.name.kind === "wildcard") {
             this.interpretExpressionInternal(ast.expression);
             return;
         }
@@ -1690,7 +1690,7 @@ export class Interpreter {
 
     private interpretDestructStatement(ast: Ast.StatementDestruct) {
         for (const [_, name] of ast.identifiers.values()) {
-            if (name.kind !== 'id') {
+            if (name.kind !== "id") {
                 continue;
             }
             const id = idText(name);
@@ -1717,7 +1717,7 @@ export class Interpreter {
         val.args.forEach((f) => valAsMap.set(idText(f.field), f.initializer));
 
         for (const [field, name] of ast.identifiers.values()) {
-            if (name.kind === 'wildcard') {
+            if (name.kind === "wildcard") {
                 continue;
             }
             const v = valAsMap.get(idText(field));

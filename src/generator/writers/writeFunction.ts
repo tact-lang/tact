@@ -1,10 +1,6 @@
 import { enabledInline } from "../../config/features";
 import type * as Ast from "../../ast/ast";
-import {
-    idOfText,
-    idText,
-    tryExtractPath,
-} from "../../ast/ast-helpers";
+import { idOfText, idText, tryExtractPath } from "../../ast/ast-helpers";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import type { FunctionDescription, TypeRef } from "../../types/types";
@@ -110,7 +106,7 @@ export function writeStatement(
         }
         case "statement_let": {
             // Underscore name case
-            if (f.name.kind === 'wildcard') {
+            if (f.name.kind === "wildcard") {
                 ctx.append(`${writeExpression(f.expression, ctx)};`);
                 return;
             }
@@ -247,7 +243,7 @@ export function writeStatement(
 
             const catchBlock = f.catchBlock;
             if (catchBlock !== undefined) {
-                if (catchBlock.catchName.kind === 'wildcard') {
+                if (catchBlock.catchName.kind === "wildcard") {
                     ctx.append(`} catch (_) {`);
                 } else {
                     ctx.append(
@@ -283,12 +279,14 @@ export function writeStatement(
             }
 
             const flag = freshIdentifier("flag");
-            const key = f.keyName.kind === 'wildcard'
-                ? freshIdentifier("underscore")
-                : funcIdOf(f.keyName);
-            const value = f.valueName.kind === 'wildcard'
-                ? freshIdentifier("underscore")
-                : funcIdOf(f.valueName);
+            const key =
+                f.keyName.kind === "wildcard"
+                    ? freshIdentifier("underscore")
+                    : funcIdOf(f.keyName);
+            const value =
+                f.valueName.kind === "wildcard"
+                    ? freshIdentifier("underscore")
+                    : funcIdOf(f.valueName);
 
             // Handle Int key
             if (t.key === "Int") {
@@ -509,7 +507,7 @@ export function writeStatement(
 
             const leftHands = fields.map((field) => {
                 const id =
-                    field === undefined || field[1].kind === 'wildcard'
+                    field === undefined || field[1].kind === "wildcard"
                         ? "_"
                         : funcIdOf(field[1]);
 
@@ -754,7 +752,8 @@ function getAsmFunctionSignature(
 ) {
     const isMutable = fAst.attributes.some((a) => a.type === "mutates");
     const firstParam = fAst.params.at(0)?.name;
-    const hasSelfParam = firstParam?.kind === 'id' && firstParam.text === "self";
+    const hasSelfParam =
+        firstParam?.kind === "id" && firstParam.text === "self";
     const needRearrange =
         fAst.shuffle.ret.length === 0 &&
         fAst.shuffle.args.length > 1 &&
@@ -783,10 +782,9 @@ function getAsmFunctionSignature(
     const [headParam, ...tailParams] = params;
     const paramsDict = Object.fromEntries([
         ["self", headParam],
-        ...zip(f.params, tailParams)
-            .map(([a, b]) => {
-                return [a.name.kind === 'id' ? a.name.text : '_', b] as const
-            })
+        ...zip(f.params, tailParams).map(([a, b]) => {
+            return [a.name.kind === "id" ? a.name.text : "_", b] as const;
+        }),
     ]);
 
     return {
@@ -818,7 +816,9 @@ function writeNonMutatingFunction(
             const params = f.ast.params;
             const firstParam = params.at(0)?.name;
             const withoutSelfParams =
-                params.length > 0 && firstParam?.kind === 'id' && firstParam.text === "self"
+                params.length > 0 &&
+                firstParam?.kind === "id" &&
+                firstParam.text === "self"
                     ? params.slice(1)
                     : params;
             ctx.append(
