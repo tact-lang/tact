@@ -1,28 +1,12 @@
-import * as fs from "fs";
-import * as path from "path";
-import { allInFolder } from "../../../utils/all-in-folder.build";
-import { __DANGER__disableVersionNumber } from "../../../../pipeline/version";
-
-const pwd = (fileName: string): string => path.join(__dirname, fileName);
-
-const templateTestFilePath = pwd("map-property-based.spec.ts.template");
-const outputTestDir = pwd("generated-tests");
-const templateContractFilePath = pwd("map-property-based.tact.template");
-const outputContractDir = pwd("contracts");
-
-const keyCastTemplate = "<__KEY_CAST__>"; // basically a crutch, needed because of this issue: https://github.com/tact-lang/tact/issues/2099.
-const keyTypeTemplate = "<__KEY_TYPE__>";
-const keyTsTypeTemplate = "<__KEY_TS_TYPE__>";
-const keyFilenameTemplate = "<__KEY_FILENAME__>";
-const keyGeneratorTemplate = "<__KEY_GENERATOR__>";
-const keyTypeNoSerializationTemplate = "<__KEY_TYPE_NO_SERIALIZATION__>";
-
-const valueCastTemplate = "<__VALUE_CAST__>"; // same crutch here
-const valueTypeTemplate = "<__VALUE_TYPE__>";
-const valueTsTypeTemplate = "<__VALUE_TS_TYPE__>";
-const valueFilenameTemplate = "<__VALUE_FILENAME__>";
-const valueGeneratorTemplate = "<__VALUE_GENERATOR__>";
-const valueTypeNoSerializationTemplate = "<__VALUE_TYPE_NO_SERIALIZATION__>";
+import type * as Ast from "../../../../ast/ast";
+import { getAstFactory, type FactoryAst } from "../../../../ast/ast-helpers";
+import { getMakeAst } from "../../../../ast/generated/make-factory";
+import {
+    buildModule,
+    filterGlobalDeclarations,
+    loadCustomStdlibFc,
+    parseStandardLibrary,
+} from "./util";
 
 const keyTypes = [
     "Int",
@@ -63,12 +47,22 @@ const valueTypes = [
     "Int as coins",
 ] as const;
 
-type keyValueTypes = (typeof keyTypes)[number] | (typeof valueTypes)[number];
+type keyType = (typeof keyTypes)[number];
+type valueType = (typeof valueTypes)[number];
+type keyValueTypes = keyType | valueType;
 
-function getTypeNoSerialization(type: keyValueTypes): string {
-    return type.split(" as ")[0] ?? type;
+function splitTypeAndSerialization(
+    type: keyValueTypes,
+): [string, string | undefined] {
+    const components = type.split(" as ");
+    const typePart = components[0];
+    if (typeof typePart === "undefined") {
+        throw new Error(`Expected a type in ${type}`);
+    }
+    return [typePart, components[1]];
 }
 
+/*
 const typeGenerators: Record<keyValueTypes, string> = {
     Int: "fc.bigInt",
     Address: "_generateAddressLocal",
@@ -134,69 +128,481 @@ const tsTypeMapping: Record<keyValueTypes, string> = {
     "Int as int256": "bigint",
     "Int as int257": "bigint",
     "Int as coins": "bigint",
+};*/
+
+type ContractWrapper = {
+    moduleItems: Ast.ModuleItem[];
+    keyType: keyType;
+    valueType: valueType;
+    contractName: string;
 };
 
+type ModuleWrapper = {
+    module: Ast.Module;
+    contracts: Map<string, [keyType, valueType]>;
+};
+
+function getModuleItemsFactory(astF: FactoryAst) {
+    let opCodeCounter = 50n;
+    const mF = getMakeAst(astF);
+    const mapFieldName = "mapUnderTest";
+
+    function getFreshOpCode(): bigint {
+        return opCodeCounter++;
+    }
+
+    function createContract(
+        keyT: keyType,
+        valT: valueType,
+    ): { items: Ast.ModuleItem[]; contractName: string } {
+        const moduleItems: Ast.ModuleItem[] = [];
+
+        const namePostfix =
+            keyT.replaceAll(" ", "_") + valT.replaceAll(" ", "_");
+        const contractName = "C_" + namePostfix;
+        const [kT, kS] = splitTypeAndSerialization(keyT);
+        const [vT, vS] = splitTypeAndSerialization(valT);
+        const kTNode = mF.makeDummyTypeId(kT);
+        const vTNode = mF.makeDummyTypeId(vT);
+        const kSNode =
+            typeof kS !== "undefined" ? mF.makeDummyId(kS) : undefined;
+        const vSNode =
+            typeof vS !== "undefined" ? mF.makeDummyId(vS) : undefined;
+
+        // Message declaration for SetKeyValue
+        {
+            const keyField = mF.makeDummyFieldDecl(
+                mF.makeDummyId("key"),
+                kTNode,
+                undefined,
+                kSNode,
+            );
+            const valueField = mF.makeDummyFieldDecl(
+                mF.makeDummyId("value"),
+                vTNode,
+                undefined,
+                vSNode,
+            );
+
+            moduleItems.push(
+                mF.makeDummyMessageDecl(
+                    mF.makeDummyId("SetKeyValue_" + namePostfix),
+                    mF.makeDummyNumber(10, getFreshOpCode()),
+                    [keyField, valueField],
+                ),
+            );
+        }
+
+        // Message declaration for DeleteKey
+        {
+            const keyField = mF.makeDummyFieldDecl(
+                mF.makeDummyId("key"),
+                kTNode,
+                undefined,
+                kSNode,
+            );
+            moduleItems.push(
+                mF.makeDummyMessageDecl(
+                    mF.makeDummyId("DeleteKey_" + namePostfix),
+                    mF.makeDummyNumber(10, getFreshOpCode()),
+                    [keyField],
+                ),
+            );
+        }
+
+        // Contract declaration
+        {
+            const decls: Ast.ContractDeclaration[] = [];
+
+            // Map field
+            decls.push(
+                mF.makeDummyFieldDecl(
+                    mF.makeDummyId(mapFieldName),
+                    mF.makeDummyMapType(kTNode, kSNode, vTNode, vSNode),
+                    undefined,
+                    undefined,
+                ),
+            );
+
+            // init function
+            {
+                const body = mF.makeDummyStatementAssign(
+                    mF.makeDummyFieldAccess(
+                        mF.makeDummyId("self"),
+                        mF.makeDummyId(mapFieldName),
+                    ),
+                    mF.makeDummyStaticCall(mF.makeDummyId("emptyMap"), []),
+                );
+                decls.push(mF.makeDummyContractInit([], [body]));
+            }
+
+            // wholeMap getter
+            {
+                const body = mF.makeDummyStatementReturn(
+                    mF.makeDummyFieldAccess(
+                        mF.makeDummyId("self"),
+                        mF.makeDummyId(mapFieldName),
+                    ),
+                );
+                decls.push(
+                    mF.makeDummyFunctionDef(
+                        [mF.makeDummyFunctionAttributeGet(undefined)],
+                        mF.makeDummyId("wholeMap"),
+                        mF.makeDummyMapType(kTNode, kSNode, vTNode, vSNode),
+                        [],
+                        [body],
+                    ),
+                );
+            }
+
+            // getValue getter
+            {
+                const body = mF.makeDummyStatementReturn(
+                    mF.makeDummyMethodCall(
+                        mF.makeDummyFieldAccess(
+                            mF.makeDummyId("self"),
+                            mF.makeDummyId(mapFieldName),
+                        ),
+                        mF.makeDummyId("get"),
+                        [mF.makeDummyId("key")],
+                    ),
+                );
+                decls.push(
+                    mF.makeDummyFunctionDef(
+                        [mF.makeDummyFunctionAttributeGet(undefined)],
+                        mF.makeDummyId("getValue"),
+                        mF.makeDummyOptionalType(vTNode),
+                        [
+                            mF.makeDummyTypedParameter(
+                                mF.makeDummyId("key"),
+                                kTNode,
+                            ),
+                        ],
+                        [body],
+                    ),
+                );
+            }
+
+            // exists getter
+            {
+                const body = mF.makeDummyStatementReturn(
+                    mF.makeDummyMethodCall(
+                        mF.makeDummyFieldAccess(
+                            mF.makeDummyId("self"),
+                            mF.makeDummyId(mapFieldName),
+                        ),
+                        mF.makeDummyId("exists"),
+                        [mF.makeDummyId("key")],
+                    ),
+                );
+                decls.push(
+                    mF.makeDummyFunctionDef(
+                        [mF.makeDummyFunctionAttributeGet(undefined)],
+                        mF.makeDummyId("exists"),
+                        mF.makeDummyTypeId("Bool"),
+                        [
+                            mF.makeDummyTypedParameter(
+                                mF.makeDummyId("key"),
+                                kTNode,
+                            ),
+                        ],
+                        [body],
+                    ),
+                );
+            }
+
+            // Empty receiver
+            decls.push(
+                mF.makeDummyReceiver(
+                    mF.makeDummyReceiverInternal(mF.makeReceiverFallback()),
+                    [],
+                ),
+            );
+
+            // ClearRequest receiver
+            {
+                const body = mF.makeDummyStatementAssign(
+                    mF.makeDummyFieldAccess(
+                        mF.makeDummyId("self"),
+                        mF.makeDummyId(mapFieldName),
+                    ),
+                    mF.makeDummyStaticCall(mF.makeDummyId("emptyMap"), []),
+                );
+                decls.push(
+                    mF.makeDummyReceiver(
+                        mF.makeDummyReceiverInternal(
+                            mF.makeReceiverSimple(
+                                mF.makeDummyTypedParameter(
+                                    mF.makeDummyId("_"),
+                                    mF.makeDummyTypeId("ClearRequest"),
+                                ),
+                            ),
+                        ),
+                        [body],
+                    ),
+                );
+            }
+
+            // SetKeyValue receiver
+            {
+                const body = mF.makeDummyStatementExpression(
+                    mF.makeDummyMethodCall(
+                        mF.makeDummyFieldAccess(
+                            mF.makeDummyId("self"),
+                            mF.makeDummyId(mapFieldName),
+                        ),
+                        mF.makeDummyId("set"),
+                        [
+                            mF.makeDummyFieldAccess(
+                                mF.makeDummyId("data"),
+                                mF.makeDummyId("key"),
+                            ),
+                            mF.makeDummyFieldAccess(
+                                mF.makeDummyId("data"),
+                                mF.makeDummyId("value"),
+                            ),
+                        ],
+                    ),
+                );
+                decls.push(
+                    mF.makeDummyReceiver(
+                        mF.makeDummyReceiverInternal(
+                            mF.makeReceiverSimple(
+                                mF.makeDummyTypedParameter(
+                                    mF.makeDummyId("data"),
+                                    mF.makeDummyTypeId(
+                                        "SetKeyValue_" + namePostfix,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        [body],
+                    ),
+                );
+            }
+
+            // DeleteKey receiver
+            {
+                const body = mF.makeDummyStatementExpression(
+                    mF.makeDummyMethodCall(
+                        mF.makeDummyFieldAccess(
+                            mF.makeDummyId("self"),
+                            mF.makeDummyId(mapFieldName),
+                        ),
+                        mF.makeDummyId("del"),
+                        [
+                            mF.makeDummyFieldAccess(
+                                mF.makeDummyId("data"),
+                                mF.makeDummyId("key"),
+                            ),
+                        ],
+                    ),
+                );
+                decls.push(
+                    mF.makeDummyReceiver(
+                        mF.makeDummyReceiverInternal(
+                            mF.makeReceiverSimple(
+                                mF.makeDummyTypedParameter(
+                                    mF.makeDummyId("data"),
+                                    mF.makeDummyTypeId(
+                                        "DeleteKey_" + namePostfix,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        [body],
+                    ),
+                );
+            }
+
+            moduleItems.push(
+                mF.makeDummyContract(
+                    mF.makeDummyId(contractName),
+                    [],
+                    [],
+                    undefined,
+                    decls,
+                ),
+            );
+        }
+
+        return { items: moduleItems, contractName };
+    }
+
+    function createCommonModuleItems(): Ast.ModuleItem[] {
+        const moduleItems: Ast.ModuleItem[] = [];
+
+        // Message declaration for ClearRequest
+        moduleItems.push(
+            mF.makeDummyMessageDecl(
+                mF.makeDummyId("ClearRequest"),
+                mF.makeDummyNumber(10, getFreshOpCode()),
+                [],
+            ),
+        );
+
+        return moduleItems;
+    }
+
+    function createCompilationModules(
+        wrappedContracts: ContractWrapper[],
+        commonItems: Ast.ModuleItem[],
+        compilationBatchSize: number,
+    ): ModuleWrapper[] {
+        const modules: ModuleWrapper[] = [];
+
+        let moduleItemAccumulator: Ast.ModuleItem[] = [];
+        let contractNamesAccumulator: Map<string, [keyType, valueType]> =
+            new Map();
+
+        let counter = 0;
+
+        for (const wrappedContract of wrappedContracts) {
+            moduleItemAccumulator.push(...wrappedContract.moduleItems);
+            const contractName = wrappedContract.contractName;
+            contractNamesAccumulator.set(contractName, [
+                wrappedContract.keyType,
+                wrappedContract.valueType,
+            ]);
+            counter++;
+
+            if (counter >= compilationBatchSize) {
+                modules.push({
+                    module: mF.makeModule(
+                        [],
+                        [...moduleItemAccumulator, ...commonItems],
+                    ),
+                    contracts: contractNamesAccumulator,
+                });
+                counter = 0;
+                moduleItemAccumulator = [];
+                contractNamesAccumulator = new Map();
+            }
+        }
+
+        // if there are elements in the accumulators, it means that the last group
+        // did not fill completely, we need to create a module with the leftovers
+        if (moduleItemAccumulator.length > 0) {
+            modules.push({
+                module: mF.makeModule(
+                    [],
+                    [...moduleItemAccumulator, ...commonItems],
+                ),
+                contracts: contractNamesAccumulator,
+            });
+        }
+
+        return modules;
+    }
+
+    return {
+        createContract,
+        createCommonModuleItems,
+        createCompilationModules,
+    };
+}
+
 const main = async () => {
-    // Ensure the output directories exists
-    if (!fs.existsSync(outputTestDir)) {
-        fs.mkdirSync(outputTestDir);
-    }
-    if (!fs.existsSync(outputContractDir)) {
-        fs.mkdirSync(outputContractDir);
-    }
+    const batchSize = 20;
+    const contracts: ContractWrapper[] = [];
+    const astF = getAstFactory();
+    const mF = getModuleItemsFactory(astF);
 
-    const templateTest = fs.readFileSync(templateTestFilePath, "utf-8");
-    const templateContract = fs.readFileSync(templateContractFilePath, "utf-8");
+    // Create common module items
+    const commonItems = mF.createCommonModuleItems();
 
-    // Generate files for all combinations of types
+    // Generate specific contract for each type combination
     for (const keyType of keyTypes) {
         for (const valueType of valueTypes) {
-            const keyFilenameSuffix = keyType.replaceAll(" ", "-");
-            const valueFilenameSuffix = valueType.replaceAll(" ", "-");
-
-            const outputFileName = `map-property-based-${keyFilenameSuffix}-${valueFilenameSuffix}`;
-
-            const typedTest = templateTest
-                .replaceAll(keyCastTemplate, getCast(keyType))
-                .replaceAll(valueCastTemplate, getCast(valueType))
-                .replaceAll(keyTsTypeTemplate, tsTypeMapping[keyType])
-                .replaceAll(valueTsTypeTemplate, tsTypeMapping[valueType])
-                .replaceAll(keyFilenameTemplate, keyFilenameSuffix)
-                .replaceAll(valueFilenameTemplate, valueFilenameSuffix)
-                .replaceAll(keyGeneratorTemplate, typeGenerators[keyType])
-                .replaceAll(valueGeneratorTemplate, typeGenerators[valueType]);
-
-            const testFilePath = path.join(
-                outputTestDir,
-                outputFileName + ".spec.ts",
-            );
-            fs.writeFileSync(testFilePath, typedTest);
-
-            const typedContract = templateContract
-                .replaceAll(keyTypeTemplate, keyType)
-                .replaceAll(valueTypeTemplate, valueType)
-                .replaceAll(
-                    keyTypeNoSerializationTemplate,
-                    getTypeNoSerialization(keyType),
-                )
-                .replaceAll(
-                    valueTypeNoSerializationTemplate,
-                    getTypeNoSerialization(valueType),
-                );
-
-            const contractFilePath = path.join(
-                outputContractDir,
-                outputFileName + ".tact",
-            );
-            fs.writeFileSync(contractFilePath, typedContract);
+            const contractData = mF.createContract(keyType, valueType);
+            contracts.push({
+                moduleItems: contractData.items,
+                keyType,
+                valueType,
+                contractName: contractData.contractName,
+            });
         }
     }
 
-    // Disable version number in packages
-    __DANGER__disableVersionNumber();
+    // Now group the contracts into batches. Each batch will be a single module
+    // for compilation. Attach the common module items into each batch.
+    const modulesForCompilation = mF.createCompilationModules(
+        contracts,
+        commonItems,
+        batchSize,
+    );
 
-    // Compile generated contracts
-    await allInFolder(__dirname, [path.join(outputContractDir, "*.tact")]);
+    console.log(
+        `There are ${contracts.length} contracts, grouped into ${modulesForCompilation.length} compilation batches`,
+    );
+
+    // Parse the stdlib and filter it with the minimal definitions we need
+    const stdlibModule = filterGlobalDeclarations(
+        parseStandardLibrary(astF),
+        getMakeAst(astF),
+        new Set([
+            "Int",
+            "Bool",
+            "Address",
+            "Cell",
+            "Context",
+            "Slice",
+            //"Builder",
+            //"String",
+            "StateInit",
+            "SendParameters",
+            "BaseTrait",
+            "SendDefaultMode",
+            "SendRemainingValue",
+            "SendIgnoreErrors",
+            "SendRemainingBalance",
+            "ReserveExact",
+            "sender",
+            "context",
+            "myBalance",
+            "nativeReserve",
+            //"contractAddress",
+            //"contractAddressExt",
+            //"storeUint",
+            //"storeInt",
+            //"contractHash",
+            //"newAddress",
+            //"beginCell",
+            //"endCell",
+            "send",
+            //"asSlice",
+            //"asAddressUnsafe",
+            //"beginParse",
+        ]),
+    );
+
+    const customStdlibFc = loadCustomStdlibFc();
+
+    // Create the custom stdlib, with the loaded custom FunC stdlib
+    const customStdlib = {
+        modules: [stdlibModule],
+        stdlib_fc: customStdlibFc.stdlib_fc,
+        stdlib_ex_fc: customStdlibFc.stdlib_ex_fc,
+    };
+
+    const contractCodesAccumulator: Map<string, Buffer> = new Map();
+
+    for (const moduleWrap of modulesForCompilation) {
+        console.log(
+            `Compiling batch with contract names [${[...moduleWrap.contracts.keys()].join(",")}]...`,
+        );
+
+        const contractCodes = await buildModule(
+            astF,
+            moduleWrap.module,
+            customStdlib,
+            true,
+        );
+
+        for (const [key, value] of contractCodes) {
+            contractCodesAccumulator.set(key, value);
+        }
+    }
 };
 
 void main();
