@@ -64,7 +64,7 @@ Exit code     | Origin                              | Brief description
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
 [$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid standard address.
 ~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6.
-[$138$](#138) | Tact compiler ([Compute phase][c])  | Not a basechain address.
+[$138$](#138) | Tact compiler ([Compute phase][c])  | Not a basechain address. Available since Tact 1.6.3.
 
 :::note
 
@@ -605,9 +605,13 @@ contract Hal9k with Ownable {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 132 with the `AccessDenied` [constant][const].
+
 ### 133: Contract stopped {#133}
 
 A message has been sent to a "stopped" contract: a contract that inherits the [`Stoppable{:tact}`](/ref/stdlib-stoppable#stoppable) trait and has the `self.stopped{:tact}` flag set to `true{:tact}`.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 133 with the `ContractStopped` [constant][const].
 
 ### 134: Invalid argument {#134}
 
@@ -628,9 +632,13 @@ try {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 134 with the `InvalidArgument` [constant][const].
+
 ### 135: Code of a contract was not found {#135}
 
 If the code of the contract does not match the one saved in TypeScript wrappers, an error with exit code $135$ will be thrown: `Code of a contract was not found`.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 135 with the `ContractCodeNotFound` [constant][const].
 
 ### 136: Invalid standard address {#136}
 
@@ -656,6 +664,8 @@ try {
     // exitCode is 136
 }
 ```
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 136 with the `InvalidStandardAddress` [constant][const].
 
 ### 137: Masterchain support is not enabled for this contract {#137}
 
@@ -706,6 +716,7 @@ try {
 [builder]: /book/cells#builders
 [slice]: /book/cells#slices
 [message]: /book/structs-and-messages#messages
+[const]: /book/constants
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
