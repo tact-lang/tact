@@ -1,4 +1,4 @@
-import { beginCell } from "@ton/core";
+import { beginCell, Contract } from "@ton/core";
 import { getType } from "../../types/resolveDescriptors";
 import {
     showValue,
@@ -26,6 +26,7 @@ import { enabledAlwaysSaveContractData } from "../../config/features";
 import { getAstFactory, idText } from "../../ast/ast-helpers";
 import { evalConstantExpression } from "../../optimizer/constEval";
 import { getAstUtil } from "../../ast/util";
+import { func } from "fast-check";
 
 type ContractReceivers = {
     readonly internal: Receivers;
@@ -85,86 +86,52 @@ export function writeNonBouncedRouter(
         return;
     }
 
-    const writeBinaryReceivers = (msgOpcodeRemoved: boolean) => {
-        receivers.binary.forEach((binRcv) => {
-            writeBinaryReceiver(binRcv, msgOpcodeRemoved, contract, wCtx);
-            wCtx.append();
+    if (receivers.binary.length !== 0) {
+        wCtx.append(";; Start of binary receiver switch");
+        receivers.binary.forEach((binaryReceiver) => {
+            writeBinaryReceiver(binaryReceiver, contract, wCtx);
         });
-    };
-
-    // - Special case: only binary receivers and possibly
-    //    - fallback receiver not reading its input message, or
-    //    - empty fallback receiver, or
-    //    - fallback receiver of the form `receive(msg: Slice) { throw(CODE) }`
-    //      where CODE is a statically known exit code expression
-    if (
-        typeof receivers.empty === "undefined" &&
-        receivers.comment.length === 0 &&
-        typeof receivers.commentFallback === "undefined" &&
-        fallbackReceiverKind(receivers.fallback, wCtx).kind !== "unknown"
-    ) {
-        wCtx.append(`var op = in_msg~load_opcode_${receivers.kind}();`);
-
-        writeBinaryReceivers(true);
-
-        if (typeof receivers.fallback !== "undefined") {
-            writeFallbackReceiver(receivers.fallback, contract, "in_msg", wCtx);
-        } else {
-            // "default" fallback receiver
-            wCtx.append(`;; Throw if not handled`);
-            wCtx.append(`throw(${contractErrors.invalidMessage.id});`);
-        }
-        return;
+        wCtx.append(";; End of binary receiver switch");
+        wCtx.append();
     }
 
-    // If there is a fallback receiver and binary/string receivers, we need to keep in_msg intact,
-    // otherwise we can modify in_msg in-place
-    const opcodeReader: "~load_uint" | ".preload_uint" =
-        typeof receivers.fallback === "undefined"
-            ? "~load_uint"
-            : ".preload_uint";
-
-    const doesHaveTextReceivers =
-        receivers.comment.length > 0 ||
-        typeof receivers.commentFallback !== "undefined";
-
-    wCtx.append("int op = 0;");
-    wCtx.append("int in_msg_length = slice_bits(in_msg);");
-    wCtx.inBlock("if (in_msg_length >= 32)", () => {
-        wCtx.append(`op = in_msg${opcodeReader}(32);`);
-
-        if (doesHaveTextReceivers) {
-            writeBinaryReceivers(opcodeReader === "~load_uint");
-        }
-    });
-
-    // NOTE: It should be more efficient to write all binary receivers inside
-    //       `in_msg_length` length if-check regardless of text receivers,
-    //       but while using Fift this way is better
-    if (!doesHaveTextReceivers) {
-        writeBinaryReceivers(opcodeReader === "~load_uint");
+    if (receivers.comment.length !== 0) {
+        wCtx.append(";; Start of comment receiver switch");
+        wCtx.append("var in_msg_hash = slice_hash(in_msg);");
+        receivers.comment.forEach((commentReceiver) => {
+            writeCommentReceiver(commentReceiver, contract, wCtx);
+        });
+        wCtx.append(";; End of comment receiver switch");
+        wCtx.append();
     }
 
-    if (typeof receivers.empty !== "undefined") {
-        const emptyRcv = receivers.empty;
-        wCtx.append(";; Receive empty message");
-        wCtx.inBlock("if ((op == 0) & (in_msg_length <= 32))", () => {
-            writeReceiverBody(emptyRcv, contract, wCtx);
+    // Yeah this is a mess, but I don't create the rules...
+    const commentFallback = receivers.commentFallback;
+    const emptyReceiver = receivers.empty;
+    if (typeof emptyReceiver !== "undefined") {
+        wCtx.append("int in_msg_length = slice_bits(in_msg);");
+        if (typeof commentFallback !== "undefined") {
+            wCtx.inBlock(`if (in_msg~${opcodeCheckerFuncId(0n)}())`, () => {
+                wCtx.append(";; Empty receiver");
+                wCtx.inBlock("if (in_msg_length == 32)", () => {
+                    writeReceiverBody(emptyReceiver, contract, wCtx);
+                });
+                wCtx.append(";; Comment fallback receiver");
+                writeFallbackReceiver(commentFallback, contract, "in_msg", wCtx);
+            });
+        }
+        wCtx.inBlock('if ((in_msg_length < 32) | equal_slices_bits("00000000"s, in_msg))', () => {
+            writeReceiverBody(emptyReceiver, contract, wCtx);
+        });
+    } else if (typeof commentFallback !== "undefined") {
+        wCtx.append(";; Comment fallback receiver");
+        wCtx.inBlock(`if (in_msg~${opcodeCheckerFuncId(0n)}())`, () => {
+            writeFallbackReceiver(commentFallback, contract, "in_msg", wCtx);
         });
     }
-
-    writeCommentReceivers(
-        receivers.comment,
-        receivers.commentFallback,
-        receivers.kind,
-        opcodeReader === "~load_uint",
-        typeof receivers.fallback !== "undefined",
-        contract,
-        wCtx,
-    );
 
     if (typeof receivers.fallback !== "undefined") {
-        wCtx.append(";; Receiver fallback");
+        wCtx.append(";; Fallback receiver");
         writeFallbackReceiver(receivers.fallback, contract, "in_msg", wCtx);
     } else {
         wCtx.append(`;; Throw if not handled`);
@@ -174,7 +141,6 @@ export function writeNonBouncedRouter(
 
 function writeBinaryReceiver(
     binaryReceiver: ReceiverDescription,
-    msgOpcodeRemoved: boolean,
     contract: TypeDescription,
     wCtx: WriterContext,
 ): void {
@@ -195,11 +161,11 @@ function writeBinaryReceiver(
             binaryReceiver.ast.loc,
         );
     }
+
+    const opcode = allocation.header.value;
+
     wCtx.append(`;; Receive ${selector.type} message`);
-    wCtx.inBlock(`if (op == ${messageOpcode(allocation.header)})`, () => {
-        if (!msgOpcodeRemoved) {
-            wCtx.append("in_msg~skip_bits(32);");
-        }
+    wCtx.inBlock(`if (in_msg~${opcodeCheckerFuncId(opcode)}())`, () => {
         const msgFields = resolveFuncTypeUnpack(
             selector.type,
             funcIdOf(selector.name),
@@ -213,173 +179,90 @@ function writeBinaryReceiver(
     });
 }
 
-function writeCommentReceivers(
-    commentReceivers: ReceiverDescription[],
-    commentFallbackReceiver: FallbackReceiver | undefined,
-    kind: "internal" | "external",
-    msgOpcodeRemoved: boolean,
-    fallbackReceiverExists: boolean,
+function writeCommentReceiver(
+    commentReceiver: ReceiverDescription,
     contract: TypeDescription,
     wCtx: WriterContext,
 ): void {
-    // - Special case: no text receivers at all
+    const selector = commentReceiver.selector;
     if (
-        typeof commentFallbackReceiver === "undefined" &&
-        commentReceivers.length === 0
+        selector.kind !== "internal-comment" &&
+        selector.kind !== "external-comment"
     ) {
-        return;
+        throwInternalCompilerError(
+            `Invalid selector type: ${selector.kind} (internal-comment or external-comment is expected)`,
+            commentReceiver.ast.loc,
+        );
     }
-    const writeFallbackTextReceiver = (
-        commentFallbackReceiver: FallbackReceiver,
-    ) => {
-        const writeFallbackTextReceiverInternal = () => {
-            wCtx.append(";; Fallback Text Receiver");
-            wCtx.inBlock("if (in_msg_length >= 32)", () => {
-                const inMsg = msgOpcodeRemoved
-                    ? "in_msg"
-                    : "in_msg.skip_bits(32)";
-                writeFallbackReceiver(
-                    commentFallbackReceiver,
-                    contract,
-                    inMsg,
-                    wCtx,
-                );
-            });
-        };
 
-        // We optimize fallback
-        if (!fallbackReceiverExists) {
-            wCtx.inBlock("if (op == 0)", writeFallbackTextReceiverInternal);
-        } else {
-            writeFallbackTextReceiverInternal();
-        }
-    };
-
-    const writeTextReceivers = () => {
-        // - Special case: only fallback comment receiver
-        if (
-            typeof commentFallbackReceiver !== "undefined" &&
-            commentReceivers.length === 0
-        ) {
-            writeFallbackTextReceiver(commentFallbackReceiver);
-            return;
-        }
-
-        wCtx.append("var text_op = slice_hash(in_msg);");
-        commentReceivers.forEach((commentRcv) => {
-            if (
-                commentRcv.selector.kind !== "external-comment" &&
-                commentRcv.selector.kind !== "internal-comment"
-            ) {
-                throwInternal(
-                    `Wrong type of a text receiver: ${commentRcv.selector.kind}`,
-                );
-                return;
-            }
-            const hash = commentPseudoOpcode(
-                commentRcv.selector.comment,
-                !msgOpcodeRemoved,
-                commentRcv.ast.loc,
-            );
-            wCtx.append(`;; Receive "${commentRcv.selector.comment}" message`);
-
-            wCtx.inBlock(`if (text_op == 0x${hash})`, () => {
-                writeReceiverBody(commentRcv, contract, wCtx);
-            });
-        });
-
-        if (typeof commentFallbackReceiver !== "undefined") {
-            writeFallbackTextReceiver(commentFallbackReceiver);
-        }
-    };
-
-    wCtx.append(";; Empty Receiver and Text Receivers");
-    if (fallbackReceiverExists) {
-        wCtx.inBlock("if (op == 0)", writeTextReceivers);
-    } else {
-        // - Special case: no fallback receiver
-        writeTextReceivers();
-    }
+    const hash = commentPseudoOpcode(selector.comment, true, commentReceiver.ast.loc);
+    wCtx.append(`;; Receive "${selector.comment}" message`);
+    wCtx.inBlock(`if (in_msg_hash == 0x${hash})`, () => {
+        writeReceiverBody(commentReceiver, contract, wCtx);
+    });
 }
 
-// this opcode reader utility only handles the cases of only binary receivers + different special cases
-// for the fallback receiver (for instance, there is neither empty receiver nor text receivers)
-export function writeLoadOpcode(receivers: Receivers, wCtx: WriterContext) {
-    const loadOpcodeSignature = `(slice, int) ~load_opcode_${receivers.kind}(slice s)`;
+function opcodeCheckerFuncId(opcode: bigint) {
+    const opHex = opcode.toString(16).padStart(8, "0");
+    return `opcode<${opHex}>?`;
+}
 
-    // assumes the boolean flag is already at the top of the stack
-    const throwIfNot = (exitCode: number): string => {
-        if (exitCode < 2 ** 11) return `${exitCode} THROWIFNOT`;
-        else return `${exitCode} PUSHINT SWAP THROWANYIFNOT`;
-    };
+function writeOpcodeChecker(opcode: bigint, wCtx: WriterContext) {
+    const opHex = opcode.toString(16).padStart(8, "0");
+    wCtx.append(
+        `(slice, int) ${opcodeCheckerFuncId(opcode)}(slice s) asm "x{${opHex}} SDBEGINSQ";`
+    );
+}
 
-    const fbRcvKind = fallbackReceiverKind(receivers.fallback, wCtx);
+export function writeOpcodeCheckers(
+    receivers: ContractReceivers,
+    contract: TypeDescription,
+    wCtx: WriterContext
+) {
+    const opcodes: Set<bigint> = new Set();
 
-    switch (fbRcvKind.kind) {
-        case "unknown":
-            return;
-        case "no-fallback":
-        case "statically-known-single-throw": {
-            // no fallback receiver or fallback with throw
-            const exitCode =
-                fbRcvKind.kind === "no-fallback"
-                    ? contractErrors.invalidMessage.id
-                    : fbRcvKind.exitCode;
-            wCtx.append(
-                ";; message opcode reader utility: only binary receivers",
+    const binaryReceivers: ReceiverDescription[] = [];
+    binaryReceivers.push(...receivers.internal.binary);
+    binaryReceivers.push(...receivers.external.binary);
+    binaryReceivers.push(...receivers.bounced.binary);
+
+    binaryReceivers.forEach((binaryReceiver: ReceiverDescription) => {
+        const selector = binaryReceiver.selector;
+        if (
+            selector.kind !== "internal-binary" &&
+            selector.kind !== "external-binary" &&
+            selector.kind !== "bounce-binary"
+        ) {
+            throwInternalCompilerError(
+                `Invalid selector type: ${selector.kind} (internal-binary, external-binary or bounce-binary is expected)`,
+                binaryReceiver.ast.loc,
             );
-            wCtx.append(
-                `;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code`,
-            );
-            wCtx.append(
-                `${loadOpcodeSignature} asm( -> 1 0) "32 LDUQ ${throwIfNot(exitCode)}";`,
-            );
-            return;
         }
-        case "empty-body": {
-            // fallback receiver with empty body
-            wCtx.append(
-                ";; message opcode reader utility: binary receivers and empty fallback receiver",
+
+        const allocation = getType(wCtx.ctx, selector.type);
+        if (!allocation.header) {
+            throwInternalCompilerError(
+                `Invalid allocation: ${selector.type}`,
+                binaryReceiver.ast.loc,
             );
-            wCtx.append(
-                ";; Returns 32 bit message opcode, or returns immediately if the message is shorter than 32 bits",
-            );
-            wCtx.append(
-                `${loadOpcodeSignature} asm( -> 1 0) "32 LDUQ IFNOTRET";`,
-            );
-            return;
         }
-        case "wildcard-parameter": {
-            // fallback receiver with non-empty body and wildcard parameter
-            wCtx.append(
-                ";; message opcode reader utility: binary receivers and non-empty fallback receiver that does not read the message",
-            );
-            wCtx.append(
-                ";; Returns 32 bit message opcode, or -1 if the message is shorter than 32 bits",
-            );
-            wCtx.append(
-                `${loadOpcodeSignature} asm "32 LDUQ NEGATE 2 0 BLKPUSH DROPX ROLLX";`,
-            );
-            /*
-            32 LDUQ
-            1. x s′ −1
-            2. s 0
+        opcodes.add(allocation.header.value);
+    });
 
-            NEGATE 2 0 BLKPUSH
-            1. x s′ 1 1 1
-            2. s 0  0 0
-
-            DROPX
-            1. x s′ 1
-            2. s 0  0
-
-            ROLLX
-            1. s′ x
-            2. s  0
-            */
-            return;
-        }
+    // If there is a comment fallback, it is convenient to have zero opcode checker
+    if (
+        typeof receivers.internal.commentFallback !== "undefined" ||
+        typeof receivers.external.commentFallback !== "undefined"
+    ) {
+        opcodes.add(0n);
     }
+
+    if (opcodes.size === 0) {
+        return;
+    }
+
+    wCtx.append(";; Opcode checkers for binary messages (trims opcode on success)")
+    opcodes.forEach((opcode: bigint) => writeOpcodeChecker(opcode, wCtx));
 }
 
 type FallbackReceiverKind =
@@ -566,24 +449,13 @@ export function writeBouncedRouter(
         return;
     }
 
-    // If there is a fallback receiver and bounced message receivers, we need to keep in_msg intact,
-    // otherwise we can modify in_msg in-place
-    const opcodeReader: "~load_uint" | ".preload_uint" =
-        typeof bouncedReceivers.fallback === "undefined"
-            ? "~load_uint"
-            : ".preload_uint";
-
     wCtx.inBlock("if (msg_bounced)", () => {
         wCtx.append(";; Skip 0xFFFFFFFF prefix of a bounced message");
         wCtx.append("in_msg~skip_bits(32);");
-        wCtx.append(`int op = 0;`);
-        wCtx.inBlock("if (slice_bits(in_msg) >= 32)", () => {
-            wCtx.append(`op = in_msg${opcodeReader}(32);`);
-        });
+    
         bouncedReceivers.binary.forEach((bouncedRcv) => {
             writeBouncedReceiver(
                 bouncedRcv,
-                opcodeReader === "~load_uint",
                 contract,
                 wCtx,
             );
@@ -629,7 +501,6 @@ function writeFallbackReceiver(
 
 function writeBouncedReceiver(
     bouncedReceiver: ReceiverDescription,
-    msgOpcodeRemoved: boolean,
     contract: TypeDescription,
     wCtx: WriterContext,
 ): void {
@@ -642,10 +513,15 @@ function writeBouncedReceiver(
 
     wCtx.append(`;; Bounced handler for ${selector.type} message`);
     const allocation = getType(wCtx.ctx, selector.type);
-    wCtx.inBlock(`if (op == ${messageOpcode(allocation.header!)})`, () => {
-        if (!msgOpcodeRemoved) {
-            wCtx.append("in_msg~skip_bits(32);");
-        }
+
+    if (!allocation.header) {
+        throwInternalCompilerError(
+            `Invalid allocation: ${selector.type}`,
+            bouncedReceiver.ast.loc,
+        );
+    }
+
+    wCtx.inBlock(`if (in_msg~${opcodeCheckerFuncId(allocation.header.value)}())`, () => {
         const msgFields = resolveFuncTypeUnpack(
             selector.type,
             funcIdOf(selector.name),
