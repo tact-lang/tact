@@ -6,11 +6,11 @@ import files from "../../src/stdlib/stdlib";
 import { createVirtualFileSystem } from "../../src/vfs/createVirtualFileSystem";
 import { dummySrcInfoPrintable, generateAstIdFromName } from "./util";
 
-const StdlibFilePath = path.join(__dirname, "..", "..", "src", "stdlib", "stdlib", "std");
+const StdlibFilePath = path.join(__dirname, "..", "..", "src", "stdlib", "stdlib");
 const StdlibVFS = createVirtualFileSystem(StdlibFilePath, files);
-export const StdlibPath = StdlibVFS.resolve("stdlib.fc");
+export const StdlibPath = StdlibVFS.resolve("std/stdlib.fc");
 export const StdlibCode = StdlibVFS.readFile(StdlibPath).toString();
-// export const StdlibExPath = StdlibVFS.resolve("stdlib_ex.fc");
+// export const StdlibExPath = StdlibVFS.resolve("std/stdlib_ex.fc");
 // export const StdlibExCode = StdlibVFS.readFile(StdlibExPath).toString();
 
 /**
