@@ -8,6 +8,7 @@ import { featureEnable } from "../../src/config/features";
 import { resolveDescriptors } from "../../src/types/resolveDescriptors";
 import { resolveSignatures } from "../../src/types/resolveSignatures";
 import { resolveStatements } from "../../src/types/resolveStatements";
+import { evalComptimeExpressions } from "../../src/types/evalComptimeExpressions";
 import { resolveErrors } from "../../src/types/resolveErrors";
 import type { FactoryAst } from "../../src/ast/ast-helpers";
 import { getParser } from "../../src/grammar/grammar";
@@ -35,10 +36,11 @@ export function precompile(
     factoryAst: FactoryAst,
 ): CompilerContext {
     ctx = resolveDescriptors(ctx, factoryAst);
-    ctx = resolveSignatures(ctx, factoryAst);
-    ctx = resolveAllocations(ctx);
     ctx = resolveStatements(ctx);
+    evalComptimeExpressions(ctx, factoryAst);
+    ctx = resolveSignatures(ctx, factoryAst);
     ctx = resolveErrors(ctx, factoryAst);
+    ctx = resolveAllocations(ctx);
     return ctx;
 }
 
