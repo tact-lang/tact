@@ -2,9 +2,10 @@ import { getAstFactory } from "../../ast/ast-helpers";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
-import { openContext } from "../../context/store";
+import { openContext, parseModules } from "../../context/store";
 import { CompilerContext } from "../../context/context";
 import { getParser } from "../../grammar";
+import type { Source } from "../../imports/source";
 
 const primitiveCode = `
 primitive Int;
@@ -48,11 +49,14 @@ contract Contract2 {
 describe("resolveFuncType", () => {
     it("should process primitive types", () => {
         const ast = getAstFactory();
+        const sources: Source[] = [
+            { code: primitiveCode, path: "<unknown>", origin: "user" },
+        ];
         let ctx = openContext(
             new CompilerContext(),
-            [{ code: primitiveCode, path: "<unknown>", origin: "user" }],
+            sources,
             [],
-            getParser(ast),
+            parseModules(sources, getParser(ast)),
         );
         ctx = resolveDescriptors(ctx, ast);
         const wCtx = new WriterContext(ctx, "Contract1");
@@ -117,11 +121,14 @@ describe("resolveFuncType", () => {
 
     it("should process contract and struct types", () => {
         const ast = getAstFactory();
+        const sources: Source[] = [
+            { code: primitiveCode, path: "<unknown>", origin: "user" },
+        ];
         let ctx = openContext(
             new CompilerContext(),
-            [{ code: primitiveCode, path: "<unknown>", origin: "user" }],
+            sources,
             [],
-            getParser(ast),
+            parseModules(sources, getParser(ast)),
         );
         ctx = resolveDescriptors(ctx, ast);
         const wCtx = new WriterContext(ctx, "Contract1");

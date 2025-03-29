@@ -53,17 +53,15 @@ export function parseModules(sources: Source[], parser: Parser): Ast.Module[] {
  * Extends the compiler context by adding AST entries and source information from
  * given sources and parsed programs.
  * @public
- * @param parsedModules An optional array of previously parsed programs. If not defined, they will be parsed from `sources`.
+ * @param modules Previously parsed sources.
  * @returns The updated compiler context.
  */
 export function openContext(
     ctx: CompilerContext,
     sources: Source[],
     funcSources: { code: string; path: string }[],
-    parser: Parser,
-    parsedModules?: Ast.Module[],
+    modules: Ast.Module[],
 ): CompilerContext {
-    const modules = parsedModules ?? parseModules(sources, parser);
     const types: Ast.TypeDecl[] = [];
     const functions: (
         | Ast.NativeFunctionDecl

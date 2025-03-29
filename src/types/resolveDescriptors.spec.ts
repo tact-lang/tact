@@ -6,7 +6,7 @@ import {
 } from "./resolveDescriptors";
 import { resolveSignatures } from "./resolveSignatures";
 import { loadCases } from "../utils/loadCases";
-import { openContext } from "../context/store";
+import { openContext, parseModules } from "../context/store";
 import { featureEnable } from "../config/features";
 import type { SrcInfo } from "../grammar";
 import { getParser } from "../grammar";
@@ -14,6 +14,7 @@ import { getAstFactory } from "../ast/ast-helpers";
 import { isSrcInfo } from "../grammar/src-info";
 import { resolveStatements } from "./resolveStatements";
 import { evalComptimeExpressions } from "./evalComptimeExpressions";
+import type { Source } from "../imports/source";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
@@ -24,11 +25,14 @@ describe("resolveDescriptors", () => {
     for (const r of loadCases(__dirname + "/test/")) {
         it("should resolve descriptors for " + r.name, () => {
             const Ast = getAstFactory();
+            const sources: Source[] = [
+                { code: r.code, path: "<unknown>", origin: "user" },
+            ];
             let ctx = openContext(
                 new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                sources,
                 [],
-                getParser(Ast),
+                parseModules(sources, getParser(Ast)),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
@@ -40,11 +44,14 @@ describe("resolveDescriptors", () => {
     for (const r of loadCases(__dirname + "/test-failed/")) {
         it("should fail descriptors for " + r.name, () => {
             const Ast = getAstFactory();
+            const sources: Source[] = [
+                { code: r.code, path: "<unknown>", origin: "user" },
+            ];
             let ctx = openContext(
                 new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                sources,
                 [],
-                getParser(Ast),
+                parseModules(sources, getParser(Ast)),
             );
             ctx = featureEnable(ctx, "external");
             expect(() => {

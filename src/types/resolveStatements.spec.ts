@@ -1,23 +1,27 @@
 import { getAllExpressionTypes } from "./resolveExpression";
 import { resolveDescriptors } from "./resolveDescriptors";
 import { loadCases } from "../utils/loadCases";
-import { openContext } from "../context/store";
+import { openContext, parseModules } from "../context/store";
 import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../context/context";
 import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
 import { evalComptimeExpressions } from "./evalComptimeExpressions";
+import type { Source } from "../imports/source";
 
 describe("resolveStatements", () => {
     for (const r of loadCases(__dirname + "/stmts/")) {
         it("should resolve statements for " + r.name, () => {
             const Ast = getAstFactory();
+            const sources: Source[] = [
+                { code: r.code, path: "<unknown>", origin: "user" },
+            ];
             let ctx = openContext(
                 new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                sources,
                 [],
-                getParser(Ast),
+                parseModules(sources, getParser(Ast)),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
@@ -29,11 +33,14 @@ describe("resolveStatements", () => {
     for (const r of loadCases(__dirname + "/stmts-failed/")) {
         it("should fail statements for " + r.name, () => {
             const Ast = getAstFactory();
+            const sources: Source[] = [
+                { code: r.code, path: "<unknown>", origin: "user" },
+            ];
             let ctx = openContext(
                 new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                sources,
                 [],
-                getParser(Ast),
+                parseModules(sources, getParser(Ast)),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
