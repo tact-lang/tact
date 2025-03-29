@@ -1,5 +1,10 @@
 import type { AstTrait, AstExpression } from "../../../src/ast/ast";
-import { createSample, dummySrcInfoPrintable, generateAstId, randomBool } from "../util";
+import {
+    createSample,
+    dummySrcInfoPrintable,
+    generateAstId,
+    randomBool,
+} from "../util";
 import { FunctionDecl } from "./function";
 import { Field } from "./field";
 import { ConstantDecl, ConstantDef } from "./constant";
@@ -115,7 +120,11 @@ export class Trait extends GenerativeEntity<AstTrait> {
 
     public generate(): fc.Arbitrary<AstTrait> {
         // NOTE: It doesn't implement any receive functions, to don't clutter the top-level with them.
-        const constants = this.constantDeclarations.map((c) => c.generate());
+        const constants = (
+            this.constantDeclarations as (ConstantDecl | ConstantDef)[]
+        )
+            .concat(this.constantDefinitions)
+            .map((c) => c.generate());
         const fields = this.fieldDeclarations.map((f) => f.generate());
         const methods = this.methodDeclarations.map((m) => m.generate());
         return fc.record<AstTrait>({
