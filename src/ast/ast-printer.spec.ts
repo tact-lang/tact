@@ -4,8 +4,13 @@ import { getParser } from "../grammar";
 import { join } from "path";
 import { trimTrailingCR, CONTRACTS_DIR } from "../test/util";
 import * as assert from "assert";
-import JSONBig from "json-bigint";
 import { getAstFactory } from "./ast-helpers";
+
+const stringify = (obj: unknown): string => {
+    return JSON.stringify(obj, (key, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+    );
+};
 
 describe("formatter", () => {
     it.each(fs.readdirSync(CONTRACTS_DIR, { withFileTypes: true }))(
@@ -42,7 +47,7 @@ describe("formatter", () => {
             const code = fs.readFileSync(path, "utf-8");
             const ast = parse({ code, path, origin: "user" });
             //TODO: change for proper recursive removal
-            const astStr = JSONBig.stringify(ast).replace(/"id":[0-9]+,/g, "");
+            const astStr = stringify(ast).replace(/"id":[0-9]+,/g, "");
 
             const formattedCode = prettyPrint(ast);
             const formattedPath = join(outputDir, dentry.name);
@@ -54,7 +59,7 @@ describe("formatter", () => {
                 origin: "user",
             });
             //TODO: change for proper recursive removal
-            const astFormattedStr = JSONBig.stringify(astFormatted).replace(
+            const astFormattedStr = stringify(astFormatted).replace(
                 /"id":[0-9]+,/g,
                 "",
             );

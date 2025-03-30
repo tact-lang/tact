@@ -86,7 +86,6 @@
     "blockstore-core": "1.0.5",
     "change-case": "^4.1.2",
     "ipfs-unixfs-importer": "9.0.10",
-    "json-bigint": "^1.0.0",
     "path-normalize": "^6.0.13",
     "zod": "^3.22.4"
   },
@@ -102,7 +101,6 @@
     "@types/diff": "^7.0.0",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.12",
-    "@types/json-bigint": "^1.0.4",
     "@types/node": "^22.5.0",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
