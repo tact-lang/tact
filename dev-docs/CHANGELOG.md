@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### [1.6.5] - 2025-03-28
+### Docs
+
+- Fixed code example of the `initOf` expression to highlight support for contract parameters: PR [#2550](https://github.com/tact-lang/tact/pull/2550)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+
+## [1.6.5] - 2025-03-28
 
 ### Language features
 
