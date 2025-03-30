@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { TextMessageReceivers } from "./output/text-message-receivers_TextMessageReceivers";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("text-message-receivers", () => {
     let blockchain: Blockchain;

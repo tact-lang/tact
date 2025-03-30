@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import { Blockchain, SandboxContract } from "@ton/sandbox";
 import { MapIntLimitTester } from "./test_MapIntLimitTester";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 // disable tests on MacOS
 const it = process.platform === "darwin" && process.env.CI ? test.skip : test;

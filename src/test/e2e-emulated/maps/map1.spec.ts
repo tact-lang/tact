@@ -13,7 +13,7 @@ import { MapTestContract } from "./output/maps1_MapTestContract";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { Address, beginCell, Cell, Dictionary, toNano } from "@ton/core";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 // Type Guard for SomeStruct
 function isSomeStruct(value: unknown): value is SomeStruct {

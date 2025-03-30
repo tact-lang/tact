@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { RecursionTester } from "./output/recursion_RecursionTester";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("recursion", () => {
     let blockchain: Blockchain;

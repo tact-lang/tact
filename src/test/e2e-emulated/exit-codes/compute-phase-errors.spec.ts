@@ -3,7 +3,7 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import type { ExitCode4 } from "@/test/e2e-emulated/exit-codes/output/compute-phase-errors_ComputePhaseErrorsTester";
 import { ComputePhaseErrorsTester as TestContract } from "@/test/e2e-emulated/exit-codes/output/compute-phase-errors_ComputePhaseErrorsTester";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("compute phase errors", () => {
     let blockchain: Blockchain;

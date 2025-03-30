@@ -1,4 +1,4 @@
-import "@ton/test-utils";
+import "../../jest-utils";
 import {
     Address,
     beginCell,
@@ -12,7 +12,6 @@ import { Blockchain } from "@ton/sandbox";
 
 import { JettonMinter } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 
-import "@ton/test-utils";
 import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json";
 import type { JettonUpdateContent } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 

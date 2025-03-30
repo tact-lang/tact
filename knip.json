@@ -25,5 +25,5 @@
     ".github/workflows/tact*.yml",
     ".github/actions/**/*.yml"
   ],
-  "ignoreDependencies": ["@tact-lang/ton-abi", "husky", "tsconfig-paths"]
+  "ignoreDependencies": ["husky", "tsconfig-paths"]
 }

@@ -2,7 +2,7 @@ import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { AsmFunctionsTester as TestContract } from "./output/asm-functions_AsmFunctionsTester";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("asm functions", () => {
     let blockchain: Blockchain;

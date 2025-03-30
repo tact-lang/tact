@@ -8,7 +8,7 @@ import { Blockchain } from "@ton/sandbox";
 import { SampleDelayedUpgradeContract } from "./output/delayed-upgrade_SampleDelayedUpgradeContract";
 import { SampleDelayedUpgradeContractV2 } from "./output/delayed-upgrade-v2_SampleDelayedUpgradeContractV2";
 import { SampleDelayedUpgradeContractV3 } from "./output/delayed-upgrade-v3_SampleDelayedUpgradeContractV3";
-import "@ton/test-utils";
+import "../../jest-utils";
 import type { Maybe } from "@ton/core/dist/utils/maybe";
 
 describe("delayed upgrade", () => {

@@ -20,7 +20,7 @@ import {
     storeMyStruct1,
     storeMyStruct2,
 } from "./output/structs_StructsTester";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("structs", () => {
     let blockchain: Blockchain;

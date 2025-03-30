@@ -1,4 +1,4 @@
-import "@ton/test-utils";
+import "../../jest-utils";
 import type { Address } from "@ton/core";
 import {
     Cell,

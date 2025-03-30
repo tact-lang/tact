@@ -13,7 +13,7 @@ import {
     SIMPLE_STRUCT,
     NESTED_STRUCT,
 } from "./output/constants-for-wrappers_ConstantTester";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("constants-for-wrappers", () => {
     let blockchain: Blockchain;

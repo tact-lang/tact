@@ -8,10 +8,8 @@ module.exports = {
     },
     testEnvironment: "node",
     testPathIgnorePatterns: ["/node_modules/", "/dist/"],
-    globalSetup: "./jest.globalSetup.js",
     setupFiles: ["./jest.setup.js"],
-    globalTeardown: "./jest.teardown.js",
-    snapshotSerializers: ["@tact-lang/ton-jest/serializers"],
+    snapshotSerializers: ["./serializers.ts"],
     maxWorkers: "4",
     testTimeout: 10000,
 };

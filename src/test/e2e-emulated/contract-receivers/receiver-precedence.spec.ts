@@ -9,7 +9,7 @@ import type {
 import { Blockchain, internal } from "@ton/sandbox";
 import { ReceiverTester } from "./output/receiver-precedence_ReceiverTester";
 import { Calculator } from "./output/receiver-precedence_Calculator";
-import "@ton/test-utils";
+import "../../jest-utils";
 import { AllReceiverTester } from "./output/receiver-precedence_AllReceiverTester";
 import { BinaryAndSliceReceiverTester } from "./output/receiver-precedence_BinaryAndSliceReceiverTester";
 import { BinaryReceiverTester } from "./output/receiver-precedence_BinaryReceiverTester";

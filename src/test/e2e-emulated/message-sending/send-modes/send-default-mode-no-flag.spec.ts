@@ -13,8 +13,8 @@ import type {
     TransactionComputeVm,
     TransactionDescriptionGeneric,
 } from "@ton/core";
-import { findTransaction } from "@ton/test-utils";
 import type { Maybe } from "@ton/core/dist/utils/maybe";
+import { findTransaction } from "../../jest-utils";
 
 type MessageInfo = {
     validatorsForwardFee: bigint;

@@ -5,7 +5,7 @@ import { Self } from "./output/initof_Self";
 import { Parent } from "./output/initof_Parent";
 import { TestInit } from "./output/initof-2_TestInit";
 import { A } from "./output/initof-3_A";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("initOf", () => {
     let blockchain: Blockchain;

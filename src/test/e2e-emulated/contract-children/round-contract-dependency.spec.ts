@@ -6,7 +6,7 @@ import { A } from "./output/round-contract-dependency_A";
 import { B } from "./output/round-contract-dependency_B";
 import { C } from "./output/round-contract-dependency_C";
 
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("Diamond-shaped dependencies", () => {
     let blockchain: Blockchain;

@@ -2,7 +2,7 @@ import { beginCell, Dictionary, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { MathTester } from "./output/math_MathTester";
-import "@ton/test-utils";
+import "../../jest-utils";
 import { randomAddress } from "@/test/utils/random-utils";
 
 describe("math", () => {

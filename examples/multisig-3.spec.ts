@@ -2,7 +2,7 @@ import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { MultisigContract } from "./output/multisig-3_MultisigContract";
-import "@ton/test-utils";
+import "../src/jest-utils";
 
 describe("multisig-3", () => {
     let blockchain: Blockchain;

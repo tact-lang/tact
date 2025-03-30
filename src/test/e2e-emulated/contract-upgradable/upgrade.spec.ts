@@ -7,7 +7,7 @@ import { Blockchain } from "@ton/sandbox";
 import { SampleUpgradeContract } from "./output/upgrade_SampleUpgradeContract";
 import { SampleUpgradeContractV2 } from "./output/upgrade-v2_SampleUpgradeContractV2";
 import { SampleUpgradeContractV3 } from "./output/upgrade-v3_SampleUpgradeContractV3";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("upgrade", () => {
     let blockchain: Blockchain;

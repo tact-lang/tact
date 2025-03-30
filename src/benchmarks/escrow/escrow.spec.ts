@@ -2,7 +2,7 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import type { Address } from "@ton/core";
 import { beginCell, Cell, contractAddress, SendMode, toNano } from "@ton/core";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 import type { UpdateJettonWalletCode } from "@/benchmarks/contracts/output/escrow_Escrow";
 import {

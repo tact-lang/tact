@@ -4,7 +4,7 @@ import { Blockchain } from "@ton/sandbox";
 import { SerializationTester3 } from "./output/serialization-3_SerializationTester3";
 import { SerializationTester2 } from "./output/serialization-2_SerializationTester2";
 import { SerializationTester } from "./output/serialization_SerializationTester";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("serialization", () => {
     let blockchain: Blockchain;

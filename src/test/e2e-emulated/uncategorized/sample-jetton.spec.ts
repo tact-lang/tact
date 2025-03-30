@@ -3,7 +3,7 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { SampleJetton } from "./output/sample-jetton_SampleJetton";
 import { JettonDefaultWallet } from "./output/sample-jetton_JettonDefaultWallet";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("bugs", () => {
     let blockchain: Blockchain;

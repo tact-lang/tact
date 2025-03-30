@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { TraitsConstantContract } from "./output/base-trait-constant-override-1_TraitsConstantContract";
-import "@ton/test-utils";
+import "../../jest-utils";
 
 describe("base-trait-constant-override-1", () => {
     let blockchain: Blockchain;
