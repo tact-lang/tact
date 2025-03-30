@@ -53,7 +53,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved0 = resolved[0]!;
-                const str = JSON.parse(`"${ensureString(resolved0).value}"`);
+                const str = ensureString(resolved0).value;
                 return toNano(str).toString(10);
             },
         },
@@ -105,7 +105,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved1 = resolved[1]!;
-                const str = JSON.parse(`"${ensureString(resolved1).value}"`);
+                const str = ensureString(resolved1).value;
                 return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
         },
@@ -144,7 +144,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved0 = resolved[0]!;
-                const str = JSON.parse(`"${ensureString(resolved0).value}"`);
+                const str = ensureString(resolved0).value;
                 let address: Address;
                 try {
                     address = Address.parse(str);
@@ -195,7 +195,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load cell data
                 const resolved0 = resolved[0]!;
-                const str = JSON.parse(`"${ensureString(resolved0).value}"`);
+                const str = ensureString(resolved0).value;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -434,7 +434,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                const str = JSON.parse(`"${ensureString(resolved0).value}"`);
+                const str = ensureString(resolved0).value;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -484,7 +484,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                const str = JSON.parse(`"${ensureString(resolved0).value}"`);
+                const str = ensureString(resolved0).value;
                 let c: Cell;
                 try {
                     c = beginCell().storeBuffer(Buffer.from(str)).endCell();
@@ -528,7 +528,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                const str = JSON.parse(`"${ensureString(resolved0).value}"`);
+                const str = ensureString(resolved0).value;
                 if (str.length > 32) {
                     throwCompilationError(
                         `ascii() expects string argument with length <= 32`,
@@ -570,7 +570,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                const str = JSON.parse(`"${ensureString(resolved0).value}"`);
+                const str = ensureString(resolved0).value;
                 return `"${str}"c`;
             },
         },
