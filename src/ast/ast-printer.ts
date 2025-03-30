@@ -193,9 +193,7 @@ export const ppAstId = ({ text }: Ast.Id) => text;
 export const ppAstOptionalId = (node: Ast.OptionalId) =>
     node.kind === "id" ? ppAstId(node) : "_";
 export const ppAstNull = (_expr: Ast.Null) => "null";
-export const ppAstString = ({ value }: Ast.String) => `"${value}"`;
-export const ppAstSimplifiedString = ({ value }: Ast.SimplifiedString) =>
-    JSON.stringify(value);
+export const ppAstString = ({ value }: Ast.String) => JSON.stringify(value);
 export const ppAstAddress = ({ value }: Ast.Address) =>
     `addr("${value.toRawString()}")`;
 export const ppAstCell = ({ value }: Ast.Cell) => `cell("${value.toString()}")`;
@@ -267,7 +265,6 @@ export const ppAstExpressionNested = makeVisitor<Ast.Expression>()({
     code_of: ppLeaf(ppAstCodeOf),
     string: ppLeaf(ppAstString),
     static_call: ppLeaf(ppAstStaticCall),
-    simplified_string: ppLeaf(ppAstSimplifiedString),
     address: ppLeaf(ppAstAddress),
     cell: ppLeaf(ppAstCell),
     slice: ppLeaf(ppAstSlice),
@@ -896,7 +893,6 @@ export const ppAstNode: Printer<Ast.AstNode> = makeVisitor<Ast.AstNode>()({
     id: exprNode(ppAstExpression),
     boolean: exprNode(ppAstExpression),
     string: exprNode(ppAstExpression),
-    simplified_string: exprNode(ppAstExpression),
     null: exprNode(ppAstExpression),
     address: exprNode(ppAstExpression),
     cell: exprNode(ppAstExpression),

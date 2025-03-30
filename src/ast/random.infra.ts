@@ -69,13 +69,10 @@ function randomAstBoolean(): fc.Arbitrary<Ast.Boolean> {
 }
 
 function randomAstString(): fc.Arbitrary<Ast.String> {
-    const escapeString = (s: string): string =>
-        s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-
     return dummyAstNode(
         fc.record({
             kind: fc.constant("string"),
-            value: fc.string().map((s) => escapeString(s)),
+            value: fc.string(),
         }),
     );
 }
@@ -285,7 +282,6 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<Ast.Literal> {
                 randomAstNull(),
                 // Add Address, Cell, Slice
                 // randomAstCommentValue(),
-                // randomAstSimplifiedString(),
             );
         }
 
@@ -296,7 +292,6 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<Ast.Literal> {
             randomAstBoolean(),
             randomAstNull(),
             // Add Address, Cell, Slice
-            // randomAstSimplifiedString(),
             // randomAstCommentValue(),
             randomAstStructValue(subLiteral()),
         );

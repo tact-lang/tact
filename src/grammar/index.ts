@@ -218,8 +218,60 @@ const parseIntegerLiteral =
 const parseStringLiteral =
     ({ value, loc }: $ast.StringLiteral): Handler<Ast.String> =>
     (ctx) => {
-        return ctx.ast.String(value, loc);
+        const simplifiedValue = replaceEscapeSequences(value, loc, ctx);
+        return ctx.ast.String(simplifiedValue, loc);
     };
+
+export function replaceEscapeSequences(
+    stringLiteral: string,
+    loc: $.Loc,
+    ctx: Context,
+): string {
+    return stringLiteral.replace(
+        /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]{1,6})}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
+        (match, unicodeCodePoint, unicodeEscape, hexEscape) => {
+            switch (match) {
+                case "\\\\":
+                    return "\\";
+                case '\\"':
+                    return '"';
+                case "\\n":
+                    return "\n";
+                case "\\r":
+                    return "\r";
+                case "\\t":
+                    return "\t";
+                case "\\v":
+                    return "\v";
+                case "\\b":
+                    return "\b";
+                case "\\f":
+                    return "\f";
+                default:
+                    // Handle Unicode code point escape
+                    if (unicodeCodePoint) {
+                        const codePoint = parseInt(unicodeCodePoint, 16);
+                        if (codePoint > 0x10ffff) {
+                            ctx.err.undefinedUnicodeCodepoint()(loc);
+                            return match;
+                        }
+                        return String.fromCodePoint(codePoint);
+                    }
+                    // Handle Unicode escape
+                    if (unicodeEscape) {
+                        const codeUnit = parseInt(unicodeEscape, 16);
+                        return String.fromCharCode(codeUnit);
+                    }
+                    // Handle hex escape
+                    if (hexEscape) {
+                        const hexValue = parseInt(hexEscape, 16);
+                        return String.fromCharCode(hexValue);
+                    }
+                    return match;
+            }
+        },
+    );
+}
 
 const parseBoolLiteral =
     ({ value, loc }: $ast.BoolLiteral): Handler<Ast.Boolean> =>

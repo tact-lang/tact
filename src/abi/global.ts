@@ -13,11 +13,7 @@ import type { AbiFunction } from "./AbiFunction";
 import path from "path";
 import { cwd } from "process";
 import { posixNormalize } from "../utils/filePath";
-import {
-    ensureSimplifiedString,
-    ensureString,
-    interpretEscapeSequences,
-} from "../optimizer/interpreter";
+import { ensureString } from "../optimizer/interpreter";
 import { isLiteral } from "../ast/ast-helpers";
 import { sha256 } from "../utils/sha256";
 import { ops } from "../generator/writers/ops";
@@ -57,12 +53,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 return toNano(str).toString(10);
             },
         },
@@ -114,12 +105,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved1 = resolved[1]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved1).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved1).value,
-                    resolved1.loc,
-                );
+                const str = ensureString(resolved1).value;
                 return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
         },
@@ -158,12 +144,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 let address: Address;
                 try {
                     address = Address.parse(str);
@@ -214,12 +195,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load cell data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -406,7 +382,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     if (isLiteral(resolved0)) {
                         // FIXME: This one does not need fixing, because it is carried out inside a "isLiteral" check.
                         // Remove this comment once the optimization step is added
-                        const str = ensureSimplifiedString(resolved0).value;
+                        const str = ensureString(resolved0).value;
                         return sha256(str).value.toString(10);
                     }
 
@@ -458,12 +434,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -513,12 +484,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 let c: Cell;
                 try {
                     c = beginCell().storeBuffer(Buffer.from(str)).endCell();
@@ -562,13 +528,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
-
+                const str = ensureString(resolved0).value;
                 if (str.length > 32) {
                     throwCompilationError(
                         `ascii() expects string argument with length <= 32`,
@@ -610,13 +570,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
-
+                const str = ensureString(resolved0).value;
                 return `"${str}"c`;
             },
         },

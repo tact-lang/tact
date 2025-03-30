@@ -119,7 +119,7 @@ export function writeValue(val: Ast.Literal, wCtx: WriterContext): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(10);
-        case "simplified_string": {
+        case "string": {
             const id = writeString(val.value, wCtx);
             wCtx.used(id);
             return `${id}()`;
@@ -824,7 +824,7 @@ export function writeTypescriptValue(
     switch (val.kind) {
         case "number":
             return val.value.toString(10) + "n";
-        case "simplified_string":
+        case "string":
             return JSON.stringify(val.value);
         case "boolean":
             return val.value ? "true" : "false";

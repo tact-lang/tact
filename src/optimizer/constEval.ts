@@ -166,8 +166,6 @@ export const getOptimizer = (util: AstUtil) => {
             case "number":
                 return interpreter.interpretExpression(ast);
             case "string":
-                return interpreter.interpretExpression(ast);
-            case "simplified_string":
                 return ast;
             case "struct_value":
                 return ast;

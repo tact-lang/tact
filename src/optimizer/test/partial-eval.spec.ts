@@ -370,8 +370,6 @@ function dummyEval(
                 return ast;
             case "cell":
                 return ast;
-            case "simplified_string":
-                return ast;
             case "slice":
                 return ast;
             case "struct_value":
