@@ -21,10 +21,7 @@ import {
 import type { AllocationCell } from "@/storage/operation";
 import { throwInternalCompilerError } from "@/error/errors";
 import { topologicalSort } from "@/utils/utils";
-import {
-    allocate,
-    getAllocationOperationFromField,
-} from "@/storage/allocator";
+import { allocate, getAllocationOperationFromField } from "@/storage/allocator";
 import { serializers } from "@/bindings/typescript/serializers";
 
 import { eqNames } from "@/ast/ast-helpers";

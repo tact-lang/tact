@@ -1,5 +1,8 @@
 import { createSingleFileConfig, run } from "@/cli/tact";
-import { keyTypes, valTypes } from "@/test/e2e-emulated/map-tests/map-properties-key-value-types";
+import {
+    keyTypes,
+    valTypes,
+} from "@/test/e2e-emulated/map-tests/map-properties-key-value-types";
 import { mkdir, writeFile } from "fs/promises";
 import path, { basename, dirname, extname } from "path";
 import { exit } from "node:process";

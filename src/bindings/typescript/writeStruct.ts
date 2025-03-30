@@ -1,9 +1,6 @@
 import type { ABIType, ABITypeRef } from "@ton/core";
 import { serializers } from "@/bindings/typescript/serializers";
-import type {
-    AllocationCell,
-    AllocationOperation,
-} from "@/storage/operation";
+import type { AllocationCell, AllocationOperation } from "@/storage/operation";
 import { throwInternalCompilerError } from "@/error/errors";
 import type { Writer } from "@/utils/Writer";
 

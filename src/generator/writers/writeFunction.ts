@@ -9,7 +9,10 @@ import { resolveFuncPrimitive } from "@/generator/writers/resolveFuncPrimitive";
 import { resolveFuncType } from "@/generator/writers/resolveFuncType";
 import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
 import { funcIdOf } from "@/generator/writers/id";
-import { writeExpression, writePathExpression } from "@/generator/writers/writeExpression";
+import {
+    writeExpression,
+    writePathExpression,
+} from "@/generator/writers/writeExpression";
 import { cast } from "@/generator/writers/cast";
 import { resolveFuncTupleType } from "@/generator/writers/resolveFuncTupleType";
 import { ops } from "@/generator/writers/ops";

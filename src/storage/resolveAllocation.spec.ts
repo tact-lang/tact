@@ -1,6 +1,9 @@
 import fs from "fs";
 import { resolveDescriptors } from "@/types/resolveDescriptors";
-import { getAllocations, resolveAllocations } from "@/storage/resolveAllocation";
+import {
+    getAllocations,
+    resolveAllocations,
+} from "@/storage/resolveAllocation";
 import { openContext } from "@/context/store";
 import { resolveStatements } from "@/types/resolveStatements";
 import { CompilerContext } from "@/context/context";

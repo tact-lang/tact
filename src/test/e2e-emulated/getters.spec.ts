@@ -1,7 +1,10 @@
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { Test, Test_getterMapping } from "@/test/e2e-emulated/contracts/output/getters_Test";
+import {
+    Test,
+    Test_getterMapping,
+} from "@/test/e2e-emulated/contracts/output/getters_Test";
 import "@ton/test-utils";
 
 // disable tests on MacOS

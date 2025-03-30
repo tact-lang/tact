@@ -1,10 +1,7 @@
 import { contractErrors } from "@/abi/errors";
 import { throwInternalCompilerError } from "@/error/errors";
 import { dummySrcInfo } from "@/grammar";
-import type {
-    AllocationCell,
-    AllocationOperation,
-} from "@/storage/operation";
+import type { AllocationCell, AllocationOperation } from "@/storage/operation";
 import type { StorageAllocation } from "@/storage/StorageAllocation";
 import { getType } from "@/types/resolveDescriptors";
 import type { WriterContext } from "@/generator/Writer";

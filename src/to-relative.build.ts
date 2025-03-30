@@ -18,9 +18,9 @@ const main = async () => {
                     join(__dirname, "dist", importedName),
                 );
                 const r = !result.startsWith(".") ? "./" + result : result;
-                return `require("${r}")`
+                return `require("${r}")`;
             },
-        )
+        );
         if (source !== newSource) {
             await writeFile(fullPath, newSource);
         }
@@ -37,9 +37,9 @@ const main = async () => {
                     join(__dirname, "dist", importedName),
                 );
                 const r = !result.startsWith(".") ? "./" + result : result;
-                return `from "${r}"`
+                return `from "${r}"`;
             },
-        )
+        );
         if (source !== newSource) {
             await writeFile(fullPath, newSource);
         }

@@ -20,7 +20,11 @@ import type {
     TypeDescription,
     TypeRef,
 } from "@/types/types";
-import { printTypeRef, receiverSelectorName, typeRefEquals } from "@/types/types";
+import {
+    printTypeRef,
+    receiverSelectorName,
+    typeRefEquals,
+} from "@/types/types";
 import { getRawAST } from "@/context/store";
 import { cloneNode } from "@/ast/clone";
 import { crc16 } from "@/utils/crc16";

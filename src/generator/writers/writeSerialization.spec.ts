@@ -1,15 +1,15 @@
 import { CompilerContext } from "@/context/context";
-import {
-    getAllocation,
-    resolveAllocations,
-} from "@/storage/resolveAllocation";
+import { getAllocation, resolveAllocations } from "@/storage/resolveAllocation";
 import {
     getAllTypes,
     getType,
     resolveDescriptors,
 } from "@/types/resolveDescriptors";
 import { WriterContext } from "@/generator/Writer";
-import { writeParser, writeSerializer } from "@/generator/writers/writeSerialization";
+import {
+    writeParser,
+    writeSerializer,
+} from "@/generator/writers/writeSerialization";
 import { writeStdlib } from "@/generator/writers/writeStdlib";
 import { openContext } from "@/context/store";
 import { writeAccessors } from "@/generator/writers/writeAccessors";

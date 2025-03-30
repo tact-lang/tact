@@ -1,10 +1,7 @@
 import type { CompilerContext } from "@/context/context";
 import type * as Ast from "@/ast/ast";
 import { isLiteral } from "@/ast/ast-helpers";
-import {
-    TactConstEvalError,
-    throwInternalCompilerError,
-} from "@/error/errors";
+import { TactConstEvalError, throwInternalCompilerError } from "@/error/errors";
 import type { AstUtil } from "@/ast/util";
 import type { ExpressionTransformer } from "@/optimizer/types";
 import { StandardOptimizer } from "@/optimizer/standardOptimizer";

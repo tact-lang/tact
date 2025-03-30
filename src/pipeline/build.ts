@@ -21,11 +21,7 @@ import {
     createABITypeRefFromTypeRef,
     resolveABIType,
 } from "@/types/resolveABITypeRef";
-import {
-    getAllTypes,
-    getContracts,
-    getType,
-} from "@/types/resolveDescriptors";
+import { getAllTypes, getContracts, getType } from "@/types/resolveDescriptors";
 import { posixNormalize } from "@/utils/filePath";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
