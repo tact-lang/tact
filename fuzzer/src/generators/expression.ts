@@ -14,7 +14,7 @@ import type {
     StructInstance as AstStructInstance,
     String as AstString,
 } from "../../../src/ast/ast";
-import { NumberBase as AstNumberBase } from "../../../src/ast/ast";
+import type { NumberBase as AstNumberBase } from "../../../src/ast/ast";
 import JSONbig from "json-bigint";
 import fc from "fast-check";
 
