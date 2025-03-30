@@ -115,6 +115,8 @@
     "cspell": "^8.8.3",
     "diff": "^7.0.0",
     "eslint": "^8.57.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.11.0",
     "fast-check": "^4.0.0",
     "glob": "^8.1.0",
