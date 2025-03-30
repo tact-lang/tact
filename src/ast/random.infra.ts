@@ -1,8 +1,8 @@
 import fc from "fast-check";
-import type * as Ast from "./ast";
-import { dummySrcInfo } from "../grammar/src-info";
+import type * as Ast from "@/ast/ast";
+import { dummySrcInfo } from "@/grammar/src-info";
 import { diffJson } from "diff";
-import { astBinaryOperations, astUnaryOperations } from "./ast-constants";
+import { astBinaryOperations, astUnaryOperations } from "@/ast/ast-constants";
 
 /**
  * An array of reserved words that cannot be used as contract or variable names in tests.

@@ -1,22 +1,19 @@
-import type { CompilerContext } from "../context/context";
-import type * as Ast from "../ast/ast";
-import { isLiteral } from "../ast/ast-helpers";
-import {
-    TactConstEvalError,
-    throwInternalCompilerError,
-} from "../error/errors";
-import type { AstUtil } from "../ast/util";
-import type { ExpressionTransformer } from "./types";
-import { StandardOptimizer } from "./standardOptimizer";
-import type { InterpreterConfig } from "./interpreter";
+import type { CompilerContext } from "@/context/context";
+import type * as Ast from "@/ast/ast";
+import { isLiteral } from "@/ast/ast-helpers";
+import { TactConstEvalError, throwInternalCompilerError } from "@/error/errors";
+import type { AstUtil } from "@/ast/util";
+import type { ExpressionTransformer } from "@/optimizer/types";
+import { StandardOptimizer } from "@/optimizer/standardOptimizer";
+import type { InterpreterConfig } from "@/optimizer/interpreter";
 import {
     Interpreter,
     ensureInt,
     evalBinaryOp,
     evalUnaryOp,
     throwNonFatalErrorConstEval,
-} from "./interpreter";
-import type { SrcInfo } from "../grammar";
+} from "@/optimizer/interpreter";
+import type { SrcInfo } from "@/grammar";
 
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.

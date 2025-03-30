@@ -1,4 +1,4 @@
-import type * as Ast from "../ast/ast";
+import type * as Ast from "@/ast/ast";
 import {
     AddSelf,
     AddZero,
@@ -16,14 +16,14 @@ import {
     OrSelf,
     OrTrue,
     SubtractSelf,
-} from "./algebraic";
+} from "@/optimizer/algebraic";
 import {
     AssociativeRule1,
     AssociativeRule2,
     AssociativeRule3,
-} from "./associative";
-import type { Rule, ExpressionTransformer } from "./types";
-import type { AstUtil } from "../ast/util";
+} from "@/optimizer/associative";
+import type { Rule, ExpressionTransformer } from "@/optimizer/types";
+import type { AstUtil } from "@/ast/util";
 
 type PrioritizedRule = { priority: number; rule: Rule };
 

@@ -1,4 +1,4 @@
-import { createVirtualFileSystem } from "./createVirtualFileSystem";
+import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 
 describe("createVirtualFileSystem", () => {
     it("should create a virtual file system", () => {

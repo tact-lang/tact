@@ -1,10 +1,10 @@
 import { Address, beginCell, Cell, toNano, fromNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { IntrinsicsTester } from "./contracts/output/intrinsics_IntrinsicsTester";
+import { IntrinsicsTester } from "@/test/e2e-emulated/contracts/output/intrinsics_IntrinsicsTester";
 import "@ton/test-utils";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
-import { sha256 } from "../../utils/sha256";
+import { sha256 } from "@/utils/sha256";
 
 describe("intrinsics", () => {
     let blockchain: Blockchain;

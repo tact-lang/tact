@@ -1,6 +1,6 @@
-import type { AstNode } from "./ast";
-import type { FactoryAst } from "./ast-helpers";
-import { throwInternalCompilerError } from "../error/errors";
+import type { AstNode } from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { throwInternalCompilerError } from "@/error/errors";
 
 export function cloneNode<T extends AstNode>(
     src: T,

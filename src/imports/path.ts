@@ -1,5 +1,5 @@
-import { throwInternalCompilerError } from "../error/errors";
-import { repeat } from "../utils/array";
+import { throwInternalCompilerError } from "@/error/errors";
+import { repeat } from "@/utils/array";
 
 // Witness tag. Do not use, do not export.
 const pathTag = Symbol("path");

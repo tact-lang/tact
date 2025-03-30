@@ -1,11 +1,8 @@
 import type { ABIType, ABITypeRef } from "@ton/core";
-import { serializers } from "./serializers";
-import type {
-    AllocationCell,
-    AllocationOperation,
-} from "../../storage/operation";
-import { throwInternalCompilerError } from "../../error/errors";
-import type { Writer } from "../../utils/Writer";
+import { serializers } from "@/bindings/typescript/serializers";
+import type { AllocationCell, AllocationOperation } from "@/storage/operation";
+import { throwInternalCompilerError } from "@/error/errors";
+import type { Writer } from "@/utils/Writer";
 
 export const maxTupleSize = 15;
 

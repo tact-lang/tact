@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-confusing-void-expression */
-import { throwInternal } from "../error/errors";
-import type { Logger, SourceLogger } from "../error/logger-util";
-import type { Range } from "../error/range";
-import { getAnsiMarkup } from "./colors";
-import { TerminalLogger } from "./logger";
+import { throwInternal } from "@/error/errors";
+import type { Logger, SourceLogger } from "@/error/logger-util";
+import type { Range } from "@/error/range";
+import { getAnsiMarkup } from "@/cli/colors";
+import { TerminalLogger } from "@/cli/logger";
 import pathWindows from "path/win32";
 import pathPosix from "path/posix";
 

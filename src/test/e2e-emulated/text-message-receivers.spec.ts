@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { TextMessageReceivers } from "./contracts/output/text-message-receivers_TextMessageReceivers";
+import { TextMessageReceivers } from "@/test/e2e-emulated/contracts/output/text-message-receivers_TextMessageReceivers";
 import "@ton/test-utils";
 
 describe("text-message-receivers", () => {

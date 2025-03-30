@@ -1,22 +1,22 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { enabledDebug } from "../config/features";
+import { enabledDebug } from "@/config/features";
 import {
     writeAddress,
     writeCell,
     writeSlice,
     writeString,
-} from "../generator/writers/writeConstant";
-import { writeExpression } from "../generator/writers/writeExpression";
-import { idTextErr, throwCompilationError } from "../error/errors";
-import { getErrorId } from "../types/resolveErrors";
-import type { AbiFunction } from "./AbiFunction";
+} from "@/generator/writers/writeConstant";
+import { writeExpression } from "@/generator/writers/writeExpression";
+import { idTextErr, throwCompilationError } from "@/error/errors";
+import { getErrorId } from "@/types/resolveErrors";
+import type { AbiFunction } from "@/abi/AbiFunction";
 import path from "path";
 import { cwd } from "process";
-import { posixNormalize } from "../utils/filePath";
-import { ensureString } from "../optimizer/interpreter";
-import { isLiteral } from "../ast/ast-helpers";
-import { sha256 } from "../utils/sha256";
-import { ops } from "../generator/writers/ops";
+import { posixNormalize } from "@/utils/filePath";
+import { ensureString } from "@/optimizer/interpreter";
+import { isLiteral } from "@/ast/ast-helpers";
+import { sha256 } from "@/utils/sha256";
+import { ops } from "@/generator/writers/ops";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [

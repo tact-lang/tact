@@ -2,9 +2,9 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 
-import { NoDependencies } from "./contracts/output/diamond-contract-dependency_NoDependencies";
-import { OneDependency } from "./contracts/output/diamond-contract-dependency_OneDependency";
-import { TwoDependencies } from "./contracts/output/diamond-contract-dependency_TwoDependencies";
+import { NoDependencies } from "@/test/e2e-emulated/contracts/output/diamond-contract-dependency_NoDependencies";
+import { OneDependency } from "@/test/e2e-emulated/contracts/output/diamond-contract-dependency_OneDependency";
+import { TwoDependencies } from "@/test/e2e-emulated/contracts/output/diamond-contract-dependency_TwoDependencies";
 import "@ton/test-utils";
 
 describe("Diamond-shaped dependencies", () => {

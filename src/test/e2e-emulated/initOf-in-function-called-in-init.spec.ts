@@ -1,10 +1,10 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { Test } from "./contracts/output/initOf-in-function-called-in-init_Test";
-import { Test as Test2 } from "./contracts/output/initOf-in-function-called-in-init-2_Test";
-import { MasterV0 } from "./contracts/output/initOf-in-function-called-in-init_MasterV0";
-import { MasterV0 as MasterV02 } from "./contracts/output/initOf-in-function-called-in-init-2_MasterV0";
+import { Test } from "@/test/e2e-emulated/contracts/output/initOf-in-function-called-in-init_Test";
+import { Test as Test2 } from "@/test/e2e-emulated/contracts/output/initOf-in-function-called-in-init-2_Test";
+import { MasterV0 } from "@/test/e2e-emulated/contracts/output/initOf-in-function-called-in-init_MasterV0";
+import { MasterV0 as MasterV02 } from "@/test/e2e-emulated/contracts/output/initOf-in-function-called-in-init-2_MasterV0";
 import "@ton/test-utils";
 
 describe("initOf inside init via global function", () => {

@@ -1,10 +1,10 @@
 import fs from "fs";
-import { prettyPrint } from "./ast-printer";
-import { getParser } from "../grammar";
+import { prettyPrint } from "@/ast/ast-printer";
+import { getParser } from "@/grammar";
 import { join } from "path";
-import { trimTrailingCR, CONTRACTS_DIR } from "../test/util";
+import { trimTrailingCR, CONTRACTS_DIR } from "@/test/util";
 import * as assert from "assert";
-import { getAstFactory } from "./ast-helpers";
+import { getAstFactory } from "@/ast/ast-helpers";
 
 const stringify = (obj: unknown): string => {
     return JSON.stringify(obj, (key, value) =>

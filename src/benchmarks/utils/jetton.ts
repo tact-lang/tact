@@ -10,13 +10,13 @@ import type {
     JettonTransfer,
     Mint,
     ProvideWalletAddress,
-} from "../contracts/output/escrow_Escrow";
+} from "@/benchmarks/contracts/output/escrow_Escrow";
 import {
     storeJettonBurn,
     storeJettonTransfer,
     storeMint,
     storeProvideWalletAddress,
-} from "../contracts/output/escrow_Escrow";
+} from "@/benchmarks/contracts/output/escrow_Escrow";
 
 export const sendDiscoveryRaw = async (
     minterAddress: Address,

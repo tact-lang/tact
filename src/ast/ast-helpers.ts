@@ -1,6 +1,6 @@
-import type * as Ast from "./ast";
-import { throwInternalCompilerError } from "../error/errors";
-import { dummySrcInfo } from "../grammar";
+import type * as Ast from "@/ast/ast";
+import { throwInternalCompilerError } from "@/error/errors";
+import { dummySrcInfo } from "@/grammar";
 
 /**
  * Check if input expression is a 'path expression',

@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { RandomContract } from "./contracts/output/random_RandomContract";
+import { RandomContract } from "@/test/e2e-emulated/contracts/output/random_RandomContract";
 import "@ton/test-utils";
 
 describe("random", () => {

@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { UnderscoreVariableTestContract } from "./contracts/output/underscore-variable_UnderscoreVariableTestContract";
+import { UnderscoreVariableTestContract } from "@/test/e2e-emulated/contracts/output/underscore-variable_UnderscoreVariableTestContract";
 import "@ton/test-utils";
 
 describe("underscore-variable", () => {

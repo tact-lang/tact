@@ -1,7 +1,7 @@
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { StringsTester } from "./contracts/output/strings_StringsTester";
+import { StringsTester } from "@/test/e2e-emulated/contracts/output/strings_StringsTester";
 import "@ton/test-utils";
 
 describe("strings", () => {
