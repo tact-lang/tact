@@ -4,7 +4,7 @@ module.exports = {
         "^.+\\.(t|j)sx?$": "@swc/jest",
     },
     moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/src/$1'
+        "^@/(.*)$": "<rootDir>/src/$1",
     },
     testEnvironment: "node",
     testPathIgnorePatterns: ["/node_modules/", "/dist/"],
