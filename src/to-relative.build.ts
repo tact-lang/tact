@@ -2,12 +2,13 @@
  * Convert @/ imports to ./ imports
  */
 
-import { glob, readFile, writeFile } from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 import { dirname, join, relative } from "path";
+import { glob } from "glob";
 
 const main = async () => {
     const rootDir = join(__dirname, "..");
-    for await (const file of glob("./dist/**/*.js", { cwd: rootDir })) {
+    for (const file of glob.sync("./dist/**/*.js", { cwd: rootDir })) {
         const fullPath = join(rootDir, file);
         const source = await readFile(fullPath, "utf-8");
         const newSource = source.replace(
@@ -26,7 +27,7 @@ const main = async () => {
         }
     }
 
-    for await (const file of glob("./dist/**/*.ts", { cwd: rootDir })) {
+    for await (const file of glob.sync("./dist/**/*.ts", { cwd: rootDir })) {
         const fullPath = join(rootDir, file);
         const source = await readFile(fullPath, "utf-8");
         const newSource = source.replace(
