@@ -3,9 +3,13 @@ title: Random number generation
 description: "Various random number generation functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Random number generation for Tact smart contracts.
 
-## random
+## Common
+
+### random
 
 ```tact
 fun random(min: Int, max: Int): Int;
@@ -20,15 +24,15 @@ random(42, 43); // 42, always
 random(0, 42);  // 0-41, but never 42
 ```
 
-## randomInt
+### randomInt
 
 ```tact
 fun randomInt(): Int;
 ```
 
-Generates and returns a new pseudo-random unsigned $256$-bit [`Int{:tact}`][int] value `x`.
+Generates and returns a new pseudo-random unsigned 256-bit [`Int{:tact}`][int] value `x`.
 
-The algorithm works as follows: first, the `sha512(r){:tact}` is computed. There, `r` is an old value of the random seed, which is taken as a $32$-byte array constructed from the big-endian representation of an unsigned $256$-bit [`Int{:tact}`][int]. The first $32$ bytes of this hash are stored as the new value `r'` of the random seed, and the remaining $32$ bytes are returned as the next random value `x`.
+The algorithm works as follows: first, the `sha512(r){:tact}` is computed. There, `r` is an old value of the random seed, which is taken as a 32-byte array constructed from the big-endian representation of an unsigned 256-bit [`Int{:tact}`][int]. The first 32 bytes of this hash are stored as the new value `r'` of the random seed, and the remaining 32 bytes are returned as the next random value `x`.
 
 Usage example:
 
@@ -36,10 +40,164 @@ Usage example:
 let allYourRandomBelongToUs: Int = randomInt(); // ???, it's random :)
 ```
 
+## Advanced
+
+Various niche, dangerous, or unstable features which can produce unexpected results and are meant to be used by more experienced users.
+
 :::caution
 
-  Advanced functions for working with random numbers are listed on a specialized page: [Advanced APIs](/ref/core-advanced).
+  Proceed with caution.
+
+:::
+
+### getSeed
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun getSeed(): Int;
+```
+
+Generates and returns an unsigned 256-bit [`Int{:tact}`][int] [seed][seed] for the random number generator. The resulting seed is commonly used with the [`setSeed(){:tact}`](#setseed) and [`nativeRandomize(){:tact}`](#nativerandomize) functions.
+
+Usage example:
+
+```tact
+let seed: Int = getSeed();
+setSeed(seed); // From now on, the results of the pseudorandom number generator
+               // are completely determined by the seed, which can be handy in tests,
+               // but must not be used in production code!
+```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]\
+  [`setSeed(){:tact}`](#setseed)\
+  [`nativeRandomize(){:tact}`](#nativerandomize)
+
+:::
+
+### setSeed
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun setSeed(seed: Int);
+```
+
+Sets the [seed][seed] of the random number generator to the unsigned 256-bit [`Int{:tact}`][int] `seed`, which can be obtained with the [`getSeed(){:tact}`](#getseed) function.
+
+Attempts to specify a negative value for `seed` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let seed: Int = getSeed();
+setSeed(seed); // From now on, the results of the pseudorandom number generator
+               // are completely determined by the seed, which can be handy in tests,
+               // but must not be used in production code!
+```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]\
+  [`getSeed(){:tact}`](#getseed)
+
+:::
+
+### nativePrepareRandom
+
+```tact
+fun nativePrepareRandom();
+```
+
+Prepares the random number generator by using [`nativeRandomizeLt(){:tact}`](#nativerandomizelt). Automatically called by the [`randomInt(){:tact}`](#randomint) and [`random(){:tact}`](#random) functions.
+
+Usage example:
+
+```tact
+nativePrepareRandom(); // Prepare the RNG
+// ... do your random things ...
+```
+
+### nativeRandomize
+
+```tact
+fun nativeRandomize(x: Int);
+```
+
+Randomizes the pseudorandom number generator with the specified unsigned 256-bit [`Int{:tact}`][int] `x` by mixing it with the current [seed][seed]. The new seed is the unsigned 256-bit [`Int{:tact}`][int] value of the [SHA-256](/ref/core-crypto#sha256) hash of the concatenated old seed and `x` in their 32-byte strings [big-endian](https://en.wikipedia.org/wiki/Endianness) representation.
+
+Attempts to specify a negative value for `x` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+nativeRandomize(42);        // Now, random numbers are less predictable
+let idk: Int = randomInt(); // ???, it's random,
+                            // but the seed was adjusted deterministically!
+```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]
+
+:::
+
+### nativeRandomizeLt
+
+```tact
+fun nativeRandomizeLt();
+```
+
+Randomizes the random number generator with the [logical time][lt] of the current transaction. Equivalent to calling `nativeRandomize(curLt()){:tact}`.
+
+Usage example:
+
+```tact
+nativeRandomizeLt();        // Now, random numbers are unpredictable for users,
+                            // but still may be affected by validators or collators
+                            // as they determine the seed of the current block.
+let idk: Int = randomInt(); // ???, it's random!
+```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]\
+  [`nativeRandomize{:tact}`](#nativerandomize)\
+  [`curLt(){:tact}`](/ref/core-contextstate#curlt)
+
+:::
+
+### nativeRandom
+
+```tact
+fun nativeRandom(): Int;
+```
+
+Generates and returns a 256-bit random number just like [`randomInt(){:tact}`](#randomint) but does not initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
+
+:::note
+
+  Do not use this function directly — prefer using [`randomInt(){:tact}`](#randomint) instead.
+
+:::
+
+### nativeRandomInterval
+
+```tact
+fun nativeRandomInterval(max: Int): Int;
+```
+
+Generates and returns a 256-bit random number in the range from 0 to `max`, similar to [`random(){:tact}`](#random), but doesn't initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
+
+:::note
+
+  Don't use this function directly — prefer using [`random(){:tact}`](#random) instead.
 
 :::
 
 [int]: /book/integers
+
+[lt]: https://docs.ton.org/v3/documentation/smart-contracts/message-management/messages-and-transactions#what-is-a-logical-time
+[seed]: https://en.wikipedia.org/wiki/Random_seed

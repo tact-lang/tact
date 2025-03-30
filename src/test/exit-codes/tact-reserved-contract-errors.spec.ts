@@ -56,7 +56,9 @@ describe("Tact-reserved contract errors", () => {
     });
 
     // 133: Contract stopped
-    // NOTE: Reserved, but never thrown anywhere, can't repro
+    it("should test exit code 133", async () => {
+        await testReservedExitCode(133, contract, treasure);
+    });
 
     // 134: Invalid argument
     it("should test exit code 134", async () => {
@@ -70,6 +72,11 @@ describe("Tact-reserved contract errors", () => {
     it("should test exit code 136", async () => {
         await testReservedExitCode(136, contract, treasure);
     });
+
+    // 138: Not a basechain address
+    it("should test exit code 138", async () => {
+        await testReservedExitCode(138, contract, treasure);
+    });
 });
 
 async function testReservedExitCode(
@@ -79,8 +86,15 @@ async function testReservedExitCode(
 ) {
     expect(code).toBeGreaterThanOrEqual(128);
     expect(code).toBeLessThan(256);
-    expect([128, 130, 132, 134, 136]).toContain(code);
-    type testedExitCodes = "128" | "130" | "132" | "134" | "136";
+    expect([128, 130, 132, 133, 134, 136, 138]).toContain(code);
+    type testedExitCodes =
+        | "128"
+        | "130"
+        | "132"
+        | "133"
+        | "134"
+        | "136"
+        | "138";
 
     const sendResult = await contract.send(
         treasure.getSender(),

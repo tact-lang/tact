@@ -1,4 +1,8 @@
-import type { AstFieldDecl, AstExpression, AstId } from "../../../src/ast/ast";
+import type {
+    FieldDecl as AstFieldDecl,
+    Expression as AstExpression,
+    Id as AstId,
+} from "../../../src/ast/ast";
 import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { tyToAstType } from "../types";
 import type { Type } from "../types";

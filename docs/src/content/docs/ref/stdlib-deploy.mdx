@@ -3,6 +3,8 @@ title: "@stdlib/deploy"
 description: "Provides unified mechanisms for deployments"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Provides unified mechanisms for deployments.
 
 To use this library, import `@stdlib/deploy`:
@@ -15,25 +17,36 @@ import "@stdlib/deploy";
 
 ### Deploy
 
+Message struct used in a receiver of the **deprecated** [`Deployable{:tact}`](#deployable) trait.
+
 ```tact
 message Deploy {
+    /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 }
 ```
 
 ### DeployOk
 
+Forwarded message struct used in **deprecated** [`Deployable{:tact}`](#deployable) and [`FactoryDeployable{:tact}`](#factorydeployable) traits.
+
 ```tact
 message DeployOk {
+    /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 }
 ```
 
 ### FactoryDeploy
 
+Message struct used in a receiver of the **deprecated** [`FactoryDeployable{:tact}`](#factorydeployable) trait.
+
 ```tact
 message FactoryDeploy {
+    /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
+
+    /// Address to forward `DeployOk` message to.
     cashback: Address;
 }
 ```
@@ -42,11 +55,13 @@ message FactoryDeploy {
 
 ### Deployable
 
-A simple trait `Deployable{:tact}` that provides a convenient unified mechanism for deployments by implementing a simple receiver for the [Deploy](#deploy) message.
+<Badge text="Deprecated since Tact 1.6" variant="tip" size="medium"/><p/>
 
-All contracts are deployed by sending them a message. While any message can be used for this purpose, the best practice is to use the special [Deploy](#deploy) message.
+The trait `Deployable{:tact}` provides a unified mechanism for deployments by implementing a simple receiver for the [`Deploy{:tact}`](#deploy) message.
 
-This message has a single field, `queryId`, provided by the deployer (usually set to zero). If the deployment succeeds, the contract will reply with a [DeployOk](#deployok) message and echo the same `queryId` in the response.
+All contracts are deployed by sending them a message. While any message can be used for this purpose, you can use the special [`Deploy{:tact}`](#deploy) message.
+
+This message has a single field, `queryId`, provided by the deployer (usually set to zero). If the deployment succeeds, the contract will reply with a [`DeployOk{:tact}`](#deployok) message and echo the same `queryId` in the response.
 
 Source code:
 
@@ -68,7 +83,19 @@ contract ExampleContract with Deployable {
 }
 ```
 
+Unless you need the `queryId`, use a `null` message body receiver instead of this trait.
+
+```tact
+contract ExampleContract {
+    // Forwards the remaining value in the
+    // incoming message back to the sender
+    receive() { cashback(sender()) }
+}
+```
+
 ### FactoryDeployable
+
+<Badge text="Deprecated since Tact 1.6" variant="tip" size="medium"/><p/>
 
 The trait `FactoryDeployable{:tact}` provides a convenient unified mechanism for chained deployments.
 
@@ -89,6 +116,16 @@ import "@stdlib/deploy";
 
 contract ExampleContract with FactoryDeployable {
     // Now, this contract has a receiver for the FactoryDeploy message
+}
+```
+
+Unless you need the `queryId`, use a `null` message body receiver instead of this trait.
+
+```tact
+contract ExampleContract {
+    // Forwards the remaining value in the
+    // incoming message back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 

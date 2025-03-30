@@ -282,7 +282,7 @@ Field  | Type                  | Description
 
 :::note
 
-  For workchain 0, the [`Address{:tact}`][p] of the current contract obtained by calling the [`myAddress(){:tact}`](/ref/core-common#myaddress) function is identical to the one that can be obtained by calling the [`contractAddress(){:tact}`](/ref/core-common#contractaddress) function with the initial state of the current contract computed via `initOf{:tact}`:
+  For workchain 0, the [`Address{:tact}`][p] of the current contract obtained by calling the [`myAddress(){:tact}`](/ref/core-contextstate#myaddress) function is identical to the one that can be obtained by calling the [`contractAddress(){:tact}`](/ref/core-addresses#contractaddress) function with the initial state of the current contract computed via `initOf{:tact}`:
 
   ```tact {6}
   contract TheKingPrawn {
@@ -295,7 +295,7 @@ Field  | Type                  | Description
   }
   ```
 
-  However, if you only need the address of the current contract at runtime and not its `StateInit{:tact}`, use the [`myAddress(){:tact}`](/ref/core-common#myaddress) function, as it consumes **significantly** less gas.
+  However, if you only need the address of the current contract at runtime and not its `StateInit{:tact}`, use the [`myAddress(){:tact}`](/ref/core-contextstate#myaddress) function, as it consumes **significantly** less gas.
 
 :::
 
@@ -314,7 +314,7 @@ codeOf ExampleContract; // a Cell with ExampleContract code
 //     name of the contract
 ```
 
-If `codeOf{:tact}` is used for the current contract, its result is equivalent to calling [`myCode(){:tact}`](/ref/core-advanced#mycode).
+If `codeOf{:tact}` is used for the current contract, its result is equivalent to calling [`myCode(){:tact}`](/ref/core-contextstate#mycode).
 
 ```tact
 contract ExampleContract {

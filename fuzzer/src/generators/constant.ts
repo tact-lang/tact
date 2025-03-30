@@ -1,8 +1,8 @@
 import type {
-    AstConstantDecl,
-    AstConstantDef,
-    AstConstantAttribute,
-    AstExpression,
+    ConstantDecl as AstConstantDecl,
+    ConstantDef as AstConstantDef,
+    ConstantAttribute as AstConstantAttribute,
+    Expression as AstExpression,
 } from "../../../src/ast/ast";
 import {
     generateAstIdFromName,

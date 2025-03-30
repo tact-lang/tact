@@ -9,7 +9,7 @@ import fc from "fast-check";
 import type { NamedScopeItemKind, Scope } from "./scope";
 import { GlobalContext } from "./context";
 import type { Type } from "./types";
-import type { AstId, AstNode } from "../../src/ast/ast";
+import type { Id as AstId, AstNode } from "../../src/ast/ast";
 import { nextId } from "./id";
 import { getSrcInfo } from "../../src/grammar/src-info";
 

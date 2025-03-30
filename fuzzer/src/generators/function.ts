@@ -1,9 +1,9 @@
 import type {
-    AstFunctionDef,
-    AstTypedParameter,
-    AstFunctionAttribute,
-    AstStatement,
-    AstFunctionDecl,
+    FunctionDef as AstFunctionDef,
+    TypedParameter as AstTypedParameter,
+    FunctionAttribute as AstFunctionAttribute,
+    Statement as AstStatement,
+    FunctionDecl as AstFunctionDecl,
 } from "../../../src/ast/ast";
 import {
     tyToAstType,
@@ -38,7 +38,8 @@ export const SUPPORTED_RETURN_TYS = [
     StdlibType.String,
 ];
 
-function doesntHaveArguments(kind: FunctionKind, type: FunctionType): boolean { // cspell:disable-line
+function doesntHaveArguments(kind: FunctionKind, type: FunctionType): boolean {
+    // cspell:disable-line
     if (kind === "function") {
         return type.signature.length === 1;
     } else {
@@ -55,7 +56,8 @@ function generateParameters(
     type: FunctionType,
     scope: Scope,
 ): AstTypedParameter[] {
-    if (doesntHaveArguments(kind, type)) { // cspell:disable-line
+    if (doesntHaveArguments(kind, type)) {
+        // cspell:disable-line
         return [];
     }
     const slice =

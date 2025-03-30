@@ -1,10 +1,9 @@
-import type * as A from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import type { CompilerContext } from "../context/context";
 import { isAssignable } from "./subtyping";
 import {
     tryExtractPath,
     eqNames,
-    isWildcard,
     isSelfId,
     idText,
     selfId,
@@ -49,11 +48,14 @@ export function emptyContext(
     };
 }
 
-function checkVariableExists(
+function ensureVariableDoesNotExist(
     ctx: CompilerContext,
     sctx: StatementContext,
-    name: A.AstId,
+    name: Ast.OptionalId,
 ): void {
+    if (name.kind !== "id") {
+        return;
+    }
     if (sctx.vars.has(idText(name))) {
         throwCompilationError(
             `Variable already exists: ${idTextErr(name)}`,
@@ -111,13 +113,13 @@ function removeRequiredVariable(
 }
 
 export function addVariable(
-    name: A.AstId,
+    name: Ast.OptionalId,
     ref: TypeRef,
     ctx: CompilerContext,
     sctx: StatementContext,
 ): StatementContext {
-    checkVariableExists(ctx, sctx, name); // Should happen earlier
-    if (isWildcard(name)) {
+    ensureVariableDoesNotExist(ctx, sctx, name); // Should happen earlier
+    if (name.kind === "wildcard") {
         return sctx;
     }
     return {
@@ -127,7 +129,7 @@ export function addVariable(
 }
 
 function processCondition(
-    condition: A.AstStatementCondition,
+    condition: Ast.StatementCondition,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -191,7 +193,7 @@ function processCondition(
 
 // Precondition: `self` here means a contract or a trait,
 // and not a `self` parameter of a mutating method
-export function isLvalue(path: A.AstId[], ctx: CompilerContext): boolean {
+export function isLvalue(path: Ast.Id[], ctx: CompilerContext): boolean {
     const headId = path[0]!;
     if (isSelfId(headId) && path.length > 1) {
         // we can be dealing with a contract/trait constant `self.constFoo`
@@ -213,7 +215,7 @@ export function isLvalue(path: A.AstId[], ctx: CompilerContext): boolean {
 }
 
 function processStatements(
-    statements: readonly A.AstStatement[],
+    statements: readonly Ast.Statement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -238,7 +240,7 @@ function processStatements(
                     ctx = resolveExpression(s.expression, sctx, ctx);
 
                     // Check variable name
-                    checkVariableExists(ctx, sctx, s.name);
+                    ensureVariableDoesNotExist(ctx, sctx, s.name);
 
                     // Check type
                     const expressionType = getExpType(ctx, s.expression);
@@ -252,15 +254,19 @@ function processStatements(
                         }
                         sctx = addVariable(s.name, variableType, ctx, sctx);
                     } else {
+                        // Here it's fine to display _ as variable name, because
+                        // let can have only one wildcard. In other cases it's not,
+                        // so we must not do it in `idTextErr`
+                        const name = s.name.kind === "id" ? s.name : "_";
                         if (expressionType.kind === "null") {
                             throwCompilationError(
-                                `Cannot infer type for ${idTextErr(s.name)}`,
+                                `Cannot infer type for ${idTextErr(name)}`,
                                 s.loc,
                             );
                         }
                         if (expressionType.kind === "void") {
                             throwCompilationError(
-                                `The inferred type of variable ${idTextErr(s.name)} is "void", which is not allowed`,
+                                `The inferred type of variable ${idTextErr(name)} is "void", which is not allowed`,
                                 s.loc,
                             );
                         }
@@ -355,29 +361,29 @@ function processStatements(
                         );
                     }
 
-                    if (s.op === "&&" || s.op === "||") {
+                    if (s.op === "&&=" || s.op === "||=") {
                         if (tailType.name !== "Bool") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Bool type`,
+                                `Type error: Augmented assignment ${s.op} is only allowed for Bool type`,
                                 s.path.loc,
                             );
                         }
                         if (expressionType.name !== "Bool") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Bool type`,
+                                `Type error: Augmented assignment ${s.op} is only allowed for Bool type`,
                                 s.expression.loc,
                             );
                         }
                     } else {
                         if (tailType.name !== "Int") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Int type`,
+                                `Type error: Augmented assignment ${s.op} is only allowed for Int type`,
                                 s.path.loc,
                             );
                         }
                         if (expressionType.name !== "Int") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Int type`,
+                                `Type error: Augmented assignment ${s.op} is only allowed for Int type`,
                                 s.expression.loc,
                             );
                         }
@@ -565,7 +571,7 @@ function processStatements(
 
                     let catchCtx = sctx;
                     // Process catchName variable for exit code
-                    checkVariableExists(
+                    ensureVariableDoesNotExist(
                         ctx,
                         initialSctx,
                         s.catchBlock.catchName,
@@ -627,8 +633,8 @@ function processStatements(
                 let foreachSctx = sctx;
 
                 // Add key and value to statement context
-                if (!isWildcard(s.keyName)) {
-                    checkVariableExists(ctx, initialSctx, s.keyName);
+                if (s.keyName.kind === "id") {
+                    ensureVariableDoesNotExist(ctx, initialSctx, s.keyName);
                     foreachSctx = addVariable(
                         s.keyName,
                         { kind: "ref", name: mapType.key, optional: false },
@@ -636,8 +642,8 @@ function processStatements(
                         initialSctx,
                     );
                 }
-                if (!isWildcard(s.valueName)) {
-                    checkVariableExists(ctx, foreachSctx, s.valueName);
+                if (s.valueName.kind === "id") {
+                    ensureVariableDoesNotExist(ctx, foreachSctx, s.valueName);
                     foreachSctx = addVariable(
                         s.valueName,
                         { kind: "ref", name: mapType.value, optional: false },
@@ -671,7 +677,7 @@ function processStatements(
 
                 // Check variable names
                 for (const [_, name] of s.identifiers.values()) {
-                    checkVariableExists(ctx, sctx, name);
+                    ensureVariableDoesNotExist(ctx, sctx, name);
                 }
 
                 // Check type
@@ -731,7 +737,7 @@ function processStatements(
                             field.loc,
                         );
                     }
-                    if (name.text !== "_") {
+                    if (name.kind === "id") {
                         sctx = addVariable(name, f.type, ctx, sctx);
                     }
                 });
@@ -751,7 +757,7 @@ function processStatements(
 }
 
 function processFunctionBody(
-    statements: readonly A.AstStatement[],
+    statements: readonly Ast.Statement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {

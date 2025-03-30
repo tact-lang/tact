@@ -1,4 +1,4 @@
-import type { AstId } from "../../../src/ast/ast";
+import type { Id as AstId } from "../../../src/ast/ast";
 import { nextId } from "../id";
 import type { IDIdx } from "../id";
 import type { Type } from "../types";

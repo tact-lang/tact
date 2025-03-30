@@ -16,8 +16,6 @@ An [array](https://en.wikipedia.org/wiki/Array_(data_structure)) is a data struc
 The following example emulates an array using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
 
 ```tact
-import "@stdlib/deploy"; // for Deployable trait
-
 struct Array {
     m: map<Int as uint16, Int>; // array of Int values as a map of Ints to Ints,
                                 // with serialization of its keys to uint16 to save space
@@ -119,7 +117,7 @@ fun emptyArray(): Array {
 }
 
 // Contract emulating an Array using the map
-contract MapAsArray with Deployable {
+contract MapAsArray {
     // Persistent state variables
     array: Array;
 
@@ -127,6 +125,10 @@ contract MapAsArray with Deployable {
     init() {
         self.array = emptyArray();
     }
+
+    // Internal message receiver, which responds to a `null` message body
+    // If used for deployment, forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     // Internal message receiver, which responds to a String message "append"
     receive("append") {
@@ -169,8 +171,6 @@ A [stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) is a data st
 The following example emulates a stack using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
 
 ```tact
-import "@stdlib/deploy"; // for Deployable trait
-
 struct Stack {
     m: map<Int as uint16, Int>; // stack of Int values as a map of Ints to Ints,
                                 // with serialization of its keys to uint16 to save space
@@ -219,7 +219,7 @@ fun emptyStack(): Stack {
     return Stack{m: emptyMap(), length: 0}; // length defaults to 0
 }
 
-contract MapAsStack with Deployable {
+contract MapAsStack {
     // Persistent state variables
     stack: Stack; // our stack, which uses the map
 
@@ -227,6 +227,10 @@ contract MapAsStack with Deployable {
     init() {
         self.stack = emptyStack();
     }
+
+    // Internal message receiver, which responds to a `null` message body
+    // If used for deployment, forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     // Internal message receiver, which responds to a String message "push"
     receive("push") {
@@ -270,8 +274,6 @@ A [circular buffer](https://en.wikipedia.org/wiki/Circular_buffer) (circular que
 The following example emulates a circular buffer using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
 
 ```tact
-import "@stdlib/deploy"; // for Deployable trait
-
 struct CircularBuffer {
     m: map<Int as uint8, Int>; // circular buffer of Int values as a map of Ints to Ints,
                                // with serialization of its keys to uint8 to save space
@@ -329,7 +331,7 @@ fun emptyCircularBuffer(): CircularBuffer {
 }
 
 // This contract records the last 5 timestamps of when a "timer" message was received
-contract MapAsCircularBuffer with Deployable {
+contract MapAsCircularBuffer {
     // Persistent state variables
     cBuf: CircularBuffer; // our circular buffer, which uses a map
 
@@ -337,6 +339,10 @@ contract MapAsCircularBuffer with Deployable {
     init() {
         self.cBuf = emptyCircularBuffer();
     }
+
+    // Internal message receiver, which responds to a `null` message body
+    // If used for deployment, forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     // Internal message receiver, which responds to a String message "timer"
     // and records the timestamp when it receives such a message

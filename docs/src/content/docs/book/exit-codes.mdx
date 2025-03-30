@@ -59,11 +59,12 @@ Exit code     | Origin                              | Brief description
 [$130$](#130) | Tact compiler ([Compute phase][c])  | Invalid incoming message — there is no receiver for the opcode of the received message.
 [$131$](#131) | Tact compiler ([Compute phase][c])  | Constraints error. Reserved, but never thrown.
 [$132$](#132) | Tact compiler ([Compute phase][c])  | Access denied — someone other than the owner sent a message to the contract.
-[$133$](#133) | Tact compiler ([Compute phase][c])  | Contract stopped. Reserved, but never thrown.
+[$133$](#133) | Tact compiler ([Compute phase][c])  | Contract stopped.
 [$134$](#134) | Tact compiler ([Compute phase][c])  | Invalid argument.
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
 [$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid standard address.
 ~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6.
+[$138$](#138) | Tact compiler ([Compute phase][c])  | Not a basechain address.
 
 :::note
 
@@ -606,7 +607,7 @@ contract Hal9k with Ownable {
 
 ### 133: Contract stopped {#133}
 
-A message has been sent to a stopped contract. Reserved, but never thrown.
+A message has been sent to a "stopped" contract: a contract that inherits the [`Stoppable{:tact}`](/ref/stdlib-stoppable#stoppable) trait and has the `self.stopped{:tact}` flag set to `true{:tact}`.
 
 ### 134: Invalid argument {#134}
 
@@ -616,7 +617,7 @@ Here are some of the functions in Tact which can throw an error with this exit c
 
 1. [`Int.toFloatString(digits){:tact}`](/ref/core-strings#inttofloatstring): if `digits` is not in the interval $0 < digits < 78$.
 
-2. [`String.fromBase64(){:tact}`](/ref/core-strings#stringfrombase64) and [`Slice.fromBase64(){:tact}`](/ref/core-strings#slicefrombase64): if the given [`String{:tact}`][p] or [`Slice{:tact}`][slice] contains non-Base64 characters.
+2. [`String.fromBase64(){:tact}`](/ref/core-strings#stringfrombase64) and [`Slice.fromBase64(){:tact}`](/ref/core-cells#slicefrombase64): if the given [`String{:tact}`][p] or [`Slice{:tact}`][slice] contains non-Base64 characters.
 
 ```tact
 try {
@@ -670,6 +671,32 @@ try {
     dump(newAddress(masterchainID, 0));
 } catch (exitCode) {
     // exitCode is 137
+}
+```
+
+### 138: Not a basechain address {#138}
+
+<Badge text="Available since Tact 1.6.3" variant="tip" size="medium"/><p/>
+
+The value of type [`Address{:tact}`][p] belongs to a basechain, when its [chain ID](https://docs.ton.org/learn/overviews/addresses#workchain-id) is equal to 0.
+
+Such check is currently only performed in the [`forceBasechain(){:tact}`](/ref/core-addresses#forcebasechain) function. If the address does not belong to a basechain, i.e., its chain ID isn't 0, the function throws an error with exit code 138: `Not a basechain address`.
+
+```tact
+let someBasechainAddress: Address =
+    newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+
+let someMasterchainAddress: Address =
+    newAddress(-1, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+
+// Does not throw because the chain ID is 0
+forceBasechain(someBasechainAddress);
+
+try {
+    // Throws because the chain ID is -1 (masterchain)
+    forceBasechain(someMasterchainAddress);
+} catch (exitCode) {
+    // exitCode is 138
 }
 ```
 

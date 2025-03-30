@@ -1,4 +1,7 @@
-import type { AstMessageDecl, AstStructDecl } from "../../../src/ast/ast";
+import type {
+    MessageDecl as AstMessageDecl,
+    StructDecl as AstStructDecl,
+} from "../../../src/ast/ast";
 import { tyToString, throwTyError } from "../types";
 import type { Type, StructField } from "../types";
 import type { Scope } from "../scope";

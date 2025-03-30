@@ -1089,15 +1089,6 @@ exports[`resolveStatements should fail statements for stmt-destructuring-fields-
 "
 `;
 
-exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-underscore 1`] = `
-"<unknown>:15:12: Field '"_"' not found in type 'S'
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S {_, b, c} =  s;
-                  ^
-  16 |     return b + c;
-"
-`;
-
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-shadowed-const-id 1`] = `
 "<unknown>:17:16: Variable "x" is trying to shadow an existing constant with the same name
   16 |     let s = S{ a: 1, b: 2, c: 3 };
@@ -1824,33 +1815,6 @@ exports[`resolveStatements should fail statements for var-scope-while-shadows-ou
 > 7 |         let b: Int = a + 3;
                   ^
   8 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for var-underscore-name-access 1`] = `
-"<unknown>:6:16: Wildcard variable name '_' cannot be accessed
-  5 |     foreach (_, _ in m) {
-> 6 |         return _;
-                     ^
-  7 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for var-underscore-name-access2 1`] = `
-"<unknown>:7:14: Wildcard variable name '_' cannot be accessed
-  6 |     foreach (_, v in m) {
-> 7 |         x += _;
-                   ^
-  8 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for var-underscore-name-access3 1`] = `
-"<unknown>:9:12: Wildcard variable name '_' cannot be accessed
-   8 |     let _: Int = someImpureFunction();
->  9 |     return _;
-                  ^
-  10 | }
 "
 `;
 

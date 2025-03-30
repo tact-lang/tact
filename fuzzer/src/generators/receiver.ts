@@ -1,11 +1,11 @@
 import type {
-    AstReceiver,
-    AstStatement,
-    AstReceiverKind,
-    AstReceiverSubKind,
-    AstReceiverSimple,
-    AstReceiverFallback,
-    AstReceiverComment,
+    Receiver as AstReceiver,
+    Statement as AstStatement,
+    ReceiverKind as AstReceiverKind,
+    ReceiverSubKind as AstReceiverSubKind,
+    ReceiverSimple as AstReceiverSimple,
+    ReceiverFallback as AstReceiverFallback,
+    ReceiverComment as AstReceiverComment,
 } from "../../../src/ast/ast";
 import { UtilType, StdlibType, isBouncedMessage } from "../types";
 import type { Type } from "../types";

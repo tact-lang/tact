@@ -164,6 +164,9 @@ export const syntaxErrorSchema = <T, U>(
         unknownGeneric: () => {
             return handle(sub`Unknown generic type`);
         },
+        noWildcard: () => {
+            return handle(text(`Wildcard not allowed here`));
+        },
     };
 };
 

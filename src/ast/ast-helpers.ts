@@ -1,5 +1,4 @@
-import type * as A from "./ast";
-import type { AstId } from "./ast";
+import type * as Ast from "./ast";
 import { throwInternalCompilerError } from "../error/errors";
 import { dummySrcInfo } from "../grammar";
 
@@ -9,7 +8,7 @@ import { dummySrcInfo } from "../grammar";
  * @param path A path expression to check.
  * @returns An array of identifiers or null if the input expression is not a path expression.
  */
-export function tryExtractPath(path: A.AstExpression): A.AstId[] | null {
+export function tryExtractPath(path: Ast.Expression): Ast.Id[] | null {
     switch (path.kind) {
         case "id":
             return [path];
@@ -29,10 +28,10 @@ type DistributiveOmit<T, K extends keyof any> = T extends any
 
 export const getAstFactory = () => {
     let nextId = 1;
-    function createNode(src: DistributiveOmit<A.AstNode, "id">): A.AstNode {
+    function createNode(src: DistributiveOmit<Ast.AstNode, "id">): Ast.AstNode {
         return Object.freeze(Object.assign({ id: nextId++ }, src));
     }
-    function cloneNode<T extends A.AstNode>(src: T): T {
+    function cloneNode<T extends Ast.AstNode>(src: T): T {
         const newNode: T = { ...src, id: nextId++ };
         return Object.freeze(newNode);
     }
@@ -44,57 +43,53 @@ export const getAstFactory = () => {
 
 export type FactoryAst = ReturnType<typeof getAstFactory>;
 
-export function idText(ident: A.AstId | A.AstFuncId | A.AstTypeId): string {
+export function idText(ident: Ast.Id | Ast.FuncId | Ast.TypeId): string {
     return ident.text;
 }
 
-export function isInt(ident: A.AstTypeId): boolean {
+export function isInt(ident: Ast.TypeId): boolean {
     return ident.text === "Int";
 }
 
-export function isBool(ident: A.AstTypeId): boolean {
+export function isBool(ident: Ast.TypeId): boolean {
     return ident.text === "Bool";
 }
 
-export function isCell(ident: A.AstTypeId): boolean {
+export function isCell(ident: Ast.TypeId): boolean {
     return ident.text === "Cell";
 }
 
-export function isSlice(ident: A.AstTypeId): boolean {
+export function isSlice(ident: Ast.TypeId): boolean {
     return ident.text === "Slice";
 }
 
-export function isBuilder(ident: A.AstTypeId): boolean {
+export function isBuilder(ident: Ast.TypeId): boolean {
     return ident.text === "Builder";
 }
 
-export function isAddress(ident: A.AstTypeId): boolean {
+export function isAddress(ident: Ast.TypeId): boolean {
     return ident.text === "Address";
 }
 
-export function isString(ident: A.AstTypeId): boolean {
+export function isString(ident: Ast.TypeId): boolean {
     return ident.text === "String";
 }
 
-export function isStringBuilder(ident: A.AstTypeId): boolean {
+export function isStringBuilder(ident: Ast.TypeId): boolean {
     return ident.text === "StringBuilder";
 }
 
-export function isSelfId(ident: A.AstId): boolean {
-    return ident.text === "self";
+export function isSelfId(ident: Ast.OptionalId): boolean {
+    return ident.kind === "id" && ident.text === "self";
 }
 
-export function isWildcard(ident: A.AstId): boolean {
-    return ident.text === "_";
-}
-
-export function isRequire(ident: A.AstId): boolean {
+export function isRequire(ident: Ast.Id): boolean {
     return ident.text === "require";
 }
 
 export function eqNames(
-    left: A.AstId | A.AstTypeId | string,
-    right: A.AstId | A.AstTypeId | string,
+    left: Ast.Id | Ast.TypeId | string,
+    right: Ast.Id | Ast.TypeId | string,
 ): boolean {
     if (typeof left === "string") {
         if (typeof right === "string") {
@@ -109,7 +104,7 @@ export function eqNames(
     }
 }
 
-export function idOfText(text: string): A.AstId {
+export function idOfText(text: string): Ast.Id {
     return {
         kind: "id",
         text,
@@ -118,7 +113,7 @@ export function idOfText(text: string): A.AstId {
     };
 }
 
-export function astNumToString(n: A.AstNumber): string {
+export function astNumToString(n: Ast.Number): string {
     switch (n.base) {
         case 2:
             return `0b${n.value.toString(n.base)}`;
@@ -136,8 +131,8 @@ export function astNumToString(n: A.AstNumber): string {
 // For example, two struct instances are equal if they have the same
 // type and same fields in the same order.
 export function eqExpressions(
-    ast1: A.AstExpression,
-    ast2: A.AstExpression,
+    ast1: Ast.Expression,
+    ast2: Ast.Expression,
 ): boolean {
     if (ast1.kind !== ast2.kind) {
         return false;
@@ -147,98 +142,98 @@ export function eqExpressions(
         case "null":
             return true;
         case "boolean":
-            return ast1.value === (ast2 as A.AstBoolean).value;
+            return ast1.value === (ast2 as Ast.Boolean).value;
         case "number":
-            return ast1.value === (ast2 as A.AstNumber).value;
+            return ast1.value === (ast2 as Ast.Number).value;
         case "string":
-            return ast1.value === (ast2 as A.AstString).value;
+            return ast1.value === (ast2 as Ast.String).value;
         case "id":
-            return eqNames(ast1, ast2 as A.AstId);
+            return eqNames(ast1, ast2 as Ast.Id);
         case "address":
-            return ast1.value.equals((ast2 as A.AstAddress).value);
+            return ast1.value.equals((ast2 as Ast.Address).value);
         case "cell":
-            return ast1.value.equals((ast2 as A.AstCell).value);
+            return ast1.value.equals((ast2 as Ast.Cell).value);
         case "slice":
             return ast1.value
                 .asCell()
-                .equals((ast2 as A.AstSlice).value.asCell());
+                .equals((ast2 as Ast.Slice).value.asCell());
         case "simplified_string":
-            return ast1.value === (ast2 as A.AstSimplifiedString).value;
+            return ast1.value === (ast2 as Ast.SimplifiedString).value;
         case "struct_value":
             return (
-                eqNames(ast1.type, (ast2 as A.AstStructValue).type) &&
+                eqNames(ast1.type, (ast2 as Ast.StructValue).type) &&
                 eqArrays(
                     ast1.args,
-                    (ast2 as A.AstStructValue).args,
+                    (ast2 as Ast.StructValue).args,
                     eqFieldValues,
                 )
             );
         case "method_call":
             return (
-                eqNames(ast1.method, (ast2 as A.AstMethodCall).method) &&
-                eqExpressions(ast1.self, (ast2 as A.AstMethodCall).self) &&
+                eqNames(ast1.method, (ast2 as Ast.MethodCall).method) &&
+                eqExpressions(ast1.self, (ast2 as Ast.MethodCall).self) &&
                 eqArrays(
                     ast1.args,
-                    (ast2 as A.AstMethodCall).args,
+                    (ast2 as Ast.MethodCall).args,
                     eqExpressions,
                 )
             );
         case "init_of":
             return (
-                eqNames(ast1.contract, (ast2 as A.AstInitOf).contract) &&
-                eqArrays(ast1.args, (ast2 as A.AstInitOf).args, eqExpressions)
+                eqNames(ast1.contract, (ast2 as Ast.InitOf).contract) &&
+                eqArrays(ast1.args, (ast2 as Ast.InitOf).args, eqExpressions)
             );
         case "code_of":
-            return eqNames(ast1.contract, (ast2 as A.AstCodeOf).contract);
+            return eqNames(ast1.contract, (ast2 as Ast.CodeOf).contract);
         case "op_unary":
             return (
-                ast1.op === (ast2 as A.AstOpUnary).op &&
-                eqExpressions(ast1.operand, (ast2 as A.AstOpUnary).operand)
+                ast1.op === (ast2 as Ast.OpUnary).op &&
+                eqExpressions(ast1.operand, (ast2 as Ast.OpUnary).operand)
             );
         case "op_binary":
             return (
-                ast1.op === (ast2 as A.AstOpBinary).op &&
-                eqExpressions(ast1.left, (ast2 as A.AstOpBinary).left) &&
-                eqExpressions(ast1.right, (ast2 as A.AstOpBinary).right)
+                ast1.op === (ast2 as Ast.OpBinary).op &&
+                eqExpressions(ast1.left, (ast2 as Ast.OpBinary).left) &&
+                eqExpressions(ast1.right, (ast2 as Ast.OpBinary).right)
             );
         case "conditional":
             return (
                 eqExpressions(
                     ast1.condition,
-                    (ast2 as A.AstConditional).condition,
+                    (ast2 as Ast.Conditional).condition,
                 ) &&
                 eqExpressions(
                     ast1.thenBranch,
-                    (ast2 as A.AstConditional).thenBranch,
+                    (ast2 as Ast.Conditional).thenBranch,
                 ) &&
                 eqExpressions(
                     ast1.elseBranch,
-                    (ast2 as A.AstConditional).elseBranch,
+                    (ast2 as Ast.Conditional).elseBranch,
                 )
             );
         case "struct_instance":
             return (
-                eqNames(ast1.type, (ast2 as A.AstStructInstance).type) &&
+                eqNames(ast1.type, (ast2 as Ast.StructInstance).type) &&
                 eqArrays(
                     ast1.args,
-                    (ast2 as A.AstStructInstance).args,
+                    (ast2 as Ast.StructInstance).args,
                     eqFieldInitializers,
                 )
             );
         case "field_access":
             return (
-                eqNames(ast1.field, (ast2 as A.AstFieldAccess).field) &&
+                eqNames(ast1.field, (ast2 as Ast.FieldAccess).field) &&
                 eqExpressions(
                     ast1.aggregate,
-                    (ast2 as A.AstFieldAccess).aggregate,
+                    (ast2 as Ast.FieldAccess).aggregate,
                 )
             );
         case "static_call":
             return (
-                eqNames(ast1.function, (ast2 as A.AstStaticCall).function) &&
+                eqNames(ast1.function, (ast2 as Ast.StaticCall).function) &&
                 eqArrays(
                     ast1.args,
-                    (ast2 as A.AstStaticCall).args,
+                    (ast2 as Ast.StaticCall).args,
                     eqExpressions,
                 )
             );
@@ -248,8 +243,8 @@ export function eqExpressions(
 }
 
 function eqFieldInitializers(
-    arg1: A.AstStructFieldInitializer,
-    arg2: A.AstStructFieldInitializer,
+    arg1: Ast.StructFieldInitializer,
+    arg2: Ast.StructFieldInitializer,
 ): boolean {
     return (
         eqNames(arg1.field, arg2.field) &&
@@ -258,8 +253,8 @@ function eqFieldInitializers(
 }
 
 function eqFieldValues(
-    arg1: A.AstStructFieldValue,
-    arg2: A.AstStructFieldValue,
+    arg1: Ast.StructFieldValue,
+    arg2: Ast.StructFieldValue,
 ): boolean {
     return (
         eqNames(arg1.field, arg2.field) &&
@@ -362,7 +357,7 @@ function isB(d: A): d is B {
 }
 */
 
-export function isLiteral(ast: A.AstExpression): ast is A.AstLiteral {
+export function isLiteral(ast: Ast.Expression): ast is Ast.Literal {
     return checkLiteral(
         ast,
         () => true,
@@ -371,9 +366,9 @@ export function isLiteral(ast: A.AstExpression): ast is A.AstLiteral {
 }
 
 function checkLiteral<T>(
-    ast: A.AstExpression,
-    t: (node: A.AstLiteral) => T,
-    f: (node: Exclude<A.AstExpression, A.AstLiteral>) => T,
+    ast: Ast.Expression,
+    t: (node: Ast.Literal) => T,
+    f: (node: Exclude<Ast.Expression, Ast.Literal>) => T,
 ): T {
     switch (ast.kind) {
         case "null":
@@ -404,7 +399,7 @@ function checkLiteral<T>(
     }
 }
 
-export const selfId: AstId = {
+export const selfId: Ast.Id = {
     kind: "id",
     text: "self",
     id: 0,

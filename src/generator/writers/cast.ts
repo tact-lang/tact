@@ -15,7 +15,7 @@ export function cast(
         }
         if (!from.optional && to.optional) {
             const type = getType(ctx.ctx, from.name);
-            if (type.kind === "struct") {
+            if (type.kind === "struct" || type.kind === "contract") {
                 return `${ops.typeAsOptional(type.name, ctx)}(${expression})`;
             }
         }

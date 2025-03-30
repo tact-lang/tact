@@ -1,4 +1,4 @@
-import type { AstTypedParameter } from "../../../src/ast/ast";
+import type { TypedParameter as AstTypedParameter } from "../../../src/ast/ast";
 import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { tyToAstType } from "../types";
 import type { Type } from "../types";

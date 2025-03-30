@@ -1,4 +1,4 @@
-import type { AstTypeDecl } from "../../src/ast/ast";
+import type { TypeDecl as AstTypeDecl } from "../../src/ast/ast";
 import { nextId } from "./id";
 
 import * as path from "path";

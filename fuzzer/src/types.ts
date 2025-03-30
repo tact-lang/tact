@@ -1,9 +1,9 @@
 import type {
-    AstPrimitiveTypeDecl,
-    AstType,
-    AstExpression,
-    AstTypeId,
-    AstTypeDecl,
+    PrimitiveTypeDecl as AstPrimitiveTypeDecl,
+    Type as AstType,
+    Expression as AstExpression,
+    TypeId as AstTypeId,
+    TypeDecl as AstTypeDecl,
 } from "../../src/ast/ast";
 import {
     createSample,

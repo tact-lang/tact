@@ -1,5 +1,5 @@
 import type { CompilerContext } from "../context/context";
-import type * as A from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import { isLiteral } from "../ast/ast-helpers";
 import {
     TactConstEvalError,
@@ -21,9 +21,9 @@ import type { SrcInfo } from "../grammar";
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.
 class PartiallyEvaluatedTree extends Error {
-    public tree: A.AstExpression;
+    public tree: Ast.Expression;
 
-    constructor(tree: A.AstExpression) {
+    constructor(tree: Ast.Expression) {
         super();
         this.tree = tree;
     }
@@ -35,11 +35,11 @@ export const getOptimizer = (util: AstUtil) => {
     const optimizer: ExpressionTransformer = new StandardOptimizer(util);
 
     function partiallyEvalUnaryOp(
-        op: A.AstUnaryOperation,
-        operand: A.AstExpression,
+        op: Ast.UnaryOperation,
+        operand: Ast.Expression,
         source: SrcInfo,
         ctx: CompilerContext,
-    ): A.AstExpression {
+    ): Ast.Expression {
         if (operand.kind === "number" && op === "-") {
             // emulating negative integer literals
             return ensureInt(util.makeNumberLiteral(-operand.value, source));
@@ -57,12 +57,12 @@ export const getOptimizer = (util: AstUtil) => {
     }
 
     function partiallyEvalBinaryOp(
-        op: A.AstBinaryOperation,
-        left: A.AstExpression,
-        right: A.AstExpression,
+        op: Ast.BinaryOperation,
+        left: Ast.Expression,
+        right: Ast.Expression,
         source: SrcInfo,
         ctx: CompilerContext,
-    ): A.AstExpression {
+    ): Ast.Expression {
         const leftOperand = partiallyEvalExpression(left, ctx);
 
         if (isLiteral(leftOperand)) {
@@ -126,10 +126,10 @@ export const getOptimizer = (util: AstUtil) => {
 
     // FIXME: Refactor this method in a separate PR because many cases in the switch do the same.
     function partiallyEvalExpression(
-        ast: A.AstExpression,
+        ast: Ast.Expression,
         ctx: CompilerContext,
         interpreterConfig?: InterpreterConfig,
-    ): A.AstExpression {
+    ): Ast.Expression {
         const interpreter = new Interpreter(util, ctx, interpreterConfig);
         switch (ast.kind) {
             case "id":
@@ -212,11 +212,11 @@ export const getOptimizer = (util: AstUtil) => {
 };
 
 export function evalConstantExpression(
-    ast: A.AstExpression,
+    ast: Ast.Expression,
     ctx: CompilerContext,
     util: AstUtil,
     interpreterConfig?: InterpreterConfig,
-): A.AstLiteral {
+): Ast.Literal {
     const interpreter = new Interpreter(util, ctx, interpreterConfig);
     const result = interpreter.interpretExpression(ast);
     return result;

@@ -3,18 +3,18 @@ import { getReturnType } from "./types";
 import type { IDIdx } from "./id";
 import type { GenerativeEntity } from "./generators";
 import type {
-    AstFunctionDef,
-    AstTypedParameter,
-    AstTrait,
-    AstStatement,
-    AstStructDecl,
-    AstFieldDecl,
-    AstReceiver,
-    AstContract,
-    AstConstantDecl,
-    AstConstantDef,
-    AstFunctionDecl,
-    AstMessageDecl,
+    FunctionDef as AstFunctionDef,
+    TypedParameter as AstTypedParameter,
+    Trait as AstTrait,
+    Statement as AstStatement,
+    StructDecl as AstStructDecl,
+    FieldDecl as AstFieldDecl,
+    Receiver as AstReceiver,
+    Contract as AstContract,
+    ConstantDecl as AstConstantDecl,
+    ConstantDef as AstConstantDef,
+    FunctionDecl as AstFunctionDecl,
+    MessageDecl as AstMessageDecl,
 } from "../../src/ast/ast";
 import type { NamedGenerativeEntity } from "./generators/generator";
 

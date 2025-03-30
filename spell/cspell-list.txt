@@ -1,3 +1,4 @@
+Aksakov
 Aliaksandr
 alnum
 Ashimine
@@ -15,8 +16,6 @@ bitstrings
 blockstore
 bocchi
 bounceable
-bounceable
-bounceable
 Brujin
 CCITT
 cheatsheet
@@ -24,6 +23,7 @@ Cheatsheet
 cheatsheets
 Cheatsheets
 cleanall
+CNFT
 codegen
 compilables
 Compilables
@@ -44,12 +44,12 @@ disasm
 divmod
 dnsresolve
 Domínguez
+dstr
 elseifnot
 Eltociear
 Epva
 errno
 Esorat
-extracurrency
 extracurrency
 forall
 formedness
@@ -61,12 +61,12 @@ Georgiy
 getsimpleforwardfee
 gettest
 guarantor
-guarantor
 Héctor
 hehe
 heisenbugs
 idict
 Ikko
+Ilya
 infixl
 infixr
 initof
@@ -104,9 +104,12 @@ masterchain
 Masterchain
 mathrm
 maxint
+memecoin
 Merkle
 minmax
 mintable
+misparse
+misparsed
 mktemp
 multiformats
 nanoton
@@ -114,13 +117,13 @@ nanotons
 Neovim
 nextra
 nobounce
-nobounce
 nocheck
 noexcept
 nonterminal
 Nonterminal
 notcoin
 Novus
+Nowarp
 Offchain
 omelander
 Ovchinnikov
@@ -154,6 +157,7 @@ seti
 shardchains
 shiki
 Shvetc
+skywardboundd
 Stateinit
 statinit
 stdlib
@@ -183,6 +187,7 @@ Toncoin
 Toncoins
 tonstudio
 Topup
+Tradoor
 Trunov
 typechecker
 udict
@@ -190,6 +195,7 @@ uintptr
 uints
 unboc
 uncons
+undiscussed
 uninit
 Uninit
 unixfs

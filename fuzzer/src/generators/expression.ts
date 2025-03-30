@@ -1,20 +1,20 @@
 import type {
-    AstBoolean,
-    AstExpression,
-    AstId,
-    AstNull,
-    AstNumber,
-    // AstOpBinary,
-    AstFieldAccess,
-    AstMethodCall,
-    AstStaticCall,
-    // AstOpUnary,
-    AstSimplifiedString,
-    AstStructFieldInitializer,
-    AstStructInstance,
-    AstString,
+    Boolean as AstBoolean,
+    Expression as AstExpression,
+    Id as AstId,
+    Null as AstNull,
+    Number as AstNumber,
+    // OpBinary as AstOpBinary,
+    FieldAccess as AstFieldAccess,
+    MethodCall as AstMethodCall,
+    StaticCall as AstStaticCall,
+    // OpUnary as AstOpUnary,
+    SimplifiedString as AstSimplifiedString,
+    StructFieldInitializer as AstStructFieldInitializer,
+    StructInstance as AstStructInstance,
+    String as AstString,
 } from "../../../src/ast/ast";
-import type { AstNumberBase } from "../../../src/ast/ast";
+import { NumberBase as AstNumberBase } from "../../../src/ast/ast";
 import JSONbig from "json-bigint";
 import fc from "fast-check";
 
@@ -383,6 +383,7 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
 //         //                  ["==", "!=", "&&", "||"]),
 //     ];
 // }
+// TODO: figure out what does this code does and why it is unused
 
 /**
  * Generates struct field access expressions, e.g., `myStruct.a`.

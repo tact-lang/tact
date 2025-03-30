@@ -1,7 +1,7 @@
 import { CompilerContext } from "../../src/context/context";
 import { createABI } from "../../src/generator/createABI";
 import { writeProgram } from "../../src/generator/writeProgram";
-import type { AstModule } from "../../src/ast/ast";
+import type { Module as AstModule } from "../../src/ast/ast";
 import { openContext } from "../../src/context/store";
 import { resolveAllocations } from "../../src/storage/resolveAllocation";
 import { featureEnable } from "../../src/config/features";
@@ -11,7 +11,7 @@ import { resolveStatements } from "../../src/types/resolveStatements";
 import { evalComptimeExpressions } from "../../src/types/evalComptimeExpressions";
 import { resolveErrors } from "../../src/types/resolveErrors";
 import type { FactoryAst } from "../../src/ast/ast-helpers";
-import { getParser } from "../../src/grammar/grammar";
+import { getParser } from "../../src/grammar";
 
 export function createContext(
     program: AstModule,
@@ -22,7 +22,7 @@ export function createContext(
         ctx,
         /*sources=*/ [],
         /*funcSources=*/ [],
-        getParser(factoryAst, "new"),
+        getParser(factoryAst),
         [program],
     );
     return ctx;

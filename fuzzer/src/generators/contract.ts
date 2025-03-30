@@ -1,8 +1,8 @@
 import type {
-    AstContract,
-    AstConstantDef,
-    AstFunctionDef,
-    AstFieldDecl,
+    Contract as AstContract,
+    ConstantDef as AstConstantDef,
+    FunctionDef as AstFunctionDef,
+    FieldDecl as AstFieldDecl,
 } from "../../../src/ast/ast";
 import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { FunctionDef } from "./function";

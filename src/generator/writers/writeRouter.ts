@@ -1,16 +1,17 @@
 import { beginCell } from "@ton/core";
 import { getType } from "../../types/resolveDescriptors";
-import type {
-    FallbackReceiverSelector,
-    ReceiverDescription,
-    TypeDescription,
+import {
+    showValue,
+    type FallbackReceiverSelector,
+    type ReceiverDescription,
+    type TypeDescription,
 } from "../../types/types";
 import type { WriterContext } from "../Writer";
 import { funcIdOf } from "./id";
 import { ops } from "./ops";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
-import type { AstNumber, AstReceiver } from "../../ast/ast";
+import type * as Ast from "../../ast/ast";
 import {
     throwCompilationError,
     throwInternal,
@@ -22,6 +23,9 @@ import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
 import type { Effect } from "../../types/effects";
 import { enabledAlwaysSaveContractData } from "../../config/features";
+import { getAstFactory, idText } from "../../ast/ast-helpers";
+import { evalConstantExpression } from "../../optimizer/constEval";
+import { getAstUtil } from "../../ast/util";
 
 type ContractReceivers = {
     readonly internal: Receivers;
@@ -43,7 +47,7 @@ type Receivers = {
 type FallbackReceiver = {
     selector: FallbackReceiverSelector;
     effects: ReadonlySet<Effect>;
-    ast: AstReceiver;
+    ast: Ast.Receiver;
 };
 
 type BouncedReceivers = {
@@ -88,18 +92,28 @@ export function writeNonBouncedRouter(
         });
     };
 
-    // - Special case: only binary receivers
+    // - Special case: only binary receivers and possibly
+    //    - fallback receiver not reading its input message, or
+    //    - empty fallback receiver, or
+    //    - fallback receiver of the form `receive(msg: Slice) { throw(CODE) }`
+    //      where CODE is a statically known exit code expression
     if (
         typeof receivers.empty === "undefined" &&
         receivers.comment.length === 0 &&
         typeof receivers.commentFallback === "undefined" &&
-        typeof receivers.fallback === "undefined"
+        fallbackReceiverKind(receivers.fallback, wCtx).kind !== "unknown"
     ) {
-        wCtx.append("var op = in_msg~load_opcode();");
+        wCtx.append(`var op = in_msg~load_opcode_${receivers.kind}();`);
 
         writeBinaryReceivers(true);
 
-        wCtx.append(`throw(${contractErrors.invalidMessage.id});`);
+        if (typeof receivers.fallback !== "undefined") {
+            writeFallbackReceiver(receivers.fallback, contract, "in_msg", wCtx);
+        } else {
+            // "default" fallback receiver
+            wCtx.append(`;; Throw if not handled`);
+            wCtx.append(`throw(${contractErrors.invalidMessage.id});`);
+        }
         return;
     }
 
@@ -288,6 +302,149 @@ function writeCommentReceivers(
     }
 }
 
+// this opcode reader utility only handles the cases of only binary receivers + different special cases
+// for the fallback receiver (for instance, there is neither empty receiver nor text receivers)
+export function writeLoadOpcode(receivers: Receivers, wCtx: WriterContext) {
+    const loadOpcodeSignature = `(slice, int) ~load_opcode_${receivers.kind}(slice s)`;
+
+    // assumes the boolean flag is already at the top of the stack
+    const throwIfNot = (exitCode: number): string => {
+        if (exitCode < 2 ** 11) return `${exitCode} THROWIFNOT`;
+        else return `${exitCode} PUSHINT SWAP THROWANYIFNOT`;
+    };
+
+    const fbRcvKind = fallbackReceiverKind(receivers.fallback, wCtx);
+
+    switch (fbRcvKind.kind) {
+        case "unknown":
+            return;
+        case "no-fallback":
+        case "statically-known-single-throw": {
+            // no fallback receiver or fallback with throw
+            const exitCode =
+                fbRcvKind.kind === "no-fallback"
+                    ? contractErrors.invalidMessage.id
+                    : fbRcvKind.exitCode;
+            wCtx.append(
+                ";; message opcode reader utility: only binary receivers",
+            );
+            wCtx.append(
+                `;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code`,
+            );
+            wCtx.append(
+                `${loadOpcodeSignature} asm( -> 1 0) "32 LDUQ ${throwIfNot(exitCode)}";`,
+            );
+            return;
+        }
+        case "empty-body": {
+            // fallback receiver with empty body
+            wCtx.append(
+                ";; message opcode reader utility: binary receivers and empty fallback receiver",
+            );
+            wCtx.append(
+                ";; Returns 32 bit message opcode, or returns immediately if the message is shorter than 32 bits",
+            );
+            wCtx.append(
+                `${loadOpcodeSignature} asm( -> 1 0) "32 LDUQ IFNOTRET";`,
+            );
+            return;
+        }
+        case "wildcard-parameter": {
+            // fallback receiver with non-empty body and wildcard parameter
+            wCtx.append(
+                ";; message opcode reader utility: binary receivers and non-empty fallback receiver that does not read the message",
+            );
+            wCtx.append(
+                ";; Returns 32 bit message opcode, or -1 if the message is shorter than 32 bits",
+            );
+            wCtx.append(
+                `${loadOpcodeSignature} asm "32 LDUQ NEGATE 2 0 BLKPUSH DROPX ROLLX";`,
+            );
+            /*
+            32 LDUQ
+            1. x s′ −1
+            2. s 0
+
+            NEGATE 2 0 BLKPUSH
+            1. x s′ 1 1 1
+            2. s 0  0 0
+
+            DROPX
+            1. x s′ 1
+            2. s 0  0
+
+            ROLLX
+            1. s′ x
+            2. s  0
+            */
+            return;
+        }
+    }
+}
+
+type FallbackReceiverKind =
+    | { kind: "unknown" }
+    | { kind: "no-fallback" }
+    | { kind: "empty-body" }
+    | { kind: "wildcard-parameter" }
+    | { kind: "statically-known-single-throw"; exitCode: number };
+
+function fallbackReceiverKind(
+    fallback: FallbackReceiver | undefined,
+    wCtx: WriterContext,
+): FallbackReceiverKind {
+    // Note the order of the `if` statements is very important
+    // For instance, `receive(foo: Slice) { } and
+    // `receive(_: Slice) { throw(0xFFFF) }` have higher priority
+    // compared to a fallback receiver that does not read its message, i.e.
+    // `receive(_: Slice) { /* body that is not `throw()` and not empty */}`
+
+    if (typeof fallback === "undefined") {
+        return { kind: "no-fallback" };
+    }
+    if (fallback.ast.statements.length === 0) {
+        return { kind: "empty-body" };
+    }
+    // fallback receiver with single statement `throw(CODE)` in its body
+    const [fbStmt] = fallback.ast.statements;
+    if (typeof fbStmt !== "undefined") {
+        if (
+            fbStmt.kind === "statement_expression" &&
+            fbStmt.expression.kind === "static_call" &&
+            idText(fbStmt.expression.function) === "throw"
+        ) {
+            const [throwArg] = fbStmt.expression.args;
+            const util = getAstUtil(getAstFactory());
+            if (typeof throwArg !== "undefined") {
+                const constEvalResult = evalConstantExpression(
+                    throwArg,
+                    wCtx.ctx,
+                    util,
+                );
+                if (constEvalResult.kind !== "number") {
+                    throwInternalCompilerError(
+                        `"throw" can only have a number as an argument, but it has throws ${showValue(constEvalResult)}`,
+                        throwArg.loc,
+                    );
+                }
+                return {
+                    kind: "statically-known-single-throw",
+                    exitCode: Number(constEvalResult.value),
+                };
+            } else {
+                throwInternalCompilerError(
+                    `"throw" must have an argument`,
+                    fbStmt.expression.loc,
+                );
+            }
+        }
+    }
+    if (fallback.selector.name.kind === "wildcard") {
+        return { kind: "wildcard-parameter" };
+    }
+    return { kind: "unknown" };
+}
+
 export function groupContractReceivers(
     contract: TypeDescription,
 ): ContractReceivers {
@@ -453,8 +610,21 @@ function writeFallbackReceiver(
     inMsg: string,
     wCtx: WriterContext,
 ): void {
-    wCtx.append(`slice ${funcIdOf(fbRcv.selector.name)} = ${inMsg};`);
-    writeReceiverBody(fbRcv, contract, wCtx);
+    if (fbRcv.selector.name.kind === "id" && fbRcv.ast.statements.length != 0) {
+        wCtx.append(`slice ${funcIdOf(fbRcv.selector.name)} = ${inMsg};`);
+    }
+    for (const stmt of fbRcv.ast.statements) {
+        writeRcvStatement(stmt, fbRcv.effects, contract, wCtx);
+    }
+    wCtx.append(
+        storeContractVariablesConditionally(fbRcv.effects, contract, wCtx),
+    );
+    if (
+        fbRcv.selector.kind !== "internal-fallback" &&
+        fbRcv.selector.kind !== "external-fallback"
+    ) {
+        wCtx.append("return ();");
+    }
 }
 
 function writeBouncedReceiver(
@@ -499,19 +669,48 @@ function writeReceiverBody(
     wCtx: WriterContext,
 ): void {
     for (const stmt of rcv.ast.statements) {
-        writeStatement(stmt, null, null, wCtx);
+        writeRcvStatement(stmt, rcv.effects, contract, wCtx);
     }
-    if (
-        enabledAlwaysSaveContractData(wCtx.ctx) ||
-        contract.init?.kind !== "contract-params" ||
-        rcv.effects.has("contractStorageWrite")
-    ) {
-        writeStoreContractVariables(contract, wCtx);
-    }
+    wCtx.append(
+        storeContractVariablesConditionally(rcv.effects, contract, wCtx),
+    );
     wCtx.append("return ();");
 }
 
-function messageOpcode(n: AstNumber): string {
+function storeContractVariablesConditionally(
+    rcvEffects: ReadonlySet<Effect>,
+    contract: TypeDescription,
+    wCtx: WriterContext,
+): string {
+    // we persist the contract state in the following three cases:
+    // - the user explicitly asks for it using tact.config.json
+    // - lazy initialization is used (in that case the lazy deployment bit is set and the contract storage needs to be updated)
+    // - the receiver has a side effect that writes to the contract storage
+    return enabledAlwaysSaveContractData(wCtx.ctx) ||
+        contract.init?.kind !== "contract-params" ||
+        rcvEffects.has("contractStorageWrite")
+        ? writeStoreContractVariables(contract, wCtx)
+        : "";
+}
+
+function writeRcvStatement(
+    stmt: Ast.Statement,
+    rcvEffects: ReadonlySet<Effect>,
+    contract: TypeDescription,
+    wCtx: WriterContext,
+): void {
+    // XXX: if this is the last return statement in the receiver, the user will get contract storage updated twice,
+    // wasting gas, but this is a rare case and we don't want to complicate the code for this,
+    // nobody should write code like this, as it is not idiomatic
+    const returns = storeContractVariablesConditionally(
+        rcvEffects,
+        contract,
+        wCtx,
+    );
+    writeStatement(stmt, null, returns, wCtx);
+}
+
+function messageOpcode(n: Ast.Number): string {
     // FunC does not support binary and octal numerals
     switch (n.base) {
         case 10:
@@ -526,16 +725,13 @@ function messageOpcode(n: AstNumber): string {
 function writeStoreContractVariables(
     contract: TypeDescription,
     wCtx: WriterContext,
-): void {
+): string {
     const contractVariables = resolveFuncTypeFromAbiUnpack(
         "$self",
         getAllocation(wCtx.ctx, contract.name).ops,
         wCtx,
     );
-    wCtx.append(`;; Persist state`);
-    wCtx.append(
-        `${ops.contractStore(contract.name, wCtx)}(${contractVariables});`,
-    );
+    return `${ops.contractStore(contract.name, wCtx)}(${contractVariables});`;
 }
 
 export function commentPseudoOpcode(

@@ -1,40 +1,41 @@
 import type {
-    AstConstantDecl,
-    AstConstantDef,
-    AstImport,
-    AstNativeFunctionDecl,
-    AstModule,
-    AstBouncedMessageType,
-    AstMapType,
-    AstReceiver,
-    AstContractInit,
-    AstStatementRepeat,
-    AstStatementUntil,
-    AstStatementWhile,
-    AstStatementForEach,
-    AstStatementTry,
-    AstStructFieldInitializer,
-    AstStatementCondition,
-    AstStatementAugmentedAssign,
-    AstStatementAssign,
-    AstStatementExpression,
-    AstStatementReturn,
-    AstStatementLet,
-    AstFunctionDef,
-    AstFunctionDecl,
-    AstType,
-    AstStatement,
-    AstExpression,
-    AstFieldDecl,
-    AstPrimitiveTypeDecl,
-    AstStructDecl,
-    AstContract,
-    AstTrait,
-    AstMessageDecl,
+    Id as AstId,
+    ConstantDecl as AstConstantDecl,
+    ConstantDef as AstConstantDef,
+    Import as AstImport,
+    NativeFunctionDecl as AstNativeFunctionDecl,
+    Module as AstModule,
+    BouncedMessageType as AstBouncedMessageType,
+    MapType as AstMapType,
+    Receiver as AstReceiver,
+    ContractInit as AstContractInit,
+    StatementRepeat as AstStatementRepeat,
+    StatementUntil as AstStatementUntil,
+    StatementWhile as AstStatementWhile,
+    StatementForEach as AstStatementForEach,
+    StatementTry as AstStatementTry,
+    StructFieldInitializer as AstStructFieldInitializer,
+    StatementCondition as AstStatementCondition,
+    StatementAugmentedAssign as AstStatementAugmentedAssign,
+    StatementAssign as AstStatementAssign,
+    StatementExpression as AstStatementExpression,
+    StatementReturn as AstStatementReturn,
+    StatementLet as AstStatementLet,
+    FunctionDef as AstFunctionDef,
+    FunctionDecl as AstFunctionDecl,
+    Type as AstType,
+    Statement as AstStatement,
+    Expression as AstExpression,
+    FieldDecl as AstFieldDecl,
+    PrimitiveTypeDecl as AstPrimitiveTypeDecl,
+    StructDecl as AstStructDecl,
+    Contract as AstContract,
+    Trait as AstTrait,
+    MessageDecl as AstMessageDecl,
     AstNode,
-    AstTraitDeclaration,
-    AstModuleItem,
-    AstContractDeclaration,
+    TraitDeclaration as AstTraitDeclaration,
+    ModuleItem as AstModuleItem,
+    ContractDeclaration as AstContractDeclaration,
 } from "../../src/ast/ast";
 
 /**
@@ -392,7 +393,10 @@ class PrettyPrinter {
 
     public ppAstFunction(func: AstFunctionDecl | AstFunctionDef): string {
         const argsFormatted = func.params
-            .map((arg) => `${arg.name.text}: ${this.ppAstType(arg.type)}`)
+            .map(
+                (arg) =>
+                    `${(arg.name as AstId).text}: ${this.ppAstType(arg.type)}`,
+            ) //TODO: wildcard
             .join(", ");
         const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
@@ -422,12 +426,12 @@ class PrettyPrinter {
 
     ppAstReceiveHeader(receive: AstReceiver): string {
         if (receive.selector.kind === "bounce")
-            return `bounced(${receive.selector.param.name.text}: ${this.ppAstType(receive.selector.param.type)})`;
+            return `bounced(${(receive.selector.param.name as AstId).text}: ${this.ppAstType(receive.selector.param.type)})`; //TODO: wildcard
         const prefix =
             receive.selector.kind === "internal" ? "receive" : "external";
         const suffix =
             receive.selector.subKind.kind === "simple"
-                ? `(${receive.selector.subKind.param.name.text}: ${this.ppAstType(receive.selector.subKind.param.type)})`
+                ? `(${(receive.selector.subKind.param.name as AstId).text}: ${this.ppAstType(receive.selector.subKind.param.type)})` //TODO: wildcard
                 : receive.selector.subKind.kind === "fallback"
                   ? "()"
                   : `("${receive.selector.subKind.comment.value}")`;
@@ -436,7 +440,10 @@ class PrettyPrinter {
 
     ppAstNativeFunction(func: AstNativeFunctionDecl): string {
         const argsFormatted = func.params
-            .map((arg) => `${arg.name.text}: ${this.ppAstType(arg.type)}`)
+            .map(
+                (arg) =>
+                    `${(arg.name as AstId).text}: ${this.ppAstType(arg.type)}`,
+            ) //TODO: wildcard
             .join(", ");
         const returnType = func.return
             ? `: ${this.ppAstType(func.return)}`
@@ -448,7 +455,10 @@ class PrettyPrinter {
 
     ppAstInitFunction(initFunc: AstContractInit): string {
         const argsFormatted = initFunc.params
-            .map((arg) => `${arg.name.text}: ${this.ppAstType(arg.type)}`)
+            .map(
+                (arg) =>
+                    `${(arg.name as AstId).text}: ${this.ppAstType(arg.type)}`,
+            ) //TODO: wildcard
             .join(", ");
 
         this.increaseIndent();
@@ -509,7 +519,7 @@ class PrettyPrinter {
             statement.type === undefined
                 ? ""
                 : `: ${this.ppAstType(statement.type)}`;
-        return `${this.indent()}let ${statement.name.text}${tyAnnotation} = ${expression};`;
+        return `${this.indent()}let ${(statement.name as AstId).text}${tyAnnotation} = ${expression};`; //TODO: wildcard
     }
 
     ppAstStatementReturn(statement: AstStatementReturn): string {
@@ -561,7 +571,7 @@ class PrettyPrinter {
     }
 
     ppAstStatementForEach(statement: AstStatementForEach): string {
-        const header = `foreach (${statement.keyName.text}, ${statement.valueName.text} in ${this.ppAstExpression(statement.map)})`;
+        const header = `foreach (${(statement.keyName as AstId).text}, ${(statement.valueName as AstId).text} in ${this.ppAstExpression(statement.map)})`; //TODO: wildcard
         const body = this.ppStatementBlock(statement.statements);
         return `${this.indent()}${header} ${body}`;
     }
@@ -570,7 +580,7 @@ class PrettyPrinter {
         const tryBody = this.ppStatementBlock(statement.statements);
         const tryPrefix = `${this.indent()}try ${tryBody}`;
         const catchSuffix = statement.catchBlock
-            ? ` catch (${statement.catchBlock.catchName.text}) ${this.ppStatementBlock(statement.catchBlock.catchStatements)}`
+            ? ` catch (${(statement.catchBlock.catchName as AstId).text}) ${this.ppStatementBlock(statement.catchBlock.catchStatements)}` //TODO: wildcard
             : "";
         return tryPrefix + catchSuffix;
     }

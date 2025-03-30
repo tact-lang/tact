@@ -11,7 +11,7 @@ Tact 中的消息通常使用内置[Struct](/zh-cn/book/structs-and-messages#str
 | :------- | :--------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
 | `bounce` | [`Bool{:tact}`][p]     | 如果设置为`true`（默认），当接收合约不存在或无法处理消息时，消息会退回给发送者。                                                                                         |
 | `to`     | [`Address{:tact}`][p]  | TON 区块链中的内部接收器 [`Address{:tact}`][p]。                                                                                               |
-| `value`  | [`Int{:tact}`][int]    | 消息中要发送的[nanoToncoins][nano]的金额。 此值通常用于支付[转发费用][fwdfee]，除非使用了可选标志[`SendPayGasSeparately{:tact}`](/zh-cn/book/message-mode#optional-flags)。 |
+| `value`  | [`Int{:tact}`][int]    | 消息中要发送的[nanoToncoins][nano]的金额。 此值通常用于支付[转发费用][fwdfee]，除非使用了可选标志[`SendPayFwdFeesSeparately{:tact}`](/zh-cn/book/message-mode#optional-flags)。 |
 | `mode`   | [`Int{:tact}`][int]    | 一个 8 位值，用于配置发送消息的方式，默认值为 $0$。 参见：[消息`模式`](/zh-cn/book/message-mode)。 见：[消息`mode`](/zh-cn/book/message-mode).                                    |
 | `body`   | [`Cell?{:tact}`][cell] | [可选][opt]消息正文作为[`Cell{:tact}`][cell]                                                                                                |
 | `code`   | [`Cell?{:tact}`][cell] | [可选][opt] 合约的初始代码（编译后的字节码）                                                                                                          |
@@ -96,7 +96,7 @@ send(SendParameters{
 
 ## 外发消息处理 {#outbound-message-processing}
 
-TON 区块链上的每笔交易都由 [多个阶段][phases] 组成。 发送消息是在[计算阶段][compute]进行评估，但是在该阶段**不是**发送。 相反，它们将按照出现顺序排入[操作阶段][phases]，在[计算阶段][compute]中列出的所有操作，如外向消息或[储备请求](/zh-cn/ref/core-advanced#nativereserve)，都会在此阶段执行。
+TON 区块链上的每笔交易都由 [多个阶段][phases] 组成。 发送消息是在[计算阶段][compute]进行评估，但是在该阶段**不是**发送。 相反，它们将按照出现顺序排入[操作阶段][phases]，在[计算阶段][compute]中列出的所有操作，如外向消息或[储备请求](/zh-cn/ref/core-contextstate#nativereserve)，都会在此阶段执行。
 
 由于所有值都是在[计算阶段][compute]中计算的，所有费用都是在计算结束前计算的，而且在[操作阶段][phases]中出现异常时不会恢复交易，因此向外发送消息可能会因[操作费](https://docs.ton.org/develop/howto/fees-low-level#action-fee) 或[转发费][fwdfee]不足而失败，不会出现跳转。
 
@@ -110,8 +110,8 @@ contract FailureIsNothingButAnotherStep {
         // 1st outbound message evaluated and queued (but not sent yet)
         send(SendParameters{
             to: sender(),
-            value: ton("0.042"), // plus forward fee due to SendPayGasSeparately
-            mode: SendIgnoreErrors | SendPayGasSeparately,
+            value: ton("0.042"), // plus forward fee due to SendPayFwdFeesSeparately
+            mode: SendIgnoreErrors | SendPayFwdFeesSeparately,
         });
 
         // 2nd outbound message evaluated and queued (but not sent yet, and never will be!)
@@ -136,12 +136,12 @@ contract FailureIsNothingButAnotherStep {
 
   有关所有消息发送功能的更多消息，请参阅参考资料：
 
-- [`send(){:tact}`](/zh-cn/ref/core-common#send)
-- [`emit(){:tact}`](/zh-cn/ref/core-common#emit)
+- [`send(){:tact}`](/zh-cn/ref/core-send#send)
+- [`emit(){:tact}`](/zh-cn/ref/core-send#emit)
 - [`self.notify(){:tact}`](/zh-cn/ref/core-base#self-notify)
 - [`self.reply(){:tact}`](/zh-cn/ref/core-base#self-reply)
 - [`self.forward(){:tact}`](/zh-cn/ref/core-base#self-forward)
-- [`nativeSendMessage(){:tact}`](/zh-cn/ref/core-advanced#nativesendmessage)
+- [`nativeSendMessage(){:tact}`](/zh-cn/ref/core-send#nativesendmessage)
 
 :::
 

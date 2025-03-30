@@ -219,18 +219,23 @@ struct BradBit {
 
 All runtime calculations with numbers are performed at 257 bits, so [overflows](https://en.wikipedia.org/wiki/Integer_overflow) are quite rare. Nevertheless, if any math operation overflows, an exception will be thrown, and the transaction will fail. You could say that Tact's math is safe by default.
 
-Note that there is no problem with mixing variables of [different state sizes](#serialization) in the same calculation. At runtime, they are all the same type no matter what — $257$-bit signed integers, so overflows won't occur at this stage.
+Note that there is no problem with mixing variables of [different state sizes](#serialization) in the same calculation. At runtime, they are all the same type no matter what — 257-bit signed integers, so overflows won't occur at this stage.
 
 However, this can still lead to **errors** in the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) of the transaction. Consider the following example:
 
 ```tact
-import "@stdlib/deploy";
-
-contract ComputeErrorsOhNo with Deployable {
+contract ComputeErrorsOhNo {
     oneByte: Int as uint8; // persistent state variable, max value is 255
 
     init() {
         self.oneByte = 255; // initial value is 255, everything fits
+    }
+
+    // Empty receiver for the deployment
+    receive() {
+        // Forward the remaining value in the
+        // incoming message back to the sender
+        cashback(sender());
     }
 
     receive("lets break it") {

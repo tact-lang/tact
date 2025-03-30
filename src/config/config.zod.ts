@@ -9,6 +9,7 @@ export const safetyOptionsSchema: z.ZodType<C.SafetyOptions> = z.object({
 export const optimizationOptionsSchema: z.ZodType<C.OptimizationOptions> =
     z.object({
         alwaysSaveContractData: z.boolean().optional(),
+        internalExternalReceiversOutsideMethodsMap: z.boolean().optional(),
     });
 
 /**
@@ -42,10 +43,6 @@ export const optionsSchema: z.ZodType<C.Options> = z.object({
      * Read more: https://docs.tact-lang.org/book/contracts#interfaces
      */
     interfacesGetter: z.boolean().optional(),
-    /**
-     * If set to "new", uses new parser. If set to "old", uses legacy parser. Default is "old".
-     */
-    parser: z.union([z.literal("new"), z.literal("old")]).optional(),
     /**
      * Experimental options that might be removed in the future. Use with caution!
      */

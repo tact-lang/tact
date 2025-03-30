@@ -1,5 +1,5 @@
-import type * as A from "../ast/ast";
-import { eqNames, idText, isWildcard } from "../ast/ast-helpers";
+import type * as Ast from "../ast/ast";
+import { eqNames, idText } from "../ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
@@ -25,11 +25,11 @@ import { StructFunctions } from "../abi/struct";
 import { prettyPrint } from "../ast/ast-printer";
 
 const store = createContextStore<{
-    ast: A.AstExpression;
+    ast: Ast.Expression;
     description: TypeRef;
 }>();
 
-export function getExpType(ctx: CompilerContext, exp: A.AstExpression) {
+export function getExpType(ctx: CompilerContext, exp: Ast.Expression) {
     const t = store.get(ctx, exp.id);
     if (!t) {
         throwInternalCompilerError(`Expression ${exp.id} not found`);
@@ -39,7 +39,7 @@ export function getExpType(ctx: CompilerContext, exp: A.AstExpression) {
 
 function registerExpType(
     ctx: CompilerContext,
-    exp: A.AstExpression,
+    exp: Ast.Expression,
     description: TypeRef,
 ): CompilerContext {
     const ex = store.get(ctx, exp.id);
@@ -56,7 +56,7 @@ function registerExpType(
 }
 
 function resolveBooleanLiteral(
-    exp: A.AstBoolean,
+    exp: Ast.Boolean,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -68,7 +68,7 @@ function resolveBooleanLiteral(
 }
 
 function resolveIntLiteral(
-    exp: A.AstNumber,
+    exp: Ast.Number,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -80,7 +80,7 @@ function resolveIntLiteral(
 }
 
 function resolveNullLiteral(
-    exp: A.AstNull,
+    exp: Ast.Null,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -88,7 +88,7 @@ function resolveNullLiteral(
 }
 
 function resolveAddressLiteral(
-    exp: A.AstAddress,
+    exp: Ast.Address,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -100,7 +100,7 @@ function resolveAddressLiteral(
 }
 
 function resolveCellLiteral(
-    exp: A.AstCell,
+    exp: Ast.Cell,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -112,7 +112,7 @@ function resolveCellLiteral(
 }
 
 function resolveSliceLiteral(
-    exp: A.AstSlice,
+    exp: Ast.Slice,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -124,7 +124,7 @@ function resolveSliceLiteral(
 }
 
 function resolveStringLiteral(
-    exp: A.AstString | A.AstSimplifiedString,
+    exp: Ast.String | Ast.SimplifiedString,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -136,7 +136,7 @@ function resolveStringLiteral(
 }
 
 function resolveStructNew(
-    exp: A.AstStructInstance | A.AstStructValue,
+    exp: Ast.StructInstance | Ast.StructValue,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -207,7 +207,7 @@ function resolveStructNew(
 }
 
 function resolveBinaryOp(
-    exp: A.AstOpBinary,
+    exp: Ast.OpBinary,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -352,7 +352,7 @@ function isEqualityType(ctx: CompilerContext, ty: TypeRef): boolean {
 }
 
 function resolveUnaryOp(
-    exp: A.AstOpUnary,
+    exp: Ast.OpUnary,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -412,7 +412,7 @@ function resolveUnaryOp(
 }
 
 function resolveFieldAccess(
-    exp: A.AstFieldAccess,
+    exp: Ast.FieldAccess,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -504,21 +504,23 @@ function resolveFieldAccess(
 }
 
 function checkParameterType(
-    expression: A.AstExpression,
+    expression: Ast.Expression,
     parameter: FunctionParameter,
     ctx: CompilerContext,
 ) {
     const t = getExpType(ctx, expression);
     if (!isAssignable(t, parameter.type)) {
+        // FIXME: this is non-descriptive of parameter name
+        const name = parameter.name.kind === "id" ? parameter.name : "_";
         throwCompilationError(
-            `Cannot pass an expression of type "${printTypeRef(t)}" to the parameter ${idTextErr(parameter.name)} of type "${printTypeRef(parameter.type)}"`,
+            `Cannot pass an expression of type "${printTypeRef(t)}" to the parameter ${idTextErr(name)} of type "${printTypeRef(parameter.type)}"`,
             expression.loc,
         );
     }
 }
 
 function resolveStaticCall(
-    exp: A.AstStaticCall,
+    exp: Ast.StaticCall,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -586,7 +588,7 @@ function resolveStaticCall(
 }
 
 function resolveCall(
-    exp: A.AstMethodCall,
+    exp: Ast.MethodCall,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -724,7 +726,7 @@ function resolveCall(
 }
 
 function resolveInitOf(
-    ast: A.AstInitOf,
+    ast: Ast.InitOf,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -767,10 +769,7 @@ function resolveInitOf(
     });
 }
 
-function resolveCodeOf(
-    ast: A.AstCodeOf,
-    ctx: CompilerContext,
-): CompilerContext {
+function resolveCodeOf(ast: Ast.CodeOf, ctx: CompilerContext): CompilerContext {
     // Resolve type
     const type = getType(ctx, ast.contract);
     if (type.kind !== "contract") {
@@ -789,7 +788,7 @@ function resolveCodeOf(
 }
 
 function resolveConditional(
-    ast: A.AstConditional,
+    ast: Ast.Conditional,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -829,7 +828,7 @@ function resolveConditional(
 }
 
 export function resolveExpression(
-    exp: A.AstExpression,
+    exp: Ast.Expression,
     sctx: StatementContext,
     ctx: CompilerContext,
 ) {
@@ -877,13 +876,6 @@ export function resolveExpression(
             const v = sctx.vars.get(exp.text);
             if (!v) {
                 if (!hasStaticConstant(ctx, exp.text)) {
-                    if (isWildcard(exp)) {
-                        throwCompilationError(
-                            "Wildcard variable name '_' cannot be accessed",
-                            exp.loc,
-                        );
-                    }
-
                     // Handle static struct method calls
                     try {
                         const t = getType(ctx, exp.text);

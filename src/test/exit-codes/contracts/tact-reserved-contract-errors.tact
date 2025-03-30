@@ -1,12 +1,16 @@
 import "@stdlib/ownable";
 import "@stdlib/dns";
+import "@stdlib/stoppable";
 import "./tact-reserved-contract-errors";
 
 message(1478) SpanishInquisition {}
 
-contract ReservedContractErrorsTester with Ownable {
+contract ReservedContractErrorsTester with Ownable, Stoppable {
     /// To make Ownable work
     owner: Address;
+    stopped: Bool = false;
+
+    const masterchainAddress: Address = newAddress(-1, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873);
 
     /// Setups address of this contract to be its owner
     init() { self.owner = myAddress() }
@@ -33,6 +37,12 @@ contract ReservedContractErrorsTester with Ownable {
     /// Exit code 132
     receive("132") {
         self.requireOwner();
+    }
+
+    /// Exit code 133
+    receive("133") {
+        self.stopped = true;
+        self.requireNotStopped();
     }
 
     /// Exit code 134
@@ -197,5 +207,9 @@ contract ReservedContractErrorsTester with Ownable {
         // As we got here, everything above caused the target exit code,
         // so let's throw it explicitly now for the tests on Blueprint's side
         throw(targetCode);
+    }
+
+    receive("138") {
+        forceBasechain(self.masterchainAddress);
     }
 }

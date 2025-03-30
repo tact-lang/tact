@@ -5,7 +5,6 @@ import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { getAllTypes } from "../types/resolveDescriptors";
 import { getAllErrors } from "../types/resolveErrors";
-import { idText } from "../ast/ast-helpers";
 
 export function createABI(ctx: CompilerContext, name: string): ContractABI {
     const allTypes = getAllTypes(ctx);
@@ -125,7 +124,8 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                 name: f.name,
                 methodId: f.methodId,
                 arguments: f.params.map((v) => ({
-                    name: idText(v.name),
+                    // FIXME: wildcards in ABI?
+                    name: v.name.kind === "id" ? v.name.text : "_",
                     type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
                 })),
                 returnType:

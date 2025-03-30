@@ -1,4 +1,4 @@
-import type { AstModule } from "../../../src/ast/ast";
+import type { Module as AstModule } from "../../../src/ast/ast";
 import {
     createSamplesArray,
     createSample,

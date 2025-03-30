@@ -1,4 +1,4 @@
-import type * as A from "../../ast/ast";
+import type * as Ast from "../../ast/ast";
 import type { AstUtil } from "../../ast/util";
 import { getAstUtil } from "../../ast/util";
 import { getOptimizer } from "../constEval";
@@ -7,7 +7,6 @@ import type { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
 import { evalBinaryOp, evalUnaryOp } from "../interpreter";
 import { getParser } from "../../grammar";
-import { defaultParser } from "../../grammar/grammar";
 import { throwInternalCompilerError } from "../../error/errors";
 import type { FactoryAst } from "../../ast/ast-helpers";
 import { eqExpressions, getAstFactory, isLiteral } from "../../ast/ast-helpers";
@@ -314,7 +313,7 @@ const booleanExpressions = [
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
         const ast = getAstFactory();
-        const { parseExpression } = getParser(ast, defaultParser);
+        const { parseExpression } = getParser(ast);
         const util = getAstUtil(ast);
         const { partiallyEvalExpression } = getOptimizer(util);
         const originalValue = partiallyEvalExpression(
@@ -334,7 +333,7 @@ function testExpressionWithOptimizer(
 ) {
     it(`should simplify ${original} to ${simplified}`, () => {
         const ast = getAstFactory();
-        const { parseExpression } = getParser(ast, defaultParser);
+        const { parseExpression } = getParser(ast);
         const originalValue = optimizer.applyRules(
             dummyEval(parseExpression(original), ast),
         );
@@ -350,12 +349,12 @@ function testExpressionWithOptimizer(
 // expressions. So, when comparing for equality of expressions, we also need to simplify
 // constant expressions.
 function dummyEval(
-    ast: A.AstExpression,
+    ast: Ast.Expression,
     astFactory: FactoryAst,
-): A.AstExpression {
+): Ast.Expression {
     const cloneNode = astFactory.cloneNode;
     const util = getAstUtil(astFactory);
-    const recurse = (ast: A.AstExpression): A.AstExpression => {
+    const recurse = (ast: Ast.Expression): Ast.Expression => {
         switch (ast.kind) {
             case "null":
                 return ast;
@@ -378,7 +377,7 @@ function dummyEval(
             case "struct_value":
                 return ast; // No need to simplify: fields already simplified
             case "method_call": {
-                const copy: A.AstMethodCall = {
+                const copy: Ast.MethodCall = {
                     ...ast,
                     args: ast.args.map(recurse),
                     self: recurse(ast.self),
@@ -386,20 +385,20 @@ function dummyEval(
                 return cloneNode(copy);
             }
             case "init_of": {
-                const copy: A.AstInitOf = {
+                const copy: Ast.InitOf = {
                     ...ast,
                     args: ast.args.map(recurse),
                 };
                 return cloneNode(copy);
             }
             case "code_of": {
-                const copy: A.AstCodeOf = {
+                const copy: Ast.CodeOf = {
                     ...ast,
                 };
                 return cloneNode(copy);
             }
             case "op_unary": {
-                const copy: A.AstOpUnary = {
+                const copy: Ast.OpUnary = {
                     ...ast,
                     operand: recurse(ast.operand),
                 };
@@ -410,7 +409,7 @@ function dummyEval(
                 return newNode;
             }
             case "op_binary": {
-                const copy: A.AstOpBinary = {
+                const copy: Ast.OpBinary = {
                     ...ast,
                     left: recurse(ast.left),
                     right: recurse(ast.right),
@@ -429,7 +428,7 @@ function dummyEval(
                 return newNode;
             }
             case "conditional": {
-                const copy: A.AstConditional = {
+                const copy: Ast.Conditional = {
                     ...ast,
                     thenBranch: recurse(ast.thenBranch),
                     elseBranch: recurse(ast.elseBranch),
@@ -437,10 +436,10 @@ function dummyEval(
                 return cloneNode(copy);
             }
             case "struct_instance": {
-                const copy: A.AstStructInstance = {
+                const copy: Ast.StructInstance = {
                     ...ast,
                     args: ast.args.map((param) => {
-                        const copy: A.AstStructFieldInitializer = {
+                        const copy: Ast.StructFieldInitializer = {
                             ...param,
                             initializer: recurse(param.initializer),
                         };
@@ -450,14 +449,14 @@ function dummyEval(
                 return cloneNode(copy);
             }
             case "field_access": {
-                const copy: A.AstFieldAccess = {
+                const copy: Ast.FieldAccess = {
                     ...ast,
                     aggregate: recurse(ast.aggregate),
                 };
                 return cloneNode(copy);
             }
             case "static_call": {
-                const copy: A.AstStaticCall = {
+                const copy: Ast.StaticCall = {
                     ...ast,
                     args: ast.args.map(recurse),
                 };
@@ -482,7 +481,7 @@ class ParameterizableDummyOptimizer implements ExpressionTransformer {
         this.rules = rules;
     }
 
-    public applyRules = (ast: A.AstExpression): A.AstExpression => {
+    public applyRules = (ast: Ast.Expression): Ast.Expression => {
         return this.rules.reduce(
             (prev, rule) => rule.applyRule(prev, this),
             ast,
