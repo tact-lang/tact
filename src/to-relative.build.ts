@@ -15,7 +15,7 @@ const main = async () => {
             (_, importedName) => {
                 const result = relative(
                     dirname(fullPath),
-                    join(__dirname, "dist", importedName),
+                    join(rootDir, "dist", importedName),
                 );
                 const r = !result.startsWith(".") ? "./" + result : result;
                 return `require("${r}")`;
@@ -34,7 +34,7 @@ const main = async () => {
             (_, importedName) => {
                 const result = relative(
                     dirname(fullPath),
-                    join(__dirname, "dist", importedName),
+                    join(rootDir, "dist", importedName),
                 );
                 const r = !result.startsWith(".") ? "./" + result : result;
                 return `from "${r}"`;
