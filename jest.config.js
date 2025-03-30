@@ -3,6 +3,9 @@ module.exports = {
     transform: {
         "^.+\\.(t|j)sx?$": "@swc/jest",
     },
+    moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1'
+    },
     testEnvironment: "node",
     testPathIgnorePatterns: ["/node_modules/", "/dist/"],
     globalSetup: "./jest.globalSetup.js",
