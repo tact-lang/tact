@@ -295,7 +295,7 @@ describe("intrinsics", () => {
     };
 
     it("should calculate sha256 correctly", async () => {
-        function sha256Hex(src: string | Buffer) {
+        function sha256Hex(src: string) {
             return sha256(src).value;
         }
         expect(await contract.getGetHash()).toBe(sha256Hex("hello world"));

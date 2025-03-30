@@ -1,4 +1,15 @@
-import { sha256_sync } from "@ton/crypto";
+/* eslint-disable @typescript-eslint/no-require-imports */
+function sha256Sync(input: string): bigint {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const isBrowser = typeof window !== 'undefined' || typeof document !== 'undefined';
+
+    const hex = isBrowser
+        ? require('sha.js')('sha256').update(input, 'utf8').digest('hex')
+        : require('crypto').createHash('sha256').update(input, 'utf8').digest('hex');
+
+    return BigInt('0x' + hex);
+}
 
 // Witness tag. Do not use, do not export!
 const Sha256Tag = Symbol("sha256");
@@ -8,9 +19,9 @@ type Sha256 = {
     readonly value: bigint;
 };
 
-export const sha256 = (input: Buffer | string): Sha256 => ({
+export const sha256 = (input: string): Sha256 => ({
     kind: Sha256Tag,
-    value: bufferToBigInt(sha256_sync(input)),
+    value: sha256Sync(input),
 });
 
 /**
@@ -31,6 +42,3 @@ export const sha256 = (input: Buffer | string): Sha256 => ({
  */
 export const highest32ofSha256 = (sha: Sha256): bigint =>
     sha.value >> (256n - 32n);
-
-const bufferToBigInt = (buffer: Buffer): bigint =>
-    buffer.reduce((acc, byte) => (acc << 8n) | BigInt(byte), 0n);
