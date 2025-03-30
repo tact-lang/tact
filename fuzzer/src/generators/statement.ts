@@ -40,11 +40,11 @@ import {
     generateAstIdFromName,
     dummySrcInfoPrintable,
 } from "../util";
-import { GenerativeEntity } from "./generator";
+import { GenerativeEntity, NamedGenerativeEntity } from "./generator";
 import { StdlibType, UtilType, tyToAstType } from "../types";
 import type { Type } from "../types";
 import { Scope } from "../scope";
-import type { ScopeItemKind } from "../scope";
+import type { NamedScopeItemKind } from "../scope";
 
 /** Type all the imperative constructions have. */
 const STMT_TY: Type = { kind: "util", type: UtilType.Unit };
@@ -79,7 +79,7 @@ export class Return extends GenerativeEntity<AstStatement> {
  * Let generator is the entry point of the bottom-up statement generation.
  * It creates a variable binding and then adds additional statements that mutate the created binding and the global state.
  */
-export class Let extends GenerativeEntity<AstStatement> {
+export class Let extends NamedGenerativeEntity<AstStatement> {
     /**
      * @param parentScope Scope this statement belongs to.
      * @param type Type of the generated binding.
@@ -90,15 +90,14 @@ export class Let extends GenerativeEntity<AstStatement> {
         type: Type,
         private expr: fc.Arbitrary<AstExpression>,
     ) {
-        super(type);
-        this.name = createSample(generateAstId(parentScope));
+        super(type, createSample(generateAstId(parentScope)));
     }
 
     generate(): fc.Arbitrary<AstStatement> {
         return fc.record<AstStatementLet>({
             kind: fc.constant("statement_let"),
             id: fc.constant(this.idx),
-            name: fc.constantFrom(this.name!),
+            name: fc.constantFrom(this.name),
             type: fc.constantFrom(tyToAstType(this.type)),
             expression: this.expr,
             loc: fc.constant(dummySrcInfoPrintable),
@@ -390,7 +389,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
      */
     private makeVarAssign(): fc.Arbitrary<AstStatement> | undefined {
         const varEntries: [string, Type][] =
-            this.parentScope.getEntriesRecursive("let");
+            this.parentScope.getNamedEntriesRecursive("let");
         if (varEntries.length === 0) {
             return undefined;
         }
@@ -413,7 +412,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
             return undefined;
         }
         const fieldEntries: [string, Type][] =
-            this.parentScope.getEntriesRecursive("field");
+            this.parentScope.getNamedEntriesRecursive("field");
         if (fieldEntries.length === 0) {
             return undefined;
         }
@@ -466,9 +465,9 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Collects all local map AstIds in parent scope.
      */
-    private collectLocalMapIds(entryKinds: ScopeItemKind[]): AstId[] {
+    private collectLocalMapIds(entryKinds: NamedScopeItemKind[]): AstId[] {
         return this.parentScope
-            .getEntriesRecursive(...entryKinds)
+            .getNamedEntriesRecursive(...entryKinds)
             .filter(([_, mapTy]: [string, Type]) => mapTy.kind === "map")
             .map(([mapName, _]: [string, Type]) =>
                 generateAstIdFromName(mapName),
@@ -478,9 +477,9 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Collects all field map AstIds in parent scope.
      */
-    private collectFieldMapIds(entryKinds: ScopeItemKind[]): AstFieldAccess[] {
+    private collectFieldMapIds(entryKinds: NamedScopeItemKind[]): AstFieldAccess[] {
         return this.parentScope
-            .getEntriesRecursive(...entryKinds)
+            .getNamedEntriesRecursive(...entryKinds)
             .filter(([_, mapTy]: [string, Type]) => mapTy.kind === "map")
             .map(([mapName, _]: [string, Type]) =>
                 generateFieldAccess(mapName),
@@ -571,7 +570,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
         if (this.parentScope.definedIn("method", "contract") && randomBool()) {
             // Call a method
             const methodEntries =
-                this.parentScope.getEntriesRecursive("methodDef");
+                this.parentScope.getNamedEntriesRecursive("methodDef");
             if (methodEntries.length === 0) {
                 return undefined;
             }
@@ -587,7 +586,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
         } else {
             // Call a function
             const funEntries =
-                this.parentScope.getEntriesRecursive("functionDef");
+                this.parentScope.getNamedEntriesRecursive("functionDef");
             if (funEntries.length === 0) {
                 return undefined;
             }

@@ -12,7 +12,7 @@ import { Contract } from "./contract";
 import { Message, Struct } from "./struct";
 import { Trait } from "./trait";
 import { Scope } from "../scope";
-import { GenerativeEntity } from "./generator";
+import { NamedGenerativeEntity } from "./generator";
 import { getStdlibTraits } from "../stdlib";
 
 import fc from "fast-check";
@@ -44,7 +44,7 @@ export interface ProgramParameters {
  * An object that encapsulates a randomly generated AstModule including extra information
  * about its entries and their scopes.
  */
-export class Program extends GenerativeEntity<AstModule> {
+export class Program extends NamedGenerativeEntity<AstModule> {
     /** Top-level global scope. */
     private scope: Scope;
 
@@ -69,11 +69,11 @@ export class Program extends GenerativeEntity<AstModule> {
         // NOTE: Structures and messages must be generated prior to contracts in order
         // to add their entries to scopes for futher reuse.
         Array.from({ length: structsNum }).forEach((_) => {
-            this.scope.add("struct", this.makeStruct());
+            this.scope.addNamed("struct", this.makeStruct());
         });
 
         Array.from({ length: messagesNum }).forEach((_) => {
-            this.scope.add("message", this.makeMessage());
+            this.scope.addNamed("message", this.makeMessage());
         });
 
         // NOTE: Traits must be generated prior to contracts to enable them implement them.
@@ -81,13 +81,13 @@ export class Program extends GenerativeEntity<AstModule> {
         Array.from({ length: traitsNum }).forEach((_) => {
             const trait = this.makeTrait();
             traits.push(trait);
-            this.scope.add("trait", trait);
+            this.scope.addNamed("trait", trait);
         });
 
         // One of the traits could be implemented by the main contract.
         const traitToImplement =
             traitsNum > 0 && randomBool() ? randomElement(traits) : undefined;
-        this.scope.add("contract", this.makeContract(traitToImplement));
+        this.scope.addNamed("contract", this.makeContract(traitToImplement));
     }
 
     /**
@@ -105,22 +105,22 @@ export class Program extends GenerativeEntity<AstModule> {
                   .concat(getStdlibTypes())
                   .map((entry) => fc.constant(entry))
             : [];
-        const traits = Array.from(this.scope.getAll("trait")).map((t) =>
+        const traits = Array.from(this.scope.getAllNamed("trait")).map((t) =>
             t.generate(),
         );
-        const contracts = Array.from(this.scope.getAll("contract")).map((c) =>
-            c.generate(),
-        );
-        const structs = Array.from(this.scope.getAll("struct")).map((s) =>
-            s.generate(),
-        );
-        const messages = Array.from(this.scope.getAll("message")).map((m) =>
-            m.generate(),
-        );
-        const constants = Array.from(this.scope.getAll("constantDef")).map(
+        const contracts = Array.from(this.scope.getAllNamed("contract")).map(
             (c) => c.generate(),
         );
-        const functions = Array.from(this.scope.getAll("functionDef")).map(
+        const structs = Array.from(this.scope.getAllNamed("struct")).map((s) =>
+            s.generate(),
+        );
+        const messages = Array.from(this.scope.getAllNamed("message")).map(
+            (m) => m.generate(),
+        );
+        const constants = Array.from(this.scope.getAllNamed("constantDef")).map(
+            (c) => c.generate(),
+        );
+        const functions = Array.from(this.scope.getAllNamed("functionDef")).map(
             (f) => f.generate(),
         );
         return fc.record<AstModule>({

@@ -23,7 +23,7 @@ import {
     generateAstId,
     generateAstIdFromName,
 } from "../util";
-import { GenerativeEntity } from "./generator";
+import { NamedGenerativeEntity } from "./generator";
 
 import fc from "fast-check";
 
@@ -64,7 +64,7 @@ function generateParameters(
             : type.signature.slice(0, -1);
     return slice.map((argty) => {
         const param = new Parameter(scope, argty);
-        scope.add("parameter", param);
+        scope.addNamed("parameter", param);
         return createSample(param.generate());
     });
 }
@@ -107,7 +107,7 @@ function getAttributes(
  * An object that encapsulates the generated free function or contract method definition including
  * its scope and nested elements.
  */
-export class FunctionDef extends GenerativeEntity<AstFunctionDef> {
+export class FunctionDef extends NamedGenerativeEntity<AstFunctionDef> {
     /** Generated body items. */
     private body: fc.Arbitrary<AstStatement>[] = [];
 
@@ -122,12 +122,15 @@ export class FunctionDef extends GenerativeEntity<AstFunctionDef> {
         type: FunctionType,
         name?: string,
     ) {
-        super(type);
-        this.scope = new Scope(kind, parentScope);
+        const scope = new Scope(kind, parentScope);
+        super(
+            type,
+            name
+                ? generateAstIdFromName(name)
+                : createSample(generateAstId(scope)),
+        );
+        this.scope = scope;
         this.kind = kind;
-        this.name = name
-            ? generateAstIdFromName(name)
-            : createSample(generateAstId(this.scope));
     }
 
     /**
@@ -140,10 +143,10 @@ export class FunctionDef extends GenerativeEntity<AstFunctionDef> {
                 ? getReturnType(type)
                 : { kind: "util", type: UtilType.Unit };
         const returnStmt = new Return(this.scope, returnTy).generate();
-        const generatedLetBindings = Array.from(this.scope.getAll("let")).map(
+        const generatedLetBindings = Array.from(this.scope.getAllNamed("let")).map(
             (c) => c.generate(),
         );
-        const generatedStmts = Array.from(this.scope.getAll("statement")).map(
+        const generatedStmts = Array.from(this.scope.getAllUnnamed("statement")).map(
             (c) => c.generate(),
         );
         this.body = [...generatedLetBindings, ...generatedStmts, returnStmt];
@@ -160,7 +163,7 @@ export class FunctionDef extends GenerativeEntity<AstFunctionDef> {
             attributes: fc.constant(
                 getAttributes(extraAttrs, this.kind, false),
             ),
-            name: fc.constant(this.name!),
+            name: fc.constant(this.name),
             return: fc.constant(
                 isUnit(returnTy) ? undefined : tyToAstType(returnTy),
             ),
@@ -188,17 +191,17 @@ export class FunctionDef extends GenerativeEntity<AstFunctionDef> {
  * An object that encapsulates the generated free function or trait method declaration including
  * its scope and nested elements.
  */
-export class FunctionDecl extends GenerativeEntity<AstFunctionDecl> {
+export class FunctionDecl extends NamedGenerativeEntity<AstFunctionDecl> {
     /** Scope used within the generated function. */
     private scope: Scope;
 
     private kind: FunctionKind;
 
     constructor(parentScope: Scope, kind: FunctionKind, type: FunctionType) {
-        super(type);
+        const scope = new Scope(kind, parentScope);
+        super(type, createSample(generateAstId(scope)));
         this.kind = "method";
-        this.scope = new Scope(kind, parentScope);
-        this.name = createSample(generateAstId(this.scope));
+        this.scope = scope;
     }
 
     private generateImpl(
@@ -209,7 +212,7 @@ export class FunctionDecl extends GenerativeEntity<AstFunctionDecl> {
             kind: fc.constant("function_decl"),
             id: fc.constant(this.idx),
             attributes: fc.constant(getAttributes(extraAttrs, this.kind, true)),
-            name: fc.constant(this.name!),
+            name: fc.constant(this.name),
             return: fc.constant(
                 isUnit(returnTy) ? undefined : tyToAstType(returnTy),
             ),
@@ -242,7 +245,7 @@ export class FunctionDecl extends GenerativeEntity<AstFunctionDecl> {
             this.scope.parentScope!,
             kind,
             this.type as FunctionType,
-            this.name!.text,
+            this.name.text,
         ).generateImpl(attrs);
     }
 }

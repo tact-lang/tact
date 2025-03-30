@@ -9,15 +9,11 @@ abstract class GenerativeEntityBase {
     /** The unique index of the entity. */
     public idx: IDIdx;
 
-    /** An optional name of the entity. */
-    public name?: AstId;
-
     /** The type of the entity. */
     public type: Type;
 
-    constructor(type: Type, name?: AstId) {
+    constructor(type: Type) {
         this.idx = nextId();
-        this.name = name;
         this.type = type;
     }
 }
@@ -28,6 +24,16 @@ abstract class GenerativeEntityBase {
 export abstract class GenerativeEntity<T> extends GenerativeEntityBase {
     abstract generate(): fc.Arbitrary<T>;
 }
+
+export abstract class NamedGenerativeEntity<T> extends GenerativeEntity<T> {
+    public name: AstId;
+
+    constructor(type: Type, name: AstId) {
+        super(type);
+        this.name = name;
+    }
+}
+
 /**
  * A specialized version of GenerativeEntity that cannot generate AST entities in some cases.
  */

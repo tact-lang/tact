@@ -14,17 +14,16 @@ import {
 import { tyToAstType } from "../types";
 import type { Type } from "../types";
 import type { Scope } from "../scope";
-import { GenerativeEntity } from "./generator";
+import { NamedGenerativeEntity } from "./generator";
 
 import fc from "fast-check";
 
 /**
  * An object that encapsulates a generated AstConstantDecl.
  */
-export class ConstantDecl extends GenerativeEntity<AstConstantDecl> {
+export class ConstantDecl extends NamedGenerativeEntity<AstConstantDecl> {
     constructor(scope: Scope, type: Type) {
-        super(type);
-        this.name = createSample(generateAstId(scope));
+        super(type, createSample(generateAstId(scope)));
     }
 
     private getAttributes(
@@ -41,7 +40,7 @@ export class ConstantDecl extends GenerativeEntity<AstConstantDecl> {
         return fc.record<AstConstantDecl>({
             kind: fc.constant("constant_decl"),
             id: fc.constant(this.idx),
-            name: fc.constant(this.name!),
+            name: fc.constant(this.name),
             type: fc.constant(tyToAstType(this.type)),
             attributes: fc.constantFrom(this.getAttributes(extraAttrs)),
             loc: fc.constant(dummySrcInfoPrintable),
@@ -60,7 +59,7 @@ export class ConstantDecl extends GenerativeEntity<AstConstantDecl> {
      * @param init An initializer evaluable in compile-time.
      */
     public createDefinition(init: fc.Arbitrary<AstExpression>): ConstantDef {
-        return new ConstantDef(this.name?.text!, this.type, init);
+        return new ConstantDef(this.name?.text, this.type, init);
     }
 }
 
@@ -68,7 +67,7 @@ export class ConstantDecl extends GenerativeEntity<AstConstantDecl> {
  * An object that encapsulates a generated AstConstantDef.
  * @parentScope Scope this constant belongs to.
  */
-export class ConstantDef extends GenerativeEntity<AstConstantDef> {
+export class ConstantDef extends NamedGenerativeEntity<AstConstantDef> {
     /**
      * Create new constant definition from its name and type. Used to create definition from an existing declaration.
      * @param init An initializer evaluable in compile-time.
@@ -78,8 +77,7 @@ export class ConstantDef extends GenerativeEntity<AstConstantDef> {
         type: Type,
         private init: fc.Arbitrary<AstExpression>,
     ) {
-        super(type);
-        this.name = generateAstIdFromName(name);
+        super(type, generateAstIdFromName(name));
     }
     /**
      * Create a new constant definition generation name from scope.
@@ -103,7 +101,7 @@ export class ConstantDef extends GenerativeEntity<AstConstantDef> {
         return fc.record<AstConstantDef>({
             kind: fc.constant("constant_def"),
             id: fc.constant(this.idx),
-            name: fc.constant(this.name!),
+            name: fc.constant(this.name),
             type: fc.constant(tyToAstType(this.type)),
             initializer: choosenInit,
             attributes: fc.constantFrom(extraAttrs),

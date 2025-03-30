@@ -11,7 +11,12 @@ import { UtilType, StdlibType, isBouncedMessage } from "../types";
 import type { Type } from "../types";
 import { Scope } from "../scope";
 import { GenerativeEntity } from "./generator";
-import { createSample, dummySrcInfoPrintable, randomBool, randomElement } from "../util";
+import {
+    createSample,
+    dummySrcInfoPrintable,
+    randomBool,
+    randomElement,
+} from "../util";
 import { Expression, generateString } from "./expression";
 import { Parameter } from "./parameter";
 import { StatementExpression } from "./statement";
@@ -85,7 +90,7 @@ export class Receive extends GenerativeEntity<AstReceiver> {
                 }),
             );
             const param = new Parameter(this.scope, ty);
-            this.scope.add("parameter", param);
+            this.scope.addNamed("parameter", param);
             const internalSimple = generateRecieverKind(
                 "internal",
                 generateReceiverSimpleSubKind(param),
@@ -98,7 +103,7 @@ export class Receive extends GenerativeEntity<AstReceiver> {
         }
 
         // Choose a random message and create a bounced receiver using it.
-        const messages = this.scope.getProgramScope().getAll("message");
+        const messages = this.scope.getProgramScope().getAllNamed("message");
         if (messages.length > 0 && randomBool()) {
             const msg = randomElement(messages);
             const param = new Parameter(
@@ -106,7 +111,7 @@ export class Receive extends GenerativeEntity<AstReceiver> {
                 msg.type,
                 isBouncedMessage(msg.type),
             );
-            this.scope.add("parameter", param);
+            this.scope.addNamed("parameter", param);
             return fc.record<AstReceiverKind>({
                 kind: fc.constantFrom("bounce"),
                 param: param.generate(),
@@ -145,12 +150,12 @@ export class Receive extends GenerativeEntity<AstReceiver> {
         const expr = new Expression(this.scope, this.type).generate();
         const stmt = new StatementExpression(expr).generate();
 
-        const generatedLetBindings = Array.from(this.scope.getAll("let")).map(
-            (c) => c.generate(),
-        );
-        const generatedStmts = Array.from(this.scope.getAll("statement")).map(
-            (c) => c.generate(),
-        );
+        const generatedLetBindings = Array.from(
+            this.scope.getAllNamed("let"),
+        ).map((c) => c.generate());
+        const generatedStmts = Array.from(
+            this.scope.getAllUnnamed("statement"),
+        ).map((c) => c.generate());
         this.body = [...generatedLetBindings, ...generatedStmts, stmt];
         return fc.tuple(...this.body);
     }

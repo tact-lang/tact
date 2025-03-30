@@ -28,7 +28,11 @@ import {
     generateAstIdFromName,
     dummySrcInfoPrintable,
 } from "../util";
-import { GenerativeEntity, GenerativeEntityOpt } from "./generator";
+import {
+    GenerativeEntity,
+    NamedGenerativeEntity,
+    GenerativeEntityOpt,
+} from "./generator";
 import { nextId } from "../id";
 import {
     StdlibType,
@@ -227,7 +231,7 @@ export function generateMethodCallArgs(
 /**
  * Generates field and contract constants access operations.
  */
-export class FieldAccess extends GenerativeEntity<AstFieldAccess> {
+export class FieldAccess extends NamedGenerativeEntity<AstFieldAccess> {
     constructor(
         type: Type,
         fieldName: string,
@@ -240,7 +244,7 @@ export class FieldAccess extends GenerativeEntity<AstFieldAccess> {
         return fc.record<AstFieldAccess>({
             kind: fc.constant("field_access"),
             aggregate: fc.constant(this.src ?? generateThisID()),
-            field: fc.constant(this.name!),
+            field: fc.constant(this.name),
             id: fc.constant(this.idx),
             loc: fc.constant(dummySrcInfoPrintable),
         });
@@ -250,7 +254,7 @@ export class FieldAccess extends GenerativeEntity<AstFieldAccess> {
 /**
  * Generates method calls.
  */
-export class MethodCall extends GenerativeEntity<AstMethodCall> {
+export class MethodCall extends NamedGenerativeEntity<AstMethodCall> {
     constructor(
         type: Type,
         name: string,
@@ -263,7 +267,7 @@ export class MethodCall extends GenerativeEntity<AstMethodCall> {
         return fc.record<AstMethodCall>({
             kind: fc.constant("method_call"),
             self: fc.constant(this.src),
-            method: fc.constant(this.name!),
+            method: fc.constant(this.name),
             args: packArbitraries(this.args),
             id: fc.constant(this.idx),
             loc: fc.constant(dummySrcInfoPrintable),
@@ -274,7 +278,7 @@ export class MethodCall extends GenerativeEntity<AstMethodCall> {
 /**
  * Generates free function calls.
  */
-export class StaticCall extends GenerativeEntity<AstStaticCall> {
+export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
     constructor(
         type: Type,
         name: string,
@@ -285,7 +289,7 @@ export class StaticCall extends GenerativeEntity<AstStaticCall> {
     generate(): fc.Arbitrary<AstStaticCall> {
         return fc.record<AstStaticCall>({
             kind: fc.constant("static_call"),
-            function: fc.constantFrom(this.name!),
+            function: fc.constantFrom(this.name),
             args: packArbitraries(this.args),
             id: fc.constant(this.idx),
             loc: fc.constant(dummySrcInfoPrintable),
@@ -427,7 +431,7 @@ export class StructAccess extends GenerativeEntityOpt<
                     [] as string[],
                 );
                 if (matchingFieldNames.length > 0) {
-                    acc.set(struct.name?.text!, [
+                    acc.set(struct.name.text, [
                         struct.type,
                         matchingFieldNames,
                     ]);
@@ -471,10 +475,8 @@ export class StructAccess extends GenerativeEntityOpt<
             structType,
         ).generate();
         const varStmt = new Let(this.parentScope, structType, initExpr);
-        this.parentScope.add("let", varStmt);
-        return new Map([
-            [chosenStructName, [structType, [varStmt.name?.text!]]],
-        ]);
+        this.parentScope.addNamed("let", varStmt);
+        return new Map([[chosenStructName, [structType, [varStmt.name.text]]]]);
     }
 
     /**
@@ -660,12 +662,12 @@ export class Expression extends GenerativeEntity<AstExpression> {
                     : undefined;
             if (init) {
                 const constant = ConstantDef.fromScope(scope, ty, init);
-                this.parentScope.add("constantDef", constant);
-                constantNames.push(constant.name?.text!);
+                this.parentScope.addNamed("constantDef", constant);
+                constantNames.push(constant.name.text);
             } else {
                 const constant = new ConstantDecl(scope, ty);
-                this.parentScope.add("constantDecl", constant);
-                constantNames.push(constant.name?.text!);
+                this.parentScope.addNamed("constantDecl", constant);
+                constantNames.push(constant.name.text);
             }
         }
         const arbs = scope.definedIn("contract", "method")
@@ -707,8 +709,8 @@ export class Expression extends GenerativeEntity<AstExpression> {
                           compileTimeEval: true,
                       }).generate();
             const field = new Field(this.parentScope, ty, init);
-            this.parentScope.add("field", field);
-            fieldNames.push(field.name?.text!);
+            this.parentScope.addNamed("field", field);
+            fieldNames.push(field.name.text);
         }
         const arbs = fieldNames.map((name) =>
             new FieldAccess(ty, name).generate(),
@@ -733,8 +735,8 @@ export class Expression extends GenerativeEntity<AstExpression> {
         if (varNames.length === 0) {
             const init = new Expression(this.parentScope, ty).generate();
             const varStmt = new Let(this.parentScope, ty, init);
-            this.parentScope.add("let", varStmt);
-            varNames.push(varStmt.name?.text!);
+            this.parentScope.addNamed("let", varStmt);
+            varNames.push(varStmt.name.text);
         }
         const arbs = varNames.map((name) =>
             fc.constant(generateAstIdFromName(name)),
@@ -772,7 +774,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
         }
         Array.from({ length: this.generatedStatementsNum }).forEach(() => {
             const stmt = new Statement(this.parentScope);
-            this.parentScope.add("statement", stmt);
+            this.parentScope.addUnnamed("statement", stmt);
         });
     }
 
@@ -793,8 +795,8 @@ export class Expression extends GenerativeEntity<AstExpression> {
             const programScope = this.parentScope.getProgramScope();
             const funTy = makeFunctionTy("function", returnTy);
             const fun = new FunctionDef(programScope, "function", funTy);
-            this.parentScope.add("functionDef", fun);
-            funNames.push([fun.name?.text!, funTy]);
+            this.parentScope.addNamed("functionDef", fun);
+            funNames.push([fun.name.text, funTy]);
         }
         const arbs = funNames.map(([name, funTy]) =>
             new StaticCall(
@@ -826,7 +828,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
         const stdlibArbs = [
             // self.map_field.get(key)
             ...this.parentScope
-                .getEntriesRecursive("field")
+                .getNamedEntriesRecursive("field")
                 .reduce((acc, [mapName, mapTy]) => {
                     if (
                         mapTy.kind === "map" &&
@@ -855,7 +857,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
                 }, [] as fc.Arbitrary<AstExpression>[]),
             // map_var.get(key)
             ...this.parentScope
-                .getEntriesRecursive("let")
+                .getNamedEntriesRecursive("let")
                 .reduce((acc, [mapName, mapTy]) => {
                     if (
                         mapTy.kind === "map" &&
@@ -895,8 +897,8 @@ export class Expression extends GenerativeEntity<AstExpression> {
             }
             const methodTy = makeFunctionTy("method", returnTy);
             const method = new FunctionDef(contractScope, "method", methodTy);
-            this.parentScope.add("methodDef", method);
-            userMethods.push([method.name?.text!, methodTy]);
+            this.parentScope.addNamed("methodDef", method);
+            userMethods.push([method.name.text, methodTy]);
         }
         const userArbs = userMethods.map(([name, methodTy]) =>
             new MethodCall(

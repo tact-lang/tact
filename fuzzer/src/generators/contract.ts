@@ -12,7 +12,7 @@ import { Receive } from "./receiver";
 import { UtilType } from "../types";
 import type { FunctionType } from "../types";
 import { Scope } from "../scope";
-import { GenerativeEntity } from "./generator";
+import { NamedGenerativeEntity } from "./generator";
 
 import fc from "fast-check";
 import { Field } from "./field";
@@ -29,7 +29,7 @@ export interface ContractParameters {
  * An object that encapsulates a randomly generated AstContract including extra information
  * about its entries and their scopes.
  */
-export class Contract extends GenerativeEntity<AstContract> {
+export class Contract extends NamedGenerativeEntity<AstContract> {
     /** Scope used within the generated contract. */
     private scope: Scope;
 
@@ -45,9 +45,12 @@ export class Contract extends GenerativeEntity<AstContract> {
         private trait?: Trait,
         params: Partial<ContractParameters> = {},
     ) {
-        super({ kind: "util", type: UtilType.Contract });
-        this.scope = new Scope("contract", parentScope);
-        this.name = createSample(generateAstId(this.scope));
+        const scope = new Scope("contract", parentScope);
+        super(
+            { kind: "util", type: UtilType.Contract },
+            createSample(generateAstId(scope)),
+        );
+        this.scope = scope;
 
         const { receiveNum = 1 } = params;
         this.receiveNum = receiveNum;
@@ -103,24 +106,24 @@ export class Contract extends GenerativeEntity<AstContract> {
         const requestedMethods = this.methodSignatures.map((signature) =>
             new FunctionDef(this.scope, "method", signature).generate(),
         );
-        const generatedMethods = Array.from(this.scope.getAll("methodDef")).map(
+        const generatedMethods = Array.from(this.scope.getAllNamed("methodDef")).map(
             (m) => m.generate(),
         );
         const requestedReceives = Array.from({ length: this.receiveNum }).map(
             (_) => new Receive(this.scope).generate(),
         );
         const generatedConstants = Array.from(
-            this.scope.getAll("constantDef"),
+            this.scope.getAllNamed("constantDef"),
         ).map((c) => c.generate());
-        const generatedFields = Array.from(this.scope.getAll("field")).map(
+        const generatedFields = Array.from(this.scope.getAllNamed("field")).map(
             (f) => f.generate(),
         );
         return fc.record<AstContract>({
             kind: fc.constant("contract"),
             id: fc.constant(this.idx),
-            name: fc.constant(this.name!),
+            name: fc.constant(this.name),
             traits: fc.constant(
-                this.trait === undefined ? [] : [this.trait.name!],
+                this.trait === undefined ? [] : [this.trait.name],
             ),
             attributes: fc.constantFrom([]),
             declarations: fc.tuple(

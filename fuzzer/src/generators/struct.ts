@@ -3,15 +3,19 @@ import { tyToString, throwTyError } from "../types";
 import type { Type, StructField } from "../types";
 import type { Scope } from "../scope";
 import { Field } from "./field";
-import { dummySrcInfoPrintable, generateAstIdFromName, packArbitraries } from "../util";
-import { GenerativeEntity } from "./generator";
+import {
+    dummySrcInfoPrintable,
+    generateAstIdFromName,
+    packArbitraries,
+} from "../util";
+import { NamedGenerativeEntity } from "./generator";
 
 import fc from "fast-check";
 
 /**
  * An object that generates AstStructDecl object.
  */
-export class Struct extends GenerativeEntity<AstStructDecl> {
+export class Struct extends NamedGenerativeEntity<AstStructDecl> {
     /**
      * @param programScope A program scope the structure defined in.
      */
@@ -47,7 +51,7 @@ export class Struct extends GenerativeEntity<AstStructDecl> {
         return fc.record<AstStructDecl>({
             kind: fc.constant("struct_decl"),
             id: fc.constant(this.idx),
-            name: fc.constant(this.name!),
+            name: fc.constant(this.name),
             fields: packArbitraries(fields),
             loc: fc.constant(dummySrcInfoPrintable),
         });
@@ -57,7 +61,7 @@ export class Struct extends GenerativeEntity<AstStructDecl> {
 /**
  * An object that generates AstMessageDecl object messages.
  */
-export class Message extends GenerativeEntity<AstMessageDecl> {
+export class Message extends NamedGenerativeEntity<AstMessageDecl> {
     /**
      * @param programScope A program scope the structure defined in.
      */

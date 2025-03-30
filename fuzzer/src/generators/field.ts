@@ -3,14 +3,14 @@ import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { tyToAstType } from "../types";
 import type { Type } from "../types";
 import type { Scope } from "../scope";
-import { GenerativeEntity } from "./generator";
+import { NamedGenerativeEntity } from "./generator";
 
 import fc from "fast-check";
 
 /**
  * An object that encapsulates a generated AstFieldDecl.
  */
-export class Field extends GenerativeEntity<AstFieldDecl> {
+export class Field extends NamedGenerativeEntity<AstFieldDecl> {
     /**
      * @param init An optional initializer evaluable in compile-time.
      * @param parentScope Scope this field belongs to. Could be a contract or program for struct fields.
@@ -33,15 +33,14 @@ export class Field extends GenerativeEntity<AstFieldDecl> {
                 `Cannot define a field in a ${parentScope.kind} scope`,
             );
         }
-        super(type);
-        this.name = name ?? createSample(generateAstId(parentScope));
+        super(type, name ?? createSample(generateAstId(parentScope)));
     }
 
     generate(): fc.Arbitrary<AstFieldDecl> {
         return fc.record<AstFieldDecl>({
             kind: fc.constant("field_decl"),
             id: fc.constant(this.idx),
-            name: fc.constant(this.name!),
+            name: fc.constant(this.name),
             type: fc.constant(tyToAstType(this.type)),
             initializer: this.init ?? fc.constant(undefined),
             as: fc.constantFrom(undefined),

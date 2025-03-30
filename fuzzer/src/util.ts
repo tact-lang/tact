@@ -6,7 +6,7 @@ import fs from "fs/promises";
 import * as path from "path";
 import fc from "fast-check";
 
-import type { Scope, ScopeItemKind } from "./scope";
+import type { NamedScopeItemKind, Scope } from "./scope";
 import { GlobalContext } from "./context";
 import type { Type } from "./types";
 import type { AstId, AstNode } from "../../src/ast/ast";
@@ -39,7 +39,7 @@ export async function withNodeFS(f: (vfs: VirtualFileSystem) => Promise<void>) {
 export function createProperty<Ts extends [unknown, ...unknown[]]>(
     ...args: [
         ...arbitraries: { [K in keyof Ts]: fc.Arbitrary<Ts[K]> },
-        predicate: (...args: Ts) => boolean | void,
+        predicate: (...args: Ts) => boolean | void, // eslint-disable-line @typescript-eslint/no-invalid-void-type
     ]
 ): fc.IPropertyWithHooks<Ts> {
     const arbitraries = args.slice(0, -1) as unknown as {
@@ -187,7 +187,7 @@ export function generateAstId(
  */
 export function choose(
     scope: Scope,
-    kind: ScopeItemKind,
+    kind: NamedScopeItemKind,
     ty: Type,
 ): string | undefined {
     const availableNames = scope.getNamesRecursive(kind, ty);

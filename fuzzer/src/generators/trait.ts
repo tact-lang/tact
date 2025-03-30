@@ -12,7 +12,7 @@ import { Expression } from "./expression";
 import { TypeGen, makeFunctionTy, UtilType } from "../types";
 import type { Type } from "../types";
 import { Scope } from "../scope";
-import { GenerativeEntity } from "./generator";
+import { NamedGenerativeEntity } from "./generator";
 
 import fc from "fast-check";
 
@@ -39,7 +39,7 @@ export interface TraitParameters {
 /**
  * An object that encapsulates a randomly generated AstTrait.
  */
-export class Trait extends GenerativeEntity<AstTrait> {
+export class Trait extends NamedGenerativeEntity<AstTrait> {
     /** Trait scope. */
     private scope: Scope;
 
@@ -55,9 +55,12 @@ export class Trait extends GenerativeEntity<AstTrait> {
     public methodDeclarations: FunctionDecl[] = [];
 
     constructor(programScope: Scope, params: Partial<TraitParameters> = {}) {
-        super({ kind: "util", type: UtilType.Trait });
-        this.scope = new Scope("trait", programScope);
-        this.name = createSample(generateAstId(this.scope));
+        const scope = new Scope("trait", programScope);
+        super(
+            { kind: "util", type: UtilType.Trait },
+            createSample(generateAstId(scope)),
+        );
+        this.scope = scope;
 
         const {
             fieldNum = 1,
@@ -91,7 +94,7 @@ export class Trait extends GenerativeEntity<AstTrait> {
             (_) => {
                 const ty = TypeGen.fromScope(this.scope).pick();
                 const field = new Field(this.scope, ty);
-                this.scope.add("field", field);
+                this.scope.addNamed("field", field);
                 return field;
             },
         );
@@ -130,7 +133,7 @@ export class Trait extends GenerativeEntity<AstTrait> {
         return fc.record<AstTrait>({
             kind: fc.constant("trait"),
             id: fc.constant(this.idx),
-            name: fc.constant(this.name!),
+            name: fc.constant(this.name),
             traits: fc.constant([]),
             attributes: fc.constant([]),
             declarations: fc.tuple(...constants, ...fields, ...methods),

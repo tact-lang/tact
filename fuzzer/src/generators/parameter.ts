@@ -3,14 +3,14 @@ import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { tyToAstType } from "../types";
 import type { Type } from "../types";
 import type { Scope } from "../scope";
-import { GenerativeEntity } from "./generator";
+import { NamedGenerativeEntity } from "./generator";
 
 import fc from "fast-check";
 
 /**
  * An object that encapsulates generated AstTypedParameter.
  */
-export class Parameter extends GenerativeEntity<AstTypedParameter> {
+export class Parameter extends NamedGenerativeEntity<AstTypedParameter> {
     /**
      * @param parentScope Scope of the function this argument belongs to.
      * @param isBounced If the type of the argument should be wrapped in `bounced<>`
@@ -25,15 +25,14 @@ export class Parameter extends GenerativeEntity<AstTypedParameter> {
                 `Cannot define a function argument in the ${parentScope.kind} scope`,
             );
         }
-        super(type);
-        this.name = createSample(generateAstId(parentScope));
+        super(type, createSample(generateAstId(parentScope)));
     }
 
     generate(): fc.Arbitrary<AstTypedParameter> {
         return fc.record<AstTypedParameter>({
             kind: fc.constant("typed_parameter"),
             id: fc.constant(this.idx),
-            name: fc.constant(this.name!),
+            name: fc.constant(this.name),
             type: fc.constant(tyToAstType(this.type, this.isBounced)),
             loc: fc.constant(dummySrcInfoPrintable),
         });
