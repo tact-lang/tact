@@ -4,17 +4,17 @@ import type {
     AstId,
     AstNull,
     AstNumber,
-    AstOpBinary,
+    // AstOpBinary,
     AstFieldAccess,
     AstMethodCall,
     AstStaticCall,
-    AstOpUnary,
+    // AstOpUnary,
     AstSimplifiedString,
     AstStructFieldInitializer,
     AstStructInstance,
     AstString,
 } from "../../../src/ast/ast";
-import { AstNumberBase } from "../../../src/ast/ast";
+import type { AstNumberBase } from "../../../src/ast/ast";
 import JSONbig from "json-bigint";
 import fc from "fast-check";
 
@@ -297,92 +297,92 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
     }
 }
 
-export namespace OpUnary {
-    function generate(
-        args: fc.Arbitrary<AstExpression>[],
-        allowedOps: readonly AstOpUnary["op"][],
-    ): fc.Arbitrary<AstOpUnary> {
-        return fc.letrec((tie) => ({
-            astExpression: fc.oneof(
-                { maxDepth: 1 },
-                ...args.map((gen) => ({ arbitrary: gen, weight: 1 })),
-                {
-                    arbitrary: tie("astOpUnary"),
-                    weight: 1,
-                },
-            ),
-            astOpUnary: fc.record<AstOpUnary>({
-                kind: fc.constant("op_unary"),
-                id: fc.constant(nextId()),
-                op: fc.constantFrom(...allowedOps),
-                loc: fc.constant(dummySrcInfoPrintable),
-                operand: tie("astExpression") as fc.Arbitrary<AstExpression>,
-            }),
-        })).astOpUnary;
-    }
+// export namespace OpUnary {
+//     function generate(
+//         args: fc.Arbitrary<AstExpression>[],
+//         allowedOps: readonly AstOpUnary["op"][],
+//     ): fc.Arbitrary<AstOpUnary> {
+//         return fc.letrec((tie) => ({
+//             astExpression: fc.oneof(
+//                 { maxDepth: 1 },
+//                 ...args.map((gen) => ({ arbitrary: gen, weight: 1 })),
+//                 {
+//                     arbitrary: tie("astOpUnary"),
+//                     weight: 1,
+//                 },
+//             ),
+//             astOpUnary: fc.record<AstOpUnary>({
+//                 kind: fc.constant("op_unary"),
+//                 id: fc.constant(nextId()),
+//                 op: fc.constantFrom(...allowedOps),
+//                 loc: fc.constant(dummySrcInfoPrintable),
+//                 operand: tie("astExpression") as fc.Arbitrary<AstExpression>,
+//             }),
+//         })).astOpUnary;
+//     }
 
-    // Generates numeric expressions
-    // num -> num
-    export const Num = generate([generateNumber()], ["+", "-"]);
+//     // Generates numeric expressions
+//     // num -> num
+//     export const Num = generate([generateNumber()], ["+", "-"]);
 
-    // Generates boolean expressions
-    // bool -> bool
-    export const Bool = generate([generateBoolean()], ["!"]);
+//     // Generates boolean expressions
+//     // bool -> bool
+//     export const Bool = generate([generateBoolean()], ["!"]);
 
-    // TODO: Handle optionals (`!!`)
-}
+//     // TODO: Handle optionals (`!!`)
+// }
 
-export namespace OpBinary {
-    export function generate(
-        args: fc.Arbitrary<AstExpression>[],
-        allowedOps: readonly AstOpBinary["op"][],
-    ): fc.Arbitrary<AstOpBinary> {
-        return fc.letrec((tie) => ({
-            astExpression: fc.oneof(
-                { maxDepth: 1 },
-                ...args.map((gen) => ({ arbitrary: gen, weight: 1 })),
-                {
-                    arbitrary: tie("astOpBinary"),
-                    weight: 1,
-                },
-            ),
-            astOpBinary: fc.record<AstOpBinary>({
-                kind: fc.constant("op_binary"),
-                id: fc.constant(nextId()),
-                op: fc.constantFrom(...allowedOps),
-                left: tie("astExpression") as fc.Arbitrary<AstExpression>,
-                right: tie("astExpression") as fc.Arbitrary<AstExpression>,
-                loc: fc.constant(dummySrcInfoPrintable),
-            }),
-        })).astOpBinary;
-    }
+// export namespace OpBinary {
+//     export function generate(
+//         args: fc.Arbitrary<AstExpression>[],
+//         allowedOps: readonly AstOpBinary["op"][],
+//     ): fc.Arbitrary<AstOpBinary> {
+//         return fc.letrec((tie) => ({
+//             astExpression: fc.oneof(
+//                 { maxDepth: 1 },
+//                 ...args.map((gen) => ({ arbitrary: gen, weight: 1 })),
+//                 {
+//                     arbitrary: tie("astOpBinary"),
+//                     weight: 1,
+//                 },
+//             ),
+//             astOpBinary: fc.record<AstOpBinary>({
+//                 kind: fc.constant("op_binary"),
+//                 id: fc.constant(nextId()),
+//                 op: fc.constantFrom(...allowedOps),
+//                 left: tie("astExpression") as fc.Arbitrary<AstExpression>,
+//                 right: tie("astExpression") as fc.Arbitrary<AstExpression>,
+//                 loc: fc.constant(dummySrcInfoPrintable),
+//             }),
+//         })).astOpBinary;
+//     }
 
-    // num -> num -> num
-    export const NumOps: AstOpBinary["op"][] = [
-        "+",
-        "-",
-        "*",
-        "/",
-        "%",
-        "<<",
-        ">>",
-        "&",
-        "|",
-    ];
-    export const NumGens = [generateNumber(), OpUnary.Num];
+//     // num -> num -> num
+//     export const NumOps: AstOpBinary["op"][] = [
+//         "+",
+//         "-",
+//         "*",
+//         "/",
+//         "%",
+//         "<<",
+//         ">>",
+//         "&",
+//         "|",
+//     ];
+//     export const NumGens = [generateNumber(), OpUnary.Num];
 
-    // bool -> bool -> bool
-    export const BoolOps: AstOpBinary["op"][] = ["&&", "||"];
-    export const BoolGens = [
-        generateBoolean(),
-        OpUnary.Bool,
-        // bool -> bool -> bool
-        generate([generateBoolean()], BoolOps),
-        // num -> num -> bool
-        // mkAstOpBinaryGen([ Primitive.NumberGen ],
-        //                  ["==", "!=", "&&", "||"]),
-    ];
-}
+//     // bool -> bool -> bool
+//     export const BoolOps: AstOpBinary["op"][] = ["&&", "||"];
+//     export const BoolGens = [
+//         generateBoolean(),
+//         OpUnary.Bool,
+//         // bool -> bool -> bool
+//         generate([generateBoolean()], BoolOps),
+//         // num -> num -> bool
+//         // mkAstOpBinaryGen([ Primitive.NumberGen ],
+//         //                  ["==", "!=", "&&", "||"]),
+//     ];
+// }
 
 /**
  * Generates struct field access expressions, e.g., `myStruct.a`.
@@ -534,7 +534,7 @@ export interface ExpressionParameters {
     generateStatements: boolean;
 
     /**
-     * Indicates whether the generated expression must be evaluable at compile time.
+     * Indicates whether the generated expression must be evaluable at compile time. // cspell:disable-line
      * @default false
      */
     compileTimeEval: boolean;
@@ -680,7 +680,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
 
     /**
      * Generates or chooses an available field and makes a "use" expression from it.
-     * @return Use expression of the generated field, or `undefined` if cannot create it.expre
+     * @return Use expression of the generated field, or `undefined` if cannot create it.
      */
     private makeFieldUse(ty: Type): fc.Arbitrary<AstFieldAccess> | undefined {
         if (

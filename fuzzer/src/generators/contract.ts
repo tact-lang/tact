@@ -106,9 +106,9 @@ export class Contract extends NamedGenerativeEntity<AstContract> {
         const requestedMethods = this.methodSignatures.map((signature) =>
             new FunctionDef(this.scope, "method", signature).generate(),
         );
-        const generatedMethods = Array.from(this.scope.getAllNamed("methodDef")).map(
-            (m) => m.generate(),
-        );
+        const generatedMethods = Array.from(
+            this.scope.getAllNamed("methodDef"),
+        ).map((m) => m.generate());
         const requestedReceives = Array.from({ length: this.receiveNum }).map(
             (_) => new Receive(this.scope).generate(),
         );

@@ -67,7 +67,7 @@ export class Program extends NamedGenerativeEntity<AstModule> {
         this.scope = new Scope("program", undefined);
 
         // NOTE: Structures and messages must be generated prior to contracts in order
-        // to add their entries to scopes for futher reuse.
+        // to add their entries to scopes for further reuse.
         Array.from({ length: structsNum }).forEach((_) => {
             this.scope.addNamed("struct", this.makeStruct());
         });

@@ -38,7 +38,7 @@ export const SUPPORTED_RETURN_TYS = [
     StdlibType.String,
 ];
 
-function doesntHaveArguments(kind: FunctionKind, type: FunctionType): boolean {
+function doesntHaveArguments(kind: FunctionKind, type: FunctionType): boolean { // cspell:disable-line
     if (kind === "function") {
         return type.signature.length === 1;
     } else {
@@ -55,15 +55,15 @@ function generateParameters(
     type: FunctionType,
     scope: Scope,
 ): AstTypedParameter[] {
-    if (doesntHaveArguments(kind, type)) {
+    if (doesntHaveArguments(kind, type)) { // cspell:disable-line
         return [];
     }
     const slice =
         kind === "method"
             ? type.signature.slice(1, -1)
             : type.signature.slice(0, -1);
-    return slice.map((argty) => {
-        const param = new Parameter(scope, argty);
+    return slice.map((argType) => {
+        const param = new Parameter(scope, argType);
         scope.addNamed("parameter", param);
         return createSample(param.generate());
     });
@@ -143,12 +143,12 @@ export class FunctionDef extends NamedGenerativeEntity<AstFunctionDef> {
                 ? getReturnType(type)
                 : { kind: "util", type: UtilType.Unit };
         const returnStmt = new Return(this.scope, returnTy).generate();
-        const generatedLetBindings = Array.from(this.scope.getAllNamed("let")).map(
-            (c) => c.generate(),
-        );
-        const generatedStmts = Array.from(this.scope.getAllUnnamed("statement")).map(
-            (c) => c.generate(),
-        );
+        const generatedLetBindings = Array.from(
+            this.scope.getAllNamed("let"),
+        ).map((c) => c.generate());
+        const generatedStmts = Array.from(
+            this.scope.getAllUnnamed("statement"),
+        ).map((c) => c.generate());
         this.body = [...generatedLetBindings, ...generatedStmts, returnStmt];
         return fc.tuple(...this.body);
     }

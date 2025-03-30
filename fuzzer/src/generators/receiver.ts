@@ -51,16 +51,26 @@ function generateReceiverCommentSubKind(): fc.Arbitrary<AstReceiverComment> {
     });
 }
 
-function generateRecieverKind(
-    kind: "internal" | "external" | "comment",
+function generateInternalReceiverKind(
     subKind: fc.Arbitrary<AstReceiverSubKind>,
 ): fc.Arbitrary<AstReceiverKind> {
     return fc.record<AstReceiverKind>({
-        kind: fc.constant(kind),
+        kind: fc.constant("internal"),
         subKind,
         id: fc.constant(nextId()),
         loc: fc.constant(dummySrcInfoPrintable),
-    } as any); //TODO: types are correct here, but i don't know how to explain to typescript, what T<A | B> is equal to T<A> | T<B>
+    });
+}
+
+function generateExternalReceiverKind(
+    subKind: fc.Arbitrary<AstReceiverSubKind>,
+): fc.Arbitrary<AstReceiverKind> {
+    return fc.record<AstReceiverKind>({
+        kind: fc.constant("external"),
+        subKind,
+        id: fc.constant(nextId()),
+        loc: fc.constant(dummySrcInfoPrintable),
+    });
 }
 
 /**
@@ -91,12 +101,10 @@ export class Receive extends GenerativeEntity<AstReceiver> {
             );
             const param = new Parameter(this.scope, ty);
             this.scope.addNamed("parameter", param);
-            const internalSimple = generateRecieverKind(
-                "internal",
+            const internalSimple = generateInternalReceiverKind(
                 generateReceiverSimpleSubKind(param),
             );
-            const externalSimple = generateRecieverKind(
-                "external",
+            const externalSimple = generateExternalReceiverKind(
                 generateReceiverSimpleSubKind(param),
             );
             return fc.oneof(internalSimple, externalSimple);
@@ -120,20 +128,16 @@ export class Receive extends GenerativeEntity<AstReceiver> {
             });
         }
 
-        const internalFallback = generateRecieverKind(
-            "internal",
+        const internalFallback = generateInternalReceiverKind(
             generateReceiverFallbackSubKind(),
         );
-        const externalFallback = generateRecieverKind(
-            "external",
+        const externalFallback = generateExternalReceiverKind(
             generateReceiverFallbackSubKind(),
         );
-        const internalComment = generateRecieverKind(
-            "internal",
+        const internalComment = generateInternalReceiverKind(
             generateReceiverCommentSubKind(),
         );
-        const externalComment = generateRecieverKind(
-            "external",
+        const externalComment = generateExternalReceiverKind(
             generateReceiverCommentSubKind(),
         );
 
@@ -142,7 +146,7 @@ export class Receive extends GenerativeEntity<AstReceiver> {
             externalFallback,
             internalComment,
             externalComment,
-        );
+        ); // TODO: add bounce receiver generation
     }
 
     private generateBody(): fc.Arbitrary<AstStatement[]> {

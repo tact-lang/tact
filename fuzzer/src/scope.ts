@@ -47,6 +47,7 @@ function isNamedScopeItemKind(val: string): val is NamedScopeItemKind {
     return namedScopeItemKinds.find((tpe) => tpe === val) ? true : false;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const unnamedScopeItemKinds = ["statement", "receive"] as const;
 export type UnnamedScopeItemKind = (typeof unnamedScopeItemKinds)[number];
 
@@ -86,16 +87,14 @@ export class Scope {
     /**
      * Contains AST entries generated during the bottom-up AST generation.
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private mapUnnamed: Map<
         UnnamedScopeItemKind,
-        Map<IDIdx, GenerativeEntity<any>>
+        Map<IDIdx, GenerativeEntity<any>> // eslint-disable-line @typescript-eslint/no-explicit-any
     > = new Map();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private mapNamed: Map<
         NamedScopeItemKind,
-        Map<IDIdx, NamedGenerativeEntity<any>>
+        Map<IDIdx, NamedGenerativeEntity<any>> // eslint-disable-line @typescript-eslint/no-explicit-any
     > = new Map();
 
     constructor(kind: ScopeKind, parentScope: Scope | undefined) {

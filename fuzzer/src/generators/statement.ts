@@ -477,7 +477,9 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Collects all field map AstIds in parent scope.
      */
-    private collectFieldMapIds(entryKinds: NamedScopeItemKind[]): AstFieldAccess[] {
+    private collectFieldMapIds(
+        entryKinds: NamedScopeItemKind[],
+    ): AstFieldAccess[] {
         return this.parentScope
             .getNamedEntriesRecursive(...entryKinds)
             .filter(([_, mapTy]: [string, Type]) => mapTy.kind === "map")

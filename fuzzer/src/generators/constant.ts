@@ -56,10 +56,10 @@ export class ConstantDecl extends NamedGenerativeEntity<AstConstantDecl> {
 
     /**
      * Create definition for this constant destination.
-     * @param init An initializer evaluable in compile-time.
+     * @param init An initializer evaluable in compile-time. // cspell:disable-line
      */
     public createDefinition(init: fc.Arbitrary<AstExpression>): ConstantDef {
-        return new ConstantDef(this.name?.text, this.type, init);
+        return new ConstantDef(this.name.text, this.type, init);
     }
 }
 
@@ -70,7 +70,7 @@ export class ConstantDecl extends NamedGenerativeEntity<AstConstantDecl> {
 export class ConstantDef extends NamedGenerativeEntity<AstConstantDef> {
     /**
      * Create new constant definition from its name and type. Used to create definition from an existing declaration.
-     * @param init An initializer evaluable in compile-time.
+     * @param init An initializer evaluable in compile-time. // cspell:disable-line
      */
     constructor(
         name: string,
@@ -83,7 +83,7 @@ export class ConstantDef extends NamedGenerativeEntity<AstConstantDef> {
      * Create a new constant definition generation name from scope.
      * @param scope Scope to generate constant name from.
      * @param type Constant type.
-     * @param init An initializer evaluable in compile-time.
+     * @param init An initializer evaluable in compile-time. // cspell:disable-line
      */
     public static fromScope(
         scope: Scope,
@@ -97,13 +97,13 @@ export class ConstantDef extends NamedGenerativeEntity<AstConstantDef> {
         extraAttrs: AstConstantAttribute[],
         init?: fc.Arbitrary<AstExpression>,
     ): fc.Arbitrary<AstConstantDef> {
-        const choosenInit = init ?? this.init;
+        const chosenInit = init ?? this.init;
         return fc.record<AstConstantDef>({
             kind: fc.constant("constant_def"),
             id: fc.constant(this.idx),
             name: fc.constant(this.name),
             type: fc.constant(tyToAstType(this.type)),
-            initializer: choosenInit,
+            initializer: chosenInit,
             attributes: fc.constantFrom(extraAttrs),
             loc: fc.constant(dummySrcInfoPrintable),
         });
@@ -117,7 +117,7 @@ export class ConstantDef extends NamedGenerativeEntity<AstConstantDef> {
     }
 
     /**
-     * Generates a constant definition with extra attributes and overriden init.
+     * Generates a constant definition with extra attributes and overridden init.
      */
     public generateWithAttrs(
         extraAttrs: AstConstantAttribute[] = [],

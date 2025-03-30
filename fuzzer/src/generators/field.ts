@@ -12,7 +12,7 @@ import fc from "fast-check";
  */
 export class Field extends NamedGenerativeEntity<AstFieldDecl> {
     /**
-     * @param init An optional initializer evaluable in compile-time.
+     * @param init An optional initializer evaluable in compile-time. // cspell:disable-line
      * @param parentScope Scope this field belongs to. Could be a contract or program for struct fields.
      */
     constructor(

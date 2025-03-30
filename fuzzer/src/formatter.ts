@@ -489,17 +489,17 @@ class PrettyPrinter {
             case "statement_try":
                 return this.ppAstStatementTry(stmt);
             default:
-                return `Unsopported statement kind: ${stmt.kind}`;
+                return `Unsupported statement kind: ${stmt.kind}`;
         }
     }
 
-    ppStatementBlock(stmts: readonly AstStatement[]): string {
+    ppStatementBlock(statements: readonly AstStatement[]): string {
         this.increaseIndent();
-        const stmntsFormatted = stmts
+        const statementsFormatted = statements
             .map((stmt) => this.ppAstStatement(stmt))
             .join("\n");
         this.decreaseIndent();
-        const result = `{\n${stmntsFormatted}\n${this.indent()}}`;
+        const result = `{\n${statementsFormatted}\n${this.indent()}}`;
         return result;
     }
 

@@ -127,31 +127,28 @@ export const SUPPORTED_STDLIB_TYPES: StdlibType[] = [
     StdlibType.Int,
 ];
 
-namespace make {
-    export function PrimitiveType(name: string): AstPrimitiveTypeDecl {
-        const kind = "primitive_type_decl";
-        return {
-            kind,
-            id: nextId(),
-            name: generateAstIdFromName(name),
-            loc: dummySrcInfoPrintable,
-        };
-    }
-    export function ASTTypeRef(name: string): AstTypeId {
-        return {
-            kind: "type_id",
-            id: nextId(),
-            text: name,
-            loc: dummySrcInfoPrintable,
-        };
-    }
-    export function TypeRef(name: string): TypeRef {
-        return {
-            kind: "ref",
-            name,
-            optional: false,
-        };
-    }
+function makePrimitiveType(name: string): AstPrimitiveTypeDecl {
+    return {
+        kind: "primitive_type_decl",
+        id: nextId(),
+        name: generateAstIdFromName(name),
+        loc: dummySrcInfoPrintable,
+    };
+}
+function makeASTTypeRef(name: string): AstTypeId {
+    return {
+        kind: "type_id",
+        id: nextId(),
+        text: name,
+        loc: dummySrcInfoPrintable,
+    };
+}
+function makeTypeRef(name: string): TypeRef {
+    return {
+        kind: "ref",
+        name,
+        optional: false,
+    };
 }
 
 /**
@@ -161,14 +158,14 @@ const StdlibTypeCache: Map<StdlibType, [AstTypeDecl, AstType, TypeRef]> =
     new Map();
 Object.values(StdlibType).forEach((ty) => {
     StdlibTypeCache.set(ty, [
-        transformTy<AstTypeDecl>(ty, make.PrimitiveType),
-        transformTy<AstType>(ty, make.ASTTypeRef),
-        transformTy<TypeRef>(ty, make.TypeRef),
+        transformTy<AstTypeDecl>(ty, makePrimitiveType),
+        transformTy<AstType>(ty, makeASTTypeRef),
+        transformTy<TypeRef>(ty, makeTypeRef),
     ]);
 });
 
 /**
- * Creates a Tact type entry from the given tact-check type defintion.
+ * Creates a Tact type entry from the given tact-check type definition.
  */
 function transformTy<T>(ty: StdlibType, transform: (type: StdlibType) => T): T {
     if (!Object.values(StdlibType).includes(ty)) {
@@ -267,7 +264,7 @@ export function getReturnType(ty: FunctionType): Type {
  */
 export function getStdlibTypes(): AstTypeDecl[] {
     return [...Object.values(StdlibType)].map((type) =>
-        make.PrimitiveType(type),
+        makePrimitiveType(type),
     );
 }
 
@@ -448,7 +445,7 @@ export function isThis(ty: Type): boolean {
 
 /**
  * An heuristic that replicates the `resolvePartialFields` logic in the compiler in order to
- * detect if the message ough to be wrapped in `bounced<>`.
+ * detect if the message ought to be wrapped in `bounced<>`.
  */
 export function isBouncedMessage(ty: Type): boolean {
     if (ty.kind !== "message") {

@@ -47,7 +47,8 @@ export function createProperty<Ts extends [unknown, ...unknown[]]>(
     };
     const originalPredicate = args[args.length - 1] as (
         ...args: Ts
-    ) => boolean | void;
+    ) => boolean | void; // eslint-disable-line @typescript-eslint/no-invalid-void-type
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     const enhancedPredicate = (...args: Ts): boolean | void => {
         args.forEach((arg) => {
             GlobalContext.printSample(arg as AstNode);
