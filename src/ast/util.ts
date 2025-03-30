@@ -53,18 +53,6 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         return result as Ast.Boolean;
     }
 
-    function makeSimplifiedStringLiteral(
-        s: string,
-        loc: SrcInfo,
-    ): Ast.SimplifiedString {
-        const result = createNode({
-            kind: "simplified_string",
-            value: s,
-            loc: loc,
-        });
-        return result as Ast.SimplifiedString;
-    }
-
     function makeNullLiteral(loc: SrcInfo): Ast.Null {
         const result = createNode({
             kind: "null",
@@ -137,7 +125,6 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         makeBinaryExpression,
         makeNumberLiteral,
         makeBooleanLiteral,
-        makeSimplifiedStringLiteral,
         makeNullLiteral,
         makeCellLiteral,
         makeSliceLiteral,

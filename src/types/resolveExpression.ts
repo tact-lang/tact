@@ -124,7 +124,7 @@ function resolveSliceLiteral(
 }
 
 function resolveStringLiteral(
-    exp: Ast.String | Ast.SimplifiedString,
+    exp: Ast.String,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -853,10 +853,6 @@ export function resolveExpression(
         }
         case "slice": {
             return resolveSliceLiteral(exp, sctx, ctx);
-        }
-        case "simplified_string": {
-            // A simplified string is resolved as a string
-            return resolveStringLiteral(exp, sctx, ctx);
         }
         case "struct_value": {
             // A struct value is resolved as a struct instance

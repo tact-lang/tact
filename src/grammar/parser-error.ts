@@ -167,6 +167,9 @@ export const syntaxErrorSchema = <T, U>(
         noWildcard: () => {
             return handle(text(`Wildcard not allowed here`));
         },
+        undefinedUnicodeCodepoint: () => {
+            return handle(text(`Undefined Unicode code-point`));
+        },
     };
 };
 

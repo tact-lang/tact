@@ -642,6 +642,14 @@ exports[`grammar should fail literal-non-binary-digits 1`] = `
 "
 `;
 
+exports[`grammar should fail literal-string-undefined-unicode-codepoint 1`] = `
+"<unknown>:1:19: Undefined Unicode code-point
+> 1 | const S: String = "\\u{11ffff}";
+                        ^~~~~~~~~~~~
+  2 | 
+"
+`;
+
 exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
 "<unknown>:2:12: Numbers with leading zeroes cannot use underscores for JS compatibility
   1 | fun test_fun(): Int {

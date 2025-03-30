@@ -209,7 +209,6 @@ function expressionEffects(
         case "boolean":
         case "slice":
         case "null":
-        case "simplified_string":
         case "address":
         case "cell":
         case "struct_value":

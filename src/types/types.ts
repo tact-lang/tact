@@ -58,7 +58,7 @@ export function showValue(val: Ast.Literal): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(val.base);
-        case "simplified_string":
+        case "string":
             return val.value;
         case "boolean":
             return val.value ? "true" : "false";

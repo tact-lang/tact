@@ -256,6 +256,12 @@ describe("intrinsics", () => {
         expect((await contract.getGetAscii4()).toString()).toBe(
             "1563963554659859369353828835329962428465513941646011501275668087180532385",
         );
+        expect((await contract.getGetAscii5()).toString(16)).toBe(
+            "a090d080c225c0be48982c2a9",
+        );
+        expect((await contract.getGetAscii6()).toString(16)).toBe(
+            "a090d080c225c0be48982c2a9",
+        );
 
         // Check `crc32`
         expect((await contract.getGetCrc32()).toString()).toBe("2235694568");

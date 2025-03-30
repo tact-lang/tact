@@ -8,9 +8,6 @@ const valueExpressions: string[] = ["1", "true", "false", "null"];
 const notValueExpressions: string[] = [
     "g",
 
-    // Raw strings are not literals: they need to go through the interpreter to get transformed into simplified strings, which are literals.
-    '"one"',
-
     // Even if these three struct instances have literal fields, raw struct instances are not literals because they need to go through
     // the interpreter to get transformed into struct values.
     "Test {f1: 0, f2: true}",
