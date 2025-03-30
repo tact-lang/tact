@@ -17,7 +17,12 @@ import type { FunctionType, Type } from "../types";
 import { Return } from "./statement";
 import { Parameter } from "./parameter";
 import { Scope } from "../scope";
-import { createSample, dummySrcInfoPrintable, generateAstId, generateAstIdFromName } from "../util";
+import {
+    createSample,
+    dummySrcInfoPrintable,
+    generateAstId,
+    generateAstIdFromName,
+} from "../util";
 import { GenerativeEntity } from "./generator";
 
 import fc from "fast-check";
@@ -122,12 +127,7 @@ export class FunctionDef extends GenerativeEntity<AstFunctionDef> {
         this.kind = kind;
         this.name = name
             ? generateAstIdFromName(name)
-            : createSample(
-                  generateAstId(
-                      this.scope,
-                      kind === "function" ? "functionDef" : "methodDef",
-                  ),
-              );
+            : createSample(generateAstId(this.scope));
     }
 
     /**
@@ -198,12 +198,7 @@ export class FunctionDecl extends GenerativeEntity<AstFunctionDecl> {
         super(type);
         this.kind = "method";
         this.scope = new Scope(kind, parentScope);
-        this.name = createSample(
-            generateAstId(
-                this.scope,
-                kind === "function" ? "functionDecl" : "methodDecl",
-            ),
-        );
+        this.name = createSample(generateAstId(this.scope));
     }
 
     private generateImpl(

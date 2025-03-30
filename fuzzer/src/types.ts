@@ -370,21 +370,15 @@ export class TypeGen {
      * Generates an arbitrary struct or message signature.
      */
     public generateStruct(isMessage: boolean): fc.Arbitrary<Type> {
-        const kind = isMessage ? "message" : "struct";
         const structName = createSample(
-            generateName(
-                this.scope,
-                kind,
-                /*shadowing=*/ true,
-                /*isType=*/ true,
-            ),
+            generateName(this.scope, /*shadowing=*/ true, /*isType=*/ true),
         );
 
         // NOTE: It doesn't support nested structs/messages as they are not
         const fields = fc
             .array(
                 fc.record<StructField>({
-                    name: generateName(this.scope, kind), // TODO: kind in arguments doesn't makes sense here, change generateName signature so you can pass nothing in this argument
+                    name: generateName(this.scope),
                     type: this.stdlibArbitrary,
                     default: fc.constantFrom(undefined),
                 }),
@@ -392,7 +386,10 @@ export class TypeGen {
             )
             .filter((generatedFields) =>
                 generatedFields.every(
-                    (item, index) => generatedFields.indexOf(item) === index,
+                    (item, index) =>
+                        generatedFields.findIndex(
+                            (other) => other.name === item.name,
+                        ) === index,
                 ),
             );
         if (isMessage) {

@@ -24,7 +24,7 @@ import fc from "fast-check";
 export class ConstantDecl extends GenerativeEntity<AstConstantDecl> {
     constructor(scope: Scope, type: Type) {
         super(type);
-        this.name = createSample(generateAstId(scope, "constantDecl"));
+        this.name = createSample(generateAstId(scope));
     }
 
     private getAttributes(
@@ -92,11 +92,7 @@ export class ConstantDef extends GenerativeEntity<AstConstantDef> {
         type: Type,
         init: fc.Arbitrary<AstExpression>,
     ): ConstantDef {
-        return new ConstantDef(
-            createSample(generateName(scope, "constantDef")),
-            type,
-            init,
-        );
+        return new ConstantDef(createSample(generateName(scope)), type, init);
     }
 
     private generateImpl(

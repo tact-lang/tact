@@ -26,7 +26,7 @@ export class Parameter extends GenerativeEntity<AstTypedParameter> {
             );
         }
         super(type);
-        this.name = createSample(generateAstId(parentScope, "field"));
+        this.name = createSample(generateAstId(parentScope));
     }
 
     generate(): fc.Arbitrary<AstTypedParameter> {

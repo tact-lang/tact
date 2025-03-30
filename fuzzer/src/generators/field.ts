@@ -34,7 +34,7 @@ export class Field extends GenerativeEntity<AstFieldDecl> {
             );
         }
         super(type);
-        this.name = name ?? createSample(generateAstId(parentScope, "field"));
+        this.name = name ?? createSample(generateAstId(parentScope));
     }
 
     generate(): fc.Arbitrary<AstFieldDecl> {

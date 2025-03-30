@@ -47,7 +47,7 @@ export class Contract extends GenerativeEntity<AstContract> {
     ) {
         super({ kind: "util", type: UtilType.Contract });
         this.scope = new Scope("contract", parentScope);
-        this.name = createSample(generateAstId(this.scope, "contract"));
+        this.name = createSample(generateAstId(this.scope));
 
         const { receiveNum = 1 } = params;
         this.receiveNum = receiveNum;

@@ -91,7 +91,7 @@ export class Let extends GenerativeEntity<AstStatement> {
         private expr: fc.Arbitrary<AstExpression>,
     ) {
         super(type);
-        this.name = createSample(generateAstId(parentScope, "constantDef"));
+        this.name = createSample(generateAstId(parentScope));
     }
 
     generate(): fc.Arbitrary<AstStatement> {
@@ -509,8 +509,8 @@ export class Statement extends GenerativeEntity<AstStatement> {
             return undefined;
         }
         const map: fc.Arbitrary<AstExpression> = fc.oneof(...mapIds);
-        const keyVarName = createSample(generateName(scope, "let"));
-        const valueVarName = createSample(generateName(scope, "let"));
+        const keyVarName = createSample(generateName(scope));
+        const valueVarName = createSample(generateName(scope));
         const body = this.makeStmtsBlock(scope);
         return new ForeachStatement(
             map,
@@ -548,7 +548,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
         const tryStmts = this.makeStmtsBlock();
         if (randomBool()) {
             const catchScope = new Scope("block", this.parentScope);
-            const catchName = createSample(generateName(catchScope, "let"));
+            const catchName = createSample(generateName(catchScope));
             const catchStmts = this.makeStmtsBlock(catchScope).map((stmt) =>
                 createSample(stmt),
             );

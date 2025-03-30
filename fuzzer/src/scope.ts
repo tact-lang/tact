@@ -262,6 +262,24 @@ export class Scope {
             );
         }
     }
+    
+    /**
+     * Collects all names of all entities in the scope.
+     */
+    public getAllNames(): string[] {
+        return Array.from(this.map.values()).flatMap((m) =>
+            Array.from(m.values()).map((entity) => entity.name?.text ?? ""),
+        );
+    }
+
+    /**
+     * Collects all names of all entities in the scope and it all parent scopes.
+     */
+    public getAllNamesRecursive(): string[] {
+        return this.getAllNames().concat(
+            this.parentScope?.getAllNamesRecursive() ?? [],
+        );
+    }
 
     /**
      * Returns all items of the given type defined within this scope.

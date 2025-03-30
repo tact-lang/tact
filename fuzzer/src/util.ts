@@ -134,13 +134,12 @@ export function createSamplesArray<T>(
  */
 export function generateName(
     scope: Scope,
-    kind: ScopeItemKind,
     shadowing: boolean = true,
     isType: boolean = false,
 ): fc.Arbitrary<string> {
     const availableNames = shadowing
-        ? scope.getEntries(kind)
-        : scope.getEntriesRecursive(kind);
+        ? scope.getAllNames()
+        : scope.getAllNamesRecursive();
 
     return fc
         .stringMatching(isType ? VALID_TYPE_ID : VALID_ID)
@@ -167,18 +166,16 @@ export function generateAstIdFromName(name: string): AstId {
 /**
  * Generates AstId.
  * @param scope Current scope, from which AstId.text will be generated.
- * @param kind Entity for which AstId is generated.
  * @param shadowing Allow shadowing (using names available in parent scopes)
  */
 export function generateAstId(
     scope: Scope,
-    kind: ScopeItemKind,
     shadowing: boolean = true,
     isType: boolean = false,
 ): fc.Arbitrary<AstId> {
     return fc.record({
         kind: fc.constant("id"),
-        text: generateName(scope, kind, shadowing, isType),
+        text: generateName(scope, shadowing, isType),
         id: fc.constant(nextId()),
         loc: fc.constant(dummySrcInfoPrintable),
     });

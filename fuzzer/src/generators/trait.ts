@@ -57,7 +57,7 @@ export class Trait extends GenerativeEntity<AstTrait> {
     constructor(programScope: Scope, params: Partial<TraitParameters> = {}) {
         super({ kind: "util", type: UtilType.Trait });
         this.scope = new Scope("trait", programScope);
-        this.name = createSample(generateAstId(this.scope, "trait"));
+        this.name = createSample(generateAstId(this.scope));
 
         const {
             fieldNum = 1,
