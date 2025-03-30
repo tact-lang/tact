@@ -7,7 +7,7 @@ import { dirname, join, relative } from "path";
 
 const main = async () => {
     const rootDir = join(__dirname, "..");
-    for await (const file of glob("../dist/**/*.js", { cwd: rootDir })) {
+    for await (const file of glob("./dist/**/*.js", { cwd: rootDir })) {
         const fullPath = join(rootDir, file);
         const source = await readFile(fullPath, "utf-8");
         const newSource = source.replace(
@@ -26,7 +26,7 @@ const main = async () => {
         }
     }
 
-    for await (const file of glob("../dist/**/*.ts", { cwd: rootDir })) {
+    for await (const file of glob("./dist/**/*.ts", { cwd: rootDir })) {
         const fullPath = join(rootDir, file);
         const source = await readFile(fullPath, "utf-8");
         const newSource = source.replace(
