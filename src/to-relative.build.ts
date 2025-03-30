@@ -3,7 +3,7 @@
  */
 
 import { readFile, writeFile } from "fs/promises";
-import { dirname, join, relative } from "path";
+import { dirname, join, relative } from "path/posix";
 import { glob } from "glob";
 
 const main = async () => {
