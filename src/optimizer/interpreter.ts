@@ -1,41 +1,41 @@
 import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
-import { crc32 } from "../utils/crc32";
-import type * as Ast from "../ast/ast";
-import { evalConstantExpression } from "./constEval";
-import { CompilerContext } from "../context/context";
+import { crc32 } from "@/utils/crc32";
+import type * as Ast from "@/ast/ast";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { CompilerContext } from "@/context/context";
 import {
     idTextErr,
     TactCompilationError,
     TactConstEvalError,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../error/errors";
-import type { AstUtil } from "../ast/util";
-import { binaryOperationFromAugmentedAssignOperation } from "../ast/util";
-import { getAstUtil } from "../ast/util";
+} from "@/error/errors";
+import type { AstUtil } from "@/ast/util";
+import { binaryOperationFromAugmentedAssignOperation } from "@/ast/util";
+import { getAstUtil } from "@/ast/util";
 import {
     getStaticConstant,
     getStaticFunction,
     getType,
     hasStaticConstant,
     hasStaticFunction,
-} from "../types/resolveDescriptors";
-import { getExpType } from "../types/resolveExpression";
-import type { TypeRef } from "../types/types";
-import { showValue } from "../types/types";
-import { getParser, type Parser, type SrcInfo } from "../grammar";
-import { dummySrcInfo } from "../grammar";
-import type { FactoryAst } from "../ast/ast-helpers";
+} from "@/types/resolveDescriptors";
+import { getExpType } from "@/types/resolveExpression";
+import type { TypeRef } from "@/types/types";
+import { showValue } from "@/types/types";
+import { getParser, type Parser, type SrcInfo } from "@/grammar";
+import { dummySrcInfo } from "@/grammar";
+import type { FactoryAst } from "@/ast/ast-helpers";
 import {
     eqExpressions,
     eqNames,
     getAstFactory,
     idText,
     isSelfId,
-} from "../ast/ast-helpers";
-import { divFloor, modFloor } from "./util";
-import { sha256 } from "../utils/sha256";
+} from "@/ast/ast-helpers";
+import { divFloor, modFloor } from "@/optimizer/util";
+import { sha256 } from "@/utils/sha256";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);

@@ -1,7 +1,7 @@
 //type Test = { expr: string; isValue: boolean };
 
-import { getAstFactory, isLiteral } from "../ast/ast-helpers";
-import { getParser } from "./index";
+import { getAstFactory, isLiteral } from "@/ast/ast-helpers";
+import { getParser } from "@/grammar/index";
 
 const valueExpressions: string[] = ["1", "true", "false", "null"];
 

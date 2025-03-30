@@ -1,18 +1,18 @@
 import * as $ from "@tonstudio/parser-runtime";
-import type * as Ast from "../ast/ast";
-import type { FactoryAst } from "../ast/ast-helpers";
-import type { $ast } from "./grammar";
-import * as G from "./grammar";
-import { TactCompilationError } from "../error/errors";
-import type { SyntaxErrors } from "./parser-error";
-import { syntaxErrorSchema } from "./parser-error";
-import type { AstSchema } from "../ast/getAstSchema";
-import { getAstSchema } from "../ast/getAstSchema";
-import { getSrcInfo } from "./src-info";
-import { displayToString } from "../error/display-to-string";
-import { makeMakeVisitor } from "../utils/tricks";
-import type { Language, Source } from "../imports/source";
-import { emptyPath, fromString } from "../imports/path";
+import type * as Ast from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import type { $ast } from "@/grammar/grammar";
+import * as G from "@/grammar/grammar";
+import { TactCompilationError } from "@/error/errors";
+import type { SyntaxErrors } from "@/grammar/parser-error";
+import { syntaxErrorSchema } from "@/grammar/parser-error";
+import type { AstSchema } from "@/ast/getAstSchema";
+import { getAstSchema } from "@/ast/getAstSchema";
+import { getSrcInfo } from "@/grammar/src-info";
+import { displayToString } from "@/error/display-to-string";
+import { makeMakeVisitor } from "@/utils/tricks";
+import type { Language, Source } from "@/imports/source";
+import { emptyPath, fromString } from "@/imports/path";
 
 const makeVisitor = makeMakeVisitor("$");
 
@@ -1527,4 +1527,4 @@ export type Parser = {
     parseStatement: (sourceCode: string) => Ast.Statement;
 };
 
-export { dummySrcInfo, SrcInfo } from "./src-info";
+export { dummySrcInfo, SrcInfo } from "@/grammar/src-info";

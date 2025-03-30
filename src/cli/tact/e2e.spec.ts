@@ -1,5 +1,5 @@
 import { stat } from "fs/promises";
-import { makeCodegen, runCommand } from "../test-util.build";
+import { makeCodegen, runCommand } from "@/cli/test-util.build";
 import { join, normalize, dirname } from "path";
 
 // disable tests on windows

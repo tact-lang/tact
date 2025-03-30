@@ -1,5 +1,5 @@
-import { keys } from "../utils/tricks";
-import type * as Ast from "./ast";
+import { keys } from "@/utils/tricks";
+import type * as Ast from "@/ast/ast";
 
 const augmentedAssignOperationsRecord: Record<
     Ast.AugmentedAssignOperation,

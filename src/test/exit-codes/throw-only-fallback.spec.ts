@@ -2,11 +2,11 @@ import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import "@ton/test-utils";
-import { ThrowOnlyFallbackEmpty } from "./contracts/output/throw-only-fallback_ThrowOnlyFallbackEmpty";
-import { ThrowOnlyFallbackText } from "./contracts/output/throw-only-fallback_ThrowOnlyFallbackText";
-import { ThrowOnlyFallbackBinary } from "./contracts/output/throw-only-fallback_ThrowOnlyFallbackBinary";
-import { ThrowOnlyFallbackMixed } from "./contracts/output/throw-only-fallback_ThrowOnlyFallbackMixed";
-import { NotThrowOnlyFallback } from "./contracts/output/throw-only-fallback_NotThrowOnlyFallback";
+import { ThrowOnlyFallbackEmpty } from "@/test/exit-codes/contracts/output/throw-only-fallback_ThrowOnlyFallbackEmpty";
+import { ThrowOnlyFallbackText } from "@/test/exit-codes/contracts/output/throw-only-fallback_ThrowOnlyFallbackText";
+import { ThrowOnlyFallbackBinary } from "@/test/exit-codes/contracts/output/throw-only-fallback_ThrowOnlyFallbackBinary";
+import { ThrowOnlyFallbackMixed } from "@/test/exit-codes/contracts/output/throw-only-fallback_ThrowOnlyFallbackMixed";
+import { NotThrowOnlyFallback } from "@/test/exit-codes/contracts/output/throw-only-fallback_NotThrowOnlyFallback";
 
 describe("throw only fallback", () => {
     let blockchain: Blockchain;

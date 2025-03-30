@@ -12,7 +12,7 @@ import {
     SLICE,
     SIMPLE_STRUCT,
     NESTED_STRUCT,
-} from "./contracts/output/constants-for-wrappers_ConstantTester";
+} from "@/test/e2e-emulated/contracts/output/constants-for-wrappers_ConstantTester";
 import "@ton/test-utils";
 
 describe("constants-for-wrappers", () => {

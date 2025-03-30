@@ -1,37 +1,37 @@
-import type { CompilerContext } from "../context/context";
-import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
+import type { CompilerContext } from "@/context/context";
+import { getAllocation, getSortedTypes } from "@/storage/resolveAllocation";
 import {
     getAllStaticConstants,
     getAllStaticFunctions,
     getAllTypes,
     toBounced,
-} from "../types/resolveDescriptors";
-import type { WrittenFunction } from "./Writer";
-import { WriterContext } from "./Writer";
+} from "@/types/resolveDescriptors";
+import type { WrittenFunction } from "@/generator/Writer";
+import { WriterContext } from "@/generator/Writer";
 import {
     writeBouncedParser,
     writeOptionalParser,
     writeOptionalSerializer,
     writeParser,
     writeSerializer,
-} from "./writers/writeSerialization";
-import { writeStdlib } from "./writers/writeStdlib";
-import { writeAccessors } from "./writers/writeAccessors";
+} from "@/generator/writers/writeSerialization";
+import { writeStdlib } from "@/generator/writers/writeStdlib";
+import { writeAccessors } from "@/generator/writers/writeAccessors";
 import type { ContractABI } from "@ton/core";
-import { writeFunction } from "./writers/writeFunction";
-import { calculateIPFSlink } from "../utils/calculateIPFSlink";
-import { getRawAST } from "../context/store";
-import { emit } from "./emitter/emit";
+import { writeFunction } from "@/generator/writers/writeFunction";
+import { calculateIPFSlink } from "@/utils/calculateIPFSlink";
+import { getRawAST } from "@/context/store";
+import { emit } from "@/generator/emitter/emit";
 import {
     writeInit,
     writeMainContract,
     writeContractStorageOps,
-} from "./writers/writeContract";
-import { funcInitIdOf } from "./writers/id";
-import { idToHex } from "../utils/idToHex";
-import { trimIndent } from "../utils/text";
-import type { ContractsCodes } from "./writers/writeContract";
-import { writeTypescriptValue } from "./writers/writeExpression";
+} from "@/generator/writers/writeContract";
+import { funcInitIdOf } from "@/generator/writers/id";
+import { idToHex } from "@/utils/idToHex";
+import { trimIndent } from "@/utils/text";
+import type { ContractsCodes } from "@/generator/writers/writeContract";
+import { writeTypescriptValue } from "@/generator/writers/writeExpression";
 
 export async function writeProgram(
     ctx: CompilerContext,

@@ -4,9 +4,9 @@ import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
 import { internal } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { SampleUpgradeContract } from "./contracts/output/upgrade_SampleUpgradeContract";
-import { SampleUpgradeContractV2 } from "./contracts/output/upgrade-v2_SampleUpgradeContractV2";
-import { SampleUpgradeContractV3 } from "./contracts/output/upgrade-v3_SampleUpgradeContractV3";
+import { SampleUpgradeContract } from "@/test/e2e-emulated/contracts/output/upgrade_SampleUpgradeContract";
+import { SampleUpgradeContractV2 } from "@/test/e2e-emulated/contracts/output/upgrade-v2_SampleUpgradeContractV2";
+import { SampleUpgradeContractV3 } from "@/test/e2e-emulated/contracts/output/upgrade-v3_SampleUpgradeContractV3";
 import "@ton/test-utils";
 
 describe("upgrade", () => {

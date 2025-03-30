@@ -1,10 +1,10 @@
 import type { ABIField } from "@ton/core";
-import { throwInternalCompilerError } from "../error/errors";
-import type * as Ast from "../ast/ast";
-import type { SrcInfo } from "../grammar";
-import { idText } from "../ast/ast-helpers";
-import type { ItemOrigin } from "../imports/source";
-import type { Effect } from "./effects";
+import { throwInternalCompilerError } from "@/error/errors";
+import type * as Ast from "@/ast/ast";
+import type { SrcInfo } from "@/grammar";
+import { idText } from "@/ast/ast-helpers";
+import type { ItemOrigin } from "@/imports/source";
+import type { Effect } from "@/types/effects";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";

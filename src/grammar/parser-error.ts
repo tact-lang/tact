@@ -1,4 +1,4 @@
-import type { ErrorDisplay } from "../error/display";
+import type { ErrorDisplay } from "@/error/display";
 
 const attributeSchema =
     (name: string) =>

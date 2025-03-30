@@ -1,9 +1,9 @@
-import type * as Ast from "./ast";
-import { groupBy, intercalate, isUndefined } from "../utils/array";
-import { makeVisitor } from "../utils/tricks";
-import { astNumToString, idText } from "./ast-helpers";
-import { asString } from "../imports/path";
-import { throwInternalCompilerError } from "../error/errors";
+import type * as Ast from "@/ast/ast";
+import { groupBy, intercalate, isUndefined } from "@/utils/array";
+import { makeVisitor } from "@/utils/tricks";
+import { astNumToString, idText } from "@/ast/ast-helpers";
+import { asString } from "@/imports/path";
+import { throwInternalCompilerError } from "@/error/errors";
 
 //
 // Types

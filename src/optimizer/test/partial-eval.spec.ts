@@ -1,15 +1,15 @@
-import type * as Ast from "../../ast/ast";
-import type { AstUtil } from "../../ast/util";
-import { getAstUtil } from "../../ast/util";
-import { getOptimizer } from "../constEval";
-import { CompilerContext } from "../../context/context";
-import type { ExpressionTransformer, Rule } from "../types";
-import { AssociativeRule3 } from "../associative";
-import { evalBinaryOp, evalUnaryOp } from "../interpreter";
-import { getParser } from "../../grammar";
-import { throwInternalCompilerError } from "../../error/errors";
-import type { FactoryAst } from "../../ast/ast-helpers";
-import { eqExpressions, getAstFactory, isLiteral } from "../../ast/ast-helpers";
+import type * as Ast from "@/ast/ast";
+import type { AstUtil } from "@/ast/util";
+import { getAstUtil } from "@/ast/util";
+import { getOptimizer } from "@/optimizer/constEval";
+import { CompilerContext } from "@/context/context";
+import type { ExpressionTransformer, Rule } from "@/optimizer/types";
+import { AssociativeRule3 } from "@/optimizer/associative";
+import { evalBinaryOp, evalUnaryOp } from "@/optimizer/interpreter";
+import { getParser } from "@/grammar";
+import { throwInternalCompilerError } from "@/error/errors";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { eqExpressions, getAstFactory, isLiteral } from "@/ast/ast-helpers";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";

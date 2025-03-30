@@ -1,12 +1,12 @@
-import type * as Ast from "../ast/ast";
-import { eqNames, idText } from "../ast/ast-helpers";
+import type * as Ast from "@/ast/ast";
+import { eqNames, idText } from "@/ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
-import type { CompilerContext } from "../context/context";
-import { createContextStore } from "../context/context";
+} from "@/error/errors";
+import type { CompilerContext } from "@/context/context";
+import { createContextStore } from "@/context/context";
 import {
     getAllTypes,
     getStaticConstant,
@@ -14,15 +14,15 @@ import {
     getType,
     hasStaticConstant,
     hasStaticFunction,
-} from "./resolveDescriptors";
-import type { FunctionParameter, TypeRef } from "./types";
-import { printTypeRef, typeRefEquals } from "./types";
-import type { StatementContext } from "./resolveStatements";
-import { MapFunctions } from "../abi/map";
-import { GlobalFunctions } from "../abi/global";
-import { isAssignable, moreGeneralType } from "./subtyping";
-import { StructFunctions } from "../abi/struct";
-import { prettyPrint } from "../ast/ast-printer";
+} from "@/types/resolveDescriptors";
+import type { FunctionParameter, TypeRef } from "@/types/types";
+import { printTypeRef, typeRefEquals } from "@/types/types";
+import type { StatementContext } from "@/types/resolveStatements";
+import { MapFunctions } from "@/abi/map";
+import { GlobalFunctions } from "@/abi/global";
+import { isAssignable, moreGeneralType } from "@/types/subtyping";
+import { StructFunctions } from "@/abi/struct";
+import { prettyPrint } from "@/ast/ast-printer";
 
 const store = createContextStore<{
     ast: Ast.Expression;

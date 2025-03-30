@@ -1,14 +1,14 @@
-import type * as Ast from "../ast/ast";
-import type { FactoryAst } from "../ast/ast-helpers";
-import { eqNames, idText, isSelfId, isSlice, selfId } from "../ast/ast-helpers";
-import { traverse, traverseAndCheck } from "../ast/iterators";
+import type * as Ast from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { eqNames, idText, isSelfId, isSlice, selfId } from "@/ast/ast-helpers";
+import { traverse, traverseAndCheck } from "@/ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
-import type { CompilerContext, Store } from "../context/context";
-import { createContextStore } from "../context/context";
+} from "@/error/errors";
+import type { CompilerContext, Store } from "@/context/context";
+import { createContextStore } from "@/context/context";
 import type {
     ConstantDescription,
     FieldDescription,
@@ -19,26 +19,26 @@ import type {
     ReceiverSelector,
     TypeDescription,
     TypeRef,
-} from "./types";
-import { printTypeRef, receiverSelectorName, typeRefEquals } from "./types";
-import { getRawAST } from "../context/store";
-import { cloneNode } from "../ast/clone";
-import { crc16 } from "../utils/crc16";
-import { isSubsetOf } from "../utils/isSubsetOf";
+} from "@/types/types";
+import { printTypeRef, receiverSelectorName, typeRefEquals } from "@/types/types";
+import { getRawAST } from "@/context/store";
+import { cloneNode } from "@/ast/clone";
+import { crc16 } from "@/utils/crc16";
+import { isSubsetOf } from "@/utils/isSubsetOf";
 import {
     intMapKeyFormats,
     intMapValFormats,
     resolveABIType,
-} from "./resolveABITypeRef";
-import { enabledExternals } from "../config/features";
-import { isRuntimeType } from "./isRuntimeType";
-import { GlobalFunctions } from "../abi/global";
-import { getExpType, resolveExpression } from "./resolveExpression";
-import { addVariable, emptyContext } from "./resolveStatements";
-import { isAssignable } from "./subtyping";
-import type { ItemOrigin } from "../imports/source";
-import { isUndefined } from "../utils/array";
-import type { Effect } from "./effects";
+} from "@/types/resolveABITypeRef";
+import { enabledExternals } from "@/config/features";
+import { isRuntimeType } from "@/types/isRuntimeType";
+import { GlobalFunctions } from "@/abi/global";
+import { getExpType, resolveExpression } from "@/types/resolveExpression";
+import { addVariable, emptyContext } from "@/types/resolveStatements";
+import { isAssignable } from "@/types/subtyping";
+import type { ItemOrigin } from "@/imports/source";
+import { isUndefined } from "@/utils/array";
+import type { Effect } from "@/types/effects";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();

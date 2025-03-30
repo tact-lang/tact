@@ -1,13 +1,13 @@
-import type { Logger, LoggerHandlers } from "../error/logger-util";
-import { makeLogger } from "../error/logger-util";
+import type { Logger, LoggerHandlers } from "@/error/logger-util";
+import { makeLogger } from "@/error/logger-util";
 import {
     printError,
     showExpectedText,
     showTemplate,
-} from "../error/string-util";
+} from "@/error/string-util";
 import { cwd } from "process";
-import { throwInternal } from "../error/errors";
-import type { AnsiMarkup } from "./colors";
+import { throwInternal } from "@/error/errors";
+import type { AnsiMarkup } from "@/cli/colors";
 import type * as path from "path";
 
 export const CliLogger = () => {

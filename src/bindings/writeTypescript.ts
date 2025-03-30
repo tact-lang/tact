@@ -1,5 +1,5 @@
 import * as changeCase from "change-case";
-import { Writer } from "../utils/Writer";
+import { Writer } from "@/utils/Writer";
 import {
     Cell,
     type ABIArgument,
@@ -17,20 +17,20 @@ import {
     writeStruct,
     writeTupleParser,
     writeTupleSerializer,
-} from "./typescript/writeStruct";
-import type { AllocationCell } from "../storage/operation";
-import { throwInternalCompilerError } from "../error/errors";
-import { topologicalSort } from "../utils/utils";
+} from "@/bindings/typescript/writeStruct";
+import type { AllocationCell } from "@/storage/operation";
+import { throwInternalCompilerError } from "@/error/errors";
+import { topologicalSort } from "@/utils/utils";
 import {
     allocate,
     getAllocationOperationFromField,
-} from "../storage/allocator";
-import { serializers } from "./typescript/serializers";
+} from "@/storage/allocator";
+import { serializers } from "@/bindings/typescript/serializers";
 
-import { eqNames } from "../ast/ast-helpers";
-import { enabledOptimizedChildCode } from "../config/features";
-import type { CompilerContext } from "../context/context";
-import type { TypeDescription } from "../types/types";
+import { eqNames } from "@/ast/ast-helpers";
+import { enabledOptimizedChildCode } from "@/config/features";
+import type { CompilerContext } from "@/context/context";
+import type { TypeDescription } from "@/types/types";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];

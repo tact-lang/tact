@@ -1,5 +1,5 @@
-import { createSingleFileConfig, run } from "../../../cli/tact";
-import { keyTypes, valTypes } from "./map-properties-key-value-types";
+import { createSingleFileConfig, run } from "@/cli/tact";
+import { keyTypes, valTypes } from "@/test/e2e-emulated/map-tests/map-properties-key-value-types";
 import { mkdir, writeFile } from "fs/promises";
 import path, { basename, dirname, extname } from "path";
 import { exit } from "node:process";
@@ -9,12 +9,12 @@ import {
     intValFormats,
     maxInt,
     minInt,
-} from "./map-int-limits-key-value-types";
+} from "@/test/e2e-emulated/map-tests/map-int-limits-key-value-types";
 import { readFile } from "node:fs/promises";
-import { createVirtualFileSystem } from "../../../vfs/createVirtualFileSystem";
-import files from "../../../stdlib/stdlib";
-import { Logger, LogLevel } from "../../../context/logger";
-import { createNodeFileSystem } from "../../../vfs/createNodeFileSystem";
+import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
+import files from "@/stdlib/stdlib";
+import { Logger, LogLevel } from "@/context/logger";
+import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 
 type TestKind = "map-properties" | "map-int-limits";
 

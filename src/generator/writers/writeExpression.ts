@@ -3,43 +3,43 @@ import {
     TactConstEvalError,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../../error/errors";
-import type * as Ast from "../../ast/ast";
-import { getExpType } from "../../types/resolveExpression";
+} from "@/error/errors";
+import type * as Ast from "@/ast/ast";
+import { getExpType } from "@/types/resolveExpression";
 import {
     getStaticConstant,
     getStaticFunction,
     getType,
     hasStaticConstant,
-} from "../../types/resolveDescriptors";
-import type { FieldDescription, TypeDescription } from "../../types/types";
-import { printTypeRef } from "../../types/types";
-import type { TypeRef } from "../../types/types";
-import type { WriterContext } from "../Writer";
-import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { MapFunctions } from "../../abi/map";
-import { GlobalFunctions } from "../../abi/global";
-import { funcIdOf } from "./id";
-import { StructFunctions } from "../../abi/struct";
-import { resolveFuncType } from "./resolveFuncType";
+} from "@/types/resolveDescriptors";
+import type { FieldDescription, TypeDescription } from "@/types/types";
+import { printTypeRef } from "@/types/types";
+import type { TypeRef } from "@/types/types";
+import type { WriterContext } from "@/generator/Writer";
+import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
+import { MapFunctions } from "@/abi/map";
+import { GlobalFunctions } from "@/abi/global";
+import { funcIdOf } from "@/generator/writers/id";
+import { StructFunctions } from "@/abi/struct";
+import { resolveFuncType } from "@/generator/writers/resolveFuncType";
 import {
     writeAddress,
     writeCell,
     writeSlice,
     writeString,
-} from "./writeConstant";
-import { ops } from "./ops";
-import { writeCastedExpression } from "./writeFunction";
-import { isLvalue } from "../../types/resolveStatements";
-import { evalConstantExpression } from "../../optimizer/constEval";
-import { getAstUtil } from "../../ast/util";
+} from "@/generator/writers/writeConstant";
+import { ops } from "@/generator/writers/ops";
+import { writeCastedExpression } from "@/generator/writers/writeFunction";
+import { isLvalue } from "@/types/resolveStatements";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { getAstUtil } from "@/ast/util";
 import {
     eqNames,
     getAstFactory,
     idText,
     tryExtractPath,
-} from "../../ast/ast-helpers";
-import { enabledDebug, enabledNullChecks } from "../../config/features";
+} from "@/ast/ast-helpers";
+import { enabledDebug, enabledNullChecks } from "@/config/features";
 
 function isNull(wCtx: WriterContext, expr: Ast.Expression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";

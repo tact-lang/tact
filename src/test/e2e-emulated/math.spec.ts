@@ -1,9 +1,9 @@
 import { beginCell, Dictionary, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { MathTester } from "./contracts/output/math_MathTester";
+import { MathTester } from "@/test/e2e-emulated/contracts/output/math_MathTester";
 import "@ton/test-utils";
-import { randomAddress } from "../utils/random-utils";
+import { randomAddress } from "@/test/utils/random-utils";
 
 describe("math", () => {
     let blockchain: Blockchain;
