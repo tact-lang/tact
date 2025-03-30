@@ -24,7 +24,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['src/**/*.{js,ts,jsx,tsx}'],
+      files: ["src/**/*.{js,ts,jsx,tsx}"],
       rules: {
         "no-restricted-imports": [
           "error",
@@ -32,8 +32,8 @@ module.exports = {
             patterns: ["./*", "../*"],
           },
         ],
-      }
-    }
+      },
+    },
   ],
   rules: {
     "@typescript-eslint/consistent-type-imports": [
