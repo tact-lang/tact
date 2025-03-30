@@ -1,9 +1,9 @@
 import { beginCell, Builder, Cell, Slice, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { SerializationTester3 } from "./contracts/output/serialization-3_SerializationTester3";
-import { SerializationTester2 } from "./contracts/output/serialization-2_SerializationTester2";
-import { SerializationTester } from "./contracts/output/serialization_SerializationTester";
+import { SerializationTester3 } from "@/test/e2e-emulated/contracts/output/serialization-3_SerializationTester3";
+import { SerializationTester2 } from "@/test/e2e-emulated/contracts/output/serialization-2_SerializationTester2";
+import { SerializationTester } from "@/test/e2e-emulated/contracts/output/serialization_SerializationTester";
 import "@ton/test-utils";
 
 describe("serialization", () => {

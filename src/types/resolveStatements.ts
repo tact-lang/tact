@@ -1,19 +1,18 @@
-import type * as Ast from "../ast/ast";
-import type { CompilerContext } from "../context/context";
-import { isAssignable } from "./subtyping";
+import type * as Ast from "@/ast/ast";
+import type { CompilerContext } from "@/context/context";
+import { isAssignable } from "@/types/subtyping";
 import {
     tryExtractPath,
     eqNames,
-    isWildcard,
     isSelfId,
     idText,
     selfId,
-} from "../ast/ast-helpers";
+} from "@/ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
+} from "@/error/errors";
 import {
     getAllStaticFunctions,
     getStaticConstant,
@@ -21,11 +20,11 @@ import {
     hasStaticConstant,
     resolveTypeRef,
     getAllTypes,
-} from "./resolveDescriptors";
-import { getExpType, resolveExpression } from "./resolveExpression";
-import type { FunctionDescription, TypeRef } from "./types";
-import { printTypeRef } from "./types";
-import type { SrcInfo } from "../grammar";
+} from "@/types/resolveDescriptors";
+import { getExpType, resolveExpression } from "@/types/resolveExpression";
+import type { FunctionDescription, TypeRef } from "@/types/types";
+import { printTypeRef } from "@/types/types";
+import type { SrcInfo } from "@/grammar";
 
 export type StatementContext = {
     root: SrcInfo;
@@ -49,11 +48,14 @@ export function emptyContext(
     };
 }
 
-function checkVariableExists(
+function ensureVariableDoesNotExist(
     ctx: CompilerContext,
     sctx: StatementContext,
-    name: Ast.Id,
+    name: Ast.OptionalId,
 ): void {
+    if (name.kind !== "id") {
+        return;
+    }
     if (sctx.vars.has(idText(name))) {
         throwCompilationError(
             `Variable already exists: ${idTextErr(name)}`,
@@ -111,13 +113,13 @@ function removeRequiredVariable(
 }
 
 export function addVariable(
-    name: Ast.Id,
+    name: Ast.OptionalId,
     ref: TypeRef,
     ctx: CompilerContext,
     sctx: StatementContext,
 ): StatementContext {
-    checkVariableExists(ctx, sctx, name); // Should happen earlier
-    if (isWildcard(name)) {
+    ensureVariableDoesNotExist(ctx, sctx, name); // Should happen earlier
+    if (name.kind === "wildcard") {
         return sctx;
     }
     return {
@@ -238,7 +240,7 @@ function processStatements(
                     ctx = resolveExpression(s.expression, sctx, ctx);
 
                     // Check variable name
-                    checkVariableExists(ctx, sctx, s.name);
+                    ensureVariableDoesNotExist(ctx, sctx, s.name);
 
                     // Check type
                     const expressionType = getExpType(ctx, s.expression);
@@ -252,15 +254,19 @@ function processStatements(
                         }
                         sctx = addVariable(s.name, variableType, ctx, sctx);
                     } else {
+                        // Here it's fine to display _ as variable name, because
+                        // let can have only one wildcard. In other cases it's not,
+                        // so we must not do it in `idTextErr`
+                        const name = s.name.kind === "id" ? s.name : "_";
                         if (expressionType.kind === "null") {
                             throwCompilationError(
-                                `Cannot infer type for ${idTextErr(s.name)}`,
+                                `Cannot infer type for ${idTextErr(name)}`,
                                 s.loc,
                             );
                         }
                         if (expressionType.kind === "void") {
                             throwCompilationError(
-                                `The inferred type of variable ${idTextErr(s.name)} is "void", which is not allowed`,
+                                `The inferred type of variable ${idTextErr(name)} is "void", which is not allowed`,
                                 s.loc,
                             );
                         }
@@ -565,7 +571,7 @@ function processStatements(
 
                     let catchCtx = sctx;
                     // Process catchName variable for exit code
-                    checkVariableExists(
+                    ensureVariableDoesNotExist(
                         ctx,
                         initialSctx,
                         s.catchBlock.catchName,
@@ -627,8 +633,8 @@ function processStatements(
                 let foreachSctx = sctx;
 
                 // Add key and value to statement context
-                if (!isWildcard(s.keyName)) {
-                    checkVariableExists(ctx, initialSctx, s.keyName);
+                if (s.keyName.kind === "id") {
+                    ensureVariableDoesNotExist(ctx, initialSctx, s.keyName);
                     foreachSctx = addVariable(
                         s.keyName,
                         { kind: "ref", name: mapType.key, optional: false },
@@ -636,8 +642,8 @@ function processStatements(
                         initialSctx,
                     );
                 }
-                if (!isWildcard(s.valueName)) {
-                    checkVariableExists(ctx, foreachSctx, s.valueName);
+                if (s.valueName.kind === "id") {
+                    ensureVariableDoesNotExist(ctx, foreachSctx, s.valueName);
                     foreachSctx = addVariable(
                         s.valueName,
                         { kind: "ref", name: mapType.value, optional: false },
@@ -671,7 +677,7 @@ function processStatements(
 
                 // Check variable names
                 for (const [_, name] of s.identifiers.values()) {
-                    checkVariableExists(ctx, sctx, name);
+                    ensureVariableDoesNotExist(ctx, sctx, name);
                 }
 
                 // Check type
@@ -731,7 +737,7 @@ function processStatements(
                             field.loc,
                         );
                     }
-                    if (name.text !== "_") {
+                    if (name.kind === "id") {
                         sctx = addVariable(name, f.type, ctx, sctx);
                     }
                 });

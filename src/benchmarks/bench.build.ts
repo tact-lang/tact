@@ -1,5 +1,5 @@
-import { __DANGER__disableVersionNumber } from "../pipeline/version";
-import { allInFolder } from "../test/utils/all-in-folder.build";
+import { __DANGER__disableVersionNumber } from "@/pipeline/version";
+import { allInFolder } from "@/test/utils/all-in-folder.build";
 import { promises as fs } from "fs";
 import path from "path";
 

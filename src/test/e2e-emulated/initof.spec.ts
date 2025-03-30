@@ -1,10 +1,10 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { Self } from "./contracts/output/initof_Self";
-import { Parent } from "./contracts/output/initof_Parent";
-import { TestInit } from "./contracts/output/initof-2_TestInit";
-import { A } from "./contracts/output/initof-3_A";
+import { Self } from "@/test/e2e-emulated/contracts/output/initof_Self";
+import { Parent } from "@/test/e2e-emulated/contracts/output/initof_Parent";
+import { TestInit } from "@/test/e2e-emulated/contracts/output/initof-2_TestInit";
+import { A } from "@/test/e2e-emulated/contracts/output/initof-3_A";
 import "@ton/test-utils";
 
 describe("initOf", () => {

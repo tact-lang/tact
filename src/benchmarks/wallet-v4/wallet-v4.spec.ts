@@ -7,23 +7,27 @@ import { SendMode } from "@ton/core";
 import { beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
 
-import { getUsedGas, generateResults, printBenchmarkTable } from "../utils/gas";
-import benchmarkResults from "./results_gas.json";
+import {
+    getUsedGas,
+    generateResults,
+    printBenchmarkTable,
+} from "@/benchmarks/utils/gas";
+import benchmarkResults from "@/benchmarks/wallet-v4/results_gas.json";
 import type { KeyPair } from "@ton/crypto";
 import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";
 import { readFileSync } from "fs";
-import { posixNormalize } from "../../utils/filePath";
+import { posixNormalize } from "@/utils/filePath";
 import { resolve } from "path";
-import type { PluginRequestFunds } from "../contracts/output/wallet-v4_WalletV4";
+import type { PluginRequestFunds } from "@/benchmarks/contracts/output/wallet-v4_WalletV4";
 import {
     storePluginRequestFunds,
     WalletV4,
-} from "../contracts/output/wallet-v4_WalletV4";
+} from "@/benchmarks/contracts/output/wallet-v4_WalletV4";
 import {
     bufferToBigInt,
     createSeqnoCounter,
     validUntil,
-} from "../wallet-v5/utils";
+} from "@/benchmarks/wallet-v5/utils";
 
 function createSimpleTransferBody(testReceiver: Address, forwardValue: bigint) {
     const msg = beginCell().storeUint(0, 8);

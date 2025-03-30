@@ -1,12 +1,12 @@
-import type * as Ast from "../ast/ast";
-import { eqNames, idText, isWildcard } from "../ast/ast-helpers";
+import type * as Ast from "@/ast/ast";
+import { eqNames, idText } from "@/ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
-import type { CompilerContext } from "../context/context";
-import { createContextStore } from "../context/context";
+} from "@/error/errors";
+import type { CompilerContext } from "@/context/context";
+import { createContextStore } from "@/context/context";
 import {
     getAllTypes,
     getStaticConstant,
@@ -14,15 +14,15 @@ import {
     getType,
     hasStaticConstant,
     hasStaticFunction,
-} from "./resolveDescriptors";
-import type { FunctionParameter, TypeRef } from "./types";
-import { printTypeRef, typeRefEquals } from "./types";
-import type { StatementContext } from "./resolveStatements";
-import { MapFunctions } from "../abi/map";
-import { GlobalFunctions } from "../abi/global";
-import { isAssignable, moreGeneralType } from "./subtyping";
-import { StructFunctions } from "../abi/struct";
-import { prettyPrint } from "../ast/ast-printer";
+} from "@/types/resolveDescriptors";
+import type { FunctionParameter, TypeRef } from "@/types/types";
+import { printTypeRef, typeRefEquals } from "@/types/types";
+import type { StatementContext } from "@/types/resolveStatements";
+import { MapFunctions } from "@/abi/map";
+import { GlobalFunctions } from "@/abi/global";
+import { isAssignable, moreGeneralType } from "@/types/subtyping";
+import { StructFunctions } from "@/abi/struct";
+import { prettyPrint } from "@/ast/ast-printer";
 
 const store = createContextStore<{
     ast: Ast.Expression;
@@ -124,7 +124,7 @@ function resolveSliceLiteral(
 }
 
 function resolveStringLiteral(
-    exp: Ast.String | Ast.SimplifiedString,
+    exp: Ast.String,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -510,8 +510,10 @@ function checkParameterType(
 ) {
     const t = getExpType(ctx, expression);
     if (!isAssignable(t, parameter.type)) {
+        // FIXME: this is non-descriptive of parameter name
+        const name = parameter.name.kind === "id" ? parameter.name : "_";
         throwCompilationError(
-            `Cannot pass an expression of type "${printTypeRef(t)}" to the parameter ${idTextErr(parameter.name)} of type "${printTypeRef(parameter.type)}"`,
+            `Cannot pass an expression of type "${printTypeRef(t)}" to the parameter ${idTextErr(name)} of type "${printTypeRef(parameter.type)}"`,
             expression.loc,
         );
     }
@@ -852,10 +854,6 @@ export function resolveExpression(
         case "slice": {
             return resolveSliceLiteral(exp, sctx, ctx);
         }
-        case "simplified_string": {
-            // A simplified string is resolved as a string
-            return resolveStringLiteral(exp, sctx, ctx);
-        }
         case "struct_value": {
             // A struct value is resolved as a struct instance
             return resolveStructNew(exp, sctx, ctx);
@@ -874,13 +872,6 @@ export function resolveExpression(
             const v = sctx.vars.get(exp.text);
             if (!v) {
                 if (!hasStaticConstant(ctx, exp.text)) {
-                    if (isWildcard(exp)) {
-                        throwCompilationError(
-                            "Wildcard variable name '_' cannot be accessed",
-                            exp.loc,
-                        );
-                    }
-
                     // Handle static struct method calls
                     try {
                         const t = getType(ctx, exp.text);

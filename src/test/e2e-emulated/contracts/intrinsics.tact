@@ -23,6 +23,7 @@ contract IntrinsicsTester {
     u: Slice = rawSlice("8a0_");
     w: Slice = rawSlice("8_");
     v: Slice = rawSlice("00_");
+    x: Int = ascii("\n\t\r\b\f\"\\\v\u{4242}\xA9");
 
     init() {
 
@@ -158,6 +159,14 @@ contract IntrinsicsTester {
 
     get fun getAscii4(): Int {
         return self.l;
+    }
+
+    get fun getAscii5(): Int {
+        return ascii("\n\t\r\b\f\"\\\v\u{4242}\xA9");
+    }
+
+    get fun getAscii6(): Int {
+        return self.x;
     }
 
     get fun getCrc32(): Int {

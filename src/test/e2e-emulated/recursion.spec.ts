@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { RecursionTester } from "./contracts/output/recursion_RecursionTester";
+import { RecursionTester } from "@/test/e2e-emulated/contracts/output/recursion_RecursionTester";
 import "@ton/test-utils";
 
 describe("recursion", () => {

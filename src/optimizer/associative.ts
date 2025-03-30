@@ -1,18 +1,18 @@
 // This module includes rules involving associative rewrites of expressions
 
-import type { SrcInfo } from "../grammar";
-import type * as Ast from "../ast/ast";
-import { isLiteral } from "../ast/ast-helpers";
-import * as iM from "./interpreter";
-import type { ExpressionTransformer } from "./types";
-import { Rule } from "./types";
-import type { AstUtil } from "../ast/util";
+import type { SrcInfo } from "@/grammar";
+import type * as Ast from "@/ast/ast";
+import { isLiteral } from "@/ast/ast-helpers";
+import * as iM from "@/optimizer/interpreter";
+import type { ExpressionTransformer } from "@/optimizer/types";
+import { Rule } from "@/optimizer/types";
+import type { AstUtil } from "@/ast/util";
 import {
     checkIsBinaryOpNode,
     checkIsBinaryOp_With_RightValue,
     checkIsBinaryOp_With_LeftValue,
-} from "../ast/util";
-import { abs, sign } from "./util";
+} from "@/ast/util";
+import { abs, sign } from "@/optimizer/util";
 
 type TransformData = {
     simplifiedExpression: Ast.Expression;

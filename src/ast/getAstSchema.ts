@@ -4,9 +4,9 @@
  */
 
 import type { Loc } from "@tonstudio/parser-runtime";
-import type * as Ast from "./ast";
-import type { FactoryAst } from "../ast/ast-helpers";
-import type { SrcInfo } from "../grammar/src-info";
+import type * as Ast from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import type { SrcInfo } from "@/grammar/src-info";
 
 export const getAstSchema = (
     factory: FactoryAst,
@@ -263,7 +263,7 @@ export const getAstSchema = (
                 loc: toSrcInfo(loc),
             }),
         StatementLet: (
-            name: Ast.Id,
+            name: Ast.OptionalId,
             type: Ast.Type | undefined,
             expression: Ast.Expression,
             loc: Loc,
@@ -277,7 +277,7 @@ export const getAstSchema = (
             }),
         StatementDestruct: (
             type: Ast.TypeId,
-            identifiers: Map<string, [Ast.Id, Ast.Id]>,
+            identifiers: Map<string, [Ast.Id, Ast.OptionalId]>,
             ignoreUnspecifiedFields: boolean,
             expression: Ast.Expression,
             loc: Loc,
@@ -382,7 +382,7 @@ export const getAstSchema = (
             statements: Ast.Statement[],
             loc: Loc,
             catchBlock?: {
-                catchName: Ast.Id;
+                catchName: Ast.OptionalId;
                 catchStatements: Ast.Statement[];
             },
         ): Ast.StatementTry =>
@@ -393,8 +393,8 @@ export const getAstSchema = (
                 loc: toSrcInfo(loc),
             }),
         StatementForEach: (
-            keyName: Ast.Id,
-            valueName: Ast.Id,
+            keyName: Ast.OptionalId,
+            valueName: Ast.OptionalId,
             map: Ast.Expression,
             statements: Ast.Statement[],
             loc: Loc,
@@ -565,6 +565,8 @@ export const getAstSchema = (
             }),
         Id: (text: string, loc: Loc): Ast.Id =>
             createNode<Ast.Id>({ kind: "id", text, loc: toSrcInfo(loc) }),
+        Wildcard: (loc: Loc): Ast.Wildcard =>
+            createNode<Ast.Wildcard>({ kind: "wildcard", loc: toSrcInfo(loc) }),
         FuncId: (text: string, loc: Loc): Ast.FuncId =>
             createNode<Ast.FuncId>({
                 kind: "func_id",
@@ -623,7 +625,7 @@ export const getAstSchema = (
             loc: Loc,
         ): Ast.ConstantAttribute => ({ type, loc: toSrcInfo(loc) }),
         TypedParameter: (
-            name: Ast.Id,
+            name: Ast.OptionalId,
             type: Ast.Type,
             loc: Loc,
         ): Ast.TypedParameter =>

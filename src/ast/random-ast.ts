@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 import fc from "fast-check";
-import { randomAstExpression } from "./random.infra";
-import { prettyPrint } from "./ast-printer";
+import { randomAstExpression } from "@/ast/random.infra";
+import { prettyPrint } from "@/ast/ast-printer";
 
 const args = process.argv.slice(2);
 if (args.length !== 1) {

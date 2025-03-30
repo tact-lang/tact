@@ -1,5 +1,5 @@
 import { join, normalize } from "path";
-import { makeCodegen, runCommand } from "../test-util.build";
+import { makeCodegen, runCommand } from "@/cli/test-util.build";
 
 // disable tests on windows
 const testWin =

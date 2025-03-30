@@ -1,4 +1,4 @@
-import type { ErrorDisplay } from "../error/display";
+import type { ErrorDisplay } from "@/error/display";
 
 const attributeSchema =
     (name: string) =>
@@ -163,6 +163,12 @@ export const syntaxErrorSchema = <T, U>(
         },
         unknownGeneric: () => {
             return handle(sub`Unknown generic type`);
+        },
+        noWildcard: () => {
+            return handle(text(`Wildcard not allowed here`));
+        },
+        undefinedUnicodeCodepoint: () => {
+            return handle(text(`Undefined Unicode code-point`));
         },
     };
 };

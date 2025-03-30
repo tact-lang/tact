@@ -1,4 +1,4 @@
-import type { Unwrap } from "../utils/tricks";
+import type { Unwrap } from "@/utils/tricks";
 
 type Token<K, V> = Parser<[K, V]>;
 type Parser<T> = (argv: Argv) => Match<T>;
