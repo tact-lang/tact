@@ -8,7 +8,7 @@ import { getAstFactory } from "./ast-helpers";
 
 const stringify = (obj: unknown): string => {
     return JSON.stringify(obj, (key, value) =>
-        typeof value === 'bigint' ? value.toString() : value
+        typeof value === "bigint" ? value.toString() : value,
     );
 };
 
