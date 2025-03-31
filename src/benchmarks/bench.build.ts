@@ -15,7 +15,7 @@ const main = async () => {
         // Directory does not exist, no need to remove
     }
 
-    await allInFolder(__dirname, ["contracts/*.tact"], {
+    await allInFolder(__dirname, ["contracts/**/*.tact"], {
         debug: false,
         experimental: { inline: true },
         safety: { nullChecks: false },

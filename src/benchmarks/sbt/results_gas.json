@@ -1,0 +1,28 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "pr": "https://github.com/getgems-io/nft-contracts/blob/main/packages/contracts/sources/sbt-item.fc",
+      "gas": {
+        "request owner": "5548",
+        "prove ownership": "5667",
+        "get static data": "5291",
+        "destroy": "6685",
+        "revoke": "4203",
+        "take excess": "6211"
+      }
+    },
+    {
+      "label": "Tact",
+      "pr": "https://github.com/tact-lang/tact/pull/2203",
+      "gas": {
+        "request owner": "7944",
+        "prove ownership": "8114",
+        "get static data": "7279",
+        "destroy": "8030",
+        "revoke": "5459",
+        "take excess": "8266"
+      }
+    }
+  ]
+}
