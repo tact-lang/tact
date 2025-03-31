@@ -54,7 +54,7 @@ trait Ownable with BaseTrait {
     /// [Access denied]: https://docs.tact-lang.org/book/exit-codes#132
     ///
     fun requireOwner() {
-        throwUnless(AccessDenied, sender() == self.owner);
+        throwUnless(TactExitCodeAccessDenied, sender() == self.owner);
     }
 
     /// Returns the owner of the contract.

@@ -542,7 +542,7 @@ extends fun fromBase64(self: Slice): Slice {
         } else if (code == 61) { // =
             // Skip
         } else {
-            throw(InvalidArgument);
+            throw(TactExitCodeInvalidArgument);
         }
     }
 
