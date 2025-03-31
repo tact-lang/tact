@@ -10,11 +10,11 @@ import {
     generateCodeSizeResults,
     getUsedGas,
     printBenchmarkTable,
-} from "../utils/gas";
+} from "@/benchmarks/utils/gas";
 import { join, resolve } from "path";
 import { readFileSync } from "fs";
-import { posixNormalize } from "../../utils/filePath";
-import { type Step, writeLog } from "../../test/utils/write-vm-log";
+import { posixNormalize } from "@/utils/filePath";
+import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     SBTItem,
     type RequestOwner,
@@ -23,10 +23,10 @@ import {
     type Destroy,
     type Revoke,
     type TakeExcess,
-} from "../contracts/SBT/output/sbt-item_SBTItem";
+} from "@/benchmarks/contracts/SBT/output/sbt-item_SBTItem";
 
-import benchmarkResults from "./results_gas.json";
-import benchmarkCodeSizeResults from "./results_code_size.json";
+import benchmarkResults from "@/benchmarks/sbt/results_gas.json";
+import benchmarkCodeSizeResults from "@/benchmarks/sbt/results_code_size.json";
 
 const loadFunCSBTBoc = () => {
     const bocItem = readFileSync(
