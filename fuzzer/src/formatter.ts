@@ -36,6 +36,7 @@ import type {
     TraitDeclaration as AstTraitDeclaration,
     ModuleItem as AstModuleItem,
     ContractDeclaration as AstContractDeclaration,
+    OptionalId,
 } from "../../src/ast/ast";
 
 /**
@@ -101,6 +102,10 @@ class PrettyPrinter {
     //
     // Expressions
     //
+
+    ppAstOptionalId(id: OptionalId): string {
+        return "text" in id ? id.text : "_";
+    }
 
     /**
      * Returns precedence used in unary/binary operations.
@@ -395,8 +400,8 @@ class PrettyPrinter {
         const argsFormatted = func.params
             .map(
                 (arg) =>
-                    `${(arg.name as AstId).text}: ${this.ppAstType(arg.type)}`,
-            ) //TODO: wildcard
+                    `${this.ppAstOptionalId(arg.name)}: ${this.ppAstType(arg.type)}`,
+            )
             .join(", ");
         const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
@@ -426,12 +431,12 @@ class PrettyPrinter {
 
     ppAstReceiveHeader(receive: AstReceiver): string {
         if (receive.selector.kind === "bounce")
-            return `bounced(${(receive.selector.param.name as AstId).text}: ${this.ppAstType(receive.selector.param.type)})`; //TODO: wildcard
+            return `bounced(${this.ppAstOptionalId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`;
         const prefix =
             receive.selector.kind === "internal" ? "receive" : "external";
         const suffix =
             receive.selector.subKind.kind === "simple"
-                ? `(${(receive.selector.subKind.param.name as AstId).text}: ${this.ppAstType(receive.selector.subKind.param.type)})` //TODO: wildcard
+                ? `(${this.ppAstOptionalId(receive.selector.subKind.param.name)}: ${this.ppAstType(receive.selector.subKind.param.type)})`
                 : receive.selector.subKind.kind === "fallback"
                   ? "()"
                   : `("${receive.selector.subKind.comment.value}")`;
@@ -442,8 +447,8 @@ class PrettyPrinter {
         const argsFormatted = func.params
             .map(
                 (arg) =>
-                    `${(arg.name as AstId).text}: ${this.ppAstType(arg.type)}`,
-            ) //TODO: wildcard
+                    `${this.ppAstOptionalId(arg.name)}: ${this.ppAstType(arg.type)}`,
+            )
             .join(", ");
         const returnType = func.return
             ? `: ${this.ppAstType(func.return)}`
@@ -457,8 +462,8 @@ class PrettyPrinter {
         const argsFormatted = initFunc.params
             .map(
                 (arg) =>
-                    `${(arg.name as AstId).text}: ${this.ppAstType(arg.type)}`,
-            ) //TODO: wildcard
+                    `${this.ppAstOptionalId(arg.name)}: ${this.ppAstType(arg.type)}`,
+            )
             .join(", ");
 
         this.increaseIndent();
@@ -519,7 +524,7 @@ class PrettyPrinter {
             statement.type === undefined
                 ? ""
                 : `: ${this.ppAstType(statement.type)}`;
-        return `${this.indent()}let ${(statement.name as AstId).text}${tyAnnotation} = ${expression};`; //TODO: wildcard
+        return `${this.indent()}let ${this.ppAstOptionalId(statement.name)}${tyAnnotation} = ${expression};`;
     }
 
     ppAstStatementReturn(statement: AstStatementReturn): string {
@@ -571,7 +576,7 @@ class PrettyPrinter {
     }
 
     ppAstStatementForEach(statement: AstStatementForEach): string {
-        const header = `foreach (${(statement.keyName as AstId).text}, ${(statement.valueName as AstId).text} in ${this.ppAstExpression(statement.map)})`; //TODO: wildcard
+        const header = `foreach (${this.ppAstOptionalId(statement.keyName)}, ${(statement.valueName as AstId).text} in ${this.ppAstExpression(statement.map)})`;
         const body = this.ppStatementBlock(statement.statements);
         return `${this.indent()}${header} ${body}`;
     }
@@ -580,7 +585,7 @@ class PrettyPrinter {
         const tryBody = this.ppStatementBlock(statement.statements);
         const tryPrefix = `${this.indent()}try ${tryBody}`;
         const catchSuffix = statement.catchBlock
-            ? ` catch (${(statement.catchBlock.catchName as AstId).text}) ${this.ppStatementBlock(statement.catchBlock.catchStatements)}` //TODO: wildcard
+            ? ` catch (${this.ppAstOptionalId(statement.catchBlock.catchName)}) ${this.ppStatementBlock(statement.catchBlock.catchStatements)}`
             : "";
         return tryPrefix + catchSuffix;
     }
