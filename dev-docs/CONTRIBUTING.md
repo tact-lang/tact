@@ -314,8 +314,6 @@ Benchmarks have CLI commands support for updating and managing them, check [Upda
 
 The entry point to the Tact AST pretty-printer is [`src/ast/ast-printer.ts`](../src/ast/ast-printer.ts). It will be used for the Tact source code formatter once the parser keeps comments and other relevant information.
 
-The corresponding test spec files can be found in [`src/test`](../src/test) folder with the test contracts in [`src/test/contracts`](../src/test/contracts) folder.
-
 ### Build scripts and test helpers
 
 The project contains special TypeScript files with the `.build.ts` extension used for build processes and testing purposes. These files are not included in the published NPM package.
