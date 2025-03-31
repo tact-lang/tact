@@ -18,15 +18,15 @@ import {
     generateCodeSizeResults,
     getUsedGas,
     printBenchmarkTable,
-} from "../utils/gas";
+} from "@/benchmarks/utils/gas";
 import { join, resolve } from "path";
 import { readFileSync } from "fs";
-import { posixNormalize } from "../../utils/filePath";
-import { type Step, writeLog } from "../../test/utils/write-vm-log";
+import { posixNormalize } from "@/utils/filePath";
+import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     NFTCollection,
     loadInitNFTBody,
-} from "../contracts/output/nft-collection_NFTCollection";
+} from "@/benchmarks/contracts/output/nft-collection_NFTCollection";
 import type {
     DeployNFT,
     GetRoyaltyParams,
@@ -35,15 +35,15 @@ import type {
     RoyaltyParams,
     InitNFTBody,
     InitNFTData,
-} from "../contracts/output/nft-collection_NFTCollection";
+} from "@/benchmarks/contracts/output/nft-collection_NFTCollection";
 import {
     NFTItem,
     type Transfer,
     storeInitNFTBody,
-} from "../contracts/output/nft-collection_NFTItem";
+} from "@/benchmarks/contracts/output/nft-collection_NFTItem";
 
-import benchmarkResults from "./results_gas.json";
-import benchmarkCodeSizeResults from "./results_code_size.json";
+import benchmarkResults from "@/benchmarks/nft/results_gas.json";
+import benchmarkCodeSizeResults from "@/benchmarks/nft/results_code_size.json";
 
 type dictDeployNFT = {
     amount: bigint;

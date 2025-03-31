@@ -5,9 +5,9 @@ import { parse as parseYaml } from "yaml";
 import { z } from "zod";
 import { parse, str, type Loc as ParserLoc } from "@tonstudio/parser-runtime";
 import { relative } from "path";
-import type { $ast } from "./logs";
-import * as $ from "./logs";
-import { getSrcInfo } from "../../grammar/src-info";
+import type { $ast } from "@/test/utils/logs";
+import * as $ from "@/test/utils/logs";
+import { getSrcInfo } from "@/grammar/src-info";
 
 const packageSchema = z.array(
     z.object({

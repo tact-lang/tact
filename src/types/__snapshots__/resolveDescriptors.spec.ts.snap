@@ -31744,9 +31744,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
               "id": 17,
               "keyName": {
                 "id": 12,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
               "kind": "statement_foreach",
               "loc": foreach(_, _ in self.m) { },
@@ -31770,9 +31769,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
               "statements": [],
               "valueName": {
                 "id": 13,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
             },
           ],
@@ -31873,9 +31871,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
               "id": 17,
               "keyName": {
                 "id": 12,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
               "kind": "statement_foreach",
               "loc": foreach(_, _ in self.m) { },
@@ -31899,9 +31896,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
               "statements": [],
               "valueName": {
                 "id": 13,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
             },
           ],
@@ -32077,9 +32073,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
               "id": 32,
               "keyName": {
                 "id": 12,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
               "kind": "statement_foreach",
               "loc": foreach(_, _ in self.m) { },
@@ -32103,9 +32098,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
               "statements": [],
               "valueName": {
                 "id": 13,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
             },
           ],
@@ -32239,9 +32233,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
                   "id": 17,
                   "keyName": {
                     "id": 12,
-                    "kind": "id",
+                    "kind": "wildcard",
                     "loc": _,
-                    "text": "_",
                   },
                   "kind": "statement_foreach",
                   "loc": foreach(_, _ in self.m) { },
@@ -32265,9 +32258,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
                   "statements": [],
                   "valueName": {
                     "id": 13,
-                    "kind": "id",
+                    "kind": "wildcard",
                     "loc": _,
-                    "text": "_",
                   },
                 },
               ],
@@ -32368,9 +32360,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
                   "id": 17,
                   "keyName": {
                     "id": 12,
-                    "kind": "id",
+                    "kind": "wildcard",
                     "loc": _,
-                    "text": "_",
                   },
                   "kind": "statement_foreach",
                   "loc": foreach(_, _ in self.m) { },
@@ -32394,9 +32385,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
                   "statements": [],
                   "valueName": {
                     "id": 13,
-                    "kind": "id",
+                    "kind": "wildcard",
                     "loc": _,
-                    "text": "_",
                   },
                 },
               ],
@@ -35406,9 +35396,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           "loc": _: String,
           "name": {
             "id": 12,
-            "kind": "id",
+            "kind": "wildcard",
             "loc": _,
-            "text": "_",
           },
           "type": {
             "id": 13,
@@ -35423,9 +35412,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           "loc": _: Int,
           "name": {
             "id": 15,
-            "kind": "id",
+            "kind": "wildcard",
             "loc": _,
-            "text": "_",
           },
           "type": {
             "id": 16,
@@ -35440,9 +35428,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           "loc": _: Cell,
           "name": {
             "id": 18,
-            "kind": "id",
+            "kind": "wildcard",
             "loc": _,
-            "text": "_",
           },
           "type": {
             "id": 19,
@@ -35513,9 +35500,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
         "loc": _: String,
         "name": {
           "id": 12,
-          "kind": "id",
+          "kind": "wildcard",
           "loc": _,
-          "text": "_",
         },
         "type": {
           "kind": "ref",
@@ -35527,9 +35513,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
         "loc": _: Int,
         "name": {
           "id": 15,
-          "kind": "id",
+          "kind": "wildcard",
           "loc": _,
-          "text": "_",
         },
         "type": {
           "kind": "ref",
@@ -35541,9 +35526,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
         "loc": _: Cell,
         "name": {
           "id": 18,
-          "kind": "id",
+          "kind": "wildcard",
           "loc": _,
-          "text": "_",
         },
         "type": {
           "kind": "ref",
@@ -35684,9 +35668,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               "loc": _: Int,
               "name": {
                 "id": 10,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
               "type": {
                 "id": 11,
@@ -35701,9 +35684,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               "loc": _: Int,
               "name": {
                 "id": 13,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
               "type": {
                 "id": 14,
@@ -35780,9 +35762,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               "loc": _: Int,
               "name": {
                 "id": 10,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
               "type": {
                 "id": 11,
@@ -35797,9 +35778,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               "loc": _: Int,
               "name": {
                 "id": 13,
-                "kind": "id",
+                "kind": "wildcard",
                 "loc": _,
-                "text": "_",
               },
               "type": {
                 "id": 14,
@@ -35843,9 +35823,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
             "loc": _: Int,
             "name": {
               "id": 10,
-              "kind": "id",
+              "kind": "wildcard",
               "loc": _,
-              "text": "_",
             },
             "type": {
               "kind": "ref",
@@ -35857,9 +35836,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
             "loc": _: Int,
             "name": {
               "id": 13,
-              "kind": "id",
+              "kind": "wildcard",
               "loc": _,
-              "text": "_",
             },
             "type": {
               "kind": "ref",
@@ -36286,9 +36264,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                   "loc": _: Int,
                   "name": {
                     "id": 10,
-                    "kind": "id",
+                    "kind": "wildcard",
                     "loc": _,
-                    "text": "_",
                   },
                   "type": {
                     "id": 11,
@@ -36303,9 +36280,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                   "loc": _: Int,
                   "name": {
                     "id": 13,
-                    "kind": "id",
+                    "kind": "wildcard",
                     "loc": _,
-                    "text": "_",
                   },
                   "type": {
                     "id": 14,
@@ -36382,9 +36358,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                   "loc": _: Int,
                   "name": {
                     "id": 10,
-                    "kind": "id",
+                    "kind": "wildcard",
                     "loc": _,
-                    "text": "_",
                   },
                   "type": {
                     "id": 11,
@@ -36399,9 +36374,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                   "loc": _: Int,
                   "name": {
                     "id": 13,
-                    "kind": "id",
+                    "kind": "wildcard",
                     "loc": _,
-                    "text": "_",
                   },
                   "type": {
                     "id": 14,
@@ -36445,9 +36419,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                 "loc": _: Int,
                 "name": {
                   "id": 10,
-                  "kind": "id",
+                  "kind": "wildcard",
                   "loc": _,
-                  "text": "_",
                 },
                 "type": {
                   "kind": "ref",
@@ -36459,9 +36432,8 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                 "loc": _: Int,
                 "name": {
                   "id": 13,
-                  "kind": "id",
+                  "kind": "wildcard",
                   "loc": _,
-                  "text": "_",
                 },
                 "type": {
                   "kind": "ref",

@@ -1,9 +1,9 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { StdlibTest } from "./contracts/output/stdlib_StdlibTest";
+import { StdlibTest } from "@/test/e2e-emulated/contracts/output/stdlib_StdlibTest";
 import "@ton/test-utils";
-import { shouldThrowOnTvmGetMethod } from "../utils/throw";
+import { shouldThrowOnTvmGetMethod } from "@/test/utils/throw";
 
 describe("stdlib", () => {
     let blockchain: Blockchain;

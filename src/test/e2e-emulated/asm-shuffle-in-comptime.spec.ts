@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { Test } from "./contracts/output/asm-shuffle-in-comptime_Test";
+import { Test } from "@/test/e2e-emulated/contracts/output/asm-shuffle-in-comptime_Test";
 import "@ton/test-utils";
 
 describe("asm-shuffle-in-comptime", () => {

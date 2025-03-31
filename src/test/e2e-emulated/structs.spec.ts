@@ -10,7 +10,7 @@ import type {
     OptionalFields,
     S1,
     UintFields,
-} from "./contracts/output/structs_StructsTester";
+} from "@/test/e2e-emulated/contracts/output/structs_StructsTester";
 import {
     StructsTester,
     loadMyMessage1,
@@ -19,7 +19,7 @@ import {
     storeMyMessage1,
     storeMyStruct1,
     storeMyStruct2,
-} from "./contracts/output/structs_StructsTester";
+} from "@/test/e2e-emulated/contracts/output/structs_StructsTester";
 import "@ton/test-utils";
 
 describe("structs", () => {

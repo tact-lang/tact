@@ -1,7 +1,7 @@
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { LocalTypeInferenceTester } from "./contracts/output/local-type-inference_LocalTypeInferenceTester";
+import { LocalTypeInferenceTester } from "@/test/e2e-emulated/contracts/output/local-type-inference_LocalTypeInferenceTester";
 import "@ton/test-utils";
 
 describe("local-type-inference", () => {

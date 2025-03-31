@@ -1,8 +1,8 @@
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { SampleJetton } from "./contracts/output/sample-jetton_SampleJetton";
-import { JettonDefaultWallet } from "./contracts/output/sample-jetton_JettonDefaultWallet";
+import { SampleJetton } from "@/test/e2e-emulated/contracts/output/sample-jetton_SampleJetton";
+import { JettonDefaultWallet } from "@/test/e2e-emulated/contracts/output/sample-jetton_JettonDefaultWallet";
 import "@ton/test-utils";
 
 describe("bugs", () => {

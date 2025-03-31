@@ -1,3 +1,4 @@
+Aksakov
 Aliaksandr
 alnum
 Ashimine
@@ -14,8 +15,6 @@ bitstring
 bitstrings
 blockstore
 bocchi
-bounceable
-bounceable
 bounceable
 Brujin
 CCITT
@@ -52,7 +51,6 @@ Epva
 errno
 Esorat
 extracurrency
-extracurrency
 forall
 formedness
 frontmatter
@@ -63,12 +61,12 @@ Georgiy
 getsimpleforwardfee
 gettest
 guarantor
-guarantor
 Héctor
 hehe
 heisenbugs
 idict
 Ikko
+Ilya
 infixl
 infixr
 initof
@@ -119,7 +117,6 @@ nanotons
 Neovim
 nextra
 nobounce
-nobounce
 nocheck
 noexcept
 nonterminal
@@ -161,7 +158,7 @@ shardchains
 shiki
 Shvetc
 skywardboundd
-Stateinit   
+Stateinit
 statinit
 stdlib
 stdlibs

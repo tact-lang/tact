@@ -642,12 +642,29 @@ exports[`grammar should fail literal-non-binary-digits 1`] = `
 "
 `;
 
+exports[`grammar should fail literal-string-undefined-unicode-codepoint 1`] = `
+"<unknown>:1:19: Undefined Unicode code-point
+> 1 | const S: String = "\\u{11ffff}";
+                        ^~~~~~~~~~~~
+  2 | 
+"
+`;
+
 exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
 "<unknown>:2:12: Numbers with leading zeroes cannot use underscores for JS compatibility
   1 | fun test_fun(): Int {
 > 2 |     return 0_123;
                  ^~~~~
   3 | }
+"
+`;
+
+exports[`grammar should fail stmt-destructuring-fields-non-existing-underscore 1`] = `
+"<unknown>:15:12: Wildcard not allowed here
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S {_, b, c} =  s;
+                  ^
+  16 |     return b + c;
 "
 `;
 
@@ -752,6 +769,33 @@ exports[`grammar should fail type-ident-struct-should-be-capitalized 1`] = `
 > 1 | struct lowercaseIdForType {
              ^
   2 |     a: Int;
+"
+`;
+
+exports[`grammar should fail var-underscore-name-access 1`] = `
+"<unknown>:6:16: Wildcard not allowed here
+  5 |     foreach (_, _ in m) {
+> 6 |         return _;
+                     ^
+  7 |     }
+"
+`;
+
+exports[`grammar should fail var-underscore-name-access2 1`] = `
+"<unknown>:7:14: Wildcard not allowed here
+  6 |     foreach (_, v in m) {
+> 7 |         x += _;
+                   ^
+  8 |     }
+"
+`;
+
+exports[`grammar should fail var-underscore-name-access3 1`] = `
+"<unknown>:9:12: Wildcard not allowed here
+   8 |     let _: Int = someImpureFunction();
+>  9 |     return _;
+                  ^
+  10 | }
 "
 `;
 

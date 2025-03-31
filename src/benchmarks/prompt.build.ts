@@ -1,5 +1,5 @@
 import { createInterface } from "readline/promises";
-import { getCompilerVersion } from "../pipeline/version";
+import { getCompilerVersion } from "@/pipeline/version";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 

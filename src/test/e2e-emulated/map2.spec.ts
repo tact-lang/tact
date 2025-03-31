@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { randomAddress } from "../utils/random-utils";
+import { randomAddress } from "@/test/utils/random-utils";
 import type {
     MapTestContract$Data,
     SetAllMaps,
     DelAllMaps,
     ReplaceAllMaps,
     ReplaceGetAllMaps,
-} from "./contracts/output/maps2_MapTestContract";
-import { MapTestContract } from "./contracts/output/maps2_MapTestContract";
+} from "@/test/e2e-emulated/contracts/output/maps2_MapTestContract";
+import { MapTestContract } from "@/test/e2e-emulated/contracts/output/maps2_MapTestContract";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import type { Address } from "@ton/core";

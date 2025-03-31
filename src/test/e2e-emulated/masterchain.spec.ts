@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { MasterchainTester } from "./contracts/output/masterchain_MasterchainTester";
+import { MasterchainTester } from "@/test/e2e-emulated/contracts/output/masterchain_MasterchainTester";
 import "@ton/test-utils";
 
 describe("masterchain", () => {

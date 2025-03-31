@@ -1,7 +1,7 @@
-import type { CompilerContext } from "../context/context";
-import { createABI } from "../generator/createABI";
-import { writeProgram } from "../generator/writeProgram";
-import type { ContractsCodes } from "../generator/writers/writeContract";
+import type { CompilerContext } from "@/context/context";
+import { createABI } from "@/generator/createABI";
+import { writeProgram } from "@/generator/writeProgram";
+import type { ContractsCodes } from "@/generator/writers/writeContract";
 
 export async function compile(
     ctx: CompilerContext,

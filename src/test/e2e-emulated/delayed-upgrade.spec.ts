@@ -5,9 +5,9 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
 import { internal } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { SampleDelayedUpgradeContract } from "./contracts/output/delayed-upgrade_SampleDelayedUpgradeContract";
-import { SampleDelayedUpgradeContractV2 } from "./contracts/output/delayed-upgrade-v2_SampleDelayedUpgradeContractV2";
-import { SampleDelayedUpgradeContractV3 } from "./contracts/output/delayed-upgrade-v3_SampleDelayedUpgradeContractV3";
+import { SampleDelayedUpgradeContract } from "@/test/e2e-emulated/contracts/output/delayed-upgrade_SampleDelayedUpgradeContract";
+import { SampleDelayedUpgradeContractV2 } from "@/test/e2e-emulated/contracts/output/delayed-upgrade-v2_SampleDelayedUpgradeContractV2";
+import { SampleDelayedUpgradeContractV3 } from "@/test/e2e-emulated/contracts/output/delayed-upgrade-v3_SampleDelayedUpgradeContractV3";
 import "@ton/test-utils";
 import type { Maybe } from "@ton/core/dist/utils/maybe";
 

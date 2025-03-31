@@ -1,10 +1,10 @@
 import { Address, beginCell, Cell, toNano, fromNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { IntrinsicsTester } from "./contracts/output/intrinsics_IntrinsicsTester";
+import { IntrinsicsTester } from "@/test/e2e-emulated/contracts/output/intrinsics_IntrinsicsTester";
 import "@ton/test-utils";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
-import { sha256 } from "../../utils/sha256";
+import { sha256 } from "@/utils/sha256";
 
 describe("intrinsics", () => {
     let blockchain: Blockchain;
@@ -255,6 +255,12 @@ describe("intrinsics", () => {
         );
         expect((await contract.getGetAscii4()).toString()).toBe(
             "1563963554659859369353828835329962428465513941646011501275668087180532385",
+        );
+        expect((await contract.getGetAscii5()).toString(16)).toBe(
+            "a090d080c225c0be48982c2a9",
+        );
+        expect((await contract.getGetAscii6()).toString(16)).toBe(
+            "a090d080c225c0be48982c2a9",
         );
 
         // Check `crc32`

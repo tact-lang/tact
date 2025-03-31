@@ -1,4 +1,4 @@
-import { funcIdOf } from "./id";
+import { funcIdOf } from "@/generator/writers/id";
 
 let counter = 0;
 

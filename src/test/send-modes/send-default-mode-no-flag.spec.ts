@@ -1,5 +1,5 @@
-import { MessageModeTester } from "./contracts/output/message-mode-tester_MessageModeTester";
-import { Calculator } from "./contracts/output/message-mode-tester_Calculator";
+import { MessageModeTester } from "@/test/send-modes/contracts/output/message-mode-tester_MessageModeTester";
+import { Calculator } from "@/test/send-modes/contracts/output/message-mode-tester_Calculator";
 import { Blockchain } from "@ton/sandbox";
 import type {
     BlockchainTransaction,

@@ -1,8 +1,8 @@
-import type { Config } from "./config";
-import { configSchema } from "./config.zod";
+import type { Config } from "@/config/config";
+import { configSchema } from "@/config/config.zod";
 
-export * from "./config";
-export * from "./config.zod";
+export * from "@/config/config";
+export * from "@/config/config.zod";
 
 /**
  * Takes a stringified JSON [src] of a schema, converts to JSON and returns a parsed schema if it's valid
