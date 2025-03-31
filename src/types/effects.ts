@@ -1,10 +1,10 @@
-import type * as Ast from "../ast/ast";
-import { idText, isSelfId, tryExtractPath } from "../ast/ast-helpers";
-import type { CompilerContext } from "../context/context";
-import { getAllTypes, getType } from "./resolveDescriptors";
-import { idTextErr, throwInternalCompilerError } from "../error/errors";
-import { getExpType } from "./resolveExpression";
-import { StructFunctions } from "../abi/struct";
+import type * as Ast from "@/ast/ast";
+import { idText, isSelfId, tryExtractPath } from "@/ast/ast-helpers";
+import type { CompilerContext } from "@/context/context";
+import { getAllTypes, getType } from "@/types/resolveDescriptors";
+import { idTextErr, throwInternalCompilerError } from "@/error/errors";
+import { getExpType } from "@/types/resolveExpression";
+import { StructFunctions } from "@/abi/struct";
 
 export type Effect = "contractStorageRead" | "contractStorageWrite";
 
@@ -209,7 +209,6 @@ function expressionEffects(
         case "boolean":
         case "slice":
         case "null":
-        case "simplified_string":
         case "address":
         case "cell":
         case "struct_value":

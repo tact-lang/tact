@@ -1,5 +1,5 @@
-import type { Range } from "./range";
-import { intersect, shift } from "./range";
+import type { Range } from "@/error/range";
+import { intersect, shift } from "@/error/range";
 
 /**
  * Show "Expected Foo, Bar" message

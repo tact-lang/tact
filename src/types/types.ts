@@ -1,10 +1,10 @@
 import type { ABIField } from "@ton/core";
-import { throwInternalCompilerError } from "../error/errors";
-import type * as Ast from "../ast/ast";
-import type { SrcInfo } from "../grammar";
-import { idText } from "../ast/ast-helpers";
-import type { ItemOrigin } from "../imports/source";
-import type { Effect } from "./effects";
+import { throwInternalCompilerError } from "@/error/errors";
+import type * as Ast from "@/ast/ast";
+import type { SrcInfo } from "@/grammar";
+import { idText } from "@/ast/ast-helpers";
+import type { ItemOrigin } from "@/imports/source";
+import type { Effect } from "@/types/effects";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
@@ -58,7 +58,7 @@ export function showValue(val: Ast.Literal): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(val.base);
-        case "simplified_string":
+        case "string":
             return val.value;
         case "boolean":
             return val.value ? "true" : "false";
@@ -101,7 +101,7 @@ export type ConstantDescription = {
 };
 
 export type FunctionParameter = {
-    name: Ast.Id;
+    name: Ast.OptionalId;
     type: TypeRef;
     loc: SrcInfo;
 };
@@ -130,18 +130,18 @@ export type BinaryReceiverSelector =
     | {
           kind: "internal-binary";
           type: string;
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "bounce-binary";
-          name: Ast.Id;
+          name: Ast.OptionalId;
           type: string;
           bounced: boolean;
       }
     | {
           kind: "external-binary";
           type: string;
-          name: Ast.Id;
+          name: Ast.OptionalId;
       };
 
 export type CommentReceiverSelector =
@@ -165,23 +165,23 @@ type EmptyReceiverSelector =
 export type FallbackReceiverSelector =
     | {
           kind: "internal-comment-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "internal-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "bounce-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "external-comment-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "external-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       };
 
 export type ReceiverSelector =
@@ -220,7 +220,7 @@ export type ReceiverDescription = {
 };
 
 export type InitParameter = {
-    name: Ast.Id;
+    name: Ast.OptionalId;
     type: TypeRef;
     as: string | null;
     loc: SrcInfo;

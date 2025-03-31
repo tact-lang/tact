@@ -1,19 +1,19 @@
-import { CompilerContext } from "../context/context";
+import { CompilerContext } from "@/context/context";
 import {
     getAllStaticFunctions,
     getAllTypes,
     resolveDescriptors,
-} from "./resolveDescriptors";
-import { resolveSignatures } from "./resolveSignatures";
-import { loadCases } from "../utils/loadCases";
-import { openContext } from "../context/store";
-import { featureEnable } from "../config/features";
-import type { SrcInfo } from "../grammar";
-import { getParser } from "../grammar";
-import { getAstFactory } from "../ast/ast-helpers";
-import { isSrcInfo } from "../grammar/src-info";
-import { resolveStatements } from "./resolveStatements";
-import { evalComptimeExpressions } from "./evalComptimeExpressions";
+} from "@/types/resolveDescriptors";
+import { resolveSignatures } from "@/types/resolveSignatures";
+import { loadCases } from "@/utils/loadCases";
+import { openContext } from "@/context/store";
+import { featureEnable } from "@/config/features";
+import type { SrcInfo } from "@/grammar";
+import { getParser } from "@/grammar";
+import { getAstFactory } from "@/ast/ast-helpers";
+import { isSrcInfo } from "@/grammar/src-info";
+import { resolveStatements } from "@/types/resolveStatements";
+import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),

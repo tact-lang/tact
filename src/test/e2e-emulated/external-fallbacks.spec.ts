@@ -1,7 +1,7 @@
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { ExternalFallbacksTester } from "./contracts/output/external-fallbacks_ExternalFallbacksTester";
+import { ExternalFallbacksTester } from "@/test/e2e-emulated/contracts/output/external-fallbacks_ExternalFallbacksTester";
 import "@ton/test-utils";
 
 describe("external fallbacks", () => {

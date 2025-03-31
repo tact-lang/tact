@@ -2,7 +2,7 @@
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-deploy#deploy
 ///
-message Deploy {
+message(0x946a98b6) Deploy {
     /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 }
@@ -12,7 +12,7 @@ message Deploy {
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-deploy#deployok
 ///
-message DeployOk {
+message(0xaff90f57) DeployOk {
     /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 }
@@ -21,7 +21,7 @@ message DeployOk {
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-deploy#factorydeploy
 ///
-message FactoryDeploy {
+message(0x6d0ff13b) FactoryDeploy {
     /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 
@@ -29,7 +29,8 @@ message FactoryDeploy {
     cashback: Address;
 }
 
-/// **Deprecated** since Tact 1.6.0. Unless you need the `queryId`, use a `null` message body receiver instead of this trait.
+/// **Deprecated** since Tact 1.6.0. Unless you need the `queryId`,
+/// use a `null` message body receiver instead of this trait.
 ///
 /// Provides a convenient unified mechanism for deployments by implementing a
 /// simple receiver for the `Deploy` message.
@@ -54,11 +55,12 @@ message FactoryDeploy {
 ///
 trait Deployable with BaseTrait {
     receive(deploy: Deploy) {
-        self.notify(DeployOk{queryId: deploy.queryId}.toCell());
+        self.notify(DeployOk { queryId: deploy.queryId }.toCell());
     }
 }
 
-/// **Deprecated** since Tact 1.6.0. Unless you need the `queryId`, use a `null` message body receiver instead of this trait.
+/// **Deprecated** since Tact 1.6.0. Unless you need the `queryId`,
+/// use a `null` message body receiver instead of this trait.
 ///
 /// Provides a convenient unified mechanism for chained deployments.
 ///
@@ -72,7 +74,7 @@ trait Deployable with BaseTrait {
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-deploy#factorydeployable
 ///
-trait FactoryDeployable with BaseTrait  {
+trait FactoryDeployable with BaseTrait {
     receive(deploy: FactoryDeploy) {
         self.forward(deploy.cashback, DeployOk { queryId: deploy.queryId }.toCell(), false, null);
     }

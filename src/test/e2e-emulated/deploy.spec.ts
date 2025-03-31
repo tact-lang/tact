@@ -16,8 +16,8 @@ import type {
     DeployComparisonMsg,
     DeployComparisonNoBodyMsg,
     DeployParamsMsg,
-} from "./contracts/output/deploy_DeployContract";
-import { DeployContract } from "./contracts/output/deploy_DeployContract";
+} from "@/test/e2e-emulated/contracts/output/deploy_DeployContract";
+import { DeployContract } from "@/test/e2e-emulated/contracts/output/deploy_DeployContract";
 import "@ton/test-utils";
 import { findTransaction } from "@ton/test-utils";
 import type { Maybe } from "@ton/core/dist/utils/maybe";

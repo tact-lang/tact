@@ -1,4 +1,4 @@
-import { trimIndent } from "./text";
+import { trimIndent } from "@/utils/text";
 
 export class Writer {
     private indent = 0;

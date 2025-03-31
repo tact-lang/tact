@@ -1,10 +1,10 @@
 import { readFileSync } from "fs";
-import { run } from "../../cli/tact";
-import { Logger, LogLevel } from "../../context/logger";
-import files from "../../stdlib/stdlib";
-import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
+import { run } from "@/cli/tact";
+import { Logger, LogLevel } from "@/context/logger";
+import files from "@/stdlib/stdlib";
+import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import { join } from "path";
-import type { Options } from "../../config/parseConfig";
+import type { Options } from "@/config/parseConfig";
 
 // helper to reduce boilerplate
 export function itShouldNotCompile(params: {

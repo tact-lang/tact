@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { AddressTester } from "./contracts/output/address_AddressTester";
+import { AddressTester } from "@/test/e2e-emulated/contracts/output/address_AddressTester";
 import "@ton/test-utils";
 
 describe("address", () => {

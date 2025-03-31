@@ -1,9 +1,9 @@
 import { join } from "path";
-import { createSingleFileConfig, run } from "../../cli/tact";
-import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
-import { Logger, LogLevel } from "../../context/logger";
-import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
-import files from "../../stdlib/stdlib";
+import { createSingleFileConfig, run } from "@/cli/tact";
+import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
+import { Logger, LogLevel } from "@/context/logger";
+import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
+import files from "@/stdlib/stdlib";
 
 it("symlinks are not allowed", async () => {
     const result = await run({

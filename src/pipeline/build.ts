@@ -4,42 +4,38 @@ import {
     Cell as OpcodeCell,
     AssemblyWriter,
 } from "@tact-lang/opcode";
-import type { WrappersConstantDescription } from "../bindings/writeTypescript";
-import { writeTypescript } from "../bindings/writeTypescript";
-import { featureEnable } from "../config/features";
-import type { Project } from "../config/parseConfig";
-import { CompilerContext } from "../context/context";
-import { funcCompile } from "../func/funcCompile";
-import { writeReport } from "../generator/writeReport";
-import { getRawAST } from "../context/store";
-import files from "../stdlib/stdlib";
-import type { ILogger } from "../context/logger";
-import { Logger } from "../context/logger";
-import type { PackageFileFormat } from "../packaging/fileFormat";
-import { packageCode } from "../packaging/packageCode";
+import type { WrappersConstantDescription } from "@/bindings/writeTypescript";
+import { writeTypescript } from "@/bindings/writeTypescript";
+import { featureEnable } from "@/config/features";
+import type { Project } from "@/config/parseConfig";
+import { CompilerContext } from "@/context/context";
+import { funcCompile } from "@/func/funcCompile";
+import { writeReport } from "@/generator/writeReport";
+import { getRawAST } from "@/context/store";
+import files from "@/stdlib/stdlib";
+import type { ILogger } from "@/context/logger";
+import { Logger } from "@/context/logger";
+import type { PackageFileFormat } from "@/packaging/fileFormat";
+import { packageCode } from "@/packaging/packageCode";
 import {
     createABITypeRefFromTypeRef,
     resolveABIType,
-} from "../types/resolveABITypeRef";
-import {
-    getAllTypes,
-    getContracts,
-    getType,
-} from "../types/resolveDescriptors";
-import { posixNormalize } from "../utils/filePath";
-import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
-import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { compile } from "./compile";
-import { precompile } from "./precompile";
-import { getCompilerVersion } from "./version";
-import type { FactoryAst } from "../ast/ast-helpers";
-import { getAstFactory, idText } from "../ast/ast-helpers";
-import type { TactErrorCollection } from "../error/errors";
-import { TactError } from "../error/errors";
-import type { Parser } from "../grammar";
-import { getParser } from "../grammar";
-import { topSortContracts } from "./utils";
-import type { TypeDescription } from "../types/types";
+} from "@/types/resolveABITypeRef";
+import { getAllTypes, getContracts, getType } from "@/types/resolveDescriptors";
+import { posixNormalize } from "@/utils/filePath";
+import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
+import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
+import { compile } from "@/pipeline/compile";
+import { precompile } from "@/pipeline/precompile";
+import { getCompilerVersion } from "@/pipeline/version";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { getAstFactory, idText } from "@/ast/ast-helpers";
+import type { TactErrorCollection } from "@/error/errors";
+import { TactError } from "@/error/errors";
+import type { Parser } from "@/grammar";
+import { getParser } from "@/grammar";
+import { topSortContracts } from "@/pipeline/utils";
+import type { TypeDescription } from "@/types/types";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -379,7 +375,8 @@ export async function build(args: {
         const args =
             init.kind !== "contract-params"
                 ? init.params.map((v) => ({
-                      name: idText(v.name),
+                      // FIXME: wildcards in ABI?
+                      name: v.name.kind === "id" ? v.name.text : "_",
                       type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
                   }))
                 : (init.contract.params ?? []).map((v) => ({

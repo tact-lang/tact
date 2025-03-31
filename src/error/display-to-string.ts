@@ -2,8 +2,8 @@
  * Render error message to string for compiler CLI
  */
 
-import type { ErrorDisplay } from "./display";
-import { locationStr } from "./errors";
+import type { ErrorDisplay } from "@/error/display";
+import { locationStr } from "@/error/errors";
 
 /**
  * @deprecated Use `Logger` from src/error/logger-util.ts

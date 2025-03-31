@@ -1,8 +1,8 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { SampleContract2 } from "./contracts/output/bounced-routing_SampleContract2";
-import { SampleContract } from "./contracts/output/bounced-routing_SampleContract";
+import { SampleContract2 } from "@/test/e2e-emulated/contracts/output/bounced-routing_SampleContract2";
+import { SampleContract } from "@/test/e2e-emulated/contracts/output/bounced-routing_SampleContract";
 import "@ton/test-utils";
 
 describe("strings", () => {

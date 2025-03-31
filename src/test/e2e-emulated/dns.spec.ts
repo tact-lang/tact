@@ -1,7 +1,7 @@
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { DNSTester } from "./contracts/output/dns_DNSTester";
+import { DNSTester } from "@/test/e2e-emulated/contracts/output/dns_DNSTester";
 import "@ton/test-utils";
 
 function convertToInternal(src: string) {

@@ -1,13 +1,13 @@
-import { getAstFactory } from "../../ast/ast-helpers";
-import { CompilerContext } from "../../context/context";
-import { openContext } from "../../context/store";
-import { getParser } from "../../grammar";
-import { evalComptimeExpressions } from "../../types/evalComptimeExpressions";
-import { resolveDescriptors } from "../../types/resolveDescriptors";
-import { getAllExpressionTypes } from "../../types/resolveExpression";
-import { resolveSignatures } from "../../types/resolveSignatures";
-import { resolveStatements } from "../../types/resolveStatements";
-import { loadCases } from "../../utils/loadCases";
+import { getAstFactory } from "@/ast/ast-helpers";
+import { CompilerContext } from "@/context/context";
+import { openContext } from "@/context/store";
+import { getParser } from "@/grammar";
+import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
+import { resolveDescriptors } from "@/types/resolveDescriptors";
+import { getAllExpressionTypes } from "@/types/resolveExpression";
+import { resolveSignatures } from "@/types/resolveSignatures";
+import { resolveStatements } from "@/types/resolveStatements";
+import { loadCases } from "@/utils/loadCases";
 
 describe("interpreter-evaluation", () => {
     for (const r of loadCases(__dirname + "/success/")) {

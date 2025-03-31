@@ -1,6 +1,6 @@
 import type { Address, Cell, Slice } from "@ton/core";
 import { beginCell } from "@ton/core";
-import type { WriterContext } from "../Writer";
+import type { WriterContext } from "@/generator/Writer";
 
 export function writeString(str: string, ctx: WriterContext) {
     const cell = beginCell().storeStringTail(str).endCell();

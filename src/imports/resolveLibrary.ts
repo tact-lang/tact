@@ -1,7 +1,7 @@
-import type * as Ast from "../ast/ast";
-import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { asString } from "./path";
-import type { ItemOrigin, Language, Source } from "./source";
+import type * as Ast from "@/ast/ast";
+import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
+import { asString } from "@/imports/path";
+import type { ItemOrigin, Language, Source } from "@/imports/source";
 
 type ResolveLibraryArgs = {
     readonly importPath: Ast.ImportPath;

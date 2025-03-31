@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { TextMessageReceivers } from "./contracts/output/text-message-receivers_TextMessageReceivers";
+import { TextMessageReceivers } from "@/test/e2e-emulated/contracts/output/text-message-receivers_TextMessageReceivers";
 import "@ton/test-utils";
 
 describe("text-message-receivers", () => {
@@ -56,11 +56,7 @@ describe("text-message-receivers", () => {
         expect(await contract.getGetCounter()).toBe(0n);
 
         const sendMessage = async (
-            message:
-                | "increment'"
-                | 'increment-2\\"'
-                | "increment-3`"
-                | "\\\\increment-4\\\\",
+            message: Parameters<typeof contract.send>[2],
         ) => {
             const incrementResult1 = await contract.send(
                 treasure.getSender(),
@@ -78,13 +74,16 @@ describe("text-message-receivers", () => {
         await sendMessage("increment'");
         expect(await contract.getGetCounter()).toBe(1n);
 
-        await sendMessage('increment-2\\"');
+        await sendMessage('increment-2"');
         expect(await contract.getGetCounter()).toBe(3n);
 
         await sendMessage("increment-3`");
         expect(await contract.getGetCounter()).toBe(6n);
 
-        await sendMessage("\\\\increment-4\\\\");
+        await sendMessage("\\increment-4\\");
         expect(await contract.getGetCounter()).toBe(10n);
+
+        await sendMessage('test \n \t \r \b \f " \\ \v \\\\ \u{4242} \xA9');
+        expect(await contract.getGetCounter()).toBe(15n);
     });
 });

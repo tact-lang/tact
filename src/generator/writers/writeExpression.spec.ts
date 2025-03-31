@@ -1,14 +1,14 @@
 import {
     getStaticFunction,
     resolveDescriptors,
-} from "../../types/resolveDescriptors";
-import { WriterContext } from "../Writer";
-import { writeExpression } from "./writeExpression";
-import { openContext } from "../../context/store";
-import { resolveStatements } from "../../types/resolveStatements";
-import { CompilerContext } from "../../context/context";
-import { getParser } from "../../grammar";
-import { getAstFactory } from "../../ast/ast-helpers";
+} from "@/types/resolveDescriptors";
+import { WriterContext } from "@/generator/Writer";
+import { writeExpression } from "@/generator/writers/writeExpression";
+import { openContext } from "@/context/store";
+import { resolveStatements } from "@/types/resolveStatements";
+import { CompilerContext } from "@/context/context";
+import { getParser } from "@/grammar";
+import { getAstFactory } from "@/ast/ast-helpers";
 
 const code = `
 

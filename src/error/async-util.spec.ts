@@ -1,4 +1,4 @@
-import { catchUncolored, thenUncolored } from "./async-util";
+import { catchUncolored, thenUncolored } from "@/error/async-util";
 
 describe("catchUncolored", () => {
     it("should return the result of a synchronous function when it does not throw an error", () => {

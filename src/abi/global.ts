@@ -1,26 +1,22 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { enabledDebug } from "../config/features";
+import { enabledDebug } from "@/config/features";
 import {
     writeAddress,
     writeCell,
     writeSlice,
     writeString,
-} from "../generator/writers/writeConstant";
-import { writeExpression } from "../generator/writers/writeExpression";
-import { throwCompilationError } from "../error/errors";
-import { getErrorId } from "../types/resolveErrors";
-import type { AbiFunction } from "./AbiFunction";
+} from "@/generator/writers/writeConstant";
+import { writeExpression } from "@/generator/writers/writeExpression";
+import { idTextErr, throwCompilationError } from "@/error/errors";
+import { getErrorId } from "@/types/resolveErrors";
+import type { AbiFunction } from "@/abi/AbiFunction";
 import path from "path";
 import { cwd } from "process";
-import { posixNormalize } from "../utils/filePath";
-import {
-    ensureSimplifiedString,
-    ensureString,
-    interpretEscapeSequences,
-} from "../optimizer/interpreter";
-import { isLiteral } from "../ast/ast-helpers";
-import { sha256 } from "../utils/sha256";
-import { ops } from "../generator/writers/ops";
+import { posixNormalize } from "@/utils/filePath";
+import { ensureString } from "@/optimizer/interpreter";
+import { isLiteral } from "@/ast/ast-helpers";
+import { sha256 } from "@/utils/sha256";
+import { ops } from "@/generator/writers/ops";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -57,12 +53,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 return toNano(str).toString(10);
             },
         },
@@ -114,12 +105,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved1 = resolved[1]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved1).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved1).value,
-                    resolved1.loc,
-                );
+                const str = ensureString(resolved1).value;
                 return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
         },
@@ -158,12 +144,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 let address: Address;
                 try {
                     address = Address.parse(str);
@@ -214,12 +195,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load cell data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -238,10 +214,33 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "dump",
         {
             name: "dump",
-            resolve: (ctx, args, ref) => {
+            resolve: (_ctx, args, ref) => {
                 if (args.length !== 1) {
-                    throwCompilationError("dump expects 1 argument", ref);
+                    throwCompilationError(
+                        "dump() expects 1 argument, see https://docs.tact-lang.org/ref/core-debug/#dump for more information",
+                        ref,
+                    );
                 }
+
+                const arg = args[0]!;
+
+                if (!SUPPORTED_TYPES_KIND_IN_DUMP.has(arg.kind)) {
+                    throwCompilationError(
+                        "Cannot dump() this argument, see https://docs.tact-lang.org/ref/core-debug/#dump for more information",
+                        ref,
+                    );
+                }
+
+                if (
+                    arg.kind === "ref" &&
+                    !SUPPORTED_PRIMITIVE_TYPES_IN_DUMP.has(arg.name)
+                ) {
+                    throwCompilationError(
+                        `Cannot dump() argument with ${idTextErr(arg.name)} type, see https://docs.tact-lang.org/ref/core-debug/#dump for more information`,
+                        ref,
+                    );
+                }
+
                 return { kind: "void" };
             },
             generate: (ctx, args, resolved, ref) => {
@@ -383,7 +382,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     if (isLiteral(resolved0)) {
                         // FIXME: This one does not need fixing, because it is carried out inside a "isLiteral" check.
                         // Remove this comment once the optimization step is added
-                        const str = ensureSimplifiedString(resolved0).value;
+                        const str = ensureString(resolved0).value;
                         return sha256(str).value.toString(10);
                     }
 
@@ -435,12 +434,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -490,12 +484,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
+                const str = ensureString(resolved0).value;
                 let c: Cell;
                 try {
                     c = beginCell().storeBuffer(Buffer.from(str)).endCell();
@@ -539,13 +528,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
-
+                const str = ensureString(resolved0).value;
                 if (str.length > 32) {
                     throwCompilationError(
                         `ascii() expects string argument with length <= 32`,
@@ -587,15 +570,21 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load slice data
                 const resolved0 = resolved[0]!;
-                // FIXME: When optimizer step added, change the following line to:
-                // const str = ensureSimplifiedString(resolved0).value;
-                const str = interpretEscapeSequences(
-                    ensureString(resolved0).value,
-                    resolved0.loc,
-                );
-
+                const str = ensureString(resolved0).value;
                 return `"${str}"c`;
             },
         },
     ],
+]);
+
+const SUPPORTED_TYPES_KIND_IN_DUMP = new Set(["ref", "void", "null", "map"]);
+
+const SUPPORTED_PRIMITIVE_TYPES_IN_DUMP = new Set([
+    "Cell",
+    "Slice",
+    "Builder",
+    "Address",
+    "String",
+    "Bool",
+    "Int",
 ]);
