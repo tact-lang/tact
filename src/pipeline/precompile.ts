@@ -1,7 +1,7 @@
 import type { CompilerContext } from "@/context/context";
 import { resolveDescriptors } from "@/types/resolveDescriptors";
 import { resolveAllocations } from "@/storage/resolveAllocation";
-import { openContext } from "@/context/store";
+import { openContext, parseModules } from "@/context/store";
 import { resolveStatements } from "@/types/resolveStatements";
 import { resolveErrors } from "@/types/resolveErrors";
 import { resolveSignatures } from "@/types/resolveSignatures";
@@ -25,8 +25,14 @@ export function precompile(
     // Load all sources
     const imported = resolveImports({ entrypoint, project, stdlib, parser });
 
+    // Parse the sources and attach the given parsed modules
+    const finalModules = [
+        ...parseModules(imported.tact, parser),
+        ...(parsedModules ?? []),
+    ];
+
     // Add information about all the source code entries to the context
-    ctx = openContext(ctx, imported.tact, imported.func, parser, parsedModules);
+    ctx = openContext(ctx, imported.tact, imported.func, finalModules);
 
     // First load type descriptors and check that
     //       they all have valid signatures
