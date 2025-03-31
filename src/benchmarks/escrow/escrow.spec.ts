@@ -4,26 +4,26 @@ import type { Address } from "@ton/core";
 import { beginCell, Cell, contractAddress, SendMode, toNano } from "@ton/core";
 import "@ton/test-utils";
 
-import type { UpdateJettonWalletCode } from "../contracts/output/escrow_Escrow";
+import type { UpdateJettonWalletCode } from "@/benchmarks/contracts/output/escrow_Escrow";
 import {
     Escrow,
     storeApprove,
     storeCancel,
     storeFunding,
     storeUpdateJettonWalletCode,
-} from "../contracts/output/escrow_Escrow";
+} from "@/benchmarks/contracts/output/escrow_Escrow";
 import {
     getUsedGas,
     generateResults,
     printBenchmarkTable,
     generateCodeSizeResults,
     getStateSizeForAccount,
-} from "../utils/gas";
-import benchmarkResults from "./results_gas.json";
+} from "@/benchmarks/utils/gas";
+import benchmarkResults from "@/benchmarks/escrow/results_gas.json";
 import { readFileSync } from "fs";
-import { posixNormalize } from "../../utils/filePath";
+import { posixNormalize } from "@/utils/filePath";
 import { resolve } from "path";
-import benchmarkCodeSizeResults from "./results_code_size.json";
+import benchmarkCodeSizeResults from "@/benchmarks/escrow/results_code_size.json";
 
 const loadFunCEscrowBoc = () => {
     const bocEscrow = readFileSync(

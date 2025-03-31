@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { randomAddress } from "../utils/random-utils";
+import { randomAddress } from "@/test/utils/random-utils";
 import type {
     MapTestContract$Data,
     SetAllMaps,
@@ -8,8 +8,8 @@ import type {
     SomeStruct,
     ReplaceAllMaps,
     ReplaceGetAllMaps,
-} from "./contracts/output/maps1_MapTestContract";
-import { MapTestContract } from "./contracts/output/maps1_MapTestContract";
+} from "@/test/e2e-emulated/contracts/output/maps1_MapTestContract";
+import { MapTestContract } from "@/test/e2e-emulated/contracts/output/maps1_MapTestContract";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { Address, beginCell, Cell, Dictionary, toNano } from "@ton/core";

@@ -1,5 +1,5 @@
-import type { ReadonlySetLike } from "./isSubsetOf";
-import { isSubsetOf } from "./isSubsetOf";
+import type { ReadonlySetLike } from "@/utils/isSubsetOf";
+import { isSubsetOf } from "@/utils/isSubsetOf";
 
 // Tests are adapted from:
 // https://github.com/zloirock/core-js/blob/227a758ef96fa585a66cc1e89741e7d0bb696f48/tests/unit-global/es.set.is-subset-of.js

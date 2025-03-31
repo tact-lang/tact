@@ -1,9 +1,9 @@
 import type { ContractABI } from "@ton/core";
-import type { CompilerContext } from "../context/context";
-import type { PackageFileFormat } from "../packaging/fileFormat";
-import { getType } from "../types/resolveDescriptors";
-import { Writer } from "../utils/Writer";
-import type { TypeDescription } from "../types/types";
+import type { CompilerContext } from "@/context/context";
+import type { PackageFileFormat } from "@/packaging/fileFormat";
+import { getType } from "@/types/resolveDescriptors";
+import { Writer } from "@/utils/Writer";
+import type { TypeDescription } from "@/types/types";
 
 export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     const w = new Writer();

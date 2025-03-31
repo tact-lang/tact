@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { RepeatRangeTester as TestContract } from "./contracts/output/repeat-range_RepeatRangeTester";
+import { RepeatRangeTester as TestContract } from "@/test/exit-codes/contracts/output/repeat-range_RepeatRangeTester";
 import "@ton/test-utils";
 
 describe("repeat range", () => {

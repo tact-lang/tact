@@ -1,12 +1,12 @@
-import type * as Ast from "../ast/ast";
-import { eqNames, idText } from "../ast/ast-helpers";
+import type * as Ast from "@/ast/ast";
+import { eqNames, idText } from "@/ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
-import type { CompilerContext } from "../context/context";
-import { createContextStore } from "../context/context";
+} from "@/error/errors";
+import type { CompilerContext } from "@/context/context";
+import { createContextStore } from "@/context/context";
 import {
     getAllTypes,
     getStaticConstant,
@@ -14,15 +14,15 @@ import {
     getType,
     hasStaticConstant,
     hasStaticFunction,
-} from "./resolveDescriptors";
-import type { FunctionParameter, TypeRef } from "./types";
-import { printTypeRef, typeRefEquals } from "./types";
-import type { StatementContext } from "./resolveStatements";
-import { MapFunctions } from "../abi/map";
-import { GlobalFunctions } from "../abi/global";
-import { isAssignable, moreGeneralType } from "./subtyping";
-import { StructFunctions } from "../abi/struct";
-import { prettyPrint } from "../ast/ast-printer";
+} from "@/types/resolveDescriptors";
+import type { FunctionParameter, TypeRef } from "@/types/types";
+import { printTypeRef, typeRefEquals } from "@/types/types";
+import type { StatementContext } from "@/types/resolveStatements";
+import { MapFunctions } from "@/abi/map";
+import { GlobalFunctions } from "@/abi/global";
+import { isAssignable, moreGeneralType } from "@/types/subtyping";
+import { StructFunctions } from "@/abi/struct";
+import { prettyPrint } from "@/ast/ast-printer";
 
 const store = createContextStore<{
     ast: Ast.Expression;
@@ -124,7 +124,7 @@ function resolveSliceLiteral(
 }
 
 function resolveStringLiteral(
-    exp: Ast.String | Ast.SimplifiedString,
+    exp: Ast.String,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -853,10 +853,6 @@ export function resolveExpression(
         }
         case "slice": {
             return resolveSliceLiteral(exp, sctx, ctx);
-        }
-        case "simplified_string": {
-            // A simplified string is resolved as a string
-            return resolveStringLiteral(exp, sctx, ctx);
         }
         case "struct_value": {
             // A struct value is resolved as a struct instance

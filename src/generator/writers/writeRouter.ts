@@ -1,31 +1,31 @@
 import { beginCell } from "@ton/core";
-import { getType } from "../../types/resolveDescriptors";
+import { getType } from "@/types/resolveDescriptors";
 import {
     showValue,
     type FallbackReceiverSelector,
     type ReceiverDescription,
     type TypeDescription,
-} from "../../types/types";
-import type { WriterContext } from "../Writer";
-import { funcIdOf } from "./id";
-import { ops } from "./ops";
-import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { writeStatement } from "./writeFunction";
-import type * as Ast from "../../ast/ast";
+} from "@/types/types";
+import type { WriterContext } from "@/generator/Writer";
+import { funcIdOf } from "@/generator/writers/id";
+import { ops } from "@/generator/writers/ops";
+import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
+import { writeStatement } from "@/generator/writers/writeFunction";
+import type * as Ast from "@/ast/ast";
 import {
     throwCompilationError,
     throwInternal,
     throwInternalCompilerError,
-} from "../../error/errors";
-import type { SrcInfo } from "../../grammar";
-import { contractErrors } from "../../abi/errors";
-import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
-import { getAllocation } from "../../storage/resolveAllocation";
-import type { Effect } from "../../types/effects";
-import { enabledAlwaysSaveContractData } from "../../config/features";
-import { getAstFactory, idText } from "../../ast/ast-helpers";
-import { evalConstantExpression } from "../../optimizer/constEval";
-import { getAstUtil } from "../../ast/util";
+} from "@/error/errors";
+import type { SrcInfo } from "@/grammar";
+import { contractErrors } from "@/abi/errors";
+import { resolveFuncTypeFromAbiUnpack } from "@/generator/writers/resolveFuncTypeFromAbiUnpack";
+import { getAllocation } from "@/storage/resolveAllocation";
+import type { Effect } from "@/types/effects";
+import { enabledAlwaysSaveContractData } from "@/config/features";
+import { getAstFactory, idText } from "@/ast/ast-helpers";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { getAstUtil } from "@/ast/util";
 
 type ContractReceivers = {
     readonly internal: Receivers;

@@ -1,9 +1,9 @@
-import type * as Ast from "../ast/ast";
-import { throwInternalCompilerError } from "../error/errors";
-import type { CompilerContext } from "./context";
-import { createContextStore } from "./context";
-import type { Source } from "../imports/source";
-import type { Parser } from "../grammar";
+import type * as Ast from "@/ast/ast";
+import { throwInternalCompilerError } from "@/error/errors";
+import type { CompilerContext } from "@/context/context";
+import { createContextStore } from "@/context/context";
+import type { Source } from "@/imports/source";
+import type { Parser } from "@/grammar";
 
 /**
  * Represents the storage for all AST-related data within the compiler context.

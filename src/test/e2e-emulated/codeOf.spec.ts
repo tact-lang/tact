@@ -1,8 +1,8 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { CodeOfTester } from "./contracts/output/codeOf_CodeOfTester";
-import { ChildContract } from "./contracts/output/codeOf_ChildContract";
+import { CodeOfTester } from "@/test/e2e-emulated/contracts/output/codeOf_CodeOfTester";
+import { ChildContract } from "@/test/e2e-emulated/contracts/output/codeOf_ChildContract";
 import "@ton/test-utils";
 
 describe("codeOf", () => {

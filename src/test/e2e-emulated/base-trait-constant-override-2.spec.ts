@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { TraitsConstantContract } from "./contracts/output/base-trait-constant-override-2_TraitsConstantContract";
+import { TraitsConstantContract } from "@/test/e2e-emulated/contracts/output/base-trait-constant-override-2_TraitsConstantContract";
 import "@ton/test-utils";
 
 describe("base-trait-constant-override-2", () => {

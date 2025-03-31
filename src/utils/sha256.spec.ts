@@ -1,4 +1,4 @@
-import { sha256, highest32ofSha256 } from "./sha256";
+import { sha256, highest32ofSha256 } from "@/utils/sha256";
 import { beginCell } from "@ton/core";
 
 describe("sha256", () => {

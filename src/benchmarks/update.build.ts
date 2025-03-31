@@ -8,9 +8,9 @@ import {
     printBenchmarkTable,
     type RawBenchmarkResult,
     type RawCodeSizeResult,
-} from "./utils/gas";
+} from "@/benchmarks/utils/gas";
 import { createInterface } from "readline/promises";
-import { globSync } from "../test/utils/all-in-folder.build";
+import { globSync } from "@/test/utils/all-in-folder.build";
 
 const runBenchmark = (specPath: string): Promise<string> => {
     return new Promise((resolve) => {

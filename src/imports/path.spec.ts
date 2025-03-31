@@ -1,4 +1,4 @@
-import { asString, fromString } from "./path";
+import { asString, fromString } from "@/imports/path";
 
 describe("fromString", () => {
     it("empty path", () => {

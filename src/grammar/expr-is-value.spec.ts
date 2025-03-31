@@ -1,15 +1,12 @@
 //type Test = { expr: string; isValue: boolean };
 
-import { getAstFactory, isLiteral } from "../ast/ast-helpers";
-import { getParser } from "./index";
+import { getAstFactory, isLiteral } from "@/ast/ast-helpers";
+import { getParser } from "@/grammar/index";
 
 const valueExpressions: string[] = ["1", "true", "false", "null"];
 
 const notValueExpressions: string[] = [
     "g",
-
-    // Raw strings are not literals: they need to go through the interpreter to get transformed into simplified strings, which are literals.
-    '"one"',
 
     // Even if these three struct instances have literal fields, raw struct instances are not literals because they need to go through
     // the interpreter to get transformed into struct values.

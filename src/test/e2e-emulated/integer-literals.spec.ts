@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { IntegerLiteralsTester } from "./contracts/output/integer-literals_IntegerLiteralsTester";
+import { IntegerLiteralsTester } from "@/test/e2e-emulated/contracts/output/integer-literals_IntegerLiteralsTester";
 import "@ton/test-utils";
 
 describe("integer-literals", () => {

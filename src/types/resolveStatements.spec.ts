@@ -1,13 +1,13 @@
-import { getAllExpressionTypes } from "./resolveExpression";
-import { resolveDescriptors } from "./resolveDescriptors";
-import { loadCases } from "../utils/loadCases";
-import { openContext } from "../context/store";
-import { resolveStatements } from "./resolveStatements";
-import { CompilerContext } from "../context/context";
-import { featureEnable } from "../config/features";
-import { getParser } from "../grammar";
-import { getAstFactory } from "../ast/ast-helpers";
-import { evalComptimeExpressions } from "./evalComptimeExpressions";
+import { getAllExpressionTypes } from "@/types/resolveExpression";
+import { resolveDescriptors } from "@/types/resolveDescriptors";
+import { loadCases } from "@/utils/loadCases";
+import { openContext } from "@/context/store";
+import { resolveStatements } from "@/types/resolveStatements";
+import { CompilerContext } from "@/context/context";
+import { featureEnable } from "@/config/features";
+import { getParser } from "@/grammar";
+import { getAstFactory } from "@/ast/ast-helpers";
+import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
 
 describe("resolveStatements", () => {
     for (const r of loadCases(__dirname + "/stmts/")) {

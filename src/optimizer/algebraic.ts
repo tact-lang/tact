@@ -1,14 +1,14 @@
-import type * as Ast from "../ast/ast";
-import { eqExpressions, isLiteral } from "../ast/ast-helpers";
-import type { ExpressionTransformer } from "./types";
-import { Rule } from "./types";
+import type * as Ast from "@/ast/ast";
+import { eqExpressions, isLiteral } from "@/ast/ast-helpers";
+import type { ExpressionTransformer } from "@/optimizer/types";
+import { Rule } from "@/optimizer/types";
 import {
     checkIsBinaryOpNode,
     checkIsBoolean,
     checkIsName,
     checkIsNumber,
     checkIsUnaryOpNode,
-} from "../ast/util";
+} from "@/ast/util";
 
 export class AddZero extends Rule {
     private additiveOperators: Ast.BinaryOperation[] = ["+", "-"];

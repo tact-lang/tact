@@ -1,5 +1,5 @@
-import { eqExpressions, getAstFactory } from "../ast/ast-helpers";
-import { getParser } from "./index";
+import { eqExpressions, getAstFactory } from "@/ast/ast-helpers";
+import { getParser } from "@/grammar/index";
 
 type Test = { expr1: string; expr2: string; equality: boolean };
 

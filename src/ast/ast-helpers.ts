@@ -1,6 +1,6 @@
-import type * as Ast from "./ast";
-import { throwInternalCompilerError } from "../error/errors";
-import { dummySrcInfo } from "../grammar";
+import type * as Ast from "@/ast/ast";
+import { throwInternalCompilerError } from "@/error/errors";
+import { dummySrcInfo } from "@/grammar";
 
 /**
  * Check if input expression is a 'path expression',
@@ -157,8 +157,6 @@ export function eqExpressions(
             return ast1.value
                 .asCell()
                 .equals((ast2 as Ast.Slice).value.asCell());
-        case "simplified_string":
-            return ast1.value === (ast2 as Ast.SimplifiedString).value;
         case "struct_value":
             return (
                 eqNames(ast1.type, (ast2 as Ast.StructValue).type) &&
@@ -377,12 +375,11 @@ function checkLiteral<T>(
         case "address":
         case "cell":
         case "slice":
-        case "simplified_string":
+        case "string":
         case "struct_value":
             return t(ast);
 
         case "struct_instance":
-        case "string":
         case "id":
         case "method_call":
         case "init_of":
