@@ -272,7 +272,7 @@ The constant evaluator supports a large subset of Tact and handles, for instance
 
 The main logic of the constant evaluator is in the file [`src/optimizer/interpreter.ts`](../src/optimizer/interpreter.ts).
 
-You can find the relevant tests in [`src/test/e2e-emulated/contracts/constants.tact`](../src/test/e2e-emulated/constants/constants.tact) and the corresponding spec-file: [`src/test/e2e-emulated/constants.spec.ts`](../src/test/e2e-emulated/constants/constants.spec.ts).
+You can find the relevant tests in [`src/test/e2e-emulated/constants/constants.tact`](../src/test/e2e-emulated/constants/constants.tact) and the corresponding spec-file: [`src/test/e2e-emulated/constants/constants.spec.ts`](../src/test/e2e-emulated/constants/constants.spec.ts).
 
 The negative tests for constant evaluation are in the Tact files prefixed with `const-eval` in the [`src/test/compilation-failed/contracts`](../src/test/compilation-failed/contracts) folder.
 
@@ -284,7 +284,7 @@ The code generator lives in the [`src/generator`](../src/generator) sub-folder w
 
 The implementation that we have right now is being refactored to produce FunC ASTs and then pretty-print those ASTs as strings instead of producing source FunC code in one step. Here is the relevant pull request: <https://github.com/tact-lang/tact/pull/559>.
 
-One can find the end-to-end codegen test spec files in the [`src/test/e2e-emulated`](../src/test/e2e-emulated) folder. The test contracts are located in [`src/test/e2e-emulated/contracts`](../src/test/e2e-emulated/contracts) subfolder. Many of those spec files test various language features in relative isolation.
+One can find the end-to-end codegen test spec files in the [`src/test/e2e-emulated`](../src/test/e2e-emulated) folder. The test contracts are located in the subfolders of the [`src/test/e2e-emulated`](../src/test/e2e-emulated) folder. Many of those spec files test various language features in relative isolation.
 An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [`src/test/e2e-emulated/semantics.spec.ts`](../src/test/e2e-emulated/functions/semantics.spec.ts).
 
 Contracts with `inline` in the name of the file set `experimental.inline` config option to `true`.
