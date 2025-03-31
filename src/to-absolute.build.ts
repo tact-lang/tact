@@ -11,14 +11,16 @@ const main = async () => {
     const rootDir = join(__dirname, "..");
     for (const file of glob.sync("./src/**/*.ts", {
         cwd: rootDir,
-        ignore: ["./src/test/**"],
     })) {
         const fullPath = join(rootDir, file);
         const source = await readFile(fullPath, "utf-8");
         const newSource = source.replace(
             /from "([^"]*)"/g,
-            (_, importedName) => {
-                if (!importedName.startsWith(".")) {
+            (_, importedName: string) => {
+                if (
+                    !importedName.startsWith(".") ||
+                    importedName.includes("output/")
+                ) {
                     return `from "${importedName}"`;
                 }
                 const x = relative(
