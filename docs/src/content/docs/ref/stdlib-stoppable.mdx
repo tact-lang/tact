@@ -35,7 +35,7 @@ trait Stoppable with Ownable {
     /// * 133 — if the contract is stopped
     ///
     fun requireNotStopped() {
-        throwUnless(133, !self.stopped);
+        throwUnless(TactExitCodeContractStopped, !self.stopped);
     }
 
     /// Requires the contract to be stopped.
