@@ -49,6 +49,16 @@
         "internalTransfer": "8845",
         "extensionTransfer": "4914"
       }
+    },
+    {
+      "label": "1.6.5 with extracted processSendMessages",
+      "pr": null,
+      "gas": {
+        "externalTransfer": "7865",
+        "addExtension": "8326",
+        "internalTransfer": "8707",
+        "extensionTransfer": "4666"
+      }
     }
   ]
 }
