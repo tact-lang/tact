@@ -240,7 +240,7 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
 
 export function writeDictParser(s: ABIType, w: Writer) {
     w.write(`
-        function dictValueParser${s.name}(): DictionaryValue<${s.name}> {
+        export function dictValueParser${s.name}(): DictionaryValue<${s.name}> {
             return {
                 serialize: (src, builder) => {
                     builder.storeRef(beginCell().store(store${s.name}(src)).endCell());
