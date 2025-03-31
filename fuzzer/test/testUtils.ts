@@ -1,7 +1,7 @@
 import { CompilerContext } from "../../src/context/context";
 import { createABI } from "../../src/generator/createABI";
 import { writeProgram } from "../../src/generator/writeProgram";
-import type { Module as AstModule } from "../../src/ast/ast";
+import type * as Ast from "../../src/ast/ast";
 import { openContext } from "../../src/context/store";
 import { resolveAllocations } from "../../src/storage/resolveAllocation";
 import { featureEnable } from "../../src/config/features";
@@ -14,7 +14,7 @@ import type { FactoryAst } from "../../src/ast/ast-helpers";
 import { getParser } from "../../src/grammar";
 
 export function createContext(
-    program: AstModule,
+    program: Ast.Module,
     factoryAst: FactoryAst,
 ): CompilerContext {
     let ctx = new CompilerContext();

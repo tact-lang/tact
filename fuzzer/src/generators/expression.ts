@@ -1,21 +1,4 @@
-import type {
-    Boolean as AstBoolean,
-    Expression as AstExpression,
-    Id as AstId,
-    Null as AstNull,
-    Number as AstNumber,
-    // OpBinary as AstOpBinary,
-    FieldAccess as AstFieldAccess,
-    MethodCall as AstMethodCall,
-    StaticCall as AstStaticCall,
-    // OpUnary as AstOpUnary,
-    SimplifiedString as AstSimplifiedString,
-    StructFieldInitializer as AstStructFieldInitializer,
-    StructInstance as AstStructInstance,
-    String as AstString,
-    // UnaryOperation,
-} from "../../../src/ast/ast";
-import type { NumberBase as AstNumberBase } from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import JSONbig from "json-bigint";
 import fc from "fast-check";
 
@@ -49,12 +32,12 @@ import type { Scope } from "../scope";
 import { FunctionDef } from "./function";
 
 export function generateNumber(
-    base?: AstNumberBase,
+    base?: Ast.NumberBase,
     constValue?: bigint,
-): fc.Arbitrary<AstExpression> {
+): fc.Arbitrary<Ast.Expression> {
     const value =
         constValue === undefined ? fc.bigInt() : fc.constantFrom(constValue);
-    return fc.record<AstNumber>({
+    return fc.record<Ast.Number>({
         kind: fc.constant("number"),
         id: fc.constant(nextId()),
         value,
@@ -65,10 +48,10 @@ export function generateNumber(
 
 export function generateBoolean(
     constValue?: boolean,
-): fc.Arbitrary<AstBoolean> {
+): fc.Arbitrary<Ast.Boolean> {
     const value =
         constValue === undefined ? fc.boolean() : fc.constantFrom(constValue);
-    return fc.record<AstBoolean>({
+    return fc.record<Ast.Boolean>({
         kind: fc.constant("boolean"),
         id: fc.constant(nextId()),
         value,
@@ -90,8 +73,8 @@ function generateStringValue(
 export function generateSimplifiedString(
     nonEmpty: boolean = false,
     constValue?: string,
-): fc.Arbitrary<AstSimplifiedString> {
-    return fc.record<AstSimplifiedString>({
+): fc.Arbitrary<Ast.SimplifiedString> {
+    return fc.record<Ast.SimplifiedString>({
         kind: fc.constant("simplified_string"),
         id: fc.constant(nextId()),
         value: generateStringValue(nonEmpty, constValue),
@@ -102,8 +85,8 @@ export function generateSimplifiedString(
 export function generateString(
     nonEmpty: boolean = false,
     constValue?: string,
-): fc.Arbitrary<AstString> {
-    return fc.record<AstString>({
+): fc.Arbitrary<Ast.String> {
+    return fc.record<Ast.String>({
         kind: fc.constant("string"),
         id: fc.constant(nextId()),
         value: generateStringValue(nonEmpty, constValue),
@@ -111,8 +94,8 @@ export function generateString(
     });
 }
 
-export function generateNull(): fc.Arbitrary<AstNull> {
-    return fc.record<AstNull>({
+export function generateNull(): fc.Arbitrary<Ast.Null> {
+    return fc.record<Ast.Null>({
         kind: fc.constant("null"),
         id: fc.constant(nextId()),
         loc: fc.constant(dummySrcInfoPrintable),
@@ -121,8 +104,8 @@ export function generateNull(): fc.Arbitrary<AstNull> {
 
 export function generateFieldAccess(
     name: string,
-    aggregate?: AstExpression,
-): AstFieldAccess {
+    aggregate?: Ast.Expression,
+): Ast.FieldAccess {
     return {
         kind: "field_access",
         aggregate: aggregate ?? generateThisID(),
@@ -132,7 +115,7 @@ export function generateFieldAccess(
     };
 }
 
-export function generateThisID(): AstId {
+export function generateThisID(): Ast.Id {
     return {
         kind: "id",
         id: nextId(),
@@ -147,7 +130,7 @@ export function generateThisID(): AstId {
 export function generateMapInit(
     ty: Type,
     scope: Scope,
-): fc.Arbitrary<AstExpression> {
+): fc.Arbitrary<Ast.Expression> {
     if (scope.definedIn("block", "method", "function") && randomBool()) {
         return new StaticCall(ty, "emptyMap", []).generate();
     } else {
@@ -161,13 +144,13 @@ export function generateMapInit(
 export function generateStructInit(
     ty: Type,
     scope: Scope,
-): fc.Arbitrary<AstStructInstance> {
+): fc.Arbitrary<Ast.StructInstance> {
     if (ty.kind !== "struct" && ty.kind !== "message") {
         throwTyError(ty);
     }
-    const args: fc.Arbitrary<AstStructFieldInitializer>[] = ty.fields.map(
+    const args: fc.Arbitrary<Ast.StructFieldInitializer>[] = ty.fields.map(
         (field: StructField) => {
-            return fc.record<AstStructFieldInitializer>({
+            return fc.record<Ast.StructFieldInitializer>({
                 kind: fc.constant("struct_field_initializer"),
                 id: fc.constant(nextId()),
                 field: fc.constant(generateAstIdFromName(field.name)),
@@ -176,7 +159,7 @@ export function generateStructInit(
             });
         },
     );
-    return fc.record<AstStructInstance>({
+    return fc.record<Ast.StructInstance>({
         kind: fc.constantFrom("struct_instance"),
         id: fc.constantFrom(nextId()),
         type: fc.constantFrom(generateAstIdFromName(tyToString(ty))),
@@ -193,7 +176,7 @@ export function generateStructInit(
 export function generateFunctionCallArgs(
     funTy: Type,
     funScope: Scope,
-): fc.Arbitrary<AstExpression>[] {
+): fc.Arbitrary<Ast.Expression>[] {
     if (funTy.kind !== "function") {
         throw new Error(
             `Incorrect type for function: ${JSONbig.stringify(funTy)}`,
@@ -215,7 +198,7 @@ export function generateFunctionCallArgs(
 export function generateMethodCallArgs(
     methodTy: Type,
     methodScope: Scope,
-): fc.Arbitrary<AstExpression>[] {
+): fc.Arbitrary<Ast.Expression>[] {
     if (methodTy.kind !== "function") {
         throw new Error(
             `Incorrect type for method: ${JSONbig.stringify(methodTy)}`,
@@ -232,17 +215,17 @@ export function generateMethodCallArgs(
 /**
  * Generates field and contract constants access operations.
  */
-export class FieldAccess extends NamedGenerativeEntity<AstFieldAccess> {
+export class FieldAccess extends NamedGenerativeEntity<Ast.FieldAccess> {
     constructor(
         type: Type,
         fieldName: string,
-        private src?: AstId,
+        private src?: Ast.Id,
     ) {
         super(type, generateAstIdFromName(fieldName));
     }
 
-    generate(): fc.Arbitrary<AstFieldAccess> {
-        return fc.record<AstFieldAccess>({
+    generate(): fc.Arbitrary<Ast.FieldAccess> {
+        return fc.record<Ast.FieldAccess>({
             kind: fc.constant("field_access"),
             aggregate: fc.constant(this.src ?? generateThisID()),
             field: fc.constant(this.name),
@@ -255,17 +238,17 @@ export class FieldAccess extends NamedGenerativeEntity<AstFieldAccess> {
 /**
  * Generates method calls.
  */
-export class MethodCall extends NamedGenerativeEntity<AstMethodCall> {
+export class MethodCall extends NamedGenerativeEntity<Ast.MethodCall> {
     constructor(
         type: Type,
         name: string,
-        private src: AstExpression,
-        private args?: fc.Arbitrary<AstExpression>[],
+        private src: Ast.Expression,
+        private args?: fc.Arbitrary<Ast.Expression>[],
     ) {
         super(type, generateAstIdFromName(name));
     }
-    generate(): fc.Arbitrary<AstMethodCall> {
-        return fc.record<AstMethodCall>({
+    generate(): fc.Arbitrary<Ast.MethodCall> {
+        return fc.record<Ast.MethodCall>({
             kind: fc.constant("method_call"),
             self: fc.constant(this.src),
             method: fc.constant(this.name),
@@ -279,16 +262,16 @@ export class MethodCall extends NamedGenerativeEntity<AstMethodCall> {
 /**
  * Generates free function calls.
  */
-export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
+export class StaticCall extends NamedGenerativeEntity<Ast.StaticCall> {
     constructor(
         type: Type,
         name: string,
-        private args?: fc.Arbitrary<AstExpression>[],
+        private args?: fc.Arbitrary<Ast.Expression>[],
     ) {
         super(type, generateAstIdFromName(name));
     }
-    generate(): fc.Arbitrary<AstStaticCall> {
-        return fc.record<AstStaticCall>({
+    generate(): fc.Arbitrary<Ast.StaticCall> {
+        return fc.record<Ast.StaticCall>({
             kind: fc.constant("static_call"),
             function: fc.constantFrom(this.name),
             args: packArbitraries(this.args),
@@ -300,9 +283,9 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
 
 // export namespace OpUnary {
 //     function generate(
-//         args: fc.Arbitrary<AstExpression>[],
+//         args: fc.Arbitrary<Ast.Expression>[],
 //         allowedOps: readonly UnaryOperation[],
-//     ): fc.Arbitrary<AstOpUnary> {
+//     ): fc.Arbitrary<Ast.OpUnary> {
 //         return fc.letrec((tie) => ({
 //             astExpression: fc.oneof(
 //                 { maxDepth: 1 },
@@ -312,12 +295,12 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
 //                     weight: 1,
 //                 },
 //             ),
-//             astOpUnary: fc.record<AstOpUnary>({
+//             astOpUnary: fc.record<Ast.OpUnary>({
 //                 kind: fc.constant("op_unary"),
 //                 id: fc.constant(nextId()),
 //                 op: fc.constantFrom(...allowedOps),
 //                 loc: fc.constant(dummySrcInfoPrintable),
-//                 operand: tie("astExpression") as fc.Arbitrary<AstExpression>,
+//                 operand: tie("astExpression") as fc.Arbitrary<Ast.Expression>,
 //             }),
 //         })).astOpUnary;
 //     }
@@ -335,9 +318,9 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
 
 // export namespace OpBinary {
 //     export function generate(
-//         args: fc.Arbitrary<AstExpression>[],
-//         allowedOps: readonly AstOpBinary["op"][],
-//     ): fc.Arbitrary<AstOpBinary> {
+//         args: fc.Arbitrary<Ast.Expression>[],
+//         allowedOps: readonly Ast.OpBinary["op"][],
+//     ): fc.Arbitrary<Ast.OpBinary> {
 //         return fc.letrec((tie) => ({
 //             astExpression: fc.oneof(
 //                 { maxDepth: 1 },
@@ -347,19 +330,19 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
 //                     weight: 1,
 //                 },
 //             ),
-//             astOpBinary: fc.record<AstOpBinary>({
+//             astOpBinary: fc.record<Ast.OpBinary>({
 //                 kind: fc.constant("op_binary"),
 //                 id: fc.constant(nextId()),
 //                 op: fc.constantFrom(...allowedOps),
-//                 left: tie("astExpression") as fc.Arbitrary<AstExpression>,
-//                 right: tie("astExpression") as fc.Arbitrary<AstExpression>,
+//                 left: tie("astExpression") as fc.Arbitrary<Ast.Expression>,
+//                 right: tie("astExpression") as fc.Arbitrary<Ast.Expression>,
 //                 loc: fc.constant(dummySrcInfoPrintable),
 //             }),
 //         })).astOpBinary;
 //     }
 
 //     // num -> num -> num
-//     export const NumOps: AstOpBinary["op"][] = [
+//     export const NumOps: Ast.OpBinary["op"][] = [
 //         "+",
 //         "-",
 //         "*",
@@ -373,14 +356,14 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
 //     export const NumGens = [generateNumber(), OpUnary.Num];
 
 //     // bool -> bool -> bool
-//     export const BoolOps: AstOpBinary["op"][] = ["&&", "||"];
+//     export const BoolOps: Ast.OpBinary["op"][] = ["&&", "||"];
 //     export const BoolGens = [
 //         generateBoolean(),
 //         OpUnary.Bool,
 //         // bool -> bool -> bool
 //         generate([generateBoolean()], BoolOps),
 //         // num -> num -> bool
-//         // mkAstOpBinaryGen([ Primitive.NumberGen ],
+//         // mkAst.OpBinaryGen([ Primitive.NumberGen ],
 //         //                  ["==", "!=", "&&", "||"]),
 //     ];
 // }
@@ -392,7 +375,7 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
  * the desired type and creates an access expression.
  */
 export class StructAccess extends GenerativeEntityOpt<
-    AstExpression | undefined
+    Ast.Expression | undefined
 > {
     constructor(
         private parentScope: Scope,
@@ -401,7 +384,7 @@ export class StructAccess extends GenerativeEntityOpt<
         super(resultTy);
     }
 
-    generate(): fc.Arbitrary<AstFieldAccess> | undefined {
+    generate(): fc.Arbitrary<Ast.FieldAccess> | undefined {
         const structEntries = this.findStructsWithMatchingFields();
         if (structEntries.size === 0) {
             return undefined; // No suitable struct found
@@ -487,7 +470,7 @@ export class StructAccess extends GenerativeEntityOpt<
     private createFieldAccessExpression(
         structEntries: Map<string, [Type, string[]]>,
         structVarNames: Map<string, [Type, string[]]>,
-    ): fc.Arbitrary<AstFieldAccess> {
+    ): fc.Arbitrary<Ast.FieldAccess> {
         const chosenStructName = randomElement(
             Array.from(structVarNames.keys()),
         );
@@ -562,7 +545,7 @@ export const NonGenerativeExpressionParams: Partial<ExpressionParameters> = {
  * may recursively create additional constructs, such as functions and constants,
  * in outer scopes.
  */
-export class Expression extends GenerativeEntity<AstExpression> {
+export class Expression extends GenerativeEntity<Ast.Expression> {
     private generateFunctions: boolean;
     private generateMethods: boolean;
     private generateConstants: boolean;
@@ -615,7 +598,9 @@ export class Expression extends GenerativeEntity<AstExpression> {
      * Generates or chooses an available constant and makes a "use" expression from it.
      * @return Use of the generated constant, or `undefined` if that type is unsupported.
      */
-    private makeConstantUse(ty: Type): fc.Arbitrary<AstExpression> | undefined {
+    private makeConstantUse(
+        ty: Type,
+    ): fc.Arbitrary<Ast.Expression> | undefined {
         if (this.compileTimeEval || !this.generateConstants) {
             return undefined;
         }
@@ -684,7 +669,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
      * Generates or chooses an available field and makes a "use" expression from it.
      * @return Use expression of the generated field, or `undefined` if cannot create it.
      */
-    private makeFieldUse(ty: Type): fc.Arbitrary<AstFieldAccess> | undefined {
+    private makeFieldUse(ty: Type): fc.Arbitrary<Ast.FieldAccess> | undefined {
         if (
             this.compileTimeEval ||
             !this.generateFields ||
@@ -725,7 +710,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
      * The process of generating local variables involves creating new statements in the function/method body.
      * @return Use expression of the generated local variable, or `undefined` if cannot create it.
      */
-    private makeLocalVarUse(ty: Type): fc.Arbitrary<AstId> | undefined {
+    private makeLocalVarUse(ty: Type): fc.Arbitrary<Ast.Id> | undefined {
         if (
             this.compileTimeEval ||
             !this.generateStatements ||
@@ -753,7 +738,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
      */
     private makeStructFieldAccess(
         ty: Type,
-    ): fc.Arbitrary<AstFieldAccess> | undefined {
+    ): fc.Arbitrary<Ast.FieldAccess> | undefined {
         if (
             this.compileTimeEval ||
             !this.generateStatements ||
@@ -786,7 +771,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
      */
     private makeFunCall(
         returnTy: Type,
-    ): fc.Arbitrary<AstStaticCall> | undefined {
+    ): fc.Arbitrary<Ast.StaticCall> | undefined {
         if (this.compileTimeEval || !this.generateFunctions) {
             return undefined;
         }
@@ -816,7 +801,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
      */
     private makeMethodCall(
         returnTy: Type,
-    ): fc.Arbitrary<AstExpression> | undefined {
+    ): fc.Arbitrary<Ast.Expression> | undefined {
         if (
             this.compileTimeEval ||
             !this.generateMethods ||
@@ -856,7 +841,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
                         acc.push(opCall);
                     }
                     return acc;
-                }, [] as fc.Arbitrary<AstExpression>[]),
+                }, [] as fc.Arbitrary<Ast.Expression>[]),
             // map_var.get(key)
             ...this.parentScope
                 .getNamedEntriesRecursive("let")
@@ -884,7 +869,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
                         acc.push(opCall);
                     }
                     return acc;
-                }, [] as fc.Arbitrary<AstExpression>[]),
+                }, [] as fc.Arbitrary<Ast.Expression>[]),
         ];
 
         // Generate or collect the available user-defined methods
@@ -916,7 +901,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
     }
 
     /** Generates `require` function call. */
-    private generateRequireCall(): fc.Arbitrary<AstStaticCall> {
+    private generateRequireCall(): fc.Arbitrary<Ast.StaticCall> {
         const condition = new Expression(this.parentScope, {
             kind: "stdlib",
             type: StdlibType.Bool,
@@ -935,7 +920,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
     /**
      * Generates expressions that returns the given standard type when evaluated.
      */
-    private generateExpressions(ty: Type): fc.Arbitrary<AstExpression> {
+    private generateExpressions(ty: Type): fc.Arbitrary<Ast.Expression> {
         const funCall = this.makeFunCall(ty);
         const methodCall = this.makeMethodCall(ty);
         const constant = this.makeConstantUse(ty);
@@ -985,8 +970,8 @@ export class Expression extends GenerativeEntity<AstExpression> {
      * During expression generation, the generator creates new AST entries in the outer scopes,
      * including functions and constants saving them to the given context.
      */
-    generate(): fc.Arbitrary<AstExpression> {
-        let expr: fc.Arbitrary<AstExpression>;
+    generate(): fc.Arbitrary<Ast.Expression> {
+        let expr: fc.Arbitrary<Ast.Expression>;
         switch (this.type.kind) {
             case "stdlib":
             case "map":

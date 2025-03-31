@@ -1,9 +1,6 @@
 import { funcCompile } from "../../src/func/funcCompile";
 import { posixNormalize } from "../../src/utils/filePath";
-import type {
-    Module as AstModule,
-    Contract as AstContract,
-} from "../../src/ast/ast";
+import type * as Ast from "../../src/ast/ast";
 import { writeFileSync } from "fs";
 import * as path from "path";
 import fc from "fast-check";
@@ -20,7 +17,7 @@ import {
 import { GlobalContext } from "../src/context";
 import { getAstFactory } from "../../src/ast/ast-helpers";
 
-function getContract(program: AstModule): AstContract | undefined {
+function getContract(program: Ast.Module): Ast.Contract | undefined {
     for (const entry of program.items) {
         if (entry.kind === "contract") {
             return entry;
@@ -29,7 +26,7 @@ function getContract(program: AstModule): AstContract | undefined {
     return undefined;
 }
 
-async function compileProgram(program: AstModule) {
+async function compileProgram(program: Ast.Module) {
     await withNodeFS(async (vfs) => {
         const factoryAst = getAstFactory();
         let ctx = createContext(program, factoryAst);

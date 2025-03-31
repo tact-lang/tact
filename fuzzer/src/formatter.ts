@@ -1,43 +1,4 @@
-import type {
-    Id as AstId,
-    ConstantDecl as AstConstantDecl,
-    ConstantDef as AstConstantDef,
-    Import as AstImport,
-    NativeFunctionDecl as AstNativeFunctionDecl,
-    Module as AstModule,
-    BouncedMessageType as AstBouncedMessageType,
-    MapType as AstMapType,
-    Receiver as AstReceiver,
-    ContractInit as AstContractInit,
-    StatementRepeat as AstStatementRepeat,
-    StatementUntil as AstStatementUntil,
-    StatementWhile as AstStatementWhile,
-    StatementForEach as AstStatementForEach,
-    StatementTry as AstStatementTry,
-    StructFieldInitializer as AstStructFieldInitializer,
-    StatementCondition as AstStatementCondition,
-    StatementAugmentedAssign as AstStatementAugmentedAssign,
-    StatementAssign as AstStatementAssign,
-    StatementExpression as AstStatementExpression,
-    StatementReturn as AstStatementReturn,
-    StatementLet as AstStatementLet,
-    FunctionDef as AstFunctionDef,
-    FunctionDecl as AstFunctionDecl,
-    Type as AstType,
-    Statement as AstStatement,
-    Expression as AstExpression,
-    FieldDecl as AstFieldDecl,
-    PrimitiveTypeDecl as AstPrimitiveTypeDecl,
-    StructDecl as AstStructDecl,
-    Contract as AstContract,
-    Trait as AstTrait,
-    MessageDecl as AstMessageDecl,
-    AstNode,
-    TraitDeclaration as AstTraitDeclaration,
-    ModuleItem as AstModuleItem,
-    ContractDeclaration as AstContractDeclaration,
-    OptionalId,
-} from "../../src/ast/ast";
+import type * as Ast from "../../src/ast/ast";
 
 /**
  * PrettyPrinter class provides methods to format and indent Tact code.
@@ -64,7 +25,7 @@ class PrettyPrinter {
         return " ".repeat(this.indentLevel * this.indentSpaces);
     }
 
-    ppAstPrimitive(primitive: AstPrimitiveTypeDecl): string {
+    ppAstPrimitive(primitive: Ast.PrimitiveTypeDecl): string {
         return `${this.indent()}primitive ${primitive.name.text};`;
     }
 
@@ -72,7 +33,7 @@ class PrettyPrinter {
     // Types
     //
 
-    ppAstType(typeRef: AstType): string {
+    ppAstType(typeRef: Ast.Type): string {
         switch (typeRef.kind) {
             case "type_id":
                 return typeRef.text;
@@ -85,7 +46,7 @@ class PrettyPrinter {
         }
     }
 
-    ppAstTypeRefMap(typeRef: AstMapType): string {
+    ppAstTypeRefMap(typeRef: Ast.MapType): string {
         const keyAlias = typeRef.keyStorageType
             ? ` as ${typeRef.keyStorageType.text}`
             : "";
@@ -95,7 +56,7 @@ class PrettyPrinter {
         return `map<${typeRef.keyType.text}${keyAlias}, ${typeRef.valueType.text}${valueAlias}>`;
     }
 
-    ppAstBouncedMessageType(type: AstBouncedMessageType): string {
+    ppAstBouncedMessageType(type: Ast.BouncedMessageType): string {
         return `bounced<${type.messageType.text}>`;
     }
 
@@ -103,7 +64,7 @@ class PrettyPrinter {
     // Expressions
     //
 
-    ppAstOptionalId(id: OptionalId): string {
+    ppAstOptionalId(id: Ast.OptionalId): string {
         return "text" in id ? id.text : "_";
     }
 
@@ -154,7 +115,10 @@ class PrettyPrinter {
         }
     }
 
-    ppAstExpression(expr: AstExpression, parentPrecedence: number = 0): string {
+    ppAstExpression(
+        expr: Ast.Expression,
+        parentPrecedence: number = 0,
+    ): string {
         let result: string;
         let currentPrecedence = this.getPrecedence(expr.kind);
 
@@ -217,7 +181,7 @@ class PrettyPrinter {
         return result;
     }
 
-    ppAstStructFieldInitializer(param: AstStructFieldInitializer): string {
+    ppAstStructFieldInitializer(param: Ast.StructFieldInitializer): string {
         return `${param.field.text}: ${this.ppAstExpression(param.initializer)}`;
     }
 
@@ -225,7 +189,7 @@ class PrettyPrinter {
     // Program
     //
 
-    ppAstProgram(program: AstModule): string {
+    ppAstProgram(program: Ast.Module): string {
         const entriesFormatted = program.items
             .map((entry, index, array) => {
                 const formattedEntry = this.ppProgramItem(entry);
@@ -242,7 +206,7 @@ class PrettyPrinter {
         return entriesFormatted.trim();
     }
 
-    ppProgramItem(item: AstModuleItem): string {
+    ppProgramItem(item: Ast.ModuleItem): string {
         switch (item.kind) {
             case "struct_decl":
             case "message_decl":
@@ -264,11 +228,11 @@ class PrettyPrinter {
         }
     }
 
-    ppAstProgramImport(importItem: AstImport): string {
+    ppAstProgramImport(importItem: Ast.Import): string {
         return `${this.indent()}import "${importItem.importPath.path.segments.join()}";`;
     }
 
-    ppAstStruct(struct: AstStructDecl | AstMessageDecl): string {
+    ppAstStruct(struct: Ast.StructDecl | Ast.MessageDecl): string {
         const typePrefix =
             struct.kind === "message_decl" ? "message" : "struct";
         const prefixFormatted =
@@ -283,7 +247,7 @@ class PrettyPrinter {
         return `${this.indent()}${typePrefix} ${prefixFormatted}${struct.name.text} {\n${fieldsFormatted}\n}`;
     }
 
-    ppAstTrait(trait: AstTrait): string {
+    ppAstTrait(trait: Ast.Trait): string {
         const traitsFormatted = trait.traits.map((t) => t.text).join(", ");
         const attrsRaw = trait.attributes
             .map((attr) => `@${attr.type}("${attr.name.value}")`)
@@ -313,7 +277,7 @@ class PrettyPrinter {
         return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
     }
 
-    ppTraitBody(item: AstTraitDeclaration): string {
+    ppTraitBody(item: Ast.TraitDeclaration): string {
         switch (item.kind) {
             case "field_decl":
                 return this.ppAstField(item);
@@ -330,7 +294,7 @@ class PrettyPrinter {
         }
     }
 
-    ppAstField(field: AstFieldDecl): string {
+    ppAstField(field: Ast.FieldDecl): string {
         const typeFormatted = this.ppAstType(field.type);
         const initializer = field.initializer
             ? ` = ${this.ppAstExpression(field.initializer)}`
@@ -339,7 +303,7 @@ class PrettyPrinter {
         return `${this.indent()}${field.name.text}: ${typeFormatted}${asAlias}${initializer};`;
     }
 
-    ppAstConstant(constant: AstConstantDecl | AstConstantDef): string {
+    ppAstConstant(constant: Ast.ConstantDecl | Ast.ConstantDef): string {
         const valueFormatted =
             constant.kind === "constant_def"
                 ? ` = ${this.ppAstExpression(constant.initializer)}`
@@ -349,7 +313,7 @@ class PrettyPrinter {
         return `${this.indent()}${attrsFormatted}const ${constant.name.text}: ${this.ppAstType(constant.type)}${valueFormatted};`;
     }
 
-    ppAstContract(contract: AstContract): string {
+    ppAstContract(contract: Ast.Contract): string {
         const traitsFormatted = contract.traits
             .map((trait) => trait.text)
             .join(", ");
@@ -379,7 +343,7 @@ class PrettyPrinter {
         return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
     }
 
-    ppContractBody(declaration: AstContractDeclaration): string {
+    ppContractBody(declaration: Ast.ContractDeclaration): string {
         switch (declaration.kind) {
             case "field_decl":
                 return this.ppAstField(declaration);
@@ -396,7 +360,7 @@ class PrettyPrinter {
         }
     }
 
-    public ppAstFunction(func: AstFunctionDecl | AstFunctionDef): string {
+    public ppAstFunction(func: Ast.FunctionDecl | Ast.FunctionDef): string {
         const argsFormatted = func.params
             .map(
                 (arg) =>
@@ -423,13 +387,13 @@ class PrettyPrinter {
         return `${this.indent()}${attrsFormatted}fun ${func.name.text}(${argsFormatted})${returnType}${body}`;
     }
 
-    ppAstReceive(receive: AstReceiver): string {
+    ppAstReceive(receive: Ast.Receiver): string {
         const header = this.ppAstReceiveHeader(receive);
         const stmtsFormatted = this.ppStatementBlock(receive.statements);
         return `${this.indent()}${header} ${stmtsFormatted}`;
     }
 
-    ppAstReceiveHeader(receive: AstReceiver): string {
+    ppAstReceiveHeader(receive: Ast.Receiver): string {
         if (receive.selector.kind === "bounce")
             return `bounced(${this.ppAstOptionalId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`;
         const prefix =
@@ -443,7 +407,7 @@ class PrettyPrinter {
         return prefix + suffix;
     }
 
-    ppAstNativeFunction(func: AstNativeFunctionDecl): string {
+    ppAstNativeFunction(func: Ast.NativeFunctionDecl): string {
         const argsFormatted = func.params
             .map(
                 (arg) =>
@@ -458,7 +422,7 @@ class PrettyPrinter {
         return `${this.indent()}@name(${func.nativeName.text})\n${this.indent()}${attrs}native ${func.name.text}(${argsFormatted})${returnType};`;
     }
 
-    ppAstInitFunction(initFunc: AstContractInit): string {
+    ppAstInitFunction(initFunc: Ast.ContractInit): string {
         const argsFormatted = initFunc.params
             .map(
                 (arg) =>
@@ -479,7 +443,7 @@ class PrettyPrinter {
     // Statements
     //
 
-    ppAstStatement(stmt: AstStatement): string {
+    ppAstStatement(stmt: Ast.Statement): string {
         switch (stmt.kind) {
             case "statement_let":
                 return this.ppAstStatementLet(stmt);
@@ -508,7 +472,7 @@ class PrettyPrinter {
         }
     }
 
-    ppStatementBlock(statements: readonly AstStatement[]): string {
+    ppStatementBlock(statements: readonly Ast.Statement[]): string {
         this.increaseIndent();
         const statementsFormatted = statements
             .map((stmt) => this.ppAstStatement(stmt))
@@ -518,7 +482,7 @@ class PrettyPrinter {
         return result;
     }
 
-    ppAstStatementLet(statement: AstStatementLet): string {
+    ppAstStatementLet(statement: Ast.StatementLet): string {
         const expression = this.ppAstExpression(statement.expression);
         const tyAnnotation =
             statement.type === undefined
@@ -527,28 +491,28 @@ class PrettyPrinter {
         return `${this.indent()}let ${this.ppAstOptionalId(statement.name)}${tyAnnotation} = ${expression};`;
     }
 
-    ppAstStatementReturn(statement: AstStatementReturn): string {
+    ppAstStatementReturn(statement: Ast.StatementReturn): string {
         const expression = statement.expression
             ? this.ppAstExpression(statement.expression)
             : "";
         return `${this.indent()}return ${expression};`;
     }
 
-    ppAstStatementExpression(statement: AstStatementExpression): string {
+    ppAstStatementExpression(statement: Ast.StatementExpression): string {
         return `${this.indent()}${this.ppAstExpression(statement.expression)};`;
     }
 
-    ppAstStatementAssign(statement: AstStatementAssign): string {
+    ppAstStatementAssign(statement: Ast.StatementAssign): string {
         return `${this.indent()}${this.ppAstExpression(statement.path)} = ${this.ppAstExpression(statement.expression)};`;
     }
 
     ppAstStatementAugmentedAssign(
-        statement: AstStatementAugmentedAssign,
+        statement: Ast.StatementAugmentedAssign,
     ): string {
         return `${this.indent()}${this.ppAstExpression(statement.path)} ${statement.op}= ${this.ppAstExpression(statement.expression)};`;
     }
 
-    ppAstCondition(statement: AstStatementCondition): string {
+    ppAstCondition(statement: Ast.StatementCondition): string {
         const condition = this.ppAstExpression(statement.condition);
         const trueBranch = this.ppStatementBlock(statement.trueStatements);
         const falseBranch = statement.falseStatements
@@ -557,31 +521,31 @@ class PrettyPrinter {
         return `${this.indent()}if (${condition}) ${trueBranch}${falseBranch}`;
     }
 
-    ppAstStatementWhile(statement: AstStatementWhile): string {
+    ppAstStatementWhile(statement: Ast.StatementWhile): string {
         const condition = this.ppAstExpression(statement.condition);
         const stmts = this.ppStatementBlock(statement.statements);
         return `${this.indent()}while (${condition}) ${stmts}`;
     }
 
-    ppAstStatementRepeat(statement: AstStatementRepeat): string {
+    ppAstStatementRepeat(statement: Ast.StatementRepeat): string {
         const condition = this.ppAstExpression(statement.iterations);
         const stmts = this.ppStatementBlock(statement.statements);
         return `${this.indent()}repeat (${condition}) ${stmts}`;
     }
 
-    ppAstStatementUntil(statement: AstStatementUntil): string {
+    ppAstStatementUntil(statement: Ast.StatementUntil): string {
         const condition = this.ppAstExpression(statement.condition);
         const stmts = this.ppStatementBlock(statement.statements);
         return `${this.indent()}do ${stmts} until (${condition});`;
     }
 
-    ppAstStatementForEach(statement: AstStatementForEach): string {
-        const header = `foreach (${this.ppAstOptionalId(statement.keyName)}, ${(statement.valueName as AstId).text} in ${this.ppAstExpression(statement.map)})`;
+    ppAstStatementForEach(statement: Ast.StatementForEach): string {
+        const header = `foreach (${this.ppAstOptionalId(statement.keyName)}, ${(statement.valueName as Ast.Id).text} in ${this.ppAstExpression(statement.map)})`;
         const body = this.ppStatementBlock(statement.statements);
         return `${this.indent()}${header} ${body}`;
     }
 
-    ppAstStatementTry(statement: AstStatementTry): string {
+    ppAstStatementTry(statement: Ast.StatementTry): string {
         const tryBody = this.ppStatementBlock(statement.statements);
         const tryPrefix = `${this.indent()}try ${tryBody}`;
         const catchSuffix = statement.catchBlock
@@ -592,12 +556,12 @@ class PrettyPrinter {
 }
 
 /**
- * Formats an Ast node into a pretty-printed string representation.
- * @param input The Ast node to format.
- * @returns A string that represents the formatted Ast node.
+ * Formats an Ast. node into a pretty-printed string representation.
+ * @param input The Ast. node to format.
+ * @returns A string that represents the formatted Ast. node.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatAst(input: AstNode): string {
+export function formatAst(input: Ast.AstNode): string {
     const pp = new PrettyPrinter();
     switch (input.kind) {
         case "module":
@@ -630,6 +594,6 @@ export function formatAst(input: AstNode): string {
         case "trait":
             return pp.ppAstTrait(input);
         default:
-            throw new Error(`Unsupported Ast type: ${input.kind}`);
+            throw new Error(`Unsupported Ast. type: ${input.kind}`);
     }
 }

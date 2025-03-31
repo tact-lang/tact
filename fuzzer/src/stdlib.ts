@@ -1,4 +1,4 @@
-import type { TypeDecl as AstTypeDecl } from "../../src/ast/ast";
+import type * as Ast from "../../src/ast/ast";
 import { nextId } from "./id";
 
 import * as path from "path";
@@ -24,7 +24,7 @@ export const StdlibCode = StdlibVFS.readFile(StdlibPath).toString();
  * Returns traits defined in stdlib.
  * TODO: We should parse its sources instead
  */
-export function getStdlibTraits(): AstTypeDecl[] {
+export function getStdlibTraits(): Ast.TypeDecl[] {
     return [
         {
             kind: "trait",

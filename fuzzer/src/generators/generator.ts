@@ -1,4 +1,4 @@
-import type { Id as AstId } from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import { nextId } from "../id";
 import type { IDIdx } from "../id";
 import type { Type } from "../types";
@@ -26,9 +26,9 @@ export abstract class GenerativeEntity<T> extends GenerativeEntityBase {
 }
 
 export abstract class NamedGenerativeEntity<T> extends GenerativeEntity<T> {
-    public name: AstId;
+    public name: Ast.Id;
 
-    constructor(type: Type, name: AstId) {
+    constructor(type: Type, name: Ast.Id) {
         super(type);
         this.name = name;
     }

@@ -9,7 +9,7 @@ import fc from "fast-check";
 import type { NamedScopeItemKind, Scope } from "./scope";
 import { GlobalContext } from "./context";
 import type { Type } from "./types";
-import type { Id as AstId, AstNode } from "../../src/ast/ast";
+import type * as Ast from "../../src/ast/ast";
 import { nextId } from "./id";
 import { getSrcInfo } from "../../src/grammar/src-info";
 
@@ -51,7 +51,7 @@ export function createProperty<Ts extends [unknown, ...unknown[]]>(
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     const enhancedPredicate = (...args: Ts): boolean | void => {
         args.forEach((arg) => {
-            GlobalContext.printSample(arg as AstNode);
+            GlobalContext.printSample(arg as Ast.AstNode);
         });
         return originalPredicate(...args);
     };
@@ -153,9 +153,9 @@ export function generateName(
 }
 
 /**
- * Generates AstId from string name and with new id.
+ * Generates Ast.Id from string name and with new id.
  */
-export function generateAstIdFromName(name: string): AstId {
+export function generateAstIdFromName(name: string): Ast.Id {
     return {
         kind: "id",
         text: name,
@@ -165,15 +165,15 @@ export function generateAstIdFromName(name: string): AstId {
 }
 
 /**
- * Generates AstId.
- * @param scope Current scope, from which AstId.text will be generated.
+ * Generates Ast.Id.
+ * @param scope Current scope, from which Ast.Id.text will be generated.
  * @param shadowing Allow shadowing (using names available in parent scopes)
  */
 export function generateAstId(
     scope: Scope,
     shadowing: boolean = true,
     isType: boolean = false,
-): fc.Arbitrary<AstId> {
+): fc.Arbitrary<Ast.Id> {
     return fc.record({
         kind: fc.constant("id"),
         text: generateName(scope, shadowing, isType),

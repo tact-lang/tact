@@ -1,10 +1,4 @@
-import type {
-    PrimitiveTypeDecl as AstPrimitiveTypeDecl,
-    Type as AstType,
-    Expression as AstExpression,
-    TypeId as AstTypeId,
-    TypeDecl as AstTypeDecl,
-} from "../../src/ast/ast";
+import type * as Ast from "../../src/ast/ast";
 import {
     createSample,
     generateName,
@@ -44,7 +38,7 @@ export type MapType = {
 export type StructField = {
     name: string;
     type: Type;
-    default?: fc.Arbitrary<AstExpression>;
+    default?: fc.Arbitrary<Ast.Expression>;
 };
 
 /** Utility types used internally in the generator. */
@@ -127,7 +121,7 @@ export const SUPPORTED_STDLIB_TYPES: StdlibType[] = [
     StdlibType.Int,
 ];
 
-function makePrimitiveType(name: string): AstPrimitiveTypeDecl {
+function makePrimitiveType(name: string): Ast.PrimitiveTypeDecl {
     return {
         kind: "primitive_type_decl",
         id: nextId(),
@@ -135,7 +129,7 @@ function makePrimitiveType(name: string): AstPrimitiveTypeDecl {
         loc: dummySrcInfoPrintable,
     };
 }
-function makeASTTypeRef(name: string): AstTypeId {
+function makeASTTypeRef(name: string): Ast.TypeId {
     return {
         kind: "type_id",
         id: nextId(),
@@ -154,12 +148,12 @@ function makeTypeRef(name: string): TypeRef {
 /**
  * Cache for Stdlib types.
  */
-const StdlibTypeCache: Map<StdlibType, [AstTypeDecl, AstType, TypeRef]> =
+const StdlibTypeCache: Map<StdlibType, [Ast.TypeDecl, Ast.Type, TypeRef]> =
     new Map();
 Object.values(StdlibType).forEach((ty) => {
     StdlibTypeCache.set(ty, [
-        transformTy<AstTypeDecl>(ty, makePrimitiveType),
-        transformTy<AstType>(ty, makeASTTypeRef),
+        transformTy<Ast.TypeDecl>(ty, makePrimitiveType),
+        transformTy<Ast.Type>(ty, makeASTTypeRef),
         transformTy<TypeRef>(ty, makeTypeRef),
     ]);
 });
@@ -173,7 +167,7 @@ function transformTy<T>(ty: StdlibType, transform: (type: StdlibType) => T): T {
     }
     return transform(ty);
 }
-export function tyToAstTypeDecl(ty: Type): AstTypeDecl {
+export function tyToAstTypeDecl(ty: Type): Ast.TypeDecl {
     switch (ty.kind) {
         case "stdlib": {
             const result = StdlibTypeCache.get(ty.type);
@@ -186,14 +180,14 @@ export function tyToAstTypeDecl(ty: Type): AstTypeDecl {
             throwTyError(ty);
     }
 }
-export function tyToAstType(ty: Type, isBounced = false): AstType {
+export function tyToAstType(ty: Type, isBounced = false): Ast.Type {
     const generateAstTypeId = (text: string) =>
         ({
             kind: "type_id",
             text,
             id: nextId(),
             loc: dummySrcInfoPrintable,
-        }) as AstTypeId;
+        }) as Ast.TypeId;
 
     switch (ty.kind) {
         case "stdlib": {
@@ -205,7 +199,7 @@ export function tyToAstType(ty: Type, isBounced = false): AstType {
         }
         case "struct":
         case "message": {
-            const simpleType: AstTypeId = {
+            const simpleType: Ast.TypeId = {
                 kind: "type_id",
                 text: ty.name,
                 id: nextId(),
@@ -262,7 +256,7 @@ export function getReturnType(ty: FunctionType): Type {
 /**
  * Returns mock AST entries for types defined in standard library.
  */
-export function getStdlibTypes(): AstTypeDecl[] {
+export function getStdlibTypes(): Ast.TypeDecl[] {
     return [...Object.values(StdlibType)].map((type) =>
         makePrimitiveType(type),
     );

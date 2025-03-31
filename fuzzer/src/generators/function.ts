@@ -1,10 +1,4 @@
-import type {
-    FunctionDef as AstFunctionDef,
-    TypedParameter as AstTypedParameter,
-    FunctionAttribute as AstFunctionAttribute,
-    Statement as AstStatement,
-    FunctionDecl as AstFunctionDecl,
-} from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import {
     tyToAstType,
     StdlibType,
@@ -54,7 +48,7 @@ function generateParameters(
     kind: FunctionKind,
     type: FunctionType,
     scope: Scope,
-): AstTypedParameter[] {
+): Ast.TypedParameter[] {
     if (notHaveArguments(kind, type)) {
         return [];
     }
@@ -73,11 +67,11 @@ function generateParameters(
  * Prepares the final list of attributes based on function kind and the current implementation details.
  */
 function getAttributes(
-    extraAttrs: AstFunctionAttribute[],
+    extraAttrs: Ast.FunctionAttribute[],
     kind: FunctionKind,
     onlyDeclaration: boolean,
-): AstFunctionAttribute[] {
-    const attrs: AstFunctionAttribute[] = extraAttrs;
+): Ast.FunctionAttribute[] {
+    const attrs: Ast.FunctionAttribute[] = extraAttrs;
 
     // We are marking all the methods with the `get` attribute to ensure they
     // will be compiled to func and tested by compilation tests.
@@ -107,9 +101,9 @@ function getAttributes(
  * An object that encapsulates the generated free function or contract method definition including
  * its scope and nested elements.
  */
-export class FunctionDef extends NamedGenerativeEntity<AstFunctionDef> {
+export class FunctionDef extends NamedGenerativeEntity<Ast.FunctionDef> {
     /** Generated body items. */
-    private body: fc.Arbitrary<AstStatement>[] = [];
+    private body: fc.Arbitrary<Ast.Statement>[] = [];
 
     /** Scope used within the generated function. */
     private scope: Scope;
@@ -136,7 +130,7 @@ export class FunctionDef extends NamedGenerativeEntity<AstFunctionDef> {
     /**
      * Generates body of the function emitting return statement and statements generated from the bottom-up.
      */
-    private generateBody(): fc.Arbitrary<AstStatement[]> {
+    private generateBody(): fc.Arbitrary<Ast.Statement[]> {
         const type = this.type as FunctionType;
         const returnTy: Type =
             type.signature.length > 0
@@ -154,10 +148,10 @@ export class FunctionDef extends NamedGenerativeEntity<AstFunctionDef> {
     }
 
     public generateImpl(
-        extraAttrs: AstFunctionAttribute[],
-    ): fc.Arbitrary<AstFunctionDef> {
+        extraAttrs: Ast.FunctionAttribute[],
+    ): fc.Arbitrary<Ast.FunctionDef> {
         const returnTy = getReturnType(this.type as FunctionType);
-        return fc.record<AstFunctionDef>({
+        return fc.record<Ast.FunctionDef>({
             kind: fc.constant("function_def"),
             id: fc.constant(this.idx),
             attributes: fc.constant(
@@ -182,7 +176,7 @@ export class FunctionDef extends NamedGenerativeEntity<AstFunctionDef> {
     /**
      * Generates a function definition without extra attributes.
      */
-    public generate(): fc.Arbitrary<AstFunctionDef> {
+    public generate(): fc.Arbitrary<Ast.FunctionDef> {
         return this.generateImpl([]);
     }
 }
@@ -191,7 +185,7 @@ export class FunctionDef extends NamedGenerativeEntity<AstFunctionDef> {
  * An object that encapsulates the generated free function or trait method declaration including
  * its scope and nested elements.
  */
-export class FunctionDecl extends NamedGenerativeEntity<AstFunctionDecl> {
+export class FunctionDecl extends NamedGenerativeEntity<Ast.FunctionDecl> {
     /** Scope used within the generated function. */
     private scope: Scope;
 
@@ -205,10 +199,10 @@ export class FunctionDecl extends NamedGenerativeEntity<AstFunctionDecl> {
     }
 
     private generateImpl(
-        extraAttrs: AstFunctionAttribute[],
-    ): fc.Arbitrary<AstFunctionDecl> {
+        extraAttrs: Ast.FunctionAttribute[],
+    ): fc.Arbitrary<Ast.FunctionDecl> {
         const returnTy = getReturnType(this.type as FunctionType);
-        return fc.record<AstFunctionDecl>({
+        return fc.record<Ast.FunctionDecl>({
             kind: fc.constant("function_decl"),
             id: fc.constant(this.idx),
             attributes: fc.constant(getAttributes(extraAttrs, this.kind, true)),
@@ -230,7 +224,7 @@ export class FunctionDecl extends NamedGenerativeEntity<AstFunctionDecl> {
     /**
      * Generates a function definition without extra attributes.
      */
-    public generate(): fc.Arbitrary<AstFunctionDecl> {
+    public generate(): fc.Arbitrary<Ast.FunctionDecl> {
         return this.generateImpl([]);
     }
 
@@ -239,8 +233,8 @@ export class FunctionDecl extends NamedGenerativeEntity<AstFunctionDecl> {
      */
     public generateDefinition(
         kind: FunctionKind,
-        attrs: AstFunctionAttribute[] = [],
-    ): fc.Arbitrary<AstFunctionDef> {
+        attrs: Ast.FunctionAttribute[] = [],
+    ): fc.Arbitrary<Ast.FunctionDef> {
         return new FunctionDef(
             this.scope.parentScope!,
             kind,

@@ -1,4 +1,4 @@
-import type { TypedParameter as AstTypedParameter } from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { tyToAstType } from "../types";
 import type { Type } from "../types";
@@ -8,9 +8,9 @@ import { NamedGenerativeEntity } from "./generator";
 import fc from "fast-check";
 
 /**
- * An object that encapsulates generated AstTypedParameter.
+ * An object that encapsulates generated Ast.TypedParameter.
  */
-export class Parameter extends NamedGenerativeEntity<AstTypedParameter> {
+export class Parameter extends NamedGenerativeEntity<Ast.TypedParameter> {
     /**
      * @param parentScope Scope of the function this argument belongs to.
      * @param isBounced If the type of the argument should be wrapped in `bounced<>`
@@ -28,8 +28,8 @@ export class Parameter extends NamedGenerativeEntity<AstTypedParameter> {
         super(type, createSample(generateAstId(parentScope)));
     }
 
-    generate(): fc.Arbitrary<AstTypedParameter> {
-        return fc.record<AstTypedParameter>({
+    generate(): fc.Arbitrary<Ast.TypedParameter> {
+        return fc.record<Ast.TypedParameter>({
             kind: fc.constant("typed_parameter"),
             id: fc.constant(this.idx),
             name: fc.constant(this.name),

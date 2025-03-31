@@ -1,4 +1,4 @@
-import type { Module as AstModule } from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import {
     createSamplesArray,
     createSample,
@@ -41,10 +41,10 @@ export interface ProgramParameters {
 }
 
 /**
- * An object that encapsulates a randomly generated AstModule including extra information
+ * An object that encapsulates a randomly generated Ast.Module including extra information
  * about its entries and their scopes.
  */
-export class Program extends NamedGenerativeEntity<AstModule> {
+export class Program extends NamedGenerativeEntity<Ast.Module> {
     /** Top-level global scope. */
     private scope: Scope;
 
@@ -99,7 +99,7 @@ export class Program extends NamedGenerativeEntity<AstModule> {
      * constants, functions and contract fields. AST nodes inside the contract implementation may vary,
      * as determined by fast-check.
      */
-    public generate(): fc.Arbitrary<AstModule> {
+    public generate(): fc.Arbitrary<Ast.Module> {
         const stdlibEntries = this.addStdlib
             ? getStdlibTraits()
                   .concat(getStdlibTypes())
@@ -123,7 +123,7 @@ export class Program extends NamedGenerativeEntity<AstModule> {
         const functions = Array.from(this.scope.getAllNamed("functionDef")).map(
             (f) => f.generate(),
         );
-        return fc.record<AstModule>({
+        return fc.record<Ast.Module>({
             kind: fc.constantFrom("module"),
             id: fc.constantFrom(this.idx),
             items: fc.tuple(

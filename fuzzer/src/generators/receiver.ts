@@ -1,12 +1,4 @@
-import type {
-    Receiver as AstReceiver,
-    Statement as AstStatement,
-    ReceiverKind as AstReceiverKind,
-    ReceiverSubKind as AstReceiverSubKind,
-    ReceiverSimple as AstReceiverSimple,
-    ReceiverFallback as AstReceiverFallback,
-    ReceiverComment as AstReceiverComment,
-} from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import { UtilType, StdlibType, isBouncedMessage } from "../types";
 import type { Type } from "../types";
 import { Scope } from "../scope";
@@ -28,23 +20,23 @@ const RECEIVE_RETURN_TY: Type = { kind: "util", type: UtilType.Unit };
 
 function generateReceiverSimpleSubKind(
     param: Parameter,
-): fc.Arbitrary<AstReceiverSimple> {
-    return fc.record<AstReceiverSimple>({
+): fc.Arbitrary<Ast.ReceiverSimple> {
+    return fc.record<Ast.ReceiverSimple>({
         kind: fc.constant("simple"),
         param: param.generate(),
         id: fc.constant(nextId()),
     });
 }
 
-function generateReceiverFallbackSubKind(): fc.Arbitrary<AstReceiverFallback> {
-    return fc.record<AstReceiverFallback>({
+function generateReceiverFallbackSubKind(): fc.Arbitrary<Ast.ReceiverFallback> {
+    return fc.record<Ast.ReceiverFallback>({
         kind: fc.constant("fallback"),
         id: fc.constant(nextId()),
     });
 }
 
-function generateReceiverCommentSubKind(): fc.Arbitrary<AstReceiverComment> {
-    return fc.record<AstReceiverComment>({
+function generateReceiverCommentSubKind(): fc.Arbitrary<Ast.ReceiverComment> {
+    return fc.record<Ast.ReceiverComment>({
         kind: fc.constant("comment"),
         comment: generateString(/*nonEmpty=*/ true),
         id: fc.constant(nextId()),
@@ -52,9 +44,9 @@ function generateReceiverCommentSubKind(): fc.Arbitrary<AstReceiverComment> {
 }
 
 function generateInternalReceiverKind(
-    subKind: fc.Arbitrary<AstReceiverSubKind>,
-): fc.Arbitrary<AstReceiverKind> {
-    return fc.record<AstReceiverKind>({
+    subKind: fc.Arbitrary<Ast.ReceiverSubKind>,
+): fc.Arbitrary<Ast.ReceiverKind> {
+    return fc.record<Ast.ReceiverKind>({
         kind: fc.constant("internal"),
         subKind,
         id: fc.constant(nextId()),
@@ -63,9 +55,9 @@ function generateInternalReceiverKind(
 }
 
 function generateExternalReceiverKind(
-    subKind: fc.Arbitrary<AstReceiverSubKind>,
-): fc.Arbitrary<AstReceiverKind> {
-    return fc.record<AstReceiverKind>({
+    subKind: fc.Arbitrary<Ast.ReceiverSubKind>,
+): fc.Arbitrary<Ast.ReceiverKind> {
+    return fc.record<Ast.ReceiverKind>({
         kind: fc.constant("external"),
         subKind,
         id: fc.constant(nextId()),
@@ -74,11 +66,11 @@ function generateExternalReceiverKind(
 }
 
 /**
- * An object that encapsulates an AstReceiver.
+ * An object that encapsulates an Ast.Receiver.
  */
-export class Receive extends GenerativeEntity<AstReceiver> {
+export class Receive extends GenerativeEntity<Ast.Receiver> {
     /** Generated body items. */
-    private body: fc.Arbitrary<AstStatement>[] = [];
+    private body: fc.Arbitrary<Ast.Statement>[] = [];
 
     /** Scope used within the generated receive method. */
     private scope: Scope;
@@ -88,7 +80,7 @@ export class Receive extends GenerativeEntity<AstReceiver> {
         this.scope = new Scope("receive", parentScope);
     }
 
-    private generateSelector(): fc.Arbitrary<AstReceiverKind> {
+    private generateSelector(): fc.Arbitrary<Ast.ReceiverKind> {
         if (randomBool()) {
             const ty = createSample(
                 fc.record<Type>({
@@ -120,7 +112,7 @@ export class Receive extends GenerativeEntity<AstReceiver> {
                 isBouncedMessage(msg.type),
             );
             this.scope.addNamed("parameter", param);
-            return fc.record<AstReceiverKind>({
+            return fc.record<Ast.ReceiverKind>({
                 kind: fc.constantFrom("bounce"),
                 param: param.generate(),
                 id: fc.constant(nextId()),
@@ -149,7 +141,7 @@ export class Receive extends GenerativeEntity<AstReceiver> {
         ); // TODO: add bounce receiver generation
     }
 
-    private generateBody(): fc.Arbitrary<AstStatement[]> {
+    private generateBody(): fc.Arbitrary<Ast.Statement[]> {
         // Create a dummy expression to execute the bottom-up AST generation.
         const expr = new Expression(this.scope, this.type).generate();
         const stmt = new StatementExpression(expr).generate();
@@ -164,8 +156,8 @@ export class Receive extends GenerativeEntity<AstReceiver> {
         return fc.tuple(...this.body);
     }
 
-    public generate(): fc.Arbitrary<AstReceiver> {
-        return fc.record<AstReceiver>({
+    public generate(): fc.Arbitrary<Ast.Receiver> {
+        return fc.record<Ast.Receiver>({
             kind: fc.constant("receiver"),
             id: fc.constant(this.idx),
             selector: this.generateSelector(),

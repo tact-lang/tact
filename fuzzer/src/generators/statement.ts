@@ -1,22 +1,4 @@
-import type {
-    StatementReturn as AstStatementReturn,
-    FieldAccess as AstFieldAccess,
-    StatementExpression as AstStatementExpression,
-    Statement as AstStatement,
-    StatementTry as AstStatementTry,
-    StatementForEach as AstStatementForEach,
-    StatementCondition as AstStatementCondition,
-    StatementRepeat as AstStatementRepeat,
-    StatementAssign as AstStatementAssign,
-    StatementAugmentedAssign as AstStatementAugmentedAssign,
-    AugmentedAssignOperation as AstAugmentedAssignOperation,
-    StatementWhile as AstStatementWhile,
-    StatementUntil as AstStatementUntil,
-    Expression as AstExpression,
-    StatementLet as AstStatementLet,
-    Id as AstId,
-    CatchBlock as AstCatchBlock,
-} from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import fc from "fast-check";
 
 import {
@@ -52,7 +34,7 @@ const STMT_TY: Type = { kind: "util", type: UtilType.Unit };
 /**
  * Generates `return` statements.
  */
-export class Return extends GenerativeEntity<AstStatement> {
+export class Return extends GenerativeEntity<Ast.Statement> {
     /**
      * @param parentScope Scope this statement belongs to.
      */
@@ -62,8 +44,8 @@ export class Return extends GenerativeEntity<AstStatement> {
     ) {
         super(type);
     }
-    generate(): fc.Arbitrary<AstStatement> {
-        return fc.record<AstStatementReturn>({
+    generate(): fc.Arbitrary<Ast.Statement> {
+        return fc.record<Ast.StatementReturn>({
             kind: fc.constant("statement_return"),
             id: fc.constant(this.idx),
             expression:
@@ -79,7 +61,7 @@ export class Return extends GenerativeEntity<AstStatement> {
  * Let generator is the entry point of the bottom-up statement generation.
  * It creates a variable binding and then adds additional statements that mutate the created binding and the global state.
  */
-export class Let extends NamedGenerativeEntity<AstStatement> {
+export class Let extends NamedGenerativeEntity<Ast.Statement> {
     /**
      * @param parentScope Scope this statement belongs to.
      * @param type Type of the generated binding.
@@ -88,13 +70,13 @@ export class Let extends NamedGenerativeEntity<AstStatement> {
     constructor(
         parentScope: Scope,
         type: Type,
-        private expr: fc.Arbitrary<AstExpression>,
+        private expr: fc.Arbitrary<Ast.Expression>,
     ) {
         super(type, createSample(generateAstId(parentScope)));
     }
 
-    generate(): fc.Arbitrary<AstStatement> {
-        return fc.record<AstStatementLet>({
+    generate(): fc.Arbitrary<Ast.Statement> {
+        return fc.record<Ast.StatementLet>({
             kind: fc.constant("statement_let"),
             id: fc.constant(this.idx),
             name: fc.constantFrom(this.name),
@@ -108,7 +90,7 @@ export class Let extends NamedGenerativeEntity<AstStatement> {
 /**
  * Creates assignments and augmented assignments to modify global or local variables.
  */
-export class AssignStatement extends GenerativeEntity<AstStatement> {
+export class AssignStatement extends GenerativeEntity<Ast.Statement> {
     /**
      * @param path A qualified name of the lhs.
      * @param rhs Expression to assign to.
@@ -116,17 +98,17 @@ export class AssignStatement extends GenerativeEntity<AstStatement> {
      * @param ty Type of the statement.
      */
     constructor(
-        private path: AstExpression,
-        private rhs: fc.Arbitrary<AstExpression>,
+        private path: Ast.Expression,
+        private rhs: fc.Arbitrary<Ast.Expression>,
         private rhsTy: Type,
         ty = STMT_TY,
     ) {
         super(ty);
     }
 
-    generate(): fc.Arbitrary<AstStatement> {
-        const assigns: fc.Arbitrary<AstStatement>[] = [
-            fc.record<AstStatementAssign>({
+    generate(): fc.Arbitrary<Ast.Statement> {
+        const assigns: fc.Arbitrary<Ast.Statement>[] = [
+            fc.record<Ast.StatementAssign>({
                 kind: fc.constant("statement_assign"),
                 id: fc.constant(this.idx),
                 path: fc.constant(this.path),
@@ -141,10 +123,10 @@ export class AssignStatement extends GenerativeEntity<AstStatement> {
             this.rhsTy.type === StdlibType.Int
         ) {
             assigns.push(
-                fc.record<AstStatementAugmentedAssign>({
+                fc.record<Ast.StatementAugmentedAssign>({
                     kind: fc.constant("statement_augmentedassign"),
                     id: fc.constant(this.idx),
-                    op: fc.constantFrom<AstAugmentedAssignOperation>(
+                    op: fc.constantFrom<Ast.AugmentedAssignOperation>(
                         "+=",
                         "-=",
                         "*=",
@@ -164,38 +146,38 @@ export class AssignStatement extends GenerativeEntity<AstStatement> {
 /**
  * Generates `while` and `until` loops.
  */
-export class WhileUntilStatement extends GenerativeEntity<AstStatement> {
+export class WhileUntilStatement extends GenerativeEntity<Ast.Statement> {
     constructor(
-        private condition: fc.Arbitrary<AstExpression>,
-        private body: fc.Arbitrary<AstStatement>[],
+        private condition: fc.Arbitrary<Ast.Expression>,
+        private body: fc.Arbitrary<Ast.Statement>[],
         private kind: "until" | "while",
         type: Type = STMT_TY,
     ) {
         super(type);
     }
-    generate(): fc.Arbitrary<AstStatement> {
+    generate(): fc.Arbitrary<Ast.Statement> {
         return fc.record({
             kind: fc.constant(`statement_${this.kind}`),
             id: fc.constant(this.idx),
             condition: this.condition,
             statements: packArbitraries(this.body),
             loc: fc.constant(dummySrcInfoPrintable),
-        }) as fc.Arbitrary<AstStatementWhile | AstStatementUntil>;
+        }) as fc.Arbitrary<Ast.StatementWhile | Ast.StatementUntil>;
     }
 }
 
 /**
  * Generates `repeat` loops.
  */
-export class RepeatStatement extends GenerativeEntity<AstStatement> {
+export class RepeatStatement extends GenerativeEntity<Ast.Statement> {
     constructor(
         private parentScope: Scope,
-        private body: fc.Arbitrary<AstStatement>[],
+        private body: fc.Arbitrary<Ast.Statement>[],
         type: Type = STMT_TY,
     ) {
         super(type);
     }
-    generate(): fc.Arbitrary<AstStatement> {
+    generate(): fc.Arbitrary<Ast.Statement> {
         const iterations = new Expression(this.parentScope, {
             kind: "stdlib",
             type: StdlibType.Int,
@@ -206,25 +188,25 @@ export class RepeatStatement extends GenerativeEntity<AstStatement> {
             iterations,
             statements: packArbitraries(this.body),
             loc: fc.constant(dummySrcInfoPrintable),
-        }) as fc.Arbitrary<AstStatementRepeat>;
+        }) as fc.Arbitrary<Ast.StatementRepeat>;
     }
 }
 
 /**
  * Generates `foreach` loops.
  */
-export class ForeachStatement extends GenerativeEntity<AstStatement> {
+export class ForeachStatement extends GenerativeEntity<Ast.Statement> {
     constructor(
-        private map: fc.Arbitrary<AstExpression>,
+        private map: fc.Arbitrary<Ast.Expression>,
         private keyName: string,
         private valueName: string,
-        private body: fc.Arbitrary<AstStatement>[],
+        private body: fc.Arbitrary<Ast.Statement>[],
         type: Type = STMT_TY,
     ) {
         super(type);
     }
-    generate(): fc.Arbitrary<AstStatement> {
-        return fc.record<AstStatementForEach>({
+    generate(): fc.Arbitrary<Ast.Statement> {
+        return fc.record<Ast.StatementForEach>({
             kind: fc.constant("statement_foreach"),
             keyName: fc.constant(generateAstIdFromName(this.keyName)),
             valueName: fc.constant(generateAstIdFromName(this.valueName)),
@@ -239,22 +221,22 @@ export class ForeachStatement extends GenerativeEntity<AstStatement> {
 /**
  * Generates conditional statements.
  */
-export class ConditionStatement extends GenerativeEntity<AstStatementCondition> {
+export class ConditionStatement extends GenerativeEntity<Ast.StatementCondition> {
     constructor(
         private parentScope: Scope,
-        private trueStmts: fc.Arbitrary<AstStatement>[],
-        private falseStmts?: fc.Arbitrary<AstStatement>[],
-        private elseif?: fc.Arbitrary<AstStatementCondition>,
+        private trueStmts: fc.Arbitrary<Ast.Statement>[],
+        private falseStmts?: fc.Arbitrary<Ast.Statement>[],
+        private elseif?: fc.Arbitrary<Ast.StatementCondition>,
         type: Type = STMT_TY,
     ) {
         super(type);
     }
-    generate(): fc.Arbitrary<AstStatementCondition> {
+    generate(): fc.Arbitrary<Ast.StatementCondition> {
         const condition = new Expression(this.parentScope, {
             kind: "stdlib",
             type: StdlibType.Bool,
         }).generate();
-        return fc.record<AstStatementCondition>({
+        return fc.record<Ast.StatementCondition>({
             kind: fc.constant(`statement_condition`),
             condition,
             trueStatements: packArbitraries(this.trueStmts),
@@ -270,16 +252,16 @@ export class ConditionStatement extends GenerativeEntity<AstStatementCondition> 
 /**
  * Generates try-catch statements.
  */
-export class TryCatch extends GenerativeEntity<AstStatement> {
+export class TryCatch extends GenerativeEntity<Ast.Statement> {
     constructor(
-        private tryStmts: fc.Arbitrary<AstStatement>[],
-        private catchBlock?: AstCatchBlock,
+        private tryStmts: fc.Arbitrary<Ast.Statement>[],
+        private catchBlock?: Ast.CatchBlock,
         type: Type = STMT_TY,
     ) {
         super(type);
     }
-    generate(): fc.Arbitrary<AstStatement> {
-        return fc.record<AstStatementTry>({
+    generate(): fc.Arbitrary<Ast.Statement> {
+        return fc.record<Ast.StatementTry>({
             kind: fc.constant("statement_try"),
             id: fc.constant(this.idx),
             statements: packArbitraries(this.tryStmts),
@@ -293,15 +275,15 @@ export class TryCatch extends GenerativeEntity<AstStatement> {
  * Generates expression statements.
  * The return value of the function/method calls generated by this is never used.
  */
-export class StatementExpression extends GenerativeEntity<AstStatement> {
+export class StatementExpression extends GenerativeEntity<Ast.Statement> {
     constructor(
-        private expr: fc.Arbitrary<AstExpression>,
+        private expr: fc.Arbitrary<Ast.Expression>,
         type: Type = STMT_TY,
     ) {
         super(type);
     }
-    generate(): fc.Arbitrary<AstStatement> {
-        return fc.record<AstStatementExpression>({
+    generate(): fc.Arbitrary<Ast.Statement> {
+        return fc.record<Ast.StatementExpression>({
             kind: fc.constant("statement_expression"),
             id: fc.constant(this.idx),
             expression: this.expr,
@@ -327,7 +309,7 @@ export interface StatementParameters {
 /**
  * The generator that creates statements in the given block which mutate global or local state.
  */
-export class Statement extends GenerativeEntity<AstStatement> {
+export class Statement extends GenerativeEntity<Ast.Statement> {
     private nestedBlocksNum: number;
     private stmtsInBlock: number;
     private params: Partial<StatementParameters>;
@@ -358,7 +340,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
         this.params = params;
     }
 
-    generate(): fc.Arbitrary<AstStatement> {
+    generate(): fc.Arbitrary<Ast.Statement> {
         const varAssign = this.makeVarAssign();
         const fieldAssign = this.makeFieldAssign();
         const loopStmt = randomBool()
@@ -387,7 +369,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Creates statements that mutate local variables, including assignments and augmented assignments.
      */
-    private makeVarAssign(): fc.Arbitrary<AstStatement> | undefined {
+    private makeVarAssign(): fc.Arbitrary<Ast.Statement> | undefined {
         const varEntries: [string, Type][] =
             this.parentScope.getNamedEntriesRecursive("let");
         if (varEntries.length === 0) {
@@ -407,7 +389,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Creates statements that mutate contract fields, including assignments and augmented assignments.
      */
-    private makeFieldAssign(): fc.Arbitrary<AstStatement> | undefined {
+    private makeFieldAssign(): fc.Arbitrary<Ast.Statement> | undefined {
         if (!this.parentScope.definedIn("method")) {
             return undefined;
         }
@@ -434,7 +416,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Creates either while or until loops.
      */
-    private makeWhileUntil(): fc.Arbitrary<AstStatement> | undefined {
+    private makeWhileUntil(): fc.Arbitrary<Ast.Statement> | undefined {
         if (this.recursionLevel >= this.nestedBlocksNum) {
             return undefined;
         }
@@ -454,7 +436,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Generates repeat loops.
      */
-    private makeRepeat(): fc.Arbitrary<AstStatement> | undefined {
+    private makeRepeat(): fc.Arbitrary<Ast.Statement> | undefined {
         if (this.recursionLevel >= this.nestedBlocksNum) {
             return undefined;
         }
@@ -463,9 +445,9 @@ export class Statement extends GenerativeEntity<AstStatement> {
     }
 
     /**
-     * Collects all local map AstIds in parent scope.
+     * Collects all local map Ast.Ids in parent scope.
      */
-    private collectLocalMapIds(entryKinds: NamedScopeItemKind[]): AstId[] {
+    private collectLocalMapIds(entryKinds: NamedScopeItemKind[]): Ast.Id[] {
         return this.parentScope
             .getNamedEntriesRecursive(...entryKinds)
             .filter(([_, mapTy]: [string, Type]) => mapTy.kind === "map")
@@ -475,11 +457,11 @@ export class Statement extends GenerativeEntity<AstStatement> {
     }
 
     /**
-     * Collects all field map AstIds in parent scope.
+     * Collects all field map Ast.Ids in parent scope.
      */
     private collectFieldMapIds(
         entryKinds: NamedScopeItemKind[],
-    ): AstFieldAccess[] {
+    ): Ast.FieldAccess[] {
         return this.parentScope
             .getNamedEntriesRecursive(...entryKinds)
             .filter(([_, mapTy]: [string, Type]) => mapTy.kind === "map")
@@ -491,7 +473,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Generates foreach loops.
      */
-    private makeForEach(): fc.Arbitrary<AstStatement> | undefined {
+    private makeForEach(): fc.Arbitrary<Ast.Statement> | undefined {
         if (this.recursionLevel >= this.nestedBlocksNum) {
             return undefined;
         }
@@ -509,7 +491,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
         if (mapIds.length === 0) {
             return undefined;
         }
-        const map: fc.Arbitrary<AstExpression> = fc.oneof(...mapIds);
+        const map: fc.Arbitrary<Ast.Expression> = fc.oneof(...mapIds);
         const keyVarName = createSample(generateName(scope));
         const valueVarName = createSample(generateName(scope));
         const body = this.makeStmtsBlock(scope);
@@ -524,7 +506,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Generates conditional statements.
      */
-    private makeCondition(): fc.Arbitrary<AstStatementCondition> | undefined {
+    private makeCondition(): fc.Arbitrary<Ast.StatementCondition> | undefined {
         if (this.recursionLevel >= this.nestedBlocksNum) {
             return undefined;
         }
@@ -542,7 +524,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Generates try and try-catch statements
      */
-    private makeTryCatch(): fc.Arbitrary<AstStatement> | undefined {
+    private makeTryCatch(): fc.Arbitrary<Ast.Statement> | undefined {
         if (this.recursionLevel >= this.nestedBlocksNum) {
             return undefined;
         }
@@ -565,7 +547,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Generates function or method calls without using the return value.
      */
-    private makeCall(): fc.Arbitrary<AstStatement> | undefined {
+    private makeCall(): fc.Arbitrary<Ast.Statement> | undefined {
         if (this.recursionLevel >= this.nestedBlocksNum) {
             return undefined;
         }
@@ -606,9 +588,9 @@ export class Statement extends GenerativeEntity<AstStatement> {
     /**
      * Creates a block of statements nested in curly braces in concrete syntax.
      */
-    private makeStmtsBlock(blockScope?: Scope): fc.Arbitrary<AstStatement>[] {
+    private makeStmtsBlock(blockScope?: Scope): fc.Arbitrary<Ast.Statement>[] {
         const scope = blockScope ?? new Scope("block", this.parentScope);
-        const block: fc.Arbitrary<AstStatement>[] = [];
+        const block: fc.Arbitrary<Ast.Statement>[] = [];
         Array.from({ length: this.stmtsInBlock }).forEach(() => {
             const stmt = new Statement(
                 scope,
@@ -624,7 +606,7 @@ export class Statement extends GenerativeEntity<AstStatement> {
      * Generates a dummy statement which doesn't have affect on control-flow nor state:
      * `while (false) { }`
      */
-    private makeDummyStmt(): fc.Arbitrary<AstStatement> {
+    private makeDummyStmt(): fc.Arbitrary<Ast.Statement> {
         const falseExpr = generateBoolean(false);
         return new WhileUntilStatement(falseExpr, [], "while").generate();
     }

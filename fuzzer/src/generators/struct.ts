@@ -1,7 +1,4 @@
-import type {
-    MessageDecl as AstMessageDecl,
-    StructDecl as AstStructDecl,
-} from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import { tyToString, throwTyError } from "../types";
 import type { Type, StructField } from "../types";
 import type { Scope } from "../scope";
@@ -16,9 +13,9 @@ import { NamedGenerativeEntity } from "./generator";
 import fc from "fast-check";
 
 /**
- * An object that generates AstStructDecl object.
+ * An object that generates Ast.StructDecl object.
  */
-export class Struct extends NamedGenerativeEntity<AstStructDecl> {
+export class Struct extends NamedGenerativeEntity<Ast.StructDecl> {
     /**
      * @param programScope A program scope the structure defined in.
      */
@@ -39,7 +36,7 @@ export class Struct extends NamedGenerativeEntity<AstStructDecl> {
         super(type, generateAstIdFromName(type.name));
     }
 
-    generate(): fc.Arbitrary<AstStructDecl> {
+    generate(): fc.Arbitrary<Ast.StructDecl> {
         if (this.type.kind !== "struct") {
             throwTyError(this.type);
         }
@@ -51,7 +48,7 @@ export class Struct extends NamedGenerativeEntity<AstStructDecl> {
                 generateAstIdFromName(fieldTy.name),
             ).generate();
         });
-        return fc.record<AstStructDecl>({
+        return fc.record<Ast.StructDecl>({
             kind: fc.constant("struct_decl"),
             id: fc.constant(this.idx),
             name: fc.constant(this.name),
@@ -62,9 +59,9 @@ export class Struct extends NamedGenerativeEntity<AstStructDecl> {
 }
 
 /**
- * An object that generates AstMessageDecl object messages.
+ * An object that generates Ast.MessageDecl object messages.
  */
-export class Message extends NamedGenerativeEntity<AstMessageDecl> {
+export class Message extends NamedGenerativeEntity<Ast.MessageDecl> {
     /**
      * @param programScope A program scope the structure defined in.
      */
@@ -85,7 +82,7 @@ export class Message extends NamedGenerativeEntity<AstMessageDecl> {
         super(type, generateAstIdFromName(type.name));
     }
 
-    generate(): fc.Arbitrary<AstMessageDecl> {
+    generate(): fc.Arbitrary<Ast.MessageDecl> {
         if (this.type.kind !== "message") {
             throwTyError(this.type);
         }
@@ -97,7 +94,7 @@ export class Message extends NamedGenerativeEntity<AstMessageDecl> {
                 generateAstIdFromName(fieldTy.name),
             ).generate();
         });
-        return fc.record<AstMessageDecl>({
+        return fc.record<Ast.MessageDecl>({
             kind: fc.constant("message_decl"),
             id: fc.constant(this.idx),
             name: fc.constant(this.name!),

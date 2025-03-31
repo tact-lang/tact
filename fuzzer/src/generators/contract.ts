@@ -1,9 +1,4 @@
-import type {
-    Contract as AstContract,
-    ConstantDef as AstConstantDef,
-    FunctionDef as AstFunctionDef,
-    FieldDecl as AstFieldDecl,
-} from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { FunctionDef } from "./function";
 import type { Trait } from "./trait";
@@ -26,10 +21,10 @@ export interface ContractParameters {
 }
 
 /**
- * An object that encapsulates a randomly generated AstContract including extra information
+ * An object that encapsulates a randomly generated Ast.Contract including extra information
  * about its entries and their scopes.
  */
-export class Contract extends NamedGenerativeEntity<AstContract> {
+export class Contract extends NamedGenerativeEntity<Ast.Contract> {
     /** Scope used within the generated contract. */
     private scope: Scope;
 
@@ -56,11 +51,11 @@ export class Contract extends NamedGenerativeEntity<AstContract> {
         this.receiveNum = receiveNum;
     }
 
-    public generate(): fc.Arbitrary<AstContract> {
+    public generate(): fc.Arbitrary<Ast.Contract> {
         // Implemented declarations from the trait
-        let traitFields: fc.Arbitrary<AstFieldDecl>[] = [];
-        let traitConstants: fc.Arbitrary<AstConstantDef>[] = [];
-        let traitMethods: fc.Arbitrary<AstFunctionDef>[] = [];
+        let traitFields: fc.Arbitrary<Ast.FieldDecl>[] = [];
+        let traitConstants: fc.Arbitrary<Ast.ConstantDef>[] = [];
+        let traitMethods: fc.Arbitrary<Ast.FunctionDef>[] = [];
         if (this.trait !== undefined) {
             traitFields = this.trait.fieldDeclarations.map(({ type, name }) => {
                 const init = new Expression(this.scope, type, {
@@ -118,7 +113,7 @@ export class Contract extends NamedGenerativeEntity<AstContract> {
         const generatedFields = Array.from(this.scope.getAllNamed("field")).map(
             (f) => f.generate(),
         );
-        return fc.record<AstContract>({
+        return fc.record<Ast.Contract>({
             kind: fc.constant("contract"),
             id: fc.constant(this.idx),
             name: fc.constant(this.name),

@@ -2,20 +2,7 @@ import type { Type } from "./types";
 import { getReturnType } from "./types";
 import type { IDIdx } from "./id";
 import type { GenerativeEntity } from "./generators";
-import type {
-    FunctionDef as AstFunctionDef,
-    TypedParameter as AstTypedParameter,
-    Trait as AstTrait,
-    Statement as AstStatement,
-    StructDecl as AstStructDecl,
-    FieldDecl as AstFieldDecl,
-    Receiver as AstReceiver,
-    Contract as AstContract,
-    ConstantDecl as AstConstantDecl,
-    ConstantDef as AstConstantDef,
-    FunctionDecl as AstFunctionDecl,
-    MessageDecl as AstMessageDecl,
-} from "../../src/ast/ast";
+import type * as Ast from "../../src/ast/ast";
 import type { NamedGenerativeEntity } from "./generators/generator";
 
 export type ScopeKind =
@@ -55,23 +42,23 @@ export type ScopeItemKind = NamedScopeItemKind | UnnamedScopeItemKind;
 
 /** Maps each ScopeItemKind to its respective GenerativeEntity specialization. */
 type NamedGenerativeEntityMap = {
-    let: NamedGenerativeEntity<AstStatement>;
-    parameter: NamedGenerativeEntity<AstTypedParameter>;
-    struct: NamedGenerativeEntity<AstStructDecl>;
-    message: NamedGenerativeEntity<AstMessageDecl>;
-    constantDecl: NamedGenerativeEntity<AstConstantDecl>;
-    constantDef: NamedGenerativeEntity<AstConstantDef>;
-    functionDecl: NamedGenerativeEntity<AstFunctionDecl>;
-    functionDef: NamedGenerativeEntity<AstFunctionDef>;
-    methodDecl: NamedGenerativeEntity<AstFunctionDecl>;
-    methodDef: NamedGenerativeEntity<AstFunctionDef>;
-    field: NamedGenerativeEntity<AstFieldDecl>;
-    contract: NamedGenerativeEntity<AstContract>;
-    trait: NamedGenerativeEntity<AstTrait>;
+    let: NamedGenerativeEntity<Ast.Statement>;
+    parameter: NamedGenerativeEntity<Ast.TypedParameter>;
+    struct: NamedGenerativeEntity<Ast.StructDecl>;
+    message: NamedGenerativeEntity<Ast.MessageDecl>;
+    constantDecl: NamedGenerativeEntity<Ast.ConstantDecl>;
+    constantDef: NamedGenerativeEntity<Ast.ConstantDef>;
+    functionDecl: NamedGenerativeEntity<Ast.FunctionDecl>;
+    functionDef: NamedGenerativeEntity<Ast.FunctionDef>;
+    methodDecl: NamedGenerativeEntity<Ast.FunctionDecl>;
+    methodDef: NamedGenerativeEntity<Ast.FunctionDef>;
+    field: NamedGenerativeEntity<Ast.FieldDecl>;
+    contract: NamedGenerativeEntity<Ast.Contract>;
+    trait: NamedGenerativeEntity<Ast.Trait>;
 };
 type GenerativeEntityMap = {
-    statement: GenerativeEntity<AstStatement>;
-    receive: GenerativeEntity<AstReceiver>;
+    statement: GenerativeEntity<Ast.Statement>;
+    receive: GenerativeEntity<Ast.Receiver>;
 };
 
 /**

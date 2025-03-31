@@ -1,7 +1,4 @@
-import type {
-    Trait as AstTrait,
-    Expression as AstExpression,
-} from "../../../src/ast/ast";
+import type * as Ast from "../../../src/ast/ast";
 import {
     createSample,
     dummySrcInfoPrintable,
@@ -40,9 +37,9 @@ export interface TraitParameters {
 }
 
 /**
- * An object that encapsulates a randomly generated AstTrait.
+ * An object that encapsulates a randomly generated Ast.Trait.
  */
-export class Trait extends NamedGenerativeEntity<AstTrait> {
+export class Trait extends NamedGenerativeEntity<Ast.Trait> {
     /** Trait scope. */
     private scope: Scope;
 
@@ -80,7 +77,7 @@ export class Trait extends NamedGenerativeEntity<AstTrait> {
     /**
      * Randomly generates init expressions for constants.
      */
-    private makeInit(ty: Type): fc.Arbitrary<AstExpression> | undefined {
+    private makeInit(ty: Type): fc.Arbitrary<Ast.Expression> | undefined {
         return ty.kind === "map" || randomBool()
             ? undefined
             : new Expression(this.scope, ty, {
@@ -124,7 +121,7 @@ export class Trait extends NamedGenerativeEntity<AstTrait> {
         });
     }
 
-    public generate(): fc.Arbitrary<AstTrait> {
+    public generate(): fc.Arbitrary<Ast.Trait> {
         // NOTE: It doesn't implement any receive functions, to don't clutter the top-level with them.
         const constants = (
             this.constantDeclarations as (ConstantDecl | ConstantDef)[]
@@ -133,7 +130,7 @@ export class Trait extends NamedGenerativeEntity<AstTrait> {
             .map((c) => c.generate());
         const fields = this.fieldDeclarations.map((f) => f.generate());
         const methods = this.methodDeclarations.map((m) => m.generate());
-        return fc.record<AstTrait>({
+        return fc.record<Ast.Trait>({
             kind: fc.constant("trait"),
             id: fc.constant(this.idx),
             name: fc.constant(this.name),
