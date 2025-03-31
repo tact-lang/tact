@@ -52,7 +52,7 @@
     },
     {
       "label": "1.6.5 with extracted processSendMessages",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2569",
       "gas": {
         "externalTransfer": "7865",
         "addExtension": "8326",
