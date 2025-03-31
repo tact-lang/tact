@@ -156,7 +156,6 @@ export class Program extends NamedGenerativeEntity<AstModule> {
      * Creates a structure in the program scope.
      */
     private makeStruct(): Struct {
-        // TODO: What if the struct-instance/field pair is the same as second-contract-instance/field pair?
         return new Struct(
             this.scope,
             createSample(TypeGen.fromScope(this.scope).generateStruct(false)),
@@ -167,7 +166,6 @@ export class Program extends NamedGenerativeEntity<AstModule> {
      * Creates a message in the program scope.
      */
     private makeMessage(): Message {
-        // TODO: What if the struct-instance/field pair is the same as second-contract-instance/field pair?
         return new Message(
             this.scope,
             createSample(TypeGen.fromScope(this.scope).generateStruct(true)),

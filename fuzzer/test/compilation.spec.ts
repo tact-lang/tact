@@ -1,6 +1,9 @@
 import { funcCompile } from "../../src/func/funcCompile";
 import { posixNormalize } from "../../src/utils/filePath";
-import type { Module as AstModule, Contract as AstContract } from "../../src/ast/ast";
+import type {
+    Module as AstModule,
+    Contract as AstContract,
+} from "../../src/ast/ast";
 import { writeFileSync } from "fs";
 import * as path from "path";
 import fc from "fast-check";

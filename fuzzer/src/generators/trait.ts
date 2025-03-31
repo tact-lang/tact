@@ -1,4 +1,7 @@
-import type { Trait as AstTrait, Expression as AstExpression } from "../../../src/ast/ast";
+import type {
+    Trait as AstTrait,
+    Expression as AstExpression,
+} from "../../../src/ast/ast";
 import {
     createSample,
     dummySrcInfoPrintable,

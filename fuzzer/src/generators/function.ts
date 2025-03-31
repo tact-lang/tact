@@ -38,8 +38,7 @@ export const SUPPORTED_RETURN_TYS = [
     StdlibType.String,
 ];
 
-function doesntHaveArguments(kind: FunctionKind, type: FunctionType): boolean {
-    // cspell:disable-line
+function notHaveArguments(kind: FunctionKind, type: FunctionType): boolean {
     if (kind === "function") {
         return type.signature.length === 1;
     } else {
@@ -56,8 +55,7 @@ function generateParameters(
     type: FunctionType,
     scope: Scope,
 ): AstTypedParameter[] {
-    if (doesntHaveArguments(kind, type)) {
-        // cspell:disable-line
+    if (notHaveArguments(kind, type)) {
         return [];
     }
     const slice =

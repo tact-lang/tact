@@ -13,6 +13,7 @@ import type {
     StructFieldInitializer as AstStructFieldInitializer,
     StructInstance as AstStructInstance,
     String as AstString,
+    // UnaryOperation,
 } from "../../../src/ast/ast";
 import type { NumberBase as AstNumberBase } from "../../../src/ast/ast";
 import JSONbig from "json-bigint";
@@ -300,7 +301,7 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
 // export namespace OpUnary {
 //     function generate(
 //         args: fc.Arbitrary<AstExpression>[],
-//         allowedOps: readonly AstOpUnary["op"][],
+//         allowedOps: readonly UnaryOperation[],
 //     ): fc.Arbitrary<AstOpUnary> {
 //         return fc.letrec((tie) => ({
 //             astExpression: fc.oneof(
@@ -383,7 +384,7 @@ export class StaticCall extends NamedGenerativeEntity<AstStaticCall> {
 //         //                  ["==", "!=", "&&", "||"]),
 //     ];
 // }
-// TODO: figure out what does this code does and why it is unused
+// TODO: This part has to be rewritten and used in generation.
 
 /**
  * Generates struct field access expressions, e.g., `myStruct.a`.
