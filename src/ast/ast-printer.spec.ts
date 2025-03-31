@@ -47,7 +47,7 @@ describe.each(contracts)("%s", (_, path) => {
         const ast = parse({ code, path, origin: "user" });
         //TODO: change for proper recursive removal
         const astStr = stringify(ast).replace(/"id":[0-9]+,/g, "");
-    
+
         const formattedCode = prettyPrint(ast);
         const astFormatted = parse({
             code: formattedCode,
@@ -60,5 +60,5 @@ describe.each(contracts)("%s", (_, path) => {
             "",
         );
         expect(astFormattedStr).toEqual(astStr);
-    }); 
+    });
 });
