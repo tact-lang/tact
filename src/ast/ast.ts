@@ -1,7 +1,7 @@
 import type * as TonCore from "@ton/core";
-import type { SrcInfo } from "../grammar/src-info";
-import type { RelativePath } from "../imports/path";
-import type { Language } from "../imports/source";
+import type { SrcInfo } from "@/grammar/src-info";
+import type { RelativePath } from "@/imports/path";
+import type { Language } from "@/imports/source";
 
 export type Module = {
     readonly kind: "module";
@@ -213,7 +213,7 @@ export type Statement =
 
 export type StatementLet = {
     readonly kind: "statement_let";
-    readonly name: Id;
+    readonly name: OptionalId;
     readonly type: Type | undefined;
     readonly expression: Expression;
     readonly id: number;
@@ -243,18 +243,18 @@ export type StatementAssign = {
 };
 
 export type AugmentedAssignOperation =
-    | "+"
-    | "-"
-    | "*"
-    | "/"
-    | "&&"
-    | "||"
-    | "%"
-    | "|"
-    | "<<"
-    | ">>"
-    | "&"
-    | "^";
+    | "+="
+    | "-="
+    | "*="
+    | "/="
+    | "&&="
+    | "||="
+    | "%="
+    | "|="
+    | "<<="
+    | ">>="
+    | "&="
+    | "^=";
 
 export type StatementAugmentedAssign = {
     readonly kind: "statement_augmentedassign";
@@ -307,14 +307,14 @@ export type StatementTry = {
 };
 
 export type CatchBlock = {
-    readonly catchName: Id;
+    readonly catchName: OptionalId;
     readonly catchStatements: readonly Statement[];
 };
 
 export type StatementForEach = {
     readonly kind: "statement_foreach";
-    readonly keyName: Id;
-    readonly valueName: Id;
+    readonly keyName: OptionalId;
+    readonly valueName: OptionalId;
     readonly map: Expression;
     readonly statements: readonly Statement[];
     readonly id: number;
@@ -325,7 +325,7 @@ export type StatementDestruct = {
     readonly kind: "statement_destruct";
     readonly type: TypeId;
     /** field name -> [field id, local id] */
-    readonly identifiers: ReadonlyMap<string, readonly [Id, Id]>;
+    readonly identifiers: ReadonlyMap<string, readonly [Id, OptionalId]>;
     readonly ignoreUnspecifiedFields: boolean;
     readonly expression: Expression;
     readonly id: number;
@@ -391,14 +391,13 @@ export type Expression =
     | Id
     | InitOf
     | CodeOf
-    | String
     | Literal;
 
 export type Literal =
     | Number
     | Boolean
     | Null
-    | SimplifiedString
+    | String
     | Address
     | Cell
     | Slice
@@ -509,9 +508,17 @@ export type Conditional = {
     readonly loc: SrcInfo;
 };
 
+export type OptionalId = Id | Wildcard;
+
 export type Id = {
     readonly kind: "id";
     readonly text: string;
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type Wildcard = {
+    readonly kind: "wildcard";
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -566,20 +573,7 @@ export type ImportPath = {
 // from standard library is still import with origin: "stdlib"
 export type ImportType = "stdlib" | "relative";
 
-// An SimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
-// An String is not a literal because it may contain escaping characters that have not been simplified, like '\\'.
-// SimplifiedString is always produced by the interpreter, never directly by the parser. The parser produces Strings, which
-// then get transformed into SimplifiedString by the interpreter.
-export type SimplifiedString = {
-    readonly kind: "simplified_string";
-    readonly value: string;
-    readonly id: number;
-    readonly loc: SrcInfo;
-};
-
-/**
- * @deprecated SimplifiedString
- */
+// A String is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
 export type String = {
     readonly kind: "string";
     readonly value: string;
@@ -671,7 +665,7 @@ export type FunctionAttribute = FunctionAttributeGet | FunctionAttributeRest;
 
 export type TypedParameter = {
     readonly kind: "typed_parameter";
-    readonly name: Id;
+    readonly name: OptionalId;
     readonly type: Type;
     readonly id: number;
     readonly loc: SrcInfo;
@@ -724,6 +718,7 @@ export type ReceiverKind = ReceiverInternal | ReceiverExternal | ReceiverBounce;
 
 export type AstNode =
     | FuncId
+    | Wildcard
     | DestructMapping
     | DestructEnd
     | Expression

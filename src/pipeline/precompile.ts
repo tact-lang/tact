@@ -1,17 +1,17 @@
-import type { CompilerContext } from "../context/context";
-import { resolveDescriptors } from "../types/resolveDescriptors";
-import { resolveAllocations } from "../storage/resolveAllocation";
-import { openContext, parseModules } from "../context/store";
-import { resolveStatements } from "../types/resolveStatements";
-import { resolveErrors } from "../types/resolveErrors";
-import { resolveSignatures } from "../types/resolveSignatures";
-import { resolveImports } from "../imports/resolveImports";
-import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import type * as Ast from "../ast/ast";
-import type { FactoryAst } from "../ast/ast-helpers";
-import type { Parser } from "../grammar";
-import { evalComptimeExpressions } from "../types/evalComptimeExpressions";
-import { computeReceiversEffects } from "../types/effects";
+import type { CompilerContext } from "@/context/context";
+import { resolveDescriptors } from "@/types/resolveDescriptors";
+import { resolveAllocations } from "@/storage/resolveAllocation";
+import { openContext, parseModules } from "@/context/store";
+import { resolveStatements } from "@/types/resolveStatements";
+import { resolveErrors } from "@/types/resolveErrors";
+import { resolveSignatures } from "@/types/resolveSignatures";
+import { resolveImports } from "@/imports/resolveImports";
+import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
+import type * as Ast from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import type { Parser } from "@/grammar";
+import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
+import { computeReceiversEffects } from "@/types/effects";
 
 export function precompile(
     ctx: CompilerContext,

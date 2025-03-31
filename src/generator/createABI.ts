@@ -1,11 +1,10 @@
 import type { ABIGetter, ABIReceiver, ABIType, ContractABI } from "@ton/core";
-import { contractErrors } from "../abi/errors";
-import type { CompilerContext } from "../context/context";
-import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
-import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
-import { getAllTypes } from "../types/resolveDescriptors";
-import { getAllErrors } from "../types/resolveErrors";
-import { idText } from "../ast/ast-helpers";
+import { contractErrors } from "@/abi/errors";
+import type { CompilerContext } from "@/context/context";
+import { getSupportedInterfaces } from "@/types/getSupportedInterfaces";
+import { createABITypeRefFromTypeRef } from "@/types/resolveABITypeRef";
+import { getAllTypes } from "@/types/resolveDescriptors";
+import { getAllErrors } from "@/types/resolveErrors";
 
 export function createABI(ctx: CompilerContext, name: string): ContractABI {
     const allTypes = getAllTypes(ctx);
@@ -125,7 +124,8 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                 name: f.name,
                 methodId: f.methodId,
                 arguments: f.params.map((v) => ({
-                    name: idText(v.name),
+                    // FIXME: wildcards in ABI?
+                    name: v.name.kind === "id" ? v.name.text : "_",
                     type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
                 })),
                 returnType:

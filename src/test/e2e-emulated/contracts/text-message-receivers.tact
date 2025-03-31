@@ -19,6 +19,12 @@ contract TextMessageReceivers with Deployable {
         self.counter += 4;
     }
 
+    receive(s: String) {
+        if (s == "test \n \t \r \b \f \" \\ \v \\\\ \u{4242} \xA9") {
+            self.counter += 5;
+        }
+    }
+
     get fun getCounter(): Int {
         return self.counter;
     }

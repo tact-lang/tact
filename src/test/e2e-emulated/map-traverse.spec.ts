@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { MapTraverseTestContract } from "./contracts/output/map-traverse_MapTraverseTestContract";
+import { MapTraverseTestContract } from "@/test/e2e-emulated/contracts/output/map-traverse_MapTraverseTestContract";
 import "@ton/test-utils";
 
 describe("map-traversal", () => {

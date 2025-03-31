@@ -2,17 +2,17 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 
-import { Parent } from "./contracts/output/star-contract-dependency_Parent";
-import { Child0 } from "./contracts/output/star-contract-dependency_Child0";
-import { Child1 } from "./contracts/output/star-contract-dependency_Child1";
-import { Child2 } from "./contracts/output/star-contract-dependency_Child2";
-import { Child3 } from "./contracts/output/star-contract-dependency_Child3";
-import { Child4 } from "./contracts/output/star-contract-dependency_Child4";
-import { Child5 } from "./contracts/output/star-contract-dependency_Child5";
-import { Child6 } from "./contracts/output/star-contract-dependency_Child6";
-import { Child7 } from "./contracts/output/star-contract-dependency_Child7";
-import { Child8 } from "./contracts/output/star-contract-dependency_Child8";
-import { Child9 } from "./contracts/output/star-contract-dependency_Child9";
+import { Parent } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Parent";
+import { Child0 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child0";
+import { Child1 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child1";
+import { Child2 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child2";
+import { Child3 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child3";
+import { Child4 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child4";
+import { Child5 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child5";
+import { Child6 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child6";
+import { Child7 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child7";
+import { Child8 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child8";
+import { Child9 } from "@/test/e2e-emulated/contracts/output/star-contract-dependency_Child9";
 
 import "@ton/test-utils";
 

@@ -1,11 +1,11 @@
-import { TactInternalError } from "./errors";
-import type { Logger } from "./logger-util";
+import { TactInternalError } from "@/error/errors";
+import type { Logger } from "@/error/logger-util";
 import {
     _exit,
     _ExitError,
     handleTopLevelErrors,
     rethrowWithPath,
-} from "./logger-util";
+} from "@/error/logger-util";
 
 describe("handleTopLevelErrors", () => {
     const mockLogger = {

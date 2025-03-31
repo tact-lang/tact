@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { AsCommentTester } from "./contracts/output/as-comment_AsCommentTester";
+import { AsCommentTester } from "@/test/e2e-emulated/contracts/output/as-comment_AsCommentTester";
 import "@ton/test-utils";
 
 describe("asComment", () => {

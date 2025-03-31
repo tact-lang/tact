@@ -31,11 +31,19 @@ const SendRemainingBalance: Int = 128;
 ///
 const SendOnlyEstimateFee: Int = 1024;
 
+/// **Deprecated** since Tact 1.6.5.
+///
 /// Pay forward fees separately from the message value.
 ///
 /// See: https://docs.tact-lang.org/book/message-mode#optional-flags
 ///
 const SendPayGasSeparately: Int = 1;
+
+/// Pay forward fees separately from the message value.
+///
+/// See: https://docs.tact-lang.org/book/message-mode#optional-flags
+///
+const SendPayFwdFeesSeparately: Int = 1;
 
 /// Ignore any errors arising while processing this message during the action phase.
 ///
@@ -77,7 +85,7 @@ struct SendParameters {
 
     /// The amount of nanoToncoins you want to send with
     /// the message. This value is used to cover forward fees,
-    /// unless the optional flag `SendPayGasSeparately` is used.
+    /// unless the optional flag `SendPayFwdFeesSeparately` is used.
     value: Int;
 
     /// Recipient internal `Address` on TON Blockchain.
@@ -102,7 +110,7 @@ struct MessageParameters {
 
     /// The amount of nanoToncoins you want to send with
     /// the message. This value is used to cover forward fees,
-    /// unless the optional flag `SendPayGasSeparately` is used.
+    /// unless the optional flag `SendPayFwdFeesSeparately` is used.
     value: Int;
 
     /// Recipient internal `Address` on TON Blockchain.
@@ -119,8 +127,6 @@ struct MessageParameters {
 ///
 /// The `MessageParameters` struct is similar to `SendParameters` struct, but without the `code` and `data` fields.
 ///
-/// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
-///
 /// ```tact
 /// fun example() {
 ///     message(MessageParameters{
@@ -131,9 +137,15 @@ struct MessageParameters {
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-send#message
 /// * https://docs.tact-lang.org/book/message-mode
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun message(params: MessageParameters) {
     NEWC
@@ -159,8 +171,6 @@ asm fun message(params: MessageParameters) {
 
 /// Global function. Queues the message to be sent using a `SendParameters` Struct.
 ///
-/// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
-///
 /// ```tact
 /// fun example() {
 ///     send(SendParameters{
@@ -171,7 +181,13 @@ asm fun message(params: MessageParameters) {
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
 /// See: https://docs.tact-lang.org/ref/core-send#send
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun send(params: SendParameters) {
     // Instructions are grouped, and the stack states they produce as a group are shown right after.
@@ -281,7 +297,7 @@ struct DeployParameters {
 
     /// The amount of nanoToncoins you want to send with
     /// the message. This value is used to cover forward fees,
-    /// unless the optional flag `SendPayGasSeparately` is used.
+    /// unless the optional flag `SendPayFwdFeesSeparately` is used.
     value: Int;
 
     /// When set to `true` (default) message bounces back to the sender if
@@ -301,12 +317,10 @@ struct DeployParameters {
 /// * `mode: Int`, an 8-bit value that configures how to send a message, defaults to 0.
 /// * `body: Cell?`, optional message body as a `Cell`.
 /// * `value: Int`, the amount of nanoToncoins you want to send with the message.
-///   This value is used to cover forward fees, unless the optional flag `SendPayGasSeparately` is used.
+///   This value is used to cover forward fees, unless the optional flag `SendPayFwdFeesSeparately` is used.
 /// * `bounce: Bool`, when set to `true` (default) message bounces back to the sender
 ///    if the recipient contract doesn't exist or wasn't able to process the message.
 /// * `init: StateInit`, init package of the contract (initial code and initial data).
-///
-/// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
 ///
 /// ```tact
 /// fun example() {
@@ -319,9 +333,15 @@ struct DeployParameters {
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-send#deploy
 /// * https://docs.tact-lang.org/book/message-mode
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun deploy(params: DeployParameters) {
     // Instructions are grouped, and the stack states they produce as a group are shown right after.
@@ -416,8 +436,6 @@ asm fun deploy(params: DeployParameters) {
 ///
 /// This function won't forward excess values if any other message-sending functions were called in the same receiver before.
 ///
-/// Attempts to queue more than 255 messages throw an exception with exit code 33: `Action list is too long`.
-///
 /// ```tact
 /// fun examples() {
 ///     // Forward the remaining value back to the sender
@@ -435,7 +453,13 @@ asm fun deploy(params: DeployParameters) {
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
 /// See: https://docs.tact-lang.org/ref/core-send#cashback
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun cashback(to: Address) {
     16 PUSHINT       // 0x10, i.e. 0x18 but with bounce = false
@@ -454,13 +478,17 @@ asm fun cashback(to: Address) {
 ///
 /// Queues the message to be sent by specifying the complete `cell` and the message `mode`.
 ///
-/// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
-///
 /// Prefer using a much more common and user-friendly `send()` function unless you have a complex logic that can't be expressed otherwise.
+///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-send#nativesendmessage
 /// * https://docs.tact-lang.org/ref/core-send#send
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
 
@@ -468,11 +496,15 @@ asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
 ///
 /// Similar to `nativeSendMessage()`, but also calculates and returns the forward fee in nanoToncoins.
 ///
-/// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-send#nativesendmessagereturnforwardfee
 /// * https://docs.tact-lang.org/ref/core-send#nativesendmessage
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 
@@ -482,15 +514,19 @@ asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 ///
 /// The message is sent with the default mode: `SendDefaultMode` (0).
 ///
-/// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
-///
 /// ```tact
 /// fun example() {
 ///     emit("Catch me if you can, Mr. Holmes".asComment()); // asComment() converts a String to a Cell
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
 /// See: https://docs.tact-lang.org/ref/core-send#emit
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 inline fun emit(body: Cell) {
     // ext_out_msg_info$11 src:MsgAddressInt dest:MsgAddressExt created_lt:uint64 created_at:uint32

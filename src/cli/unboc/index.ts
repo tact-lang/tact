@@ -1,11 +1,11 @@
 import { readFileSync } from "fs";
 import { AssemblyWriter, Cell, disassembleRoot } from "@tact-lang/opcode";
-import { ArgConsumer } from "../arg-consumer";
-import type { GetParserResult } from "../arg-parser";
-import { ArgParser } from "../arg-parser";
-import { CliLogger } from "../logger";
-import { UnbocErrors } from "./error-schema";
-import { showCommit } from "../version";
+import { ArgConsumer } from "@/cli/arg-consumer";
+import type { GetParserResult } from "@/cli/arg-parser";
+import { ArgParser } from "@/cli/arg-parser";
+import { CliLogger } from "@/cli/logger";
+import { UnbocErrors } from "@/cli/unboc/error-schema";
+import { showCommit } from "@/cli/version";
 
 const unbocVersion = "0.0.1";
 

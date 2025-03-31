@@ -254,7 +254,7 @@ fun constructThenParse() {
 - 对于任何 [Struct](#structs)/[Message](#messages)类型的实例，调用`.toCell(){:tact}`，然后对结果应用`Struct.fromCell(){:tact}`（或`Message.fromCell(){:tact}`），就会得到原始实例的副本：
 
 ```tact {8-9,13-14}
-struct ArbitraryStruct {}
+struct ArbitraryStruct { fieldNotFound: Int = 404 }
 message(0x2A) ArbitraryMessage {}
 
 fun lawOne() {

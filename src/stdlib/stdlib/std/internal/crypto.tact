@@ -40,8 +40,6 @@ asm extends fun hash(self: Slice): Int { HASHSU }
 ///
 /// Unlike `sha256()`, this function is gas-efficient and **only** hashes the data of the given `Slice`, i.e. up to 1023 bits, ignoring the refs.
 ///
-/// Attempts to specify a `Slice` with number of bits **not** divisible by 8 throw an exception with exit code 9: `Cell underflow`.
-///
 /// ```tact
 /// fun examples() {
 ///     // Base64-encoded BoC with "Hello, World!"
@@ -63,7 +61,13 @@ asm extends fun hash(self: Slice): Int { HASHSU }
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when attempting to specify a `Slice` with number of bits **not** divisible by 8.
+///
 /// See: https://docs.tact-lang.org/ref/core-cells#slicehashdata
+///
+/// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 
@@ -73,15 +77,19 @@ asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 ///
 /// Unlike `sha256()`, this function is gas-efficient and **only** hashes up to 127 bytes of the given string. Using longer strings would cause collisions if their first 127 bytes are the same.
 ///
-/// Attempts to specify a `String` with number of bits **not** divisible by 8 throw an exception with exit code 9: `Cell underflow`.
-///
 /// ```tact
 /// fun example() {
 ///     let roll: Int = "Never gonna give you up!".hashData(); // just the hash of the data
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when attempting to specify a `String` with number of bits **not** divisible by 8.
+///
 /// See: https://docs.tact-lang.org/ref/core-strings#stringhashdata
+///
+/// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 
@@ -130,8 +138,6 @@ asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 asm fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool { CHKSIGNU }
 
 /// Checks the [Ed25519] `signature` of the `data` using a `publicKey`, similar to `checkSignature()`.
-/// If the bit length of `data` is not divisible by 8, this function throws an error with
-/// [exit code 9]: `Cell underflow`.
 /// Verification itself is done indirectly on a [SHA-256] hash of the `data`.
 ///
 /// Returns `true` if the signature is valid, `false` otherwise.
@@ -149,9 +155,13 @@ asm fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool { CHKS
 /// NOTE: The first 10 calls of this function are very cheap regarding gas usage. However,
 /// the 11th call and onward consume more than 4 thousand gas units.
 ///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when the bit length of `data` is **not** divisible by 8.
+///
 /// See: https://docs.tact-lang.org/ref/core-crypto#checkdatasignature
 ///
-/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
 /// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
 /// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 ///

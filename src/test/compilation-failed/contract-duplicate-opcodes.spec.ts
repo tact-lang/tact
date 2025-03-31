@@ -1,4 +1,4 @@
-import { itShouldNotCompile } from "./util";
+import { itShouldNotCompile } from "@/test/compilation-failed/util";
 
 describe("contract-duplicate-opcodes", () => {
     itShouldNotCompile({

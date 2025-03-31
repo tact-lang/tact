@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { TernaryTester } from "./contracts/output/ternary_TernaryTester";
+import { TernaryTester } from "@/test/e2e-emulated/contracts/output/ternary_TernaryTester";
 import "@ton/test-utils";
 
 describe("ternary", () => {

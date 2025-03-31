@@ -1,14 +1,14 @@
 import path from "path";
-import type * as A from "../../ast/ast";
-import { getAstFactory } from "../../ast/ast-helpers";
-import { CompilerContext } from "../../context/context";
-import { precompile } from "../../pipeline/precompile";
-import files from "../../stdlib/stdlib";
-import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
+import type * as A from "@/ast/ast";
+import { getAstFactory } from "@/ast/ast-helpers";
+import { CompilerContext } from "@/context/context";
+import { precompile } from "@/pipeline/precompile";
+import files from "@/stdlib/stdlib";
+import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import fs from "fs";
-import { getParser } from "../../grammar";
-import { getMakeAst } from "../../ast/generated/make-factory";
-import type { MakeAstFactory } from "../../ast/generated/make-factory";
+import { getParser } from "@/grammar";
+import { getMakeAst } from "@/ast/generated/make-factory";
+import type { MakeAstFactory } from "@/ast/generated/make-factory";
 
 // This function manually creates a module containing a contract with a reference to StateInit in its single field.
 // StateInit is declared in stdlib.

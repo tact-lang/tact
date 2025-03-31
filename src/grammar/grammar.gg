@@ -203,7 +203,7 @@ StatementDestruct   = keyword<"let"> type:TypeId "{" fields:inter<destructItem, 
 StatementBlock      = body:statements;
 StatementReturn     = keyword<"return"> expression:expression? semicolon;
 StatementExpression = expression:expression semicolon;
-StatementAssign     = left:expression operator:augmentedOp? "=" right:expression semicolon;
+StatementAssign     = left:expression operator:(augmentedOp / "=") right:expression semicolon;
 StatementCondition  = keyword<"if"> condition:expression trueBranch:statements falseBranch:(keyword<"else"> @(FalseBranch / StatementCondition))?;
 StatementWhile      = keyword<"while"> condition:parens body:statements;
 StatementRepeat     = keyword<"repeat"> condition:parens body:statements;
@@ -211,7 +211,7 @@ StatementUntil      = keyword<"do"> body:statements keyword<"until"> condition:p
 StatementTry        = keyword<"try"> body:statements handler:(keyword<"catch"> "(" name:Id ")" body:statements)?;
 StatementForEach    = keyword<"foreach"> "(" key:Id "," value:Id "in" expression:expression ")" body:statements;
 
-augmentedOp = "||" / "&&" / ">>" / "<<" / [-+*/%|&^];
+augmentedOp = "||=" / "&&=" / ">>=" / "<<=" / "-=" / "+=" / "*=" / "/=" / "%=" / "|=" / "&=" / "^=";
 FalseBranch = body:statements;
 semicolon = ";" / &"}";
 

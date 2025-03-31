@@ -1,11 +1,11 @@
-import { getAstFactory } from "../../ast/ast-helpers";
-import { resolveDescriptors } from "../../types/resolveDescriptors";
-import { WriterContext } from "../Writer";
-import { resolveFuncType } from "./resolveFuncType";
-import { openContext, parseModules } from "../../context/store";
-import { CompilerContext } from "../../context/context";
-import { getParser } from "../../grammar";
-import type { Source } from "../../imports/source";
+import { getAstFactory } from "@/ast/ast-helpers";
+import { resolveDescriptors } from "@/types/resolveDescriptors";
+import { WriterContext } from "@/generator/Writer";
+import { resolveFuncType } from "@/generator/writers/resolveFuncType";
+import { openContext, parseModules } from "@/context/store";
+import { CompilerContext } from "@/context/context";
+import { getParser } from "@/grammar";
+import type { Source } from "@/imports/source";
 
 const primitiveCode = `
 primitive Int;

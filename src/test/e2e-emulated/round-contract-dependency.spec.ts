@@ -2,9 +2,9 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 
-import { A } from "./contracts/output/round-contract-dependency_A";
-import { B } from "./contracts/output/round-contract-dependency_B";
-import { C } from "./contracts/output/round-contract-dependency_C";
+import { A } from "@/test/e2e-emulated/contracts/output/round-contract-dependency_A";
+import { B } from "@/test/e2e-emulated/contracts/output/round-contract-dependency_B";
+import { C } from "@/test/e2e-emulated/contracts/output/round-contract-dependency_C";
 
 import "@ton/test-utils";
 

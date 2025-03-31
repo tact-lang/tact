@@ -259,7 +259,7 @@ contract ExampleContract {
 The expression `initOf{:tact}` computes the initial state, i.e., `StateInit{:tact}`, of a [contract](/book/contracts):
 
 ```tact
-//                     argument values for the init() function of the contract
+//                     argument values of contract or init() parameters
 //                     ↓   ↓
 initOf ExampleContract(42, 100); // returns a Struct StateInit{}
 //     ---------------
@@ -273,7 +273,7 @@ initOf ExampleContract(
 );
 ```
 
-The `StateInit{:tact}` is a [Struct][s] consisting of the following fields:
+The `StateInit{:tact}` is a [struct][s] consisting of the following fields:
 
 Field  | Type                  | Description
 :----- | :-------------------- | :----------
@@ -317,7 +317,7 @@ codeOf ExampleContract; // a Cell with ExampleContract code
 If `codeOf{:tact}` is used for the current contract, its result is equivalent to calling [`myCode(){:tact}`](/ref/core-contextstate#mycode).
 
 ```tact
-contract ExampleContract {
+contract ExampleContract() {
     receive() {
         myCode() == codeOf ExampleContract; // true
     }

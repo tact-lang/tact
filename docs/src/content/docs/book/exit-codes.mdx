@@ -59,7 +59,7 @@ Exit code     | Origin                              | Brief description
 [$130$](#130) | Tact compiler ([Compute phase][c])  | Invalid incoming message — there is no receiver for the opcode of the received message.
 [$131$](#131) | Tact compiler ([Compute phase][c])  | Constraints error. Reserved, but never thrown.
 [$132$](#132) | Tact compiler ([Compute phase][c])  | Access denied — someone other than the owner sent a message to the contract.
-[$133$](#133) | Tact compiler ([Compute phase][c])  | Contract stopped. Reserved, but never thrown.
+[$133$](#133) | Tact compiler ([Compute phase][c])  | Contract stopped.
 [$134$](#134) | Tact compiler ([Compute phase][c])  | Invalid argument.
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
 [$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid standard address.
@@ -607,7 +607,7 @@ contract Hal9k with Ownable {
 
 ### 133: Contract stopped {#133}
 
-A message has been sent to a stopped contract. Reserved, but never thrown.
+A message has been sent to a "stopped" contract: a contract that inherits the [`Stoppable{:tact}`](/ref/stdlib-stoppable#stoppable) trait and has the `self.stopped{:tact}` flag set to `true{:tact}`.
 
 ### 134: Invalid argument {#134}
 

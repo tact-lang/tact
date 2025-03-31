@@ -1,0 +1,54 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "size": {
+        "collection cells": "36",
+        "collection bits": "7640",
+        "item cells": "16",
+        "item bits": "4044"
+      },
+      "pr": "https://github.com/ton-blockchain/token-contract/tree/main/nft"
+    },
+    {
+      "label": "Tact",
+      "size": {
+        "collection cells": "44",
+        "collection bits": "25642",
+        "item cells": "12",
+        "item bits": "7330"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/2479"
+    },
+    {
+      "label": "1.6.4 with constructor instead of lazy bit",
+      "pr": "https://github.com/tact-lang/tact/pull/2479",
+      "size": {
+        "collection cells": "42",
+        "collection bits": "22417",
+        "item cells": "11",
+        "item bits": "6410"
+      }
+    },
+    {
+      "label": "1.6.4 with lazy bit",
+      "pr": "https://github.com/tact-lang/tact/pull/2479",
+      "size": {
+        "collection cells": "43",
+        "collection bits": "24074",
+        "item cells": "11",
+        "item bits": "6930"
+      }
+    },
+    {
+      "label": "1.6.4 with Use structs in init",
+      "pr": "https://github.com/tact-lang/tact/pull/2479",
+      "size": {
+        "collection cells": "42",
+        "collection bits": "23802",
+        "item cells": "11",
+        "item bits": "6850"
+      }
+    }
+  ]
+}

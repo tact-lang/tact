@@ -1,10 +1,10 @@
-import { randomAddress } from "../utils/random-utils";
+import { randomAddress } from "@/test/utils/random-utils";
 import type {
     SomeGenericStruct,
     StructWithOptionals,
-} from "./contracts/output/optionals_ContractWithOptionals";
-import { ContractWithOptionals } from "./contracts/output/optionals_ContractWithOptionals";
-import { Opt4 } from "./contracts/output/optionals_Opt4";
+} from "@/test/e2e-emulated/contracts/output/optionals_ContractWithOptionals";
+import { ContractWithOptionals } from "@/test/e2e-emulated/contracts/output/optionals_ContractWithOptionals";
+import { Opt4 } from "@/test/e2e-emulated/contracts/output/optionals_Opt4";
 import type { Address, Cell } from "@ton/core";
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";

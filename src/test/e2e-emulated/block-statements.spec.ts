@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { Test } from "./contracts/output/block-statements_Test";
+import { Test } from "@/test/e2e-emulated/contracts/output/block-statements_Test";
 import "@ton/test-utils";
 
 describe("block-statements", () => {

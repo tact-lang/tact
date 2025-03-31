@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { Test } from "./contracts/output/init-return_Test";
+import { Test } from "@/test/e2e-emulated/contracts/output/init-return_Test";
 import "@ton/test-utils";
 
 describe("init-return", () => {

@@ -1,7 +1,7 @@
-import { getType } from "../../types/resolveDescriptors";
-import type { TypeRef } from "../../types/types";
-import type { WriterContext } from "../Writer";
-import { ops } from "./ops";
+import { getType } from "@/types/resolveDescriptors";
+import type { TypeRef } from "@/types/types";
+import type { WriterContext } from "@/generator/Writer";
+import { ops } from "@/generator/writers/ops";
 
 export function cast(
     from: TypeRef,
@@ -15,7 +15,7 @@ export function cast(
         }
         if (!from.optional && to.optional) {
             const type = getType(ctx.ctx, from.name);
-            if (type.kind === "struct") {
+            if (type.kind === "struct" || type.kind === "contract") {
                 return `${ops.typeAsOptional(type.name, ctx)}(${expression})`;
             }
         }

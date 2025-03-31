@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { ConstantTester } from "./contracts/output/self-constants_ConstantTester";
+import { ConstantTester } from "@/test/e2e-emulated/contracts/output/self-constants_ConstantTester";
 import "@ton/test-utils";
 
 describe("self-constants", () => {

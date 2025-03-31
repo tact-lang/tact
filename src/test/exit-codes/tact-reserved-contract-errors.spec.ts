@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { ReservedContractErrorsTester as TestContract } from "./contracts/output/tact-reserved-contract-errors_ReservedContractErrorsTester";
+import { ReservedContractErrorsTester as TestContract } from "@/test/exit-codes/contracts/output/tact-reserved-contract-errors_ReservedContractErrorsTester";
 import "@ton/test-utils";
 
 describe("Tact-reserved contract errors", () => {
@@ -56,7 +56,9 @@ describe("Tact-reserved contract errors", () => {
     });
 
     // 133: Contract stopped
-    // NOTE: Reserved, but never thrown anywhere, can't repro
+    it("should test exit code 133", async () => {
+        await testReservedExitCode(133, contract, treasure);
+    });
 
     // 134: Invalid argument
     it("should test exit code 134", async () => {
@@ -84,8 +86,15 @@ async function testReservedExitCode(
 ) {
     expect(code).toBeGreaterThanOrEqual(128);
     expect(code).toBeLessThan(256);
-    expect([128, 130, 132, 134, 136, 138]).toContain(code);
-    type testedExitCodes = "128" | "130" | "132" | "134" | "136" | "138";
+    expect([128, 130, 132, 133, 134, 136, 138]).toContain(code);
+    type testedExitCodes =
+        | "128"
+        | "130"
+        | "132"
+        | "133"
+        | "134"
+        | "136"
+        | "138";
 
     const sendResult = await contract.send(
         treasure.getSender(),

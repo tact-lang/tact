@@ -1,5 +1,5 @@
-import { throwInternalCompilerError } from "../error/errors";
-import type { ItemOrigin } from "../imports/source";
+import { throwInternalCompilerError } from "@/error/errors";
+import type { ItemOrigin } from "@/imports/source";
 
 type LineAndColumnInfo = {
     lineNum: number;
@@ -130,7 +130,7 @@ const getErrorPrinter = ({
         // Only the line that contains range.start is underlined in error message
         // Otherwise error on `while (...) {}` would display the whole loop body, for example
         const hasInterval =
-            line.range.start <= range.start && range.start < line.range.end;
+            line.range.start <= range.start && range.start <= line.range.end;
 
         // Find the line-relative range
         const mapped = shift(intersect(range, line.range), -line.range.start);
