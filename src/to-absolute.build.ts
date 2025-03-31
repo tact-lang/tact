@@ -9,7 +9,10 @@ import { glob } from "glob";
 const main = async () => {
     let hadChanges = false;
     const rootDir = join(__dirname, "..");
-    for (const file of glob.sync("./src/**/*.ts", { cwd: rootDir })) {
+    for (const file of glob.sync("./src/**/*.ts", {
+        cwd: rootDir,
+        ignore: ["./src/test/**"],
+    })) {
         const fullPath = join(rootDir, file);
         const source = await readFile(fullPath, "utf-8");
         const newSource = source.replace(

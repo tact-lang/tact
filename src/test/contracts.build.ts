@@ -17,12 +17,7 @@ const main = async () => {
 
     await allInFolder(
         __dirname,
-        [
-            "e2e-emulated/contracts/*.tact",
-            "codegen/all-contracts.tact",
-            "exit-codes/contracts/*.tact",
-            "send-modes/contracts/*.tact",
-        ],
+        ["e2e-emulated/**/*.tact", "codegen/all-contracts.tact"],
         options,
     );
 
