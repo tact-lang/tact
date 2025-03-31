@@ -1,0 +1,1 @@
+asm fun quotedInstruction(): Int { "PUSHINT" }

@@ -1,0 +1,1 @@
+asm fun undefinedInstruction(): Int { FOO }

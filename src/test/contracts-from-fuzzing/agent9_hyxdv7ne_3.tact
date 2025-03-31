@@ -1,0 +1,1 @@
+asm fun echo(x: Int): Int { x }

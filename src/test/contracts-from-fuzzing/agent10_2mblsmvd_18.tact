@@ -1,0 +1,5 @@
+contract DebugDumpStack {
+    receive() {
+        dumpStack();
+    }
+}

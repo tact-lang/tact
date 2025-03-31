@@ -1,0 +1,3 @@
+contract TestEmpty {
+    receive() {}
+}

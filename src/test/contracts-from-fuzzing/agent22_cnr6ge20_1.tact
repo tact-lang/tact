@@ -1,0 +1,1 @@
+asm fun basicAnswer(): Int { 42 PUSHINT }

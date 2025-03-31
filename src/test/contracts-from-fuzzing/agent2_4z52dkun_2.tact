@@ -1,0 +1,1 @@
+asm fun wrongCase(): Cell { mycode }

@@ -1,0 +1,1 @@
+asm fun pushLarge(): Int { 1000 PUSHINT }

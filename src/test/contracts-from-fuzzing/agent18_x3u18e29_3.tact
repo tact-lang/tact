@@ -1,0 +1,1 @@
+asm fun answer(): Int { 42 INT }

@@ -1,0 +1,1 @@
+asm fun badPrim(): Int { 43 }

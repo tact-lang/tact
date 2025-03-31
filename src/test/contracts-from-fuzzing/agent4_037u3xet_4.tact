@@ -1,0 +1,1 @@
+asm fun testBad(): Int { 43 }

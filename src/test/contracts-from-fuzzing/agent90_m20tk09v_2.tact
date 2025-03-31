@@ -1,0 +1,16 @@
+struct Point {
+    x: Int;
+    y: Int;
+}
+
+fun getPoint(): Point {
+    return Point { x: 10, y: 20 };
+}
+
+contract Test {
+    receive() {
+        let Point { x, y } = getPoint();
+        dump(x);
+        dump(y);
+    }
+}

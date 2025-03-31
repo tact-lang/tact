@@ -1,0 +1,1 @@
+asm fun caseTest(): Cell { mycode }
