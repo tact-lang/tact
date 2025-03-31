@@ -57,7 +57,7 @@ contract SBTItem {
         self.revokedAt = revokedAt;
     }
 
-    receive(msg: RequestOwner) { // 0xd0c3bfea
+    receive(msg: RequestOwner) {
         throwUnless(NotInit, self.owner != null);
 
         let content: Cell? = self.content!!;
@@ -66,7 +66,7 @@ contract SBTItem {
             content = null;
         }
 
-        let msgBody = RequestOwnerOut { // 0x0dd607e3
+        let msgBody = RequestOwnerOut {
             queryId: msg.queryId,
             index: self.itemIndex,
             senderAddress: sender(),
@@ -85,7 +85,7 @@ contract SBTItem {
         });
     }
 
-    receive(msg: ProveOwnership) { // 0x04ded148
+    receive(msg: ProveOwnership) {
         throwUnless(NotInit, null != self.owner);
         throwUnless(IncorrectSender, self.owner == sender());
 
@@ -95,7 +95,7 @@ contract SBTItem {
             content = emptyCell();
         }
 
-        let msgBody = ProveOwnershipOut { // 0x0524c7ae
+        let msgBody = ProveOwnershipOut {
             queryId: msg.queryId,
             index: self.itemIndex,
             ownerAddress: self.owner!!,
@@ -146,7 +146,7 @@ contract SBTItem {
         });
     }
 
-    receive(msg: Destroy) { // 0x1f04537a
+    receive(msg: Destroy) { 
         throwUnless(NotInit, self.owner != null);
         throwUnless(IncorrectSender, self.owner == sender());
 
@@ -164,7 +164,7 @@ contract SBTItem {
         self.authorityAddress = null;
     }
 
-    receive(msg: Revoke) { // 0x6f89f5e3
+    receive(msg: Revoke) { 
         throwUnless(NotInit, self.owner != null);
         throwUnless(IncorrectSender, self.authorityAddress == sender());
         throwUnless(AlreadyRevoked, self.revokedAt == 0);
