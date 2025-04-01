@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Release contributors
 
 - [Novus Nota](https://github.com/novusnota)
+- [skywardboundd](https://github.com/skywardboundd)
 
 ## [1.6.5] - 2025-03-28
 
