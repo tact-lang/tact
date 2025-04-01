@@ -25,6 +25,7 @@ cheatsheet
 Cheatsheet
 cheatsheets
 Cheatsheets
+Chksig
 cleanall
 CNFT
 codegen
@@ -62,6 +63,7 @@ frontmatter
 funcfiftlib
 funcid
 funs
+gasfee
 Georgiy
 getsimpleforwardfee
 gettest
@@ -144,6 +146,7 @@ pinst
 POSIX
 postpack
 prando
+predeploy
 quadtree
 quadtrees
 RANDU
@@ -190,6 +193,7 @@ tactlang
 Tarjan
 tcons
 testdata
+TESTSEED
 thetonstudio
 TIMELOCK
 timeouted
@@ -214,6 +218,7 @@ undiscussed
 uninit
 Uninit
 unixfs
+unixtime
 untypable
 utime
 varint

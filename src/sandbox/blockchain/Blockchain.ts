@@ -442,11 +442,11 @@ export class Blockchain {
     protected async runQueue(
         params?: MessageParams,
     ): Promise<SendMessageResult> {
-        const txes = await this.processQueue(params);
+        const transactions = await this.processQueue(params);
         return {
-            transactions: txes,
-            events: txes.map((tx) => tx.events).flat(),
-            externals: txes.map((tx) => tx.externals).flat(),
+            transactions: transactions,
+            events: transactions.map((tx) => tx.events).flat(),
+            externals: transactions.map((tx) => tx.externals).flat(),
         };
     }
 

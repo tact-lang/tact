@@ -188,30 +188,30 @@ class Pointer {
 class Heap {
     private pointers: Pointer[] = [];
     private module: any;
-    private maxPtrs: number = 0;
+    private maxPointers: number = 0;
 
     constructor(module: any) {
         this.module = module;
     }
 
-    getPointersForStrings(strs: string[]): number[] {
-        this.maxPtrs = Math.max(this.maxPtrs, strs.length);
-        const sorted = strs
+    getPointersForStrings(strings: string[]): number[] {
+        this.maxPointers = Math.max(this.maxPointers, strings.length);
+        const sorted = strings
             .map((str, i) => ({ str, i }))
             .sort((a, b) => b.str.length - a.str.length);
-        const ptrs = sorted
+        const pointers = sorted
             .map((e) => ({ i: e.i, ptr: this.getCStringPointer(e.str) }))
             .sort((a, b) => a.i - b.i)
             .map((e) => e.ptr.rawPointer);
         this.pointers.sort((a, b) => b.length - a.length);
         this.pointers
-            .slice(this.maxPtrs)
+            .slice(this.maxPointers)
             .forEach((ptr) => this.module._free(ptr.rawPointer));
-        this.pointers = this.pointers.slice(0, this.maxPtrs);
+        this.pointers = this.pointers.slice(0, this.maxPointers);
         this.pointers.forEach((p) => {
             p.free();
         });
-        return ptrs;
+        return pointers;
     }
 
     getCStringPointer(data: string) {
@@ -429,11 +429,11 @@ export class Executor implements IExecutor {
                 invocationArgs[i] = arg;
             }
         }
-        const strPtrs = this.heap.getPointersForStrings(
+        const strPointers = this.heap.getPointersForStrings(
             strArgs.map((e) => e.str),
         );
-        for (let i = 0; i < strPtrs.length; i++) {
-            invocationArgs[strArgs[i]!.i] = strPtrs[i]!;
+        for (let i = 0; i < strPointers.length; i++) {
+            invocationArgs[strArgs[i]!.i] = strPointers[i]!;
         }
 
         return this.module[method](...invocationArgs);

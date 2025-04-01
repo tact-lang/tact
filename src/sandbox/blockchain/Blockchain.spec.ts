@@ -69,7 +69,7 @@ describe("Blockchain", () => {
         ]);
     });
 
-    it("should preinitialize treasury", async () => {
+    it("should pre-initialize treasury", async () => {
         const blockchain = await Blockchain.create();
 
         const treasury = await blockchain.treasury("");
@@ -305,7 +305,7 @@ describe("Blockchain", () => {
         const res = await blockchain.sendMessage(testMsg);
         // Rolling back
         await blockchain.loadFrom(prevState);
-        // Get iterable insead of iterator
+        // Get iterable instead of iterator
         const iter = await blockchain.sendMessageIter(testMsg);
 
         const stepByStepResults: BlockchainTransaction[] = [];
