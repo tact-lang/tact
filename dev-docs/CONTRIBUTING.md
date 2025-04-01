@@ -61,6 +61,12 @@ Running [ESLint](https://eslint.org) across the whole Tact codebase:
 yarn lint
 ```
 
+To check (and fix) relative imports (`./`) accidentally created by IDE, there is a separate linter:
+
+```shell
+yarn to-absolute
+```
+
 ### Spell-checking
 
 To spell-check the entire codebase with [CSpell](http://cspell.org), run:
