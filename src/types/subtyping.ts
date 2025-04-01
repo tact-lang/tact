@@ -1,4 +1,4 @@
-import type { TypeRef } from "./types";
+import type { TypeRef } from "@/types/types";
 
 export function isAssignable(src: TypeRef, to: TypeRef): boolean {
     // If both are refs

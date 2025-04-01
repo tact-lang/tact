@@ -3,43 +3,43 @@ import {
     TactConstEvalError,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../../error/errors";
-import type * as Ast from "../../ast/ast";
-import { getExpType } from "../../types/resolveExpression";
+} from "@/error/errors";
+import type * as Ast from "@/ast/ast";
+import { getExpType } from "@/types/resolveExpression";
 import {
     getStaticConstant,
     getStaticFunction,
     getType,
     hasStaticConstant,
-} from "../../types/resolveDescriptors";
-import type { FieldDescription, TypeDescription } from "../../types/types";
-import { printTypeRef } from "../../types/types";
-import type { TypeRef } from "../../types/types";
-import type { WriterContext } from "../Writer";
-import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { MapFunctions } from "../../abi/map";
-import { GlobalFunctions } from "../../abi/global";
-import { funcIdOf } from "./id";
-import { StructFunctions } from "../../abi/struct";
-import { resolveFuncType } from "./resolveFuncType";
+} from "@/types/resolveDescriptors";
+import type { FieldDescription, TypeDescription } from "@/types/types";
+import { printTypeRef } from "@/types/types";
+import type { TypeRef } from "@/types/types";
+import type { WriterContext } from "@/generator/Writer";
+import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
+import { MapFunctions } from "@/abi/map";
+import { GlobalFunctions } from "@/abi/global";
+import { funcIdOf } from "@/generator/writers/id";
+import { StructFunctions } from "@/abi/struct";
+import { resolveFuncType } from "@/generator/writers/resolveFuncType";
 import {
     writeAddress,
     writeCell,
     writeSlice,
     writeString,
-} from "./writeConstant";
-import { ops } from "./ops";
-import { writeCastedExpression } from "./writeFunction";
-import { isLvalue } from "../../types/resolveStatements";
-import { evalConstantExpression } from "../../optimizer/constEval";
-import { getAstUtil } from "../../ast/util";
+} from "@/generator/writers/writeConstant";
+import { ops } from "@/generator/writers/ops";
+import { writeCastedExpression } from "@/generator/writers/writeFunction";
+import { isLvalue } from "@/types/resolveStatements";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { getAstUtil } from "@/ast/util";
 import {
     eqNames,
     getAstFactory,
     idText,
     tryExtractPath,
-} from "../../ast/ast-helpers";
-import { enabledDebug, enabledNullChecks } from "../../config/features";
+} from "@/ast/ast-helpers";
+import { enabledDebug, enabledNullChecks } from "@/config/features";
 
 function isNull(wCtx: WriterContext, expr: Ast.Expression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -119,7 +119,7 @@ export function writeValue(val: Ast.Literal, wCtx: WriterContext): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(10);
-        case "simplified_string": {
+        case "string": {
             const id = writeString(val.value, wCtx);
             wCtx.used(id);
             return `${id}()`;
@@ -688,7 +688,14 @@ export function writeExpression(
                     const renderedSelfAndArguments = [s, ...renderedArguments];
                     const selfAndParameters = [
                         "self",
-                        ...methodDescr.params.map((p) => idText(p.name)),
+                        ...methodDescr.params.map((p) => {
+                            if (p.name.kind === "wildcard") {
+                                throwInternalCompilerError(
+                                    "Wildcard parameters in asm shuffle must be discarded on earlier compilation stages",
+                                );
+                            }
+                            return p.name.text;
+                        }),
                     ];
                     const shuffledArgs = methodDescr.ast.shuffle.args.map(
                         (shuffleArg) => {
@@ -817,7 +824,7 @@ export function writeTypescriptValue(
     switch (val.kind) {
         case "number":
             return val.value.toString(10) + "n";
-        case "simplified_string":
+        case "string":
             return JSON.stringify(val.value);
         case "boolean":
             return val.value ? "true" : "false";

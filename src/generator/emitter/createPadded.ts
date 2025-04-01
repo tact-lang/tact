@@ -1,4 +1,4 @@
-import { trimIndent } from "../../utils/text";
+import { trimIndent } from "@/utils/text";
 
 export function createPadded(src: string) {
     return trimIndent(src)

@@ -1,6 +1,6 @@
 import type { ABITypeRef } from "@ton/core";
-import { getType } from "../../types/resolveDescriptors";
-import type { WriterContext } from "../Writer";
+import { getType } from "@/types/resolveDescriptors";
+import type { WriterContext } from "@/generator/Writer";
 
 export function resolveFuncTypeFromAbiUnpack(
     name: string,

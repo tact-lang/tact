@@ -11,13 +11,13 @@ import type {
     JettonTransfer,
     Mint,
     ProvideWalletAddress,
-} from "../contracts/output/escrow_Escrow";
+} from "@/benchmarks/contracts/output/escrow_Escrow";
 import {
     storeJettonBurn,
     storeJettonTransfer,
     storeMint,
     storeProvideWalletAddress,
-} from "../contracts/output/escrow_Escrow";
+} from "@/benchmarks/contracts/output/escrow_Escrow";
 import { readFileSync } from "fs";
 import { posixNormalize } from "../../utils/filePath";
 import { resolve } from "path";

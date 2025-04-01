@@ -646,9 +646,9 @@ This example extends the [`ecrecover(){:tact}`](#ecrecover) example and adds mor
 ```tact
 // Calculates and returns the SHA-256 hash
 // as a 256-bit unsigned `Int` of the given `data`.
+//
 // Unlike the `sha256()` function from the Core library,
-// this one works purely on-chain (at runtime), hashing the strings completely,
-// whereas the `sha256()` reliably works only with their first 1023 bits of data.
+// this one works purely on-chain (at runtime).
 fun onchainSha256(data: String): Int {
     _onchainShaPush(data);
     while (_onchainShaShouldProceed()) {

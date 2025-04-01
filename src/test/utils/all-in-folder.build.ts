@@ -1,13 +1,13 @@
 import { glob } from "glob";
-import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
-import type { Options } from "../../config/parseConfig";
+import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
+import type { Options } from "@/config/parseConfig";
 import { basename, dirname, extname, join } from "path";
-import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
-import { Logger, LogLevel } from "../../context/logger";
-import { run } from "../../cli/tact";
-import files from "../../stdlib/stdlib";
-import { posixNormalize } from "../../utils/filePath";
-import { funcCompile } from "../../func/funcCompile";
+import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
+import { Logger, LogLevel } from "@/context/logger";
+import { run } from "@/cli/tact";
+import files from "@/stdlib/stdlib";
+import { posixNormalize } from "@/utils/filePath";
+import { funcCompile } from "@/func/funcCompile";
 
 // node.js 20+ builtin
 export const globSync = (globs: string[], options: { cwd: string }) => {

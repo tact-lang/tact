@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { writeFile } from "fs/promises";
-import { entries } from "../../utils/tricks";
-import { md } from "./markdown";
-import type { Transaction } from "./parse-log";
-import { parseLog } from "./parse-log";
+import { entries } from "@/utils/tricks";
+import { md } from "@/test/utils/markdown";
+import type { Transaction } from "@/test/utils/parse-log";
+import { parseLog } from "@/test/utils/parse-log";
 
 const main = async () => {
     const argv = process.argv.slice(2);

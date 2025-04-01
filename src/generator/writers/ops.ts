@@ -1,4 +1,4 @@
-import type { WriterContext } from "../Writer";
+import type { WriterContext } from "@/generator/Writer";
 
 function used(name: string, ctx: WriterContext) {
     const c = ctx.currentContext();

@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { createNodeFileSystem } from "./createNodeFileSystem";
+import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 
 describe("createNodeFileSystem", () => {
     it("should open file system", () => {

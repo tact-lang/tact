@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+
+- Fixed code example of the `initOf` expression to highlight support for contract parameters: PR [#2550](https://github.com/tact-lang/tact/pull/2550)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+
+## [1.6.5] - 2025-03-28
+
 ### Language features
 
 - Optimized `Context().sender` to use `sender()` function for better gas efficiency: PR [#2427](https://github.com/tact-lang/tact/pull/2427)
@@ -18,11 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Generated code now short-circuits `&&=` and `||=` operators: PR [#2494](https://github.com/tact-lang/tact/pull/2494)
 - [fix] Get methods that return optional contract state now work correctly: PR [#2512](https://github.com/tact-lang/tact/pull/2512)
 - [fix] Get methods that return contract state for empty contracts now work correctly: PR [#2517](https://github.com/tact-lang/tact/pull/2517)
+- [fix] Skip checking if the slice has been parsed completely when parsing a message (`Message.fromSlice()`) with the last field of the type `Slice as remaining`: PR [#2524](https://github.com/tact-lang/tact/pull/2524)
+- [fix] The wildcard symbol (`_`) cannot be used as an identifier in any context, including struct/message fields or contract names: PR [#2519](https://github.com/tact-lang/tact/pull/2519)
 
 ### Standard Library
 
 - Deprecated the `SendPayGasSeparately` constant in favor of `SendPayFwdFeesSeparately`: PR [#2483](https://github.com/tact-lang/tact/pull/2483)
-- Time related functions are now located in the `std/internal/time.tact` file: PR [#2507](https://github.com/tact-lang/tact/pull/2507)
+- Time-related functions are now located in the `std/internal/time.tact` file: PR [#2507](https://github.com/tact-lang/tact/pull/2507)
 - [fix] The `Stoppable` trait now uses `throwUnless` with exit code 133 instead of `require` with "Contract stopped" message: PR [#2503](https://github.com/tact-lang/tact/pull/2503)
 
 ### Code generation
@@ -31,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Internal infrastructure
 
-- `internalExternalReceiversOutsideMethodsMap` have been reworked to ensure compatibility with explorers: PR [#2398](https://github.com/tact-lang/tact/pull/2398)
+- `internalExternalReceiversOutsideMethodsMap` has been reworked to ensure compatibility with explorers: PR [#2398](https://github.com/tact-lang/tact/pull/2398)
 
 ### Docs
 
@@ -48,6 +60,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Petr Makhnev](https://github.com/i582)
 - [skywardboundd](https://github.com/skywardboundd)
 - [Anton Trunov](https://github.com/anton-trunov)
+
+### Special thanks
+
+- [Ilya Aksakov](https://github.com/lexent3010) and the [RSquad](https://github.com/rsquad) team
 
 ## [1.6.4] - 2025-03-18
 

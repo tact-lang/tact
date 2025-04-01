@@ -1,4 +1,4 @@
-import type { TypeDescription } from "../types/types";
+import type { TypeDescription } from "@/types/types";
 
 /**
  * This function sorts contracts in topological order.

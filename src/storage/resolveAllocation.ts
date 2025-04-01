@@ -1,19 +1,17 @@
-import type { CompilerContext } from "../context/context";
-import { createContextStore } from "../context/context";
-import { getType, toBounced, getAllTypes } from "../types/resolveDescriptors";
-import type { TypeDescription } from "../types/types";
-import { topologicalSort } from "../utils/utils";
-import type { StorageAllocation } from "./StorageAllocation";
-import type { AllocationOperation } from "./operation";
-import { allocate, getAllocationOperationFromField } from "./allocator";
+import type { CompilerContext } from "@/context/context";
+import { createContextStore } from "@/context/context";
+import { getType, toBounced, getAllTypes } from "@/types/resolveDescriptors";
+import type { TypeDescription } from "@/types/types";
+import { topologicalSort } from "@/utils/utils";
+import type { StorageAllocation } from "@/storage/StorageAllocation";
+import type { AllocationOperation } from "@/storage/operation";
+import { allocate, getAllocationOperationFromField } from "@/storage/allocator";
 import {
     createABITypeRefFromTypeRef,
     resolveABIType,
-} from "../types/resolveABITypeRef";
-import { funcInitIdOf } from "../generator/writers/id";
-import { throwInternalCompilerError } from "../error/errors";
-
-import { idText } from "../ast/ast-helpers";
+} from "@/types/resolveABITypeRef";
+import { funcInitIdOf } from "@/generator/writers/id";
+import { throwInternalCompilerError } from "@/error/errors";
 
 const store = createContextStore<StorageAllocation>();
 
@@ -161,7 +159,7 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
                         f.loc,
                     );
                     ops.push({
-                        name: idText(f.name),
+                        name: f.name.kind === "id" ? f.name.text : "_",
                         type: abiType,
                         op: getAllocationOperationFromField(
                             abiType,
@@ -173,7 +171,7 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
                 for (const f of s.init.contract.params ?? []) {
                     const abiType = resolveABIType(f);
                     ops.push({
-                        name: idText(f.name),
+                        name: f.name.text,
                         type: abiType,
                         op: getAllocationOperationFromField(
                             abiType,

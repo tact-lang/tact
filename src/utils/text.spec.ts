@@ -1,4 +1,4 @@
-import { isBlank, trimIndent } from "./text";
+import { isBlank, trimIndent } from "@/utils/text";
 describe("text", () => {
     it("should detect blank lines", () => {
         expect(isBlank("")).toBe(true);

@@ -1,4 +1,4 @@
-import type { TypeRef } from "./types";
+import type { TypeRef } from "@/types/types";
 
 export function isRuntimeType(src: TypeRef): boolean {
     if (src.kind === "null") {

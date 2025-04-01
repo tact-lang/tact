@@ -3,11 +3,11 @@ import { Address, beginCell, Cell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 
-import { JettonMinter } from "../contracts/output/jetton-minter-discoverable_JettonMinter";
+import { JettonMinter } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 
 import "@ton/test-utils";
-import benchmarkCodeSizeResults from "./results_code_size.json";
-import type { JettonUpdateContent } from "../contracts/output/jetton-minter-discoverable_JettonMinter";
+import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json";
+import type { JettonUpdateContent } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 
 import {
     generateCodeSizeResults,
@@ -15,7 +15,7 @@ import {
     getStateSizeForAccount,
     getUsedGas,
     printBenchmarkTable,
-} from "../utils/gas";
+} from "@/benchmarks/utils/gas";
 import benchmarkResults from "./results_gas.json";
 import { join } from "path";
 import { type Step, writeLog } from "../../test/utils/write-vm-log";
@@ -26,7 +26,7 @@ import {
     sendDiscoveryRaw,
     sendMintRaw,
     sendTransferRaw,
-} from "../utils/jetton";
+} from "@/benchmarks/utils/jetton";
 
 describe("Jetton", () => {
     let blockchain: Blockchain;

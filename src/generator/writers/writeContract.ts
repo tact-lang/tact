@@ -5,25 +5,25 @@ import {
     enabledIpfsAbiGetter,
     enabledLazyDeploymentCompletedGetter,
     enabledOptimizedChildCode,
-} from "../../config/features";
-import type { InitDescription, TypeDescription } from "../../types/types";
-import type { WriterContext } from "../Writer";
-import { funcIdOf, funcInitIdOf } from "./id";
-import { ops } from "./ops";
-import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
-import { resolveFuncType } from "./resolveFuncType";
-import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { writeValue } from "./writeExpression";
-import { writeGetter, writeStatement } from "./writeFunction";
-import { writeInterfaces } from "./writeInterfaces";
+} from "@/config/features";
+import type { InitDescription, TypeDescription } from "@/types/types";
+import type { WriterContext } from "@/generator/Writer";
+import { funcIdOf, funcInitIdOf } from "@/generator/writers/id";
+import { ops } from "@/generator/writers/ops";
+import { resolveFuncPrimitive } from "@/generator/writers/resolveFuncPrimitive";
+import { resolveFuncType } from "@/generator/writers/resolveFuncType";
+import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
+import { writeValue } from "@/generator/writers/writeExpression";
+import { writeGetter, writeStatement } from "@/generator/writers/writeFunction";
+import { writeInterfaces } from "@/generator/writers/writeInterfaces";
 import {
     groupContractReceivers,
     writeBouncedRouter,
     writeLoadOpcode,
     writeNonBouncedRouter,
-} from "./writeRouter";
-import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
-import { getAllocation } from "../../storage/resolveAllocation";
+} from "@/generator/writers/writeRouter";
+import { resolveFuncTypeFromAbiUnpack } from "@/generator/writers/resolveFuncTypeFromAbiUnpack";
+import { getAllocation } from "@/storage/resolveAllocation";
 
 export type ContractsCodes = Record<
     string,

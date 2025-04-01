@@ -1,4 +1,4 @@
-import { crc32 } from "./crc32";
+import { crc32 } from "@/utils/crc32";
 
 describe("crc32", () => {
     it("crc32 is correctly calculated from the string", () => {

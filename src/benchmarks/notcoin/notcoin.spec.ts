@@ -10,11 +10,11 @@ import {
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 
-import { JettonMinterNotcoin } from "../contracts/output/jetton-minter-notcoin_JettonMinterNotcoin";
+import { JettonMinterNotcoin } from "@/benchmarks/contracts/output/jetton-minter-notcoin_JettonMinterNotcoin";
 
 import "@ton/test-utils";
-import benchmarkCodeSizeResults from "./results_code_size.json";
-import type { JettonUpdateContent } from "../contracts/output/jetton-minter-notcoin_JettonMinterNotcoin";
+import benchmarkCodeSizeResults from "@/benchmarks/notcoin/results_code_size.json";
+import type { JettonUpdateContent } from "@/benchmarks/contracts/output/jetton-minter-notcoin_JettonMinterNotcoin";
 
 import {
     generateCodeSizeResults,
@@ -22,19 +22,19 @@ import {
     getStateSizeForAccount,
     getUsedGas,
     printBenchmarkTable,
-} from "../utils/gas";
-import benchmarkResults from "./results_gas.json";
+} from "@/benchmarks/utils/gas";
+import benchmarkResults from "@/benchmarks/notcoin/results_gas.json";
 import { join, resolve } from "path";
 import { readFileSync } from "fs";
-import { posixNormalize } from "../../utils/filePath";
-import { type Step, writeLog } from "../../test/utils/write-vm-log";
+import { posixNormalize } from "@/utils/filePath";
+import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     getJettonWalletRaw,
     sendBurnRaw,
     sendDiscoveryRaw,
     sendMintRaw,
     sendTransferRaw,
-} from "../utils/jetton";
+} from "@/benchmarks/utils/jetton";
 
 const loadNotcoinJettonsBoc = () => {
     const bocMinter = readFileSync(

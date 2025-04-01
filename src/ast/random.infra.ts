@@ -1,8 +1,8 @@
 import fc from "fast-check";
-import type * as Ast from "./ast";
-import { dummySrcInfo } from "../grammar/src-info";
+import type * as Ast from "@/ast/ast";
+import { dummySrcInfo } from "@/grammar/src-info";
 import { diffJson } from "diff";
-import { astBinaryOperations, astUnaryOperations } from "./ast-constants";
+import { astBinaryOperations, astUnaryOperations } from "@/ast/ast-constants";
 
 /**
  * An array of reserved words that cannot be used as contract or variable names in tests.
@@ -69,13 +69,10 @@ function randomAstBoolean(): fc.Arbitrary<Ast.Boolean> {
 }
 
 function randomAstString(): fc.Arbitrary<Ast.String> {
-    const escapeString = (s: string): string =>
-        s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-
     return dummyAstNode(
         fc.record({
             kind: fc.constant("string"),
-            value: fc.string().map((s) => escapeString(s)),
+            value: fc.string(),
         }),
     );
 }
@@ -145,7 +142,8 @@ function randomAstId(): fc.Arbitrary<Ast.Id> {
                     (i) =>
                         !reservedWords.includes(i) &&
                         !i.startsWith("__gen") &&
-                        !i.startsWith("__tact"),
+                        !i.startsWith("__tact") &&
+                        i !== "_",
                 ),
         }),
     );
@@ -284,7 +282,6 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<Ast.Literal> {
                 randomAstNull(),
                 // Add Address, Cell, Slice
                 // randomAstCommentValue(),
-                // randomAstSimplifiedString(),
             );
         }
 
@@ -295,7 +292,6 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<Ast.Literal> {
             randomAstBoolean(),
             randomAstNull(),
             // Add Address, Cell, Slice
-            // randomAstSimplifiedString(),
             // randomAstCommentValue(),
             randomAstStructValue(subLiteral()),
         );
