@@ -49,7 +49,7 @@ fc.configureGlobal({
             });
 
             // @ts-expect-error -- 1
-            const error = log.error ? log.error : "Unknown error";
+            const error = log.error ?? "Unknown error";
 
             const errorMessage = `
       Property failed after ${log.numRuns} tests
