@@ -3,7 +3,7 @@ import {
     compareAddressForTest,
     compareCellForTest,
     compareSliceForTest,
-} from "@/jest-utils/test/comparisons";
+} from "@/jest-utils/comparisons";
 
 describe("Cell comparison", () => {
     it("should work", () => {

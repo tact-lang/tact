@@ -1284,10 +1284,10 @@
   resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.3.1.tgz#bd9c7b10771f7a100fe2e5e5f18b33350225dc96"
   integrity sha512-DfLGz59yl0PPnqFnFzkwr20NNspe4ocZJlBgyTiikGxpS5932wE7Jb9tcKpLqVKzR0TFiqBK0RbOTHM3e6qCRA==
   dependencies:
-    "@/core" "^0.60.0"
+    "@ton/core" "^0.60.0"
     "@ton/crypto" "^3.3.0"
 
-"@/core@^0.60.0":
+"@ton/core@^0.60.0":
   version "0.60.1"
   resolved "https://registry.npmjs.org/@ton/core/-/core-0.60.1.tgz#cc9a62fb308d7597b1217dc8e44c7e2dcc0aceaa"
   integrity sha512-8FwybYbfkk57C3l9gvnlRhRBHbLYmeu0LbB1z9N+dhDz0Z+FJW8w0TJlks8CgHrAFxsT3FlR2LsqFnsauMp38w==
@@ -1309,11 +1309,6 @@
     "@ton/crypto-primitives" "2.1.0"
     jssha "3.2.0"
     tweetnacl "1.0.3"
-
-"@ton/sandbox@^0.27.0":
-  version "0.27.1"
-  resolved "https://registry.npmjs.org/@ton/sandbox/-/sandbox-0.27.1.tgz#ed24f07ac8c463d9d921faf96db147072d7a55c1"
-  integrity sha512-wgCq92wrAC64WdhcolDboK1cDLj0IQe2vtLklc4GJAMcfMGDAenPkcae9T7ihP6Bz6UvFLWOIgwpapDuUQ7ndQ==
 
 "@tonstudio/parser-runtime@^0.0.1":
   version "0.0.1"

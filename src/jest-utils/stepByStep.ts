@@ -1,9 +1,9 @@
 import type { Transaction } from "@/core";
-import type { FlatTransactionComparable } from "@/jest-utils/test/transaction";
+import type { FlatTransactionComparable } from "@/jest-utils/transaction";
 import {
     flattenTransaction,
     compareTransaction,
-} from "@/jest-utils/test/transaction";
+} from "@/jest-utils/transaction";
 import { inspect } from "util";
 
 export async function executeTill<T extends Transaction>(

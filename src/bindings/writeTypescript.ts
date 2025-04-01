@@ -67,9 +67,7 @@ export function writeTypescript(
 ) {
     const w = new Writer();
 
-    const lib = process.env.INTERNAL
-        ? "@/core"
-        : "@tact-lang/compiler/dist/core";
+    const lib = process.env.INTERNAL ? "@/core" : "@tact-lang/compiler/core";
 
     w.write(`
         import { 

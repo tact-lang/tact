@@ -1,7 +1,5 @@
 import { join } from "path";
 import { execFileSync } from "child_process";
-import { z } from "zod";
-import { readFile } from "fs/promises";
 
 const rootPath = join(__dirname, "..", "..");
 
@@ -24,16 +22,6 @@ export function showCommit() {
     }
 }
 
-export async function getVersion() {
-    const packageSchema = z.object({
-        version: z.string(),
-    });
-
-    const packageJsonPath = join(rootPath, "package.json");
-
-    const pkg = packageSchema.parse(
-        JSON.parse(await readFile(packageJsonPath, "utf-8")),
-    );
-
-    return pkg.version;
+export function getVersion() {
+    return "%VERSION%";
 }

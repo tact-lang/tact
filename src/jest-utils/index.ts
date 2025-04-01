@@ -6,21 +6,21 @@ export {
     findTransaction,
     findTransactionRequired,
     filterTransactions,
-} from "@/jest-utils/test/transaction";
+} from "@/jest-utils/transaction";
 
-export { randomAddress } from "@/jest-utils/utils/randomAddress";
+export { randomAddress } from "@/jest-utils/randomAddress";
 
-export { executeTill, executeFrom } from "@/jest-utils/utils/stepByStep";
+export { executeTill, executeFrom } from "@/jest-utils/stepByStep";
 
-import type { FlatTransactionComparable } from "@/jest-utils/test/transaction";
-import { compareTransactionForTest } from "@/jest-utils/test/transaction";
+import type { FlatTransactionComparable } from "@/jest-utils/transaction";
+import { compareTransactionForTest } from "@/jest-utils/transaction";
 import type { MatcherFunction } from "expect";
-import type { CompareResult } from "@/jest-utils/test/interface";
+import type { CompareResult } from "@/jest-utils/interface";
 import {
     compareAddressForTest,
     compareCellForTest,
     compareSliceForTest,
-} from "@/jest-utils/test/comparisons";
+} from "@/jest-utils/comparisons";
 import type { Address, Cell, Slice } from "@/core";
 import jestGlobals from "@jest/globals";
 

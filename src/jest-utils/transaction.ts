@@ -2,7 +2,7 @@
 import type { AccountStatus, CurrencyCollection, Transaction } from "@/core";
 import { Address, Cell } from "@/core";
 import { inspect } from "util";
-import type { CompareResult } from "@/jest-utils/test/interface";
+import type { CompareResult } from "@/jest-utils/interface";
 
 export type FlatTransaction = {
     from?: Address;
