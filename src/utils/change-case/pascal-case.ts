@@ -2,7 +2,7 @@ import { noCase, Options } from "@/utils/change-case/no-case";
 
 export { Options };
 
-export function pascalCaseTransform(input: string, index: number) {
+function pascalCaseTransform(input: string, index: number) {
     const firstChar = input.charAt(0);
     const lowerChars = input.substr(1).toLowerCase();
     if (index > 0 && firstChar >= "0" && firstChar <= "9") {
