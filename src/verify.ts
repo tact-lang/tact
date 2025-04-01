@@ -59,7 +59,7 @@ export async function verify(args: {
     if (typeof params.entrypoint !== "string") {
         return { ok: false, error: "invalid-package-format" };
     }
-    const options: Options = params.options || {};
+    const options: Options = params.options ?? {};
     const entrypoint: string = params.entrypoint;
 
     // Create config
