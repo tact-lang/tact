@@ -16,12 +16,12 @@
       "label": "Tact",
       "pr": "https://github.com/tact-lang/tact/pull/2203",
       "gas": {
-        "request owner": "7944",
-        "prove ownership": "8114",
-        "get static data": "7279",
-        "destroy": "8030",
-        "revoke": "5459",
-        "take excess": "8266"
+        "request owner": "7934",
+        "prove ownership": "8104",
+        "get static data": "7269",
+        "destroy": "8020",
+        "revoke": "5449",
+        "take excess": "8256"
       }
     }
   ]

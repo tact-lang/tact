@@ -113,6 +113,18 @@ contract SBTItem {
         });
     }
 
+    bounced(msg: bounced<ProveOwnershipOut>) { 
+        message(MessageParameters {
+            to: self.owner!!,
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: false,
+            body: ProveOwnershipBounced {
+                queryId: msg.queryId,
+            }.toCell(),
+        });
+    }
+
     receive(msg: GetStaticData) {
         throwUnless(NotInit, self.owner != null);
 

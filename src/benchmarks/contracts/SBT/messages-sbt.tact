@@ -48,6 +48,10 @@ message(0x0524c7ae) ProveOwnershipOut {
     content: Cell?;
 }
 
+message(0xc18e86d2) ProveOwnershipBounced {
+    queryId: Int as uint64;
+}
+
 message(0x2fcb26a2) GetStaticData {
     queryId: Int as uint64;
 }
