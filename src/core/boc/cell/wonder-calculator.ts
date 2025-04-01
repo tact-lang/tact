@@ -6,17 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { BitString } from "../bit-string";
-import { CellType } from "../cell-type";
-import type { Cell } from "../cell";
-import { LevelMask } from "./level-mask";
-import type { ExoticPruned } from "./exotic-pruned";
-import { exoticPruned } from "./exotic-pruned";
-import { exoticMerkleProof } from "./exotic-merkle-proof";
-import { getRepr } from "./descriptor";
+import { BitString } from "@/core/boc/bit-string";
+import { CellType } from "@/core/boc/cell-type";
+import type { Cell } from "@/core/boc/cell";
+import { LevelMask } from "@/core/boc/cell/level-mask";
+import type { ExoticPruned } from "@/core/boc/cell/exotic-pruned";
+import { exoticPruned } from "@/core/boc/cell/exotic-pruned";
+import { exoticMerkleProof } from "@/core/boc/cell/exotic-merkle-proof";
+import { getRepr } from "@/core/boc/cell/descriptor";
 import { sha256_sync } from "@ton/crypto";
-import { exoticMerkleUpdate } from "./exotic-merkle-update";
-import { exoticLibrary } from "./exotic-library";
+import { exoticMerkleUpdate } from "@/core/boc/cell/exotic-merkle-update";
+import { exoticLibrary } from "@/core/boc/cell/exotic-library";
 
 //
 // This function replicates unknown logic of resolving cell data

@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { beginCell } from "../boc/builder";
-import { Address } from "./address";
-import { contractAddress } from "./contract-address";
+import { beginCell } from "@/core/boc/builder";
+import { Address } from "@/core/address/address";
+import { contractAddress } from "@/core/address/contract-address";
 
 describe("contractAddress", () => {
     it("should resolve address correctly", () => {

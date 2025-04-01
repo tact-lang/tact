@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Cell } from "../boc/cell";
-import { loadShardStateUnsplit } from "./shard-state-unsplit";
+import { Cell } from "@/core/boc/cell";
+import { loadShardStateUnsplit } from "@/core/types/shard-state-unsplit";
 
 describe("ShardStateUnsplit", () => {
     it("should parse ShardState", () => {

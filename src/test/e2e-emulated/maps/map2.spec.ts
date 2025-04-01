@@ -13,7 +13,7 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import type { Address } from "@ton/core";
 import { beginCell, Dictionary, toNano } from "@ton/core";
-import "../../jest-utils";
+import "@/jest-utils";
 
 // Type definitions for keys and values to make them type-safe
 type TestKeys = {

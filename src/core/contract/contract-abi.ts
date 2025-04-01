@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Maybe } from "../utils/maybe";
+import type { Maybe } from "@/core/utils/maybe";
 
 export type ABIError = {
     message: string;

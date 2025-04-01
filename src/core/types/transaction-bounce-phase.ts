@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
-import type { StorageUsedShort } from "./storage-used-short";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
+import type { StorageUsedShort } from "@/core/types/storage-used-short";
 import {
     loadStorageUsedShort,
     storeStorageUsedShort,
-} from "./storage-used-short";
+} from "@/core/types/storage-used-short";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L318
 // tr_phase_bounce_negfunds$00 = TrBouncePhase;

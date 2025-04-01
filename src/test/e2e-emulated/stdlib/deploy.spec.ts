@@ -18,9 +18,9 @@ import type {
     DeployParamsMsg,
 } from "./output/deploy_DeployContract";
 import { DeployContract } from "./output/deploy_DeployContract";
-import "../../jest-utils";
+import "@/jest-utils";
 import type { Maybe } from "@ton/core/dist/utils/maybe";
-import { findTransaction } from "../../jest-utils";
+import { findTransaction } from "@/jest-utils";
 
 const counter = () => {
     let next = 0n;

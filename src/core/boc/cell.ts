@@ -7,15 +7,15 @@
  */
 
 import inspectSymbol from "symbol.inspect";
-import { BitString } from "./bit-string";
-import { CellType } from "./cell-type";
-import { Slice } from "./slice";
-import type { LevelMask } from "./cell/level-mask";
-import { resolveExotic } from "./cell/resolve-exotic";
-import { wonderCalculator } from "./cell/wonder-calculator";
-import { deserializeBoc, serializeBoc } from "./cell/serialization";
-import { BitReader } from "./bit-reader";
-import { beginCell } from "./builder";
+import { BitString } from "@/core/boc/bit-string";
+import { CellType } from "@/core/boc/cell-type";
+import { Slice } from "@/core/boc/slice";
+import type { LevelMask } from "@/core/boc/cell/level-mask";
+import { resolveExotic } from "@/core/boc/cell/resolve-exotic";
+import { wonderCalculator } from "@/core/boc/cell/wonder-calculator";
+import { deserializeBoc, serializeBoc } from "@/core/boc/cell/serialization";
+import { BitReader } from "@/core/boc/bit-reader";
+import { beginCell } from "@/core/boc/builder";
 
 /**
  * Cell as described in TVM spec

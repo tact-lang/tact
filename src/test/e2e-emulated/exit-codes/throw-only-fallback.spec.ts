@@ -1,7 +1,7 @@
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import "../../jest-utils";
+import "@/jest-utils";
 import { ThrowOnlyFallbackEmpty } from "@/test/e2e-emulated/exit-codes/output/throw-only-fallback_ThrowOnlyFallbackEmpty";
 import { ThrowOnlyFallbackText } from "@/test/e2e-emulated/exit-codes/output/throw-only-fallback_ThrowOnlyFallbackText";
 import { ThrowOnlyFallbackBinary } from "@/test/e2e-emulated/exit-codes/output/throw-only-fallback_ThrowOnlyFallbackBinary";

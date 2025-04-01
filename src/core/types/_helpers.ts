@@ -6,17 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../address/address";
-import { Cell } from "../boc/cell";
-import type { Maybe } from "../utils/maybe";
-import { beginCell } from "../boc/builder";
-import { toNano } from "../utils/convert";
-import type { MessageRelaxed } from "./message-relaxed";
-import type { Message } from "./message";
-import type { Dictionary } from "../dict/dictionary";
-import type { StateInit } from "./state-init";
-import type { ExtraCurrency } from "./extra-currency";
-import { packExtraCurrencyDict } from "./extra-currency";
+import { Address } from "@/core/address/address";
+import { Cell } from "@/core/boc/cell";
+import type { Maybe } from "@/core/utils/maybe";
+import { beginCell } from "@/core/boc/builder";
+import { toNano } from "@/core/utils/convert";
+import type { MessageRelaxed } from "@/core/types/message-relaxed";
+import type { Message } from "@/core/types/message";
+import type { Dictionary } from "@/core/dict/dictionary";
+import type { StateInit } from "@/core/types/state-init";
+import type { ExtraCurrency } from "@/core/types/extra-currency";
+import { packExtraCurrencyDict } from "@/core/types/extra-currency";
 
 export function internal(src: {
     to: Address | string;

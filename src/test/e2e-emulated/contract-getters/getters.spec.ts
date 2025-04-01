@@ -2,7 +2,7 @@ import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { Test, Test_getterMapping } from "./output/getters_Test";
-import "../../jest-utils";
+import "@/jest-utils";
 
 // disable tests on MacOS
 const it = process.platform === "darwin" && process.env.CI ? test.skip : test;

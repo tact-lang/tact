@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { beginCell } from "../boc/builder";
-import { serializeDict } from "./serialize-dict";
+import { beginCell } from "@/core/boc/builder";
+import { serializeDict } from "@/core/dict/serialize-dict";
 
 describe("serializeDict", () => {
     it("should build prefix tree", () => {

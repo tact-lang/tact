@@ -6,19 +6,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import type { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
-import type { DictionaryValue } from "../dict/dictionary";
-import type { Maybe } from "../utils/maybe";
-import type { CommonMessageInfo } from "./common-message-info";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
+import type { DictionaryValue } from "@/core/dict/dictionary";
+import type { Maybe } from "@/core/utils/maybe";
+import type { CommonMessageInfo } from "@/core/types/common-message-info";
 import {
     loadCommonMessageInfo,
     storeCommonMessageInfo,
-} from "./common-message-info";
-import type { StateInit } from "./state-init";
-import { loadStateInit, storeStateInit } from "./state-init";
+} from "@/core/types/common-message-info";
+import type { StateInit } from "@/core/types/state-init";
+import { loadStateInit, storeStateInit } from "@/core/types/state-init";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L147
 // message$_ {X:Type} info:CommonMsgInfo

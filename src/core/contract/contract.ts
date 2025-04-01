@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Address } from "../address/address";
-import { Cell } from "../boc/cell";
-import type { StateInit } from "../types/state-init";
-import type { Maybe } from "../utils/maybe";
-import type { ContractABI } from "./contract-abi";
+import type { Address } from "@/core/address/address";
+import { Cell } from "@/core/boc/cell";
+import type { StateInit } from "@/core/types/state-init";
+import type { Maybe } from "@/core/utils/maybe";
+import type { ContractABI } from "@/core/contract/contract-abi";
 
 export interface Contract {
     readonly address: Address;

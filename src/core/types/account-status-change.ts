@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
 
 // acst_unchanged$0 = AccStatusChange;  // x -> x
 // acst_frozen$10 = AccStatusChange;    // init -> frozen

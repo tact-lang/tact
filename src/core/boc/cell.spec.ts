@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { BitString } from "./bit-string";
-import { Cell } from "./cell";
-import { CellType } from "./cell-type";
+import { BitString } from "@/core/boc/bit-string";
+import { Cell } from "@/core/boc/cell";
+import { CellType } from "@/core/boc/cell-type";
 
 describe("Cell", () => {
     it("should construct", () => {

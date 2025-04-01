@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
-import type { CurrencyCollection } from "./currency-collection";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
+import type { CurrencyCollection } from "@/core/types/currency-collection";
 import {
     loadCurrencyCollection,
     storeCurrencyCollection,
-} from "./currency-collection";
+} from "@/core/types/currency-collection";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L259
 // depth_balance$_ split_depth:(#<= 30) balance:CurrencyCollection = DepthBalanceInfo;

@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Maybe } from "../utils/maybe";
-import type { ExtraCurrency } from "../types/extra-currency";
+import type { Maybe } from "@/core/utils/maybe";
+import type { ExtraCurrency } from "@/core/types/extra-currency";
 
 export type ContractState = {
     balance: bigint;

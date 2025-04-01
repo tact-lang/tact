@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { TernaryTester } from "./output/ternary_TernaryTester";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("ternary", () => {
     let blockchain: Blockchain;

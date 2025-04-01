@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { TupleItem } from "./tuple";
+import type { TupleItem } from "@/core/tuple/tuple";
 
 export class TupleReader {
     private readonly items: TupleItem[];

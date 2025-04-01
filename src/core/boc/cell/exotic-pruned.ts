@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { BitReader } from "../bit-reader";
-import type { BitString } from "../bit-string";
-import type { Cell } from "../cell";
-import { LevelMask } from "./level-mask";
+import { BitReader } from "@/core/boc/bit-reader";
+import type { BitString } from "@/core/boc/bit-string";
+import type { Cell } from "@/core/boc/cell";
+import { LevelMask } from "@/core/boc/cell/level-mask";
 
 export type ExoticPruned = {
     mask: number;

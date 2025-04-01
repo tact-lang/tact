@@ -10,8 +10,8 @@
 // storage_used_short$_ cells:(VarUInteger 7)
 //  bits:(VarUInteger 7) = StorageUsedShort;
 
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
 
 export type StorageUsedShort = {
     cells: bigint;

@@ -14,7 +14,7 @@ import { Child7 } from "./output/star-contract-dependency_Child7";
 import { Child8 } from "./output/star-contract-dependency_Child8";
 import { Child9 } from "./output/star-contract-dependency_Child9";
 
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("Diamond-shaped dependencies", () => {
     let blockchain: Blockchain;

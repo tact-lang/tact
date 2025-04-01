@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { IntegerLiteralsTester } from "./output/integer-literals_IntegerLiteralsTester";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("integer-literals", () => {
     let blockchain: Blockchain;

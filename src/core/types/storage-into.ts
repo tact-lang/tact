@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
-import type { Maybe } from "../utils/maybe";
-import type { StorageUsed } from "./storage-used";
-import { loadStorageUsed, storeStorageUsed } from "./storage-used";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
+import type { Maybe } from "@/core/utils/maybe";
+import type { StorageUsed } from "@/core/types/storage-used";
+import { loadStorageUsed, storeStorageUsed } from "@/core/types/storage-used";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L228
 // storage_info$_ used:StorageUsed last_paid:uint32

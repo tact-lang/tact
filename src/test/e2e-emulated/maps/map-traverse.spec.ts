@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { MapTraverseTestContract } from "./output/map-traverse_MapTraverseTestContract";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("map-traversal", () => {
     let blockchain: Blockchain;

@@ -14,7 +14,7 @@ import type {
     TransactionDescriptionGeneric,
 } from "@ton/core";
 import type { Maybe } from "@ton/core/dist/utils/maybe";
-import { findTransaction } from "../../jest-utils";
+import { findTransaction } from "@/jest-utils";
 
 type MessageInfo = {
     validatorsForwardFee: bigint;

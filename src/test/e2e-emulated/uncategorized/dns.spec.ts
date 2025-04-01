@@ -2,7 +2,7 @@ import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { DNSTester } from "./output/dns_DNSTester";
-import "../../jest-utils";
+import "@/jest-utils";
 
 function convertToInternal(src: string) {
     if (src === ".") {

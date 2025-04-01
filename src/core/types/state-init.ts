@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import type { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
-import { Dictionary } from "../dict/dictionary";
-import type { Maybe } from "../utils/maybe";
-import type { SimpleLibrary } from "./simple-library";
-import { SimpleLibraryValue } from "./simple-library";
-import type { TickTock } from "./tick-tock";
-import { loadTickTock, storeTickTock } from "./tick-tock";
+import type { Builder } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
+import { Dictionary } from "@/core/dict/dictionary";
+import type { Maybe } from "@/core/utils/maybe";
+import type { SimpleLibrary } from "@/core/types/simple-library";
+import { SimpleLibraryValue } from "@/core/types/simple-library";
+import type { TickTock } from "@/core/types/tick-tock";
+import { loadTickTock, storeTickTock } from "@/core/types/tick-tock";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L141
 // _ split_depth:(Maybe (## 5)) special:(Maybe TickTock)

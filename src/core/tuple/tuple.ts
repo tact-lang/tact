@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import type { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
 
 const INT64_MIN = BigInt("-9223372036854775808");
 const INT64_MAX = BigInt("9223372036854775807");

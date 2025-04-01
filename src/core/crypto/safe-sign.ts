@@ -7,7 +7,7 @@
  */
 
 import { sha256_sync, sign, signVerify } from "@ton/crypto";
-import type { Cell } from "../boc/cell";
+import type { Cell } from "@/core/boc/cell";
 
 const MIN_SEED_LENGTH = 8;
 const MAX_SEED_LENGTH = 64;

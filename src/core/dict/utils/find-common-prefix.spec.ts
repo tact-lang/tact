@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { findCommonPrefix } from "./find-common-prefix";
+import { findCommonPrefix } from "@/core/dict/utils/find-common-prefix";
 
 describe("findCommonPrefix", () => {
     it("should find common prefix", () => {

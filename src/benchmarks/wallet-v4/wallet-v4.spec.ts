@@ -1,4 +1,4 @@
-import "../../jest-utils";
+import "@/jest-utils";
 
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";

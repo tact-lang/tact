@@ -7,7 +7,7 @@
  */
 
 import inspectSymbol from "symbol.inspect";
-import { crc16 } from "../utils/crc16";
+import { crc16 } from "@/core/utils/crc16";
 
 const bounceable_tag = 0x11;
 const non_bounceable_tag = 0x51;

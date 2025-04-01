@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import { loadMessage, storeMessage } from "./message";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import { loadMessage, storeMessage } from "@/core/types/message";
 
 describe("Message", () => {
     it("should handle edge case with extra currency", () => {

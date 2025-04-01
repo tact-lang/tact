@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { BitReader } from "../bit-reader";
-import { BitString } from "../bit-string";
-import { Cell } from "../cell";
-import { topologicalSort } from "./topological-sort";
-import { bitsForNumber } from "../../utils/bits-for-number";
-import { BitBuilder } from "../bit-builder";
-import { getBitsDescriptor, getRefsDescriptor } from "./descriptor";
-import { bitsToPaddedBuffer } from "../utils/padded-bits";
-import { crc32c } from "../../utils/crc32c";
+import { BitReader } from "@/core/boc/bit-reader";
+import { BitString } from "@/core/boc/bit-string";
+import { Cell } from "@/core/boc/cell";
+import { topologicalSort } from "@/core/boc/cell/topological-sort";
+import { bitsForNumber } from "@/core/utils/bits-for-number";
+import { BitBuilder } from "@/core/boc/bit-builder";
+import { getBitsDescriptor, getRefsDescriptor } from "@/core/boc/cell/descriptor";
+import { bitsToPaddedBuffer } from "@/core/boc/utils/padded-bits";
+import { crc32c } from "@/core/utils/crc32c";
 
 function getHashesCount(levelMask: number) {
     return getHashesCountFromMask(levelMask & 7);

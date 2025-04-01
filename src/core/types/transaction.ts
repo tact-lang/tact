@@ -6,28 +6,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import type { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
-import { Dictionary } from "../dict/dictionary";
-import type { Maybe } from "../utils/maybe";
-import type { AccountStatus } from "./account-status";
-import { loadAccountStatus, storeAccountStatus } from "./account-status";
-import type { CurrencyCollection } from "./currency-collection";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
+import { Dictionary } from "@/core/dict/dictionary";
+import type { Maybe } from "@/core/utils/maybe";
+import type { AccountStatus } from "@/core/types/account-status";
+import { loadAccountStatus, storeAccountStatus } from "@/core/types/account-status";
+import type { CurrencyCollection } from "@/core/types/currency-collection";
 import {
     loadCurrencyCollection,
     storeCurrencyCollection,
-} from "./currency-collection";
-import type { HashUpdate } from "./hash-update";
-import { loadHashUpdate, storeHashUpdate } from "./hash-update";
-import type { Message } from "./message";
-import { loadMessage, MessageValue, storeMessage } from "./message";
-import type { TransactionDescription } from "./transaction-description";
+} from "@/core/types/currency-collection";
+import type { HashUpdate } from "@/core/types/hash-update";
+import { loadHashUpdate, storeHashUpdate } from "@/core/types/hash-update";
+import type { Message } from "@/core/types/message";
+import { loadMessage, MessageValue, storeMessage } from "@/core/types/message";
+import type { TransactionDescription } from "@/core/types/transaction-description";
 import {
     loadTransactionDescription,
     storeTransactionDescription,
-} from "./transaction-description";
+} from "@/core/types/transaction-description";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L263
 // transaction$0111 account_addr:bits256 lt:uint64

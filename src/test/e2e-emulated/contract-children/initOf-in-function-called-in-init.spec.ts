@@ -5,7 +5,7 @@ import { Test } from "./output/initOf-in-function-called-in-init_Test";
 import { Test as Test2 } from "./output/initOf-in-function-called-in-init-2_Test";
 import { MasterV0 } from "./output/initOf-in-function-called-in-init_MasterV0";
 import { MasterV0 as MasterV02 } from "./output/initOf-in-function-called-in-init-2_MasterV0";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("initOf inside init via global function", () => {
     let blockchain: Blockchain;

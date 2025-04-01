@@ -7,9 +7,9 @@
  */
 
 import Prando from "prando";
-import { Address } from "../address/address";
-import { ExternalAddress } from "../address/external-address";
-import { bitsForNumber } from "./bits-for-number";
+import { Address } from "@/core/address/address";
+import { ExternalAddress } from "@/core/address/external-address";
+import { bitsForNumber } from "@/core/utils/bits-for-number";
 
 export function testAddress(workchain: number, seed: string) {
     const random = new Prando(seed);

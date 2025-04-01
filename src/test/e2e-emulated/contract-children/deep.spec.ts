@@ -4,7 +4,7 @@ import { Blockchain } from "@ton/sandbox";
 import { A } from "./output/deep_A";
 import { B } from "./output/deep_B";
 import { C } from "./output/deep_C";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("random", () => {
     let blockchain: Blockchain;

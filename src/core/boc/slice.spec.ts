@@ -8,9 +8,9 @@
 
 import { randomInt } from "crypto";
 import Prando from "prando";
-import { testAddress } from "../utils/test-address";
-import { BitBuilder } from "./bit-builder";
-import { Cell } from "./cell";
+import { testAddress } from "@/core/utils/test-address";
+import { BitBuilder } from "@/core/boc/bit-builder";
+import { Cell } from "@/core/boc/cell";
 
 describe("Slice", () => {
     it("should read uints from slice", () => {

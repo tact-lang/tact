@@ -6,9 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { TupleReader } from "./reader";
-import type { TupleItem } from "./tuple";
+import { TupleReader } from "@/core/tuple/reader";
+import type { TupleItem } from "@/core/tuple/tuple";
 import fs from "fs";
+import { join } from "path";
 
 describe("tuple", () => {
     it("should read cons", () => {
@@ -54,7 +55,7 @@ describe("tuple", () => {
     });
 
     it("should read ultra deep cons", () => {
-        const fContent = fs.readFileSync("./src/tuple/ultra-deep-cons.json");
+        const fContent = fs.readFileSync(join(__dirname, "ultra-deep-cons.json"));
         const cons: TupleItem[] = JSON.parse(fContent.toString());
 
         const result = [];

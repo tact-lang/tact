@@ -6,19 +6,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
-import type { Maybe } from "../utils/maybe";
-import type { AccountStatusChange } from "./account-status-change";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
+import type { Maybe } from "@/core/utils/maybe";
+import type { AccountStatusChange } from "@/core/types/account-status-change";
 import {
     loadAccountStatusChange,
     storeAccountStatusChange,
-} from "./account-status-change";
-import type { StorageUsedShort } from "./storage-used-short";
+} from "@/core/types/account-status-change";
+import type { StorageUsedShort } from "@/core/types/storage-used-short";
 import {
     loadStorageUsedShort,
     storeStorageUsedShort,
-} from "./storage-used-short";
+} from "@/core/types/storage-used-short";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L310
 // tr_phase_action$_ success:Bool valid:Bool no_funds:Bool

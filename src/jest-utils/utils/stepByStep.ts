@@ -3,7 +3,7 @@ import {
     FlatTransactionComparable,
     flattenTransaction,
     compareTransaction,
-} from "../test/transaction";
+} from "@/jest-utils/test/transaction";
 import { inspect } from "util";
 
 export async function executeTill<T extends Transaction>(

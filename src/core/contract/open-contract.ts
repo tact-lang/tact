@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../address/address";
-import { Cell } from "../boc/cell";
-import type { StateInit } from "../types/state-init";
-import type { Contract } from "./contract";
-import type { ContractProvider } from "./contract-provider";
+import { Address } from "@/core/address/address";
+import { Cell } from "@/core/boc/cell";
+import type { StateInit } from "@/core/types/state-init";
+import type { Contract } from "@/core/contract/contract";
+import type { ContractProvider } from "@/core/contract/contract-provider";
 
 export type OpenedContract<F> = {
     [P in keyof F]: P extends `${"get" | "send" | "is"}${string}`

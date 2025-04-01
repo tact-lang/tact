@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { deserializeBoc, serializeBoc } from "./serialization";
+import { deserializeBoc, serializeBoc } from "@/core/boc/cell/serialization";
 import fs from "fs";
-import { beginCell } from "../builder";
-import { CellType } from "../cell-type";
-import { exoticPruned } from "./exotic-pruned";
-import { Cell } from "../cell";
+import { beginCell } from "@/core/boc/builder";
+import { CellType } from "@/core/boc/cell-type";
+import { exoticPruned } from "@/core/boc/cell/exotic-pruned";
+import { Cell } from "@/core/boc/cell";
 
 const wallets: string[] = [
     "B5EE9C72410101010044000084FF0020DDA4F260810200D71820D70B1FED44D0D31FD3FFD15112BAF2A122F901541044F910F2A2F80001D31F3120D74A96D307D402FB00DED1A4C8CB1FCBFFC9ED5441FDF089",

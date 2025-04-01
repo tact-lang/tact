@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { crc16 } from "./crc16";
+import { crc16 } from "@/core/utils/crc16";
 
 describe("crc16", () => {
     it("should match test vector", () => {

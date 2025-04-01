@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { base32Decode, base32Encode } from "./base32";
+import { base32Decode, base32Encode } from "@/core/utils/base32";
 
 describe("base32", () => {
     it("should encode and decode", () => {

@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Address } from "../address/address";
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
-import type { AccountStorage } from "./account-storage";
-import { loadAccountStorage, storeAccountStorage } from "./account-storage";
-import type { StorageInfo } from "./storage-into";
-import { loadStorageInfo, storeStorageInfo } from "./storage-into";
+import type { Address } from "@/core/address/address";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
+import type { AccountStorage } from "@/core/types/account-storage";
+import { loadAccountStorage, storeAccountStorage } from "@/core/types/account-storage";
+import type { StorageInfo } from "@/core/types/storage-into";
+import { loadStorageInfo, storeStorageInfo } from "@/core/types/storage-into";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L231
 // account_none$0 = Account;

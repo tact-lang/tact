@@ -6,24 +6,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../address/address";
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
-import { BitString } from "../boc/bit-string";
-import type { Maybe } from "../utils/maybe";
+import { Address } from "@/core/address/address";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
+import { BitString } from "@/core/boc/bit-string";
+import type { Maybe } from "@/core/utils/maybe";
 import {
     generateMerkleProof,
     generateMerkleProofDirect,
-} from "./generate-merkle-proof";
-import { generateMerkleUpdate } from "./generate-merkle-update";
-import { parseDict } from "./parse-dict";
-import { serializeDict } from "./serialize-dict";
+} from "@/core/dict/generate-merkle-proof";
+import { generateMerkleUpdate } from "@/core/dict/generate-merkle-update";
+import { parseDict } from "@/core/dict/parse-dict";
+import { serializeDict } from "@/core/dict/serialize-dict";
 import {
     deserializeInternalKey,
     serializeInternalKey,
-} from "./utils/internal-key-serializer";
+} from "@/core/dict/utils/internal-key-serializer";
 
 export type DictionaryKeyTypes = Address | number | bigint | Buffer | BitString;
 

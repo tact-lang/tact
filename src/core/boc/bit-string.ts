@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { bitsToPaddedBuffer } from "./utils/padded-bits";
+import { bitsToPaddedBuffer } from "@/core/boc/utils/padded-bits";
 import inspectSymbol from "symbol.inspect";
 
 /**

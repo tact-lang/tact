@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { UnderscoreVariableTestContract } from "./output/underscore-variable_UnderscoreVariableTestContract";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("underscore-variable", () => {
     let blockchain: Blockchain;

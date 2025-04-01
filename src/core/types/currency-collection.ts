@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
-import { Dictionary } from "../dict/dictionary";
-import type { Maybe } from "../utils/maybe";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
+import { Dictionary } from "@/core/dict/dictionary";
+import type { Maybe } from "@/core/utils/maybe";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L120
 // extra_currencies$_ dict:(HashmapE 32 (VarUInteger 32))

@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Cell } from "../cell";
+import type { Cell } from "@/core/boc/cell";
 
 const ITERATION_LIMIT = 100000;
 

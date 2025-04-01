@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Address } from "../../address/address";
-import { BitString } from "../../boc/bit-string";
-import { testAddress } from "../../utils/test-address";
+import type { Address } from "@/core/address/address";
+import { BitString } from "@/core/boc/bit-string";
+import { testAddress } from "@/core/utils/test-address";
 import {
     deserializeInternalKey,
     serializeInternalKey,
-} from "./internal-key-serializer";
+} from "@/core/dict/utils/internal-key-serializer";
 
 describe("internalKeySerializer", () => {
     it("should serialize numbers", () => {

@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import { exoticMerkleProof } from "../boc/cell/exotic-merkle-proof";
-import { exoticMerkleUpdate } from "../boc/cell/exotic-merkle-update";
-import { Dictionary } from "./dictionary";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import { exoticMerkleProof } from "@/core/boc/cell/exotic-merkle-proof";
+import { exoticMerkleUpdate } from "@/core/boc/cell/exotic-merkle-update";
+import { Dictionary } from "@/core/dict/dictionary";
 import fs from "fs";
-import { BitString } from "../boc/bit-string";
+import { BitString } from "@/core/boc/bit-string";
 
 function storeBits(builder: Builder, src: string) {
     for (const s of src) {

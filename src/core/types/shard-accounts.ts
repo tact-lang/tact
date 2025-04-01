@@ -6,17 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
-import type { DictionaryValue } from "../dict/dictionary";
-import { Dictionary } from "../dict/dictionary";
-import type { DepthBalanceInfo } from "./depth-balance-info";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
+import type { DictionaryValue } from "@/core/dict/dictionary";
+import { Dictionary } from "@/core/dict/dictionary";
+import type { DepthBalanceInfo } from "@/core/types/depth-balance-info";
 import {
     loadDepthBalanceInfo,
     storeDepthBalanceInfo,
-} from "./depth-balance-info";
-import type { ShardAccount } from "./shard-account";
-import { loadShardAccount, storeShardAccount } from "./shard-account";
+} from "@/core/types/depth-balance-info";
+import type { ShardAccount } from "@/core/types/shard-account";
+import { loadShardAccount, storeShardAccount } from "@/core/types/shard-account";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L261
 // _ (HashmapAugE 256 ShardAccount DepthBalanceInfo) = ShardAccounts;

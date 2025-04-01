@@ -6,27 +6,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { beginCell } from "../boc/builder";
+import { beginCell } from "@/core/boc/builder";
 import type {
     OutAction,
     OutActionChangeLibrary,
     OutActionReserve,
     OutActionSendMsg,
     OutActionSetCode,
-} from "./out-list";
+} from "@/core/types/out-list";
 import {
     loadOutAction,
     loadOutList,
     storeOutAction,
     storeOutList,
-} from "./out-list";
-import { SendMode } from "./send-mode";
-import type { MessageRelaxed } from "./message-relaxed";
-import { storeMessageRelaxed } from "./message-relaxed";
-import { ReserveMode } from "./reserve-mode";
-import { storeCurrencyCollection } from "./currency-collection";
-import type { LibRef } from "./lib-ref";
-import { storeLibRef } from "./lib-ref";
+} from "@/core/types/out-list";
+import { SendMode } from "@/core/types/send-mode";
+import type { MessageRelaxed } from "@/core/types/message-relaxed";
+import { storeMessageRelaxed } from "@/core/types/message-relaxed";
+import { ReserveMode } from "@/core/types/reserve-mode";
+import { storeCurrencyCollection } from "@/core/types/currency-collection";
+import type { LibRef } from "@/core/types/lib-ref";
+import { storeLibRef } from "@/core/types/lib-ref";
 
 const mockMessageRelaxed1: MessageRelaxed = {
     info: {

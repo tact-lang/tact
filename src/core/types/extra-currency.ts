@@ -1,8 +1,8 @@
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import type { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
-import { Dictionary } from "../dict/dictionary";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
+import { Dictionary } from "@/core/dict/dictionary";
 
 export type ExtraCurrency = Record<number, bigint>;
 

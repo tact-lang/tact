@@ -11,8 +11,8 @@
 //  cskip_bad_state$01 = ComputeSkipReason;
 //  cskip_no_gas$10 = ComputeSkipReason;
 
-import type { Builder } from "../boc/builder";
-import type { Slice } from "../boc/slice";
+import type { Builder } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
 
 export type ComputeSkipReason = "no-state" | "bad-state" | "no-gas";
 

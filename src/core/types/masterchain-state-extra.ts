@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
-import { Dictionary } from "../dict/dictionary";
-import type { CurrencyCollection } from "./currency-collection";
-import { loadCurrencyCollection } from "./currency-collection";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
+import { Dictionary } from "@/core/dict/dictionary";
+import type { CurrencyCollection } from "@/core/types/currency-collection";
+import { loadCurrencyCollection } from "@/core/types/currency-collection";
 
 // Source: https://github.com/ton-foundation/ton/blob/ae5c0720143e231c32c3d2034cfe4e533a16d969/crypto/block/block.tlb#L509
 // _ config_addr:bits256 config:^(Hashmap 32 ^Cell)

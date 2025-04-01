@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../address/address";
-import { ExternalAddress } from "../address/external-address";
-import type { BitString } from "./bit-string";
+import { Address } from "@/core/address/address";
+import { ExternalAddress } from "@/core/address/external-address";
+import type { BitString } from "@/core/boc/bit-string";
 
 /**
  * Class for reading bit strings

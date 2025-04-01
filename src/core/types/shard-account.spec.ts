@@ -7,9 +7,9 @@
  */
 
 import { inspect } from "util";
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import { loadShardAccount, storeShardAccount } from "./shard-account";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import { loadShardAccount, storeShardAccount } from "@/core/types/shard-account";
 
 describe("ShardAccount", () => {
     it("should parse tonkite cell", () => {

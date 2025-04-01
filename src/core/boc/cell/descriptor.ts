@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { BitString } from "../bit-string";
-import type { Cell } from "../cell";
-import { CellType } from "../cell-type";
-import { bitsToPaddedBuffer } from "../utils/padded-bits";
+import type { BitString } from "@/core/boc/bit-string";
+import type { Cell } from "@/core/boc/cell";
+import { CellType } from "@/core/boc/cell-type";
+import { bitsToPaddedBuffer } from "@/core/boc/utils/padded-bits";
 
 export function getRefsDescriptor(
     refs: Cell[],

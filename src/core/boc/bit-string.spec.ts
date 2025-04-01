@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { BitBuilder } from "./bit-builder";
-import { BitString } from "./bit-string";
+import { BitBuilder } from "@/core/boc/bit-builder";
+import { BitString } from "@/core/boc/bit-string";
 
 describe("BitString", () => {
     let testOOB: (

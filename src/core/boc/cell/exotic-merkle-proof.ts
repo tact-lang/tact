@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { BitReader } from "../bit-reader";
-import type { BitString } from "../bit-string";
-import type { Cell } from "../cell";
-import { beginCell } from "../builder";
+import { BitReader } from "@/core/boc/bit-reader";
+import type { BitString } from "@/core/boc/bit-string";
+import type { Cell } from "@/core/boc/cell";
+import { beginCell } from "@/core/boc/builder";
 
 export function exoticMerkleProof(bits: BitString, refs: Cell[]) {
     const reader = new BitReader(bits);

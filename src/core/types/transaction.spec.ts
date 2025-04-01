@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import { loadTransaction, storeTransaction } from "./transaction";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import { loadTransaction, storeTransaction } from "@/core/types/transaction";
 
 describe("Transaction", () => {
     it("should parse transaction", () => {

@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../address/address";
-import { ExternalAddress } from "../address/external-address";
-import { bitsForNumber } from "../utils/bits-for-number";
-import type { Maybe } from "../utils/maybe";
-import { BitString } from "./bit-string";
+import { Address } from "@/core/address/address";
+import { ExternalAddress } from "@/core/address/external-address";
+import { bitsForNumber } from "@/core/utils/bits-for-number";
+import type { Maybe } from "@/core/utils/maybe";
+import { BitString } from "@/core/boc/bit-string";
 
 /**
  * Class for building bit strings

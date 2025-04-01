@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { RepeatRangeTester as TestContract } from "@/test/e2e-emulated/exit-codes/output/repeat-range_RepeatRangeTester";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("repeat range", () => {
     let blockchain: Blockchain;

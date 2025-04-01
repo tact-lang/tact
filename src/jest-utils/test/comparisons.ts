@@ -1,5 +1,5 @@
 import { Address, Cell, Slice } from "@ton/core";
-import { CompareResult } from "./interface";
+import { CompareResult } from "@/jest-utils/test/interface";
 
 export function compareCellForTest(subject: any, cmp: Cell): CompareResult {
     return {

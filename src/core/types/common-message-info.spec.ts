@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { beginCell } from "../boc/builder";
-import { testAddress, testExternalAddress } from "../utils/test-address";
-import type { CommonMessageInfo } from "./common-message-info";
+import { beginCell } from "@/core/boc/builder";
+import { testAddress, testExternalAddress } from "@/core/utils/test-address";
+import type { CommonMessageInfo } from "@/core/types/common-message-info";
 import {
     loadCommonMessageInfo,
     storeCommonMessageInfo,
-} from "./common-message-info";
+} from "@/core/types/common-message-info";
 
 describe("CommonMessageInfo", () => {
     it("should serialize external-in messages", () => {

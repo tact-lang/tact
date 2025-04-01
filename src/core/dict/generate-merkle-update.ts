@@ -1,11 +1,11 @@
-import { beginCell } from "../boc/builder";
-import type { Cell } from "../boc/cell";
+import { beginCell } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
 import type {
     DictionaryKeyTypes,
     Dictionary,
     DictionaryKey,
-} from "./dictionary";
-import { generateMerkleProof } from "./generate-merkle-proof";
+} from "@/core/dict/dictionary";
+import { generateMerkleProof } from "@/core/dict/generate-merkle-proof";
 
 function convertToMerkleUpdate(c1: Cell, c2: Cell): Cell {
     return beginCell()

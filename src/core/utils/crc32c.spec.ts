@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { crc32c } from "./crc32c";
+import { crc32c } from "@/core/utils/crc32c";
 
 describe("src32c", () => {
     it("should match test vector", () => {

@@ -8,10 +8,10 @@
 
 import { randomInt } from "crypto";
 import Prando from "prando";
-import { testAddress } from "../utils/test-address";
-import { BitBuilder } from "./bit-builder";
-import { BitReader } from "./bit-reader";
-import { beginCell } from "./builder";
+import { testAddress } from "@/core/utils/test-address";
+import { BitBuilder } from "@/core/boc/bit-builder";
+import { BitReader } from "@/core/boc/bit-reader";
+import { beginCell } from "@/core/boc/builder";
 
 describe("BitReader", () => {
     it("should read uints from builder", () => {

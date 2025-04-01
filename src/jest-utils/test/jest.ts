@@ -1,14 +1,14 @@
 import {
     FlatTransactionComparable,
     compareTransactionForTest,
-} from "./transaction";
+} from "@/jest-utils/test/transaction";
 import type { MatcherFunction } from "expect";
-import { CompareResult } from "./interface";
+import { CompareResult } from "@/jest-utils/test/interface";
 import {
     compareAddressForTest,
     compareCellForTest,
     compareSliceForTest,
-} from "./comparisons";
+} from "@/jest-utils/test/comparisons";
 import { Address, Cell, Slice } from "@ton/core";
 
 function wrapComparer<T>(

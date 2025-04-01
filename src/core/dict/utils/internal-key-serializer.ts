@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../../address/address";
-import { BitString } from "../../boc/bit-string";
+import { Address } from "@/core/address/address";
+import { BitString } from "@/core/boc/bit-string";
 import {
     bitsToPaddedBuffer,
     paddedBufferToBits,
-} from "../../boc/utils/padded-bits";
+} from "@/core/boc/utils/padded-bits";
 
 export function serializeInternalKey(value: any): string {
     if (typeof value === "number") {

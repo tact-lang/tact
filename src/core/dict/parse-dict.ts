@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Slice } from "../boc/slice";
+import type { Slice } from "@/core/boc/slice";
 
 function readUnaryLength(slice: Slice) {
     let res = 0;

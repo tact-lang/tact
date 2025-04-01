@@ -1,4 +1,4 @@
-import "../../jest-utils";
+import "@/jest-utils";
 import {
     Address,
     beginCell,

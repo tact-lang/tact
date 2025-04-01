@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../builder";
-import { beginCell } from "../builder";
-import type { Cell } from "../cell";
-import type { Slice } from "../slice";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
 
 function readBuffer(slice: Slice) {
     // Check consistency

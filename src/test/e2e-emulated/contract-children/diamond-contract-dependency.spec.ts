@@ -5,7 +5,7 @@ import { Blockchain } from "@ton/sandbox";
 import { NoDependencies } from "./output/diamond-contract-dependency_NoDependencies";
 import { OneDependency } from "./output/diamond-contract-dependency_OneDependency";
 import { TwoDependencies } from "./output/diamond-contract-dependency_TwoDependencies";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("Diamond-shaped dependencies", () => {
     let blockchain: Blockchain;

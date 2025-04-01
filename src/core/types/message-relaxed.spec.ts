@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import { loadMessageRelaxed, storeMessageRelaxed } from "./message-relaxed";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import { loadMessageRelaxed, storeMessageRelaxed } from "@/core/types/message-relaxed";
 
 describe("MessageRelaxed", () => {
     it("should parse message relaxed", () => {

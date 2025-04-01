@@ -6,26 +6,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { SendMode } from "./send-mode";
-import type { MessageRelaxed } from "./message-relaxed";
-import { loadMessageRelaxed, storeMessageRelaxed } from "./message-relaxed";
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import type { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
-import { loadStorageInfo, storeStorageInfo } from "./storage-into";
-import { loadAccountStorage, storeAccountStorage } from "./account-storage";
-import { Account } from "./account";
-import { loadMessage } from "./message";
-import type { CurrencyCollection } from "./currency-collection";
+import type { SendMode } from "@/core/types/send-mode";
+import type { MessageRelaxed } from "@/core/types/message-relaxed";
+import { loadMessageRelaxed, storeMessageRelaxed } from "@/core/types/message-relaxed";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
+import { loadStorageInfo, storeStorageInfo } from "@/core/types/storage-into";
+import { loadAccountStorage, storeAccountStorage } from "@/core/types/account-storage";
+import { Account } from "@/core/types/account";
+import { loadMessage } from "@/core/types/message";
+import type { CurrencyCollection } from "@/core/types/currency-collection";
 import {
     loadCurrencyCollection,
     storeCurrencyCollection,
-} from "./currency-collection";
-import { SimpleLibrary } from "./simple-library";
-import type { LibRef } from "./lib-ref";
-import { loadLibRef, storeLibRef } from "./lib-ref";
-import type { ReserveMode } from "./reserve-mode";
+} from "@/core/types/currency-collection";
+import { SimpleLibrary } from "@/core/types/simple-library";
+import type { LibRef } from "@/core/types/lib-ref";
+import { loadLibRef, storeLibRef } from "@/core/types/lib-ref";
+import type { ReserveMode } from "@/core/types/reserve-mode";
 
 export interface OutActionSendMsg {
     type: "sendMsg";

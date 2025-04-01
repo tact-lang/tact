@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import { loadStateInit, storeStateInit } from "./state-init";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import { loadStateInit, storeStateInit } from "@/core/types/state-init";
 
 describe("StateInit", () => {
     it("shoild serialize to match golden-1", () => {

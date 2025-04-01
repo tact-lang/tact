@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { Test } from "./output/augmented-assign-short-circuit_Test";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("augmented assign short circuit", () => {
     let blockchain: Blockchain;

@@ -6,21 +6,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Address } from "../address/address";
-import type { ExternalAddress } from "../address/external-address";
-import { BitBuilder } from "./bit-builder";
-import type { BitString } from "./bit-string";
-import type { Writable } from "./writable";
-import { Cell } from "./cell";
-import type { Slice } from "./slice";
-import { writeString } from "./utils/strings";
+import type { Address } from "@/core/address/address";
+import type { ExternalAddress } from "@/core/address/external-address";
+import { BitBuilder } from "@/core/boc/bit-builder";
+import type { BitString } from "@/core/boc/bit-string";
+import type { Writable } from "@/core/boc/writable";
+import { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
+import { writeString } from "@/core/boc/utils/strings";
 import type {
     Dictionary,
     DictionaryKey,
     DictionaryKeyTypes,
     DictionaryValue,
-} from "../dict/dictionary";
-import type { Maybe } from "../utils/maybe";
+} from "@/core/dict/dictionary";
+import type { Maybe } from "@/core/utils/maybe";
 
 /**
  * Start building a cell

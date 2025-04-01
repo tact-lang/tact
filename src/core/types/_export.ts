@@ -6,28 +6,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export { internal, external, comment } from "./_helpers";
-export { Account, loadAccount, storeAccount } from "./account";
+export { internal, external, comment } from "@/core/types/_helpers";
+export { Account, loadAccount, storeAccount } from "@/core/types/account";
 export {
     AccountState,
     loadAccountState,
     storeAccountState,
-} from "./account-state";
+} from "@/core/types/account-state";
 export {
     AccountStatus,
     loadAccountStatus,
     storeAccountStatus,
-} from "./account-status";
+} from "@/core/types/account-status";
 export {
     AccountStatusChange,
     loadAccountStatusChange,
     storeAccountStatusChange,
-} from "./account-status-change";
+} from "@/core/types/account-status-change";
 export {
     AccountStorage,
     loadAccountStorage,
     storeAccountStorage,
-} from "./account-storage";
+} from "@/core/types/account-storage";
 export {
     OutActionSendMsg,
     OutActionSetCode,
@@ -38,7 +38,7 @@ export {
     storeOutAction,
     loadOutList,
     storeOutList,
-} from "./out-list";
+} from "@/core/types/out-list";
 export {
     CommonMessageInfo,
     CommonMessageInfoInternal,
@@ -46,29 +46,29 @@ export {
     CommonMessageInfoExternalOut,
     loadCommonMessageInfo,
     storeCommonMessageInfo,
-} from "./common-message-info";
+} from "@/core/types/common-message-info";
 export {
     CommonMessageInfoRelaxed,
     CommonMessageInfoRelaxedExternalOut,
     CommonMessageInfoRelaxedInternal,
     loadCommonMessageInfoRelaxed,
     storeCommonMessageInfoRelaxed,
-} from "./common-message-info-relaxed";
+} from "@/core/types/common-message-info-relaxed";
 export {
     ComputeSkipReason,
     loadComputeSkipReason,
     storeComputeSkipReason,
-} from "./compute-skip-reason";
+} from "@/core/types/compute-skip-reason";
 export {
     CurrencyCollection,
     loadCurrencyCollection,
     storeCurrencyCollection,
-} from "./currency-collection";
+} from "@/core/types/currency-collection";
 export {
     DepthBalanceInfo,
     loadDepthBalanceInfo,
     storeDepthBalanceInfo,
-} from "./depth-balance-info";
+} from "@/core/types/depth-balance-info";
 export {
     ExtraCurrency,
     packExtraCurrencyCell,
@@ -76,62 +76,62 @@ export {
     loadExtraCurrency,
     loadMaybeExtraCurrency,
     storeExtraCurrency,
-} from "./extra-currency";
-export { HashUpdate, loadHashUpdate, storeHashUpdate } from "./hash-update";
+} from "@/core/types/extra-currency";
+export { HashUpdate, loadHashUpdate, storeHashUpdate } from "@/core/types/hash-update";
 export {
     MasterchainStateExtra,
     loadMasterchainStateExtra,
-} from "./masterchain-state-extra";
-export { Message, loadMessage, storeMessage } from "./message";
+} from "@/core/types/masterchain-state-extra";
+export { Message, loadMessage, storeMessage } from "@/core/types/message";
 export {
     MessageRelaxed,
     loadMessageRelaxed,
     storeMessageRelaxed,
-} from "./message-relaxed";
-export { SendMode } from "./send-mode";
-export { ReserveMode } from "./reserve-mode";
+} from "@/core/types/message-relaxed";
+export { SendMode } from "@/core/types/send-mode";
+export { ReserveMode } from "@/core/types/reserve-mode";
 export {
     ShardAccount,
     loadShardAccount,
     storeShardAccount,
-} from "./shard-account";
+} from "@/core/types/shard-account";
 export {
     ShardAccountRef,
     ShardAccountRefValue,
     loadShardAccounts,
     storeShardAccounts,
-} from "./shard-accounts";
-export { ShardIdent, loadShardIdent, storeShardIdent } from "./shard-ident";
+} from "@/core/types/shard-accounts";
+export { ShardIdent, loadShardIdent, storeShardIdent } from "@/core/types/shard-ident";
 export {
     ShardStateUnsplit,
     loadShardStateUnsplit,
-} from "./shard-state-unsplit";
+} from "@/core/types/shard-state-unsplit";
 export {
     SimpleLibrary,
     loadSimpleLibrary,
     storeSimpleLibrary,
-} from "./simple-library";
-export { LibRef, loadLibRef, storeLibRef } from "./lib-ref";
+} from "@/core/types/simple-library";
+export { LibRef, loadLibRef, storeLibRef } from "@/core/types/lib-ref";
 export {
     SplitMergeInfo,
     loadSplitMergeInfo,
     storeSplitMergeInfo,
-} from "./split-merge-info";
-export { StateInit, loadStateInit, storeStateInit } from "./state-init";
-export { StorageInfo, loadStorageInfo, storeStorageInfo } from "./storage-into";
-export { StorageUsed, loadStorageUsed, storeStorageUsed } from "./storage-used";
+} from "@/core/types/split-merge-info";
+export { StateInit, loadStateInit, storeStateInit } from "@/core/types/state-init";
+export { StorageInfo, loadStorageInfo, storeStorageInfo } from "@/core/types/storage-into";
+export { StorageUsed, loadStorageUsed, storeStorageUsed } from "@/core/types/storage-used";
 export {
     StorageUsedShort,
     loadStorageUsedShort,
     storeStorageUsedShort,
-} from "./storage-used-short";
-export { TickTock, loadTickTock, storeTickTock } from "./tick-tock";
-export { Transaction, loadTransaction, storeTransaction } from "./transaction";
+} from "@/core/types/storage-used-short";
+export { TickTock, loadTickTock, storeTickTock } from "@/core/types/tick-tock";
+export { Transaction, loadTransaction, storeTransaction } from "@/core/types/transaction";
 export {
     TransactionActionPhase,
     loadTransactionActionPhase,
     storeTransactionActionPhase,
-} from "./transaction-action-phase";
+} from "@/core/types/transaction-action-phase";
 export {
     TransactionBouncePhase,
     TransactionBounceNoFunds,
@@ -139,19 +139,19 @@ export {
     TransactionBounceOk,
     loadTransactionBouncePhase,
     storeTransactionBouncePhase,
-} from "./transaction-bounce-phase";
+} from "@/core/types/transaction-bounce-phase";
 export {
     TransactionComputeVm,
     TransactionComputePhase,
     TransactionComputeSkipped,
     loadTransactionComputePhase,
     storeTransactionComputePhase,
-} from "./transaction-compute-phase";
+} from "@/core/types/transaction-compute-phase";
 export {
     TransactionCreditPhase,
     loadTransactionCreditPhase,
     storeTransactionCreditPhase,
-} from "./transaction-credit-phase";
+} from "@/core/types/transaction-credit-phase";
 export {
     TransactionDescription,
     TransactionDescriptionGeneric,
@@ -163,9 +163,9 @@ export {
     TransactionDescriptionTickTock,
     loadTransactionDescription,
     storeTransactionDescription,
-} from "./transaction-description";
+} from "@/core/types/transaction-description";
 export {
     TransactionStoragePhase,
     loadTransactionStoragePhase,
     storeTransactionsStoragePhase,
-} from "./transaction-storage-phase";
+} from "@/core/types/transaction-storage-phase";

@@ -6,7 +6,7 @@ import {
     Transaction,
 } from "@ton/core";
 import { inspect } from "util";
-import { CompareResult } from "./interface";
+import { CompareResult } from "@/jest-utils/test/interface";
 
 export type FlatTransaction = {
     from?: Address;

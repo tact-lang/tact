@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import type { Slice } from "../boc/slice";
-import type { Maybe } from "../utils/maybe";
-import type { ComputeSkipReason } from "./compute-skip-reason";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
+import type { Maybe } from "@/core/utils/maybe";
+import type { ComputeSkipReason } from "@/core/types/compute-skip-reason";
 import {
     loadComputeSkipReason,
     storeComputeSkipReason,
-} from "./compute-skip-reason";
+} from "@/core/types/compute-skip-reason";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L296
 // tr_phase_compute_skipped$0 reason:ComputeSkipReason

@@ -6,18 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Cell } from "../boc/cell";
-import type { SendMode } from "../types/send-mode";
-import type { TupleReader } from "../tuple/reader";
-import type { TupleItem } from "../tuple/tuple";
-import type { Maybe } from "../utils/maybe";
-import type { ContractState } from "./contract-state";
-import type { Sender } from "./sender";
-import type { Contract } from "./contract";
-import type { Address } from "../address/address";
-import type { Transaction } from "../types/transaction";
-import type { ExtraCurrency } from "../types/extra-currency";
-import type { OpenedContract } from "./open-contract";
+import type { Cell } from "@/core/boc/cell";
+import type { SendMode } from "@/core/types/send-mode";
+import type { TupleReader } from "@/core/tuple/reader";
+import type { TupleItem } from "@/core/tuple/tuple";
+import type { Maybe } from "@/core/utils/maybe";
+import type { ContractState } from "@/core/contract/contract-state";
+import type { Sender } from "@/core/contract/sender";
+import type { Contract } from "@/core/contract/contract";
+import type { Address } from "@/core/address/address";
+import type { Transaction } from "@/core/types/transaction";
+import type { ExtraCurrency } from "@/core/types/extra-currency";
+import type { OpenedContract } from "@/core/contract/open-contract";
 
 export type ContractGetMethodResult = {
     stack: TupleReader;

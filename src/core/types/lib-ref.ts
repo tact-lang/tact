@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import type { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
+import type { Builder } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
 
 // Source: https://github.com/ton-blockchain/ton/blob/128a85bee568e84146f1e985a92ea85011d1e380/crypto/block/block.tlb#L385-L386
 // libref_hash$0 lib_hash:bits256 = LibRef;

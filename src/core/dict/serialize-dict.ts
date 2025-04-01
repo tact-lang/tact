@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import { findCommonPrefix } from "./utils/find-common-prefix";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import { findCommonPrefix } from "@/core/dict/utils/find-common-prefix";
 
 //
 // Tree Build

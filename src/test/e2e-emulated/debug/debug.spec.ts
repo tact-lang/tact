@@ -3,7 +3,7 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { Debug } from "./output/debug_Debug";
 import { posixNormalize } from "@/utils/filePath";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("debug", () => {
     let blockchain: Blockchain;

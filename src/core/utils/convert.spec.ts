@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { fromNano, toNano } from "./convert";
+import { fromNano, toNano } from "@/core/utils/convert";
 
 const stringCases: { nano: string; real: string }[] = [
     { real: "1", nano: "1000000000" },

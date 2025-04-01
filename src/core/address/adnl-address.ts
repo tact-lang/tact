@@ -7,8 +7,8 @@
  */
 
 import inspectSymbol from "symbol.inspect";
-import { base32Decode, base32Encode } from "../utils/base32";
-import { crc16 } from "../utils/crc16";
+import { base32Decode, base32Encode } from "@/core/utils/base32";
+import { crc16 } from "@/core/utils/crc16";
 
 export class AdnlAddress {
     static parseFriendly(src: string) {

@@ -11,12 +11,12 @@ import type {
     DictionaryKey,
     DictionaryKeyTypes,
     DictionaryValue,
-} from "../dict/dictionary";
-import { Dictionary } from "../dict/dictionary";
-import type { BitReader } from "./bit-reader";
-import { beginCell } from "./builder";
-import type { Cell } from "./cell";
-import { readString } from "./utils/strings";
+} from "@/core/dict/dictionary";
+import { Dictionary } from "@/core/dict/dictionary";
+import type { BitReader } from "@/core/boc/bit-reader";
+import { beginCell } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import { readString } from "@/core/boc/utils/strings";
 
 /**
  * Slice is a class that allows to read cell data

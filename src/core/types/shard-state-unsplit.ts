@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Slice } from "../boc/slice";
-import type { Dictionary } from "../dict/dictionary";
-import type { Maybe } from "../utils/maybe";
-import type { MasterchainStateExtra } from "./masterchain-state-extra";
-import { loadMasterchainStateExtra } from "./masterchain-state-extra";
-import { ShardAccount } from "./shard-account";
-import type { ShardAccountRef } from "./shard-accounts";
-import { loadShardAccounts } from "./shard-accounts";
-import type { ShardIdent } from "./shard-ident";
-import { loadShardIdent } from "./shard-ident";
+import type { Slice } from "@/core/boc/slice";
+import type { Dictionary } from "@/core/dict/dictionary";
+import type { Maybe } from "@/core/utils/maybe";
+import type { MasterchainStateExtra } from "@/core/types/masterchain-state-extra";
+import { loadMasterchainStateExtra } from "@/core/types/masterchain-state-extra";
+import { ShardAccount } from "@/core/types/shard-account";
+import type { ShardAccountRef } from "@/core/types/shard-accounts";
+import { loadShardAccounts } from "@/core/types/shard-accounts";
+import type { ShardIdent } from "@/core/types/shard-ident";
+import { loadShardIdent } from "@/core/types/shard-ident";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L396
 // shard_state#9023afe2 global_id:int32

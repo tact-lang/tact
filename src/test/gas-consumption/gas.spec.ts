@@ -9,7 +9,7 @@ import type {
     TreasuryContract,
 } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import "../../jest-utils";
+import "@/jest-utils";
 import { getUsedGas } from "@/benchmarks/utils/gas";
 import type { Step } from "@/test/utils/write-vm-log";
 import { writeLog } from "@/test/utils/write-vm-log";

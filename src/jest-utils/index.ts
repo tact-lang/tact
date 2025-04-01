@@ -6,11 +6,10 @@ export {
     findTransaction,
     findTransactionRequired,
     filterTransactions,
-} from "./test/transaction";
+} from "@/jest-utils/test/transaction";
 
-import "./test/jest";
-import "./test/chai";
+import "@/jest-utils/test/jest";
 
-export { randomAddress } from "./utils/randomAddress";
+export { randomAddress } from "@/jest-utils/utils/randomAddress";
 
-export { executeTill, executeFrom } from "./utils/stepByStep";
+export { executeTill, executeFrom } from "@/jest-utils/utils/stepByStep";

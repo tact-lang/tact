@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { comment } from "../../types/_helpers";
-import { readString, stringToCell } from "./strings";
+import { comment } from "@/core/types/_helpers";
+import { readString, stringToCell } from "@/core/boc/utils/strings";
 
 describe("strings", () => {
     const cases: string[][] = [

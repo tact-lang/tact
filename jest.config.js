@@ -8,8 +8,7 @@ module.exports = {
     },
     testEnvironment: "node",
     testPathIgnorePatterns: ["/node_modules/", "/dist/"],
-    setupFiles: ["./jest.setup.js"],
-    snapshotSerializers: ["./serializers.ts"],
+    setupFilesAfterEnv: ["./jest.setup.ts"],
     maxWorkers: "4",
     testTimeout: 10000,
 };

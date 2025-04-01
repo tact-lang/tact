@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { CellType } from "./cell-type";
+import { CellType } from "@/core/boc/cell-type";
 
 describe("CellType", () => {
     it("should match values in c++ code", () => {

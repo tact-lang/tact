@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { Test } from "./output/contract-optional-empty-state_Test";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("contract optional empty state", () => {
     let blockchain: Blockchain;

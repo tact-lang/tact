@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { bitsForNumber } from "./bits-for-number";
+import { bitsForNumber } from "@/core/utils/bits-for-number";
 
 describe("bitsForNumber", () => {
     it("should work", () => {

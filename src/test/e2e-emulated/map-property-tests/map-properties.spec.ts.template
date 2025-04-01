@@ -5,7 +5,7 @@ import {
     MapPropertiesTester,
     ValData,
 } from "./test_MapPropertiesTester";
-import "../../jest-utils";
+import "@/jest-utils";
 
 // disable tests on MacOS
 const it = process.platform === "darwin" && process.env.CI ? test.skip : test;

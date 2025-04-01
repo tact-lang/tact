@@ -6,39 +6,39 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import type { Slice } from "../boc/slice";
-import type { Maybe } from "../utils/maybe";
-import type { SplitMergeInfo } from "./split-merge-info";
-import { loadSplitMergeInfo, storeSplitMergeInfo } from "./split-merge-info";
-import type { Transaction } from "./transaction";
-import { loadTransaction, storeTransaction } from "./transaction";
-import type { TransactionActionPhase } from "./transaction-action-phase";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import type { Slice } from "@/core/boc/slice";
+import type { Maybe } from "@/core/utils/maybe";
+import type { SplitMergeInfo } from "@/core/types/split-merge-info";
+import { loadSplitMergeInfo, storeSplitMergeInfo } from "@/core/types/split-merge-info";
+import type { Transaction } from "@/core/types/transaction";
+import { loadTransaction, storeTransaction } from "@/core/types/transaction";
+import type { TransactionActionPhase } from "@/core/types/transaction-action-phase";
 import {
     loadTransactionActionPhase,
     storeTransactionActionPhase,
-} from "./transaction-action-phase";
-import type { TransactionBouncePhase } from "./transaction-bounce-phase";
+} from "@/core/types/transaction-action-phase";
+import type { TransactionBouncePhase } from "@/core/types/transaction-bounce-phase";
 import {
     loadTransactionBouncePhase,
     storeTransactionBouncePhase,
-} from "./transaction-bounce-phase";
-import type { TransactionComputePhase } from "./transaction-compute-phase";
+} from "@/core/types/transaction-bounce-phase";
+import type { TransactionComputePhase } from "@/core/types/transaction-compute-phase";
 import {
     loadTransactionComputePhase,
     storeTransactionComputePhase,
-} from "./transaction-compute-phase";
-import type { TransactionCreditPhase } from "./transaction-credit-phase";
+} from "@/core/types/transaction-compute-phase";
+import type { TransactionCreditPhase } from "@/core/types/transaction-credit-phase";
 import {
     loadTransactionCreditPhase,
     storeTransactionCreditPhase,
-} from "./transaction-credit-phase";
-import type { TransactionStoragePhase } from "./transaction-storage-phase";
+} from "@/core/types/transaction-credit-phase";
+import type { TransactionStoragePhase } from "@/core/types/transaction-storage-phase";
 import {
     loadTransactionStoragePhase,
     storeTransactionsStoragePhase,
-} from "./transaction-storage-phase";
+} from "@/core/types/transaction-storage-phase";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L324
 // trans_ord$0000 credit_first:Bool

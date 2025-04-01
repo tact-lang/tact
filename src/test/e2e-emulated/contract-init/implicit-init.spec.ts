@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { MyContract } from "./output/implicit-init_MyContract";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("implicit-init", () => {
     let blockchain: Blockchain;

@@ -3,7 +3,7 @@ import type { Cell } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { SendTester } from "./output/send_SendTester";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("send", () => {
     let blockchain: Blockchain;

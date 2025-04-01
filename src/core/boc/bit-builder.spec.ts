@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../address/address";
-import { BitBuilder } from "./bit-builder";
+import { Address } from "@/core/address/address";
+import { BitBuilder } from "@/core/boc/bit-builder";
 
 describe("BitBuilder", () => {
     it("should serialize uint", () => {

@@ -1,6 +1,6 @@
 import { Address, Cell } from "@ton/core";
 
-export const serializers = {
+export const serializer = {
     test(src: unknown) {
         if (Buffer.isBuffer(src)) {
             return true;
@@ -27,3 +27,5 @@ export const serializers = {
         throw new Error("Unknown type");
     },
 };
+
+export default serializer;

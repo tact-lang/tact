@@ -1,4 +1,4 @@
-import type { Slice } from "../../boc/slice";
+import type { Slice } from "@/core/boc/slice";
 
 export function readUnaryLength(slice: Slice) {
     let res = 0;

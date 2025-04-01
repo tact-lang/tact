@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { BitReader } from "../bit-reader";
-import type { BitString } from "../bit-string";
-import type { Cell } from "../cell";
-import { CellType } from "../cell-type";
-import { exoticLibrary } from "./exotic-library";
-import { exoticMerkleProof } from "./exotic-merkle-proof";
-import { exoticMerkleUpdate } from "./exotic-merkle-update";
-import { exoticPruned } from "./exotic-pruned";
-import { LevelMask } from "./level-mask";
+import { BitReader } from "@/core/boc/bit-reader";
+import type { BitString } from "@/core/boc/bit-string";
+import type { Cell } from "@/core/boc/cell";
+import { CellType } from "@/core/boc/cell-type";
+import { exoticLibrary } from "@/core/boc/cell/exotic-library";
+import { exoticMerkleProof } from "@/core/boc/cell/exotic-merkle-proof";
+import { exoticMerkleUpdate } from "@/core/boc/cell/exotic-merkle-update";
+import { exoticPruned } from "@/core/boc/cell/exotic-pruned";
+import { LevelMask } from "@/core/boc/cell/level-mask";
 
 function resolvePruned(
     bits: BitString,

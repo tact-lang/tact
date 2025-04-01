@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Builder } from "../boc/builder";
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import { parseDict } from "./parse-dict";
+import type { Builder } from "@/core/boc/builder";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import { parseDict } from "@/core/dict/parse-dict";
 
 function storeBits(builder: Builder, src: string) {
     for (const s of src) {

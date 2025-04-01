@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Address } from "../address/address";
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import { parseTuple, serializeTuple } from "./tuple";
+import { Address } from "@/core/address/address";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import { parseTuple, serializeTuple } from "@/core/tuple/tuple";
 
 describe("tuple", () => {
     it("should serialize tuple with numbers", () => {

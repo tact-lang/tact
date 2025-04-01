@@ -2,7 +2,7 @@ import { Address, beginCell, Cell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { StdlibTest } from "./output/stdlib_StdlibTest";
-import "../../jest-utils";
+import "@/jest-utils";
 import { shouldThrowOnTvmGetMethod } from "@/test/utils/throw";
 
 describe("stdlib", () => {

@@ -1,13 +1,13 @@
-import { beginCell } from "../boc/builder";
-import type { Cell } from "../boc/cell";
-import type { Slice } from "../boc/slice";
+import { beginCell } from "@/core/boc/builder";
+import type { Cell } from "@/core/boc/cell";
+import type { Slice } from "@/core/boc/slice";
 import type {
     DictionaryKeyTypes,
     Dictionary,
     DictionaryKey,
-} from "./dictionary";
-import { readUnaryLength } from "./utils/read-unary-length";
-import { convertToMerkleProof } from "../boc/cell/exotic-merkle-proof";
+} from "@/core/dict/dictionary";
+import { readUnaryLength } from "@/core/dict/utils/read-unary-length";
+import { convertToMerkleProof } from "@/core/boc/cell/exotic-merkle-proof";
 
 function convertToPrunedBranch(c: Cell): Cell {
     return beginCell()

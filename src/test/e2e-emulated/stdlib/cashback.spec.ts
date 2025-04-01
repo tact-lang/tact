@@ -3,7 +3,7 @@ import type { Address, Cell } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { CashbackTester } from "./output/cashback_CashbackTester";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("cashback", () => {
     let blockchain: Blockchain;

@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { RandomContract } from "./output/random_RandomContract";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("random", () => {
     let blockchain: Blockchain;

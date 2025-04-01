@@ -3,7 +3,7 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { A } from "./output/ordering_A";
 import { B } from "./output/ordering_B";
-import "../../jest-utils";
+import "@/jest-utils";
 
 describe("ordering", () => {
     let blockchain: Blockchain;

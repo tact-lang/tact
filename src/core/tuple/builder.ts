@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Address } from "../address/address";
-import { beginCell } from "../boc/builder";
-import { Cell } from "../boc/cell";
-import { Slice } from "../boc/slice";
-import type { Maybe } from "../utils/maybe";
-import type { TupleItem } from "./tuple";
+import type { Address } from "@/core/address/address";
+import { beginCell } from "@/core/boc/builder";
+import { Cell } from "@/core/boc/cell";
+import { Slice } from "@/core/boc/slice";
+import type { Maybe } from "@/core/utils/maybe";
+import type { TupleItem } from "@/core/tuple/tuple";
 
 export class TupleBuilder {
     private _tuple: TupleItem[] = [];
