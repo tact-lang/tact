@@ -6,6 +6,7 @@ node_modules
 coverage
 dist
 output/
+build/
 src/func/funcfiftlib.wasm.js
 src/test/e2e-emulated/map-property-tests/build
 **/.testing/
