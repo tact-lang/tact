@@ -48,7 +48,6 @@ Domínguez
 dstr
 elseifnot
 Eltociear
-Embrey
 Epva
 errno
 Esorat
@@ -169,7 +168,6 @@ Ston
 STON.fi
 Stonfi
 storer
-strıng
 struct
 structs
 stry
