@@ -171,34 +171,16 @@ fun showcase() {
 
     // ---
     // Strings are immutable sequences of characters,
-    // which are useful to store texts to be used as special message bodies.
+    // which are used mainly to send and receive text message bodies.
     // ---
 
     // String literals are wrapped in double-quotes and can contain escape sequences,
     // but they intentionally cannot be concatenated via any operators.
-    let str: String = "I am a string literal, boo!";
-    let escape1 = "\\ \" \n \r \t \v \b \f \x00 through \xFF";
-    let escape2 = "\u0000 through \uFFFF and \u{0} through \u{FFFFFF}";
+    let str: String = "I am a string literal, 👻!"; // see the "Expressions" section for more
 
     // Strings are useful for storing text,
     // so they can be converted to a Cell type to be used as message bodies.
     let noComments: Cell = "yes comments".asComment(); // prefixes a string with 32 zero bits
-
-
-    // ---
-    // It's cheaper to manipulate and prepare strings off-chain,
-    // but there are StringBuilders for composing them on-chain.
-    // ---
-
-    // The interfaces look similar to the Builders because, under the hood,
-    // StringBuilders are just Builders with a different set of functions exposed by Tact.
-    let sb: StringBuilder = beginString()
-        .concat("You can be The Good Guy or the guy who saves the world...")
-        .concat("You can't be both");
-
-    // You can append something to an existing StringBuilder too.
-    sb.append(". — Radcliffe");
-    let fullQuote: String = sb.toString();
 }
 
 // Finally, under the hood, Address and String types are a Slice,
@@ -317,12 +299,6 @@ fun showcase() {
     // Furthermore, as with many other types, maps are just Cells with a distinct data layout.
     // Therefore, you can type cast any map back to its underlying Cell type.
     myMap.asCell();
-
-    // To ignore possible differences in serialization logic of maps,
-    // there is a costly method that is guaranteed to compare correctly.
-    let anotherMap: map<Int, Int> = emptyMap();
-    myMap.deepEquals(anotherMap); // true, and for the explanation of it see the
-                                  // relevant section on the maps page in the Book.
 }
 
 // Serialization of integer keys or values is possible but only meaningful
@@ -533,9 +509,11 @@ contract MyContract() {
         true; false;
 
         // String literals.
-        "foo"; "1234";
-        "\\ \" \n \r \t \v \b \f \x00 through \xFF";
-        "\u0000 through \uFFFF and \u{0} through \u{FFFFFF}";
+        "You can be The Good Guy or the guy who saves the world... You can't be both.";
+        "1234"; // a string, not a number
+        "👻"; // strings support Unicode
+        "\\ \" \n \r \t \v \b \f \x00 through \xFF"; // common escape sequences
+        "\u0000 through \uFFFF and \u{0} through \u{10FFFF}"; // unicode escape sequences
 
         // `null` and `self` literals.
         null; // not an instance of a primitive type, but
@@ -560,12 +538,11 @@ contract MyContract() {
 
         // Field access.
         addr.hash; // null
-        self.storageReserve; // 0, a contract-level constant present in all contracts,
-                             // because they implicitly inherit the BaseTrait
-                             // that defines it.
+        self.MOON_RADIUS_KM; // 1738, a contract-level constant
+                             // defined below this function
 
         // Extension function calls (methods).
-        self.storageReserve.toString(); // "0"
+        self.MOON_RADIUS_KM.toString(); // "1738"
         self.notify("Cashback".asComment()); // rather expensive,
                                              // use cashback() instead
         "hey".asComment(); // allowed on literals
@@ -579,7 +556,7 @@ contract MyContract() {
 
         // But there are special, compile-time-only functions.
         let _: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
-        let _: Cell = cell("");
+        let _: Cell = cell("te6cckEBAQEAAgAAAEysuc0="); // an empty Cell
         let _: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="); // a Slice with Hello world!
         let _: Slice = rawSlice("000DEADBEEF000"); // CS{Cell{03f...430} bits: 588..644; refs: 1..1}
         let _: Int = ascii("⚡"); // 14850721 or 0xE29AA1, 3 bytes in total
@@ -594,6 +571,9 @@ contract MyContract() {
         // codeOf, which only obtains the code.
         codeOf MyContract;
     }
+
+    // Constants support compile-time expressions
+    const MOON_RADIUS_KM: Int = 1730 + (8 | 8);
 }
 ```
 
@@ -1154,7 +1134,7 @@ Read more:
 * [Blueprint framework on GitHub](https://github.com/ton-org/blueprint).
 * [tact-template on GitHub](https://github.com/tact-lang/tact-template).
 
-## Deployment
+## Contract deployment {#deploy}
 
 ```tact
 fun showcase() {
