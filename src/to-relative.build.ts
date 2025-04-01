@@ -31,14 +31,14 @@ const main = async () => {
         const fullPath = join(rootDir, file);
         const source = await readFile(fullPath, "utf-8");
         const newSource = source.replace(
-            /from "@\/([^"]*)"/g,
-            (_, importedName) => {
+            /(from|import) "@\/([^"]*)"/g,
+            (_, prefix, importedName) => {
                 const result = relative(
                     dirname(fullPath),
                     join(rootDir, "dist", importedName),
                 );
                 const r = !result.startsWith(".") ? "./" + result : result;
-                return `from "${r}"`;
+                return `${prefix} "${r}"`;
             },
         );
         if (source !== newSource) {
