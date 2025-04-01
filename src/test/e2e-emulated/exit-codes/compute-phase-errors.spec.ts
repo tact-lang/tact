@@ -1,6 +1,6 @@
-import { toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import type { ExitCode4 } from "@/test/e2e-emulated/exit-codes/output/compute-phase-errors_ComputePhaseErrorsTester";
 import { ComputePhaseErrorsTester as TestContract } from "@/test/e2e-emulated/exit-codes/output/compute-phase-errors_ComputePhaseErrorsTester";
 import "@/jest-utils";

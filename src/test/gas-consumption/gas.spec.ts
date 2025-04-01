@@ -1,14 +1,14 @@
 import type {
     TransactionComputeVm,
     TransactionDescriptionGeneric,
-} from "@ton/core";
-import { beginCell, toNano } from "@ton/core";
+} from "@/core";
+import { beginCell, toNano } from "@/core";
 import type {
     BlockchainTransaction,
     SandboxContract,
     TreasuryContract,
-} from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+} from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import "@/jest-utils";
 import { getUsedGas } from "@/benchmarks/utils/gas";
 import type { Step } from "@/test/utils/write-vm-log";

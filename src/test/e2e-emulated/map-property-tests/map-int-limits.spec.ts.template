@@ -1,5 +1,5 @@
-import { toNano } from "@ton/core";
-import { Blockchain, SandboxContract } from "@ton/sandbox";
+import { toNano } from "@/core";
+import { Blockchain, SandboxContract } from "@/sandbox";
 import { MapIntLimitTester } from "./test_MapIntLimitTester";
 import "@/jest-utils";
 

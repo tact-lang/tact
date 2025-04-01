@@ -1,4 +1,4 @@
-import type { ABIField } from "@ton/core";
+import type { ABIField } from "@/core";
 import { throwInternalCompilerError } from "@/error/errors";
 import type * as Ast from "@/ast/ast";
 import type { SrcInfo } from "@/grammar";

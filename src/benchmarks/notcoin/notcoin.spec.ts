@@ -6,9 +6,9 @@ import {
     contractAddress,
     SendMode,
     toNano,
-} from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+} from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 
 import { JettonMinterNotcoin } from "@/benchmarks/contracts/output/jetton-minter-notcoin_JettonMinterNotcoin";
 

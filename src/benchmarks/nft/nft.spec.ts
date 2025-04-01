@@ -1,5 +1,5 @@
 import "@/jest-utils";
-import type { Address } from "@ton/core";
+import type { Address } from "@/core";
 import {
     Cell,
     beginCell,
@@ -7,11 +7,11 @@ import {
     contractAddress,
     SendMode,
     Dictionary,
-} from "@ton/core";
+} from "@/core";
 
-import type { Slice, Sender, Builder } from "@ton/core";
-import { Blockchain } from "@ton/sandbox";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { Slice, Sender, Builder } from "@/core";
+import { Blockchain } from "@/sandbox";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
 import {
     generateResults,
     getStateSizeForAccount,

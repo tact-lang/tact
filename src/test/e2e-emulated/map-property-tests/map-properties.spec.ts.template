@@ -1,5 +1,5 @@
-import { Address, address, Cell, toNano } from "@ton/core";
-import { Blockchain, SandboxContract } from "@ton/sandbox";
+import { Address, address, Cell, toNano } from "@/core";
+import { Blockchain, SandboxContract } from "@/sandbox";
 import {
     KeyData,
     MapPropertiesTester,

@@ -1,4 +1,4 @@
-import type { Address, Cell, Slice } from "@ton/core";
+import type { Address, Cell, Slice } from "@/core";
 import type * as Ast from "@/ast/ast";
 import type { FactoryAst } from "@/ast/ast-helpers";
 import { isLiteral } from "@/ast/ast-helpers";

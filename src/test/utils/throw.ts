@@ -1,4 +1,4 @@
-import { GetMethodError } from "@ton/sandbox";
+import { GetMethodError } from "@/sandbox";
 
 export const shouldThrowOnTvmGetMethod = async (
     f: () => Promise<void>,

@@ -1,4 +1,4 @@
-import type { Transaction } from "@ton/core";
+import type { Transaction } from "@/core";
 import type { FlatTransactionComparable } from "@/jest-utils/test/transaction";
 import {
     flattenTransaction,

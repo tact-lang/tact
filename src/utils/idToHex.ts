@@ -1,4 +1,4 @@
-import { beginCell } from "@ton/core";
+import { beginCell } from "@/core";
 
 export function idToHex(id: number) {
     return beginCell()

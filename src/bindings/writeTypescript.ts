@@ -1,11 +1,6 @@
 import * as changeCase from "change-case";
 import { Writer } from "@/utils/Writer";
-import {
-    Cell,
-    type ABIArgument,
-    type ABIType,
-    type ContractABI,
-} from "@ton/core";
+import { Cell, type ABIArgument, type ABIType, type ContractABI } from "@/core";
 import {
     writeArgumentToStack,
     writeDictParser,
@@ -72,6 +67,10 @@ export function writeTypescript(
 ) {
     const w = new Writer();
 
+    const lib = process.env.INTERNAL
+        ? "@/core"
+        : "@tact-lang/compiler/dist/core";
+
     w.write(`
         import { 
             Cell,
@@ -94,7 +93,7 @@ export function writeTypescript(
             ABIReceiver,
             TupleBuilder,
             DictionaryValue
-        } from '@ton/core';
+        } from '${lib}';
     `);
     w.append();
 

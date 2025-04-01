@@ -1,5 +1,5 @@
-import type { Address, Cell, Slice } from "@ton/core";
-import { beginCell } from "@ton/core";
+import type { Address, Cell, Slice } from "@/core";
+import { beginCell } from "@/core";
 import type { WriterContext } from "@/generator/Writer";
 
 export function writeString(str: string, ctx: WriterContext) {

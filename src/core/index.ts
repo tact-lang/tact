@@ -36,9 +36,9 @@ export {
 export {
     exoticMerkleProof,
     convertToMerkleProof,
-} from "@/core/boc/cell/exotic-merkle-proof";
-export { exoticMerkleUpdate } from "@/core/boc/cell/exotic-merkle-update";
-export { exoticPruned } from "@/core/boc/cell/exotic-pruned";
+} from "@/core/boc/cell-util/exotic-merkle-proof";
+export { exoticMerkleUpdate } from "@/core/boc/cell-util/exotic-merkle-update";
+export { exoticPruned } from "@/core/boc/cell-util/exotic-pruned";
 
 // Merkle trees
 export {

@@ -1,4 +1,4 @@
-import { beginCell } from "@ton/core";
+import { beginCell } from "@/core";
 import { getType } from "@/types/resolveDescriptors";
 import {
     showValue,

@@ -1,10 +1,6 @@
-import type { Address, Cell } from "@ton/core";
-import { beginCell, Builder, SendMode, toNano } from "@ton/core";
-import type {
-    Blockchain,
-    SandboxContract,
-    TreasuryContract,
-} from "@ton/sandbox";
+import type { Address, Cell } from "@/core";
+import { beginCell, Builder, SendMode, toNano } from "@/core";
+import type { Blockchain, SandboxContract, TreasuryContract } from "@/sandbox";
 import type {
     JettonBurn,
     JettonTransfer,

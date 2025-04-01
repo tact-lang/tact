@@ -4,14 +4,14 @@ import type {
     Message,
     Slice,
     StateInit,
-} from "@ton/core";
-import { beginCell, toNano } from "@ton/core";
+} from "@/core";
+import { beginCell, toNano } from "@/core";
 import type {
     BlockchainTransaction,
     SandboxContract,
     TreasuryContract,
-} from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+} from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import type {
     DeployComparisonMsg,
     DeployComparisonNoBodyMsg,
@@ -19,7 +19,7 @@ import type {
 } from "./output/deploy_DeployContract";
 import { DeployContract } from "./output/deploy_DeployContract";
 import "@/jest-utils";
-import type { Maybe } from "@ton/core/dist/utils/maybe";
+import type { Maybe } from "@/core/utils/maybe";
 import { findTransaction } from "@/jest-utils";
 
 const counter = () => {

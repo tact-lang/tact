@@ -5,10 +5,10 @@ import type {
 } from "./output/optionals_ContractWithOptionals";
 import { ContractWithOptionals } from "./output/optionals_ContractWithOptionals";
 import { Opt4 } from "./output/optionals_Opt4";
-import type { Address, Cell } from "@ton/core";
-import { beginCell, toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import type { Address, Cell } from "@/core";
+import { beginCell, toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import "@/jest-utils";
 
 function strEq2(a: StructWithOptionals | null, b: StructWithOptionals | null) {

@@ -1,9 +1,9 @@
-import type { Cell } from "@ton/core";
-import { Builder } from "@ton/core";
-import { beginCell, toNano } from "@ton/core";
-import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
-import { internal } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import type { Cell } from "@/core";
+import { Builder } from "@/core";
+import { beginCell, toNano } from "@/core";
+import type { SandboxContract, Treasury, TreasuryContract } from "@/sandbox";
+import { internal } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { SampleUpgradeContract } from "./output/upgrade_SampleUpgradeContract";
 import { SampleUpgradeContractV2 } from "./output/upgrade-v2_SampleUpgradeContractV2";
 import { SampleUpgradeContractV3 } from "./output/upgrade-v3_SampleUpgradeContractV3";

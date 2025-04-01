@@ -1,6 +1,6 @@
-import { beginCell, toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { beginCell, toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { A } from "./output/deep_A";
 import { B } from "./output/deep_B";
 import { C } from "./output/deep_C";

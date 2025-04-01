@@ -1,4 +1,4 @@
-import type { ABITypeRef } from "@ton/core";
+import type { ABITypeRef } from "@/core";
 import { getType } from "@/types/resolveDescriptors";
 import type { WriterContext } from "@/generator/Writer";
 

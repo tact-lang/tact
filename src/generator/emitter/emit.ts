@@ -1,4 +1,4 @@
-import type { Maybe } from "@ton/core/dist/utils/maybe";
+import type { Maybe } from "@/core/utils/maybe";
 import { trimIndent } from "@/utils/text";
 import type { WrittenFunction } from "@/generator/Writer";
 import { createPadded } from "@/generator/emitter/createPadded";

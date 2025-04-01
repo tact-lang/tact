@@ -10,10 +10,13 @@ import inspectSymbol from "symbol.inspect";
 import { BitString } from "@/core/boc/bit-string";
 import { CellType } from "@/core/boc/cell-type";
 import { Slice } from "@/core/boc/slice";
-import type { LevelMask } from "@/core/boc/cell/level-mask";
-import { resolveExotic } from "@/core/boc/cell/resolve-exotic";
-import { wonderCalculator } from "@/core/boc/cell/wonder-calculator";
-import { deserializeBoc, serializeBoc } from "@/core/boc/cell/serialization";
+import type { LevelMask } from "@/core/boc/cell-util/level-mask";
+import { resolveExotic } from "@/core/boc/cell-util/resolve-exotic";
+import { wonderCalculator } from "@/core/boc/cell-util/wonder-calculator";
+import {
+    deserializeBoc,
+    serializeBoc,
+} from "@/core/boc/cell-util/serialization";
 import { BitReader } from "@/core/boc/bit-reader";
 import { beginCell } from "@/core/boc/builder";
 

@@ -1,6 +1,6 @@
-import { beginCell, toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { beginCell, toNano } from "../src/core";
+import type { SandboxContract, TreasuryContract } from "../src/sandbox";
+import { Blockchain } from "../src/sandbox";
 import { MultisigContract } from "./output/multisig-3_MultisigContract";
 import "../src/jest-utils";
 

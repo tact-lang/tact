@@ -1,4 +1,4 @@
-import type * as TonCore from "@ton/core";
+import type * as TonCore from "@/core";
 import type { SrcInfo } from "@/grammar/src-info";
 import type { RelativePath } from "@/imports/path";
 import type { Language } from "@/imports/source";

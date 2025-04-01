@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { AccountStatus, CurrencyCollection, Transaction } from "@ton/core";
-import { Address, Cell } from "@ton/core";
+import type { AccountStatus, CurrencyCollection, Transaction } from "@/core";
+import { Address, Cell } from "@/core";
 import { inspect } from "util";
 import type { CompareResult } from "@/jest-utils/test/interface";
 

@@ -1,6 +1,6 @@
-import { Address, toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { Address, toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { Debug } from "./output/debug_Debug";
 import { posixNormalize } from "@/utils/filePath";
 import "@/jest-utils";

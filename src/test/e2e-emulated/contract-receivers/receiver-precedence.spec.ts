@@ -1,12 +1,12 @@
-import type { Address, Sender, TransactionDescriptionGeneric } from "@ton/core";
-import { beginCell, Cell, external, toNano } from "@ton/core";
+import type { Address, Sender, TransactionDescriptionGeneric } from "@/core";
+import { beginCell, Cell, external, toNano } from "@/core";
 import type {
     SandboxContract,
     SendMessageResult,
     SmartContractTransaction,
     TreasuryContract,
-} from "@ton/sandbox";
-import { Blockchain, internal } from "@ton/sandbox";
+} from "@/sandbox";
+import { Blockchain, internal } from "@/sandbox";
 import { ReceiverTester } from "./output/receiver-precedence_ReceiverTester";
 import { Calculator } from "./output/receiver-precedence_Calculator";
 import "@/jest-utils";

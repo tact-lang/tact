@@ -7,7 +7,7 @@ import type {
     DictionaryKey,
 } from "@/core/dict/dictionary";
 import { readUnaryLength } from "@/core/dict/utils/read-unary-length";
-import { convertToMerkleProof } from "@/core/boc/cell/exotic-merkle-proof";
+import { convertToMerkleProof } from "@/core/boc/cell-util/exotic-merkle-proof";
 
 function convertToPrunedBranch(c: Cell): Cell {
     return beginCell()

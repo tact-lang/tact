@@ -9,10 +9,10 @@ import type {
     ReplaceGetAllMaps,
 } from "./output/maps2_MapTestContract";
 import { MapTestContract } from "./output/maps2_MapTestContract";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
-import type { Address } from "@ton/core";
-import { beginCell, Dictionary, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
+import type { Address } from "@/core";
+import { beginCell, Dictionary, toNano } from "@/core";
 import "@/jest-utils";
 
 // Type definitions for keys and values to make them type-safe

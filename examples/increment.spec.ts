@@ -1,7 +1,7 @@
 import { IncrementContract } from "./output/increment_IncrementContract";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
-import { toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "../src/sandbox";
+import { Blockchain } from "../src/sandbox";
+import { toNano } from "../src/core";
 import "../src/jest-utils";
 
 describe("increment", () => {

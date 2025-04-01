@@ -1,6 +1,6 @@
-import { beginCell, BitString, Dictionary, toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { beginCell, BitString, Dictionary, toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { Tester } from "./output/mutating-methods_Tester";
 import "@/jest-utils";
 

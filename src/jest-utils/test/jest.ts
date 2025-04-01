@@ -7,7 +7,7 @@ import {
     compareCellForTest,
     compareSliceForTest,
 } from "@/jest-utils/test/comparisons";
-import type { Address, Cell, Slice } from "@ton/core";
+import type { Address, Cell, Slice } from "@/core";
 import jestGlobals from "@jest/globals";
 
 function wrapComparer<T>(

@@ -1,7 +1,7 @@
-import type { Cell } from "@ton/core";
-import { Address, beginCell, Dictionary, toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import type { Cell } from "@/core";
+import { Address, beginCell, Dictionary, toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { MapComparisonTestContract } from "./output/map-comparison_MapComparisonTestContract";
 import "@/jest-utils";
 

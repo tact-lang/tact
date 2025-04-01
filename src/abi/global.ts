@@ -1,4 +1,4 @@
-import { Address, beginCell, Cell, toNano } from "@ton/core";
+import { Address, beginCell, Cell, toNano } from "@/core";
 import { enabledDebug } from "@/config/features";
 import {
     writeAddress,

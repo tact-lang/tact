@@ -1,5 +1,5 @@
 import normalize from "path-normalize";
-import { Cell } from "@ton/core";
+import { Cell } from "@/core";
 import type { Config, Options } from "@/config/parseConfig";
 import type { ILogger } from "@/context/logger";
 import { Logger } from "@/context/logger";

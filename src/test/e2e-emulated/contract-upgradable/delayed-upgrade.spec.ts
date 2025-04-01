@@ -1,15 +1,15 @@
-import type { ABIError, Cell } from "@ton/core";
-import { Builder } from "@ton/core";
-import { beginCell } from "@ton/core";
-import { toNano } from "@ton/core";
-import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
-import { internal } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import type { ABIError, Cell } from "@/core";
+import { Builder } from "@/core";
+import { beginCell } from "@/core";
+import { toNano } from "@/core";
+import type { SandboxContract, Treasury, TreasuryContract } from "@/sandbox";
+import { internal } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { SampleDelayedUpgradeContract } from "./output/delayed-upgrade_SampleDelayedUpgradeContract";
 import { SampleDelayedUpgradeContractV2 } from "./output/delayed-upgrade-v2_SampleDelayedUpgradeContractV2";
 import { SampleDelayedUpgradeContractV3 } from "./output/delayed-upgrade-v3_SampleDelayedUpgradeContractV3";
 import "@/jest-utils";
-import type { Maybe } from "@ton/core/dist/utils/maybe";
+import type { Maybe } from "@/core/utils/maybe";
 
 describe("delayed upgrade", () => {
     let blockchain: Blockchain;

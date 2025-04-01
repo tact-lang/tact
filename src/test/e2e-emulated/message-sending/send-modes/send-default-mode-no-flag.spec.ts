@@ -1,19 +1,19 @@
 import { MessageModeTester } from "@/test/e2e-emulated/message-sending/send-modes/output/message-mode-tester_MessageModeTester";
 import { Calculator } from "@/test/e2e-emulated/message-sending/send-modes/output/message-mode-tester_Calculator";
-import { Blockchain } from "@ton/sandbox";
+import { Blockchain } from "@/sandbox";
 import type {
     BlockchainTransaction,
     SandboxContract,
     TreasuryContract,
-} from "@ton/sandbox";
-import { toNano } from "@ton/core";
+} from "@/sandbox";
+import { toNano } from "@/core";
 import type {
     Message,
     TransactionActionPhase,
     TransactionComputeVm,
     TransactionDescriptionGeneric,
-} from "@ton/core";
-import type { Maybe } from "@ton/core/dist/utils/maybe";
+} from "@/core";
+import type { Maybe } from "@/core/utils/maybe";
 import { findTransaction } from "@/jest-utils";
 
 type MessageInfo = {

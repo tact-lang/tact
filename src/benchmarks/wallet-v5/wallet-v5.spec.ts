@@ -1,12 +1,12 @@
 import "@/jest-utils";
 
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
-import { Cell, contractAddress } from "@ton/core";
-import type { Address } from "@ton/core";
-import { external } from "@ton/core";
-import { SendMode } from "@ton/core";
-import { beginCell, Dictionary, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
+import { Cell, contractAddress } from "@/core";
+import type { Address } from "@/core";
+import { external } from "@/core";
+import { SendMode } from "@/core";
+import { beginCell, Dictionary, toNano } from "@/core";
 
 import {
     getUsedGas,

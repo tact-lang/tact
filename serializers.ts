@@ -1,4 +1,4 @@
-import { Address, Cell } from "@ton/core";
+import { Address, Cell } from "@/core";
 
 export const serializer = {
     test(src: unknown) {

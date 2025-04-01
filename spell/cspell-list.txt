@@ -51,6 +51,7 @@ Domínguez
 dstr
 elseifnot
 Eltociear
+emscripten
 Epva
 errno
 Esorat

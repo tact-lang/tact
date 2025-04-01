@@ -1,6 +1,6 @@
-import { toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { ReservedContractErrorsTester as TestContract } from "@/test/e2e-emulated/exit-codes/output/tact-reserved-contract-errors_ReservedContractErrorsTester";
 import "@/jest-utils";
 

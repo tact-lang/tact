@@ -1,4 +1,4 @@
-import { beginCell, Cell, Dictionary } from "@ton/core";
+import { beginCell, Cell, Dictionary } from "@/core";
 import {
     disassembleRoot,
     Cell as OpcodeCell,

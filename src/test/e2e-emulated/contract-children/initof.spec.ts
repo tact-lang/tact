@@ -1,6 +1,6 @@
-import { toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { Self } from "./output/initof_Self";
 import { Parent } from "./output/initof_Parent";
 import { TestInit } from "./output/initof-2_TestInit";

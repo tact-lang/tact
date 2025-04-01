@@ -379,6 +379,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
             const prepared: Map<bigint, V> = new Map();
             for (const [k, v] of this._map) {
                 prepared.set(
+                    // @ts-expect-error -- 1
                     resolvedKey.serialize(deserializeInternalKey(k)),
                     v,
                 );
@@ -425,6 +426,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
         // Prepare map
         const prepared: Map<bigint, V> = new Map();
         for (const [k, v] of this._map) {
+            // @ts-expect-error -- 1
             prepared.set(resolvedKey.serialize(deserializeInternalKey(k)), v);
         }
 

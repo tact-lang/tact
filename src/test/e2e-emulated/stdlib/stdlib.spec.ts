@@ -1,6 +1,6 @@
-import { Address, beginCell, Cell, toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { Address, beginCell, Cell, toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { StdlibTest } from "./output/stdlib_StdlibTest";
 import "@/jest-utils";
 import { shouldThrowOnTvmGetMethod } from "@/test/utils/throw";

@@ -1,5 +1,5 @@
 import * as changeCase from "change-case";
-import type { ABIField } from "@ton/core";
+import type { ABIField } from "@/core";
 import type { CompilerContext } from "@/context/context";
 import { idToHex } from "@/utils/idToHex";
 import {

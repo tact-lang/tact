@@ -1,5 +1,5 @@
-import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
-import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
+import { Address, beginCell, BitString, Cell, toNano } from "@/core";
+import { paddedBufferToBits } from "@/core/boc/utils/padded-bits";
 import { crc32 } from "@/utils/crc32";
 import type * as Ast from "@/ast/ast";
 import { evalConstantExpression } from "@/optimizer/constEval";

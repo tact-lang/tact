@@ -9,8 +9,8 @@
 import type { Builder } from "@/core/boc/builder";
 import { beginCell } from "@/core/boc/builder";
 import { Cell } from "@/core/boc/cell";
-import { exoticMerkleProof } from "@/core/boc/cell/exotic-merkle-proof";
-import { exoticMerkleUpdate } from "@/core/boc/cell/exotic-merkle-update";
+import { exoticMerkleProof } from "@/core/boc/cell-util/exotic-merkle-proof";
+import { exoticMerkleUpdate } from "@/core/boc/cell-util/exotic-merkle-update";
 import { Dictionary } from "@/core/dict/dictionary";
 import fs from "fs";
 import { BitString } from "@/core/boc/bit-string";

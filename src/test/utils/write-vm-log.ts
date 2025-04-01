@@ -1,4 +1,4 @@
-import type { Blockchain } from "@ton/sandbox";
+import type { Blockchain } from "@/sandbox";
 import { appendFileSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import { dirname } from "path";
 

@@ -1,5 +1,5 @@
 import { sha256, highest32ofSha256 } from "@/utils/sha256";
-import { beginCell } from "@ton/core";
+import { beginCell } from "@/core";
 
 describe("sha256", () => {
     const bigintToBuffer = (value: bigint): Buffer => {

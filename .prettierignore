@@ -5,3 +5,4 @@ src/grammar/grammar.ts
 /src/stdlib/stdlib.ts
 /grammar
 /docs
+src/core/tuple/ultra-deep-cons.json

@@ -1,6 +1,6 @@
-import { toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { toNano } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
 import { CodeOfTester } from "./output/codeOf_CodeOfTester";
 import { ChildContract } from "./output/codeOf_ChildContract";
 import "@/jest-utils";

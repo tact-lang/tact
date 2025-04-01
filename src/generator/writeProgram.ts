@@ -17,7 +17,7 @@ import {
 } from "@/generator/writers/writeSerialization";
 import { writeStdlib } from "@/generator/writers/writeStdlib";
 import { writeAccessors } from "@/generator/writers/writeAccessors";
-import type { ContractABI } from "@ton/core";
+import type { ContractABI } from "@/core";
 import { writeFunction } from "@/generator/writers/writeFunction";
 import { calculateIPFSlink } from "@/utils/calculateIPFSlink";
 import { getRawAST } from "@/context/store";

@@ -1,4 +1,4 @@
-import { Address } from "@ton/core";
+import { Address } from "@/core";
 
 export function randomAddress(workchain = 0): Address {
     const b = Buffer.alloc(32);

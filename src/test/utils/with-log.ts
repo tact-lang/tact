@@ -1,4 +1,4 @@
-import type { Blockchain } from "@ton/sandbox";
+import type { Blockchain } from "@/sandbox";
 import { type Transaction, getTransactions } from "@/test/utils/parse-log";
 
 export async function withLog<T>(

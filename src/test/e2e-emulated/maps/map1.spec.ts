@@ -10,9 +10,9 @@ import type {
     ReplaceGetAllMaps,
 } from "./output/maps1_MapTestContract";
 import { MapTestContract } from "./output/maps1_MapTestContract";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
-import { Address, beginCell, Cell, Dictionary, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
+import { Blockchain } from "@/sandbox";
+import { Address, beginCell, Cell, Dictionary, toNano } from "@/core";
 import "@/jest-utils";
 
 // Type Guard for SomeStruct

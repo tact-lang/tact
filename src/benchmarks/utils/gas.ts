@@ -1,8 +1,8 @@
-import type { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
+import type { SendMessageResult } from "@/sandbox/blockchain/Blockchain";
 import chalk from "chalk";
 import Table from "cli-table3";
-import type { Blockchain } from "@ton/sandbox";
-import type { Address, Cell } from "@ton/core";
+import type { Blockchain } from "@/sandbox";
+import type { Address, Cell } from "@/core";
 
 export function getUsedGas(
     sendEnough: SendMessageResult,

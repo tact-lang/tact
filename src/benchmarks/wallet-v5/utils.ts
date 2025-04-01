@@ -1,6 +1,6 @@
-import type { Address, Cell } from "@ton/core";
-import { beginCell, SendMode } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { Address, Cell } from "@/core";
+import { beginCell, SendMode } from "@/core";
+import type { SandboxContract, TreasuryContract } from "@/sandbox";
 
 const Opcodes = {
     action_send_msg: 0x0ec3c86d,

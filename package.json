@@ -33,7 +33,8 @@
     "gen:contracts:benchmarks": "yarn gen:contracts:benchmarks:tact && yarn gen:contracts:benchmarks:func",
     "gen:contracts:test:map": "ts-node ./src/test/e2e-emulated/map-property-tests/generate.ts",
     "gen:contracts:all": "yarn gen:contracts:examples && yarn gen:contracts:test && yarn gen:contracts:benchmarks && yarn gen:contracts:test:map",
-    "gen": "yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && yarn gen:contracts:all",
+    "gen:aux": "yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && yarn gen:contracts:all",
+    "gen": "cross-env INTERNAL='true' yarn gen:aux",
     "clean": "rm -fr dist",
     "cleanall": "rm -fr dist node_modules",
     "copy:stdlib": "ts-node src/stdlib/copy.build.ts",
@@ -94,7 +95,6 @@
   "devDependencies": {
     "@swc/core": "^1.10.7",
     "@swc/jest": "^0.2.37",
-    "@ton/sandbox": "^0.27.0",
     "@tonstudio/pgen": "^0.0.1",
     "@types/diff": "^7.0.0",
     "@types/glob": "^8.1.0",

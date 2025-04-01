@@ -1,4 +1,4 @@
-import type { ABIGetter, ABIReceiver, ABIType, ContractABI } from "@ton/core";
+import type { ABIGetter, ABIReceiver, ABIType, ContractABI } from "@/core";
 import { contractErrors } from "@/abi/errors";
 import type { CompilerContext } from "@/context/context";
 import { getSupportedInterfaces } from "@/types/getSupportedInterfaces";

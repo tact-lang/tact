@@ -1,4 +1,4 @@
-import type { ABIType, ABITypeRef } from "@ton/core";
+import type { ABIType, ABITypeRef } from "@/core";
 import { serializers } from "@/bindings/typescript/serializers";
 import type { AllocationCell, AllocationOperation } from "@/storage/operation";
 import { throwInternalCompilerError } from "@/error/errors";

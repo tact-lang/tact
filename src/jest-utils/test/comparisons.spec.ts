@@ -1,4 +1,4 @@
-import { Address, beginCell } from "@ton/core";
+import { Address, beginCell } from "@/core";
 import {
     compareAddressForTest,
     compareCellForTest,
