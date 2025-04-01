@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pre-compilation of ASTs should fail pre-compilation when source files and a manual AST have declaration clashes 1`] = `
+"Type "Test" already exists
+> 1 |  
+      ^
+"
+`;

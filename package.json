@@ -31,7 +31,7 @@
     "gen:contracts:benchmarks:tact": "ts-node src/benchmarks/bench.build.ts",
     "gen:contracts:benchmarks:func": "ts-node src/benchmarks/func.build.ts",
     "gen:contracts:benchmarks": "yarn gen:contracts:benchmarks:tact && yarn gen:contracts:benchmarks:func",
-    "gen:contracts:test:map": "ts-node ./src/test/e2e-emulated/map-tests/generate.ts",
+    "gen:contracts:test:map": "ts-node ./src/test/e2e-emulated/map-property-tests/generate.ts",
     "gen:contracts:all": "yarn gen:contracts:examples && yarn gen:contracts:test && yarn gen:contracts:benchmarks && yarn gen:contracts:test:map",
     "gen": "yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && yarn gen:contracts:all",
     "clean": "rm -fr dist",
@@ -58,6 +58,7 @@
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "next-version": "ts-node version.build.ts",
     "random-ast": "ts-node ./src/ast/random-ast.ts",
+    "gen:make-funs": "ts-node ./src/ast/generated/gen-make-functions-script.ts && yarn prettier -w ./src/ast/generated/make-factory.ts",
     "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10"
   },
   "files": [
@@ -106,6 +107,9 @@
     "@types/node": "^22.5.0",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
+    "@babel/generator": "^7.26.5",
+    "@babel/parser": "^7.26.5",
+    "@babel/types": "^7.26.5",
     "chalk": "4.1.2",
     "cli-table3": "^0.6.5",
     "cross-env": "^7.0.3",
