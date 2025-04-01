@@ -12,7 +12,10 @@ import { Cell } from "@/core/boc/cell";
 import { topologicalSort } from "@/core/boc/cell/topological-sort";
 import { bitsForNumber } from "@/core/utils/bits-for-number";
 import { BitBuilder } from "@/core/boc/bit-builder";
-import { getBitsDescriptor, getRefsDescriptor } from "@/core/boc/cell/descriptor";
+import {
+    getBitsDescriptor,
+    getRefsDescriptor,
+} from "@/core/boc/cell/descriptor";
 import { bitsToPaddedBuffer } from "@/core/boc/utils/padded-bits";
 import { crc32c } from "@/core/utils/crc32c";
 
@@ -26,7 +29,7 @@ function getHashesCountFromMask(mask: number) {
         n += mask & 1;
         mask = mask >> 1;
     }
-    return n + 1; // 1 repr + up to 3 higher hashes
+    return n + 1; // 1 representation + up to 3 higher hashes
 }
 
 function readCell(reader: BitReader, sizeBytes: number) {
@@ -132,8 +135,8 @@ export function parseBoc(src: Buffer) {
     } else if (magic === 0xb5ee9c72) {
         const hasIdx = reader.loadUint(1);
         const hasCrc32c = reader.loadUint(1);
-        const hasCacheBits = reader.loadUint(1);
-        const flags = reader.loadUint(2); // Must be 0
+        reader.loadUint(1); // hasCacheBits
+        reader.loadUint(2); // flags, must be 0
         const size = reader.loadUint(3);
         const offBytes = reader.loadUint(8);
         const cells = reader.loadUint(size * 8);
@@ -200,7 +203,7 @@ export function deserializeBoc(src: Buffer) {
     // Build cells
     //
 
-    [...cells].reverse().map(cell => {
+    [...cells].reverse().map((cell) => {
         if (cell.result) {
             throw Error("Impossible");
         }
@@ -222,9 +225,9 @@ export function deserializeBoc(src: Buffer) {
     // Load roots
     //
 
-    const roots: Cell[] = boc.root.map(root => {
+    const roots: Cell[] = boc.root.map((root) => {
         const rootInfo = cells[root];
-        if (typeof rootInfo === 'undefined') {
+        if (typeof rootInfo === "undefined") {
             throw new Error("Root not found");
         }
         const cell = rootInfo.result;
@@ -264,7 +267,7 @@ export function serializeBoc(
     // Sort cells
     const allCells = topologicalSort(root);
 
-    // Calculcate parameters
+    // Calculate parameters
     const cellsNum = allCells.length;
     const has_idx = opts.idx;
     const has_crc32c = opts.crc32;
@@ -319,12 +322,7 @@ export function serializeBoc(
     }
     for (const { cell, refs } of allCells) {
         // Cells
-        writeCellToBuilder(
-            cell,
-            refs,
-            sizeBytes,
-            builder,
-        );
+        writeCellToBuilder(cell, refs, sizeBytes, builder);
     }
     if (has_crc32c) {
         const crc32 = crc32c(builder.buffer()); // builder.buffer() is fast since it doesn't allocate new memory

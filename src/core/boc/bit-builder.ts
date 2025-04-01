@@ -8,7 +8,6 @@
 
 import { Address } from "@/core/address/address";
 import { ExternalAddress } from "@/core/address/external-address";
-import { bitsForNumber } from "@/core/utils/bits-for-number";
 import type { Maybe } from "@/core/utils/maybe";
 import { BitString } from "@/core/boc/bit-string";
 
@@ -47,7 +46,7 @@ export class BitBuilder {
             (typeof value === "boolean" && value) ||
             (typeof value === "number" && value > 0)
         ) {
-            // @ts-ignore
+            // @ts-expect-error -- 1
             this._buffer[(n / 8) | 0] |= 1 << (7 - (n % 8));
         }
 
@@ -78,9 +77,8 @@ export class BitBuilder {
             src.copy(this._buffer, this._length / 8);
             this._length += src.length * 8;
         } else {
-            for (let i = 0; i < src.length; i++) {
-                // @ts-ignore
-                this.writeUint(src[i], 8);
+            for (const x of src) {
+                this.writeUint(x, 8);
             }
         }
     }
@@ -118,16 +116,16 @@ export class BitBuilder {
 
         const tillByte = 8 - (this._length % 8);
         if (tillByte > 0) {
-            const bidx = Math.floor(this._length / 8);
+            const bitIndex = Math.floor(this._length / 8);
             if (bits < tillByte) {
                 const wb = Number(v);
-                // @ts-ignore
-                this._buffer[bidx] |= wb << (tillByte - bits);
+                // @ts-expect-error -- 1
+                this._buffer[bitIndex] |= wb << (tillByte - bits);
                 this._length += bits;
             } else {
                 const wb = Number(v >> BigInt(bits - tillByte));
-                // @ts-ignore
-                this._buffer[bidx] |= wb;
+                // @ts-expect-error -- 1
+                this._buffer[bitIndex] |= wb;
                 this._length += tillByte;
             }
         }
@@ -136,13 +134,13 @@ export class BitBuilder {
         while (bits > 0) {
             if (bits >= 8) {
                 this._buffer[this._length / 8] = Number(
-                    (v >> BigInt(bits - 8)) & 0xffn,
+                    (v >> BigInt(bits - 8)) & 255n,
                 );
                 this._length += 8;
                 bits -= 8;
             } else {
                 this._buffer[this._length / 8] = Number(
-                    (v << BigInt(8 - bits)) & 0xffn,
+                    (v << BigInt(8 - bits)) & 255n,
                 );
                 this._length += bits;
                 bits = 0;
@@ -201,7 +199,7 @@ export class BitBuilder {
     }
 
     /**
-     * Wrtie var uint value, used for serializing coins
+     * Write var uint value, used for serializing coins
      * @param value value to write as bigint or number
      * @param bits header bits to write size
      */
@@ -233,7 +231,7 @@ export class BitBuilder {
     }
 
     /**
-     * Wrtie var int value, used for serializing coins
+     * Write var int value, used for serializing coins
      * @param value value to write as bigint or number
      * @param bits header bits to write size
      */
@@ -299,6 +297,7 @@ export class BitBuilder {
         }
 
         // Invalid address
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw Error(`Invalid address. Got ${address}`);
     }
 

@@ -43,31 +43,33 @@ export function topologicalSort(src: Cell): { cell: Cell; refs: number[] }[] {
         }
         tempMark.add(hash);
         const refs = allCells.get(hash)!.refs;
-        [...refs].reverse().forEach(ref => visit(ref));
+        [...refs].reverse().forEach((ref) => {
+            visit(ref);
+        });
         sorted.push(hash);
         tempMark.delete(hash);
         notPermCells.delete(hash);
     }
     for (let i = 0; i < ITERATION_LIMIT; ++i) {
         const id = Array.from(notPermCells)[0];
-        if (typeof id === 'undefined') {
+        if (typeof id === "undefined") {
             break;
         }
         visit(id);
     }
 
-    sorted.reverse()
+    sorted.reverse();
 
     const indexes: Map<string, number> = new Map();
     sorted.forEach((s, i) => {
         indexes.set(s, i);
     });
 
-    return sorted.map(ent => {
+    return sorted.map((ent) => {
         const rrr = allCells.get(ent)!;
         return {
             cell: rrr.cell,
             refs: rrr.refs.map((v) => indexes.get(v)!),
         };
-    })
+    });
 }

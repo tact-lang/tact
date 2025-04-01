@@ -28,7 +28,7 @@ export function generateMerkleUpdate<K extends DictionaryKeyTypes, V>(
     const oldProof = generateMerkleProof(dict, [key], keyObject).refs[0];
     dict.set(key, newValue);
     const newProof = generateMerkleProof(dict, [key], keyObject).refs[0];
-    if (typeof oldProof === 'undefined' || typeof newProof === 'undefined') {
+    if (typeof oldProof === "undefined" || typeof newProof === "undefined") {
         throw new Error("Bug");
     }
     return convertToMerkleUpdate(oldProof, newProof);

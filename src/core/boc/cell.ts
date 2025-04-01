@@ -39,7 +39,7 @@ export class Cell {
     static fromBase64(src: string): Cell {
         const parsed = Cell.fromBoc(Buffer.from(src, "base64"));
         const cell = parsed[0];
-        if (parsed.length !== 1 || typeof cell === 'undefined') {
+        if (parsed.length !== 1 || typeof cell === "undefined") {
             throw new Error("Deserialized more than one cell");
         }
         return cell;
@@ -52,7 +52,7 @@ export class Cell {
     static fromHex(src: string): Cell {
         const parsed = Cell.fromBoc(Buffer.from(src, "hex"));
         const cell = parsed[0];
-        if (parsed.length !== 1 || typeof cell === 'undefined') {
+        if (parsed.length !== 1 || typeof cell === "undefined") {
             throw new Error("Deserialized more than one cell");
         }
         return cell;
@@ -141,7 +141,7 @@ export class Cell {
     }
 
     /**
-     * Beging cell parsing
+     * Begin cell parsing
      * @returns a new slice
      */
     beginParse = (allowExotic: boolean = false) => {
@@ -159,8 +159,8 @@ export class Cell {
     hash = (level: number = 3): Buffer => {
         const hashId = Math.min(this._hashes.length - 1, level);
         const hash = this._hashes[hashId];
-        if (typeof hash === 'undefined') {
-            throw new Error('Invalid level');
+        if (typeof hash === "undefined") {
+            throw new Error("Invalid level");
         }
         return hash;
     };
@@ -173,8 +173,8 @@ export class Cell {
     depth = (level: number = 3): number => {
         const hashId = Math.min(this._depths.length - 1, level);
         const hash = this._depths[hashId];
-        if (typeof hash === 'undefined') {
-            throw new Error('Invalid level');
+        if (typeof hash === "undefined") {
+            throw new Error("Invalid level");
         }
         return hash;
     };
@@ -188,7 +188,7 @@ export class Cell {
     };
 
     /**
-     * Checks cell to be euqal to another cell
+     * Checks cell to be equal to another cell
      * @param other other cell
      * @returns true if cells are equal
      */
@@ -221,7 +221,7 @@ export class Cell {
      * @returns string representation
      */
     toString(indent?: string): string {
-        const id = indent || "";
+        const id = indent ?? "";
         let t = "x";
         if (this.isExotic) {
             if (this.type === CellType.MerkleProof) {
@@ -241,7 +241,7 @@ export class Cell {
     }
 
     /**
-     * Covnert cell to slice
+     * Convert cell to slice
      * @returns slice
      */
     asSlice() {

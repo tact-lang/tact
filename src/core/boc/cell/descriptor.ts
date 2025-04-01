@@ -26,7 +26,7 @@ export function getBitsDescriptor(bits: BitString) {
     return Math.ceil(len / 8) + Math.floor(len / 8);
 }
 
-export function getRepr(
+export function getRepresentation(
     originalBits: BitString,
     bits: BitString,
     refs: Cell[],
@@ -36,16 +36,16 @@ export function getRepr(
 ) {
     // Allocate
     const bitsLen = Math.ceil(bits.length / 8);
-    const repr = Buffer.alloc(2 + bitsLen + (2 + 32) * refs.length);
+    const representation = Buffer.alloc(2 + bitsLen + (2 + 32) * refs.length);
 
     // Write descriptors
-    let reprCursor = 0;
-    repr[reprCursor++] = getRefsDescriptor(refs, levelMask, type);
-    repr[reprCursor++] = getBitsDescriptor(originalBits);
+    let cursor = 0;
+    representation[cursor++] = getRefsDescriptor(refs, levelMask, type);
+    representation[cursor++] = getBitsDescriptor(originalBits);
 
     // Write bits
-    bitsToPaddedBuffer(bits).copy(repr, reprCursor);
-    reprCursor += bitsLen;
+    bitsToPaddedBuffer(bits).copy(representation, cursor);
+    cursor += bitsLen;
 
     // Write refs
     for (const c of refs) {
@@ -55,8 +55,8 @@ export function getRepr(
         } else {
             childDepth = c.depth(level);
         }
-        repr[reprCursor++] = Math.floor(childDepth / 256);
-        repr[reprCursor++] = childDepth % 256;
+        representation[cursor++] = Math.floor(childDepth / 256);
+        representation[cursor++] = childDepth % 256;
     }
     for (const c of refs) {
         let childHash: Buffer;
@@ -65,10 +65,10 @@ export function getRepr(
         } else {
             childHash = c.hash(level);
         }
-        childHash.copy(repr, reprCursor);
-        reprCursor += 32;
+        childHash.copy(representation, cursor);
+        cursor += 32;
     }
 
     // Result
-    return repr;
+    return representation;
 }

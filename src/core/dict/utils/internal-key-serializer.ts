@@ -8,12 +8,10 @@
 
 import { Address } from "@/core/address/address";
 import { BitString } from "@/core/boc/bit-string";
-import {
-    bitsToPaddedBuffer,
-    paddedBufferToBits,
-} from "@/core/boc/utils/padded-bits";
+import { paddedBufferToBits } from "@/core/boc/utils/padded-bits";
+import type { DictionaryKeyTypes } from "@/core/dict/dictionary";
 
-export function serializeInternalKey(value: any): string {
+export function serializeInternalKey(value: DictionaryKeyTypes): string {
     if (typeof value === "number") {
         if (!Number.isSafeInteger(value)) {
             throw Error("Invalid key type: not a safe integer: " + value);
@@ -32,7 +30,7 @@ export function serializeInternalKey(value: any): string {
     }
 }
 
-export function deserializeInternalKey(value: string): any {
+export function deserializeInternalKey(value: string): DictionaryKeyTypes {
     const k = value.slice(0, 2);
     const v = value.slice(2);
     if (k === "n:") {
@@ -50,7 +48,7 @@ export function deserializeInternalKey(value: string): any {
             const charLen = lastDash ? v.length - 1 : v.length;
             const padded = v.substr(0, charLen) + "0"; //Padding
             if (!lastDash && (charLen & 1) !== 0) {
-                // Four bit nibmle without padding
+                // Four bit nibble without padding
                 return new BitString(
                     Buffer.from(padded, "hex"),
                     0,

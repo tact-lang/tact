@@ -24,7 +24,7 @@ export function exoticMerkleProof(bits: BitString, refs: Cell[]) {
     }
 
     const firstRef = refs[0];
-    if (refs.length !== 1 || typeof firstRef === 'undefined') {
+    if (refs.length !== 1 || typeof firstRef === "undefined") {
         throw new Error(
             `Merkle Proof cell must have exactly 1 ref, got "${refs.length}"`,
         );

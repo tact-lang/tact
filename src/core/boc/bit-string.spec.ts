@@ -24,8 +24,9 @@ describe("BitString", () => {
             length: number,
         ) => {
             try {
-                const bs2 = bs[method](offset, length);
+                bs[method](offset, length);
                 throw Error("Should fail");
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (e: any) {
                 expect(e.message.endsWith("out of bounds")).toBe(true);
             }
@@ -101,7 +102,7 @@ describe("BitString", () => {
         testOOB("subbuffer", bs, bs.length + 1, 0);
         testOOB("subbuffer", bs, -1, 0);
     });
-    it("should OOB when offset is on the end of bitsring and length > 0", () => {
+    it("should OOB when offset is on the end of bitstring and length > 0", () => {
         const bs = new BitString(Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]), 0, 64);
         testOOB("substring", bs, bs.length, 1);
     });

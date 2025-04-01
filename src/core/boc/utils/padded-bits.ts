@@ -32,7 +32,7 @@ export function paddedBufferToBits(buff: Buffer) {
     for (let i = buff.length - 1; i >= 0; i--) {
         if (buff[i] !== 0) {
             const testByte = buff[i];
-            if (typeof testByte === 'undefined') {
+            if (typeof testByte === "undefined") {
                 throw new Error("Impossible");
             }
             // Looking for a rightmost set padding bit

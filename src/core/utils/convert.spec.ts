@@ -47,6 +47,7 @@ describe("convert", () => {
         expect(() => toNano(-Infinity)).toThrow();
     });
     it("should throw an error due to insufficient precision of number", () => {
+        // eslint-disable-next-line no-loss-of-precision
         expect(() => toNano(10000000.000000001)).toThrow();
     });
     it("should convert numbers toNano", () => {

@@ -23,7 +23,11 @@ export function exoticMerkleUpdate(bits: BitString, refs: Cell[]) {
     }
 
     const [firstRef, secondRef] = refs;
-    if (refs.length !== 2 || typeof firstRef === 'undefined' || typeof secondRef === 'undefined') {
+    if (
+        refs.length !== 2 ||
+        typeof firstRef === "undefined" ||
+        typeof secondRef === "undefined"
+    ) {
         throw new Error(
             `Merkle Update cell must have exactly 2 refs, got "${refs.length}"`,
         );

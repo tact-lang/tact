@@ -1,6 +1,6 @@
-import { Transaction } from "@ton/core";
+import type { Transaction } from "@ton/core";
+import type { FlatTransactionComparable } from "@/jest-utils/test/transaction";
 import {
-    FlatTransactionComparable,
     flattenTransaction,
     compareTransaction,
 } from "@/jest-utils/test/transaction";
@@ -10,7 +10,7 @@ export async function executeTill<T extends Transaction>(
     txs: AsyncIterator<T>,
     match: FlatTransactionComparable,
 ) {
-    let executed: T[] = [];
+    const executed: T[] = [];
     let iterResult = await txs.next();
     let found = false;
     while (!iterResult.done) {
@@ -33,7 +33,7 @@ export async function executeTill<T extends Transaction>(
 export async function executeFrom<T extends Transaction>(
     txs: AsyncIterator<T>,
 ) {
-    let executed: T[] = [];
+    const executed: T[] = [];
     let iterResult = await txs.next();
 
     while (!iterResult.done) {

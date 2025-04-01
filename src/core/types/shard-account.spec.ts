@@ -6,13 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { inspect } from "util";
 import { beginCell } from "@/core/boc/builder";
 import { Cell } from "@/core/boc/cell";
-import { loadShardAccount, storeShardAccount } from "@/core/types/shard-account";
+import {
+    loadShardAccount,
+    storeShardAccount,
+} from "@/core/types/shard-account";
 
 describe("ShardAccount", () => {
-    it("should parse tonkite cell", () => {
+    it("should parse ton kit cell", () => {
         const boc = Buffer.from(
             "te6cckEBBAEA7wABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAnfACD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqCAkCIGAAAACAAAAAAAAAAGgN4Lazp2QAAE0ACAwCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjPUU3w=",
             "base64",

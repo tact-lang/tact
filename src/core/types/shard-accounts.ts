@@ -16,7 +16,10 @@ import {
     storeDepthBalanceInfo,
 } from "@/core/types/depth-balance-info";
 import type { ShardAccount } from "@/core/types/shard-account";
-import { loadShardAccount, storeShardAccount } from "@/core/types/shard-account";
+import {
+    loadShardAccount,
+    storeShardAccount,
+} from "@/core/types/shard-account";
 
 // Source: https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/block/block.tlb#L261
 // _ (HashmapAugE 256 ShardAccount DepthBalanceInfo) = ShardAccounts;

@@ -55,7 +55,9 @@ describe("tuple", () => {
     });
 
     it("should read ultra deep cons", () => {
-        const fContent = fs.readFileSync(join(__dirname, "ultra-deep-cons.json"));
+        const fContent = fs.readFileSync(
+            join(__dirname, "ultra-deep-cons.json"),
+        );
         const cons: TupleItem[] = JSON.parse(fContent.toString());
 
         const result = [];
@@ -68,7 +70,7 @@ describe("tuple", () => {
         expect(new TupleReader(cons).readLispList()).toEqual(result);
     });
 
-    it("should raise error on nontuple element in chain", () => {
+    it("should raise error on non-tuple element in chain", () => {
         const cons: TupleItem[] = [
             {
                 type: "int",

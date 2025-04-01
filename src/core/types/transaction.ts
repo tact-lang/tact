@@ -13,7 +13,10 @@ import type { Slice } from "@/core/boc/slice";
 import { Dictionary } from "@/core/dict/dictionary";
 import type { Maybe } from "@/core/utils/maybe";
 import type { AccountStatus } from "@/core/types/account-status";
-import { loadAccountStatus, storeAccountStatus } from "@/core/types/account-status";
+import {
+    loadAccountStatus,
+    storeAccountStatus,
+} from "@/core/types/account-status";
 import type { CurrencyCollection } from "@/core/types/currency-collection";
 import {
     loadCurrencyCollection,

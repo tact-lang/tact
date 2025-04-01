@@ -9,7 +9,7 @@
 export function findCommonPrefix(src: string[], startPos = 0) {
     // Corner cases
     const [firstSrc, ...restSrc] = src;
-    if (src.length === 0 || typeof firstSrc === 'undefined') {
+    if (src.length === 0 || typeof firstSrc === "undefined") {
         return "";
     }
 

@@ -9,7 +9,10 @@
 import type { Builder } from "@/core/boc/builder";
 import type { Slice } from "@/core/boc/slice";
 import type { AccountState } from "@/core/types/account-state";
-import { loadAccountState, storeAccountState } from "@/core/types/account-state";
+import {
+    loadAccountState,
+    storeAccountState,
+} from "@/core/types/account-state";
 import type { CurrencyCollection } from "@/core/types/currency-collection";
 import {
     loadCurrencyCollection,

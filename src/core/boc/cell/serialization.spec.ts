@@ -413,7 +413,7 @@ describe("boc", () => {
             __dirname + "/__testdata__/block.txt",
             "utf8",
         );
-        const cell = Cell.fromBase64(testCase);
+        Cell.fromBase64(testCase);
     });
 
     it("should hash tx with merkle body", () => {

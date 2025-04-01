@@ -60,7 +60,7 @@ describe("Out List", () => {
     const outActionReserveTag = 0x36e6b809;
     const outActionChangeLibraryTag = 0x26fa1dd4;
 
-    it("Should serialise sendMsg action", () => {
+    it("Should serialize sendMsg action", () => {
         const mode = SendMode.PAY_GAS_SEPARATELY;
         const action = storeOutAction({
             type: "sendMsg",
@@ -82,7 +82,7 @@ describe("Out List", () => {
         expect(expected.equals(actual)).toBeTruthy();
     });
 
-    it("Should serialise setCode action", () => {
+    it("Should serialize setCode action", () => {
         const action = storeOutAction({
             type: "setCode",
             newCode: mockSetCodeCell,

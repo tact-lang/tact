@@ -1,16 +1,16 @@
 import fc from "fast-check";
 
-import { serializer } from './serializers';
-import { expect } from '@jest/globals';
+import { serializer } from "./serializers";
+import { expect } from "@jest/globals";
 
 expect.addSnapshotSerializer(serializer);
 
 function sanitizeObject(
     obj: object,
     options: {
-        excludeKeys: string[]
+        excludeKeys: string[];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        valueTransformers: Record<string, any>,
+        valueTransformers: Record<string, any>;
     } = {
         excludeKeys: [],
         valueTransformers: {},
@@ -20,7 +20,7 @@ function sanitizeObject(
 
     if (Array.isArray(obj)) {
         return obj.map((item) => sanitizeObject(item, options));
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (obj !== null && typeof obj === "object") {
         const newObj = {};
         for (const [key, value] of Object.entries(obj)) {

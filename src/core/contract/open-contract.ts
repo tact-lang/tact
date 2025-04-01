@@ -28,13 +28,12 @@ export function openContract<T extends Contract>(
     }) => ContractProvider,
 ): OpenedContract<T> {
     // Resolve parameters
-    let address: Address;
     let init: StateInit | null = null;
 
     if (!Address.isAddress(src.address)) {
         throw Error("Invalid address");
     }
-    address = src.address;
+    const address = src.address;
     if (src.init) {
         if (!(src.init.code instanceof Cell)) {
             throw Error("Invalid init.code");
@@ -49,6 +48,7 @@ export function openContract<T extends Contract>(
     const executor = factory({ address, init });
 
     // Create proxy
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return new Proxy<any>(src as any, {
         get(target, prop) {
             const value = target[prop];
@@ -59,6 +59,7 @@ export function openContract<T extends Contract>(
                     prop.startsWith("is"))
             ) {
                 if (typeof value === "function") {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     return (...args: any[]) =>
                         value.apply(target, [executor, ...args]);
                 }

@@ -10,7 +10,7 @@ import { BitReader } from "@/core/boc/bit-reader";
 import type { BitString } from "@/core/boc/bit-string";
 import type { Cell } from "@/core/boc/cell";
 
-export function exoticLibrary(bits: BitString, refs: Cell[]) {
+export function exoticLibrary(bits: BitString, _refs: Cell[]) {
     const reader = new BitReader(bits);
 
     // type + hash

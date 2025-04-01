@@ -21,7 +21,7 @@ describe("internalKeySerializer", () => {
             expect(deserializeInternalKey(serializeInternalKey(c))).toBe(c);
         }
     });
-    it("should serialize bignumbers", () => {
+    it("should serialize bigint", () => {
         const cs = [
             0n,
             -1n,

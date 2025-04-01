@@ -55,6 +55,19 @@
     "src/test/e2e-emulated/map-property-tests/build",
     "/docs",
     "src/benchmarks/contracts/func/notcoin/stdlib-custom.fc",
-    "src/benchmarks/contracts/func/notcoin/gas.fc"
+    "src/benchmarks/contracts/func/notcoin/gas.fc",
+    "src/core/boc/cell/__testdata__/",
+    "src/core/types/__testdata__/",
+    "src/core/boc/cell/serialization.spec.ts",
+    "src/core/tuple/tuple.spec.ts",
+    "src/core/types/message.spec.ts",
+    "src/core/types/shard-account.spec.ts",
+    "src/core/types/state-init.spec.ts",
+    "src/core/utils/base32.spec.ts",
+    "src/jest-utils/test/comparisons.spec.ts",
+    "src/core/address/address.spec.ts",
+    "src/core/address/contract-address.spec.ts",
+    "src/core/boc/bit-builder.spec.ts",
+    "src/core/boc/bit-string.spec.ts"
   ]
 }

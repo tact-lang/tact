@@ -7,7 +7,6 @@
  */
 
 import type { Address } from "@/core/address/address";
-import { Cell } from "@/core/boc/cell";
 import type { StateInit } from "@/core/types/state-init";
 import type { Maybe } from "@/core/utils/maybe";
 import type { ContractABI } from "@/core/contract/contract-abi";

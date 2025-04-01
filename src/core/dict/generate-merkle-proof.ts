@@ -28,7 +28,7 @@ function doGenerateMerkleProof(
     const originalCell = slice.asCell();
 
     if (keys.length == 0) {
-        // no keys to prove, prune the whole subdict
+        // no keys to prove, prune the whole child dict
         return convertToPrunedBranch(originalCell);
     }
 
@@ -110,7 +110,7 @@ export function generateMerkleProofDirect<K extends DictionaryKeyTypes, V>(
     keys.forEach((key) => {
         if (!dict.has(key)) {
             throw new Error(
-                `Trying to generate merkle proof for a missing key "${key}"`,
+                `Trying to generate merkle proof for a missing key "${String(key)}"`,
             );
         }
     });

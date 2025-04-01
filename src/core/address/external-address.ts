@@ -8,7 +8,7 @@
 
 import inspectSymbol from "symbol.inspect";
 export class ExternalAddress {
-    static isAddress(src: any): src is ExternalAddress {
+    static isAddress(src: unknown): src is ExternalAddress {
         return src instanceof ExternalAddress;
     }
 

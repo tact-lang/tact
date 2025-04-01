@@ -40,8 +40,7 @@ function readChar(alphabet: string, char: string): number {
 }
 
 export function base32Decode(input: string): Buffer {
-    let cleanedInput: string;
-    cleanedInput = input.toLowerCase();
+    const cleanedInput = input.toLowerCase();
 
     const { length } = cleanedInput;
 

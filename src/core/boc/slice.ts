@@ -78,7 +78,7 @@ export class Slice {
     }
 
     /**
-     * Preload a signle bit
+     * Preload a single bit
      * @returns true or false depending on the bit value
      */
     preloadBit() {
@@ -393,7 +393,7 @@ export class Slice {
      */
     loadRef() {
         const ref = this._refs[this._refsOffset++];
-        if (typeof ref === 'undefined') {
+        if (typeof ref === "undefined") {
             throw new Error("No more references");
         }
         return ref;
@@ -405,7 +405,7 @@ export class Slice {
      */
     preloadRef() {
         const ref = this._refs[this._refsOffset];
-        if (typeof ref === 'undefined') {
+        if (typeof ref === "undefined") {
             throw new Error("No more references");
         }
         return ref;

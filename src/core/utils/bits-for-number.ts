@@ -21,12 +21,14 @@ export function bitsForNumber(
 
         const v2 = v > 0 ? v : -v;
         return v2.toString(2).length + 1 /* Sign bit */;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (mode === "uint") {
         if (v < 0) {
             throw Error(`value is negative. Got ${src}`);
         }
         return v.toString(2).length;
     } else {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw Error(`invalid mode. Got ${mode}`);
     }
 }

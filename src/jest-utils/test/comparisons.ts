@@ -1,5 +1,7 @@
-import { Address, Cell, Slice } from "@ton/core";
-import { CompareResult } from "@/jest-utils/test/interface";
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Address, Cell, Slice } from "@ton/core";
+import type { CompareResult } from "@/jest-utils/test/interface";
 
 export function compareCellForTest(subject: any, cmp: Cell): CompareResult {
     return {

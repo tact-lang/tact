@@ -34,9 +34,11 @@ export function storeComputeSkipReason(src: ComputeSkipReason) {
             builder.storeUint(0x00, 2);
         } else if (src === "bad-state") {
             builder.storeUint(0x01, 2);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (src === "no-gas") {
             builder.storeUint(0x02, 2);
         } else {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             throw new Error(`Unknown ComputeSkipReason: ${src}`);
         }
     };

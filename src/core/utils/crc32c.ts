@@ -10,6 +10,7 @@ const POLY = 0x82f63b78;
 
 export function crc32c(source: Buffer) {
     let crc = 0 ^ 0xffffffff;
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let n = 0; n < source.length; n++) {
         crc ^= source[n]!;
         crc = crc & 1 ? (crc >>> 1) ^ POLY : crc >>> 1;

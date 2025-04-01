@@ -11,7 +11,7 @@ import { Cell } from "@/core/boc/cell";
 import { loadStateInit, storeStateInit } from "@/core/types/state-init";
 
 describe("StateInit", () => {
-    it("shoild serialize to match golden-1", () => {
+    it("should serialize to match golden-1", () => {
         // Serialize
         const boc = beginCell()
             .store(

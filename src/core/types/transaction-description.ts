@@ -11,7 +11,10 @@ import { beginCell } from "@/core/boc/builder";
 import type { Slice } from "@/core/boc/slice";
 import type { Maybe } from "@/core/utils/maybe";
 import type { SplitMergeInfo } from "@/core/types/split-merge-info";
-import { loadSplitMergeInfo, storeSplitMergeInfo } from "@/core/types/split-merge-info";
+import {
+    loadSplitMergeInfo,
+    storeSplitMergeInfo,
+} from "@/core/types/split-merge-info";
 import type { Transaction } from "@/core/types/transaction";
 import { loadTransaction, storeTransaction } from "@/core/types/transaction";
 import type { TransactionActionPhase } from "@/core/types/transaction-action-phase";

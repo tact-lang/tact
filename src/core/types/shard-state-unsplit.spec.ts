@@ -17,6 +17,7 @@ describe("ShardStateUnsplit", () => {
         loadShardStateUnsplit(cell.beginParse());
     });
     it("should parse account state with exotic cells", () => {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const data = require("./__testdata__/configProof");
         const cell = Cell.fromBoc(Buffer.from(data, "base64"))[0]!;
         loadShardStateUnsplit(cell.beginParse());

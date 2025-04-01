@@ -1,12 +1,8 @@
-import {
-    AccountStatus,
-    Address,
-    Cell,
-    CurrencyCollection,
-    Transaction,
-} from "@ton/core";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { AccountStatus, CurrencyCollection, Transaction } from "@ton/core";
+import { Address, Cell } from "@ton/core";
 import { inspect } from "util";
-import { CompareResult } from "@/jest-utils/test/interface";
+import type { CompareResult } from "@/jest-utils/test/interface";
 
 export type FlatTransaction = {
     from?: Address;
@@ -140,7 +136,7 @@ export function flattenTransaction(tx: Transaction): FlatTransaction {
     };
 }
 
-function compareValue(a: any, b: any) {
+function compareValue(a: unknown, b: unknown) {
     if (a instanceof Address) {
         if (!(b instanceof Address)) return false;
         return a.equals(b);
@@ -171,12 +167,12 @@ export function compareTransaction(
         if (!(key in tx))
             throw new Error(`Unknown flat transaction object key ${key}`);
 
-        const cmpv = (cmp as any)[key];
-        const txv = (tx as any)[key];
-        if (typeof cmpv === "function") {
-            if (!cmpv(txv)) return false;
+        const txLeft = (cmp as any)[key];
+        const txRight = (tx as any)[key];
+        if (typeof txLeft === "function") {
+            if (!txLeft(txRight)) return false;
         } else {
-            if (!compareValue(txv, cmpv)) return false;
+            if (!compareValue(txRight, txLeft)) return false;
         }
     }
 

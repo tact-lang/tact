@@ -259,7 +259,7 @@ export class Builder {
 
     /**
      * Store address
-     * @param addres address to store
+     * @param address address to store
      * @returns this builder
      */
     storeAddress(address: Maybe<Address | ExternalAddress>) {
@@ -392,7 +392,7 @@ export class Builder {
 
     /**
      * Store object in this builder
-     * @param writer Writable or writer functuin
+     * @param writer Writable or writer function
      */
     store(writer: ((builder: Builder) => void) | Writable) {
         this.storeWritable(writer);

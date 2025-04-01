@@ -26,8 +26,8 @@ function resolvePruned(
     // Calculate parameters
     return {
         type: CellType.PrunedBranch,
-        depths: pruned.pruned.map(x => x.depth),
-        hashes: pruned.pruned.map(x => x.hash),
+        depths: pruned.pruned.map((x) => x.depth),
+        hashes: pruned.pruned.map((x) => x.hash),
         mask: new LevelMask(pruned.mask),
     };
 }
@@ -37,7 +37,7 @@ function resolveLibrary(
     refs: Cell[],
 ): { type: CellType; depths: number[]; hashes: Buffer[]; mask: LevelMask } {
     // Parse library cell
-    const pruned = exoticLibrary(bits, refs);
+    exoticLibrary(bits, refs);
 
     // Calculate parameters
     const depths: number[] = [];
@@ -57,10 +57,10 @@ function resolveMerkleProof(
     refs: Cell[],
 ): { type: CellType; depths: number[]; hashes: Buffer[]; mask: LevelMask } {
     // Parse merkle proof cell
-    const merkleProof = exoticMerkleProof(bits, refs);
+    exoticMerkleProof(bits, refs);
 
     const firstRef = refs[0];
-    if (typeof firstRef === 'undefined') {
+    if (typeof firstRef === "undefined") {
         throw new Error("Bug");
     }
 
@@ -82,12 +82,12 @@ function resolveMerkleUpdate(
     refs: Cell[],
 ): { type: CellType; depths: number[]; hashes: Buffer[]; mask: LevelMask } {
     // Parse merkle proof cell
-    const merkleUpdate = exoticMerkleUpdate(bits, refs);
+    exoticMerkleUpdate(bits, refs);
 
     const firstRef = refs[0];
     const secondRef = refs[1];
 
-    if (typeof firstRef === 'undefined' || typeof secondRef === 'undefined') {
+    if (typeof firstRef === "undefined" || typeof secondRef === "undefined") {
         throw new Error("Bug");
     }
 

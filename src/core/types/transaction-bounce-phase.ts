@@ -84,6 +84,7 @@ export function storeTransactionBouncePhase(src: TransactionBouncePhase) {
         } else if (src.type === "negative-funds") {
             builder.storeBit(false);
             builder.storeBit(false);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (src.type === "no-funds") {
             builder.storeBit(false);
             builder.storeBit(true);

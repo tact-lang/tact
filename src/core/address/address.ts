@@ -28,9 +28,9 @@ function parseFriendlyAddress(src: string | Buffer) {
     // Prepare data
     const addr = data.subarray(0, 34);
     const crc = data.subarray(34, 36);
-    const calcedCrc = crc16(addr);
-    if (!(calcedCrc[0] === crc[0] && calcedCrc[1] === crc[1])) {
-        throw new Error("Invalid checksum: " + src);
+    const calculatedCrc = crc16(addr);
+    if (!(calculatedCrc[0] === crc[0] && calculatedCrc[1] === crc[1])) {
+        throw new Error("Invalid checksum: " + src.toString());
     }
 
     // Parse tag
@@ -45,7 +45,7 @@ function parseFriendlyAddress(src: string | Buffer) {
         tag = tag ^ test_flag;
     }
     if (tag !== bounceable_tag && tag !== non_bounceable_tag)
-        throw "Unknown address tag";
+        throw new Error("Unknown address tag");
 
     isBounceable = tag === bounceable_tag;
 
@@ -63,7 +63,7 @@ function parseFriendlyAddress(src: string | Buffer) {
 }
 
 export class Address {
-    static isAddress(src: any): src is Address {
+    static isAddress(src: unknown): src is Address {
         return src instanceof Address;
     }
 
@@ -88,7 +88,7 @@ export class Address {
 
         const [wc, hash] = source.split(":");
 
-        if (typeof wc === 'undefined' || typeof hash === 'undefined') {
+        if (typeof wc === "undefined" || typeof hash === "undefined") {
             return false;
         }
 
@@ -131,8 +131,12 @@ export class Address {
     static parseRaw(source: string) {
         const parts = source.split(":");
         const [wc, h] = parts;
-        if (typeof wc === 'undefined' || typeof h === 'undefined' || parts.length !== 2) {
-            throw new Error('Invalid address');
+        if (
+            typeof wc === "undefined" ||
+            typeof h === "undefined" ||
+            parts.length !== 2
+        ) {
+            throw new Error("Invalid address");
         }
 
         const workChain = parseInt(wc);
@@ -150,7 +154,7 @@ export class Address {
                 address: new Address(r.workchain, r.hashPart),
             };
         } else {
-            const addr = source.replace(/\-/g, "+").replace(/_/g, "\/"); // Convert from url-friendly to true base64
+            const addr = source.replace(/-/g, "+").replace(/_/g, "/"); // Convert from url-friendly to true base64
             const r = parseFriendlyAddress(addr);
             return {
                 isBounceable: r.isBounceable,
@@ -195,9 +199,8 @@ export class Address {
     };
 
     toStringBuffer = (args?: { bounceable?: boolean; testOnly?: boolean }) => {
-        const testOnly = args?.testOnly !== undefined ? args.testOnly : false;
-        const bounceable =
-            args?.bounceable !== undefined ? args.bounceable : true;
+        const testOnly = args?.testOnly ?? false;
+        const bounceable = args?.bounceable ?? true;
 
         let tag = bounceable ? bounceable_tag : non_bounceable_tag;
         if (testOnly) {
@@ -219,7 +222,7 @@ export class Address {
         bounceable?: boolean;
         testOnly?: boolean;
     }) => {
-        const urlSafe = args?.urlSafe !== undefined ? args.urlSafe : true;
+        const urlSafe = args?.urlSafe ?? true;
         const buffer = this.toStringBuffer(args);
         if (urlSafe) {
             return buffer

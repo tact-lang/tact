@@ -46,7 +46,7 @@ export function loadAccountStatus(slice: Slice): AccountStatus {
 /**
  * Store account state to builder
  * @param src account state
- * @param builder buidler
+ * @param builder builder
  */
 export function storeAccountStatus(src: AccountStatus) {
     return (builder: Builder) => {
@@ -56,6 +56,7 @@ export function storeAccountStatus(src: AccountStatus) {
             builder.storeUint(0x01, 2);
         } else if (src === "active") {
             builder.storeUint(0x02, 2);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (src === "non-existing") {
             builder.storeUint(0x03, 2);
         } else {

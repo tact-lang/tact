@@ -8,7 +8,10 @@
 
 import { beginCell } from "@/core/boc/builder";
 import { Cell } from "@/core/boc/cell";
-import { loadMessageRelaxed, storeMessageRelaxed } from "@/core/types/message-relaxed";
+import {
+    loadMessageRelaxed,
+    storeMessageRelaxed,
+} from "@/core/types/message-relaxed";
 
 describe("MessageRelaxed", () => {
     it("should parse message relaxed", () => {
@@ -27,7 +30,8 @@ describe("MessageRelaxed", () => {
             "te6cckEBBgEApwAJRgMNtncFfUUJSR6XK02Y/bjHpB1pj8VtOlnKAxgDtajfKgACASIFgZABAwIoSAEBN4Yioo+yQnBEkgpN5SV1lnSGuoJhL3ShCi0dcMHbuFcAACIBIAUEAE2/fOtFTZyY8zlmFJ8dch//XZQ4QApiXOGPZXvjFv5j0LSgZ7ckWPAoSAEBr+h0Em3TbCgl+CpPMKKoQskNFu4vLU/8w4Zuaz7PRP8AAOG0rdg=";
         const cell = Cell.fromBase64(boc);
 
-        const payload = beginCell()
+        // payload
+        beginCell()
             .store(
                 storeMessageRelaxed({
                     body: cell,

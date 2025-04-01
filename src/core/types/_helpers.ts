@@ -39,6 +39,7 @@ export function internal(src: {
     } else if (Address.isAddress(src.to)) {
         to = src.to;
     } else {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Invalid address ${src.to}`);
     }
 
@@ -95,6 +96,7 @@ export function external(src: {
     } else if (Address.isAddress(src.to)) {
         to = src.to;
     } else {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Invalid address ${src.to}`);
     }
 
@@ -105,7 +107,7 @@ export function external(src: {
             importFee: 0n,
         },
         init: src.init ?? undefined,
-        body: src.body || Cell.EMPTY,
+        body: src.body ?? Cell.EMPTY,
     };
 }
 

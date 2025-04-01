@@ -9,7 +9,6 @@
 import { randomInt } from "crypto";
 import Prando from "prando";
 import { testAddress } from "@/core/utils/test-address";
-import { BitBuilder } from "@/core/boc/bit-builder";
 import { BitReader } from "@/core/boc/bit-reader";
 import { beginCell } from "@/core/boc/builder";
 

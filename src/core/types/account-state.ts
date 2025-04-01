@@ -28,6 +28,7 @@ export type AccountStateFrozen = { type: "frozen"; stateHash: bigint };
 export function loadAccountState(cs: Slice): AccountState {
     if (cs.loadBit()) {
         return { type: "active", state: loadStateInit(cs) };
+        // eslint-disable-next-line no-dupe-else-if
     } else if (cs.loadBit()) {
         return { type: "frozen", stateHash: cs.loadUintBig(256) };
     } else {
@@ -44,9 +45,12 @@ export function storeAccountState(src: AccountState) {
             builder.storeBit(false);
             builder.storeBit(true);
             builder.storeUint(src.stateHash, 256);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (src.type === "uninit") {
             builder.storeBit(false);
             builder.storeBit(false);
+        } else {
+            throw new Error("Unknown account state type");
         }
     };
 }

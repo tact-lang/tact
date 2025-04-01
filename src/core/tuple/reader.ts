@@ -28,7 +28,7 @@ export class TupleReader {
 
     pop() {
         const res = this.items[0];
-        if (this.items.length === 0 || typeof res === 'undefined') {
+        if (this.items.length === 0 || typeof res === "undefined") {
             throw Error("EOF");
         }
         this.items.splice(0, 1);
@@ -90,6 +90,7 @@ export class TupleReader {
 
     readAddress() {
         const r = this.readCell().beginParse().loadAddress();
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (r !== null) {
             return r;
         } else {
@@ -160,7 +161,8 @@ export class TupleReader {
             const head = tail.pop();
             const tail0 = tail.items[0];
             if (
-                tail.items.length === 0 || typeof tail0 === 'undefined' || 
+                tail.items.length === 0 ||
+                typeof tail0 === "undefined" ||
                 (tail0.type !== "tuple" && tail0.type !== "null")
             ) {
                 throw Error(
@@ -177,7 +179,11 @@ export class TupleReader {
 
     readLispListDirect(): TupleItem[] {
         const item = this.items[0];
-        if (this.items.length === 1 && typeof item !== 'undefined' && item.type === "null") {
+        if (
+            this.items.length === 1 &&
+            typeof item !== "undefined" &&
+            item.type === "null"
+        ) {
             return [];
         }
 

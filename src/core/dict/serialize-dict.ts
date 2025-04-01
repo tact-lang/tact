@@ -37,19 +37,6 @@ type Edge<T> = {
     node: Node<T>;
 };
 
-function removePrefixMap<T>(src: Map<string, T>, length: number) {
-    if (length === 0) {
-        return src;
-    } else {
-        const res: Map<string, T> = new Map();
-        for (const k of src.keys()) {
-            const d = src.get(k)!;
-            res.set(k.slice(length), d);
-        }
-        return res;
-    }
-}
-
 function forkMap<T>(src: Map<string, T>, prefixLen: number) {
     if (src.size === 0) {
         throw Error("Internal inconsistency");
@@ -64,10 +51,10 @@ function forkMap<T>(src: Map<string, T>, prefixLen: number) {
         }
     }
     if (left.size === 0) {
-        throw Error("Internal inconsistency. Left emtpy.");
+        throw Error("Internal inconsistency. Left empty.");
     }
     if (right.size === 0) {
-        throw Error("Internal inconsistency. Right emtpy.");
+        throw Error("Internal inconsistency. Right empty.");
     }
     return { left, right };
 }
@@ -78,7 +65,7 @@ function buildNode<T>(src: Map<string, T>, prefixLen: number): Node<T> {
     }
     if (src.size === 1) {
         const value = Array.from(src.values())[0];
-        if (typeof value === 'undefined') {
+        if (typeof value === "undefined") {
             throw new Error("Impossible");
         }
         return { type: "leaf", value };
@@ -120,6 +107,7 @@ export function writeLabelShort(src: string, to: Builder) {
     to.storeBit(0);
 
     // Unary length
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < src.length; i++) {
         to.storeBit(1);
     }
@@ -217,8 +205,11 @@ function writeLabel(src: string, keyLength: number, to: Builder) {
         writeLabelShort(src, to);
     } else if (type === "long") {
         writeLabelLong(src, keyLength, to);
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (type === "same") {
         writeLabelSame(src.startsWith("1"), src.length, keyLength, to);
+    } else {
+        throw new Error("Unknown key type");
     }
 }
 function writeNode<T>(

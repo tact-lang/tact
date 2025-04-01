@@ -25,7 +25,7 @@ export class BitString {
 
     /**
      * Checks if supplied object is BitString
-     * @param src is unknow object
+     * @param src is unknown object
      * @returns true if object is BitString and false otherwise
      **/
     static isBitString(src: unknown): src is BitString {
@@ -72,12 +72,12 @@ export class BitString {
             throw new Error(`Index ${index} < 0 is out of bounds`);
         }
 
-        // Calculcate offsets
+        // Calculate offsets
         const byteIndex = (this._offset + index) >> 3;
         const bitIndex = 7 - ((this._offset + index) % 8); // NOTE: We are using big endian
 
         // Return the bit
-        // @ts-ignore
+        // @ts-expect-error -- 1
         return (this._data[byteIndex] & (1 << bitIndex)) !== 0;
     }
 
@@ -129,7 +129,7 @@ export class BitString {
         }
         if (offset + length > this._length) {
             throw new Error(
-                `Offset + Lenght = ${offset + length} is out of bounds`,
+                `Offset + Length = ${offset + length} is out of bounds`,
             );
         }
 

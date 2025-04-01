@@ -10,7 +10,10 @@ import type { Address } from "@/core/address/address";
 import type { Builder } from "@/core/boc/builder";
 import type { Slice } from "@/core/boc/slice";
 import type { AccountStorage } from "@/core/types/account-storage";
-import { loadAccountStorage, storeAccountStorage } from "@/core/types/account-storage";
+import {
+    loadAccountStorage,
+    storeAccountStorage,
+} from "@/core/types/account-storage";
 import type { StorageInfo } from "@/core/types/storage-into";
 import { loadStorageInfo, storeStorageInfo } from "@/core/types/storage-into";
 

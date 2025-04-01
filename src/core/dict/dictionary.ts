@@ -126,7 +126,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
 
         /**
          * Create big var int
-         * @param bits nubmer of header bits
+         * @param bits number of header bits
          * @returns DictionaryValue<bigint>
          */
         BigVarInt: (bits: number) => {
@@ -153,7 +153,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
 
         /**
          * Create big var int
-         * @param bits nubmer of header bits
+         * @param bits number of header bits
          * @returns DictionaryValue<bigint>
          */
         BigVarUint: (bits: number) => {
@@ -198,7 +198,7 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
          * @param requested bit length
          * @returns DictionaryValue<BitString>
          * Point is that Buffer is not applicable
-         * when length is not 8 bit alligned.
+         * when length is not 8 bit aligned.
          */
         BitString: (bits: number) => {
             return createBitStringValue(bits);
@@ -641,8 +641,8 @@ function createBitStringKey(bits: number): DictionaryKey<BitString> {
 
 function createIntValue(bits: number): DictionaryValue<number> {
     return {
-        serialize: (src, buidler) => {
-            buidler.storeInt(src, bits);
+        serialize: (src, builder) => {
+            builder.storeInt(src, bits);
         },
         parse: (src) => {
             const value = src.loadInt(bits);
@@ -654,8 +654,8 @@ function createIntValue(bits: number): DictionaryValue<number> {
 
 function createBigIntValue(bits: number): DictionaryValue<bigint> {
     return {
-        serialize: (src, buidler) => {
-            buidler.storeInt(src, bits);
+        serialize: (src, builder) => {
+            builder.storeInt(src, bits);
         },
         parse: (src) => {
             const value = src.loadIntBig(bits);
@@ -667,8 +667,8 @@ function createBigIntValue(bits: number): DictionaryValue<bigint> {
 
 function createBigVarIntValue(bits: number): DictionaryValue<bigint> {
     return {
-        serialize: (src, buidler) => {
-            buidler.storeVarInt(src, bits);
+        serialize: (src, builder) => {
+            builder.storeVarInt(src, bits);
         },
         parse: (src) => {
             const value = src.loadVarIntBig(bits);
@@ -680,8 +680,8 @@ function createBigVarIntValue(bits: number): DictionaryValue<bigint> {
 
 function createBigVarUintValue(bits: number): DictionaryValue<bigint> {
     return {
-        serialize: (src, buidler) => {
-            buidler.storeVarUint(src, bits);
+        serialize: (src, builder) => {
+            builder.storeVarUint(src, bits);
         },
         parse: (src) => {
             const value = src.loadVarUintBig(bits);
@@ -693,8 +693,8 @@ function createBigVarUintValue(bits: number): DictionaryValue<bigint> {
 
 function createUintValue(bits: number): DictionaryValue<number> {
     return {
-        serialize: (src, buidler) => {
-            buidler.storeUint(src, bits);
+        serialize: (src, builder) => {
+            builder.storeUint(src, bits);
         },
         parse: (src) => {
             const value = src.loadUint(bits);
@@ -706,8 +706,8 @@ function createUintValue(bits: number): DictionaryValue<number> {
 
 function createBigUintValue(bits: number): DictionaryValue<bigint> {
     return {
-        serialize: (src, buidler) => {
-            buidler.storeUint(src, bits);
+        serialize: (src, builder) => {
+            builder.storeUint(src, bits);
         },
         parse: (src) => {
             const value = src.loadUintBig(bits);
@@ -719,8 +719,8 @@ function createBigUintValue(bits: number): DictionaryValue<bigint> {
 
 function createBooleanValue(): DictionaryValue<boolean> {
     return {
-        serialize: (src, buidler) => {
-            buidler.storeBit(src);
+        serialize: (src, builder) => {
+            builder.storeBit(src);
         },
         parse: (src) => {
             const value = src.loadBit();
@@ -732,8 +732,8 @@ function createBooleanValue(): DictionaryValue<boolean> {
 
 function createAddressValue(): DictionaryValue<Address> {
     return {
-        serialize: (src, buidler) => {
-            buidler.storeAddress(src);
+        serialize: (src, builder) => {
+            builder.storeAddress(src);
         },
         parse: (src) => {
             const addr = src.loadAddress();
@@ -745,8 +745,8 @@ function createAddressValue(): DictionaryValue<Address> {
 
 function createCellValue(): DictionaryValue<Cell> {
     return {
-        serialize: (src, buidler) => {
-            buidler.storeRef(src);
+        serialize: (src, builder) => {
+            builder.storeRef(src);
         },
         parse: (src) => {
             const value = src.loadRef();
@@ -761,8 +761,8 @@ function createDictionaryValue<K extends DictionaryKeyTypes, V>(
     value: DictionaryValue<V>,
 ): DictionaryValue<Dictionary<K, V>> {
     return {
-        serialize: (src, buidler) => {
-            src.store(buidler);
+        serialize: (src, builder) => {
+            src.store(builder);
         },
         parse: (src) => {
             const dict = Dictionary.load(key, value, src);
@@ -774,11 +774,11 @@ function createDictionaryValue<K extends DictionaryKeyTypes, V>(
 
 function createBufferValue(size: number): DictionaryValue<Buffer> {
     return {
-        serialize: (src, buidler) => {
+        serialize: (src, builder) => {
             if (src.length !== size) {
                 throw Error("Invalid buffer size");
             }
-            buidler.storeBuffer(src);
+            builder.storeBuffer(src);
         },
         parse: (src) => {
             const value = src.loadBuffer(size);

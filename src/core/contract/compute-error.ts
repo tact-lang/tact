@@ -20,8 +20,8 @@ export class ComputeError extends Error {
     ) {
         super(message);
         this.exitCode = exitCode;
-        this.debugLogs = opts?.debugLogs ? opts.debugLogs : null;
-        this.logs = opts?.logs ? opts.logs : null;
+        this.debugLogs = opts?.debugLogs ?? null;
+        this.logs = opts?.logs ?? null;
         Object.setPrototypeOf(this, ComputeError.prototype);
     }
 }

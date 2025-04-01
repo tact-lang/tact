@@ -1,18 +1,17 @@
-import {
-    FlatTransactionComparable,
-    compareTransactionForTest,
-} from "@/jest-utils/test/transaction";
+import type { FlatTransactionComparable } from "@/jest-utils/test/transaction";
+import { compareTransactionForTest } from "@/jest-utils/test/transaction";
 import type { MatcherFunction } from "expect";
-import { CompareResult } from "@/jest-utils/test/interface";
+import type { CompareResult } from "@/jest-utils/test/interface";
 import {
     compareAddressForTest,
     compareCellForTest,
     compareSliceForTest,
 } from "@/jest-utils/test/comparisons";
-import { Address, Cell, Slice } from "@ton/core";
+import type { Address, Cell, Slice } from "@ton/core";
+import jestGlobals from "@jest/globals";
 
 function wrapComparer<T>(
-    comparer: (subject: any, cmp: T) => CompareResult,
+    comparer: (subject: unknown, cmp: T) => CompareResult,
 ): MatcherFunction<[cmp: T]> {
     return function (actual, cmp) {
         const result = comparer(actual, cmp);
@@ -34,19 +33,15 @@ const toEqualCell = wrapComparer(compareCellForTest);
 const toEqualAddress = wrapComparer(compareAddressForTest);
 const toEqualSlice = wrapComparer(compareSliceForTest);
 
-try {
-    const jestGlobals = require("@jest/globals");
-
-    if (jestGlobals)
-        jestGlobals.expect.extend({
-            toHaveTransaction,
-            toEqualCell,
-            toEqualAddress,
-            toEqualSlice,
-        });
-} catch (e) {}
+jestGlobals.expect.extend({
+    toHaveTransaction,
+    toEqualCell,
+    toEqualAddress,
+    toEqualSlice,
+});
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     export namespace jest {
         interface Matchers<R> {
             toHaveTransaction(cmp: FlatTransactionComparable): R;

@@ -11,7 +11,6 @@ import type { Dictionary } from "@/core/dict/dictionary";
 import type { Maybe } from "@/core/utils/maybe";
 import type { MasterchainStateExtra } from "@/core/types/masterchain-state-extra";
 import { loadMasterchainStateExtra } from "@/core/types/masterchain-state-extra";
-import { ShardAccount } from "@/core/types/shard-account";
 import type { ShardAccountRef } from "@/core/types/shard-accounts";
 import { loadShardAccounts } from "@/core/types/shard-accounts";
 import type { ShardIdent } from "@/core/types/shard-ident";

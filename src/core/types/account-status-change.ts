@@ -33,6 +33,7 @@ export function storeAccountStatusChange(src: AccountStatusChange) {
         } else if (src === "frozen") {
             builder.storeBit(1);
             builder.storeBit(0);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (src === "deleted") {
             builder.storeBit(1);
             builder.storeBit(1);

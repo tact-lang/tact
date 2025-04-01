@@ -90,7 +90,7 @@ export function loadCommonMessageInfo(slice: Slice): CommonMessageInfo {
         };
     }
 
-    // External In mesage
+    // External In message
     if (!slice.loadBit()) {
         const src = slice.loadMaybeExternalAddress();
         const dest = slice.loadAddress()!;
@@ -139,6 +139,7 @@ export function storeCommonMessageInfo(source: CommonMessageInfo) {
             builder.storeAddress(source.src);
             builder.storeAddress(source.dest);
             builder.storeCoins(source.importFee);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (source.type === "external-out") {
             builder.storeBit(1);
             builder.storeBit(1);

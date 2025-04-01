@@ -82,7 +82,7 @@ export function loadCommonMessageInfoRelaxed(
         };
     }
 
-    // External In mesage
+    // External In message
     if (!slice.loadBit()) {
         throw Error(
             "External In message is not possible for CommonMessageInfoRelaxed",
@@ -120,6 +120,7 @@ export function storeCommonMessageInfoRelaxed(
             builder.storeCoins(source.forwardFee);
             builder.storeUint(source.createdLt, 64);
             builder.storeUint(source.createdAt, 32);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (source.type === "external-out") {
             builder.storeBit(1);
             builder.storeBit(1);

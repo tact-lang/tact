@@ -75,6 +75,7 @@ function serializeTupleItem(src: TupleItem, builder: Builder) {
     } else if (src.type === "builder") {
         builder.storeUint(0x05, 8);
         builder.storeRef(src.cell);
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (src.type === "tuple") {
         let head: Cell | null = null;
         let tail: Cell | null = null;
@@ -155,9 +156,9 @@ function parseStackItem(cs: Slice): TupleItem {
             let tail: Slice = cs.loadRef().beginParse();
             items.unshift(parseStackItem(tail));
             for (let i = 0; i < length - 2; i++) {
-                const ohead = head;
-                head = ohead.loadRef().beginParse();
-                tail = ohead.loadRef().beginParse();
+                const head1 = head;
+                head = head1.loadRef().beginParse();
+                tail = head1.loadRef().beginParse();
                 items.unshift(parseStackItem(tail));
             }
             items.unshift(parseStackItem(head));
@@ -181,7 +182,7 @@ function parseStackItem(cs: Slice): TupleItem {
 
 function serializeTupleTail(src: TupleItem[], builder: Builder) {
     const lastSrc = src[src.length - 1];
-    if (src.length > 0 && typeof lastSrc !== 'undefined') {
+    if (src.length > 0 && typeof lastSrc !== "undefined") {
         // rest:^(VmStackList n)
         const tail = beginCell();
         serializeTupleTail(src.slice(0, src.length - 1), tail);

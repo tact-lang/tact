@@ -55,7 +55,7 @@ export function exoticPruned(bits: BitString, refs: Cell[]): ExoticPruned {
             8 +
             8 +
             mask.apply(mask.level - 1).hashCount *
-                (256 /* Hash */ + 16) /* Depth */;
+                (256 /* Hash */ + 16); /* Depth */
         if (bits.length !== size) {
             throw new Error(
                 `Pruned branch cell must have exactly ${size} bits, got "${bits.length}"`,
@@ -68,7 +68,7 @@ export function exoticPruned(bits: BitString, refs: Cell[]): ExoticPruned {
     for (let i = 0; i < mask.level; i++) {
         hashes.push(reader.loadBuffer(32));
     }
-    
+
     const pruned: { depth: number; hash: Buffer }[] = [];
     for (const hash of hashes) {
         pruned.push({

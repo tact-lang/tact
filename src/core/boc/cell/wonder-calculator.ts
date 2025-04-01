@@ -13,7 +13,7 @@ import { LevelMask } from "@/core/boc/cell/level-mask";
 import type { ExoticPruned } from "@/core/boc/cell/exotic-pruned";
 import { exoticPruned } from "@/core/boc/cell/exotic-pruned";
 import { exoticMerkleProof } from "@/core/boc/cell/exotic-merkle-proof";
-import { getRepr } from "@/core/boc/cell/descriptor";
+import { getRepresentation } from "@/core/boc/cell/descriptor";
 import { sha256_sync } from "@ton/crypto";
 import { exoticMerkleUpdate } from "@/core/boc/cell/exotic-merkle-update";
 import { exoticLibrary } from "@/core/boc/cell/exotic-library";
@@ -47,10 +47,10 @@ export function wonderCalculator(
         levelMask = new LevelMask(pruned.mask);
     } else if (type === CellType.MerkleProof) {
         // Parse proof
-        const loaded = exoticMerkleProof(bits, refs);
+        exoticMerkleProof(bits, refs); // loaded
 
         const firstRef = refs[0];
-        if (typeof firstRef === 'undefined') {
+        if (typeof firstRef === "undefined") {
             throw new Error("Bug");
         }
 
@@ -58,11 +58,14 @@ export function wonderCalculator(
         levelMask = new LevelMask(firstRef.mask.value >> 1);
     } else if (type === CellType.MerkleUpdate) {
         // Parse update
-        const loaded = exoticMerkleUpdate(bits, refs);
+        exoticMerkleUpdate(bits, refs); // // loaded
 
         const firstRef = refs[0];
-        const secondRef =  refs[1];
-        if (typeof firstRef === 'undefined' || typeof secondRef === 'undefined') {
+        const secondRef = refs[1];
+        if (
+            typeof firstRef === "undefined" ||
+            typeof secondRef === "undefined"
+        ) {
             throw new Error("Bug");
         }
 
@@ -70,9 +73,10 @@ export function wonderCalculator(
         levelMask = new LevelMask(
             (firstRef.mask.value | secondRef.mask.value) >> 1,
         );
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (type === CellType.Library) {
         // Parse library
-        const loaded = exoticLibrary(bits, refs);
+        exoticLibrary(bits, refs); // // loaded
 
         // Load level
         levelMask = new LevelMask();
@@ -116,14 +120,10 @@ export function wonderCalculator(
                 throw Error("Invalid: " + levelI + ", " + type);
             }
             const elem = hashes[hashI - hashIOffset - 1];
-            if (typeof elem === 'undefined') {
+            if (typeof elem === "undefined") {
                 throw new Error("Bug");
             }
-            currentBits = new BitString(
-                elem,
-                0,
-                256,
-            );
+            currentBits = new BitString(elem, 0, 256);
         }
 
         //
@@ -148,7 +148,7 @@ export function wonderCalculator(
         // Hash
         //
 
-        const repr = getRepr(
+        const representation = getRepresentation(
             bits,
             currentBits,
             refs,
@@ -156,7 +156,7 @@ export function wonderCalculator(
             levelMask.apply(levelI).value,
             type,
         );
-        const hash = sha256_sync(repr);
+        const hash = sha256_sync(representation);
 
         //
         // Persist next
@@ -185,15 +185,15 @@ export function wonderCalculator(
             const { hashIndex: thisHashIndex } = levelMask;
             if (hashIndex !== thisHashIndex) {
                 const p = pruned.pruned[hashIndex];
-                if (typeof p === 'undefined') {
-                    throw new Error('Bug');
+                if (typeof p === "undefined") {
+                    throw new Error("Bug");
                 }
                 resolvedHashes.push(p.hash);
                 resolvedDepths.push(p.depth);
             } else {
                 const h = hashes[0];
                 const d = depths[0];
-                if (typeof h === 'undefined' || typeof d === 'undefined') {
+                if (typeof h === "undefined" || typeof d === "undefined") {
                     throw new Error("Bug");
                 }
                 resolvedHashes.push(h);
@@ -205,7 +205,7 @@ export function wonderCalculator(
             const ix = levelMask.apply(i).hashIndex;
             const h = hashes[ix];
             const d = depths[ix];
-            if (typeof h === 'undefined' || typeof d === 'undefined') {
+            if (typeof h === "undefined" || typeof d === "undefined") {
                 throw new Error("Bug");
             }
             resolvedHashes.push(h);

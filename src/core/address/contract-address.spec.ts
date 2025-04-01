@@ -22,6 +22,6 @@ describe("contractAddress", () => {
                     "EQCSY_vTjwGrlvTvkfwhinJ60T2oiwgGn3U7Tpw24kupIhHz",
                 ),
             ),
-        );
+        ).toBe(true);
     });
 });

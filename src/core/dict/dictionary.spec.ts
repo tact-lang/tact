@@ -114,13 +114,17 @@ describe("Dictionary", () => {
         for (const i of [71, 72]) {
             const r = configs.get(i)!;
             const config = r.beginParse();
-            const bridgeAddress = config.loadBuffer(32);
-            const oracleMultisigAddress = config.loadBuffer(32);
-            const oracles = config.loadDict(
+            // bridgeAddress
+            config.loadBuffer(32);
+            // oracleMultisigAddress
+            config.loadBuffer(32);
+            // oracles
+            config.loadDict(
                 Dictionary.Keys.BigUint(256),
                 Dictionary.Values.Buffer(32),
             );
-            const externalChainAddress = config.loadBuffer(32);
+            // externalChainAddress
+            config.loadBuffer(32);
             // console.warn(oracles);
         }
     });
