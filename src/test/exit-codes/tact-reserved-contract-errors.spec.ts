@@ -5,7 +5,14 @@ import { ReservedContractErrorsTester as TestContract } from "@/test/exit-codes/
 import "@ton/test-utils";
 
 type ExitCodeValue = 128 | 130 | 132 | 133 | 134 | 136 | 138;
-type ExitCodeKey = "TactExitCodeNullReferenceException" | "TactExitCodeInvalidIncomingMessage" | "TactExitCodeAccessDenied" | "TactExitCodeContractStopped" | "TactExitCodeInvalidArgument" | "TactExitCodeInvalidStandardAddress" | "TactExitCodeNotBasechainAddress";
+type ExitCodeKey =
+    | "TactExitCodeNullReferenceException"
+    | "TactExitCodeInvalidIncomingMessage"
+    | "TactExitCodeAccessDenied"
+    | "TactExitCodeContractStopped"
+    | "TactExitCodeInvalidArgument"
+    | "TactExitCodeInvalidStandardAddress"
+    | "TactExitCodeNotBasechainAddress";
 
 // Мапа кодов ошибок Tact
 const TactExitCodes: Map<ExitCodeKey, ExitCodeValue> = new Map([
@@ -15,7 +22,7 @@ const TactExitCodes: Map<ExitCodeKey, ExitCodeValue> = new Map([
     ["TactExitCodeContractStopped", 133],
     ["TactExitCodeInvalidArgument", 134],
     ["TactExitCodeInvalidStandardAddress", 136],
-    ["TactExitCodeNotBasechainAddress", 138]
+    ["TactExitCodeNotBasechainAddress", 138],
 ]);
 
 describe("Tact-reserved contract errors", () => {
@@ -48,7 +55,11 @@ describe("Tact-reserved contract errors", () => {
 
     // 128: Null reference exception
     it("should test exit code TactExitCodeNullReferenceException(128)", async () => {
-        await testReservedExitCode("TactExitCodeNullReferenceException", contract, treasure);
+        await testReservedExitCode(
+            "TactExitCodeNullReferenceException",
+            contract,
+            treasure,
+        );
     });
 
     // 129: Invalid serialization prefix
@@ -58,7 +69,11 @@ describe("Tact-reserved contract errors", () => {
 
     // 130: Invalid incoming message
     it("should test exit code TactExitCodeInvalidIncomingMessage(130)", async () => {
-        await testReservedExitCode("TactExitCodeInvalidIncomingMessage", contract, treasure);
+        await testReservedExitCode(
+            "TactExitCodeInvalidIncomingMessage",
+            contract,
+            treasure,
+        );
     });
 
     // 131: Constraints error
@@ -66,17 +81,29 @@ describe("Tact-reserved contract errors", () => {
 
     // 132: Access denied
     it("should test exit code TactExitCodeAccessDenied(132)", async () => {
-        await testReservedExitCode("TactExitCodeAccessDenied", contract, treasure);
+        await testReservedExitCode(
+            "TactExitCodeAccessDenied",
+            contract,
+            treasure,
+        );
     });
 
     // 133: Contract stopped
     it("should test exit code TactExitCodeContractStopped(133)", async () => {
-        await testReservedExitCode("TactExitCodeContractStopped", contract, treasure);
+        await testReservedExitCode(
+            "TactExitCodeContractStopped",
+            contract,
+            treasure,
+        );
     });
 
     // 134: Invalid argument
     it("should test exit code TactExitCodeInvalidArgument(134)", async () => {
-        await testReservedExitCode("TactExitCodeInvalidArgument", contract, treasure);
+        await testReservedExitCode(
+            "TactExitCodeInvalidArgument",
+            contract,
+            treasure,
+        );
     });
 
     // 135: Code of a contract was not found
@@ -84,12 +111,20 @@ describe("Tact-reserved contract errors", () => {
 
     // 136: Invalid address
     it("should test exit code TactExitCodeInvalidStandardAddress(136)", async () => {
-        await testReservedExitCode("TactExitCodeInvalidStandardAddress", contract, treasure);
+        await testReservedExitCode(
+            "TactExitCodeInvalidStandardAddress",
+            contract,
+            treasure,
+        );
     });
 
     // 138: Not a basechain address
     it("should test exit code TactExitCodeNotBasechainAddress(138)", async () => {
-        await testReservedExitCode("TactExitCodeNotBasechainAddress", contract, treasure);
+        await testReservedExitCode(
+            "TactExitCodeNotBasechainAddress",
+            contract,
+            treasure,
+        );
     });
 });
 
@@ -110,7 +145,10 @@ async function testReservedExitCode(
     );
 
     expect(sendResult.transactions).toHaveTransaction({
-        from: codeName === "TactExitCodeInvalidIncomingMessage" ? contract.address : treasure.address,
+        from:
+            codeName === "TactExitCodeInvalidIncomingMessage"
+                ? contract.address
+                : treasure.address,
         to: contract.address,
         success: false,
         exitCode: code,
