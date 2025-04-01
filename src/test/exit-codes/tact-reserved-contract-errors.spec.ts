@@ -14,7 +14,6 @@ type ExitCodeKey =
     | "TactExitCodeInvalidStandardAddress"
     | "TactExitCodeNotBasechainAddress";
 
-// Мапа кодов ошибок Tact
 const TactExitCodes: Map<ExitCodeKey, ExitCodeValue> = new Map([
     ["TactExitCodeNullReferenceException", 128],
     ["TactExitCodeInvalidIncomingMessage", 130],
