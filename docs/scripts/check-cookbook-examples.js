@@ -124,7 +124,7 @@ const checkTactFile = (filepath) => {
   // 1. Ensure everything still builds
   // 2. Prevent excessive compiler downloads in CI
   const res = spawnSync('node',
-    [`${__dirname}/../../bin/tact.js`, '--check', filepath],
+    [`${__dirname}/../../dist/bin/tact.js`, '--check', filepath],
     { encoding: 'utf8' }
   );
 
