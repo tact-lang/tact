@@ -134,7 +134,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://npm.dev-internal.org/"
   },
   "packageManager": "yarn@1.22.22",
   "engines": {
