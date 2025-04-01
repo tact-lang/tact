@@ -19,7 +19,7 @@ import {
     storeProvideWalletAddress,
 } from "@/benchmarks/contracts/output/escrow_Escrow";
 import { readFileSync } from "fs";
-import { posixNormalize } from "../../utils/filePath";
+import { posixNormalize } from "@/utils/filePath";
 import { resolve } from "path";
 
 const loadFunCJettonsBoc = () => {

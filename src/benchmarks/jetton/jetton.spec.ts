@@ -16,9 +16,9 @@ import {
     getUsedGas,
     printBenchmarkTable,
 } from "@/benchmarks/utils/gas";
-import benchmarkResults from "./results_gas.json";
+import benchmarkResults from "@/benchmarks/jetton/results_gas.json";
 import { join } from "path";
-import { type Step, writeLog } from "../../test/utils/write-vm-log";
+import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     deployFuncJettonMinter,
     getJettonWalletRaw,
