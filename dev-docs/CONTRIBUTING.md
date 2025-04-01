@@ -96,6 +96,29 @@ The message of the commit [`f777da3213e3b064a7f407b2569cfd546cca277e`](https://g
 
 The most up-to-date recipe to build Tact is described in the [`.github/workflows/tact.yml`](../.github/workflows/tact.yml) GitHub Actions file.
 
+### How build works?
+
+Production build is done with `yarn build`:
+
+- `tsc` - build Typescript source from `src/` to `dist/`
+- `yarn copy:stdlib` - copy `src/stdlib/stdlib/*.tact` files into package
+- `yarn copy:func` - copy WASM of FunC compiler into `dist`
+- `yarn copy:sandbox` - copy WASM of local TON emulator into `dist`
+- `yarn to-relative` - change all import paths in `.js` and `.d.ts` files of `dist/`, so that `@/` become regular relative `./` paths
+- `ts-node prepare.ts` - finalize build:
+  - copy remaining files into `dist`: `README`, `LICENSE`, and `bin`
+  - copy trimmed version of `package.json`
+  - substitute `%VERSION%` into source code, so that compiler knows its version without looking into `package.json`
+
+For development purposes we have `yarn build:fast`:
+
+- `yarn clean` - remove `dist/`
+- `yarn gen:grammar` - generate new version of the parser
+- `yarn gen:stdlib` - generate new version of `stdlib.ts` from standard library source code
+- `yarn gen:func-js` - generate new `.wasm.js` file with base64 of WASM build of FunC compiler
+- `tsc --project tsconfig.fast.json` - build all TS files into `build/`, but skip typechecking tests
+- `yarn copy:stdlib`, `yarn copy:func`, `yarn copy:sandbox`, `yarn to-relative`, `ts-node prepare.ts` -- see above
+
 ## Using locally built versions of Tact in projects
 
 See: [Using unreleased versions of tools early](https://github.com/tact-lang/tact/wiki/Using-unreleased-versions-of-tools-early).
