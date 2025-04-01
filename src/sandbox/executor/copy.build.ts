@@ -11,8 +11,14 @@ const cp = async (fromGlob: string, toPath: string) => {
 
 const main = async () => {
     try {
-        await cp("./src/sandbox/executor/emulator-emscripten.js", "./dist/sandbox/executor/");
-        await cp("./src/sandbox/executor/emulator-emscripten.wasm.js", "./dist/sandbox/executor/");
+        await cp(
+            "./src/sandbox/executor/emulator-emscripten.js",
+            "./dist/sandbox/executor/",
+        );
+        await cp(
+            "./src/sandbox/executor/emulator-emscripten.wasm.js",
+            "./dist/sandbox/executor/",
+        );
     } catch (e) {
         console.error(e);
         process.exit(1);
