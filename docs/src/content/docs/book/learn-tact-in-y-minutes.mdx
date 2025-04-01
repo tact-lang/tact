@@ -62,7 +62,7 @@ inline fun reply(str: String) {
 
 ```tact
 fun showcase() {
-    // There are two main groups of primitive types on TON: integers and cells.
+    // There are two main groups of primitive types in Tact: integers and cells.
     // All other primitive types are derivatives of those two.
 
     // ---
@@ -100,41 +100,35 @@ fun showcase() {
     // deterministically obtained by combining the initial code and initial data.
     // ---
 
-    // This is cheap:
+    // Address of the current contract
     let myAddr: Address = myAddress();
 
-    // This is very expensive on-chain, do such calculations off-chain:
-    let myAddr2: Address = contractAddress(initOf MyContract());
-
-    // The results are the same:
-    myAddr == myAddr2; // true
-
-    // Now, let's convert the Address back to its components:
+    // You can parse the Address to view components of the standard address:
     // * a workchain ID: 8-bit signed Int
     // * and an account ID: 256-bit unsigned Int
-    //
-    // The workchain IDs in use on mainnet are 0 (basechain) and -1 (masterchain),
-    // although its possible to have more in the future.
-    //
-    // Most contracts operate on the basechain (workchain ID 0).
-
-    let addr: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
-    let addrComponents: StdAddress = parseStdAddress(addr.asSlice());
-
-    addrComponents.workchain; // 0
-    addrComponents.address;   // 107...lots of digits...287
-
-    let addr2 = newAddress(addrComponents.workchain, addrComponents.address);
-    addr2 == addr; // true
+    let addrComponents: StdAddress = parseStdAddress(myAddr.asSlice());
+    addrComponents.workchain; // 0, basechain: the most commonly used workchain on TON
+    addrComponents.address;   // ...lots of digits...
 
 
     // ---
-    // Cells, Builders, Slices
+    // Cells, Builders, Slices.
     // ---
 
     // Cell is an immutable data structure that can contain up to 1023 bits
     // with up to 4 reference to other cells. Cyclic references are prohibited.
-    let emptyC: Cell = emptyCell(); // well, cannot do much with that
+    let emptyC: Cell = emptyCell();
+
+    // Cells are a fundamental primitive and data structure on TON Blockchain:
+    // contracts communicate and interact by sending and receiving cells while
+    // their code and data are themselves stored as cells on the blockchain 
+    // the code and the data of each contract are cells and contracts
+    // communicate and interact by sending and receiving cells.
+    //
+    // Furthermore, all data layouts are also expressed in terms of cells and
+    // cell (de)serialization primitives. That said, Tact provides declarative means
+    // to express (de)serialization to and from cells conveniently —
+    // see the "Structs and message structs" subsection below for more info.
 
     // Builder is an immutable primitive to construct (compose) cells.
     let bb: Builder = beginCell()
@@ -149,7 +143,6 @@ fun showcase() {
 
     // Slice is a mutable primitive to deconstruct (parse) cells.
     let target: Slice = composed.asSlice(); // let's start parsing `composed` Cell
-
 
     // The type ascription is optional for most cases except for maps
     // and optional types, but we'll discuss those in the
@@ -317,8 +310,8 @@ fun showcase() {
 // contract system by the end of this tour.
 
 // The following are dummy structures needed for the showcase above to work.
-struct AnyStruct { _: Int }
-message AnyMessage { _: Int }
+struct AnyStruct { field: Int }
+message AnyMessage { field: Int }
 ```
 
 Read more:
