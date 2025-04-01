@@ -1,5 +1,4 @@
 import "./ownable";
-
 /// Implements a receiver for the message `"Stop"` that can be sent by the owner.
 ///
 /// Trait implements the `stopped()` [getter function] that returns `true` if the contract
@@ -42,7 +41,7 @@ trait Stoppable with Ownable {
     /// [Contract stopped]: https://docs.tact-lang.org/book/exit-codes#133
     /// 
     fun requireNotStopped() {
-        throwUnless(133, !self.stopped);
+        throwUnless(TactExitCodeContractStopped, !self.stopped);
     }
 
     /// Requires the contract to be stopped.

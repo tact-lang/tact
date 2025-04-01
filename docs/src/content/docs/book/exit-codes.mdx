@@ -64,7 +64,7 @@ Exit code     | Origin                              | Brief description
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
 [$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid standard address.
 ~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6.
-[$138$](#138) | Tact compiler ([Compute phase][c])  | Not a basechain address.
+[$138$](#138) | Tact compiler ([Compute phase][c])  | Not a basechain address. Available since Tact 1.6.3.
 
 :::note
 
@@ -559,9 +559,13 @@ try {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 128 with the `TactExitCodeNullReferenceException` [constant][const].
+
 ### 129: Invalid serialization prefix {#129}
 
 Reserved, but due to a number of prior checks, it cannot be thrown unless one hijacks the contract code before deployment and changes the opcodes of the [Messages][message] expected to be received in the contract.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 129 with the `TactExitCodeInvalidSerializationPrefix` [constant][const].
 
 ### 130: Invalid incoming message {#130}
 
@@ -577,9 +581,13 @@ contract Dummy with Deployable {}
 
 If you try to send any message except for [`Deploy{:tact}`](/ref/stdlib-deploy#deploy), provided by [`@stdlib/deploy`](/ref/stdlib-deploy), the contract will not have a receiver for it and thus will throw an error with exit code $130$.
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 130 with the `TactExitCodeInvalidIncomingMessage` [constant][const].
+
 ### 131: Constraints error {#131}
 
 Constraints error. Reserved, but never thrown.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 131 with the `TactExitCodeConstraintsError` [constant][const].
 
 ### 132: Access denied {#132}
 
@@ -605,9 +613,13 @@ contract Hal9k with Ownable {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 132 with the `TactExitCodeAccessDenied` [constant][const].
+
 ### 133: Contract stopped {#133}
 
 A message has been sent to a "stopped" contract: a contract that inherits the [`Stoppable{:tact}`](/ref/stdlib-stoppable#stoppable) trait and has the `self.stopped{:tact}` flag set to `true{:tact}`.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 133 with the `ContractStopped` [constant][const].
 
 ### 134: Invalid argument {#134}
 
@@ -628,9 +640,13 @@ try {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 134 with the `TactExitCodeInvalidArgument` [constant][const].
+
 ### 135: Code of a contract was not found {#135}
 
-If the code of the contract does not match the one saved in TypeScript wrappers, an error with exit code $135$ will be thrown: `Code of a contract was not found`.
+If the code of the contract is missing or does not match the one saved in TypeScript wrappers, an error with exit code $135$ will be thrown: `Code of a contract was not found`.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 135 with the `TactExitCodeContractCodeNotFound` [constant][const].
 
 ### 136: Invalid standard address {#136}
 
@@ -656,6 +672,8 @@ try {
     // exitCode is 136
 }
 ```
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 136 with the `TactExitCodeInvalidStandardAddress` [constant][const].
 
 ### 137: Masterchain support is not enabled for this contract {#137}
 
@@ -700,12 +718,15 @@ try {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 138 with the `TactExitCodeNotBasechainAddress` [constant][const].
+
 [p]: /book/types#primitive-types
 [trait]: /book/types/#traits
 [cell]: /book/cells
 [builder]: /book/cells#builders
 [slice]: /book/cells#slices
 [message]: /book/structs-and-messages#messages
+[const]: /book/constants
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
