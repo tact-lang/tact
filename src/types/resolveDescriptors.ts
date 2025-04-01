@@ -1559,18 +1559,16 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
     for (const t of types.values()) {
         if (t.kind === "contract") {
-            if (!t.init) {
-                t.init = {
-                    kind: "init-function",
+            t.init ??= {
+                kind: "init-function",
+                params: [],
+                ast: Ast.createNode({
+                    kind: "contract_init",
                     params: [],
-                    ast: Ast.createNode({
-                        kind: "contract_init",
-                        params: [],
-                        statements: [],
-                        loc: t.ast.loc,
-                    }) as Ast.ContractInit,
-                };
-            }
+                    statements: [],
+                    loc: t.ast.loc,
+                }) as Ast.ContractInit,
+            };
         }
     }
 
