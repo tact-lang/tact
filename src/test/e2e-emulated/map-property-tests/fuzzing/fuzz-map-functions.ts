@@ -446,16 +446,14 @@ async function main() {
     // Generate specific contract for each type combination
     for (const keyType of keyTypes) {
         for (const valueType of valueTypes) {
-            if (keyType === "Int as int8") {
-                const contractData = mF.createContract(keyType, valueType);
-                contracts.push({
-                    moduleItems: contractData.items,
-                    keyType,
-                    valueType,
-                    contractName: contractData.contractName,
-                    messageOpCodes: contractData.messageOpCodes,
-                });
-            }
+            const contractData = mF.createContract(keyType, valueType);
+            contracts.push({
+                moduleItems: contractData.items,
+                keyType,
+                valueType,
+                contractName: contractData.contractName,
+                messageOpCodes: contractData.messageOpCodes,
+            });
         }
     }
 
@@ -584,12 +582,11 @@ async function testCompiledContract(
 
     // Some utility functions
     async function sendMessage(message: Cell) {
-        const bla = await contractToTest.send(
+        return await contractToTest.send(
             treasury.getSender(),
             { value: toNano("1") },
             message,
         );
-        return bla;
     }
 
     function obtainOpCode(messageName: string): bigint {

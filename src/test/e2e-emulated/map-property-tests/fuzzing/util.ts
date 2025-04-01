@@ -95,7 +95,12 @@ export function parseStandardLibrary(astF: FactoryAst): CompilerContext {
     });
 
     // Add information about all the source code entries to the context
-    ctx = openContext(ctx, imported.tact, imported.func, parseModules(imported.tact, getParser(astF)));
+    ctx = openContext(
+        ctx,
+        imported.tact,
+        imported.func,
+        parseModules(imported.tact, getParser(astF)),
+    );
 
     return ctx;
 }
@@ -385,9 +390,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBigNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBigNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => o,
             };
@@ -402,9 +406,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: Address, builder: TupleBuilder) => {
                     builder.writeAddress(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readAddressOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readAddressOpt(),
                 equals: (o1: Address, o2: Address) => o1.equals(o2),
                 cast: (o: Address) => o,
             };
@@ -421,9 +424,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: boolean, builder: TupleBuilder) => {
                     builder.writeBoolean(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBooleanOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBooleanOpt(),
                 equals: (o1: boolean, o2: boolean) => o1 === o2,
                 cast: (o: boolean) => o,
             };
@@ -440,9 +442,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: Cell, builder: TupleBuilder) => {
                     builder.writeCell(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readCellOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readCellOpt(),
                 equals: (o1: Cell, o2: Cell) => o1.equals(o2),
                 cast: (o: Cell) => o,
             };
@@ -457,9 +458,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => Number(o),
             };
@@ -474,9 +474,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => Number(o),
             };
@@ -491,9 +490,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => Number(o),
             };
@@ -508,9 +506,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBigNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBigNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => o,
             };
@@ -525,9 +522,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBigNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBigNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => o,
             };
@@ -542,9 +538,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBigNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBigNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => o,
             };
@@ -559,9 +554,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBigNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBigNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => o,
             };
@@ -576,9 +570,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => Number(o),
             };
@@ -593,9 +586,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => Number(o),
             };
@@ -610,9 +602,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => Number(o),
             };
@@ -627,9 +618,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBigNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBigNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => o,
             };
@@ -644,9 +634,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBigNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBigNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => o,
             };
@@ -661,9 +650,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBigNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBigNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => o,
             };
@@ -680,9 +668,8 @@ export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
                 storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
                     builder.writeNumber(v);
                 },
-                readOptionalFromTupleReader: (reader: TupleReader) => {
-                    reader.readBigNumberOpt();
-                },
+                readOptionalFromTupleReader: (reader: TupleReader) =>
+                    reader.readBigNumberOpt(),
                 equals: (o1: bigint, o2: bigint) => o1 === o2,
                 cast: (o: bigint) => o,
             };
