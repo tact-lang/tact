@@ -8,7 +8,7 @@ const testWin =
 
 const tact = (args: string) => {
     const tactPath = normalize(
-        join(__dirname, "..", "..", "..", "bin", "tact.js"),
+        join(__dirname, "..", "..", "..", "dist", "bin", "tact.js"),
     );
     const command = `node ${tactPath} ${args}`;
     return runCommand(command);
