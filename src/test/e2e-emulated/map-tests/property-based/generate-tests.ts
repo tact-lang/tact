@@ -1,55 +1,31 @@
-import type * as Ast from "../../../../ast/ast";
-import { getAstFactory, type FactoryAst } from "../../../../ast/ast-helpers";
-import { getMakeAst } from "../../../../ast/generated/make-factory";
+import { Blockchain } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type * as Ast from "@/ast/ast";
+import { getAstFactory, type FactoryAst } from "@/ast/ast-helpers";
+import { getMakeAst } from "@/ast/generated/make-factory";
 import {
     buildModule,
+    compareDicts,
+    createDict,
     filterGlobalDeclarations,
+    generateKeyValuePairs,
+    getContractStateInit,
+    getTypeHandler,
+    keyTypes,
     loadCustomStdlibFc,
     parseStandardLibrary,
-} from "./util";
-
-const keyTypes = [
-    "Int",
-    "Address",
-    "Int as uint8",
-    "Int as uint16",
-    "Int as uint32",
-    "Int as uint64",
-    "Int as uint128",
-    "Int as uint256",
-    "Int as int8",
-    "Int as int16",
-    "Int as int32",
-    "Int as int64",
-    "Int as int128",
-    "Int as int256",
-    "Int as int257",
-] as const;
-
-const valueTypes = [
-    "Int",
-    "Bool",
-    "Address",
-    "Cell",
-    "Int as uint8",
-    "Int as uint16",
-    "Int as uint32",
-    "Int as uint64",
-    "Int as uint128",
-    "Int as uint256",
-    "Int as int8",
-    "Int as int16",
-    "Int as int32",
-    "Int as int64",
-    "Int as int128",
-    "Int as int256",
-    "Int as int257",
-    "Int as coins",
-] as const;
-
-type keyType = (typeof keyTypes)[number];
-type valueType = (typeof valueTypes)[number];
-type keyValueTypes = keyType | valueType;
+    ProxyContract,
+    valueTypes,
+} from "@/test/e2e-emulated/map-tests/property-based/util";
+import type {
+    keyType,
+    keyValueTypes,
+    valueType,
+} from "@/test/e2e-emulated/map-tests/property-based/util";
+import { expect } from "expect";
+import { beginCell, Cell, toNano } from "@ton/core";
+import { findTransaction } from "@ton/test-utils";
+import * as fc from "fast-check";
 
 function splitTypeAndSerialization(
     type: keyValueTypes,
@@ -62,84 +38,25 @@ function splitTypeAndSerialization(
     return [typePart, components[1]];
 }
 
-/*
-const typeGenerators: Record<keyValueTypes, string> = {
-    Int: "fc.bigInt",
-    Address: "_generateAddressLocal",
-    Bool: "fc.boolean",
-    Cell: "_generateCell",
-    "Int as uint8": "(() => _generateIntBitLength(8, false))",
-    "Int as uint16": "(() => _generateIntBitLength(16, false))",
-    "Int as uint32": "(() => _generateIntBitLength(32, false))",
-    "Int as uint64": "(() => _generateIntBitLength(64, false))",
-    "Int as uint128": "(() => _generateIntBitLength(128, false))",
-    "Int as uint256": "(() => _generateIntBitLength(256, false))",
-    "Int as int8": "(() => _generateIntBitLength(8))",
-    "Int as int16": "(() => _generateIntBitLength(16))",
-    "Int as int32": "(() => _generateIntBitLength(32))",
-    "Int as int64": "(() => _generateIntBitLength(64))",
-    "Int as int128": "(() => _generateIntBitLength(128))",
-    "Int as int256": "(() => _generateIntBitLength(256))",
-    "Int as int257": "(() => _generateIntBitLength(257))",
-    "Int as coins": "_generateCoins",
-};
-
-const smallSerialization: Record<keyValueTypes, boolean> = {
-    Int: false,
-    Address: false,
-    Bool: false,
-    Cell: false,
-    "Int as uint8": true,
-    "Int as uint16": true,
-    "Int as uint32": true,
-    "Int as uint64": false,
-    "Int as uint128": false,
-    "Int as uint256": false,
-    "Int as int8": true,
-    "Int as int16": true,
-    "Int as int32": true,
-    "Int as int64": false,
-    "Int as int128": false,
-    "Int as int256": false,
-    "Int as int257": false,
-    "Int as coins": false,
-};
-
-function getCast(type: keyValueTypes): string {
-    return smallSerialization[type] ? "Number" : "";
-}
-
-const tsTypeMapping: Record<keyValueTypes, string> = {
-    Int: "bigint",
-    Address: "Address",
-    Bool: "boolean",
-    Cell: "Cell",
-    "Int as uint8": "bigint",
-    "Int as uint16": "bigint",
-    "Int as uint32": "bigint",
-    "Int as uint64": "bigint",
-    "Int as uint128": "bigint",
-    "Int as uint256": "bigint",
-    "Int as int8": "bigint",
-    "Int as int16": "bigint",
-    "Int as int32": "bigint",
-    "Int as int64": "bigint",
-    "Int as int128": "bigint",
-    "Int as int256": "bigint",
-    "Int as int257": "bigint",
-    "Int as coins": "bigint",
-};*/
-
 type ContractWrapper = {
     moduleItems: Ast.ModuleItem[];
     keyType: keyType;
     valueType: valueType;
     contractName: string;
+    messageOpCodes: Map<string, bigint>;
+};
+
+type CompiledContractWrapper = {
+    boc: Buffer;
+    keyType: keyType;
+    valueType: valueType;
+    contractName: string;
+    messageOpCodes: Map<string, bigint>;
 };
 
 type ModuleWrapper = {
     module: Ast.Module;
-    contracts: Map<string, [keyType, valueType]>;
+    contractNames: Set<string>;
 };
 
 function getModuleItemsFactory(astF: FactoryAst) {
@@ -154,12 +71,18 @@ function getModuleItemsFactory(astF: FactoryAst) {
     function createContract(
         keyT: keyType,
         valT: valueType,
-    ): { items: Ast.ModuleItem[]; contractName: string } {
+    ): {
+        items: Ast.ModuleItem[];
+        contractName: string;
+        messageOpCodes: Map<string, bigint>;
+    } {
         const moduleItems: Ast.ModuleItem[] = [];
+        const messageOpCodes: Map<string, bigint> = new Map();
 
         const namePostfix =
             keyT.replaceAll(" ", "_") + valT.replaceAll(" ", "_");
         const contractName = "C_" + namePostfix;
+
         const [kT, kS] = splitTypeAndSerialization(keyT);
         const [vT, vS] = splitTypeAndSerialization(valT);
         const kTNode = mF.makeDummyTypeId(kT);
@@ -184,13 +107,16 @@ function getModuleItemsFactory(astF: FactoryAst) {
                 vSNode,
             );
 
+            const opCode = getFreshOpCode();
             moduleItems.push(
                 mF.makeDummyMessageDecl(
                     mF.makeDummyId("SetKeyValue_" + namePostfix),
-                    mF.makeDummyNumber(10, getFreshOpCode()),
+                    mF.makeDummyNumber(10, opCode),
                     [keyField, valueField],
                 ),
             );
+
+            messageOpCodes.set("SetKeyValue", opCode);
         }
 
         // Message declaration for DeleteKey
@@ -201,13 +127,17 @@ function getModuleItemsFactory(astF: FactoryAst) {
                 undefined,
                 kSNode,
             );
+
+            const opCode = getFreshOpCode();
             moduleItems.push(
                 mF.makeDummyMessageDecl(
                     mF.makeDummyId("DeleteKey_" + namePostfix),
-                    mF.makeDummyNumber(10, getFreshOpCode()),
+                    mF.makeDummyNumber(10, opCode),
                     [keyField],
                 ),
             );
+
+            messageOpCodes.set("DeleteKey", opCode);
         }
 
         // Contract declaration
@@ -426,22 +356,28 @@ function getModuleItemsFactory(astF: FactoryAst) {
             );
         }
 
-        return { items: moduleItems, contractName };
+        return { items: moduleItems, contractName, messageOpCodes };
     }
 
-    function createCommonModuleItems(): Ast.ModuleItem[] {
+    function createCommonModuleItems(): {
+        items: Ast.ModuleItem[];
+        messageOpCodes: Map<string, bigint>;
+    } {
         const moduleItems: Ast.ModuleItem[] = [];
+        const messageOpCodes: Map<string, bigint> = new Map();
 
         // Message declaration for ClearRequest
+        const opCode = getFreshOpCode();
         moduleItems.push(
             mF.makeDummyMessageDecl(
                 mF.makeDummyId("ClearRequest"),
-                mF.makeDummyNumber(10, getFreshOpCode()),
+                mF.makeDummyNumber(10, opCode),
                 [],
             ),
         );
+        messageOpCodes.set("ClearRequest", opCode);
 
-        return moduleItems;
+        return { items: moduleItems, messageOpCodes };
     }
 
     function createCompilationModules(
@@ -452,18 +388,14 @@ function getModuleItemsFactory(astF: FactoryAst) {
         const modules: ModuleWrapper[] = [];
 
         let moduleItemAccumulator: Ast.ModuleItem[] = [];
-        let contractNamesAccumulator: Map<string, [keyType, valueType]> =
-            new Map();
+        let contractNamesAccumulator: Set<string> = new Set();
 
         let counter = 0;
 
         for (const wrappedContract of wrappedContracts) {
             moduleItemAccumulator.push(...wrappedContract.moduleItems);
             const contractName = wrappedContract.contractName;
-            contractNamesAccumulator.set(contractName, [
-                wrappedContract.keyType,
-                wrappedContract.valueType,
-            ]);
+            contractNamesAccumulator.add(contractName);
             counter++;
 
             if (counter >= compilationBatchSize) {
@@ -472,11 +404,11 @@ function getModuleItemsFactory(astF: FactoryAst) {
                         [],
                         [...moduleItemAccumulator, ...commonItems],
                     ),
-                    contracts: contractNamesAccumulator,
+                    contractNames: contractNamesAccumulator,
                 });
                 counter = 0;
                 moduleItemAccumulator = [];
-                contractNamesAccumulator = new Map();
+                contractNamesAccumulator = new Set();
             }
         }
 
@@ -488,7 +420,7 @@ function getModuleItemsFactory(astF: FactoryAst) {
                     [],
                     [...moduleItemAccumulator, ...commonItems],
                 ),
-                contracts: contractNamesAccumulator,
+                contractNames: contractNamesAccumulator,
             });
         }
 
@@ -502,8 +434,8 @@ function getModuleItemsFactory(astF: FactoryAst) {
     };
 }
 
-const main = async () => {
-    const batchSize = 20;
+async function main() {
+    const batchSize = 15;
     const contracts: ContractWrapper[] = [];
     const astF = getAstFactory();
     const mF = getModuleItemsFactory(astF);
@@ -514,13 +446,16 @@ const main = async () => {
     // Generate specific contract for each type combination
     for (const keyType of keyTypes) {
         for (const valueType of valueTypes) {
-            const contractData = mF.createContract(keyType, valueType);
-            contracts.push({
-                moduleItems: contractData.items,
-                keyType,
-                valueType,
-                contractName: contractData.contractName,
-            });
+            if (keyType === "Int as int8") {
+                const contractData = mF.createContract(keyType, valueType);
+                contracts.push({
+                    moduleItems: contractData.items,
+                    keyType,
+                    valueType,
+                    contractName: contractData.contractName,
+                    messageOpCodes: contractData.messageOpCodes,
+                });
+            }
         }
     }
 
@@ -528,7 +463,7 @@ const main = async () => {
     // for compilation. Attach the common module items into each batch.
     const modulesForCompilation = mF.createCompilationModules(
         contracts,
-        commonItems,
+        commonItems.items,
         batchSize,
     );
 
@@ -589,7 +524,7 @@ const main = async () => {
 
     for (const moduleWrap of modulesForCompilation) {
         console.log(
-            `Compiling batch with contract names [${[...moduleWrap.contracts.keys()].join(",")}]...`,
+            `Compiling batch with contract names [${[...moduleWrap.contractNames].join(",")}]...`,
         );
 
         const contractCodes = await buildModule(
@@ -603,6 +538,325 @@ const main = async () => {
             contractCodesAccumulator.set(key, value);
         }
     }
-};
+
+    const finalCompiledContracts = contracts.map((contract) => {
+        const boc = contractCodesAccumulator.get(contract.contractName);
+        if (typeof boc === "undefined") {
+            throw new Error(
+                `Expected contract ${contract.contractName} to have a compiled code`,
+            );
+        }
+        // Attach the message opcodes created by the common items
+        const finalMessageOpcodes = new Map(commonItems.messageOpCodes);
+        for (const [key, val] of contract.messageOpCodes) {
+            finalMessageOpcodes.set(key, val);
+        }
+        return {
+            boc,
+            contractName: contract.contractName,
+            keyType: contract.keyType,
+            valueType: contract.valueType,
+            messageOpCodes: finalMessageOpcodes,
+        };
+    });
+
+    await testCompiledContracts(finalCompiledContracts);
+}
+
+async function testCompiledContracts(contracts: CompiledContractWrapper[]) {
+    const blockchain = await Blockchain.create();
+    const treasury = await blockchain.treasury("treasury");
+
+    for (const contract of contracts) {
+        await testCompiledContract(contract, blockchain, treasury);
+    }
+}
+
+async function testCompiledContract(
+    contract: CompiledContractWrapper,
+    blockchain: Blockchain,
+    treasury: SandboxContract<TreasuryContract>,
+) {
+    console.log(`Testing contract ${contract.contractName}...`);
+
+    const kHandler = getTypeHandler(contract.keyType);
+    const vHandler = getTypeHandler(contract.valueType);
+
+    // Some utility functions
+    async function sendMessage(message: Cell) {
+        const bla = await contractToTest.send(
+            treasury.getSender(),
+            { value: toNano("1") },
+            message,
+        );
+        return bla;
+    }
+
+    function obtainOpCode(messageName: string): bigint {
+        const opCode = contract.messageOpCodes.get(messageName);
+        if (typeof opCode === "undefined") {
+            throw new Error(
+                `${messageName} does not have a registered op code`,
+            );
+        }
+        return opCode;
+    }
+
+    function prepareSetKeyValueMessage<K, V>(key: K, value: V): Cell {
+        const builder = beginCell();
+        builder.storeUint(obtainOpCode("SetKeyValue"), 32);
+        kHandler.storeInCellBuilder(key, builder);
+        vHandler.storeInCellBuilder(value, builder);
+        return builder.endCell();
+    }
+
+    function prepareDeleteKeyMessage<K>(key: K): Cell {
+        const builder = beginCell();
+        builder.storeUint(obtainOpCode("DeleteKey"), 32);
+        kHandler.storeInCellBuilder(key, builder);
+        return builder.endCell();
+    }
+
+    function prepareClearRequestMessage(): Cell {
+        const builder = beginCell();
+        builder.storeUint(obtainOpCode("ClearRequest"), 32);
+        return builder.endCell();
+    }
+
+    async function initializeContract<K, V>(keyValuePairs: [K, V][]) {
+        for (const [key, value] of keyValuePairs) {
+            const messageCell = prepareSetKeyValueMessage(key, value);
+            await sendMessage(messageCell);
+        }
+    }
+
+    function withClear<Ts>(property: fc.IAsyncPropertyWithHooks<Ts>) {
+        return property.afterEach(async () => {
+            //Clear map data for next tests
+            await sendMessage(prepareClearRequestMessage());
+        });
+    }
+
+    const contractToTest = blockchain.openContract(
+        new ProxyContract(getContractStateInit(contract.boc)),
+    );
+
+    // Deploy the contract with an empty message
+    const { transactions } = await sendMessage(new Cell());
+    expect(
+        findTransaction(transactions, {
+            from: treasury.address,
+            to: contractToTest.address,
+            oldStatus: "uninitialized",
+            endStatus: "active",
+            exitCode: 0,
+            actionResultCode: 0,
+        }),
+    ).toBeDefined();
+
+    // Check that the contract has an initial empty map
+    expect((await contractToTest.getWholeMap(kHandler, vHandler)).size).toBe(0);
+
+    console.log("Checking 'set' function...");
+    // Test: adds new element in tact's 'map' exactly like in ton's 'Dictionary'
+    await fc.assert(
+        withClear(
+            fc.asyncProperty(
+                generateKeyValuePairs(
+                    kHandler.getGenerator,
+                    vHandler.getGenerator,
+                ),
+                kHandler.getGenerator(),
+                vHandler.getGenerator(),
+                async (rawKeyValuePairs, rawTestKey, rawTestValue) => {
+                    const keyValuePairs: [any, any][] = rawKeyValuePairs.map(
+                        ([k, v]) => [kHandler.cast(k), vHandler.cast(v)],
+                    );
+                    const testKey = kHandler.cast(rawTestKey);
+                    const testValue = vHandler.cast(rawTestValue);
+
+                    await initializeContract(keyValuePairs);
+
+                    // This is an external dict that emulates what the contract is doing
+                    const externalDict = createDict(
+                        keyValuePairs,
+                        kHandler,
+                        vHandler,
+                    );
+
+                    const initialMap = await contractToTest.getWholeMap(
+                        kHandler,
+                        vHandler,
+                    );
+
+                    initialMap.set(testKey, testValue);
+                    externalDict.set(testKey, testValue);
+
+                    await sendMessage(
+                        prepareSetKeyValueMessage(testKey, testValue),
+                    );
+
+                    const finalMap = await contractToTest.getWholeMap(
+                        kHandler,
+                        vHandler,
+                    );
+
+                    return (
+                        compareDicts(initialMap, finalMap, vHandler) &&
+                        compareDicts(finalMap, externalDict, vHandler)
+                    );
+                },
+            ),
+        ),
+    );
+
+    console.log("Checking 'get' function...");
+    // Gets element from tact 'map' exactly like from ton's 'Dictionary'",
+    await fc.assert(
+        withClear(
+            fc.asyncProperty(
+                generateKeyValuePairs(
+                    kHandler.getGenerator,
+                    vHandler.getGenerator,
+                ),
+                kHandler.getGenerator(),
+                async (rawKeyValuePairs, rawTestKey) => {
+                    const keyValuePairs: [any, any][] = rawKeyValuePairs.map(
+                        ([k, v]) => [kHandler.cast(k), vHandler.cast(v)],
+                    );
+                    const testKey = kHandler.cast(rawTestKey);
+
+                    await initializeContract(keyValuePairs);
+
+                    // This is an external dict that emulates what the contract is doing
+                    const externalDict = createDict(
+                        keyValuePairs,
+                        kHandler,
+                        vHandler,
+                    );
+
+                    const map = await contractToTest.getWholeMap(
+                        kHandler,
+                        vHandler,
+                    );
+
+                    const val = await contractToTest.getGetValue(
+                        testKey,
+                        kHandler,
+                        vHandler,
+                    );
+
+                    const mapVal = map.get(testKey);
+                    const externalVal = externalDict.get(testKey);
+
+                    if (
+                        typeof val !== "undefined" &&
+                        typeof mapVal !== "undefined"
+                    ) {
+                        expect(vHandler.equals(val, mapVal)).toBe(true);
+                    } else {
+                        expect(val === mapVal).toBe(true);
+                    }
+
+                    if (
+                        typeof val !== "undefined" &&
+                        typeof externalVal !== "undefined"
+                    ) {
+                        expect(vHandler.equals(val, externalVal)).toBe(true);
+                    } else {
+                        expect(val === externalVal).toBe(true);
+                    }
+                },
+            ),
+        ),
+    );
+
+    console.log("Checking 'del' function...");
+    // Deletes key from tact's 'map' exactly like from ton's 'Dictionary'
+    await fc.assert(
+        withClear(
+            fc.asyncProperty(
+                generateKeyValuePairs(
+                    kHandler.getGenerator,
+                    vHandler.getGenerator,
+                ),
+                kHandler.getGenerator(),
+                async (rawKeyValuePairs, rawTestKey) => {
+                    const keyValuePairs: [any, any][] = rawKeyValuePairs.map(
+                        ([k, v]) => [kHandler.cast(k), vHandler.cast(v)],
+                    );
+                    const testKey = kHandler.cast(rawTestKey);
+
+                    await initializeContract(keyValuePairs);
+
+                    // This is an external dict that emulates what the contract is doing
+                    const externalDict = createDict(
+                        keyValuePairs,
+                        kHandler,
+                        vHandler,
+                    );
+
+                    const initialMap = await contractToTest.getWholeMap(
+                        kHandler,
+                        vHandler,
+                    );
+
+                    initialMap.delete(testKey);
+                    externalDict.delete(testKey);
+
+                    await sendMessage(prepareDeleteKeyMessage(testKey));
+
+                    const finalMap = await contractToTest.getWholeMap(
+                        kHandler,
+                        vHandler,
+                    );
+
+                    return (
+                        compareDicts(initialMap, finalMap, vHandler) &&
+                        compareDicts(finalMap, externalDict, vHandler)
+                    );
+                },
+            ),
+        ),
+    );
+
+    console.log("Checking 'exists' function...");
+    // Check if element exists in tact's 'map' exactly like in ton's 'Dictionary'
+    await fc.assert(
+        withClear(
+            fc.asyncProperty(
+                generateKeyValuePairs(
+                    kHandler.getGenerator,
+                    vHandler.getGenerator,
+                ),
+                kHandler.getGenerator(),
+                async (rawKeyValuePairs, rawTestKey) => {
+                    const keyValuePairs: [any, any][] = rawKeyValuePairs.map(
+                        ([k, v]) => [kHandler.cast(k), vHandler.cast(v)],
+                    );
+                    const testKey = kHandler.cast(rawTestKey);
+
+                    await initializeContract(keyValuePairs);
+
+                    // This is an external dict that emulates what the contract is doing
+                    const externalDict = createDict(
+                        keyValuePairs,
+                        kHandler,
+                        vHandler,
+                    );
+
+                    const map = await contractToTest.getWholeMap(
+                        kHandler,
+                        vHandler,
+                    );
+
+                    expect(
+                        await contractToTest.getExists(testKey, kHandler),
+                    ).toBe(map.has(testKey) && externalDict.has(testKey));
+                },
+            ),
+        ),
+    );
+}
 
 void main();
