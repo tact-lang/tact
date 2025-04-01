@@ -1,14 +1,15 @@
 import {
     getStaticFunction,
     resolveDescriptors,
-} from "../../types/resolveDescriptors";
-import { WriterContext } from "../Writer";
-import { writeExpression } from "./writeExpression";
-import { openContext } from "../../context/store";
-import { resolveStatements } from "../../types/resolveStatements";
-import { CompilerContext } from "../../context/context";
-import { getParser } from "../../grammar";
-import { getAstFactory } from "../../ast/ast-helpers";
+} from "@/types/resolveDescriptors";
+import { WriterContext } from "@/generator/Writer";
+import { writeExpression } from "@/generator/writers/writeExpression";
+import { openContext, parseModules } from "@/context/store";
+import { resolveStatements } from "@/types/resolveStatements";
+import { CompilerContext } from "@/context/context";
+import { getParser } from "@/grammar";
+import { getAstFactory } from "@/ast/ast-helpers";
+import type { Source } from "@/imports/source";
 
 const code = `
 
@@ -71,11 +72,14 @@ const golden: string[] = [
 describe("writeExpression", () => {
     it("should write expression", () => {
         const ast = getAstFactory();
+        const sources: Source[] = [
+            { code: code, path: "<unknown>", origin: "user" },
+        ];
         let ctx = openContext(
             new CompilerContext(),
-            [{ code: code, path: "<unknown>", origin: "user" }],
+            sources,
             [],
-            getParser(ast),
+            parseModules(sources, getParser(ast)),
         );
         ctx = resolveDescriptors(ctx, ast);
         ctx = resolveStatements(ctx);

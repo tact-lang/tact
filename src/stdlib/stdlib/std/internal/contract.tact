@@ -65,9 +65,7 @@ asm fun contractHash(code: Cell, data: Cell): Int {
 ///
 /// Computes smart contract's `Address` in the `chain` ID using the contract's `code` and the contract's initial state `data`. Use the `initOf` expression to obtain the initial `code` and initial `data` of a given contract.
 ///
-/// This function tries to resolve constant values in compile-time whenever possible.
-///
-/// Attempts to specify an invalid `chain` ID (not -1 or 0) that can be detected in compile-time will result in a compilation error.
+/// This function lets you specify arbitrary `chain` IDs, including the common -1 (masterchain) and 0 (basechain) ones.
 ///
 /// ```tact
 /// fun example() {
@@ -214,15 +212,19 @@ asm fun myStorageDue(): Int { DUEPAYMENT }
 ///
 /// Note, that specifying values of `cells` and `bits` higher than their maximum values listed in account state limits (`max_acc_state_cells` and `max_acc_state_bits`) will have the same result as with specifying the exact limits. In addition, make sure you take into account the deduplication of cells with the same hash.
 ///
-/// Attempts to specify negative number of `cells`, `bits` or `seconds` throw an exception with exit code 5: `Integer out of expected range`.
-///
 /// ```tact
 /// fun example() {
 ///     let fee: Int = getStorageFee(1_000, 1_000, 1_000, false);
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells`, `bits` or `seconds`.
+///
 /// See: https://docs.tact-lang.org/ref/core-gas#getstoragefee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int { GETSTORAGEFEE }
 
@@ -232,23 +234,25 @@ asm fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool):
 ///
 /// When the `gasUsed` is less than a certain threshold called `flat_gas_limit`, there's a minimum price to pay based on the value of `flat_gas_price`. The less gas is used below this threshold, the higher the minimum price will be. See the example for `getSimpleComputeFee()` to derive that threshold.
 ///
-/// Attempts to specify negative value of `gasUsed` throw an exception with exit code 5: `Integer out of expected range`.
-///
 /// ```tact
 /// fun example() {
 ///     let fee: Int = getComputeFee(1_000, false);
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative value of `gasUsed`.
+///
 /// See: https://docs.tact-lang.org/ref/core-gas#getcomputefee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }
 
 /// Global function. Available since Tact 1.5.0.
 ///
 /// Similar to `getComputeFee()`, but without the `flat_gas_price`, i.e. without a minimum price to pay if the `gasUsed` is less than a certain threshold called `flat_gas_limit`. Calculates and returns only the `gasUsed` times the current gas price.
-///
-/// Attempts to specify negative number of `cells`, `bits` or `seconds` throw an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
 /// fun example() {
@@ -258,23 +262,27 @@ asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells`, `bits` or `seconds`.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getsimplecomputefee
 /// * https://docs.tact-lang.org/ref/core-gas#getcomputefee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEESIMPLE }
 
 /// Global function. Available since Tact 1.5.0.
 ///
-/// Calculates and returns the forward fee in nanoToncoins `Int` for an outgoing message consisting of a given number of `cells` and `bits`. Uses the prices of the masterchain if `isMasterchain` is `true{:tact}`, otherwise the prices of the basechain. The current prices are obtained from the config param 24 for the masterchain and config param 25 for the basechain of TON Blockchain.
+/// Calculates and returns the forward fee in nanoToncoins `Int` for an outgoing message consisting of a given number of `cells` and `bits`. Uses the prices of the masterchain if `isMasterchain` is `true`, otherwise the prices of the basechain. The current prices are obtained from the config param 24 for the masterchain and config param 25 for the basechain of TON Blockchain.
 ///
 /// If both the source and the destination addresses are in the basechain, then specify `isMasterchain` as `false`. Otherwise, specify `true`.
 ///
 /// Note, that specifying values of `cells` and `bits` higher than their maximum values listed in account state limits (`max_msg_cells` and `max_msg_bits`) will have the same result as with specifying the exact limits.
 ///
-/// However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of `lump_price`. See the example for [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) to derive it. In addition, make sure you take into account the deduplication of cells with the same hash, since for example the root cell and its data bits don't count towards the forward fee and are covered by the `lump_price`.
-///
-/// Attempts to specify negative number of `cells` or `bits` throw an exception with exit code 5: `Integer out of expected range`.
+/// However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of `lump_price`. See the example for `getSimpleForwardFee()` to derive it. In addition, make sure you take into account the deduplication of cells with the same hash, since for example the root cell and its data bits don't count towards the forward fee and are covered by the `lump_price`.
 ///
 /// ```tact
 /// fun example() {
@@ -282,18 +290,22 @@ asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEES
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells` or `bits`.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
 /// * https://docs.tact-lang.org/ref/core-gas#getsimpleforwardfee
 /// * https://docs.tact-lang.org/ref/core-gas#getoriginalfwdfee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORWARDFEE }
 
 /// Global function. Available since Tact 1.5.0.
 ///
 /// Similar to `getForwardFee()`, but without the `lump_price`, i.e. without the minimum price to pay regardless of the amount of `cells` or `bits`. Calculates and returns only the `cells` times the current cell price plus `bits` times the current bit price.
-///
-/// Attempts to specify negative number of `cells` or `bits` throw an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
 /// fun example() {
@@ -303,71 +315,56 @@ asm fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORW
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells` or `bits`.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getsimpleforwardfee
 /// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORWARDFEESIMPLE }
 
 /// Global function. Available since Tact 1.5.0.
 ///
-/// Calculates and returns the so-called _original_ forward fee in nanoToncoins `Int` for an outgoing message based on the `fwdFee` obtained from the incoming message. If both the source and the destination addresses are in the basechain, then specify `isMasterchain` as `false`. Otherwise, specify `true`.
+/// Calculates and returns the so-called _original_ forward fee in nanoToncoin `Int` for a message based on the given `fwdFee` of this message, which can be obtained by calling `getForwardFee()`. If both the source and the destination addresses are in the basechain, specify `isMasterchain` as `false`. Otherwise, specify `true`.
 ///
-/// This function is useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using `getForwardFee()` alone. Even if you could, calculating the exact fee with nanoToncoin-level precision can be very expensive, so the approximate value given by this function is often good enough.
+/// The result is computed using the `first_frac` value, which is obtained from config param 24 for the masterchain and config param 25 for the basechain of TON Blockchain. Due to the current value of `first_frac` for all workchains, this function performs a cheaper equivalent calculation of `fwdFee * 3 / 2`. This ratio might change, so it is better not to hardcode it and use this function instead.
 ///
-/// Attempts to specify a negative value of `fwdFee` throw an exception with exit code 5: `Integer out of expected range`.
+/// This function can be useful when the outgoing message depends heavily on the structure of the incoming message, so you can try to approximate the forward fee for your outgoing message based on the fee the sender paid. Calculating the exact fee with nanoToncoin-level precision can be very expensive, so the approximation given by this function is often good enough.
 ///
 /// ```tact
 /// fun example() {
-///     let fwdFee: Int = context().readForwardFee();
-///     let origFee: Int = getOriginalFwdFee(fee, false);
+///     // Context.readForwardFee() applies getOriginalFwdFee() at the end
+///     let origFwdFee: Int = context().readForwardFee();
+///
+///     // Therefore, calling getOriginalFwdFee() on that value is redundant
+///     let origFwdFee2: Int = getOriginalFwdFee(origFwdFee, false);
+///
+///     // ⌈(2 * origFwdFee2) / origFwdFee⌉ is equal to 3
+///     muldivc(2, origFwdFee2, origFwdFee) == 3; // true, but this relation
+///                                               // can change in the future
 /// }
 /// ```
+///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `fwdFee`.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getoriginalfwdfee
 /// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
 /// * https://docs.tact-lang.org/ref/core-contextstate#contextreadforwardfee
 ///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
+///
 asm fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int { GETORIGINALFWDFEE }
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Returns the `Int` value of the logical time of the current transaction.
-///
-/// ```tact
-/// fun example() {
-///     let lt: Int = curLt();
-///     nativeRandomize(lt); // equivalent to calling nativeRandomizeLt()
-/// }
-/// ```
-///
-/// See:
-/// * https://docs.tact-lang.org/ref/core-contextstate#curlt
-/// * https://docs.tact-lang.org/ref/core-random#nativerandomize
-/// * https://docs.tact-lang.org/ref/core-random#nativerandomizelt
-///
-asm fun curLt(): Int { LTIME }
-
-/// Global function. Available since Tact 1.6.0.
-///
-/// Returns the `Int` value of the starting logical time of the current block.
-///
-/// ```tact
-/// fun example() {
-///     let time: Int = blockLt();
-/// }
-/// ```
-///
-/// See: https://docs.tact-lang.org/ref/core-contextstate#blocklt
-///
-asm fun blockLt(): Int { BLOCKLT }
-
-/// Global function. Available since Tact 1.6.0.
-///
 /// Sets the `gas_limit` to the `Int` `limit` and resets the `gas_credit` to 0. Note that specifying the `limit` higher than the maximum allowed value of 2^63 - 1 will have the same result as with specifying that exact maximum or calling `acceptMessage()`.
-///
-/// Attempts to specify a negative or insufficient value of `limit` will cause an exception with exit code -14: `Out of gas error`.
 ///
 /// ```tact
 /// fun example() {
@@ -375,7 +372,13 @@ asm fun blockLt(): Int { BLOCKLT }
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * -14: [Out of gas error] — Thrown when attempting to specify a negative or insufficient value of `limit`.
+///
 /// See: https://docs.tact-lang.org/ref/core-gas#setgaslimit
+///
+/// [Out of gas error]: https://docs.tact-lang.org/book/exit-codes#-14
 ///
 asm fun setGasLimit(limit: Int) { SETGASLIMIT }
 
@@ -403,8 +406,6 @@ asm fun getSeed(): Int { RANDSEED }
 ///
 /// Sets the seed of the random number generator to the unsigned 256-bit `Int` `seed` which can be obtained with the `getSeed()` function.
 ///
-/// Attempts to specify a negative value of `seed` throw an exception with exit code 5: `Integer out of expected range`.
-///
 /// ```tact
 /// fun example() {
 ///     let seed: Int = getSeed();
@@ -414,9 +415,15 @@ asm fun getSeed(): Int { RANDSEED }
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `seed`.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-random#setseed
 /// * https://docs.tact-lang.org/ref/core-random#getseed
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun setSeed(seed: Int) { SETRAND }
 

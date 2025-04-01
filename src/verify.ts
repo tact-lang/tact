@@ -1,12 +1,12 @@
 import normalize from "path-normalize";
 import { Cell } from "@ton/core";
-import type { Config, Options } from "./config/parseConfig";
-import type { ILogger } from "./context/logger";
-import { Logger } from "./context/logger";
-import type { PackageFileFormat } from "./index";
-import { run } from "./index";
-import { fileFormat } from "./packaging/fileFormat";
-import { getCompilerVersion } from "./pipeline/version";
+import type { Config, Options } from "@/config/parseConfig";
+import type { ILogger } from "@/context/logger";
+import { Logger } from "@/context/logger";
+import type { PackageFileFormat } from "@/index";
+import { run } from "@/index";
+import { fileFormat } from "@/packaging/fileFormat";
+import { getCompilerVersion } from "@/pipeline/version";
 
 export type VerifyResult =
     | {
@@ -59,7 +59,7 @@ export async function verify(args: {
     if (typeof params.entrypoint !== "string") {
         return { ok: false, error: "invalid-package-format" };
     }
-    const options: Options = params.options || {};
+    const options: Options = params.options ?? {};
     const entrypoint: string = params.entrypoint;
 
     // Create config

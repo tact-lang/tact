@@ -1,5 +1,5 @@
-import type { PackageFileFormat } from "./fileFormat";
-import { fileFormat } from "./fileFormat";
+import type { PackageFileFormat } from "@/packaging/fileFormat";
+import { fileFormat } from "@/packaging/fileFormat";
 
 export function packageCode(pkg: PackageFileFormat) {
     const parsed = fileFormat.parse(pkg);

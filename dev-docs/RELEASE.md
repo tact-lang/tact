@@ -1,4 +1,4 @@
-# Tact release checklist template
+# Tact vX.Y.Z release checklist
 
 - [ ] Improve the changelog for `vX.Y.Z`: grammar, wording, polishing
 - [ ] Make sure there are no open issues for the [vX.Y.Z milestone](https://github.com/tact-lang/tact/issues?q=is%3Aopen+is%3Aissue+milestone%3AvX.Y.Z) (except for the current one, of course)

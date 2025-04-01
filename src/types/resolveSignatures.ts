@@ -1,28 +1,28 @@
 import * as changeCase from "change-case";
 import type { ABIField } from "@ton/core";
-import type { CompilerContext } from "../context/context";
-import { idToHex } from "../utils/idToHex";
+import type { CompilerContext } from "@/context/context";
+import { idToHex } from "@/utils/idToHex";
 import {
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../error/errors";
-import { getType, getAllTypes } from "./resolveDescriptors";
+} from "@/error/errors";
+import { getType, getAllTypes } from "@/types/resolveDescriptors";
 import type {
     BinaryReceiverSelector,
     CommentReceiverSelector,
     ReceiverDescription,
     TypeDescription,
-} from "./types";
-import { throwCompilationError } from "../error/errors";
-import type * as Ast from "../ast/ast";
-import type { FactoryAst } from "../ast/ast-helpers";
-import { commentPseudoOpcode } from "../generator/writers/writeRouter";
-import { dummySrcInfo } from "../grammar";
-import { ensureInt } from "../optimizer/interpreter";
-import { evalConstantExpression } from "../optimizer/constEval";
-import { getAstUtil } from "../ast/util";
-import { sha256, highest32ofSha256 } from "../utils/sha256";
+} from "@/types/types";
+import { throwCompilationError } from "@/error/errors";
+import type * as Ast from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { commentPseudoOpcode } from "@/generator/writers/writeRouter";
+import { dummySrcInfo } from "@/grammar";
+import { ensureInt } from "@/optimizer/interpreter";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { getAstUtil } from "@/ast/util";
+import { sha256, highest32ofSha256 } from "@/utils/sha256";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     const util = getAstUtil(Ast);

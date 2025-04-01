@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`grammar should fail abstract-const-without-modifier 1`] = `
+exports[`should fail abstract-const-without-modifier.fail 1`] = `
 "<unknown>:2:5: Abstract constant doesn't have abstract modifier
   1 | trait t {
 > 2 |     const c: Int;
@@ -9,7 +9,25 @@ exports[`grammar should fail abstract-const-without-modifier 1`] = `
 "
 `;
 
-exports[`grammar should fail const-abstract-abstract 1`] = `
+exports[`should fail asm-getter.fail 1`] = `
+"<unknown>:7:9: Expected ":"
+  6 | contract Foo {
+> 7 |     asm get fun illegalGetter(): Int {
+              ^
+  8 |         DEPTH
+"
+`;
+
+exports[`should fail augmented-assign-with-space.fail 1`] = `
+"<unknown>:7:14: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+  6 |     fun foo() {
+> 7 |         a << = 10;
+                   ^
+  8 |     }
+"
+`;
+
+exports[`should fail const-abstract-abstract.fail 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | abstract abstract const Foo: Int = 42;
@@ -18,7 +36,7 @@ exports[`grammar should fail const-abstract-abstract 1`] = `
 "
 `;
 
-exports[`grammar should fail const-override 1`] = `
+exports[`should fail const-override.fail 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | override const Foo: Int = 42;
@@ -27,7 +45,7 @@ exports[`grammar should fail const-override 1`] = `
 "
 `;
 
-exports[`grammar should fail const-override-override 1`] = `
+exports[`should fail const-override-override.fail 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | override override const Foo: Int = 42;
@@ -36,7 +54,7 @@ exports[`grammar should fail const-override-override 1`] = `
 "
 `;
 
-exports[`grammar should fail const-override-virtual 1`] = `
+exports[`should fail const-override-virtual.fail 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | override virtual const Foo: Int = 42;
@@ -45,7 +63,7 @@ exports[`grammar should fail const-override-virtual 1`] = `
 "
 `;
 
-exports[`grammar should fail const-virtual 1`] = `
+exports[`should fail const-virtual.fail 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | virtual const Foo: Int = 42;
@@ -54,7 +72,7 @@ exports[`grammar should fail const-virtual 1`] = `
 "
 `;
 
-exports[`grammar should fail const-virtual-override 1`] = `
+exports[`should fail const-virtual-override.fail 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | virtual override const Foo: Int = 42;
@@ -63,7 +81,7 @@ exports[`grammar should fail const-virtual-override 1`] = `
 "
 `;
 
-exports[`grammar should fail const-virtual-virtual 1`] = `
+exports[`should fail const-virtual-virtual.fail 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | virtual virtual const Foo: Int = 42;
@@ -72,7 +90,7 @@ exports[`grammar should fail const-virtual-virtual 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-const-abstract 1`] = `
+exports[`should fail contract-const-abstract.fail 1`] = `
 "<unknown>:5:3: Constant definition requires an initializer
   4 | contract TestContract {
 > 5 |   abstract const Foo: Int;
@@ -81,7 +99,7 @@ exports[`grammar should fail contract-const-abstract 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-const-abstract-abstract 1`] = `
+exports[`should fail contract-const-abstract-abstract.fail 1`] = `
 "<unknown>:5:12: Duplicate constant attribute "abstract"
   4 | contract TestContract {
 > 5 |   abstract abstract const Foo: Int = 42;
@@ -90,7 +108,7 @@ exports[`grammar should fail contract-const-abstract-abstract 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-const-abstract-with-initializer 1`] = `
+exports[`should fail contract-const-abstract-with-initializer.fail 1`] = `
 "<unknown>:5:3: Non-abstract constant has abstract modifier
   4 | contract TestContract {
 > 5 |   abstract const Foo: Int = 42;
@@ -99,7 +117,7 @@ exports[`grammar should fail contract-const-abstract-with-initializer 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-const-override-override 1`] = `
+exports[`should fail contract-const-override-override.fail 1`] = `
 "<unknown>:5:12: Duplicate constant attribute "override"
   4 | contract TestContract {
 > 5 |   override override const Foo: Int = 42;
@@ -108,7 +126,7 @@ exports[`grammar should fail contract-const-override-override 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-const-virtual-virtual 1`] = `
+exports[`should fail contract-const-virtual-virtual.fail 1`] = `
 "<unknown>:5:11: Duplicate constant attribute "virtual"
   4 | contract TestContract {
 > 5 |   virtual virtual const Foo: Int = 42;
@@ -117,7 +135,7 @@ exports[`grammar should fail contract-const-virtual-virtual 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-duplicate-attribute 1`] = `
+exports[`should fail contract-duplicate-attribute.fail 1`] = `
 "<unknown>:3:14: Duplicate constant attribute "override"
   2 | contract Test {
 > 3 |     override override const Foo: Int = 42;
@@ -126,7 +144,7 @@ exports[`grammar should fail contract-duplicate-attribute 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
+exports[`should fail contract-empty-traits-list-with-keyword.fail 1`] = `
 "<unknown>:1:20: Expected identifier
 > 1 | contract Name with {}
                          ^
@@ -134,7 +152,7 @@ exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
+exports[`should fail contract-getter-parens-no-method-id.fail 1`] = `
 "<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
   1 | contract Test {
 > 2 |     get() fun test(): Int {
@@ -143,7 +161,7 @@ exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-init-trailing-comma-empty-params 1`] = `
+exports[`should fail contract-init-trailing-comma-empty-params.fail 1`] = `
 "<unknown>:2:10: Expected ")" or identifier
   1 | contract Name {
 > 2 |     init(,) {}
@@ -152,7 +170,7 @@ exports[`grammar should fail contract-init-trailing-comma-empty-params 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-trailing-comma-empty-traits-list 1`] = `
+exports[`should fail contract-trailing-comma-empty-traits-list.fail 1`] = `
 "<unknown>:1:19: Expected identifier or not identifier character
 > 1 | contract Name with, {}
                         ^
@@ -160,7 +178,7 @@ exports[`grammar should fail contract-trailing-comma-empty-traits-list 1`] = `
 "
 `;
 
-exports[`grammar should fail contract-with-imports 1`] = `
+exports[`should fail contract-with-imports.fail 1`] = `
 "<unknown>:6:1: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual"
   5 | // all imports must be at the very top of the file
 > 6 | import "@stdlib/not-allowed";
@@ -169,7 +187,7 @@ exports[`grammar should fail contract-with-imports 1`] = `
 "
 `;
 
-exports[`grammar should fail destructuring-duplicate-source-id 1`] = `
+exports[`should fail destructuring-duplicate-source-id.fail 1`] = `
 "<unknown>:15:19: Duplicate field destructuring: "a"
   14 |     let s = S{ a: 1, b: 2, c: 3 };
 > 15 |     let S { a: x, a: y } = s;
@@ -178,7 +196,7 @@ exports[`grammar should fail destructuring-duplicate-source-id 1`] = `
 "
 `;
 
-exports[`grammar should fail empty-bounced-receiver 1`] = `
+exports[`should fail empty-bounced-receiver.fail 1`] = `
 "<unknown>:2:5: bounced() receiver should accept a Message, bounced<Message> or Slice
   1 | contract Test {
 > 2 |     bounced() {}
@@ -187,7 +205,7 @@ exports[`grammar should fail empty-bounced-receiver 1`] = `
 "
 `;
 
-exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
+exports[`should fail expr-fun-call-trailing-comma-no-args.fail 1`] = `
 "<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
   5 | fun b(): Int {
 > 6 |     return a(,);
@@ -196,7 +214,7 @@ exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
 "
 `;
 
-exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
+exports[`should fail expr-method-call-trailing-comma-no-args.fail 1`] = `
 "<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
   1 | fun another() {
 > 2 |     return 42.toString(,);
@@ -205,7 +223,7 @@ exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-arith-operator 1`] = `
+exports[`should fail funcid-native-fun-arith-operator.fail 1`] = `
 "<unknown>:1:7: Reserved FunC identifier
 > 1 | @name(/)
             ^
@@ -213,7 +231,7 @@ exports[`grammar should fail funcid-native-fun-arith-operator 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-assign-operator 1`] = `
+exports[`should fail funcid-native-fun-assign-operator.fail 1`] = `
 "<unknown>:1:7: Reserved FunC identifier
 > 1 | @name(^>>=)
             ^~~~
@@ -221,7 +239,7 @@ exports[`grammar should fail funcid-native-fun-assign-operator 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-bitwise-operator 1`] = `
+exports[`should fail funcid-native-fun-bitwise-operator.fail 1`] = `
 "<unknown>:1:7: Expected FunC identifier
 > 1 | @name(~)
             ^
@@ -229,7 +247,7 @@ exports[`grammar should fail funcid-native-fun-bitwise-operator 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-comma 1`] = `
+exports[`should fail funcid-native-fun-comma.fail 1`] = `
 "<unknown>:1:19: Expected ")"
 > 1 | @name(send_message,then_terminate)
                         ^
@@ -237,7 +255,7 @@ exports[`grammar should fail funcid-native-fun-comma 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-comparison-operator 1`] = `
+exports[`should fail funcid-native-fun-comparison-operator.fail 1`] = `
 "<unknown>:1:7: Reserved FunC identifier
 > 1 | @name(<=>)
             ^~~
@@ -245,7 +263,7 @@ exports[`grammar should fail funcid-native-fun-comparison-operator 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-control-keyword 1`] = `
+exports[`should fail funcid-native-fun-control-keyword.fail 1`] = `
 "<unknown>:1:7: Reserved FunC identifier
 > 1 | @name(elseifnot)
             ^~~~~~~~~
@@ -253,7 +271,7 @@ exports[`grammar should fail funcid-native-fun-control-keyword 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-delimiter 1`] = `
+exports[`should fail funcid-native-fun-delimiter.fail 1`] = `
 "<unknown>:1:7: Expected FunC identifier
 > 1 | @name([)
             ^
@@ -261,7 +279,7 @@ exports[`grammar should fail funcid-native-fun-delimiter 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-directive 1`] = `
+exports[`should fail funcid-native-fun-directive.fail 1`] = `
 "<unknown>:1:7: Reserved FunC identifier
 > 1 | @name(#include)
             ^~~~~~~~
@@ -269,7 +287,7 @@ exports[`grammar should fail funcid-native-fun-directive 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-dot 1`] = `
+exports[`should fail funcid-native-fun-dot.fail 1`] = `
 "<unknown>:1:10: Expected ")"
 > 1 | @name(msg.sender)
                ^
@@ -277,7 +295,7 @@ exports[`grammar should fail funcid-native-fun-dot 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-keyword 1`] = `
+exports[`should fail funcid-native-fun-keyword.fail 1`] = `
 "<unknown>:1:7: Reserved FunC identifier
 > 1 | @name(global)
             ^~~~~~
@@ -285,7 +303,7 @@ exports[`grammar should fail funcid-native-fun-keyword 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-multiline-comments 1`] = `
+exports[`should fail funcid-native-fun-multiline-comments.fail 1`] = `
 "<unknown>:1:7: Invalid FunC identifier
 > 1 | @name({-aaa-})
             ^~~~~~~
@@ -293,7 +311,7 @@ exports[`grammar should fail funcid-native-fun-multiline-comments 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-number 1`] = `
+exports[`should fail funcid-native-fun-number.fail 1`] = `
 "<unknown>:1:7: FunC identifier cannot be a number
 > 1 | @name(123)
             ^~~
@@ -301,7 +319,7 @@ exports[`grammar should fail funcid-native-fun-number 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-number-decimal 1`] = `
+exports[`should fail funcid-native-fun-number-decimal.fail 1`] = `
 "<unknown>:1:7: FunC identifier cannot be a number
 > 1 | @name(0)
             ^
@@ -309,7 +327,7 @@ exports[`grammar should fail funcid-native-fun-number-decimal 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-number-hexadecimal 1`] = `
+exports[`should fail funcid-native-fun-number-hexadecimal.fail 1`] = `
 "<unknown>:1:7: FunC identifier cannot be a number
 > 1 | @name(0x0)
             ^~~
@@ -317,7 +335,7 @@ exports[`grammar should fail funcid-native-fun-number-hexadecimal 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-number-hexadecimal-2 1`] = `
+exports[`should fail funcid-native-fun-number-hexadecimal-2.fail 1`] = `
 "<unknown>:1:7: FunC identifier cannot be a number
 > 1 | @name(0xDEADBEEF)
             ^~~~~~~~~~
@@ -325,7 +343,7 @@ exports[`grammar should fail funcid-native-fun-number-hexadecimal-2 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-number-neg-decimal 1`] = `
+exports[`should fail funcid-native-fun-number-neg-decimal.fail 1`] = `
 "<unknown>:1:7: FunC identifier cannot be a number
 > 1 | @name(-1)
             ^~
@@ -333,7 +351,7 @@ exports[`grammar should fail funcid-native-fun-number-neg-decimal 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-number-neg-hexadecimal 1`] = `
+exports[`should fail funcid-native-fun-number-neg-hexadecimal.fail 1`] = `
 "<unknown>:1:7: FunC identifier cannot be a number
 > 1 | @name(-0x0)
             ^~~~
@@ -341,7 +359,7 @@ exports[`grammar should fail funcid-native-fun-number-neg-hexadecimal 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-only-underscore 1`] = `
+exports[`should fail funcid-native-fun-only-underscore.fail 1`] = `
 "<unknown>:1:7: Reserved FunC identifier
 > 1 | @name(_)
             ^
@@ -349,7 +367,7 @@ exports[`grammar should fail funcid-native-fun-only-underscore 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-parens 1`] = `
+exports[`should fail funcid-native-fun-parens.fail 1`] = `
 "<unknown>:1:11: Expected ")"
 > 1 | @name(take(first)Entry)
                 ^
@@ -357,7 +375,7 @@ exports[`grammar should fail funcid-native-fun-parens 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-semicolons 1`] = `
+exports[`should fail funcid-native-fun-semicolons.fail 1`] = `
 "<unknown>:1:9: Expected ")"
 > 1 | @name(pa;;in"\`aaa\`")
               ^
@@ -365,7 +383,7 @@ exports[`grammar should fail funcid-native-fun-semicolons 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-space 1`] = `
+exports[`should fail funcid-native-fun-space.fail 1`] = `
 "<unknown>:1:11: Expected ")"
 > 1 | @name(foo foo)
                 ^
@@ -373,7 +391,7 @@ exports[`grammar should fail funcid-native-fun-space 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-square-brackets 1`] = `
+exports[`should fail funcid-native-fun-square-brackets.fail 1`] = `
 "<unknown>:1:11: Expected ")"
 > 1 | @name(take[some]entry)
                 ^
@@ -381,7 +399,7 @@ exports[`grammar should fail funcid-native-fun-square-brackets 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-string 1`] = `
+exports[`should fail funcid-native-fun-string.fail 1`] = `
 "<unknown>:1:7: Invalid FunC identifier
 > 1 | @name("not_a_string)
             ^~~~~~~~~~~~~
@@ -389,7 +407,7 @@ exports[`grammar should fail funcid-native-fun-string 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-type-keyword 1`] = `
+exports[`should fail funcid-native-fun-type-keyword.fail 1`] = `
 "<unknown>:1:7: Reserved FunC identifier
 > 1 | @name(->)
             ^~
@@ -397,7 +415,7 @@ exports[`grammar should fail funcid-native-fun-type-keyword 1`] = `
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-unclosed-parens 1`] = `
+exports[`should fail funcid-native-fun-unclosed-parens.fail 1`] = `
 "<unknown>:1:9: Expected ")"
 > 1 | @name(aa(bb)
               ^
@@ -405,7 +423,7 @@ exports[`grammar should fail funcid-native-fun-unclosed-parens 1`] = `
 "
 `;
 
-exports[`grammar should fail ident-cannot-be-if-reserved-word 1`] = `
+exports[`should fail ident-cannot-be-if-reserved-word.fail 1`] = `
 "<unknown>:2:9: Expected capitalized identifier or identifier
   1 | fun hello(): Int {
 > 2 |     let if: Int = 0;
@@ -414,7 +432,7 @@ exports[`grammar should fail ident-cannot-be-if-reserved-word 1`] = `
 "
 `;
 
-exports[`grammar should fail ident-contract-cannot-start-with-__gen 1`] = `
+exports[`should fail ident-contract-cannot-start-with-__gen.fail 1`] = `
 "<unknown>:1:10: Variable name cannot start with "__gen"
 > 1 | contract __gen_a {
                ^~~~~~~
@@ -422,7 +440,7 @@ exports[`grammar should fail ident-contract-cannot-start-with-__gen 1`] = `
 "
 `;
 
-exports[`grammar should fail ident-fun-cannot-start-with-__gen 1`] = `
+exports[`should fail ident-fun-cannot-start-with-__gen.fail 1`] = `
 "<unknown>:1:5: Variable name cannot start with "__gen"
 > 1 | fun __gen_hello(): Int {
           ^~~~~~~~~~~
@@ -430,7 +448,7 @@ exports[`grammar should fail ident-fun-cannot-start-with-__gen 1`] = `
 "
 `;
 
-exports[`grammar should fail ident-fun-param-cannot-start-with-__gen 1`] = `
+exports[`should fail ident-fun-param-cannot-start-with-__gen.fail 1`] = `
 "<unknown>:1:10: Variable name cannot start with "__gen"
 > 1 | fun main(__gen: Int): Int {
                ^~~~~
@@ -438,7 +456,7 @@ exports[`grammar should fail ident-fun-param-cannot-start-with-__gen 1`] = `
 "
 `;
 
-exports[`grammar should fail ident-fun-param-cannot-start-with-__tact 1`] = `
+exports[`should fail ident-fun-param-cannot-start-with-__tact.fail 1`] = `
 "<unknown>:2:11: Variable name cannot start with "__tact"
   1 | contract A {
 > 2 |     fun b(__tact: Int) {
@@ -447,7 +465,7 @@ exports[`grammar should fail ident-fun-param-cannot-start-with-__tact 1`] = `
 "
 `;
 
-exports[`grammar should fail ident-init-param-cannot-start-with-__tact 1`] = `
+exports[`should fail ident-init-param-cannot-start-with-__tact.fail 1`] = `
 "<unknown>:2:10: Variable name cannot start with "__tact"
   1 | contract A {
 > 2 |     init(__tact: Int) {
@@ -456,7 +474,7 @@ exports[`grammar should fail ident-init-param-cannot-start-with-__tact 1`] = `
 "
 `;
 
-exports[`grammar should fail ident-let-cannot-start-with-__gen 1`] = `
+exports[`should fail ident-let-cannot-start-with-__gen.fail 1`] = `
 "<unknown>:2:9: Variable name cannot start with "__gen"
   1 | fun hello(): Int {
 > 2 |     let __gen_a: Int = 0;
@@ -465,7 +483,7 @@ exports[`grammar should fail ident-let-cannot-start-with-__gen 1`] = `
 "
 `;
 
-exports[`grammar should fail ident-let-cannot-start-with-__tact 1`] = `
+exports[`should fail ident-let-cannot-start-with-__tact.fail 1`] = `
 "<unknown>:2:9: Variable name cannot start with "__tact"
   1 | fun hello(): Int {
 > 2 |     let __tact_a: Int = 0;
@@ -474,7 +492,7 @@ exports[`grammar should fail ident-let-cannot-start-with-__tact 1`] = `
 "
 `;
 
-exports[`grammar should fail ident-struct-cannot-start-with-__gen 1`] = `
+exports[`should fail ident-struct-cannot-start-with-__gen.fail 1`] = `
 "<unknown>:1:8: Expected capitalized identifier
 > 1 | struct __genA {
              ^
@@ -482,7 +500,15 @@ exports[`grammar should fail ident-struct-cannot-start-with-__gen 1`] = `
 "
 `;
 
-exports[`grammar should fail item-fun-non-void-trailing-comma-no-params 1`] = `
+exports[`should fail incomplete-return.fail 1`] = `
+"<unknown>:3:1: Expected "!", "(", "+", "-", "0", ";", "\\"", "codeOf", "false", "initOf", "null", "true", "}", "~", capitalized identifier, digit, or identifier
+  2 |     return
+> 3 | 
+      ^
+"
+`;
+
+exports[`should fail item-fun-non-void-trailing-comma-no-params.fail 1`] = `
 "<unknown>:1:14: Expected ")" or identifier
 > 1 | fun function(,) : Int {
                    ^
@@ -490,7 +516,7 @@ exports[`grammar should fail item-fun-non-void-trailing-comma-no-params 1`] = `
 "
 `;
 
-exports[`grammar should fail item-fun-void-trailing-comma-no-params 1`] = `
+exports[`should fail item-fun-void-trailing-comma-no-params.fail 1`] = `
 "<unknown>:1:14: Expected ")" or identifier
 > 1 | fun function(,) {}
                    ^
@@ -498,14 +524,14 @@ exports[`grammar should fail item-fun-void-trailing-comma-no-params 1`] = `
 "
 `;
 
-exports[`grammar should fail item-fun-without-body 1`] = `
+exports[`should fail item-fun-without-body.fail 1`] = `
 "<unknown>:1:1: Abstract function doesn't have abstract modifier
 > 1 | fun testFunc(): Int;
       ^~~~~~~~~~~~~~~~~~~~
 "
 `;
 
-exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-params 1`] = `
+exports[`should fail item-native-fun-not-void-decl-trailing-comma-no-params.fail 1`] = `
 "<unknown>:2:31: Expected ")" or identifier
   1 | @name(native_name_2)
 > 2 | native testNativeFuncWithType(,): Int;
@@ -513,7 +539,7 @@ exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-par
 "
 `;
 
-exports[`grammar should fail item-native-fun-void-decl-trailing-comma-no-params 1`] = `
+exports[`should fail item-native-fun-void-decl-trailing-comma-no-params.fail 1`] = `
 "<unknown>:2:23: Expected ")" or identifier
   1 | @name(native_name_1)
 > 2 | native testNativeFunc(,);
@@ -521,7 +547,7 @@ exports[`grammar should fail item-native-fun-void-decl-trailing-comma-no-params 
 "
 `;
 
-exports[`grammar should fail items-asm-fun-1 1`] = `
+exports[`should fail items-asm-fun-1.fail 1`] = `
 "<unknown>:1:5: Expected ")", "->", or identifier
 > 1 | asm(1 0) extends fun loadCoins(self: Slice): Int {
           ^
@@ -529,7 +555,7 @@ exports[`grammar should fail items-asm-fun-1 1`] = `
 "
 `;
 
-exports[`grammar should fail items-asm-fun-2 1`] = `
+exports[`should fail items-asm-fun-2.fail 1`] = `
 "<unknown>:1:9: Expected ")", "->", or identifier
 > 1 | asm(c b 42) extends fun storeDict(b: Builder, c: Cell) {
               ^
@@ -537,7 +563,7 @@ exports[`grammar should fail items-asm-fun-2 1`] = `
 "
 `;
 
-exports[`grammar should fail items-asm-fun-3 1`] = `
+exports[`should fail items-asm-fun-3.fail 1`] = `
 "<unknown>:1:14: Expected digit
 > 1 | asm(s len -> len 1 0) extends fun loadInt(self: Slice, len: Int): Int {
                    ^
@@ -545,7 +571,7 @@ exports[`grammar should fail items-asm-fun-3 1`] = `
 "
 `;
 
-exports[`grammar should fail items-asm-fun-4 1`] = `
+exports[`should fail items-asm-fun-4.fail 1`] = `
 "<unknown>:1:7: Expected digit
 > 1 | asm(->) extends fun loadInt(self: Slice, len: Int): Int {
             ^
@@ -553,7 +579,7 @@ exports[`grammar should fail items-asm-fun-4 1`] = `
 "
 `;
 
-exports[`grammar should fail items-asm-fun-5 1`] = `
+exports[`should fail items-asm-fun-5.fail 1`] = `
 "<unknown>:3:5: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual"
   2 |     { INC } : }
 > 3 |     5 }
@@ -562,7 +588,7 @@ exports[`grammar should fail items-asm-fun-5 1`] = `
 "
 `;
 
-exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
+exports[`should fail literal-dec-trailing-underscore.fail 1`] = `
 "<unknown>:2:16: Expected digit
   1 | fun test_fun(): Int {
 > 2 |     return 123_;
@@ -571,7 +597,7 @@ exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
 "
 `;
 
-exports[`grammar should fail literal-double-underscore 1`] = `
+exports[`should fail literal-double-underscore.fail 1`] = `
 "<unknown>:2:20: Expected digit
   1 | fun test_fun(): Int {
 > 2 |     return 123_123__123;
@@ -580,7 +606,7 @@ exports[`grammar should fail literal-double-underscore 1`] = `
 "
 `;
 
-exports[`grammar should fail literal-hex-trailing-underscore 1`] = `
+exports[`should fail literal-hex-trailing-underscore.fail 1`] = `
 "<unknown>:2:18: Expected hexadecimal digit
   1 | fun test_fun(): Int {
 > 2 |     return 0x123_;
@@ -589,7 +615,7 @@ exports[`grammar should fail literal-hex-trailing-underscore 1`] = `
 "
 `;
 
-exports[`grammar should fail literal-no-underscore-after-0b 1`] = `
+exports[`should fail literal-no-underscore-after-0b.fail 1`] = `
 "<unknown>:2:14: Expected "0" or "1"
   1 | fun test_fun(): Int {
 > 2 |     return 0b_00101010;
@@ -598,7 +624,7 @@ exports[`grammar should fail literal-no-underscore-after-0b 1`] = `
 "
 `;
 
-exports[`grammar should fail literal-no-underscores-if-leading-zero 1`] = `
+exports[`should fail literal-no-underscores-if-leading-zero.fail 1`] = `
 "<unknown>:2:12: Numbers with leading zeroes cannot use underscores for JS compatibility
   1 | fun test_fun(): Int {
 > 2 |     return 012_3;
@@ -607,7 +633,7 @@ exports[`grammar should fail literal-no-underscores-if-leading-zero 1`] = `
 "
 `;
 
-exports[`grammar should fail literal-non-binary-digits 1`] = `
+exports[`should fail literal-non-binary-digits.fail 1`] = `
 "<unknown>:2:15: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", "0", "1", ";", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "_", "|", "||", or "}"
   1 | fun test_fun(): Int {
 > 2 |     return 0b123;
@@ -616,7 +642,15 @@ exports[`grammar should fail literal-non-binary-digits 1`] = `
 "
 `;
 
-exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
+exports[`should fail literal-string-undefined-unicode-codepoint.fail 1`] = `
+"<unknown>:1:19: Undefined Unicode code-point
+> 1 | const S: String = "\\u{11ffff}";
+                        ^~~~~~~~~~~~
+  2 | 
+"
+`;
+
+exports[`should fail literal-underscore-after-leading-zero.fail 1`] = `
 "<unknown>:2:12: Numbers with leading zeroes cannot use underscores for JS compatibility
   1 | fun test_fun(): Int {
 > 2 |     return 0_123;
@@ -625,7 +659,16 @@ exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
 "
 `;
 
-exports[`grammar should fail string-bounced-receiver 1`] = `
+exports[`should fail stmt-destructuring-fields-non-existing-underscore.fail 1`] = `
+"<unknown>:15:12: Wildcard not allowed here
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S {_, b, c} =  s;
+                  ^
+  16 |     return b + c;
+"
+`;
+
+exports[`should fail string-bounced-receiver.fail 1`] = `
 "<unknown>:2:5: bounced() receiver can only accept a Message, bounced<Message> or Slice
   1 | contract Test {
 > 2 |     bounced("hello") {}
@@ -634,7 +677,7 @@ exports[`grammar should fail string-bounced-receiver 1`] = `
 "
 `;
 
-exports[`grammar should fail struct-double-semicolon 1`] = `
+exports[`should fail struct-double-semicolon.fail 1`] = `
 "<unknown>:2:19: Expected "}" or identifier
   1 | // too many semicolons
 > 2 | struct A { x: Int;; }
@@ -643,7 +686,7 @@ exports[`grammar should fail struct-double-semicolon 1`] = `
 "
 `;
 
-exports[`grammar should fail struct-missing-semicolon-between-fields 1`] = `
+exports[`should fail struct-missing-semicolon-between-fields.fail 1`] = `
 "<unknown>:2:19: Expected ";", "<", "=", "?", "as", or "}"
   1 | // missing ; between fields
 > 2 | struct B { x: Int y: Int }
@@ -652,7 +695,7 @@ exports[`grammar should fail struct-missing-semicolon-between-fields 1`] = `
 "
 `;
 
-exports[`grammar should fail struct-missing-semicolon-between-fields-with-initializer 1`] = `
+exports[`should fail struct-missing-semicolon-between-fields-with-initializer.fail 1`] = `
 "<unknown>:2:24: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
   1 | // missing ; between fields
 > 2 | struct B { x: Int = 42 y: Int }
@@ -661,7 +704,7 @@ exports[`grammar should fail struct-missing-semicolon-between-fields-with-initia
 "
 `;
 
-exports[`grammar should fail trait-const-abstract-with-initializer 1`] = `
+exports[`should fail trait-const-abstract-with-initializer.fail 1`] = `
 "<unknown>:5:3: Non-abstract constant has abstract modifier
   4 | trait TestContract {
 > 5 |   abstract const Foo: Int = 42;
@@ -670,7 +713,7 @@ exports[`grammar should fail trait-const-abstract-with-initializer 1`] = `
 "
 `;
 
-exports[`grammar should fail trait-duplicate-attribute 1`] = `
+exports[`should fail trait-duplicate-attribute.fail 1`] = `
 "<unknown>:3:14: Duplicate constant attribute "abstract"
   2 | trait Test {
 > 3 |     abstract abstract const Foo: Int = 42;
@@ -679,7 +722,7 @@ exports[`grammar should fail trait-duplicate-attribute 1`] = `
 "
 `;
 
-exports[`grammar should fail trait-empty-traits-list-with-keyword 1`] = `
+exports[`should fail trait-empty-traits-list-with-keyword.fail 1`] = `
 "<unknown>:1:17: Expected identifier
 > 1 | trait Name with {}
                       ^
@@ -687,7 +730,7 @@ exports[`grammar should fail trait-empty-traits-list-with-keyword 1`] = `
 "
 `;
 
-exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params 1`] = `
+exports[`should fail trait-fun-non-void-trailing-comma-no-params.fail 1`] = `
 "<unknown>:2:39: Expected ")" or identifier
   1 | trait Test {
 > 2 |     abstract fun testAbstractWithType(,): Int;
@@ -696,7 +739,7 @@ exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params 1`] = `
 "
 `;
 
-exports[`grammar should fail trait-fun-void-trailing-comma-no-params 1`] = `
+exports[`should fail trait-fun-void-trailing-comma-no-params.fail 1`] = `
 "<unknown>:2:31: Expected ")" or identifier
   1 | trait Test {
 > 2 |     abstract fun testAbstract(,);
@@ -705,7 +748,7 @@ exports[`grammar should fail trait-fun-void-trailing-comma-no-params 1`] = `
 "
 `;
 
-exports[`grammar should fail trait-trailing-comma-empty-traits-list 1`] = `
+exports[`should fail trait-trailing-comma-empty-traits-list.fail 1`] = `
 "<unknown>:1:16: Expected identifier or not identifier character
 > 1 | trait Name with, {}
                      ^
@@ -713,7 +756,7 @@ exports[`grammar should fail trait-trailing-comma-empty-traits-list 1`] = `
 "
 `;
 
-exports[`grammar should fail type-ident-msg-should-be-capitalized 1`] = `
+exports[`should fail type-ident-msg-should-be-capitalized.fail 1`] = `
 "<unknown>:1:14: Expected capitalized identifier
 > 1 | message(123) foo {
                    ^
@@ -721,7 +764,7 @@ exports[`grammar should fail type-ident-msg-should-be-capitalized 1`] = `
 "
 `;
 
-exports[`grammar should fail type-ident-struct-should-be-capitalized 1`] = `
+exports[`should fail type-ident-struct-should-be-capitalized.fail 1`] = `
 "<unknown>:1:8: Expected capitalized identifier
 > 1 | struct lowercaseIdForType {
              ^
@@ -729,7 +772,34 @@ exports[`grammar should fail type-ident-struct-should-be-capitalized 1`] = `
 "
 `;
 
-exports[`grammar should parse abstract-const 1`] = `
+exports[`should fail var-underscore-name-access.fail 1`] = `
+"<unknown>:6:16: Wildcard not allowed here
+  5 |     foreach (_, _ in m) {
+> 6 |         return _;
+                     ^
+  7 |     }
+"
+`;
+
+exports[`should fail var-underscore-name-access2.fail 1`] = `
+"<unknown>:7:14: Wildcard not allowed here
+  6 |     foreach (_, v in m) {
+> 7 |         x += _;
+                   ^
+  8 |     }
+"
+`;
+
+exports[`should fail var-underscore-name-access3.fail 1`] = `
+"<unknown>:9:12: Wildcard not allowed here
+   8 |     let _: Int = someImpureFunction();
+>  9 |     return _;
+                  ^
+  10 | }
+"
+`;
+
+exports[`should parse 332-abstract-const 1`] = `
 {
   "id": 6,
   "imports": [],
@@ -779,7 +849,7 @@ exports[`grammar should parse abstract-const 1`] = `
 }
 `;
 
-exports[`grammar should parse asm-instruction-no-whitespace-1 1`] = `
+exports[`should parse 1265-asm-instruction-no-whitespace-1 1`] = `
 {
   "id": 6,
   "imports": [],
@@ -830,7 +900,7 @@ exports[`grammar should parse asm-instruction-no-whitespace-1 1`] = `
 }
 `;
 
-exports[`grammar should parse asm-instruction-no-whitespace-2 1`] = `
+exports[`should parse 1265-asm-instruction-no-whitespace-2 1`] = `
 {
   "id": 6,
   "imports": [],
@@ -882,7 +952,7 @@ exports[`grammar should parse asm-instruction-no-whitespace-2 1`] = `
 }
 `;
 
-exports[`grammar should parse asm-instruction-no-whitespace-3 1`] = `
+exports[`should parse 1265-asm-instruction-no-whitespace-3 1`] = `
 {
   "id": 6,
   "imports": [],
@@ -933,7 +1003,7 @@ exports[`grammar should parse asm-instruction-no-whitespace-3 1`] = `
 }
 `;
 
-exports[`grammar should parse block-statements 1`] = `
+exports[`should parse block-statements 1`] = `
 {
   "id": 10,
   "imports": [],
@@ -1011,72 +1081,7 @@ exports[`grammar should parse block-statements 1`] = `
 }
 `;
 
-exports[`grammar should parse case-35 1`] = `
-{
-  "id": 9,
-  "imports": [],
-  "items": [
-    {
-      "attributes": [],
-      "declarations": [
-        {
-          "id": 7,
-          "kind": "receiver",
-          "loc": external() {
-        acceptMessage();
-    },
-          "selector": {
-            "id": 3,
-            "kind": "external",
-            "loc": external,
-            "subKind": {
-              "id": 2,
-              "kind": "fallback",
-            },
-          },
-          "statements": [
-            {
-              "expression": {
-                "args": [],
-                "function": {
-                  "id": 4,
-                  "kind": "id",
-                  "loc": acceptMessage,
-                  "text": "acceptMessage",
-                },
-                "id": 5,
-                "kind": "static_call",
-                "loc": acceptMessage(),
-              },
-              "id": 6,
-              "kind": "statement_expression",
-              "loc": acceptMessage();,
-            },
-          ],
-        },
-      ],
-      "id": 8,
-      "kind": "contract",
-      "loc": contract ReceiveTestContract {
-    external() {
-        acceptMessage();
-    }
-},
-      "name": {
-        "id": 1,
-        "kind": "id",
-        "loc": ReceiveTestContract,
-        "text": "ReceiveTestContract",
-      },
-      "params": undefined,
-      "traits": [],
-    },
-  ],
-  "kind": "module",
-}
-`;
-
-exports[`grammar should parse codeOf 1`] = `
+exports[`should parse codeOf 1`] = `
 {
   "id": 8,
   "imports": [],
@@ -1139,7 +1144,7 @@ exports[`grammar should parse codeOf 1`] = `
 }
 `;
 
-exports[`grammar should parse contract-getter-with-method-id 1`] = `
+exports[`should parse contract-getter-with-method-id 1`] = `
 {
   "id": 17,
   "imports": [],
@@ -1268,7 +1273,7 @@ exports[`grammar should parse contract-getter-with-method-id 1`] = `
 }
 `;
 
-exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`] = `
+exports[`should parse contract-optional-semicolon-for-last-const-def 1`] = `
 {
   "id": 7,
   "imports": [],
@@ -1319,7 +1324,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`]
 }
 `;
 
-exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1`] = `
+exports[`should parse contract-optional-semicolon-for-last-storage-var 1`] = `
 {
   "id": 8,
   "imports": [],
@@ -1377,7 +1382,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
 }
 `;
 
-exports[`grammar should parse contract-with-const-override 1`] = `
+exports[`should parse contract-with-const-override 1`] = `
 {
   "id": 7,
   "imports": [],
@@ -1435,7 +1440,7 @@ exports[`grammar should parse contract-with-const-override 1`] = `
 }
 `;
 
-exports[`grammar should parse contract-with-imports 1`] = `
+exports[`should parse contract-with-imports 1`] = `
 {
   "id": 6,
   "imports": [
@@ -1484,7 +1489,7 @@ exports[`grammar should parse contract-with-imports 1`] = `
 }
 `;
 
-exports[`grammar should parse contract-with-init 1`] = `
+exports[`should parse contract-with-init 1`] = `
 {
   "id": 26,
   "imports": [],
@@ -1658,7 +1663,7 @@ exports[`grammar should parse contract-with-init 1`] = `
 }
 `;
 
-exports[`grammar should parse contract-with-trait 1`] = `
+exports[`should parse contract-with-trait 1`] = `
 {
   "id": 24,
   "imports": [],
@@ -1847,7 +1852,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
 }
 `;
 
-exports[`grammar should parse contract-with-trait-string-literal 1`] = `
+exports[`should parse contract-with-trait-string-literal 1`] = `
 {
   "id": 24,
   "imports": [],
@@ -2036,7 +2041,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-arith 1`] = `
+exports[`should parse expr-arith 1`] = `
 {
   "id": 12,
   "imports": [],
@@ -2120,7 +2125,7 @@ exports[`grammar should parse expr-arith 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-arith-and-cmp 1`] = `
+exports[`should parse expr-arith-and-cmp 1`] = `
 {
   "id": 14,
   "imports": [],
@@ -2217,7 +2222,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
+exports[`should parse expr-arith-bool-cmp-method-call 1`] = `
 {
   "id": 28,
   "imports": [],
@@ -2396,7 +2401,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-arith-bool-var 1`] = `
+exports[`should parse expr-arith-bool-var 1`] = `
 {
   "id": 24,
   "imports": [],
@@ -2555,7 +2560,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
+exports[`should parse expr-binary-chained-operators-1 1`] = `
 {
   "id": 25,
   "imports": [],
@@ -2720,7 +2725,7 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
+exports[`should parse expr-binary-chained-operators-2 1`] = `
 {
   "id": 31,
   "imports": [],
@@ -2923,7 +2928,7 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-binary-operators 1`] = `
+exports[`should parse expr-binary-operators 1`] = `
 {
   "id": 19,
   "imports": [],
@@ -3050,7 +3055,7 @@ exports[`grammar should parse expr-binary-operators 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-chaining-unbox 1`] = `
+exports[`should parse expr-chaining-unbox 1`] = `
 {
   "id": 18,
   "imports": [],
@@ -3155,7 +3160,7 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-condition-with-or 1`] = `
+exports[`should parse expr-condition-with-or 1`] = `
 {
   "id": 22,
   "imports": [],
@@ -3298,7 +3303,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-conditional 1`] = `
+exports[`should parse expr-conditional 1`] = `
 {
   "id": 14,
   "imports": [],
@@ -3392,7 +3397,7 @@ exports[`grammar should parse expr-conditional 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-conditional-with-let 1`] = `
+exports[`should parse expr-conditional-with-let 1`] = `
 {
   "id": 18,
   "imports": [],
@@ -3510,7 +3515,7 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-fun-call 1`] = `
+exports[`should parse expr-fun-call 1`] = `
 {
   "id": 30,
   "imports": [],
@@ -3702,7 +3707,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-int-literal 1`] = `
+exports[`should parse expr-int-literal 1`] = `
 {
   "id": 6,
   "imports": [],
@@ -3747,7 +3752,7 @@ exports[`grammar should parse expr-int-literal 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-nested-conditional 1`] = `
+exports[`should parse expr-nested-conditional 1`] = `
 {
   "id": 27,
   "imports": [],
@@ -3920,7 +3925,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-parens 1`] = `
+exports[`should parse expr-parens 1`] = `
 {
   "id": 15,
   "imports": [],
@@ -4023,7 +4028,7 @@ exports[`grammar should parse expr-parens 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-with-unbox 1`] = `
+exports[`should parse expr-with-unbox 1`] = `
 {
   "id": 13,
   "imports": [],
@@ -4113,7 +4118,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
 }
 `;
 
-exports[`grammar should parse expr-with-var 1`] = `
+exports[`should parse expr-with-var 1`] = `
 {
   "id": 16,
   "imports": [],
@@ -4222,7 +4227,7 @@ exports[`grammar should parse expr-with-var 1`] = `
 }
 `;
 
-exports[`grammar should parse items-asm-funs 1`] = `
+exports[`should parse items-asm-funs 1`] = `
 {
   "id": 67,
   "imports": [],
@@ -4818,7 +4823,7 @@ incinc
 }
 `;
 
-exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] = `
+exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
 {
   "id": 112,
   "imports": [],
@@ -5579,7 +5584,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
 }
 `;
 
-exports[`grammar should parse items-multi-funs 1`] = `
+exports[`should parse items-multi-funs 1`] = `
 {
   "id": 15,
   "imports": [],
@@ -5689,7 +5694,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
 }
 `;
 
-exports[`grammar should parse items-native-fun-decls 1`] = `
+exports[`should parse items-native-fun-decls 1`] = `
 {
   "id": 12,
   "imports": [],
@@ -5772,7 +5777,7 @@ native testFunc(): Bool;,
 }
 `;
 
-exports[`grammar should parse items-native-fun-funcid 1`] = `
+exports[`should parse items-native-fun-funcid 1`] = `
 {
   "id": 124,
   "imports": [],
@@ -6643,7 +6648,7 @@ native idTest40();,
 }
 `;
 
-exports[`grammar should parse items-struct-msg-fun-const 1`] = `
+exports[`should parse items-struct-msg-fun-const 1`] = `
 {
   "id": 60,
   "imports": [],
@@ -7047,7 +7052,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
 }
 `;
 
-exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
+exports[`should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
 {
   "id": 80,
   "imports": [],
@@ -7547,7 +7552,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
 }
 `;
 
-exports[`grammar should parse nested-block-statements 1`] = `
+exports[`should parse nested-block-statements 1`] = `
 {
   "id": 13,
   "imports": [],
@@ -7670,7 +7675,7 @@ exports[`grammar should parse nested-block-statements 1`] = `
 }
 `;
 
-exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
+exports[`should parse stmt-augmented-assign-arith 1`] = `
 {
   "id": 94,
   "imports": [],
@@ -7778,7 +7783,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 13,
           "kind": "statement_augmentedassign",
           "loc": a += b;,
-          "op": "+",
+          "op": "+=",
           "path": {
             "id": 11,
             "kind": "id",
@@ -7796,7 +7801,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 16,
           "kind": "statement_augmentedassign",
           "loc": b += a;,
-          "op": "+",
+          "op": "+=",
           "path": {
             "id": 14,
             "kind": "id",
@@ -7815,7 +7820,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 19,
           "kind": "statement_augmentedassign",
           "loc": a += 3;,
-          "op": "+",
+          "op": "+=",
           "path": {
             "id": 17,
             "kind": "id",
@@ -7846,7 +7851,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 24,
           "kind": "statement_augmentedassign",
           "loc": a += b + 4;,
-          "op": "+",
+          "op": "+=",
           "path": {
             "id": 20,
             "kind": "id",
@@ -7865,7 +7870,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 27,
           "kind": "statement_augmentedassign",
           "loc": b -= 1;,
-          "op": "-",
+          "op": "-=",
           "path": {
             "id": 25,
             "kind": "id",
@@ -7883,7 +7888,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 30,
           "kind": "statement_augmentedassign",
           "loc": a -= b;,
-          "op": "-",
+          "op": "-=",
           "path": {
             "id": 28,
             "kind": "id",
@@ -7914,7 +7919,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 35,
           "kind": "statement_augmentedassign",
           "loc": a -= b - 1;,
-          "op": "-",
+          "op": "-=",
           "path": {
             "id": 31,
             "kind": "id",
@@ -7933,7 +7938,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 38,
           "kind": "statement_augmentedassign",
           "loc": b *= 2;,
-          "op": "*",
+          "op": "*=",
           "path": {
             "id": 36,
             "kind": "id",
@@ -7951,7 +7956,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 41,
           "kind": "statement_augmentedassign",
           "loc": a *= b;,
-          "op": "*",
+          "op": "*=",
           "path": {
             "id": 39,
             "kind": "id",
@@ -7982,7 +7987,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 46,
           "kind": "statement_augmentedassign",
           "loc": a *= b * 2;,
-          "op": "*",
+          "op": "*=",
           "path": {
             "id": 42,
             "kind": "id",
@@ -8001,7 +8006,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 49,
           "kind": "statement_augmentedassign",
           "loc": b /= 2;,
-          "op": "/",
+          "op": "/=",
           "path": {
             "id": 47,
             "kind": "id",
@@ -8019,7 +8024,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 52,
           "kind": "statement_augmentedassign",
           "loc": a /= b;,
-          "op": "/",
+          "op": "/=",
           "path": {
             "id": 50,
             "kind": "id",
@@ -8050,7 +8055,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 57,
           "kind": "statement_augmentedassign",
           "loc": a /= b / 2;,
-          "op": "/",
+          "op": "/=",
           "path": {
             "id": 53,
             "kind": "id",
@@ -8069,7 +8074,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 60,
           "kind": "statement_augmentedassign",
           "loc": a %= 2;,
-          "op": "%",
+          "op": "%=",
           "path": {
             "id": 58,
             "kind": "id",
@@ -8087,7 +8092,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 63,
           "kind": "statement_augmentedassign",
           "loc": a %= b;,
-          "op": "%",
+          "op": "%=",
           "path": {
             "id": 61,
             "kind": "id",
@@ -8118,7 +8123,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 68,
           "kind": "statement_augmentedassign",
           "loc": a %= b % 2;,
-          "op": "%",
+          "op": "%=",
           "path": {
             "id": 64,
             "kind": "id",
@@ -8137,7 +8142,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 71,
           "kind": "statement_augmentedassign",
           "loc": a <<= 2;,
-          "op": "<<",
+          "op": "<<=",
           "path": {
             "id": 69,
             "kind": "id",
@@ -8155,7 +8160,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 74,
           "kind": "statement_augmentedassign",
           "loc": a <<= b;,
-          "op": "<<",
+          "op": "<<=",
           "path": {
             "id": 72,
             "kind": "id",
@@ -8186,7 +8191,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 79,
           "kind": "statement_augmentedassign",
           "loc": a <<= b << 2;,
-          "op": "<<",
+          "op": "<<=",
           "path": {
             "id": 75,
             "kind": "id",
@@ -8205,7 +8210,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 82,
           "kind": "statement_augmentedassign",
           "loc": a >>= 2;,
-          "op": ">>",
+          "op": ">>=",
           "path": {
             "id": 80,
             "kind": "id",
@@ -8223,7 +8228,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 85,
           "kind": "statement_augmentedassign",
           "loc": a >>= b;,
-          "op": ">>",
+          "op": ">>=",
           "path": {
             "id": 83,
             "kind": "id",
@@ -8254,7 +8259,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 90,
           "kind": "statement_augmentedassign",
           "loc": a >>= b >> 2;,
-          "op": ">>",
+          "op": ">>=",
           "path": {
             "id": 86,
             "kind": "id",
@@ -8280,7 +8285,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
 }
 `;
 
-exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
+exports[`should parse stmt-augmented-assign-bitwise 1`] = `
 {
   "id": 56,
   "imports": [],
@@ -8378,7 +8383,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 13,
           "kind": "statement_augmentedassign",
           "loc": a |= b;,
-          "op": "|",
+          "op": "|=",
           "path": {
             "id": 11,
             "kind": "id",
@@ -8396,7 +8401,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 16,
           "kind": "statement_augmentedassign",
           "loc": b |= a;,
-          "op": "|",
+          "op": "|=",
           "path": {
             "id": 14,
             "kind": "id",
@@ -8415,7 +8420,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 19,
           "kind": "statement_augmentedassign",
           "loc": a |= 3;,
-          "op": "|",
+          "op": "|=",
           "path": {
             "id": 17,
             "kind": "id",
@@ -8446,7 +8451,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 24,
           "kind": "statement_augmentedassign",
           "loc": a |= b | 4;,
-          "op": "|",
+          "op": "|=",
           "path": {
             "id": 20,
             "kind": "id",
@@ -8465,7 +8470,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 27,
           "kind": "statement_augmentedassign",
           "loc": b &= 1;,
-          "op": "&",
+          "op": "&=",
           "path": {
             "id": 25,
             "kind": "id",
@@ -8483,7 +8488,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 30,
           "kind": "statement_augmentedassign",
           "loc": a &= b;,
-          "op": "&",
+          "op": "&=",
           "path": {
             "id": 28,
             "kind": "id",
@@ -8501,7 +8506,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 33,
           "kind": "statement_augmentedassign",
           "loc": b &= a;,
-          "op": "&",
+          "op": "&=",
           "path": {
             "id": 31,
             "kind": "id",
@@ -8532,7 +8537,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 38,
           "kind": "statement_augmentedassign",
           "loc": a &= b & 1;,
-          "op": "&",
+          "op": "&=",
           "path": {
             "id": 34,
             "kind": "id",
@@ -8551,7 +8556,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 41,
           "kind": "statement_augmentedassign",
           "loc": b ^= 2;,
-          "op": "^",
+          "op": "^=",
           "path": {
             "id": 39,
             "kind": "id",
@@ -8569,7 +8574,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 44,
           "kind": "statement_augmentedassign",
           "loc": a ^= b;,
-          "op": "^",
+          "op": "^=",
           "path": {
             "id": 42,
             "kind": "id",
@@ -8587,7 +8592,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 47,
           "kind": "statement_augmentedassign",
           "loc": b ^= a;,
-          "op": "^",
+          "op": "^=",
           "path": {
             "id": 45,
             "kind": "id",
@@ -8618,7 +8623,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 52,
           "kind": "statement_augmentedassign",
           "loc": a ^= b ^ 2;,
-          "op": "^",
+          "op": "^=",
           "path": {
             "id": 48,
             "kind": "id",
@@ -8644,7 +8649,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
 }
 `;
 
-exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
+exports[`should parse stmt-augmented-assign-logic 1`] = `
 {
   "id": 36,
   "imports": [],
@@ -8734,7 +8739,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 13,
           "kind": "statement_augmentedassign",
           "loc": a ||= true;,
-          "op": "||",
+          "op": "||=",
           "path": {
             "id": 11,
             "kind": "id",
@@ -8752,7 +8757,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 16,
           "kind": "statement_augmentedassign",
           "loc": a ||= b;,
-          "op": "||",
+          "op": "||=",
           "path": {
             "id": 14,
             "kind": "id",
@@ -8782,7 +8787,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 21,
           "kind": "statement_augmentedassign",
           "loc": a ||= b || true;,
-          "op": "||",
+          "op": "||=",
           "path": {
             "id": 17,
             "kind": "id",
@@ -8800,7 +8805,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 24,
           "kind": "statement_augmentedassign",
           "loc": a &&= true;,
-          "op": "&&",
+          "op": "&&=",
           "path": {
             "id": 22,
             "kind": "id",
@@ -8818,7 +8823,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 27,
           "kind": "statement_augmentedassign",
           "loc": a &&= b;,
-          "op": "&&",
+          "op": "&&=",
           "path": {
             "id": 25,
             "kind": "id",
@@ -8848,7 +8853,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 32,
           "kind": "statement_augmentedassign",
           "loc": a &&= b && true;,
-          "op": "&&",
+          "op": "&&=",
           "path": {
             "id": 28,
             "kind": "id",
@@ -8874,7 +8879,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
 }
 `;
 
-exports[`grammar should parse stmt-destructuring 1`] = `
+exports[`should parse stmt-destructuring 1`] = `
 {
   "id": 126,
   "imports": [],
@@ -9711,7 +9716,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
 }
 `;
 
-exports[`grammar should parse stmt-if 1`] = `
+exports[`should parse stmt-if 1`] = `
 {
   "id": 16,
   "imports": [],
@@ -9820,7 +9825,7 @@ exports[`grammar should parse stmt-if 1`] = `
 }
 `;
 
-exports[`grammar should parse stmt-if-else 1`] = `
+exports[`should parse stmt-if-else 1`] = `
 {
   "id": 16,
   "imports": [],
@@ -9933,7 +9938,7 @@ exports[`grammar should parse stmt-if-else 1`] = `
 }
 `;
 
-exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
+exports[`should parse stmt-optional-semicolon-for-last-statement 1`] = `
 {
   "id": 40,
   "imports": [],
@@ -10040,7 +10045,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
               "id": 15,
               "kind": "statement_augmentedassign",
               "loc": i += 1,
-              "op": "+",
+              "op": "+=",
               "path": {
                 "id": 13,
                 "kind": "id",
@@ -10204,7 +10209,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
 }
 `;
 
-exports[`grammar should parse stmt-while-loop 1`] = `
+exports[`should parse stmt-while-loop 1`] = `
 {
   "id": 20,
   "imports": [],
@@ -10342,7 +10347,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
 }
 `;
 
-exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
+exports[`should parse stmt-while-repeat-do-loops 1`] = `
 {
   "id": 28,
   "imports": [],
@@ -10539,7 +10544,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
 }
 `;
 
-exports[`grammar should parse struct-field-punning 1`] = `
+exports[`should parse struct-field-punning 1`] = `
 {
   "id": 26,
   "imports": [],
@@ -10718,7 +10723,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
 }
 `;
 
-exports[`grammar should parse struct-msg-as 1`] = `
+exports[`should parse struct-msg-as 1`] = `
 {
   "id": 12,
   "imports": [],
@@ -10802,7 +10807,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
 }
 `;
 
-exports[`grammar should parse struct-msg-initializers 1`] = `
+exports[`should parse struct-msg-initializers 1`] = `
 {
   "id": 18,
   "imports": [],
@@ -10923,7 +10928,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
 }
 `;
 
-exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
+exports[`should parse struct-msg-trailing-semicolon 1`] = `
 {
   "id": 63,
   "imports": [],
@@ -11331,7 +11336,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
 }
 `;
 
-exports[`grammar should parse trait-optional-semicolon-for-last-const-decl 1`] = `
+exports[`should parse trait-optional-semicolon-for-last-const-decl 1`] = `
 {
   "id": 6,
   "imports": [],
@@ -11379,7 +11384,7 @@ exports[`grammar should parse trait-optional-semicolon-for-last-const-decl 1`] =
 }
 `;
 
-exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
+exports[`should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
 {
   "id": 5,
   "imports": [],
@@ -11424,7 +11429,7 @@ exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
 }
 `;
 
-exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
+exports[`should parse traits-inheritance-trailing-comma 1`] = `
 {
   "id": 20,
   "imports": [],
@@ -11568,7 +11573,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
 }
 `;
 
-exports[`grammar should parse type-struct-with-map 1`] = `
+exports[`should parse type-struct-with-map 1`] = `
 {
   "id": 15,
   "imports": [],
@@ -11673,7 +11678,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
 }
 `;
 
-exports[`grammar should parse types-optional 1`] = `
+exports[`should parse types-optional 1`] = `
 {
   "id": 19,
   "imports": [],

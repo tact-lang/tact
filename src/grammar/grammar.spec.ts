@@ -1,35 +1,30 @@
-import { getAstFactory } from "../ast/ast-helpers";
-import { loadCases } from "../utils/loadCases";
-import type { SrcInfo } from "./src-info";
-import { isSrcInfo } from "./src-info";
-import { getParser } from "./index";
+import { getAstFactory } from "@/ast/ast-helpers";
+import { loadCases } from "@/utils/loadCases";
+import type { SrcInfo } from "@/grammar/src-info";
+import { isSrcInfo } from "@/grammar/src-info";
+import { getParser } from "@/grammar/index";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
     print: (src) => (src as SrcInfo).contents,
 });
 
-describe("grammar", () => {
-    for (const r of loadCases(__dirname + "/test/")) {
-        it("should parse " + r.name, () => {
-            const ast = getAstFactory();
-            const { parse } = getParser(ast);
-            expect(
-                parse({ code: r.code, path: "<unknown>", origin: "user" }),
-            ).toMatchSnapshot();
-        });
-    }
-
-    for (const r of loadCases(__dirname + "/test-failed/")) {
-        it("should fail " + r.name, () => {
-            const ast = getAstFactory();
-            const { parse } = getParser(ast);
+for (const r of loadCases(__dirname + "/test/")) {
+    const isNeg = r.name.endsWith(".fail");
+    it("should " + (isNeg ? "fail" : "parse") + " " + r.name, () => {
+        const ast = getAstFactory();
+        const { parse } = getParser(ast);
+        if (isNeg) {
             expect(() =>
                 parse({ code: r.code, path: "<unknown>", origin: "user" }),
             ).toThrowErrorMatchingSnapshot();
-        });
-    }
-});
+        } else {
+            expect(
+                parse({ code: r.code, path: "<unknown>", origin: "user" }),
+            ).toMatchSnapshot();
+        }
+    });
+}
 
 describe("parse imports", () => {
     const parser = getParser(getAstFactory());

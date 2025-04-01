@@ -1,9 +1,9 @@
 import type { Address, Cell, Slice } from "@ton/core";
-import type * as Ast from "./ast";
-import type { FactoryAst } from "./ast-helpers";
-import { isLiteral } from "./ast-helpers";
-import type { SrcInfo } from "../grammar";
-import { dummySrcInfo } from "../grammar";
+import type * as Ast from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { isLiteral } from "@/ast/ast-helpers";
+import type { SrcInfo } from "@/grammar";
+import { dummySrcInfo } from "@/grammar";
 
 export const getAstUtil = ({ createNode }: FactoryAst) => {
     function makeUnaryExpression(
@@ -51,18 +51,6 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
             loc: loc,
         });
         return result as Ast.Boolean;
-    }
-
-    function makeSimplifiedStringLiteral(
-        s: string,
-        loc: SrcInfo,
-    ): Ast.SimplifiedString {
-        const result = createNode({
-            kind: "simplified_string",
-            value: s,
-            loc: loc,
-        });
-        return result as Ast.SimplifiedString;
     }
 
     function makeNullLiteral(loc: SrcInfo): Ast.Null {
@@ -137,7 +125,6 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         makeBinaryExpression,
         makeNumberLiteral,
         makeBooleanLiteral,
-        makeSimplifiedStringLiteral,
         makeNullLiteral,
         makeCellLiteral,
         makeSliceLiteral,
@@ -183,4 +170,35 @@ export function checkIsName(ast: Ast.Expression): boolean {
 // Checks if the top level node is the specified boolean
 export function checkIsBoolean(ast: Ast.Expression, b: boolean): boolean {
     return ast.kind === "boolean" ? ast.value == b : false;
+}
+
+export function binaryOperationFromAugmentedAssignOperation(
+    op: Ast.AugmentedAssignOperation,
+): Ast.BinaryOperation {
+    switch (op) {
+        case "+=":
+            return "+";
+        case "-=":
+            return "-";
+        case "*=":
+            return "*";
+        case "/=":
+            return "/";
+        case "&&=":
+            return "&&";
+        case "||=":
+            return "||";
+        case "%=":
+            return "%";
+        case "|=":
+            return "|";
+        case "<<=":
+            return "<<";
+        case ">>=":
+            return ">>";
+        case "&=":
+            return "&";
+        case "^=":
+            return "^";
+    }
 }

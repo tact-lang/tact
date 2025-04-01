@@ -1,13 +1,13 @@
 import type { FileChangeInfo } from "fs/promises";
 import { watch } from "fs/promises";
 import { join } from "path";
-import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
-import type { VirtualFileSystem } from "../../vfs/VirtualFileSystem";
-import type { Config } from "../../config/parseConfig";
-import { Logger, LogLevel } from "../../context/logger";
-import type { CliErrors } from "./error-schema";
-import type { Args } from "./index";
-import { parseConfig } from "../../config/parseConfig";
+import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
+import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
+import type { Config } from "@/config/parseConfig";
+import { Logger, LogLevel } from "@/context/logger";
+import type { CliErrors } from "@/cli/tact/error-schema";
+import type { Args } from "@/cli/tact/index";
+import { parseConfig } from "@/config/parseConfig";
 import { ZodError } from "zod";
 
 let abortController: AbortController | null = null;

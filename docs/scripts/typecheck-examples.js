@@ -104,7 +104,7 @@ const extractTactCodeBlocks = (src) => {
     });
 
     if (moduleItems.length === 0) {
-      code = `fun _() {\n${code}\n}`;
+      code = `fun showcase() {\n${code}\n}`;
     }
 
     // Save the code

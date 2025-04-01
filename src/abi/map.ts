@@ -1,15 +1,15 @@
-import type { CompilerContext } from "../context/context";
-import type { SrcInfo } from "../grammar";
-import type { TypeRef } from "../types/types";
-import { printTypeRef } from "../types/types";
-import type { WriterContext } from "../generator/Writer";
-import { ops } from "../generator/writers/ops";
-import { writeExpression } from "../generator/writers/writeExpression";
-import { throwCompilationError } from "../error/errors";
-import { getType } from "../types/resolveDescriptors";
-import type { AbiFunction } from "./AbiFunction";
-import type * as Ast from "../ast/ast";
-import { isAssignable } from "../types/subtyping";
+import type { CompilerContext } from "@/context/context";
+import type { SrcInfo } from "@/grammar";
+import type { TypeRef } from "@/types/types";
+import { printTypeRef } from "@/types/types";
+import type { WriterContext } from "@/generator/Writer";
+import { ops } from "@/generator/writers/ops";
+import { writeExpression } from "@/generator/writers/writeExpression";
+import { throwCompilationError } from "@/error/errors";
+import { getType } from "@/types/resolveDescriptors";
+import type { AbiFunction } from "@/abi/AbiFunction";
+import type * as Ast from "@/ast/ast";
+import { isAssignable } from "@/types/subtyping";
 
 // Helper functions to avoid redundancy
 function checkArgumentsLength(

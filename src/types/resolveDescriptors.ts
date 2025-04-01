@@ -1,21 +1,14 @@
-import type * as Ast from "../ast/ast";
-import type { FactoryAst } from "../ast/ast-helpers";
-import {
-    eqNames,
-    idText,
-    isSelfId,
-    isSlice,
-    selfId,
-    isWildcard,
-} from "../ast/ast-helpers";
-import { traverse, traverseAndCheck } from "../ast/iterators";
+import type * as Ast from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { eqNames, idText, isSelfId, isSlice, selfId } from "@/ast/ast-helpers";
+import { traverse, traverseAndCheck } from "@/ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
-import type { CompilerContext, Store } from "../context/context";
-import { createContextStore } from "../context/context";
+} from "@/error/errors";
+import type { CompilerContext, Store } from "@/context/context";
+import { createContextStore } from "@/context/context";
 import type {
     ConstantDescription,
     FieldDescription,
@@ -26,26 +19,30 @@ import type {
     ReceiverSelector,
     TypeDescription,
     TypeRef,
-} from "./types";
-import { printTypeRef, receiverSelectorName, typeRefEquals } from "./types";
-import { getRawAST } from "../context/store";
-import { cloneNode } from "../ast/clone";
-import { crc16 } from "../utils/crc16";
-import { isSubsetOf } from "../utils/isSubsetOf";
+} from "@/types/types";
+import {
+    printTypeRef,
+    receiverSelectorName,
+    typeRefEquals,
+} from "@/types/types";
+import { getRawAST } from "@/context/store";
+import { cloneNode } from "@/ast/clone";
+import { crc16 } from "@/utils/crc16";
+import { isSubsetOf } from "@/utils/isSubsetOf";
 import {
     intMapKeyFormats,
     intMapValFormats,
     resolveABIType,
-} from "./resolveABITypeRef";
-import { enabledExternals } from "../config/features";
-import { isRuntimeType } from "./isRuntimeType";
-import { GlobalFunctions } from "../abi/global";
-import { getExpType, resolveExpression } from "./resolveExpression";
-import { addVariable, emptyContext } from "./resolveStatements";
-import { isAssignable } from "./subtyping";
-import type { ItemOrigin } from "../imports/source";
-import { isUndefined } from "../utils/array";
-import type { Effect } from "./effects";
+} from "@/types/resolveABITypeRef";
+import { enabledExternals } from "@/config/features";
+import { isRuntimeType } from "@/types/isRuntimeType";
+import { GlobalFunctions } from "@/abi/global";
+import { getExpType, resolveExpression } from "@/types/resolveExpression";
+import { addVariable, emptyContext } from "@/types/resolveStatements";
+import { isAssignable } from "@/types/subtyping";
+import type { ItemOrigin } from "@/imports/source";
+import { isUndefined } from "@/utils/array";
+import type { Effect } from "@/types/effects";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -853,7 +850,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         }
 
         // Check for common
-        if (a.kind === "function_def") {
+        if (a.kind === "function_def" || a.kind === "asm_function_def") {
             if (isGetter && !self) {
                 throwCompilationError(
                     "Getters must be defined within a contract",
@@ -867,7 +864,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             throwCompilationError("Getters cannot be inline", isInline.loc);
         }
 
-        const exNames: Set<string> = new Set();
+        const parameterNameSet: Set<string> = new Set();
 
         // Validate mutating
         if (isExtends) {
@@ -884,7 +881,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 );
             }
             const firstParam = params[0]!;
-            if (!isSelfId(firstParam.name)) {
+            if (
+                firstParam.name.kind !== "id" ||
+                firstParam.name.text !== "self"
+            ) {
                 throwCompilationError(
                     'Extend function must have first parameter named "self"',
                     firstParam.loc,
@@ -905,7 +905,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
             // Update self and remove first parameter
             self = firstParam.type;
-            exNames.add(idText(firstParam.name));
+            parameterNameSet.add(idText(firstParam.name));
             params = params.slice(1);
         }
 
@@ -931,7 +931,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         }
 
         for (const param of params) {
-            if (exNames.has(idText(param.name)) && !isWildcard(param.name)) {
+            if (param.name.kind !== "id") {
+                continue;
+            }
+            if (parameterNameSet.has(param.name.text)) {
                 throwCompilationError(
                     `Parameter name ${idTextErr(param.name)} is already used`,
                     param.loc,
@@ -943,7 +946,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     param.loc,
                 );
             }
-            exNames.add(idText(param.name));
+            parameterNameSet.add(idText(param.name));
         }
 
         // Check for runtime types in getters
@@ -979,9 +982,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         a.loc,
                     );
                 }
-                const paramSet = new Set(
-                    a.params.map((typedId) => idText(typedId.name)),
-                );
+                const paramsArray: string[] = [];
+                for (const typedId of a.params) {
+                    if (typedId.name.kind === "wildcard") {
+                        throwCompilationError(
+                            "cannot use wildcards with argument rearrangement",
+                            a.loc,
+                        );
+                    }
+                    paramsArray.push(idText(typedId.name));
+                }
+                const paramSet = new Set(paramsArray);
                 if (!isSubsetOf(paramSet, shuffleArgSet)) {
                     throwCompilationError(
                         "asm argument rearrangement must mention all function parameters",
@@ -1548,18 +1559,16 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
     for (const t of types.values()) {
         if (t.kind === "contract") {
-            if (!t.init) {
-                t.init = {
-                    kind: "init-function",
+            t.init ??= {
+                kind: "init-function",
+                params: [],
+                ast: Ast.createNode({
+                    kind: "contract_init",
                     params: [],
-                    ast: Ast.createNode({
-                        kind: "contract_init",
-                        params: [],
-                        statements: [],
-                        loc: t.ast.loc,
-                    }) as Ast.ContractInit,
-                };
-            }
+                    statements: [],
+                    loc: t.ast.loc,
+                }) as Ast.ContractInit,
+            };
         }
     }
 

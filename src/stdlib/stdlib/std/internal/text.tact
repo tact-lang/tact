@@ -232,9 +232,15 @@ asm extends fun toString(self: Int): String {
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 134: [Invalid argument] — Thrown when the given `digits` value is out of range.
+///
 /// See: https://docs.tact-lang.org/ref/core-strings#inttofloatstring
 ///
 /// [fixed-point representation]: https://en.wikipedia.org/wiki/Fixed-point_arithmetic
+/// [Invalid argument]: https://docs.tact-lang.org/book/exit-codes#134
+/// 
 asm extends fun toFloatString(self: Int, digits: Int): String  {
     // x digits
 
@@ -496,9 +502,6 @@ inline extends fun fromBase64(self: String): Slice {
 /// the given `String`, without throwing an exception when the `String` is larger
 /// (i.e., contains more than 1023 bits of data).
 ///
-/// If the given `String` contains characters not from the base64 set, an exception with
-/// [exit code 134] will be thrown: `Invalid argument`.
-///
 /// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 ///
 /// ```tact
@@ -511,9 +514,13 @@ inline extends fun fromBase64(self: String): Slice {
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 134: [Invalid argument] — Thrown when the given `String` contains characters not from the base64 set.
+///
 /// See: https://docs.tact-lang.org/ref/core-cells#slicefrombase64
 ///
-/// [exit code 134]: https://docs.tact-lang.org/book/exit-codes#134
+/// [Invalid argument]: https://docs.tact-lang.org/book/exit-codes#134
 /// [base64]: https://en.wikipedia.org/wiki/Base64
 ///
 extends fun fromBase64(self: Slice): Slice {
