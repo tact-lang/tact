@@ -1416,9 +1416,9 @@
     "@babel/types" "^7.20.7"
 
 "@types/diff@^7.0.0":
-  version "7.0.1"
-  resolved "https://registry.npmjs.org/@types/diff/-/diff-7.0.1.tgz#acc505eb2e8337ca400503283a6ab44a59906d9f"
-  integrity sha512-R/BHQFripuhW6XPXy05hIvXJQdQ4540KnTvEFHSLjXfHYM41liOLKgIJEyYYiQe796xpaMHfe4Uj/p7Uvng2vA==
+  version "7.0.2"
+  resolved "https://registry.npmjs.org/@types/diff/-/diff-7.0.2.tgz#d638edebf3c97aa4962b6f1164a7921ab3de9f83"
+  integrity sha512-JSWRMozjFKsGlEjiiKajUjIJVKuKdE3oVy2DNtK+fUo8q82nhFZ2CPQwicAIkXrofahDXrWJ7mjelvZphMS98Q==
 
 "@types/glob@^8.1.0":
   version "8.1.0"
