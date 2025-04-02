@@ -1,9 +1,10 @@
 import "@stdlib/ownable";
 import "@stdlib/dns";
 import "@stdlib/stoppable";
-import "./tact-reserved-contract-errors";
 
 message(1478) SpanishInquisition {}
+
+message(1970) SpanishInquisitionEpisode {}
 
 contract ReservedContractErrorsTester with Ownable, Stoppable {
     /// To make Ownable work
@@ -20,29 +21,89 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
 
     /// Exit code TactExitCodeNullReferenceException
     receive("TactExitCodeNullReferenceException") {
-        let gotcha: String? = null;
-        dump(gotcha!!);
+        // Setup
+        let targetCode = TactExitCodeNullReferenceException;
+        let failed = true;
+
+        // Case 1
+        try {
+            let gotcha: String? = null;
+            dump(gotcha!!);
+
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+
+        require(failed, "Didn't error on null reference exception");
+    }
+
+    /// Exit code TactExitCodeInvalidSerializationPrefix
+    receive("TactExitCodeInvalidSerializationPrefix") {
+        // Setup
+        let targetCode = TactExitCodeInvalidSerializationPrefix;
+        let failed = true;
+
+        // Case 1
+        try {
+            // An attempt to deserialize one message body from a Cell with another message body
+            let tmp = SpanishInquisition.fromCell(SpanishInquisitionEpisode {}.toCell());
+            dump(tmp.toCell());
+
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+
+        require(failed, "Didn't error on invalid serialization prefix");
     }
 
     /// Exit code TactExitCodeInvalidIncomingMessage
     receive("TactExitCodeInvalidIncomingMessage") {
-        message(MessageParameters{
+        message(MessageParameters {
             to: myAddress(), // Send a message back to this contract
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: SpanishInquisition{}.toCell(), // Nobody expects it!
+            body: SpanishInquisition {}.toCell(), // Nobody expects it!
         });
     }
 
     /// Exit code TactExitCodeAccessDenied
     receive("TactExitCodeAccessDenied") {
-        self.requireOwner();
+        // Setup
+        let targetCode = TactExitCodeAccessDenied;
+        let failed = true;
+
+        // Case 1
+        try {
+            self.requireOwner();
+
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+
+        require(failed, "self.requireOwner() didn't error on a non-owner");
     }
 
     /// Exit code TactExitCodeContractStopped
     receive("TactExitCodeContractStopped") {
-        self.stopped = true;
-        self.requireNotStopped();
+        // Setup
+        let targetCode = TactExitCodeContractStopped;
+        let failed = true;
+
+        // Case 1
+        try {
+            self.stopped = true;
+            self.requireNotStopped();
+
+            failed = false;
+            dump(failed);
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+
+        require(failed, "self.requireNotStopped() didn't error on the self.stopped = true");
     }
 
     /// Exit code TactExitCodeInvalidArgument
@@ -102,10 +163,6 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "dnsInternalNormalize() didn't error on Slice with refs");
-
-        // As we got here, everything above caused the target exit code,
-        // so let's throw it explicitly now for the tests on Blueprint's side
-        throw(targetCode);
     }
 
     /// Exit code TactExitCodeInvalidStandardAddress
@@ -120,7 +177,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_1, 3) // WRONG prefix!
                 .storeInt(chainID, 8) // chain ID -1
-                .storeUint(0, 256)    // account ID 0
+                .storeUint(0, 256) // account ID 0
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -135,7 +192,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_1, 3) // WRONG prefix!
                 .storeInt(chainID, 8) // chain ID 0
-                .storeUint(0, 256)    // account ID 0
+                .storeUint(0, 256) // account ID 0
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -150,7 +207,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_1, 3) // WRONG prefix!
                 .storeInt(chainID, 8) // chain ID 1
-                .storeUint(0, 256)    // account ID 0
+                .storeUint(0, 256) // account ID 0
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -165,7 +222,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_0, 3) // correct prefix
                 .storeInt(chainID, 8) // chain ID 0
-                .storeUint(0, 42)     // WRONG size of the account ID!
+                .storeUint(0, 42) // WRONG size of the account ID!
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -180,7 +237,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_0, 3) // correct prefix
                 .storeInt(chainID, 8) // chain ID -1
-                .storeUint(0, 42)     // WRONG size of the account ID!
+                .storeUint(0, 42) // WRONG size of the account ID!
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -195,7 +252,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_0, 3) // correct prefix
                 .storeInt(chainID, 8) // chain ID 0
-                .storeUint(0, 42)     // WRONG size of the account ID!
+                .storeUint(0, 42) // WRONG size of the account ID!
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -203,13 +260,22 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.asAddress() didn't error on invalid account ID size for a workchain address");
-
-        // As we got here, everything above caused the target exit code,
-        // so let's throw it explicitly now for the tests on Blueprint's side
-        throw(targetCode);
     }
 
     receive("TactExitCodeNotBasechainAddress") {
-        forceBasechain(self.masterchainAddress);
+        // Setup
+        let targetCode = TactExitCodeNotBasechainAddress;
+        let failed = true;
+
+        // Case 1
+        try {
+            forceBasechain(self.masterchainAddress);
+
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+
+        require(failed, "Didn't error on not basechain address");
     }
 }

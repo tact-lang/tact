@@ -563,13 +563,42 @@ try {
 
 ### 129: Invalid serialization prefix {#129}
 
-Reserved, but due to a number of prior checks, it cannot be thrown unless one hijacks the contract code before deployment and changes the opcodes of the [Messages][message] expected to be received in the contract.
+If there is an attempt to parse (deserialize) a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] into a [message struct][message] and the parsed opcode prefix doesn't match the expected target one, an error with exit code $129$ is thrown: `Invalid serialization prefix`.
+
+Thus, this error can occur whenever there is an opcode mismatch when using either of the following functions:
+
+1. [`Message.fromCell{:tact}`](/ref/core-cells#messagefromcell)
+2. [`Message.fromSlice(){:tact}`](/ref/core-cells#messagefromslice)
+
+```tact
+fun example() {
+    // This cell contains a 32-bit opcode prefix (0x00000001)
+    let cellOne = MsgOne {}.toCell();
+
+    try {
+        // This is a failed attempt to parse one message that has an opcode of 1 (0x00000001)
+        // from a Cell with another message that has an opcode of 2 (0x00000002)
+        let msgTwo = MsgTwo.fromCell(cellOne);
+        dump(msgTwo.toCell());
+    } catch (exitCode) {
+        // exitCode is 129
+    }
+}
+
+// An empty message struct with an opcode of 1 (0x00000001)
+message(1) MsgOne {}
+
+// An empty message struct with an opcode of 2 (0x00000002)
+message(2) MsgTwo {}
+```
+
+Additionally, this error can happen if one hijacks the contract code before deployment and changes the opcodes of the [message structs][message] expected to be received in the contract.
 
 <Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 129 with the `TactExitCodeInvalidSerializationPrefix` [constant][const].
 
 ### 130: Invalid incoming message {#130}
 
-If the received internal or external message is not handled by the contract, an error with exit code $130$ is thrown: `Invalid incoming message`. It usually happens when the contract does not have a receiver for the particular message and its opcode prefix (32-bit integer header).
+If the received internal or external message is not handled by the contract, an error with exit code $130$ is thrown: `Invalid incoming message`. It usually happens when the contract does not have a receiver for the particular message and its opcode prefix: a 32-bit integer header.
 
 Consider the following contract:
 
