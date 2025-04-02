@@ -157,7 +157,7 @@ trait Ownable {
 
     // Internal function
     fun requireOwner() {
-        throwUnless(132, context().sender == self.owner);
+        throwUnless(TactExitCodeAccessDenied, context().sender == self.owner);
     }
 
     // Getter function with return type Address

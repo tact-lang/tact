@@ -1,4 +1,3 @@
-import * as changeCase from "change-case";
 import type { ABIField } from "@ton/core";
 import type { CompilerContext } from "@/context/context";
 import { idToHex } from "@/utils/idToHex";
@@ -23,6 +22,7 @@ import { ensureInt } from "@/optimizer/interpreter";
 import { evalConstantExpression } from "@/optimizer/constEval";
 import { getAstUtil } from "@/ast/util";
 import { sha256, highest32ofSha256 } from "@/utils/sha256";
+import { snakeCase } from "@/utils/change-case/snake-case";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     const util = getAstUtil(Ast);
@@ -277,7 +277,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
         // Calculate TLB
         const tlbHeader =
             id !== null
-                ? `${changeCase.snakeCase(name)}#${idToHex(Number(id.value))}`
+                ? `${snakeCase(name)}#${idToHex(Number(id.value))}`
                 : "_";
         const tlb = tlbHeader + " " + fields.join(" ") + " = " + name;
 

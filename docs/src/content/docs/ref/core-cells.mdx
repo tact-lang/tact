@@ -1971,6 +1971,8 @@ Extension function for any [Message][message] type.
 
 Converts a [`Cell{:tact}`][cell] into the specified [Message][message] and returns that [Message][message].
 
+Attempts to pass a [`Cell{:tact}`][cell] that contains an [opcode prefix][opcode] of a different message throw an exception with [exit code 129](/book/exit-codes#129): `Invalid serialization prefix`.
+
 Attempts to pass a [`Cell{:tact}`][cell] with a layout different from the specified [Message][message] or to load more data than a [`Cell{:tact}`][cell] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage examples:
@@ -2005,6 +2007,8 @@ Extension function for any [Message][message] type.
 
 Converts a [`Slice{:tact}`][slice] into the specified [Message][message] and returns that [Message][message].
 
+Attempts to pass a [`Slice{:tact}`][slice] that contains an [opcode prefix][opcode] of a different message throw an exception with [exit code 129](/book/exit-codes#129): `Invalid serialization prefix`.
+
 Attempts to pass a [`Slice{:tact}`][slice] with a layout different from the specified [Message][message] or to load more data than a [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage examples:
@@ -2038,6 +2042,7 @@ fun cautiousParse(payload: Slice): TripleAxe? {
 [map]: /book/maps
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
+[opcode]: /book/structs-and-messages#message-opcodes
 [null]: /book/optionals
 
 [std-repr]: /book/cells#cells-representation
