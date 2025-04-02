@@ -143,7 +143,7 @@ async function testReservedExitCode(
         codeName,
     );
 
-    if ( codeName === "TactExitCodeInvalidIncomingMessage" ) {
+    if (codeName === "TactExitCodeInvalidIncomingMessage") {
         expect(sendResult.transactions).toHaveTransaction({
             from: contract.address,
             to: contract.address,
@@ -152,10 +152,10 @@ async function testReservedExitCode(
         });
         return;
     }
-    
+
     expect(sendResult.transactions).toHaveTransaction({
         from: treasure.address,
         to: contract.address,
-        success: true
+        success: true,
     });
 }

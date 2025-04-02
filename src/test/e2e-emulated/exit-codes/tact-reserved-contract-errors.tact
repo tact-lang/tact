@@ -39,11 +39,11 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
 
     /// Exit code TactExitCodeInvalidIncomingMessage
     receive("TactExitCodeInvalidIncomingMessage") {
-        message(MessageParameters{
+        message(MessageParameters {
             to: myAddress(), // Send a message back to this contract
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: SpanishInquisition{}.toCell(), // Nobody expects it!
+            body: SpanishInquisition {}.toCell(), // Nobody expects it!
         });
     }
 
@@ -61,7 +61,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
         } catch (exitCode) {
             throwIf(exitCode, exitCode != targetCode);
         }
-        
+
         require(failed, "Don't have any exitCode");
     }
 
@@ -81,7 +81,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
         } catch (exitCode) {
             throwIf(exitCode, exitCode != targetCode);
         }
-        
+
         require(failed, "Don't have any exitCode");
     }
 
@@ -156,7 +156,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_1, 3) // WRONG prefix!
                 .storeInt(chainID, 8) // chain ID -1
-                .storeUint(0, 256)    // account ID 0
+                .storeUint(0, 256) // account ID 0
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -171,7 +171,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_1, 3) // WRONG prefix!
                 .storeInt(chainID, 8) // chain ID 0
-                .storeUint(0, 256)    // account ID 0
+                .storeUint(0, 256) // account ID 0
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -186,7 +186,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_1, 3) // WRONG prefix!
                 .storeInt(chainID, 8) // chain ID 1
-                .storeUint(0, 256)    // account ID 0
+                .storeUint(0, 256) // account ID 0
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -201,7 +201,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_0, 3) // correct prefix
                 .storeInt(chainID, 8) // chain ID 0
-                .storeUint(0, 42)     // WRONG size of the account ID!
+                .storeUint(0, 42) // WRONG size of the account ID!
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -216,7 +216,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_0, 3) // correct prefix
                 .storeInt(chainID, 8) // chain ID -1
-                .storeUint(0, 42)     // WRONG size of the account ID!
+                .storeUint(0, 42) // WRONG size of the account ID!
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -231,7 +231,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             let addrSlice = beginCell()
                 .storeUint(0b10_0, 3) // correct prefix
                 .storeInt(chainID, 8) // chain ID 0
-                .storeUint(0, 42)     // WRONG size of the account ID!
+                .storeUint(0, 42) // WRONG size of the account ID!
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -254,7 +254,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
         } catch (exitCode) {
             throwIf(exitCode, exitCode != targetCode);
         }
-        
+
         require(failed, "Don't have any exitCode");
     }
 }
