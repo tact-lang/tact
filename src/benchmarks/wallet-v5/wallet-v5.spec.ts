@@ -186,7 +186,7 @@ describe("Wallet Gas Tests", () => {
     afterAll(() => {
         printBenchmarkTable(results, undefined, {
             implementationName: "FunC",
-            printMode: "first-last",
+            printMode: "full",
         });
     });
 

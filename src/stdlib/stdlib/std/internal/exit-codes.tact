@@ -6,7 +6,8 @@
 ///
 const TactExitCodeNullReferenceException: Int = 128;
 
-/// Thrown when an invalid serialization prefix is encountered.
+/// Thrown when there is a failed deserialization attempt:
+/// a certain opcode prefix was expected, but a different one was parsed.
 ///
 /// See: https://docs.tact-lang.org/book/exit-codes#129
 ///
