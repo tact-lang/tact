@@ -20,8 +20,21 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
 
     /// Exit code TactExitCodeNullReferenceException
     receive("TactExitCodeNullReferenceException") {
-        let gotcha: String? = null;
-        dump(gotcha!!);
+        // Setup
+        let targetCode = TactExitCodeNullReferenceException;
+        let failed = true;
+
+        // Case 1
+        try {
+            let gotcha: String? = null;
+            dump(gotcha!!);
+
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+
+        require(failed, "Don't have any exitCode");
     }
 
     /// Exit code TactExitCodeInvalidIncomingMessage
@@ -36,13 +49,40 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
 
     /// Exit code TactExitCodeAccessDenied
     receive("TactExitCodeAccessDenied") {
-        self.requireOwner();
+        // Setup
+        let targetCode = TactExitCodeAccessDenied;
+        let failed = true;
+
+        // Case 1
+        try {
+            self.requireOwner();
+
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+        
+        require(failed, "Don't have any exitCode");
     }
 
     /// Exit code TactExitCodeContractStopped
     receive("TactExitCodeContractStopped") {
-        self.stopped = true;
-        self.requireNotStopped();
+        // Setup
+        let targetCode = TactExitCodeContractStopped;
+        let failed = true;
+
+        // Case 1
+        try {
+            self.stopped = true;
+            self.requireNotStopped();
+
+            failed = false;
+            dump(failed);
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+        
+        require(failed, "Don't have any exitCode");
     }
 
     /// Exit code TactExitCodeInvalidArgument
@@ -102,10 +142,6 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "dnsInternalNormalize() didn't error on Slice with refs");
-
-        // As we got here, everything above caused the target exit code,
-        // so let's throw it explicitly now for the tests on Blueprint's side
-        throw(targetCode);
     }
 
     /// Exit code TactExitCodeInvalidStandardAddress
@@ -203,13 +239,22 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.asAddress() didn't error on invalid account ID size for a workchain address");
-
-        // As we got here, everything above caused the target exit code,
-        // so let's throw it explicitly now for the tests on Blueprint's side
-        throw(targetCode);
     }
 
     receive("TactExitCodeNotBasechainAddress") {
-        forceBasechain(self.masterchainAddress);
+        // Setup
+        let targetCode = TactExitCodeNotBasechainAddress;
+        let failed = true;
+
+        // Case 1
+        try {
+            forceBasechain(self.masterchainAddress);
+
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+        
+        require(failed, "Don't have any exitCode");
     }
 }
