@@ -5,6 +5,10 @@ import "./tact-reserved-contract-errors";
 
 message(1478) SpanishInquisition {}
 
+message(1111) HolyTribunal {
+    spanishInquisition: SpanishInquisition;
+}
+
 contract ReservedContractErrorsTester with Ownable, Stoppable {
     /// To make Ownable work
     owner: Address;
@@ -34,7 +38,27 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
 
-        require(failed, "Don't have any exitCode");
+        require(failed, "Didn't error on null reference exception");
+    }
+
+    /// Exit code TactExitCodeInvalidSerializationPrefix
+    receive("TactExitCodeInvalidSerializationPrefix") {
+        // Setup
+        let targetCode = TactExitCodeInvalidSerializationPrefix;
+        let failed = true;
+
+        // Case 1
+        try {
+            // We try to load message from Cell of another message
+            let tmp = SpanishInquisition.fromCell(beginCell().storeUint(1111, 32).endCell()); // load from Cell with another opcode
+            dump(tmp.toCell());
+
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+
+        require(failed, "Didn't error on invalid serialization prefix");
     }
 
     /// Exit code TactExitCodeInvalidIncomingMessage
@@ -62,7 +86,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
 
-        require(failed, "Don't have any exitCode");
+        require(failed, "Didn't error on requireOwner from notOwner");
     }
 
     /// Exit code TactExitCodeContractStopped
@@ -82,7 +106,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
 
-        require(failed, "Don't have any exitCode");
+        require(failed, "Didn't error on requireNotStopped");
     }
 
     /// Exit code TactExitCodeInvalidArgument
@@ -255,6 +279,6 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
 
-        require(failed, "Don't have any exitCode");
+        require(failed, "Didn't error on not basechain address");
     }
 }

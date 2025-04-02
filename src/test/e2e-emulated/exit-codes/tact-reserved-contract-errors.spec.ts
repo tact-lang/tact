@@ -4,9 +4,10 @@ import { Blockchain } from "@ton/sandbox";
 import { ReservedContractErrorsTester as TestContract } from "@/test/e2e-emulated/exit-codes/output/tact-reserved-contract-errors_ReservedContractErrorsTester";
 import "@ton/test-utils";
 
-type ExitCodeValue = 128 | 130 | 132 | 133 | 134 | 136 | 138;
+type ExitCodeValue = 128 | 129 | 130 | 132 | 133 | 134 | 136 | 138;
 type ExitCodeKey =
     | "TactExitCodeNullReferenceException"
+    | "TactExitCodeInvalidSerializationPrefix"
     | "TactExitCodeInvalidIncomingMessage"
     | "TactExitCodeAccessDenied"
     | "TactExitCodeContractStopped"
@@ -16,6 +17,7 @@ type ExitCodeKey =
 
 const TactExitCodes: Map<ExitCodeKey, ExitCodeValue> = new Map([
     ["TactExitCodeNullReferenceException", 128],
+    ["TactExitCodeInvalidSerializationPrefix", 129],
     ["TactExitCodeInvalidIncomingMessage", 130],
     ["TactExitCodeAccessDenied", 132],
     ["TactExitCodeContractStopped", 133],
@@ -62,9 +64,13 @@ describe("Tact-reserved contract errors", () => {
     });
 
     // 129: Invalid serialization prefix
-    // NOTE: Reserved, but due to a number of prior checks it cannot be thrown unless one hijacks
-    //       the contract code before deployment and changes the opcodes of the Messages expected
-    //       to be received in the contract
+    it("should test exit code TactExitCodeInvalidSerializationPrefix(129)", async () => {
+        await testReservedExitCode(
+            "TactExitCodeInvalidSerializationPrefix",
+            contract,
+            treasure,
+        );
+    });
 
     // 130: Invalid incoming message
     it("should test exit code TactExitCodeInvalidIncomingMessage(130)", async () => {
@@ -106,8 +112,8 @@ describe("Tact-reserved contract errors", () => {
     });
 
     // 135: Code of a contract was not found
-    // NOTE: Reserved, but one has to replace the contract code to trigger it
-
+    // NOTE: If the code of the contract is missing or does not match the one saved in TypeScript wrappers, an error with exit code 135 will be thrown
+    
     // 136: Invalid address
     it("should test exit code TactExitCodeInvalidStandardAddress(136)", async () => {
         await testReservedExitCode(
