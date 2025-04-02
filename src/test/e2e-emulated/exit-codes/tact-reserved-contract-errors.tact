@@ -18,14 +18,14 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
     /// To handle deployment
     receive() {}
 
-    /// Exit code 128
-    receive("128") {
+    /// Exit code TactExitCodeNullReferenceException
+    receive("TactExitCodeNullReferenceException") {
         let gotcha: String? = null;
         dump(gotcha!!);
     }
 
-    /// Exit code 130
-    receive("130") {
+    /// Exit code TactExitCodeInvalidIncomingMessage
+    receive("TactExitCodeInvalidIncomingMessage") {
         message(MessageParameters{
             to: myAddress(), // Send a message back to this contract
             value: 0,
@@ -34,21 +34,21 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
         });
     }
 
-    /// Exit code 132
-    receive("132") {
+    /// Exit code TactExitCodeAccessDenied
+    receive("TactExitCodeAccessDenied") {
         self.requireOwner();
     }
 
-    /// Exit code 133
-    receive("133") {
+    /// Exit code TactExitCodeContractStopped
+    receive("TactExitCodeContractStopped") {
         self.stopped = true;
         self.requireNotStopped();
     }
 
-    /// Exit code 134
-    receive("134") {
+    /// Exit code TactExitCodeInvalidArgument
+    receive("TactExitCodeInvalidArgument") {
         // Setup
-        let targetCode = 134;
+        let targetCode = TactExitCodeInvalidArgument;
         let failed = true;
 
         // Case 1
@@ -108,10 +108,10 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
         throw(targetCode);
     }
 
-    /// Exit code 136
-    receive("136") {
+    /// Exit code TactExitCodeInvalidStandardAddress
+    receive("TactExitCodeInvalidStandardAddress") {
         // Setup
-        let targetCode = 134;
+        let targetCode = TactExitCodeInvalidStandardAddress;
         let failed = true;
 
         // Case 1: Invalid tag prefix in masterchain
@@ -209,7 +209,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
         throw(targetCode);
     }
 
-    receive("138") {
+    receive("TactExitCodeNotBasechainAddress") {
         forceBasechain(self.masterchainAddress);
     }
 }
