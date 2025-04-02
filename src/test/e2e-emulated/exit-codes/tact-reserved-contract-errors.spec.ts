@@ -112,7 +112,9 @@ describe("Tact-reserved contract errors", () => {
     });
 
     // 135: Code of a contract was not found
-    // NOTE: If the code of the contract is missing or does not match the one saved in TypeScript wrappers, an error with exit code 135 will be thrown
+    // NOTE:
+    // If the code of the contract is missing or does not match the one saved
+    // in the TypeScript wrappers, an error with exit code 135 will be thrown
 
     // 136: Invalid address
     it("should test exit code TactExitCodeInvalidStandardAddress(136)", async () => {

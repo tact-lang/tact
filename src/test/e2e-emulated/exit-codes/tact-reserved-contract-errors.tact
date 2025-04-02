@@ -1,13 +1,10 @@
 import "@stdlib/ownable";
 import "@stdlib/dns";
 import "@stdlib/stoppable";
-import "./tact-reserved-contract-errors";
 
 message(1478) SpanishInquisition {}
 
-message(1111) HolyTribunal {
-    spanishInquisition: SpanishInquisition;
-}
+message(1970) SpanishInquisitionEpisode {}
 
 contract ReservedContractErrorsTester with Ownable, Stoppable {
     /// To make Ownable work
@@ -49,8 +46,8 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
 
         // Case 1
         try {
-            // We try to load message from Cell of another message
-            let tmp = SpanishInquisition.fromCell(beginCell().storeUint(1111, 32).endCell()); // load from Cell with another opcode
+            // An attempt to deserialize one message body from a Cell with another message body
+            let tmp = SpanishInquisition.fromCell(SpanishInquisitionEpisode {}.toCell());
             dump(tmp.toCell());
 
             failed = false;
@@ -86,7 +83,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
 
-        require(failed, "Didn't error on requireOwner from notOwner");
+        require(failed, "self.requireOwner() didn't error on a non-owner");
     }
 
     /// Exit code TactExitCodeContractStopped
@@ -106,7 +103,7 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
             throwIf(exitCode, exitCode != targetCode);
         }
 
-        require(failed, "Didn't error on requireNotStopped");
+        require(failed, "self.requireNotStopped() didn't error on the self.stopped = true");
     }
 
     /// Exit code TactExitCodeInvalidArgument
