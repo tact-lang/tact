@@ -1,18 +1,15 @@
-import { contractErrors } from "../../abi/errors";
-import { throwInternalCompilerError } from "../../error/errors";
-import { dummySrcInfo } from "../../grammar";
-import type {
-    AllocationCell,
-    AllocationOperation,
-} from "../../storage/operation";
-import type { StorageAllocation } from "../../storage/StorageAllocation";
-import { getType } from "../../types/resolveDescriptors";
-import type { WriterContext } from "../Writer";
-import { ops } from "./ops";
-import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";
-import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
-import type { ItemOrigin } from "../../imports/source";
-import type { TypeDescription } from "../../types/types";
+import { contractErrors } from "@/abi/errors";
+import { throwInternalCompilerError } from "@/error/errors";
+import { dummySrcInfo } from "@/grammar";
+import type { AllocationCell, AllocationOperation } from "@/storage/operation";
+import type { StorageAllocation } from "@/storage/StorageAllocation";
+import { getType } from "@/types/resolveDescriptors";
+import type { WriterContext } from "@/generator/Writer";
+import { ops } from "@/generator/writers/ops";
+import { resolveFuncTypeFromAbi } from "@/generator/writers/resolveFuncTypeFromAbi";
+import { resolveFuncTypeFromAbiUnpack } from "@/generator/writers/resolveFuncTypeFromAbiUnpack";
+import type { ItemOrigin } from "@/imports/source";
+import type { TypeDescription } from "@/types/types";
 
 const SMALL_STRUCT_MAX_FIELDS = 10;
 

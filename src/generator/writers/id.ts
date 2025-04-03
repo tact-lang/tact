@@ -1,5 +1,5 @@
-import type * as Ast from "../../ast/ast";
-import { idText } from "../../ast/ast-helpers";
+import type * as Ast from "@/ast/ast";
+import { idText } from "@/ast/ast-helpers";
 
 export function funcIdOf(ident: Ast.Id | Ast.Wildcard | string): string {
     if (typeof ident === "string") {

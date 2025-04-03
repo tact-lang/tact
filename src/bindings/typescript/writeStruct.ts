@@ -1,11 +1,8 @@
 import type { ABIType, ABITypeRef } from "@ton/core";
-import { serializers } from "./serializers";
-import type {
-    AllocationCell,
-    AllocationOperation,
-} from "../../storage/operation";
-import { throwInternalCompilerError } from "../../error/errors";
-import type { Writer } from "../../utils/Writer";
+import { serializers } from "@/bindings/typescript/serializers";
+import type { AllocationCell, AllocationOperation } from "@/storage/operation";
+import { throwInternalCompilerError } from "@/error/errors";
+import type { Writer } from "@/utils/Writer";
 
 export const maxTupleSize = 15;
 
@@ -243,7 +240,7 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
 
 export function writeDictParser(s: ABIType, w: Writer) {
     w.write(`
-        function dictValueParser${s.name}(): DictionaryValue<${s.name}> {
+        export function dictValueParser${s.name}(): DictionaryValue<${s.name}> {
             return {
                 serialize: (src, builder) => {
                     builder.storeRef(beginCell().store(store${s.name}(src)).endCell());

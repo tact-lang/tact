@@ -4,9 +4,9 @@
  */
 
 import type { Loc } from "@tonstudio/parser-runtime";
-import type * as Ast from "./ast";
-import type { FactoryAst } from "../ast/ast-helpers";
-import type { SrcInfo } from "../grammar/src-info";
+import type * as Ast from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import type { SrcInfo } from "@/grammar/src-info";
 
 export const getAstSchema = (
     factory: FactoryAst,

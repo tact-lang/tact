@@ -1,10 +1,10 @@
 import type { ABIField } from "@ton/core";
-import { throwInternalCompilerError } from "../error/errors";
-import type * as Ast from "../ast/ast";
-import type { SrcInfo } from "../grammar";
-import { idText } from "../ast/ast-helpers";
-import type { ItemOrigin } from "../imports/source";
-import type { Effect } from "./effects";
+import { throwInternalCompilerError } from "@/error/errors";
+import type * as Ast from "@/ast/ast";
+import type { SrcInfo } from "@/grammar";
+import { idText } from "@/ast/ast-helpers";
+import type { ItemOrigin } from "@/imports/source";
+import type { Effect } from "@/types/effects";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
@@ -58,7 +58,7 @@ export function showValue(val: Ast.Literal): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(val.base);
-        case "simplified_string":
+        case "string":
             return val.value;
         case "boolean":
             return val.value ? "true" : "false";

@@ -1,7 +1,7 @@
-import { getType } from "../../types/resolveDescriptors";
-import type { TypeDescription, TypeRef } from "../../types/types";
-import type { WriterContext } from "../Writer";
-import { resolveFuncType } from "./resolveFuncType";
+import { getType } from "@/types/resolveDescriptors";
+import type { TypeDescription, TypeRef } from "@/types/types";
+import type { WriterContext } from "@/generator/Writer";
+import { resolveFuncType } from "@/generator/writers/resolveFuncType";
 
 export function resolveFuncFlatTypes(
     descriptor: TypeRef | TypeDescription | string,

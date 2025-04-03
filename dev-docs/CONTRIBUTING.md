@@ -160,6 +160,20 @@ To run benchmarks and print comparison table
 yarn bench
 ```
 
+There are a few table print modes, you can set them with:
+
+```shell
+cross-env PRINT_MODE="first-last" yarn bench
+```
+
+Print modes:
+
+- **`first-last`**: Displays only the first and last benchmark results for comparison. This is useful for quickly identifying overall changes between the initial and most recent benchmarks.
+- **`full`**: Displays all benchmark results in detail. This mode provides a comprehensive view of all historical benchmark data.
+- **`last-diff`**: Displays the last three benchmark results to highlight recent changes. This mode is helpful for tracking incremental updates and their impact.
+
+Default print mode is `full`.
+
 ## Updating benchmarks
 
 To update historical benchmarks with `results.json`:
@@ -233,7 +247,7 @@ The [`src/grammar/grammar.gg`](../src/grammar/grammar.gg) file contains the Tact
 
 The helper file [`src/grammar/index.ts`](../src/grammar/index.ts) contains the logic that transforms concrete syntax trees produced with the help of parser into abstract syntax trees (ASTs) defined in [src/ast/ast.ts](../src/ast/ast.ts). The index.ts file also does grammar validation, like checking that function or constant attributes are not duplicated or that user identifiers do not start with specific reserved prefixes.
 
-The [`src/grammar/test`](../src/grammar/test) folder contains Tact files that are supposed to be parsed without any issues, and the [`src/grammar/test-failed`](../src/grammar/test-failed) folder contains grammatically incorrect test files which should result in parser errors. The parser error messages and the locations they point to are fixed in the [`src/grammar/**snapshots**/grammar.spec.ts.snap`](../src/grammar/__snapshots__/grammar.spec.ts.snap) Jest snapshot file.
+The [`src/grammar/test`](../src/grammar/test) folder contains Tact to test the parse: `.tact` files are expected to parse without any issues, and `.fail.tact` files should result in parser errors. The parser error messages and the locations they point to are fixed in the [`src/grammar/**snapshots**/grammar.spec.ts.snap`](../src/grammar/__snapshots__/grammar.spec.ts.snap) Jest snapshot file.
 
 ### Standard Library
 
@@ -272,7 +286,7 @@ The constant evaluator supports a large subset of Tact and handles, for instance
 
 The main logic of the constant evaluator is in the file [`src/optimizer/interpreter.ts`](../src/optimizer/interpreter.ts).
 
-You can find the relevant tests in [`src/test/e2e-emulated/contracts/constants.tact`](../src/test/e2e-emulated/contracts/constants.tact) and the corresponding spec-file: [`src/test/e2e-emulated/constants.spec.ts`](../src/test/e2e-emulated/constants.spec.ts).
+You can find the relevant tests in [`src/test/e2e-emulated/constants/constants.tact`](../src/test/e2e-emulated/constants/constants.tact) and the corresponding spec-file: [`src/test/e2e-emulated/constants/constants.spec.ts`](../src/test/e2e-emulated/constants/constants.spec.ts).
 
 The negative tests for constant evaluation are in the Tact files prefixed with `const-eval` in the [`src/test/compilation-failed/contracts`](../src/test/compilation-failed/contracts) folder.
 
@@ -284,8 +298,8 @@ The code generator lives in the [`src/generator`](../src/generator) sub-folder w
 
 The implementation that we have right now is being refactored to produce FunC ASTs and then pretty-print those ASTs as strings instead of producing source FunC code in one step. Here is the relevant pull request: <https://github.com/tact-lang/tact/pull/559>.
 
-One can find the end-to-end codegen test spec files in the [`src/test/e2e-emulated`](../src/test/e2e-emulated) folder. The test contracts are located in [`src/test/e2e-emulated/contracts`](../src/test/e2e-emulated/contracts) subfolder. Many of those spec files test various language features in relative isolation.
-An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [`src/test/e2e-emulated/semantics.spec.ts`](../src/test/e2e-emulated/semantics.spec.ts).
+One can find the end-to-end codegen test spec files in the [`src/test/e2e-emulated`](../src/test/e2e-emulated) folder. The test contracts are located in the subfolders of the [`src/test/e2e-emulated`](../src/test/e2e-emulated) folder. Many of those spec files test various language features in relative isolation.
+An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [`src/test/e2e-emulated/semantics.spec.ts`](../src/test/e2e-emulated/functions/semantics.spec.ts).
 
 Contracts with `inline` in the name of the file set `experimental.inline` config option to `true`.
 Contracts with `external` in the name of the file set the `external` config option to `true`.
@@ -297,7 +311,7 @@ Note: If you add an end-to-end test contract, you must also run `yarn gen` to co
 Some other codegen tests are as follows:
 
 - [`src/test/gas-consumption`](../src/test/gas-consumption/): check gas consumption;
-- [`src/test/exit-codes`](../src/test/exit-codes): test that certain actions produce the expected exit codes;
+- [`src/test/exit-codes`](../src/test/e2e-emulated/exit-codes): test that certain actions produce the expected exit codes;
 - [`src/test/codegen`](../src/test/codegen): test that these contracts compile just fine without running any dynamic tests: bug fixes for FunC code generation often add tests into this folder.
 
 ### Benchmarks
@@ -313,8 +327,6 @@ Benchmarks have CLI commands support for updating and managing them, check [Upda
 ### Pretty-printer and AST comparators
 
 The entry point to the Tact AST pretty-printer is [`src/ast/ast-printer.ts`](../src/ast/ast-printer.ts). It will be used for the Tact source code formatter once the parser keeps comments and other relevant information.
-
-The corresponding test spec files can be found in [`src/test`](../src/test) folder with the test contracts in [`src/test/contracts`](../src/test/contracts) folder.
 
 ### Build scripts and test helpers
 

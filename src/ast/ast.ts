@@ -1,7 +1,7 @@
 import type * as TonCore from "@ton/core";
-import type { SrcInfo } from "../grammar/src-info";
-import type { RelativePath } from "../imports/path";
-import type { Language } from "../imports/source";
+import type { SrcInfo } from "@/grammar/src-info";
+import type { RelativePath } from "@/imports/path";
+import type { Language } from "@/imports/source";
 
 export type Module = {
     readonly kind: "module";
@@ -391,14 +391,13 @@ export type Expression =
     | Id
     | InitOf
     | CodeOf
-    | String
     | Literal;
 
 export type Literal =
     | Number
     | Boolean
     | Null
-    | SimplifiedString
+    | String
     | Address
     | Cell
     | Slice
@@ -574,20 +573,7 @@ export type ImportPath = {
 // from standard library is still import with origin: "stdlib"
 export type ImportType = "stdlib" | "relative";
 
-// An SimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
-// An String is not a literal because it may contain escaping characters that have not been simplified, like '\\'.
-// SimplifiedString is always produced by the interpreter, never directly by the parser. The parser produces Strings, which
-// then get transformed into SimplifiedString by the interpreter.
-export type SimplifiedString = {
-    readonly kind: "simplified_string";
-    readonly value: string;
-    readonly id: number;
-    readonly loc: SrcInfo;
-};
-
-/**
- * @deprecated SimplifiedString
- */
+// A String is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
 export type String = {
     readonly kind: "string";
     readonly value: string;

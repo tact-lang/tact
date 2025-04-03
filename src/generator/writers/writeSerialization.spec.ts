@@ -1,20 +1,21 @@
-import { CompilerContext } from "../../context/context";
-import {
-    getAllocation,
-    resolveAllocations,
-} from "../../storage/resolveAllocation";
+import { CompilerContext } from "@/context/context";
+import { getAllocation, resolveAllocations } from "@/storage/resolveAllocation";
 import {
     getAllTypes,
     getType,
     resolveDescriptors,
-} from "../../types/resolveDescriptors";
-import { WriterContext } from "../Writer";
-import { writeParser, writeSerializer } from "./writeSerialization";
-import { writeStdlib } from "./writeStdlib";
-import { openContext } from "../../context/store";
-import { writeAccessors } from "./writeAccessors";
-import { getParser } from "../../grammar";
-import { getAstFactory } from "../../ast/ast-helpers";
+} from "@/types/resolveDescriptors";
+import { WriterContext } from "@/generator/Writer";
+import {
+    writeParser,
+    writeSerializer,
+} from "@/generator/writers/writeSerialization";
+import { writeStdlib } from "@/generator/writers/writeStdlib";
+import { openContext, parseModules } from "@/context/store";
+import { writeAccessors } from "@/generator/writers/writeAccessors";
+import { getParser } from "@/grammar";
+import { getAstFactory } from "@/ast/ast-helpers";
+import type { Source } from "@/imports/source";
 
 const code = `
 primitive Int;
@@ -60,11 +61,14 @@ describe("writeSerialization", () => {
     for (const s of ["A", "B", "C"]) {
         it("should write serializer for " + s, () => {
             const ast = getAstFactory();
+            const sources: Source[] = [
+                { code, path: "<unknown>", origin: "user" },
+            ];
             let ctx = openContext(
                 new CompilerContext(),
-                [{ code, path: "<unknown>", origin: "user" }],
+                sources,
                 [],
-                getParser(ast),
+                parseModules(sources, getParser(ast)),
             );
             ctx = resolveDescriptors(ctx, ast);
             ctx = resolveAllocations(ctx);

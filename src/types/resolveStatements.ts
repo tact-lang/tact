@@ -1,18 +1,18 @@
-import type * as Ast from "../ast/ast";
-import type { CompilerContext } from "../context/context";
-import { isAssignable } from "./subtyping";
+import type * as Ast from "@/ast/ast";
+import type { CompilerContext } from "@/context/context";
+import { isAssignable } from "@/types/subtyping";
 import {
     tryExtractPath,
     eqNames,
     isSelfId,
     idText,
     selfId,
-} from "../ast/ast-helpers";
+} from "@/ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
+} from "@/error/errors";
 import {
     getAllStaticFunctions,
     getStaticConstant,
@@ -20,11 +20,11 @@ import {
     hasStaticConstant,
     resolveTypeRef,
     getAllTypes,
-} from "./resolveDescriptors";
-import { getExpType, resolveExpression } from "./resolveExpression";
-import type { FunctionDescription, TypeRef } from "./types";
-import { printTypeRef } from "./types";
-import type { SrcInfo } from "../grammar";
+} from "@/types/resolveDescriptors";
+import { getExpType, resolveExpression } from "@/types/resolveExpression";
+import type { FunctionDescription, TypeRef } from "@/types/types";
+import { printTypeRef } from "@/types/types";
+import type { SrcInfo } from "@/grammar";
 
 export type StatementContext = {
     root: SrcInfo;

@@ -1,22 +1,25 @@
-import { enabledInline } from "../../config/features";
-import type * as Ast from "../../ast/ast";
-import { idOfText, idText, tryExtractPath } from "../../ast/ast-helpers";
-import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
-import { getExpType } from "../../types/resolveExpression";
-import type { FunctionDescription, TypeRef } from "../../types/types";
-import type { WriterContext } from "../Writer";
-import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
-import { resolveFuncType } from "./resolveFuncType";
-import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { funcIdOf } from "./id";
-import { writeExpression, writePathExpression } from "./writeExpression";
-import { cast } from "./cast";
-import { resolveFuncTupleType } from "./resolveFuncTupleType";
-import { ops } from "./ops";
-import { freshIdentifier } from "./freshIdentifier";
-import { idTextErr, throwInternalCompilerError } from "../../error/errors";
-import { ppAsmShuffle } from "../../ast/ast-printer";
-import { zip } from "../../utils/array";
+import { enabledInline } from "@/config/features";
+import type * as Ast from "@/ast/ast";
+import { idOfText, idText, tryExtractPath } from "@/ast/ast-helpers";
+import { getType, resolveTypeRef } from "@/types/resolveDescriptors";
+import { getExpType } from "@/types/resolveExpression";
+import type { FunctionDescription, TypeRef } from "@/types/types";
+import type { WriterContext } from "@/generator/Writer";
+import { resolveFuncPrimitive } from "@/generator/writers/resolveFuncPrimitive";
+import { resolveFuncType } from "@/generator/writers/resolveFuncType";
+import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
+import { funcIdOf } from "@/generator/writers/id";
+import {
+    writeExpression,
+    writePathExpression,
+} from "@/generator/writers/writeExpression";
+import { cast } from "@/generator/writers/cast";
+import { resolveFuncTupleType } from "@/generator/writers/resolveFuncTupleType";
+import { ops } from "@/generator/writers/ops";
+import { freshIdentifier } from "@/generator/writers/freshIdentifier";
+import { idTextErr, throwInternalCompilerError } from "@/error/errors";
+import { ppAsmShuffle } from "@/ast/ast-printer";
+import { zip } from "@/utils/array";
 
 export function writeCastedExpression(
     expression: Ast.Expression,

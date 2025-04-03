@@ -1,4 +1,4 @@
-import { crc16 } from "./crc16";
+import { crc16 } from "@/utils/crc16";
 
 describe("crc16", () => {
     it("crc16 is correctly calculated from the string", () => {

@@ -1,5 +1,4 @@
-import * as changeCase from "change-case";
-import { Writer } from "../utils/Writer";
+import { Writer } from "@/utils/Writer";
 import {
     Cell,
     type ABIArgument,
@@ -17,20 +16,18 @@ import {
     writeStruct,
     writeTupleParser,
     writeTupleSerializer,
-} from "./typescript/writeStruct";
-import type { AllocationCell } from "../storage/operation";
-import { throwInternalCompilerError } from "../error/errors";
-import { topologicalSort } from "../utils/utils";
-import {
-    allocate,
-    getAllocationOperationFromField,
-} from "../storage/allocator";
-import { serializers } from "./typescript/serializers";
+} from "@/bindings/typescript/writeStruct";
+import type { AllocationCell } from "@/storage/operation";
+import { throwInternalCompilerError } from "@/error/errors";
+import { topologicalSort } from "@/utils/utils";
+import { allocate, getAllocationOperationFromField } from "@/storage/allocator";
+import { serializers } from "@/bindings/typescript/serializers";
 
-import { eqNames } from "../ast/ast-helpers";
-import { enabledOptimizedChildCode } from "../config/features";
-import type { CompilerContext } from "../context/context";
-import type { TypeDescription } from "../types/types";
+import { eqNames } from "@/ast/ast-helpers";
+import { enabledOptimizedChildCode } from "@/config/features";
+import type { CompilerContext } from "@/context/context";
+import type { TypeDescription } from "@/types/types";
+import { pascalCase } from "@/utils/change-case/pascal-case";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];
@@ -277,7 +274,7 @@ export function writeTypescript(
             for (const t of abi.getters) {
                 w.append(JSON.stringify(t) + ",");
 
-                let getterName = changeCase.pascalCase(t.name);
+                let getterName = pascalCase(t.name);
                 if (Array.from(getterNames.values()).includes(getterName)) {
                     getterName = t.name;
                 }
