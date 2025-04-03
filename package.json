@@ -34,6 +34,7 @@
     "gen:contracts:test:map": "ts-node ./src/test/e2e-emulated/map-property-tests/generate.ts",
     "gen:contracts:all": "yarn gen:contracts:examples && yarn gen:contracts:test && yarn gen:contracts:benchmarks && yarn gen:contracts:test:map",
     "gen": "yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && yarn gen:contracts:all",
+    "fuzz:map:functions": "ts-node ./src/test/e2e-emulated/map-property-tests/fuzzing/fuzz-map-functions.ts",
     "clean": "rm -fr dist",
     "cleanall": "rm -fr dist node_modules",
     "copy:stdlib": "ts-node src/stdlib/copy.build.ts",
