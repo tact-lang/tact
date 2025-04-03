@@ -19,14 +19,14 @@ trait TestBaseTrait with BaseTrait {
     receive(msg: Notify) { self.notify(msg.body) }
 
     receive(msg: Reply) { self.reply(msg.body) }
+}
+
+trait OverrideBaseTraitConstant with BaseTrait {
+    override const storageReserve: Int = ton("0.1");
 
     get fun constant(): Int {
         return self.storageReserve;
     }
-}
-
-trait OverrideBaseTraitConstant with BaseTrait {
-    override const storageReserve: Int = 100;
 }
 
 contract TraitsConstantContract with OverrideBaseTraitConstant, TestBaseTrait {
