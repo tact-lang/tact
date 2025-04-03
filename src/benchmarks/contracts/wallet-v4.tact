@@ -8,8 +8,13 @@ message(0x706c7567) PluginRequestFunds {
     extra: Cell?;
 }
 
-message ExternalRequest {
+struct SignatureAndSignedData {
     signature: Slice as bytes64;
+    signedData: Slice as remaining;
+}
+
+message ExternalRequest {
+    all: SignatureAndSignedData;
     walletId: Int as int32;
     validUntil: Int as uint32;
     seqno: Int as uint32;
@@ -40,7 +45,7 @@ contract WalletV4(
     seqno: Int as uint32,
     walletId: Int as int32,
     publicKey: Int as uint256,
-    extensions: map<Address, Bool>
+    extensions: map<Address, Bool>,
 ) {
     receive(msg: PluginRequestFunds) {
         let addr = sender(); // check gas for ctx
@@ -54,14 +59,15 @@ contract WalletV4(
         // NOTE: Here and later we use RawMsg with nativeSendMessage because
         // in v4 wallet implementation message bodies are stored as slices in the same cell
         // instead of separate cell with ref. Our send built-ins (message, send) doesn't support such serialization
-        nativeSendMessage(RawMsg {
+        nativeSendMessage(
+            RawMsg {
                 queryId: msg.queryId,
                 op: 0x706c7567 | 0x80000000,
                 extra: msg.extra,
                 amount: msg.amount,
                 receiver: addr,
             }.toCell(),
-            64
+            64,
         );
     }
 
@@ -75,14 +81,15 @@ contract WalletV4(
         self.extensions.del(addr);
 
         if (context().bounceable) {
-            nativeSendMessage(RawMsg {
+            nativeSendMessage(
+                RawMsg {
                     queryId: msg.queryId,
                     op: 0x64737472 | 0x80000000,
                     extra: null,
                     amount: 0,
                     receiver: addr,
                 }.toCell(),
-                64
+                64,
             );
         }
     }
@@ -91,9 +98,11 @@ contract WalletV4(
         throwIf(36, msg.validUntil < now());
         throwUnless(33, msg.seqno == self.seqno);
         throwUnless(34, msg.walletId == self.walletId);
-        let msgSlice = msg.toSlice();
-        msgSlice.skipBits(32 + 512); // tact receiver op + signature skip
-        throwUnless(35, checkSignature(msgSlice.hash(), msg.signature, self.publicKey));
+        throwUnless(35, checkSignature(
+            msg.all.signedData.hash(),
+            msg.all.signature,
+            self.publicKey,
+        ));
 
         acceptMessage();
         self.seqno += 1;
@@ -122,16 +131,17 @@ contract WalletV4(
             let amount = payload.loadCoins();
             let stateInit = payload.loadRef();
             let body = payload.loadRef();
-                        
+
             let addr = newAddress(wc, stateInit.hash());
             // cant use deploy here because of only basechain support
-            nativeSendMessage(RawMsgWithDeploy {
+            nativeSendMessage(
+                RawMsgWithDeploy {
                     stateInit,
                     body,
                     amount,
                     receiver: addr,
                 }.toCell(),
-            3
+                3,
             );
 
             self.extensions.set(addr, true);
@@ -146,14 +156,15 @@ contract WalletV4(
 
             self.extensions.set(addr, true);
 
-            nativeSendMessage(RawMsg {
+            nativeSendMessage(
+                RawMsg {
                     queryId,
                     op: 0x6e6f7465,
                     extra: null,
                     amount,
                     receiver: addr,
                 }.toCell(),
-                64
+                64,
             );
         }
 
@@ -166,18 +177,19 @@ contract WalletV4(
 
             throwUnless(39, self.extensions.del(addr));
 
-            nativeSendMessage(RawMsg {
+            nativeSendMessage(
+                RawMsg {
                     queryId,
                     op: 0x64737472,
                     extra: null,
                     amount: amount,
                     receiver: addr,
                 }.toCell(),
-                64
+                64,
             );
         }
     }
-    
+
     receive(_: Slice) {
         // Fallback
     }
