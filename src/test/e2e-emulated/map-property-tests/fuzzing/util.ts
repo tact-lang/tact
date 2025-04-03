@@ -22,6 +22,7 @@ import type {
     DictionaryValue,
     Sender,
     StateInit,
+    TupleItem,
     TupleReader,
 } from "@ton/core";
 import { Cell, Dictionary } from "@ton/core";
@@ -33,6 +34,7 @@ import { getAllTypes } from "@/types/resolveDescriptors";
 import type { MakeAstFactory } from "@/ast/generated/make-factory";
 import * as fc from "fast-check";
 import { TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract } from "@ton/sandbox";
 import { sha256_sync } from "@ton/crypto";
 
 export const keyTypes = [
@@ -297,47 +299,59 @@ export class ProxyContract implements Contract {
         await provider.internal(via, { ...args, body: body });
     }
 
-    async getWholeMap(
-        provider: ContractProvider,
-        kHandler: TypeHandler,
-        vHandler: TypeHandler,
-    ) {
-        const builder = new TupleBuilder();
-        const reader = (await provider.get("wholeMap", builder.build())).stack;
-        return Dictionary.loadDirect(
-            kHandler.getDictionaryKeyType(),
-            vHandler.getDictionaryValueType(),
-            reader.readCellOpt(),
-        );
+    async getWholeMap(provider: ContractProvider, params: TupleItem[]) {
+        return (await provider.get("wholeMap", params)).stack;
     }
 
-    async getGetValue(
-        provider: ContractProvider,
-        key: any,
-        kHandler: TypeHandler,
-        vHandler: TypeHandler,
-    ) {
-        const builder = new TupleBuilder();
-        kHandler.storeInTupleBuilder(key, builder);
-        const source = (await provider.get("getValue", builder.build())).stack;
-        // Transform the null to undefined, since querying dictionaries with "get"
-        // will return undefined instead of null.
-        const result =
-            vHandler.readOptionalFromTupleReader(source) ?? undefined;
-        return result;
+    async getGetValue(provider: ContractProvider, params: TupleItem[]) {
+        return (await provider.get("getValue", params)).stack;
     }
 
-    async getExists(
-        provider: ContractProvider,
-        key: any,
-        kHandler: TypeHandler,
-    ) {
-        const builder = new TupleBuilder();
-        kHandler.storeInTupleBuilder(key, builder);
-        const source = (await provider.get("exists", builder.build())).stack;
-        const result = source.readBoolean();
-        return result;
+    async getExists(provider: ContractProvider, params: TupleItem[]) {
+        return (await provider.get("exists", params)).stack;
     }
+}
+
+// We need to do this indirection (i.e., not placing the entire code of this
+// function inside the "getWholeMap" in the ProxyContract class, and similarly for the rest
+// of the contract getters) because SandboxContract for some reason messes up the generics.
+export async function getWholeMap<K extends DictionaryKeyTypes, V>(
+    contract: SandboxContract<ProxyContract>,
+    kHandler: KeyTypeHandler<K>,
+    vHandler: ValueTypeHandler<V>,
+) {
+    const builder = new TupleBuilder();
+    const reader = await contract.getWholeMap(builder.build());
+    return Dictionary.loadDirect(
+        kHandler.getDictionaryKeyType(),
+        vHandler.getDictionaryValueType(),
+        reader.readCellOpt(),
+    );
+}
+
+export async function getGetValue<K extends DictionaryKeyTypes, V>(
+    contract: SandboxContract<ProxyContract>,
+    key: K,
+    kHandler: KeyTypeHandler<K>,
+    vHandler: ValueTypeHandler<V>,
+) {
+    const builder = new TupleBuilder();
+    kHandler.storeInTupleBuilder(key, builder);
+    const source = await contract.getGetValue(builder.build());
+    const result = vHandler.readOptionalFromTupleReader(source);
+    return result;
+}
+
+export async function getExists<K extends DictionaryKeyTypes>(
+    contract: SandboxContract<ProxyContract>,
+    key: K,
+    kHandler: KeyTypeHandler<K>,
+) {
+    const builder = new TupleBuilder();
+    kHandler.storeInTupleBuilder(key, builder);
+    const source = await contract.getExists(builder.build());
+    const result = source.readBoolean();
+    return result;
 }
 
 export function getContractStateInit(contractCode: Buffer): StateInit {
@@ -349,10 +363,10 @@ export function getContractStateInit(contractCode: Buffer): StateInit {
     return { code, data };
 }
 
-export function createDict<K, V>(
+export function createDict<K extends DictionaryKeyTypes, V>(
     initialKeyValuePairs: [K, V][],
-    kHandler: TypeHandler,
-    vHandler: TypeHandler,
+    kHandler: KeyTypeHandler<K>,
+    vHandler: ValueTypeHandler<V>,
 ) {
     const dict = Dictionary.empty(
         kHandler.getDictionaryKeyType(),
@@ -364,315 +378,501 @@ export function createDict<K, V>(
     return dict;
 }
 
-// All handlers for each possible type
-// Unfortunately, we loose type safety when working with dynamically created contracts
-// and dictionaries
-interface TypeHandler {
-    getDictionaryKeyType(): DictionaryKey<any>;
-    getDictionaryValueType(): DictionaryValue<any>;
-    getGenerator(): fc.Arbitrary<any>;
-    storeInCellBuilder(v: any, builder: Builder): void;
-    storeInTupleBuilder(v: any, builder: TupleBuilder): void;
-    readOptionalFromTupleReader(reader: TupleReader): any;
-    equals(o1: any, o2: any): boolean;
-    cast(o: any): any;
+// The interface responsible for handling methods specific for types acting
+// as keys in dictionaries
+export interface KeyTypeHandler<K extends DictionaryKeyTypes> {
+    getDictionaryKeyType(): DictionaryKey<K>;
+    getGenerator(): fc.Arbitrary<K>;
+    storeInCellBuilder(v: K, builder: Builder): void;
+    storeInTupleBuilder(v: K, builder: TupleBuilder): void;
 }
 
-export function getTypeHandler(kvT: keyValueTypes): TypeHandler {
+// The interface responsible for handling methods specific for types acting
+// as values in dictionaries
+export interface ValueTypeHandler<V> {
+    getDictionaryValueType(): DictionaryValue<V>;
+    getGenerator(): fc.Arbitrary<V>;
+    storeInCellBuilder(v: V, builder: Builder): void;
+    readOptionalFromTupleReader(reader: TupleReader): V | undefined;
+    equals(o1: V | undefined, o2: V | undefined): boolean;
+}
+
+// This type represents the existential type (sigma type):
+// exists T. KeyTypeHandler<T>
+type ExistsKeyTypeHandler = <R>(
+    cont: <T extends DictionaryKeyTypes>(handler: KeyTypeHandler<T>) => R,
+) => R;
+
+// This type represents the existential type (sigma type):
+// exists T. ValueTypeHandler<T>
+type ExistsValueTypeHandler = <R>(
+    cont: <T>(handler: ValueTypeHandler<T>) => R,
+) => R;
+
+// The constructor for the existential type for KeyTypeHandler
+function constructKeyTypeExistential<T extends DictionaryKeyTypes>(
+    handler: KeyTypeHandler<T>,
+): ExistsKeyTypeHandler {
+    return <R>(
+        cont: <K extends DictionaryKeyTypes>(h: KeyTypeHandler<K>) => R,
+    ) => cont(handler);
+}
+
+// The constructor for the existential type for ValueTypeHandler
+function constructValueTypeExistential<T>(
+    handler: ValueTypeHandler<T>,
+): ExistsValueTypeHandler {
+    return <R>(cont: <K>(h: ValueTypeHandler<K>) => R) => cont(handler);
+}
+
+export function getKeyTypeHandler(kT: keyType): ExistsKeyTypeHandler {
+    const handler = getTypeHandlers(kT)[0];
+    if (typeof handler === "undefined") {
+        throw new Error(`${kT} does not have a key type handler`);
+    }
+    return handler;
+}
+
+export function getValueTypeHandler(vT: valueType): ExistsValueTypeHandler {
+    return getTypeHandlers(vT)[1];
+}
+
+// This function returns both the key type handler and value type handler for each possible
+// dictionary type. Some dictionary types do not have a key type handler; for example, "Bool"
+// does not have a key type handler because it cannot act as keys in a dictionary.
+// For such types, the function returns "undefined" in the first position of the tuple.
+function getTypeHandlers(
+    kvT: keyValueTypes,
+): [ExistsKeyTypeHandler | undefined, ExistsValueTypeHandler] {
     switch (kvT) {
         case "Int": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.BigInt(257),
-                getDictionaryValueType: () => Dictionary.Values.BigInt(257),
-                getGenerator: () => _generateIntBitLength(257, true),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeInt(v, 257),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBigNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => o,
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.BigInt(257),
+                    getGenerator: () => _generateIntBitLength(257, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 257),
+                    storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.BigInt(257),
+                    getGenerator: () => _generateIntBitLength(257, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 257),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBigNumberOpt() ?? undefined,
+                    equals: (o1: bigint | undefined, o2: bigint | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Address": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.Address(),
-                getDictionaryValueType: () => Dictionary.Values.Address(),
-                getGenerator: () => _generateAddress(),
-                storeInCellBuilder: (v: Address, builder: Builder) =>
-                    builder.storeAddress(v),
-                storeInTupleBuilder: (v: Address, builder: TupleBuilder) => {
-                    builder.writeAddress(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readAddressOpt(),
-                equals: (o1: Address, o2: Address) => o1.equals(o2),
-                cast: (o: Address) => o,
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.Address(),
+                    getGenerator: () => _generateAddress(),
+                    storeInCellBuilder: (v: Address, builder: Builder) =>
+                        builder.storeAddress(v),
+                    storeInTupleBuilder: (
+                        v: Address,
+                        builder: TupleBuilder,
+                    ) => {
+                        builder.writeAddress(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.Address(),
+                    getGenerator: () => _generateAddress(),
+                    storeInCellBuilder: (v: Address, builder: Builder) =>
+                        builder.storeAddress(v),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readAddressOpt() ?? undefined,
+                    equals: (
+                        o1: Address | undefined,
+                        o2: Address | undefined,
+                    ) => {
+                        if (
+                            typeof o1 !== "undefined" &&
+                            typeof o2 !== "undefined"
+                        ) {
+                            return o1.equals(o2);
+                        } else {
+                            return o1 === o2;
+                        }
+                    },
+                }),
+            ];
         }
         case "Bool": {
-            return {
-                getDictionaryKeyType: () => {
-                    throw new Error("Bool is not a valid key type");
-                },
-                getDictionaryValueType: () => Dictionary.Values.Bool(),
-                getGenerator: () => fc.boolean(),
-                storeInCellBuilder: (v: boolean, builder: Builder) =>
-                    builder.storeBit(v),
-                storeInTupleBuilder: (v: boolean, builder: TupleBuilder) => {
-                    builder.writeBoolean(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBooleanOpt(),
-                equals: (o1: boolean, o2: boolean) => o1 === o2,
-                cast: (o: boolean) => o,
-            };
+            return [
+                undefined,
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.Bool(),
+                    getGenerator: () => fc.boolean(),
+                    storeInCellBuilder: (v: boolean, builder: Builder) =>
+                        builder.storeBit(v),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBooleanOpt() ?? undefined,
+                    equals: (
+                        o1: boolean | undefined,
+                        o2: boolean | undefined,
+                    ) => o1 === o2,
+                }),
+            ];
         }
         case "Cell": {
-            return {
-                getDictionaryKeyType: () => {
-                    throw new Error("Cell is not a valid key type");
-                },
-                getDictionaryValueType: () => Dictionary.Values.Cell(),
-                getGenerator: () => _generateCell(),
-                storeInCellBuilder: (v: Cell, builder: Builder) =>
-                    builder.storeRef(v),
-                storeInTupleBuilder: (v: Cell, builder: TupleBuilder) => {
-                    builder.writeCell(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readCellOpt(),
-                equals: (o1: Cell, o2: Cell) => o1.equals(o2),
-                cast: (o: Cell) => o,
-            };
+            return [
+                undefined,
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.Cell(),
+                    getGenerator: () => _generateCell(),
+                    storeInCellBuilder: (v: Cell, builder: Builder) =>
+                        builder.storeRef(v),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readCellOpt() ?? undefined,
+                    equals: (o1: Cell | undefined, o2: Cell | undefined) => {
+                        if (
+                            typeof o1 !== "undefined" &&
+                            typeof o2 !== "undefined"
+                        ) {
+                            return o1.equals(o2);
+                        } else {
+                            return o1 === o2;
+                        }
+                    },
+                }),
+            ];
         }
         case "Int as int8": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.Int(8),
-                getDictionaryValueType: () => Dictionary.Values.Int(8),
-                getGenerator: () => _generateIntBitLength(8, true),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeInt(v, 8),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => Number(o),
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.Int(8),
+                    getGenerator: () =>
+                        _generateIntBitLength(8, true).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeInt(v, 8),
+                    storeInTupleBuilder: (v: number, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.Int(8),
+                    getGenerator: () =>
+                        _generateIntBitLength(8, true).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeInt(v, 8),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readNumberOpt() ?? undefined,
+                    equals: (o1: number | undefined, o2: number | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as int16": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.Int(16),
-                getDictionaryValueType: () => Dictionary.Values.Int(16),
-                getGenerator: () => _generateIntBitLength(16, true),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeInt(v, 16),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => Number(o),
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.Int(16),
+                    getGenerator: () =>
+                        _generateIntBitLength(16, true).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeInt(v, 16),
+                    storeInTupleBuilder: (v: number, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.Int(16),
+                    getGenerator: () =>
+                        _generateIntBitLength(16, true).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeInt(v, 16),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readNumberOpt() ?? undefined,
+                    equals: (o1: number | undefined, o2: number | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as int32": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.Int(32),
-                getDictionaryValueType: () => Dictionary.Values.Int(32),
-                getGenerator: () => _generateIntBitLength(32, true),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeInt(v, 32),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => Number(o),
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.Int(32),
+                    getGenerator: () =>
+                        _generateIntBitLength(32, true).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeInt(v, 32),
+                    storeInTupleBuilder: (v: number, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.Int(32),
+                    getGenerator: () =>
+                        _generateIntBitLength(32, true).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeInt(v, 32),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readNumberOpt() ?? undefined,
+                    equals: (o1: number | undefined, o2: number | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as int64": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.BigInt(64),
-                getDictionaryValueType: () => Dictionary.Values.BigInt(64),
-                getGenerator: () => _generateIntBitLength(64, true),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeInt(v, 64),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBigNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => o,
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.BigInt(64),
+                    getGenerator: () => _generateIntBitLength(64, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 64),
+                    storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.BigInt(64),
+                    getGenerator: () => _generateIntBitLength(64, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 64),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBigNumberOpt() ?? undefined,
+                    equals: (o1: bigint | undefined, o2: bigint | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as int128": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.BigInt(128),
-                getDictionaryValueType: () => Dictionary.Values.BigInt(128),
-                getGenerator: () => _generateIntBitLength(128, true),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeInt(v, 128),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBigNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => o,
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.BigInt(128),
+                    getGenerator: () => _generateIntBitLength(128, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 128),
+                    storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.BigInt(128),
+                    getGenerator: () => _generateIntBitLength(128, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 128),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBigNumberOpt() ?? undefined,
+                    equals: (o1: bigint | undefined, o2: bigint | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as int256": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.BigInt(256),
-                getDictionaryValueType: () => Dictionary.Values.BigInt(256),
-                getGenerator: () => _generateIntBitLength(256, true),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeInt(v, 256),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBigNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => o,
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.BigInt(256),
+                    getGenerator: () => _generateIntBitLength(256, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 256),
+                    storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.BigInt(256),
+                    getGenerator: () => _generateIntBitLength(256, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 256),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBigNumberOpt() ?? undefined,
+                    equals: (o1: bigint | undefined, o2: bigint | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as int257": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.BigInt(257),
-                getDictionaryValueType: () => Dictionary.Values.BigInt(257),
-                getGenerator: () => _generateIntBitLength(257, true),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeInt(v, 257),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBigNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => o,
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.BigInt(257),
+                    getGenerator: () => _generateIntBitLength(257, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 257),
+                    storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.BigInt(257),
+                    getGenerator: () => _generateIntBitLength(257, true),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeInt(v, 257),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBigNumberOpt() ?? undefined,
+                    equals: (o1: bigint | undefined, o2: bigint | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as uint8": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.Uint(8),
-                getDictionaryValueType: () => Dictionary.Values.Uint(8),
-                getGenerator: () => _generateIntBitLength(8, false),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeUint(v, 8),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => Number(o),
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.Uint(8),
+                    getGenerator: () =>
+                        _generateIntBitLength(8, false).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeUint(v, 8),
+                    storeInTupleBuilder: (v: number, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.Uint(8),
+                    getGenerator: () =>
+                        _generateIntBitLength(8, false).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeUint(v, 8),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readNumberOpt() ?? undefined,
+                    equals: (o1: number | undefined, o2: number | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as uint16": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.Uint(16),
-                getDictionaryValueType: () => Dictionary.Values.Uint(16),
-                getGenerator: () => _generateIntBitLength(16, false),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeUint(v, 16),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => Number(o),
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.Uint(16),
+                    getGenerator: () =>
+                        _generateIntBitLength(16, false).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeUint(v, 16),
+                    storeInTupleBuilder: (v: number, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.Uint(16),
+                    getGenerator: () =>
+                        _generateIntBitLength(16, false).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeUint(v, 16),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readNumberOpt() ?? undefined,
+                    equals: (o1: number | undefined, o2: number | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as uint32": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.Uint(32),
-                getDictionaryValueType: () => Dictionary.Values.Uint(32),
-                getGenerator: () => _generateIntBitLength(32, false),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeUint(v, 32),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => Number(o),
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.Uint(32),
+                    getGenerator: () =>
+                        _generateIntBitLength(32, false).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeUint(v, 32),
+                    storeInTupleBuilder: (v: number, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.Uint(32),
+                    getGenerator: () =>
+                        _generateIntBitLength(32, false).map((n) => Number(n)),
+                    storeInCellBuilder: (v: number, builder: Builder) =>
+                        builder.storeUint(v, 32),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readNumberOpt() ?? undefined,
+                    equals: (o1: number | undefined, o2: number | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as uint64": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.BigUint(64),
-                getDictionaryValueType: () => Dictionary.Values.BigUint(64),
-                getGenerator: () => _generateIntBitLength(64, false),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeUint(v, 64),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBigNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => o,
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.BigUint(64),
+                    getGenerator: () => _generateIntBitLength(64, false),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeUint(v, 64),
+                    storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () => Dictionary.Values.BigUint(64),
+                    getGenerator: () => _generateIntBitLength(64, false),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeUint(v, 64),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBigNumberOpt() ?? undefined,
+                    equals: (o1: bigint | undefined, o2: bigint | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as uint128": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.BigUint(128),
-                getDictionaryValueType: () => Dictionary.Values.BigUint(128),
-                getGenerator: () => _generateIntBitLength(128, false),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeUint(v, 128),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBigNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => o,
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.BigUint(128),
+                    getGenerator: () => _generateIntBitLength(128, false),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeUint(v, 128),
+                    storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () =>
+                        Dictionary.Values.BigUint(128),
+                    getGenerator: () => _generateIntBitLength(128, false),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeUint(v, 128),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBigNumberOpt() ?? undefined,
+                    equals: (o1: bigint | undefined, o2: bigint | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as uint256": {
-            return {
-                getDictionaryKeyType: () => Dictionary.Keys.BigUint(256),
-                getDictionaryValueType: () => Dictionary.Values.BigUint(256),
-                getGenerator: () => _generateIntBitLength(256, false),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeUint(v, 256),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBigNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => o,
-            };
+            return [
+                constructKeyTypeExistential({
+                    getDictionaryKeyType: () => Dictionary.Keys.BigUint(256),
+                    getGenerator: () => _generateIntBitLength(256, false),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeUint(v, 256),
+                    storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
+                        builder.writeNumber(v);
+                    },
+                }),
+                constructValueTypeExistential({
+                    getDictionaryValueType: () =>
+                        Dictionary.Values.BigUint(256),
+                    getGenerator: () => _generateIntBitLength(256, false),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeUint(v, 256),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBigNumberOpt() ?? undefined,
+                    equals: (o1: bigint | undefined, o2: bigint | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
         case "Int as coins": {
-            return {
-                getDictionaryKeyType: () => {
-                    throw new Error("coins is not a valid key type");
-                },
-                getDictionaryValueType: () => Dictionary.Values.BigVarUint(4),
-                getGenerator: () => _generateCoins(),
-                storeInCellBuilder: (v: bigint, builder: Builder) =>
-                    builder.storeCoins(v),
-                storeInTupleBuilder: (v: bigint, builder: TupleBuilder) => {
-                    builder.writeNumber(v);
-                },
-                readOptionalFromTupleReader: (reader: TupleReader) =>
-                    reader.readBigNumberOpt(),
-                equals: (o1: bigint, o2: bigint) => o1 === o2,
-                cast: (o: bigint) => o,
-            };
+            return [
+                undefined,
+                constructValueTypeExistential({
+                    getDictionaryValueType: () =>
+                        Dictionary.Values.BigVarUint(4),
+                    getGenerator: () => _generateCoins(),
+                    storeInCellBuilder: (v: bigint, builder: Builder) =>
+                        builder.storeCoins(v),
+                    readOptionalFromTupleReader: (reader: TupleReader) =>
+                        reader.readBigNumberOpt() ?? undefined,
+                    equals: (o1: bigint | undefined, o2: bigint | undefined) =>
+                        o1 === o2,
+                }),
+            ];
         }
     }
 }
@@ -723,7 +923,7 @@ export function generateKeyValuePairs<K, V>(
 export function compareDicts<K extends DictionaryKeyTypes, V>(
     dict1: Dictionary<K, V>,
     dict2: Dictionary<K, V>,
-    vHandler: TypeHandler,
+    vHandler: ValueTypeHandler<V>,
 ) {
     return (
         dict1

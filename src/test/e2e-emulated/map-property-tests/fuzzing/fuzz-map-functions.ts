@@ -10,7 +10,11 @@ import {
     filterGlobalDeclarations,
     generateKeyValuePairs,
     getContractStateInit,
-    getTypeHandler,
+    getExists,
+    getGetValue,
+    getKeyTypeHandler,
+    getValueTypeHandler,
+    getWholeMap,
     keyTypes,
     loadCustomStdlibFc,
     parseStandardLibrary,
@@ -19,11 +23,14 @@ import {
 } from "@/test/e2e-emulated/map-property-tests/fuzzing/util";
 import type {
     keyType,
+    KeyTypeHandler,
     keyValueTypes,
     valueType,
+    ValueTypeHandler,
 } from "@/test/e2e-emulated/map-property-tests/fuzzing/util";
 import { expect } from "expect";
 import { beginCell, Cell, toNano } from "@ton/core";
+import type { DictionaryKeyTypes } from "@ton/core";
 import { findTransaction } from "@ton/test-utils";
 import * as fc from "fast-check";
 
@@ -577,9 +584,6 @@ async function testCompiledContract(
 ) {
     console.log(`Testing contract ${contract.contractName}...`);
 
-    const kHandler = getTypeHandler(contract.keyType);
-    const vHandler = getTypeHandler(contract.valueType);
-
     // Some utility functions
     async function sendMessage(message: Cell) {
         return await contractToTest.send(
@@ -599,7 +603,12 @@ async function testCompiledContract(
         return opCode;
     }
 
-    function prepareSetKeyValueMessage<K, V>(key: K, value: V): Cell {
+    function prepareSetKeyValueMessage<K extends DictionaryKeyTypes, V>(
+        key: K,
+        value: V,
+        kHandler: KeyTypeHandler<K>,
+        vHandler: ValueTypeHandler<V>,
+    ): Cell {
         const builder = beginCell();
         builder.storeUint(obtainOpCode("SetKeyValue"), 32);
         kHandler.storeInCellBuilder(key, builder);
@@ -607,7 +616,10 @@ async function testCompiledContract(
         return builder.endCell();
     }
 
-    function prepareDeleteKeyMessage<K>(key: K): Cell {
+    function prepareDeleteKeyMessage<K extends DictionaryKeyTypes>(
+        key: K,
+        kHandler: KeyTypeHandler<K>,
+    ): Cell {
         const builder = beginCell();
         builder.storeUint(obtainOpCode("DeleteKey"), 32);
         kHandler.storeInCellBuilder(key, builder);
@@ -620,9 +632,18 @@ async function testCompiledContract(
         return builder.endCell();
     }
 
-    async function initializeContract<K, V>(keyValuePairs: [K, V][]) {
+    async function initializeContract<K extends DictionaryKeyTypes, V>(
+        keyValuePairs: [K, V][],
+        kHandler: KeyTypeHandler<K>,
+        vHandler: ValueTypeHandler<V>,
+    ) {
         for (const [key, value] of keyValuePairs) {
-            const messageCell = prepareSetKeyValueMessage(key, value);
+            const messageCell = prepareSetKeyValueMessage(
+                key,
+                value,
+                kHandler,
+                vHandler,
+            );
             await sendMessage(messageCell);
         }
     }
@@ -651,209 +672,244 @@ async function testCompiledContract(
         }),
     ).toBeDefined();
 
-    // Check that the contract has an initial empty map
-    expect((await contractToTest.getWholeMap(kHandler, vHandler)).size).toBe(0);
+    // These handlers are "sealed" because their types are existential types.
+    const sealedKHandler = getKeyTypeHandler(contract.keyType);
+    const sealedVHandler = getValueTypeHandler(contract.valueType);
 
-    console.log("Checking 'set' function...");
+    // To unpack a variable of existential type, we simply apply it on a function
+    // where the argument to the function is the unpacked value.
+    await sealedKHandler(async (kHandler) => {
+        await sealedVHandler(async (vHandler) => {
+            // Check that the contract has an initial empty map
+            expect(
+                (await getWholeMap(contractToTest, kHandler, vHandler)).size,
+            ).toBe(0);
+
+            console.log("Checking 'set' function...");
+            await checkSetFunction(kHandler, vHandler);
+
+            console.log("Checking 'get' function...");
+            await checkGetFunction(kHandler, vHandler);
+
+            console.log("Checking 'del' function...");
+            await checkDelFunction(kHandler, vHandler);
+
+            console.log("Checking 'exists' function...");
+            await checkExistsFunction(kHandler, vHandler);
+        });
+    });
+
     // Test: adds new element in tact's 'map' exactly like in ton's 'Dictionary'
-    await fc.assert(
-        withClear(
-            fc.asyncProperty(
-                generateKeyValuePairs(
-                    kHandler.getGenerator,
-                    vHandler.getGenerator,
+    async function checkSetFunction<K extends DictionaryKeyTypes, V>(
+        kHandler: KeyTypeHandler<K>,
+        vHandler: ValueTypeHandler<V>,
+    ) {
+        await fc.assert(
+            withClear(
+                fc.asyncProperty(
+                    generateKeyValuePairs(
+                        kHandler.getGenerator,
+                        vHandler.getGenerator,
+                    ),
+                    kHandler.getGenerator(),
+                    vHandler.getGenerator(),
+                    async (keyValuePairs, testKey, testValue) => {
+                        await initializeContract(
+                            keyValuePairs,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        // This is an external dict that emulates what the contract is doing
+                        const externalDict = createDict(
+                            keyValuePairs,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        const initialMap = await getWholeMap(
+                            contractToTest,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        initialMap.set(testKey, testValue);
+                        externalDict.set(testKey, testValue);
+
+                        await sendMessage(
+                            prepareSetKeyValueMessage(
+                                testKey,
+                                testValue,
+                                kHandler,
+                                vHandler,
+                            ),
+                        );
+
+                        const finalMap = await getWholeMap(
+                            contractToTest,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        return (
+                            compareDicts(initialMap, finalMap, vHandler) &&
+                            compareDicts(finalMap, externalDict, vHandler)
+                        );
+                    },
                 ),
-                kHandler.getGenerator(),
-                vHandler.getGenerator(),
-                async (rawKeyValuePairs, rawTestKey, rawTestValue) => {
-                    const keyValuePairs: [any, any][] = rawKeyValuePairs.map(
-                        ([k, v]) => [kHandler.cast(k), vHandler.cast(v)],
-                    );
-                    const testKey = kHandler.cast(rawTestKey);
-                    const testValue = vHandler.cast(rawTestValue);
-
-                    await initializeContract(keyValuePairs);
-
-                    // This is an external dict that emulates what the contract is doing
-                    const externalDict = createDict(
-                        keyValuePairs,
-                        kHandler,
-                        vHandler,
-                    );
-
-                    const initialMap = await contractToTest.getWholeMap(
-                        kHandler,
-                        vHandler,
-                    );
-
-                    initialMap.set(testKey, testValue);
-                    externalDict.set(testKey, testValue);
-
-                    await sendMessage(
-                        prepareSetKeyValueMessage(testKey, testValue),
-                    );
-
-                    const finalMap = await contractToTest.getWholeMap(
-                        kHandler,
-                        vHandler,
-                    );
-
-                    return (
-                        compareDicts(initialMap, finalMap, vHandler) &&
-                        compareDicts(finalMap, externalDict, vHandler)
-                    );
-                },
             ),
-        ),
-    );
+        );
+    }
 
-    console.log("Checking 'get' function...");
-    // Gets element from tact 'map' exactly like from ton's 'Dictionary'",
-    await fc.assert(
-        withClear(
-            fc.asyncProperty(
-                generateKeyValuePairs(
-                    kHandler.getGenerator,
-                    vHandler.getGenerator,
-                ),
-                kHandler.getGenerator(),
-                async (rawKeyValuePairs, rawTestKey) => {
-                    const keyValuePairs: [any, any][] = rawKeyValuePairs.map(
-                        ([k, v]) => [kHandler.cast(k), vHandler.cast(v)],
-                    );
-                    const testKey = kHandler.cast(rawTestKey);
+    // Test: Gets element from tact 'map' exactly like from ton's 'Dictionary'",
+    async function checkGetFunction<K extends DictionaryKeyTypes, V>(
+        kHandler: KeyTypeHandler<K>,
+        vHandler: ValueTypeHandler<V>,
+    ) {
+        await fc.assert(
+            withClear(
+                fc.asyncProperty(
+                    generateKeyValuePairs(
+                        kHandler.getGenerator,
+                        vHandler.getGenerator,
+                    ),
+                    kHandler.getGenerator(),
+                    async (keyValuePairs, testKey) => {
+                        await initializeContract(
+                            keyValuePairs,
+                            kHandler,
+                            vHandler,
+                        );
 
-                    await initializeContract(keyValuePairs);
+                        // This is an external dict that emulates what the contract is doing
+                        const externalDict = createDict(
+                            keyValuePairs,
+                            kHandler,
+                            vHandler,
+                        );
 
-                    // This is an external dict that emulates what the contract is doing
-                    const externalDict = createDict(
-                        keyValuePairs,
-                        kHandler,
-                        vHandler,
-                    );
+                        const map = await getWholeMap(
+                            contractToTest,
+                            kHandler,
+                            vHandler,
+                        );
 
-                    const map = await contractToTest.getWholeMap(
-                        kHandler,
-                        vHandler,
-                    );
+                        const val = await getGetValue(
+                            contractToTest,
+                            testKey,
+                            kHandler,
+                            vHandler,
+                        );
 
-                    const val = await contractToTest.getGetValue(
-                        testKey,
-                        kHandler,
-                        vHandler,
-                    );
+                        const mapVal = map.get(testKey);
+                        const externalVal = externalDict.get(testKey);
 
-                    const mapVal = map.get(testKey);
-                    const externalVal = externalDict.get(testKey);
-
-                    if (
-                        typeof val !== "undefined" &&
-                        typeof mapVal !== "undefined"
-                    ) {
                         expect(vHandler.equals(val, mapVal)).toBe(true);
-                    } else {
-                        expect(val === mapVal).toBe(true);
-                    }
 
-                    if (
-                        typeof val !== "undefined" &&
-                        typeof externalVal !== "undefined"
-                    ) {
                         expect(vHandler.equals(val, externalVal)).toBe(true);
-                    } else {
-                        expect(val === externalVal).toBe(true);
-                    }
-                },
-            ),
-        ),
-    );
-
-    console.log("Checking 'del' function...");
-    // Deletes key from tact's 'map' exactly like from ton's 'Dictionary'
-    await fc.assert(
-        withClear(
-            fc.asyncProperty(
-                generateKeyValuePairs(
-                    kHandler.getGenerator,
-                    vHandler.getGenerator,
+                    },
                 ),
-                kHandler.getGenerator(),
-                async (rawKeyValuePairs, rawTestKey) => {
-                    const keyValuePairs: [any, any][] = rawKeyValuePairs.map(
-                        ([k, v]) => [kHandler.cast(k), vHandler.cast(v)],
-                    );
-                    const testKey = kHandler.cast(rawTestKey);
-
-                    await initializeContract(keyValuePairs);
-
-                    // This is an external dict that emulates what the contract is doing
-                    const externalDict = createDict(
-                        keyValuePairs,
-                        kHandler,
-                        vHandler,
-                    );
-
-                    const initialMap = await contractToTest.getWholeMap(
-                        kHandler,
-                        vHandler,
-                    );
-
-                    initialMap.delete(testKey);
-                    externalDict.delete(testKey);
-
-                    await sendMessage(prepareDeleteKeyMessage(testKey));
-
-                    const finalMap = await contractToTest.getWholeMap(
-                        kHandler,
-                        vHandler,
-                    );
-
-                    return (
-                        compareDicts(initialMap, finalMap, vHandler) &&
-                        compareDicts(finalMap, externalDict, vHandler)
-                    );
-                },
             ),
-        ),
-    );
+        );
+    }
 
-    console.log("Checking 'exists' function...");
-    // Check if element exists in tact's 'map' exactly like in ton's 'Dictionary'
-    await fc.assert(
-        withClear(
-            fc.asyncProperty(
-                generateKeyValuePairs(
-                    kHandler.getGenerator,
-                    vHandler.getGenerator,
+    // Test: Deletes key from tact's 'map' exactly like from ton's 'Dictionary'
+    async function checkDelFunction<K extends DictionaryKeyTypes, V>(
+        kHandler: KeyTypeHandler<K>,
+        vHandler: ValueTypeHandler<V>,
+    ) {
+        await fc.assert(
+            withClear(
+                fc.asyncProperty(
+                    generateKeyValuePairs(
+                        kHandler.getGenerator,
+                        vHandler.getGenerator,
+                    ),
+                    kHandler.getGenerator(),
+                    async (keyValuePairs, testKey) => {
+                        await initializeContract(
+                            keyValuePairs,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        // This is an external dict that emulates what the contract is doing
+                        const externalDict = createDict(
+                            keyValuePairs,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        const initialMap = await getWholeMap(
+                            contractToTest,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        initialMap.delete(testKey);
+                        externalDict.delete(testKey);
+
+                        await sendMessage(
+                            prepareDeleteKeyMessage(testKey, kHandler),
+                        );
+
+                        const finalMap = await getWholeMap(
+                            contractToTest,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        return (
+                            compareDicts(initialMap, finalMap, vHandler) &&
+                            compareDicts(finalMap, externalDict, vHandler)
+                        );
+                    },
                 ),
-                kHandler.getGenerator(),
-                async (rawKeyValuePairs, rawTestKey) => {
-                    const keyValuePairs: [any, any][] = rawKeyValuePairs.map(
-                        ([k, v]) => [kHandler.cast(k), vHandler.cast(v)],
-                    );
-                    const testKey = kHandler.cast(rawTestKey);
-
-                    await initializeContract(keyValuePairs);
-
-                    // This is an external dict that emulates what the contract is doing
-                    const externalDict = createDict(
-                        keyValuePairs,
-                        kHandler,
-                        vHandler,
-                    );
-
-                    const map = await contractToTest.getWholeMap(
-                        kHandler,
-                        vHandler,
-                    );
-
-                    expect(
-                        await contractToTest.getExists(testKey, kHandler),
-                    ).toBe(map.has(testKey) && externalDict.has(testKey));
-                },
             ),
-        ),
-    );
+        );
+    }
+
+    // Test: Check if element exists in tact's 'map' exactly like in ton's 'Dictionary'
+    async function checkExistsFunction<K extends DictionaryKeyTypes, V>(
+        kHandler: KeyTypeHandler<K>,
+        vHandler: ValueTypeHandler<V>,
+    ) {
+        await fc.assert(
+            withClear(
+                fc.asyncProperty(
+                    generateKeyValuePairs(
+                        kHandler.getGenerator,
+                        vHandler.getGenerator,
+                    ),
+                    kHandler.getGenerator(),
+                    async (keyValuePairs, testKey) => {
+                        await initializeContract(
+                            keyValuePairs,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        // This is an external dict that emulates what the contract is doing
+                        const externalDict = createDict(
+                            keyValuePairs,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        const map = await getWholeMap(
+                            contractToTest,
+                            kHandler,
+                            vHandler,
+                        );
+
+                        expect(
+                            await getExists(contractToTest, testKey, kHandler),
+                        ).toBe(map.has(testKey) && externalDict.has(testKey));
+                    },
+                ),
+            ),
+        );
+    }
 }
 
 void main();
