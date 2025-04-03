@@ -1,9 +1,9 @@
-import { beginCell, toNano, Cell } from "@ton/core";
+import { beginCell, toNano, type Cell } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { TraitsConstantContract } from "./output/base-trait-constant-override-1_TraitsConstantContract";
 import { TraitsConstantContractZeroReserve } from "./output/base-trait-constant-override-1_TraitsConstantContractZeroReserve";
-import {
+import type {
     Reply,
     Notify,
     Forward,
