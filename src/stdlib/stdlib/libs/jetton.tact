@@ -1,238 +1,752 @@
-/// Struct that describes the data that is returned by the Jetton Minter getter function `get_jetton_data`, defined in TEP-74.
+/// Struct. Available since Tact 1.6.6.
 ///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods-1
+/// Describes the data returned by the Jetton Minter getter function `get_jetton_data()`,
+/// which is defined in TEP-74 and should be present in every Jetton Minter implementation.
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonMinter(
+///     totalSupply: Int as coins,
+///     owner: Address,
+///     jettonContent: Cell,
+///     mintable: Bool,
+/// ) {
+///     // ...
+///     get fun get_jetton_data(): JettonMinterData {
+///         return JettonMinterData {
+///             totalSupply: self.totalSupply,
+///             mintable: self.mintable,
+///             adminAddress: self.owner,
+///             jettonContent: self.jettonContent,
+///             jettonWalletCode: codeOf JettonWallet,
+///         };
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonminterdata
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods-1
+///
 struct JettonMinterData {
-    /// Total supply of the jettons in elementary units.
+    /// Total supply of this Jetton Minter — the amount of tokens.
     totalSupply: Int as coins;
-    /// Flag that indicates whether the jettons are mintable.
+
+    /// Whether the tokens are still mintable.
     mintable: Bool;
-    /// Address of the owner of the Jetton Minter contract.
+
+    /// Owner of the Jetton Minter — the regular TON wallet address.
     owner: Address;
-    /// Jetton content.
+
+    /// Jetton content metadata, such as its name, description, symbol, etc.
+    ///
+    /// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md
+    ///
     content: Cell;
-    /// Code of the Jetton Wallet contract.
+
+    /// Code of the child Jetton Wallet contract that Jetton Minter would
+    /// deploy for each user's TON wallet.
     jettonWalletCode: Cell;
 }
 
-/// Struct that describes the data that is returned by the Jetton Wallet getter function `get_wallet_data`, defined in TEP-74.
+/// Struct. Available since Tact 1.6.6.
 ///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods
+/// Describes the data returned by the Jetton Wallet getter function `get_wallet_data()`,
+/// which is defined in TEP-74 and should be present in every Jetton Wallet implementation.
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonWallet(
+///     owner: Address,
+///     minter: Address,
+///     balance: Int as coins,
+/// ) {
+///     // ...
+///     get fun get_wallet_data(): JettonWalletData {
+///         return JettonWalletData {
+///             owner: self.owner,
+///             minter: self.minter,
+///             balance: self.balance,
+///             code: myCode(),
+///         };
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonwalletdata
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods
+///
 struct JettonWalletData {
-    /// Balance of the Jetton Wallet in elementary units.
+    /// Balance of the Jetton Wallet in tokens.
     balance: Int as coins;
-    /// Address of the owner of the Jetton Wallet contract.
+
+    /// Owner of the Jetton Wallet — the regular TON wallet address.
     owner: Address;
-    /// Address of the Jetton Minter contract.
+
+    /// Address of the parent Jetton Minter contract.
     minter: Address;
-    /// Code of the Jetton Wallet contract.
+
+    /// Code of this Jetton Wallet contract.
     code: Cell;
 }
 
-/// Message, defined in TEP-74, that is sent to the Jetton Wallet contract to transfer jettons to another account.
+/// Message struct. Available since Tact 1.6.6.
 ///
-/// #### TLB
+/// Represents a message body defined in TEP-74: it is sent to one Jetton Wallet
+/// contract to initialize a transfer of tokens to another Jetton Wallet.
 ///
-/// ```tlb
-/// transfer#0f8a7ea5 query_id:uint64 amount:(VarUInteger 16) destination:MsgAddress
-///     response_destination:MsgAddress custom_payload:(Maybe ^Cell)
-///     forward_ton_amount:(VarUInteger 16) forward_payload:(Either Cell ^Cell)
-///     = InternalMsgBody;
-/// ```
+/// NOTE: Always verify the sender of the message before taking any further actions.
 ///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer
-message(0xf8a7ea5) JettonTransfer {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-    /// Amount of transferred jettons in elementary units.
-    amount: Int as coins;
-    /// Address of the new owner of the jettons.
-    destination: Address;
-    /// Address where to send a response with confirmation of a successful transfer and the rest of the incoming message Toncoins.
-    responseDestination: Address?;
-    /// Optional custom data that could be used by either the sender or the receiver jetton wallets.
-    customPayload: Cell?;
-    /// The amount of nanotons to be sent to the destination address.
-    forwardTonAmount: Int as coins;
-    /// Optional custom data that should be sent to the destination address.
-    forwardPayload: Slice as remaining;
-}
-
-/// Message, defined in TEP-74, that is sent by the `sender` Jetton Wallet contract to the `destination` Jetton Wallet to process the transfer of jettons.
-///
-/// #### TLB
+/// #### TL-B from the TEP-74
 ///
 /// ```tlb
-/// internal_transfer#178d4519 query_id:uint64 amount:(VarUInteger 16) from:MsgAddress
-///     response_address:MsgAddress forward_ton_amount:(VarUInteger 16)
+/// transfer#0f8a7ea5
+///     query_id:uint64
+///     amount:(VarUInteger 16)
+///     destination:MsgAddress
+///     response_destination:MsgAddress
+///     custom_payload:(Maybe ^Cell)
+///     forward_ton_amount:(VarUInteger 16)
 ///     forward_payload:(Either Cell ^Cell)
 ///     = InternalMsgBody;
 /// ```
 ///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#tl-b-schema
-message(0x178d4519) JettonTransferInternal {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-    /// Amount of transferred jettons in elementary units.
+/// #### Usage example
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonWallet(
+///     owner: Address,
+///     balance: Int as coins,
+///     // ...
+/// ) {
+///     receive(msg: JettonTransfer) {
+///         forceBasechain(msg.destination);
+///         require(sender() == self.owner, "Incorrect sender");
+///
+///         self.balance -= msg.amount;
+///         require(self.balance >= 0, "Incorrect balance after send");
+///
+///         // ...further checks and actions...
+///     }
+///
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransfer
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransferinternal
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer
+///
+message(0xf8a7ea5) JettonTransfer {
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// Amount of tokens to be transferred.
     amount: Int as coins;
-    /// Address of the previous owner of the transferred jettons.
-    sender: Address;
-    /// Address where to send a response with confirmation of a successful transfer and the rest of the incoming message Toncoins.
+
+    /// A new owner of the transferred tokens — the regular TON wallet address.
+    destination: Address;
+
+    /// Address where to send a response confirming a successful transfer
+    /// and the remaining Toncoin from the incoming message.
     responseDestination: Address?;
-    /// The amount of nanotons to be sent to the destination address.
+
+    /// Optional custom data that was attached by the `sender`.
+    customPayload: Cell?;
+
+    /// The amount of nanotons to be sent to the `responseDestination` address.
     forwardTonAmount: Int as coins;
-    /// Optional custom data that should be sent to the destination address.
+
+    /// Optional custom data to be sent to the `responseDestination` address.
     forwardPayload: Slice as remaining;
 }
 
-/// Message, defined in TEP-74, that is sent by the `receiver` Jetton Wallet contract to the `receiver` address to notify about the transfer of jettons.
+/// Message struct. Available since Tact 1.6.6.
 ///
-/// #### TLB
+/// Represents a message body defined in TEP-74: it is sent and received by the
+/// Jetton Wallet contract to make a transfer or process an incoming one, respectively.
+///
+/// NOTE: Always verify the sender of the message before taking any further actions.
+///
+/// #### TL-B from the TEP-74
 ///
 /// ```tlb
-/// transfer_notification#7362d09c query_id:uint64 amount:(VarUInteger 16)
-///     sender:MsgAddress forward_payload:(Either Cell ^Cell)
+/// internal_transfer#178d4519
+///     query_id:uint64
+///    a mount:(VarUInteger 16)
+///     from:MsgAddress
+///     response_address:MsgAddress
+///     forward_ton_amount:(VarUInteger 16)
+///     forward_payload:(Either Cell ^Cell)
 ///     = InternalMsgBody;
 /// ```
 ///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer
-message(0x7362d09c) JettonTransferNotification {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-    /// Amount of transferred jettons in elementary units.
+/// #### Usage examples
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonWallet(
+///     owner: Address,
+///     minter: Address,
+///     balance: Int as coins,
+/// ) {
+///     receive(msg: JettonTransfer) {
+///         forceBasechain(msg.destination);
+///         require(sender() == self.owner, "Incorrect sender");
+///
+///         // ...other intermediate checks...
+///
+///         deploy(DeployParameters {
+///             value: 0,
+///             mode: SendRemainingValue,
+///             bounce: true,
+///             body: JettonTransferInternal {
+///                 queryId: msg.queryId,
+///                 amount: msg.amount,
+///                 sender: self.owner,
+///                 responseDestination: msg.responseDestination,
+///                 forwardTonAmount: msg.forwardTonAmount,
+///                 forwardPayload: msg.forwardPayload,
+///             }.toCell(),
+///             init: initOf JettonWallet(0, msg.destination, self.minter),
+///         });
+///     }
+///
+///     receive(msg: JettonTransferInternal) {
+///         self.balance += msg.amount;
+///
+///         // This message should come only from master, or from other JettonWallet
+///         let wallet: StateInit = initOf JettonWallet(0, msg.sender, self.minter);
+///         if (!wallet.hasSameBasechainAddress(sender())) {
+///             require(self.minter == sender(), "Incorrect sender");
+///         }
+///
+///         // ...further actions...
+///     }
+///
+///     bounced(msg: bounced<JettonTransferInternal>) {
+///         self.balance += msg.amount;
+///     }
+///
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransferinternal
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransfer
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#tl-b-schema
+///
+message(0x178d4519) JettonTransferInternal {
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// Amount of transferred tokens.
     amount: Int as coins;
-    /// Address of the previous owner of the transferred jettons.
+
+    /// Previous owner of the transferred tokens — the regular TON wallet address.
     sender: Address;
+
+    /// Address where to send a response confirming a successful transfer
+    /// and the remaining Toncoin from the incoming message.
+    responseDestination: Address?;
+
+    /// The amount of nanotons to be sent to the `responseDestination` address.
+    forwardTonAmount: Int as coins;
+
+    /// Optional custom data to be sent to the `responseDestination` address.
+    forwardPayload: Slice as remaining;
+}
+
+/// Message struct. Available since Tact 1.6.6.
+///
+/// Represents a message body defined in TEP-74: it is sent from the Jetton Wallet
+/// contract to the `self.owner` address to notify about the incoming transfer
+/// of tokens from their previous owner — the `sender`.
+///
+/// #### TL-B from the TEP-74
+///
+/// ```tlb
+/// transfer_notification#7362d09c
+///     query_id:uint64
+///     amount:(VarUInteger 16)
+///     sender:MsgAddress
+///     forward_payload:(Either Cell ^Cell)
+///     = InternalMsgBody;
+/// ```
+///
+/// #### Usage example
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonWallet(
+///     owner: Address,
+///     // ...
+/// ) {
+///     // ...
+///     receive(msg: JettonTransferInternal) {
+///         // ...prior checks...
+///
+///         let msgValue: Int = ctx.value;
+///         if (msg.forwardTonAmount > 0) {
+///             let fwdFee: Int = ctx.readForwardFee();
+///             msgValue -= msg.forwardTonAmount + fwdFee;
+///             message(MessageParameters {
+///                 to: self.owner,
+///                 value: msg.forwardTonAmount,
+///                 mode: SendPayGasSeparately,
+///                 bounce: false,
+///                 body: JettonTransferNotification {
+///                     queryId: msg.queryId,
+///                     amount: msg.amount,
+///                     sender: msg.sender,
+///                     forwardPayload: msg.forwardPayload,
+///                 }.toCell(),
+///             });
+///         }
+///
+///         // ...further actions...
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransfernotification
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransferinternal
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer
+///
+message(0x7362d09c) JettonTransferNotification {
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// Amount of transferred tokens.
+    amount: Int as coins;
+
+    /// Previous owner of the transferred tokens — the regular TON wallet address.
+    sender: Address;
+
     /// Optional custom data that was attached by the `sender`.
     forwardPayload: Slice as remaining;
 }
 
-/// Message, defined in TEP-74, that is sent to the Jetton Wallet contract by its owner to decrease its balance by the `amount` of jettons.
+/// Message struct. Available since Tact 1.6.6.
 ///
-/// #### TLB
+/// Represents a message body defined in TEP-74: it is sent to the Jetton Wallet
+/// contract from its TON wallet owner to decrease its balance by a certain `amount`.
+///
+/// NOTE: Always verify the sender of the message before taking any further actions.
+///
+/// #### TL-B from the TEP-74
 ///
 /// ```tlb
-/// burn#595f07bc query_id:uint64 amount:(VarUInteger 16)
-///     response_destination:MsgAddress custom_payload:(Maybe ^Cell)
+/// burn#595f07bc
+///     query_id:uint64
+///     amount:(VarUInteger 16)
+///     response_destination:MsgAddress
+///     custom_payload:(Maybe ^Cell)
 ///     = InternalMsgBody;
 /// ```
 ///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#2-burn
+/// #### Usage example
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonWallet(
+///     owner: Address,
+///     balance: Int as coins,
+///     // ...
+/// ) {
+///     // ...
+///     receive(msg: JettonBurn) {
+///         require(sender() == self.owner, "Incorrect sender");
+///         self.balance -= msg.amount;
+///         require(self.balance >= 0, "Incorrect balance after send");
+///         // ...further actions...
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonburn
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#2-burn
+///
 message(0x595f07bc) JettonBurn {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-    /// Amount of burned jettons.
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// Amount of burned tokens.
     amount: Int as coins;
-    // Address where to send a response with confirmation of a successful burn and the rest of the incoming message coins.
+
+    /// Address where to send a response confirming a successful burn
+    /// and the remaining Toncoin from the incoming message.
     responseDestination: Address?;
-    // Optional custom data.
+
+    /// Optional custom data.
     customPayload: Cell?;
 }
 
-/// Message, defined in TEP-74, that is sent by the Jetton Wallet contract to the Jetton Minter to notify about the burn of jettons.
+/// Message struct. Available since Tact 1.6.6.
 ///
-/// #### TLB
+/// Represents a message body defined in TEP-74: it is sent from the Jetton Wallet
+/// contract to the Jetton Minter to notify about the successful burn
+/// and reduce the total supply of tokens.
+///
+/// #### TL-B from the TEP-74
 ///
 /// ```tlb
-/// burn_notification#7bdd97de query_id:uint64 amount:(VarUInteger 16)
-///     sender:MsgAddress response_destination:MsgAddress
+/// burn_notification#7bdd97de
+///     query_id:uint64
+///     amount:(VarUInteger 16)
+///     sender:MsgAddress
+///     response_destination:MsgAddress
 ///     = InternalMsgBody;
 /// ```
 ///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#tl-b-schema
+/// #### Usage examples
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonMinter(
+///     // ...
+/// ) {
+///     // ...
+///     receive(msg: JettonBurnNotification) {
+///         let sender = parseStdAddress(sender().asSlice());
+///         let wallet = getJettonBasechainWalletByOwner(msg.sender);
+///
+///         require(
+///             sender.workchain == 0 && sender.address == wallet.hash!!,
+///             "Unauthorized burn",
+///         );
+///         // ...further actions...
+///     }
+///     // ...
+/// }
+///
+/// contract JettonWallet(
+///     balance: Int as coins,
+///     // ...
+/// ) {
+///     // ...
+///     bounced(msg: bounced<JettonBurnNotification>) {
+///         self.balance += msg.amount;
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonburnnotification
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#tl-b-schema
+///
 message(0x7bdd97de) JettonBurnNotification {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-    /// Amount of burned jettons.
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// Amount of burned tokens.
     amount: Int as coins;
-    /// Address of the previous owner of the burned jettons.
+
+    /// Previous owner of the burned tokens — the regular TON wallet address.
     sender: Address;
-    /// Address where to send a response with confirmation of a successful burn and the rest of the incoming message coins.
+
+    /// Address where to send a response confirming a successful burn
+    /// and the remaining Toncoin from the incoming message.
     responseDestination: Address?;
 }
 
-/// Message, defined in TEP-74, that is sent by the `receiver` Jetton Wallet contract to the `responseDestination` address to cashback the remaining message coins.
+/// Message struct. Available since Tact 1.6.6.
 ///
-/// #### TLB
+/// Represents a message body defined in TEP-74: it is sent from either Jetton Minter
+/// or Jetton Wallet to refund the remaining Toncoin from the incoming message.
 ///
-/// ```tlb
-/// excesses#d53276db query_id:uint64 = InternalMsgBody
-/// ```
-///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer
-message(0xd53276db) JettonExcesses {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-}
-
-/// Message, defined in TEP-89, that is sent to the Jetton Minter contract to request the Jetton Wallet address for the `ownerAddress`.
-///
-/// #### TLB
+/// #### TL-B from the TEP-74
 ///
 /// ```tlb
-/// provide_wallet_address#2c76b973 query_id:uint64
-///     owner_address:MsgAddress include_address:Bool
+/// excesses#d53276db
+///     query_id:uint64
 ///     = InternalMsgBody;
 /// ```
 ///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md#scheme
+/// #### Usage example
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonMinter(
+///     // ...
+/// ) {
+///     // ...
+///     receive(msg: JettonBurnNotification) {
+///         // ...
+///         if (msg.responseDestination != null) {
+///             message(MessageParameters {
+///                 to: msg.responseDestination!!,
+///                 body: JettonExcesses { queryId: msg.queryId }.toCell(),
+///                 value: 0,
+///                 bounce: false, // do not bounce
+///                 mode: SendRemainingValue | SendIgnoreErrors,
+///             });
+///         }
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonexcesses
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer
+///
+message(0xd53276db) JettonExcesses {
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+}
+
+/// Message struct. Available since Tact 1.6.6.
+///
+/// Represents a message body defined in TEP-89: it is sent to the Jetton Minter
+/// contract to request the Jetton Wallet address for the `ownerAddress`.
+///
+/// #### TL-B from the TEP-89
+///
+/// ```tlb
+/// provide_wallet_address#2c76b973
+///     query_id:uint64
+///     owner_address:MsgAddress
+///     include_address:Bool
+///     = InternalMsgBody;
+/// ```
+///
+/// #### Usage example
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonMinter(
+///     // ...
+/// ) {
+///     // ...
+///     receive(msg: ProvideWalletAddress) {
+///         let ownerWorkchain = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
+///         // ...further actions...
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#providewalletaddress
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md#scheme
+///
 message(0x2c76b973) ProvideWalletAddress {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-    /// Address of the owner of the requested Jetton Wallet address.
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// Owner of the requested Jetton Wallet — the regular TON wallet address.
     ownerAddress: Address;
-    /// Flag that indicates whether the `ownerAddress` should be included in the response.
+
+    /// Whether the `ownerAddress` should be included in the response.
     includeAddress: Bool;
 }
 
-/// Message, defined in TEP-89, that is sent by the Jetton Minter contract in response to the request about the Jetton Wallet address for the `ownerAddress`.
+/// Message struct. Available since Tact 1.6.6.
 ///
-/// #### TLB
+/// Represents a message body defined in TEP-89: it is sent from the Jetton Minter
+/// contract in response to a request for the Jetton Wallet address
+/// for the `ownerAddress`.
+///
+/// #### TL-B from the TEP-89
 ///
 /// ```tlb
-/// take_wallet_address#d1735400 query_id:uint64
-///     wallet_address:MsgAddress owner_address:(Maybe ^MsgAddress)
+/// take_wallet_address#d1735400
+///     query_id:uint64
+///     wallet_address:MsgAddress
+///     owner_address:(Maybe ^MsgAddress)
 ///     = InternalMsgBody;
 /// ```
 ///
-/// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md#scheme
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#takewalletaddress
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#providewalletaddress
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md#scheme
+///
 message(0xd1735400) TakeWalletAddress {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
     /// Address of the requested Jetton Wallet.
     walletAddress: Address;
-    /// Address of the owner of the requested Jetton Wallet address.
+
+    /// Owner of the requested Jetton Wallet — the regular TON wallet address.
     ownerAddress: Cell?;
 }
 
-/// Message, often used in jetton implementations, that is sent to the Jetton Minter contract by its owner to update the jetton content.
+/// Message struct. Available since Tact 1.6.6.
 ///
-/// See also: https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md
+/// Represents a message body often used in Jetton implementations: it is sent
+/// to the Jetton Minter contract to update the Jetton content metadata,
+/// which is defined in TEP-64.
+///
+/// NOTE: Always verify the sender of the message before taking any further actions.
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonMinter(
+///     owner: Address,
+///     jettonContent: Cell,
+///     // ...
+/// ) {
+///     // ...
+///     receive(msg: JettonUpdateContent) {
+///         require(sender() == self.owner, "Incorrect sender");
+///         self.jettonContent = msg.content;
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonupdatecontent
+/// * https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md
+///
 message(4) JettonUpdateContent {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-    /// New jetton content.
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// New Jetton content metadata, such as its name, description, symbol, etc.
+    ///
+    /// See: https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md
+    ///
     newContent: Cell;
 }
 
-/// Message, often used in jetton implementations, that is sent to the Jetton Minter contract to mint `mintMessage.amount` of jettons for the `receiver`.
+/// Message struct. Available since Tact 1.6.6.
+///
+/// Represents a message body often used in Jetton implementations: it is sent
+/// to the Jetton Minter contract to mint `mintMessage.amount` of tokens
+/// for the `receiver`.
+///
+/// NOTE: Always verify the sender of the message before taking any further actions.
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonMinter(
+///     owner: Address,
+///     mintable: Bool,
+///     // ...
+/// ) {
+///     // ...
+///     receive(msg: Mint) {
+///         require(sender() == self.owner, "Incorrect sender");
+///         require(self.mintable, "Mint is closed");
+///         // ...further actions...
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/stdlib-jetton#mint
+///
 message(21) Mint {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-    /// Address of the receiver of the minted jettons.
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// Recipient of the minted tokens — the regular TON wallet address.
     receiver: Address;
-    /// The amount of nanotons to be sent to the `receiver` in `transfer` message.
+
+    /// The amount of nanotons to be sent to the `receiver` during the transfer.
     tonAmount: Int as coins;
-    /// Message that would be sent to the `receiver` Jetton Wallet to handle the minting.
+
+    /// If the Jetton Wallet for the given `receiver` does not exist, this message
+    /// will be used for its deployment and minting. Otherwise, only mints the tokens
+    /// for the `receiver` using their corresponding Jetton Wallet.
     mintMessage: JettonTransferInternal;
 }
 
-/// Message, often used in jetton implementations, that is sent to the Jetton Minter contract to close the ability to mint new jettons.
+/// Message struct. Available since Tact 1.6.6.
+///
+/// Represents a message body often used in Jetton implementations: it is sent
+/// to the Jetton Minter contract to disable the ability to mint new tokens.
+///
+/// NOTE: Always verify the sender of the message before taking any further actions.
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonMinter(
+///     owner: Address,
+///     mintable: Bool,
+///     // ...
+/// ) {
+///     // ...
+///     receive(msg: CloseMinting) {
+///         require(sender() == self.owner, "Incorrect sender");
+///         self.mintable = false;
+///         cashback(sender());
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/stdlib-jetton#closeminting
+///
 message(22) CloseMinting {}
 
-/// Message, often used in jetton implementations, that is sent to the Jetton Minter contract to change the owner to the `newOwner`. Should be fetched only if send by the current owner.
+/// Message struct. Available since Tact 1.6.6.
+///
+/// Represents a message body often used in Jetton implementations: it is sent
+/// to the Jetton Minter contract to change the owner to `newOwner`.
+///
+/// NOTE: Always verify the sender of the message before taking any further actions.
+///
+/// ```tact
+/// import "@stdlib/jetton";
+///
+/// contract JettonMinter(
+///     owner: Address,
+///     // ...
+/// ) {
+///     // ...
+///     receive(msg: ChangeOwner) {
+///         require(sender() == self.owner, "Incorrect sender");
+///         self.owner = msg.newOwner;
+///     }
+///     // ...
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/stdlib-jetton#changeowner
+///
 message(3) ChangeOwner {
-    /// Arbitrary request number.
-    queryId: Int as uint64;
-    /// New owner of the Jetton Minter contract.
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// New owner of the contract — the regular TON wallet address.
     newOwner: Address;
 }

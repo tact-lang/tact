@@ -3,24 +3,35 @@ title: Fungible Tokens (Jettons)
 description: "Common examples of working with Fungible Tokens (Jettons) in Tact"
 ---
 
-This page lists common examples of working with [Fungible Tokens (Jettons)](https://docs.ton.org/develop/dapps/asset-processing/jettons).
+This page lists common examples of working with [Fungible Tokens (Jettons)](https://docs.ton.org/develop/dapps/asset-processing/jettons). That said, the [stablecoin contract](https://github.com/ton-blockchain/stablecoin-contract) is out of the scope of this page.
 
 Jettons are token standards on the TON Blockchain, designed to create fungible tokens (similar to ERC-20 on Ethereum) using a decentralized approach. They are implemented as a pair of smart contracts, typically consisting of two core components:
 
-* Jetton Master Contract (Jetton master)
-* Jetton Wallet Contract (Jetton wallet)
+* Jetton Master (or Minter), which acts like a parent contract
+* Jetton Wallet, which is a child contract managed by the Jetton Minter and created for each user's wallet.
 
 These contracts interact with each other to manage token supply, distribution, transfers, and other operations related to the Jetton.
 
-:::note
+Read more about Jetton standards:
 
-  Since Tact 1.6.5, the Jetton standard is supported natively in the Tact language with the `@stdlib/jetton` module.
+* [TEP-74: Fungible tokens (Jettons) standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md).
+* [TEP-64: Token Data Standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md)
+* [TEP-89: Discoverable Jetton Wallets](https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md)
+
+:::tip
+
+  Since Tact 1.6.6, primary and auxiliary structures for working with Jetton standards are available in the `@stdlib/jetton` library:
+
+  ```tact
+  // This would include everything from @stdlib/jetton
+  import "@stdlib/jetton";
+  ```
 
 :::
 
 ## Jetton Master Contract
 
-The Jetton Master Contract serves as the central entity for a given Jetton. It maintains critical information about the Jetton itself. Key responsibilities and data stored in the Jetton Master Contract include:
+The Jetton Master (or Minter) Contract serves as the central entity for a given Jetton. It maintains critical information about the Jetton itself. Key responsibilities and data stored in the Jetton Master Contract include:
 
 * Jetton metadata: Information such as the token's name, symbol, total supply, and decimals.
 
@@ -50,13 +61,17 @@ The transfer notification message has the following structure:
 
 ```tact
 message(0x7362d09c) JettonTransferNotification {
-    // Arbitrary request number.
-    queryId: Int as uint64;
-    // Amount of transferred jettons in elementary units.
+    /// Unique identifier used to trace transactions across multiple contracts.
+    /// Defaults to 0, which means we don't mark messages to trace requests.
+    queryId: Int as uint64 = 0;
+
+    /// Amount of transferred Jettons in elementary units.
     amount: Int as coins;
-    // Address of the previous owner of the transferred jettons.
+
+    /// Address of the previous owner of the transferred jettons.
     sender: Address;
-    // Optional custom data that was attached by the `sender`.
+
+    /// Optional custom data that was attached by the `sender`.
     forwardPayload: Slice as remaining;
 }
 ```

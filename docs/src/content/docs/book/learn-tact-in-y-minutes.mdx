@@ -121,7 +121,7 @@ fun showcase() {
 
     // Cells are a fundamental primitive and data structure on TON Blockchain:
     // contracts communicate and interact by sending and receiving cells while
-    // their code and data are themselves stored as cells on the blockchain 
+    // their code and data are themselves stored as cells on the blockchain
     // the code and the data of each contract are cells and contracts
     // communicate and interact by sending and receiving cells.
     //
@@ -1221,6 +1221,10 @@ For more, refer to the following resources:
 #### JettonWallet
 
 ```tact
+/// This library provides primary and auxiliary structures
+/// and utilities for working with the Jetton standard.
+import "@stdlib/jetton";
+
 /// Child contract per each holder of N amount of given Jetton (token)
 contract JettonWallet(
     /// Balance in Jettons.
@@ -1258,17 +1262,17 @@ contract JettonWallet(
         require(
             ctx.value >
             msg.forwardTonAmount + fwdCount * ctx.readForwardFee() +
-            (2 * getComputeFee(gasForTransfer, false) + minTonsForStorage),
+            (2 * getComputeFee(GAS_FOR_TRANSFER, false) + MIN_TONCOIN_FOR_STORAGE),
             "Insufficient amount of TON attached",
         );
 
         // Transfer Jetton from the current owner to the target user's JettonWallet.
         // If that wallet does not exist, it is deployed on-chain in the same transfer.
-        deploy(DeployParameters{
+        deploy(DeployParameters {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: JettonTransferInternal{
+            body: JettonTransferInternal {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
@@ -1304,12 +1308,12 @@ contract JettonWallet(
         if (msg.forwardTonAmount > 0) {
             let fwdFee: Int = ctx.readForwardFee();
             msgValue -= msg.forwardTonAmount + fwdFee;
-            message(MessageParameters{
+            message(MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayGasSeparately,
                 bounce: false,
-                body: JettonNotification{
+                body: JettonNotification {
                     queryId: msg.queryId,
                     amount: msg.amount,
                     sender: msg.sender,
@@ -1320,16 +1324,16 @@ contract JettonWallet(
 
         // In general, let's try to reserve minimal amount of Toncoin
         // to keep this contract running and paying storage fees.
-        nativeReserve(max(tonBalanceBeforeMsg, minTonsForStorage), ReserveAtMost);
+        nativeReserve(max(tonBalanceBeforeMsg, MIN_TONCOIN_FOR_STORAGE), ReserveAtMost);
 
         // And forward excesses (cashback) to the original sender.
         if (msg.responseDestination != null && msgValue > 0) {
-            message(MessageParameters{
+            message(MessageParameters {
                 to: msg.responseDestination!!,
                 value: msgValue,
                 mode: SendRemainingBalance + SendIgnoreErrors,
                 bounce: false,
-                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                body: JettonExcesses { queryId: msg.queryId }.toCell(),
             });
         }
     }
@@ -1348,18 +1352,18 @@ contract JettonWallet(
         let fwdFee: Int = ctx.readForwardFee();
         require(
             ctx.value >
-            (fwdFee + 2 * getComputeFee(gasForBurn, false)),
+            (fwdFee + 2 * getComputeFee(GAS_FOR_BURN, false)),
             "Insufficient amount of TON attached",
         );
 
         // Send a message to the JettonMinter to reduce the total supply
         // of the Jettons. That is, to burn some.
-        message(MessageParameters{
+        message(MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: JettonBurnNotification{
+            body: JettonBurnNotification {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
@@ -1371,16 +1375,16 @@ contract JettonWallet(
     /// Registers a bounced binary receiver of messages
     /// with the JettonTransferInternal opcode.
     /// It handles such outgoing messages that bounced back to this contract.
-    bounced(msg: bounced<JettonTransferInternal>) { self.balance += msg.amount; }
+    bounced(msg: bounced<JettonTransferInternal>) { self.balance += msg.amount }
 
     /// Registers a bounced binary receiver of messages
     /// with the JettonBurnNotification opcode.
     /// It handles such outgoing messages that bounced back to this contract.
-    bounced(msg: bounced<JettonBurnNotification>) { self.balance += msg.amount; }
+    bounced(msg: bounced<JettonBurnNotification>) { self.balance += msg.amount }
 
     /// An off-chain getter function which returns useful data about this wallet.
     get fun get_wallet_data(): JettonWalletData {
-        return JettonWalletData{
+        return JettonWalletData {
             balance: self.balance,
             owner: self.owner,
             master: self.master,
@@ -1389,65 +1393,10 @@ contract JettonWallet(
     }
 }
 
-//
-// Helper structs, message structs and constants,
-// which would otherwise be imported from another file
-//
-
-struct JettonWalletData {
-    balance: Int;
-    owner: Address;
-    master: Address;
-    code: Cell;
-}
-
-message(0xf8a7ea5) JettonTransfer {
-    queryId: Int as uint64;
-    amount: Int as coins;
-    destination: Address;
-    responseDestination: Address?;
-    customPayload: Cell?;
-    forwardTonAmount: Int as coins;
-    forwardPayload: Slice as remaining;
-}
-
-message(0x178d4519) JettonTransferInternal {
-    queryId: Int as uint64;
-    amount: Int as coins;
-    sender: Address;
-    responseDestination: Address?;
-    forwardTonAmount: Int as coins;
-    forwardPayload: Slice as remaining;
-}
-
-message(0x7362d09c) JettonNotification {
-    queryId: Int as uint64;
-    amount: Int as coins;
-    sender: Address;
-    forwardPayload: Slice as remaining;
-}
-
-message(0x595f07bc) JettonBurn {
-    queryId: Int as uint64;
-    amount: Int as coins;
-    responseDestination: Address?;
-    customPayload: Cell?;
-}
-
-message(0x7bdd97de) JettonBurnNotification {
-    queryId: Int as uint64;
-    amount: Int as coins;
-    sender: Address;
-    responseDestination: Address?;
-}
-
-message(0xd53276db) JettonExcesses {
-    queryId: Int as uint64;
-}
-
-const gasForBurn: Int = 6000;
-const gasForTransfer: Int = 8000;
-const minTonsForStorage: Int = ton("0.01");
+// Helper constants, which would otherwise be imported from another file
+const GAS_FOR_BURN: Int = 6000;
+const GAS_FOR_TRANSFER: Int = 8000;
+const MIN_TONCOIN_FOR_STORAGE: Int = ton("0.01");
 ```
 
 #### JettonMinter
