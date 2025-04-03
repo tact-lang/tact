@@ -29,7 +29,7 @@
     },
     {
       "label": "1.6.5 with signed data as remaining",
-      "pr": "https://github.com/tact-lang/tact/pull/TODO",
+      "pr": "https://github.com/tact-lang/tact/pull/2627",
       "gas": {
         "externalTransfer": "3825",
         "addPlugin": "5991",
