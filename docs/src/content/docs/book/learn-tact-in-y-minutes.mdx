@@ -37,6 +37,14 @@ contract HelloWorld {
         // Sends a reply: "Hello, World!"
         reply("Hello, World!");
     }
+
+    // Listens to incoming empty messages,
+    // which are very handy and cheap for the deployments
+    receive() {
+        // Forward the remaining value in the
+        // incoming message back to the sender.
+        cashback(sender());
+    }
 }
 
 // A helper inlined function to send text messages
@@ -1454,4 +1462,4 @@ const minTonsForStorage: Int = ton("0.01");
 
 It is a parent contract that deploys individual [Jetton wallets](#jettonwallet) per each holder.
 
-See: [`JettonMinter` in tact-lang/jetton repository](https://github.com/tact-lang/jetton/blob/main/sources/jetton_minter_discoverable.tact).
+See: [`JettonMinter` in tact-lang/jetton repository](https://github.com/tact-lang/jetton/blob/9db75a5a828e9093be5c425605c5f5c9903f505d/src/contracts/jetton-minter.tact).
