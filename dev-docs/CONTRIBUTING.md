@@ -160,6 +160,20 @@ To run benchmarks and print comparison table
 yarn bench
 ```
 
+There are a few table print modes, you can set them with:
+
+```shell
+cross-env PRINT_MODE="first-last" yarn bench
+```
+
+Print modes:
+
+- **`first-last`**: Displays only the first and last benchmark results for comparison. This is useful for quickly identifying overall changes between the initial and most recent benchmarks.
+- **`full`**: Displays all benchmark results in detail. This mode provides a comprehensive view of all historical benchmark data.
+- **`last-diff`**: Displays the last three benchmark results to highlight recent changes. This mode is helpful for tracking incremental updates and their impact.
+
+Default print mode is `full`.
+
 ## Updating benchmarks
 
 To update historical benchmarks with `results.json`:

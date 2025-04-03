@@ -35,14 +35,23 @@ export default function remarkLinksToWebIDE() {
       const lines = src.split('\n');
       if (lines.length <= 1) { return undefined; }
 
-      // Only allow pages in the Cookbook
+      // Only allow pages in the Cookbook plus some cheat sheat pages from the Book
       // NOTE: This limitation can be lifted in the future if there's popular demand
-      if (file.path.indexOf('docs/cookbook') === -1) { return undefined; }
+      const notCookbook = file.path.indexOf('docs/cookbook') === -1;
+      const notLearnXY = file.path.indexOf('learn-tact-in-y-minutes') === -1;
+      if (notCookbook && notLearnXY) {
+        return undefined;
+      }
+
+      // Skip first code block in "learn Tact in Y minutes", the one with comments
+      if (!notLearnXY && lines[0]?.startsWith('// Single-line (//) comments')) {
+        return undefined;
+      }
 
       // Detect module-level items
       let hasModuleItems = false;
       for (let i = 0; i < lines.length; i += 1) {
-        // Same regex as in scripts/check-cookbook-examples.js
+        // Same regex as in scripts/typecheck-examples.js
         const matchRes = lines[i].match(/^\s*(?:import|primitive|const|asm|fun|extends|mutates|virtual|override|inline|abstract|@name|@interface|contract|trait|struct|message)\b/);
         // TODO: Unite the regexes when Tact 2.0 arrives (or if some new module-level item arrives, or via try/catch and re-using compiler's parser)
 
