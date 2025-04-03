@@ -546,7 +546,7 @@ Tact utilizes exit codes from $128$ to $255$. Note that exit codes used by Tact 
 
 If there is a non-null assertion, such as the [`!!{:tact}`](/book/operators#unary-non-null-assert) operator, and the checked value is [`null{:tact}`](/book/optionals), an error with exit code $128$ is thrown: `Null reference exception`.
 
-This behavior can be modified by setting the [`nullChecks`](/book/config#safety-nullChecks) option to `false`, which will disable runtime null checks and would allow to save some gas. However, it is recommended to use it only for well-tested contracts, as it can lead to less recognizable type errors reported by TVM.
+This behavior can be modified by setting the [`nullChecks`](/book/config#safety-nullchecks) option to `false`, which will disable runtime null checks and would allow to save some gas. However, it is recommended to use it only for well-tested contracts, as it can lead to less recognizable type errors reported by TVM.
 
 ```tact
 let gotcha: String? = null;
