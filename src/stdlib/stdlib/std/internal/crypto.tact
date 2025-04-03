@@ -166,3 +166,32 @@ asm fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool { CHKS
 /// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 ///
 asm fun checkDataSignature(data: Slice, signature: Slice, publicKey: Int): Bool { CHKSIGNS }
+
+/// A struct that contains a cryptographic signature and the data it signs.
+///
+/// ```tact
+/// message MessageWithSignedData {
+///    bundle: SignedBundle;
+///    // bundle.signedData is the non-serialized representation
+///    // of the rest of the data fields: `walletId` and `seqno`.
+///    walletId: Int as int32;
+///    seqno: Int as uint32;
+/// }
+/// ```
+struct SignedBundle {
+    /// The 512-bit Ed25519 signature of the data.
+    signature: Slice as bytes64;
+    /// The slice with signed data obtained from the enclosing struct or message.
+    signedData: Slice as remaining;
+}
+
+/// Checks whether `self.signedData` was signed by the 512-bit [Ed25519] signature `self.signature`,
+/// using the given `publicKey`.
+///
+/// Returns `true` if the signature is valid, `false` otherwise.
+///
+/// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+///
+inline extends fun verifySignature(self: SignedBundle, publicKey: Int): Bool {
+    return checkSignature(self.signedData.hash(), self.signature, publicKey);
+}

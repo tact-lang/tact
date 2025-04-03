@@ -8,13 +8,8 @@ message(0x706c7567) PluginRequestFunds {
     extra: Cell?;
 }
 
-struct SignatureAndSignedData {
-    signature: Slice as bytes64;
-    signedData: Slice as remaining;
-}
-
 message ExternalRequest {
-    all: SignatureAndSignedData;
+    bundle: SignedBundle;
     walletId: Int as int32;
     validUntil: Int as uint32;
     seqno: Int as uint32;
@@ -98,11 +93,7 @@ contract WalletV4(
         throwIf(36, msg.validUntil < now());
         throwUnless(33, msg.seqno == self.seqno);
         throwUnless(34, msg.walletId == self.walletId);
-        throwUnless(35, checkSignature(
-            msg.all.signedData.hash(),
-            msg.all.signature,
-            self.publicKey,
-        ));
+        throwUnless(35, msg.bundle.verifySignature(self.publicKey));
 
         acceptMessage();
         self.seqno += 1;
