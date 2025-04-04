@@ -1,4 +1,4 @@
-import type * as Ast from "../../../src/ast/ast";
+import type * as Ast from "@/ast/ast";
 import {
     createSamplesArray,
     createSample,
@@ -6,14 +6,14 @@ import {
     randomBool,
     randomElement,
     generateAstIdFromName,
-} from "../util";
-import { TypeGen, UtilType, getStdlibTypes } from "../types";
-import { Contract } from "./contract";
-import { Message, Struct } from "./struct";
-import { Trait } from "./trait";
-import { Scope } from "../scope";
-import { NamedGenerativeEntity } from "./generator";
-import { getStdlibTraits } from "../stdlib";
+} from "@/test/fuzzer/src/util";
+import { TypeGen, UtilType, getStdlibTypes } from "@/test/fuzzer/src/types";
+import { Contract } from "@/test/fuzzer/src/generators/contract";
+import { Message, Struct } from "@/test/fuzzer/src/generators/struct";
+import { Trait } from "@/test/fuzzer/src/generators/trait";
+import { Scope } from "@/test/fuzzer/src/scope";
+import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
+import { getStdlibTraits } from "@/test/fuzzer/src/stdlib";
 
 import fc from "fast-check";
 

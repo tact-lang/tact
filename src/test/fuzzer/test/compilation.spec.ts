@@ -1,21 +1,21 @@
-import { funcCompile } from "../../src/func/funcCompile";
-import { posixNormalize } from "../../src/utils/filePath";
-import type * as Ast from "../../src/ast/ast";
+import { funcCompile } from "@/func/funcCompile";
+import { posixNormalize } from "@/utils/filePath";
+import type * as Ast from "@/ast/ast";
 import { writeFileSync } from "fs";
 import * as path from "path";
 import fc from "fast-check";
 
-import { Program } from "../src/generators";
-import { StdlibCode, StdlibPath } from "../src/stdlib";
-import { withNodeFS, checkAsyncProperty } from "../src/util";
+import { Program } from "@/test/fuzzer/src/generators";
+import { StdlibCode, StdlibPath } from "@/test/fuzzer/src/stdlib";
+import { withNodeFS, checkAsyncProperty } from "@/test/fuzzer/src/util";
 import {
     compile,
     precompile,
     createContext,
     enableFeatures,
-} from "./testUtils";
-import { GlobalContext } from "../src/context";
-import { getAstFactory } from "../../src/ast/ast-helpers";
+} from "@/test/fuzzer/test/testUtils";
+import { GlobalContext } from "@/test/fuzzer/src/context";
+import { getAstFactory } from "@/ast/ast-helpers";
 
 function getContract(program: Ast.Module): Ast.Contract | undefined {
     for (const entry of program.items) {
@@ -29,7 +29,7 @@ function getContract(program: Ast.Module): Ast.Contract | undefined {
 async function compileProgram(program: Ast.Module) {
     await withNodeFS(async (vfs) => {
         const factoryAst = getAstFactory();
-        let ctx = createContext(program, factoryAst);
+        let ctx = createContext(program);
         ctx = enableFeatures(ctx, "external");
         ctx = precompile(ctx, factoryAst);
         const compilationOutput = vfs.root;

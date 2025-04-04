@@ -1,4 +1,4 @@
-import type * as Ast from "../../../src/ast/ast";
+import type * as Ast from "@/ast/ast";
 import {
     tyToAstType,
     StdlibType,
@@ -6,18 +6,18 @@ import {
     getReturnType,
     isUnit,
     UtilType,
-} from "../types";
-import type { FunctionType, Type } from "../types";
-import { Return } from "./statement";
-import { Parameter } from "./parameter";
-import { Scope } from "../scope";
+} from "@/test/fuzzer/src/types";
+import type { FunctionType, Type } from "@/test/fuzzer/src/types";
+import { Return } from "@/test/fuzzer/src/generators/statement";
+import { Parameter } from "@/test/fuzzer/src/generators/parameter";
+import { Scope } from "@/test/fuzzer/src/scope";
 import {
     createSample,
     dummySrcInfoPrintable,
     generateAstId,
     generateAstIdFromName,
-} from "../util";
-import { NamedGenerativeEntity } from "./generator";
+} from "@/test/fuzzer/src/util";
+import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
 
@@ -37,6 +37,9 @@ function notHaveArguments(kind: FunctionKind, type: FunctionType): boolean {
         return type.signature.length === 1;
     } else {
         const firstArg = type.signature[0];
+        if (typeof firstArg === "undefined") {
+            throw new Error(`unexpected 'undefined'`);
+        }
         return isThis(firstArg) && type.signature.length === 2;
     }
 }

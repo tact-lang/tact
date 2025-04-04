@@ -1,21 +1,21 @@
-import { CompilerContext } from "../../src/context/context";
-import {
-    resolveExpression,
-    getExpType,
-} from "../../src/types/resolveExpression";
-import type { StatementContext } from "../../src/types/resolveStatements";
-import type { TypeRef } from "../../src/types/types";
+import { CompilerContext } from "@/context/context";
+import { resolveExpression, getExpType } from "@/types/resolveExpression";
+import type { StatementContext } from "@/types/resolveStatements";
+import type { TypeRef } from "@/types/types";
 import assert from "assert";
 
-import { Expression, NonGenerativeExpressionParams } from "../src/generators";
-import { Scope } from "../src/scope";
-import { SUPPORTED_STDLIB_TYPES } from "../src/types";
-import type { Type } from "../src/types";
+import {
+    Expression,
+    NonGenerativeExpressionParams,
+} from "@/test/fuzzer/src/generators";
+import { Scope } from "@/test/fuzzer/src/scope";
+import { SUPPORTED_STDLIB_TYPES } from "@/test/fuzzer/src/types";
+import type { Type } from "@/test/fuzzer/src/types";
 import {
     createProperty,
     checkProperty,
     dummySrcInfoPrintable,
-} from "../src/util";
+} from "@/test/fuzzer/src/util";
 
 function emptyContext(): StatementContext {
     return {

@@ -1,16 +1,20 @@
-import type * as Ast from "../../../src/ast/ast";
-import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
-import { FunctionDef } from "./function";
-import type { Trait } from "./trait";
-import { Expression } from "./expression";
-import { Receive } from "./receiver";
-import { UtilType } from "../types";
-import type { FunctionType } from "../types";
-import { Scope } from "../scope";
-import { NamedGenerativeEntity } from "./generator";
+import type * as Ast from "@/ast/ast";
+import {
+    createSample,
+    dummySrcInfoPrintable,
+    generateAstId,
+} from "@/test/fuzzer/src/util";
+import { FunctionDef } from "@/test/fuzzer/src/generators/function";
+import type { Trait } from "@/test/fuzzer/src/generators/trait";
+import { Expression } from "@/test/fuzzer/src/generators/expression";
+import { Receive } from "@/test/fuzzer/src/generators/receiver";
+import { UtilType } from "@/test/fuzzer/src/types";
+import type { FunctionType } from "@/test/fuzzer/src/types";
+import { Scope } from "@/test/fuzzer/src/scope";
+import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
-import { Field } from "./field";
+import { Field } from "@/test/fuzzer/src/generators/field";
 
 export interface ContractParameters {
     /**

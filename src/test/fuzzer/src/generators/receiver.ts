@@ -1,20 +1,27 @@
-import type * as Ast from "../../../src/ast/ast";
-import { UtilType, StdlibType, isBouncedMessage } from "../types";
-import type { Type } from "../types";
-import { Scope } from "../scope";
-import { GenerativeEntity } from "./generator";
+import type * as Ast from "@/ast/ast";
+import {
+    UtilType,
+    StdlibType,
+    isBouncedMessage,
+} from "@/test/fuzzer/src/types";
+import type { Type } from "@/test/fuzzer/src/types";
+import { Scope } from "@/test/fuzzer/src/scope";
+import { GenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 import {
     createSample,
     dummySrcInfoPrintable,
     randomBool,
     randomElement,
-} from "../util";
-import { Expression, generateString } from "./expression";
-import { Parameter } from "./parameter";
-import { StatementExpression } from "./statement";
+} from "@/test/fuzzer/src/util";
+import {
+    Expression,
+    generateString,
+} from "@/test/fuzzer/src/generators/expression";
+import { Parameter } from "@/test/fuzzer/src/generators/parameter";
+import { StatementExpression } from "@/test/fuzzer/src/generators/statement";
 
 import fc from "fast-check";
-import { nextId } from "../id";
+import { nextId } from "@/test/fuzzer/src/id";
 
 const RECEIVE_RETURN_TY: Type = { kind: "util", type: UtilType.Unit };
 
@@ -51,7 +58,7 @@ function generateInternalReceiverKind(
         subKind,
         id: fc.constant(nextId()),
         loc: fc.constant(dummySrcInfoPrintable),
-    });
+    }) as fc.Arbitrary<Ast.ReceiverKind>;
 }
 
 function generateExternalReceiverKind(
@@ -62,7 +69,7 @@ function generateExternalReceiverKind(
         subKind,
         id: fc.constant(nextId()),
         loc: fc.constant(dummySrcInfoPrintable),
-    });
+    }) as fc.Arbitrary<Ast.ReceiverKind>;
 }
 
 /**
@@ -90,7 +97,7 @@ export class Receive extends GenerativeEntity<Ast.Receiver> {
                         StdlibType.String,
                     ),
                 }),
-            );
+            ) as Type;
             const param = new Parameter(this.scope, ty);
             this.scope.addNamed("parameter", param);
             const internalSimple = generateInternalReceiverKind(
@@ -117,7 +124,7 @@ export class Receive extends GenerativeEntity<Ast.Receiver> {
                 param: param.generate(),
                 id: fc.constant(nextId()),
                 loc: fc.constant(dummySrcInfoPrintable),
-            });
+            }) as fc.Arbitrary<Ast.ReceiverKind>;
         }
 
         const internalFallback = generateInternalReceiverKind(

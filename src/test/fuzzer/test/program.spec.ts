@@ -1,10 +1,14 @@
-import { Program } from "../src/generators";
+import { Program } from "@/test/fuzzer/src/generators";
 import assert from "assert";
 
-import { precompile, createContext, enableFeatures } from "./testUtils";
-import { createProperty, checkProperty } from "../src/util";
-import { GlobalContext } from "../src/context";
-import { getAstFactory } from "../../src/ast/ast-helpers";
+import {
+    precompile,
+    createContext,
+    enableFeatures,
+} from "@/test/fuzzer/test/testUtils";
+import { createProperty, checkProperty } from "@/test/fuzzer/src/util";
+import { GlobalContext } from "@/test/fuzzer/src/context";
+import { getAstFactory } from "@/ast/ast-helpers";
 
 describe("properties", () => {
     it("generates well-typed programs", () => {
@@ -12,7 +16,7 @@ describe("properties", () => {
             new Program({ addStdlib: true }).generate(),
             (program) => {
                 const factoryAst = getAstFactory();
-                let ctx = createContext(program, factoryAst);
+                let ctx = createContext(program);
                 ctx = enableFeatures(ctx, "external");
                 precompile(ctx, factoryAst);
                 GlobalContext.resetDepth();

@@ -1,4 +1,4 @@
-import type * as Ast from "../../../src/ast/ast";
+import type * as Ast from "@/ast/ast";
 import fc from "fast-check";
 
 import {
@@ -11,7 +11,7 @@ import {
     generateMethodCallArgs,
     generateThisID,
     generateFieldAccess,
-} from "./expression";
+} from "@/test/fuzzer/src/generators/expression";
 import {
     randomBool,
     createSample,
@@ -21,12 +21,15 @@ import {
     generateAstId,
     generateAstIdFromName,
     dummySrcInfoPrintable,
-} from "../util";
-import { GenerativeEntity, NamedGenerativeEntity } from "./generator";
-import { StdlibType, UtilType, tyToAstType } from "../types";
-import type { Type } from "../types";
-import { Scope } from "../scope";
-import type { NamedScopeItemKind } from "../scope";
+} from "@/test/fuzzer/src/util";
+import {
+    GenerativeEntity,
+    NamedGenerativeEntity,
+} from "@/test/fuzzer/src/generators/generator";
+import { StdlibType, UtilType, tyToAstType } from "@/test/fuzzer/src/types";
+import type { Type } from "@/test/fuzzer/src/types";
+import { Scope } from "@/test/fuzzer/src/scope";
+import type { NamedScopeItemKind } from "@/test/fuzzer/src/scope";
 
 /** Type all the imperative constructions have. */
 const STMT_TY: Type = { kind: "util", type: UtilType.Unit };

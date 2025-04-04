@@ -1,28 +1,24 @@
-import { CompilerContext } from "../../src/context/context";
-import { createABI } from "../../src/generator/createABI";
-import { writeProgram } from "../../src/generator/writeProgram";
-import type * as Ast from "../../src/ast/ast";
-import { openContext } from "../../src/context/store";
-import { resolveAllocations } from "../../src/storage/resolveAllocation";
-import { featureEnable } from "../../src/config/features";
-import { resolveDescriptors } from "../../src/types/resolveDescriptors";
-import { resolveSignatures } from "../../src/types/resolveSignatures";
-import { resolveStatements } from "../../src/types/resolveStatements";
-import { evalComptimeExpressions } from "../../src/types/evalComptimeExpressions";
-import { resolveErrors } from "../../src/types/resolveErrors";
-import type { FactoryAst } from "../../src/ast/ast-helpers";
-import { getParser } from "../../src/grammar";
+import { CompilerContext } from "@/context/context";
+import { createABI } from "@/generator/createABI";
+import { writeProgram } from "@/generator/writeProgram";
+import type * as Ast from "@/ast/ast";
+import { openContext } from "@/context/store";
+import { resolveAllocations } from "@/storage/resolveAllocation";
+import { featureEnable } from "@/config/features";
+import { resolveDescriptors } from "@/types/resolveDescriptors";
+import { resolveSignatures } from "@/types/resolveSignatures";
+import { resolveStatements } from "@/types/resolveStatements";
+import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
+import { resolveErrors } from "@/types/resolveErrors";
+import type { FactoryAst } from "@/ast/ast-helpers";
 
-export function createContext(
-    program: Ast.Module,
-    factoryAst: FactoryAst,
-): CompilerContext {
+export function createContext(program: Ast.Module): CompilerContext {
     let ctx = new CompilerContext();
     ctx = openContext(
         ctx,
         /*sources=*/ [],
         /*funcSources=*/ [],
-        getParser(factoryAst),
+        //getParser(factoryAst),
         [program],
     );
     return ctx;

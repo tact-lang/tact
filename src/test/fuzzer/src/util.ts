@@ -1,17 +1,17 @@
 import os from "os";
-import { createNodeFileSystem } from "../../src/vfs/createNodeFileSystem";
-import type { VirtualFileSystem } from "../../src/vfs/VirtualFileSystem";
+import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
+import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
 import { mkdtemp } from "fs/promises";
 import fs from "fs/promises";
 import * as path from "path";
 import fc from "fast-check";
 
-import type { NamedScopeItemKind, Scope } from "./scope";
-import { GlobalContext } from "./context";
-import type { Type } from "./types";
-import type * as Ast from "../../src/ast/ast";
-import { nextId } from "./id";
-import { getSrcInfo } from "../../src/grammar/src-info";
+import type { NamedScopeItemKind, Scope } from "@/test/fuzzer/src/scope";
+import { GlobalContext } from "@/test/fuzzer/src/context";
+import type { Type } from "@/test/fuzzer/src/types";
+import type * as Ast from "@/ast/ast";
+import { nextId } from "@/test/fuzzer/src/id";
+import { getSrcInfo } from "@/grammar/src-info";
 
 export const VALID_ID = /^[a-zA-Z_]+[a-zA-Z_0-9]$/;
 export const VALID_TYPE_ID = /^[A-Z]+[a-zA-Z_0-9]$/;
@@ -67,13 +67,16 @@ function makeParams<T>(numRuns: number | undefined): fc.Parameters<T> {
         seed: GlobalContext.config.seed,
         reporter(out) {
             if (out.failed) {
-                if (out.counterexample !== null && out.error !== null) {
+                if (
+                    out.counterexample !== null &&
+                    out.errorInstance instanceof Error
+                ) {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     let generated: any = out.counterexample;
                     if (!generated.kind && generated[0]?.kind) {
                         generated = generated[0];
                     }
-                    out.error += `\n-----\nGenerated program:\n${GlobalContext.format(generated)}\n-----\n`;
+                    out.errorInstance.message += `\n-----\nGenerated program:\n${GlobalContext.format(generated)}\n-----\n`;
                 }
                 throw new Error(fc.defaultReportMessage(out));
             }
@@ -107,10 +110,14 @@ export async function checkAsyncProperty<T>(
  * @throws If the arbitrary cannot generate any elements.
  */
 export function createSample<T>(gen: fc.Arbitrary<T>): T {
-    return fc.sample(gen, {
+    const result = fc.sample(gen, {
         seed: GlobalContext.config.seed,
         numRuns: 1,
     })[0];
+    if (typeof result === "undefined") {
+        throw new Error("Unexpected 'undefined'");
+    }
+    return result;
 }
 
 /**
@@ -220,9 +227,17 @@ export function randomElement<T>(list: T[]): T {
         throw new Error("Empty list");
     }
     if (list.length === 1) {
-        return list[0];
+        const result = list[0];
+        if (typeof result === "undefined") {
+            throw new Error("Unexpected 'undefined'");
+        }
+        return result;
     }
-    return list[randomInt(1, list.length - 1)];
+    const result = list[randomInt(1, list.length - 1)];
+    if (typeof result === "undefined") {
+        throw new Error("Unexpected 'undefined'");
+    }
+    return result;
 }
 
 export function packArbitraries<T>(
@@ -232,3 +247,11 @@ export function packArbitraries<T>(
 }
 
 export const dummySrcInfoPrintable = getSrcInfo(" ", 0, 0, null, "user");
+
+export function stringify(obj: unknown, space: number): string {
+    return JSON.stringify(
+        obj,
+        (_, value) => (typeof value === "bigint" ? value.toString() : value),
+        space,
+    );
+}

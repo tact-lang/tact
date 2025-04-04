@@ -1,14 +1,14 @@
-import type * as Ast from "../../../src/ast/ast";
-import { tyToString, throwTyError } from "../types";
-import type { Type, StructField } from "../types";
-import type { Scope } from "../scope";
-import { Field } from "./field";
+import type * as Ast from "@/ast/ast";
+import { tyToString, throwTyError } from "@/test/fuzzer/src/types";
+import type { Type, StructField } from "@/test/fuzzer/src/types";
+import type { Scope } from "@/test/fuzzer/src/scope";
+import { Field } from "@/test/fuzzer/src/generators/field";
 import {
     dummySrcInfoPrintable,
     generateAstIdFromName,
     packArbitraries,
-} from "../util";
-import { NamedGenerativeEntity } from "./generator";
+} from "@/test/fuzzer/src/util";
+import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
 

@@ -1,8 +1,7 @@
-import JSONbig from "json-bigint";
-
-import { formatAst } from "./formatter";
-import { FuzzConfig } from "./config";
-import type { AstNode } from "../../src/ast/ast";
+import { prettyPrint } from "@/ast/ast-printer";
+import { FuzzConfig } from "@/test/fuzzer/src/config";
+import type { AstNode } from "@/ast/ast";
+import { stringify } from "@/test/fuzzer/src/util";
 
 /**
  * FuzzContext represents a stateful context that handles AST generation.
@@ -53,9 +52,9 @@ export class FuzzContext {
     public format(value: AstNode, fmt = this.config.samplesFormat): string {
         switch (fmt) {
             case "json":
-                return JSONbig.stringify(value, null, 2);
+                return stringify(value, 2);
             case "ast":
-                return formatAst(value);
+                return prettyPrint(value);
             default:
                 throw new Error(
                     `Unsupported sample format: ${this.config.samplesFormat}`,

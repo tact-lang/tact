@@ -1,18 +1,21 @@
-import type * as Ast from "../../../src/ast/ast";
+import type * as Ast from "@/ast/ast";
 import {
     createSample,
     dummySrcInfoPrintable,
     generateAstId,
     randomBool,
-} from "../util";
-import { FunctionDecl } from "./function";
-import { Field } from "./field";
-import { ConstantDecl, ConstantDef } from "./constant";
-import { Expression } from "./expression";
-import { TypeGen, makeFunctionTy, UtilType } from "../types";
-import type { Type } from "../types";
-import { Scope } from "../scope";
-import { NamedGenerativeEntity } from "./generator";
+} from "@/test/fuzzer/src/util";
+import { FunctionDecl } from "@/test/fuzzer/src/generators/function";
+import { Field } from "@/test/fuzzer/src/generators/field";
+import {
+    ConstantDecl,
+    ConstantDef,
+} from "@/test/fuzzer/src/generators/constant";
+import { Expression } from "@/test/fuzzer/src/generators/expression";
+import { TypeGen, makeFunctionTy, UtilType } from "@/test/fuzzer/src/types";
+import type { Type } from "@/test/fuzzer/src/types";
+import { Scope } from "@/test/fuzzer/src/scope";
+import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
 

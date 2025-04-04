@@ -1,7 +1,7 @@
-import type * as Ast from "../../../src/ast/ast";
-import { nextId } from "../id";
-import type { IDIdx } from "../id";
-import type { Type } from "../types";
+import type * as Ast from "@/ast/ast";
+import { nextId } from "@/test/fuzzer/src/id";
+import type { IDIdx } from "@/test/fuzzer/src/id";
+import type { Type } from "@/test/fuzzer/src/types";
 
 import type fc from "fast-check";
 

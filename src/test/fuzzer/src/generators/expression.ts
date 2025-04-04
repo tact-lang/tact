@@ -1,23 +1,26 @@
-import type * as Ast from "../../../src/ast/ast";
-import JSONbig from "json-bigint";
+import type * as Ast from "@/ast/ast";
 import fc from "fast-check";
 
-import { ConstantDecl, ConstantDef } from "./constant";
-import { Let, Statement } from "./statement";
-import { Field } from "./field";
+import {
+    ConstantDecl,
+    ConstantDef,
+} from "@/test/fuzzer/src/generators/constant";
+import { Let, Statement } from "@/test/fuzzer/src/generators/statement";
+import { Field } from "@/test/fuzzer/src/generators/field";
 import {
     randomBool,
     randomElement,
     packArbitraries,
     generateAstIdFromName,
     dummySrcInfoPrintable,
-} from "../util";
+    stringify,
+} from "@/test/fuzzer/src/util";
 import {
     GenerativeEntity,
     NamedGenerativeEntity,
     GenerativeEntityOpt,
-} from "./generator";
-import { nextId } from "../id";
+} from "@/test/fuzzer/src/generators/generator";
+import { nextId } from "@/test/fuzzer/src/id";
 import {
     StdlibType,
     tyToString,
@@ -25,11 +28,11 @@ import {
     UtilType,
     throwTyError,
     makeFunctionTy,
-} from "../types";
-import type { StructField, Type } from "../types";
-import { GlobalContext } from "../context";
-import type { Scope } from "../scope";
-import { FunctionDef } from "./function";
+} from "@/test/fuzzer/src/types";
+import type { StructField, Type } from "@/test/fuzzer/src/types";
+import { GlobalContext } from "@/test/fuzzer/src/context";
+import type { Scope } from "@/test/fuzzer/src/scope";
+import { FunctionDef } from "@/test/fuzzer/src/generators/function";
 
 export function generateNumber(
     base?: Ast.NumberBase,
@@ -68,18 +71,6 @@ function generateStringValue(
             ? fc.string({ minLength: 1 })
             : fc.string()
         : fc.constantFrom(constValue);
-}
-
-export function generateSimplifiedString(
-    nonEmpty: boolean = false,
-    constValue?: string,
-): fc.Arbitrary<Ast.SimplifiedString> {
-    return fc.record<Ast.SimplifiedString>({
-        kind: fc.constant("simplified_string"),
-        id: fc.constant(nextId()),
-        value: generateStringValue(nonEmpty, constValue),
-        loc: fc.constant(dummySrcInfoPrintable),
-    });
 }
 
 export function generateString(
@@ -178,9 +169,7 @@ export function generateFunctionCallArgs(
     funScope: Scope,
 ): fc.Arbitrary<Ast.Expression>[] {
     if (funTy.kind !== "function") {
-        throw new Error(
-            `Incorrect type for function: ${JSONbig.stringify(funTy)}`,
-        );
+        throw new Error(`Incorrect type for function: ${stringify(funTy, 0)}`);
     }
     if (funTy.signature.length === 1) {
         return [];
@@ -200,9 +189,7 @@ export function generateMethodCallArgs(
     methodScope: Scope,
 ): fc.Arbitrary<Ast.Expression>[] {
     if (methodTy.kind !== "function") {
-        throw new Error(
-            `Incorrect type for method: ${JSONbig.stringify(methodTy)}`,
-        );
+        throw new Error(`Incorrect type for method: ${stringify(methodTy, 0)}`);
     }
     if (methodTy.signature.length === 2) {
         return [];
@@ -982,7 +969,7 @@ export class Expression extends GenerativeEntity<Ast.Expression> {
                 break;
             case "function":
                 throw new Error(
-                    `Cannot generate an expression from type: ${JSONbig.stringify(this.type)}`,
+                    `Cannot generate an expression from type: ${stringify(this.type, 0)}`,
                 );
         }
         return expr;

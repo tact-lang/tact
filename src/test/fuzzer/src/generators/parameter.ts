@@ -1,9 +1,13 @@
-import type * as Ast from "../../../src/ast/ast";
-import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
-import { tyToAstType } from "../types";
-import type { Type } from "../types";
-import type { Scope } from "../scope";
-import { NamedGenerativeEntity } from "./generator";
+import type * as Ast from "@/ast/ast";
+import {
+    createSample,
+    dummySrcInfoPrintable,
+    generateAstId,
+} from "@/test/fuzzer/src/util";
+import { tyToAstType } from "@/test/fuzzer/src/types";
+import type { Type } from "@/test/fuzzer/src/types";
+import type { Scope } from "@/test/fuzzer/src/scope";
+import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
 

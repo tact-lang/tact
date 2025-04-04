@@ -1,4 +1,4 @@
-import type * as Ast from "../../src/ast/ast";
+import type * as Ast from "@/ast/ast";
 import {
     createSample,
     generateName,
@@ -6,12 +6,12 @@ import {
     randomBool,
     generateAstIdFromName,
     dummySrcInfoPrintable,
-} from "./util";
-import type { Scope } from "./scope";
-import type { TypeRef } from "../../src/types/types";
-import JSONbig from "json-bigint";
+    stringify,
+} from "@/test/fuzzer/src/util";
+import type { Scope } from "@/test/fuzzer/src/scope";
+import type { TypeRef } from "@/types/types";
 
-import { nextId } from "./id";
+import { nextId } from "@/test/fuzzer/src/id";
 import fc from "fast-check";
 
 /**
@@ -91,7 +91,7 @@ export type Type =
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function throwTyError(ty: any): never {
-    throw new Error(`Unsupported type: ${JSONbig.stringify(ty)}`);
+    throw new Error(`Unsupported type: ${stringify(ty, 0)}`);
 }
 
 export function tyToString(ty: Type): string {
@@ -250,7 +250,11 @@ export function getReturnType(ty: FunctionType): Type {
     if (ty.signature.length === 0) {
         throw new Error("Empty function signature");
     }
-    return ty.signature[ty.signature.length - 1];
+    const result = ty.signature[ty.signature.length - 1];
+    if (typeof result === "undefined") {
+        throw new Error("Unexpected 'undefined'");
+    }
+    return result;
 }
 
 /**
@@ -388,13 +392,13 @@ export class TypeGen {
                 kind: fc.constant("message"),
                 name: fc.constant(structName),
                 fields: fields,
-            });
+            }) as fc.Arbitrary<Type>;
         } else {
             return fc.record<Type>({
                 kind: fc.constant("struct"),
                 name: fc.constant(structName),
                 fields: fields,
-            });
+            }) as fc.Arbitrary<Type>;
         }
     }
 
@@ -424,7 +428,11 @@ export function makeFunctionTy(
         kind === "method" ? [{ kind: "util", type: UtilType.This }] : [];
     const args: Type[] = Array.from({ length: argsLength }, () => {
         const idx = randomInt(0, SUPPORTED_STDLIB_TYPES.length - 1);
-        return { kind: "stdlib", type: SUPPORTED_STDLIB_TYPES[idx] };
+        const selectedType = SUPPORTED_STDLIB_TYPES[idx];
+        if (typeof selectedType === "undefined") {
+            throw new Error("Unexpected 'undefined'");
+        }
+        return { kind: "stdlib", type: selectedType };
     });
     return { kind: "function", signature: [...thisArg, ...args, returnTy] };
 }

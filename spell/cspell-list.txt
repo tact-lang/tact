@@ -138,6 +138,7 @@ pinst
 POSIX
 postpack
 prando
+preorder
 quadtree
 quadtrees
 RANDU

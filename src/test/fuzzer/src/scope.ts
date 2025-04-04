@@ -1,9 +1,9 @@
-import type { Type } from "./types";
-import { getReturnType } from "./types";
-import type { IDIdx } from "./id";
-import type { GenerativeEntity } from "./generators";
-import type * as Ast from "../../src/ast/ast";
-import type { NamedGenerativeEntity } from "./generators/generator";
+import type { Type } from "@/test/fuzzer/src/types";
+import { getReturnType } from "@/test/fuzzer/src/types";
+import type { IDIdx } from "@/test/fuzzer/src/id";
+import type { GenerativeEntity } from "@/test/fuzzer/src/generators";
+import type * as Ast from "@/ast/ast";
+import type { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 export type ScopeKind =
     | "program"
