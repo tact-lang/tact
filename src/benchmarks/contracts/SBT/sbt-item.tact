@@ -44,17 +44,10 @@ contract SBTItem {
         throwUnless(InvalidData, self.owner == null);
         throwUnless(IncorrectDeployer, sender() == self.collectionAddress);
 
-        let owner: Address = msg.loadAddress();
-        self.owner = owner;
-
-        let content: Cell = msg.loadRef();
-        self.content = content;
-
-        let authorityAddress: Address = msg.loadAddress();
-        self.authorityAddress = authorityAddress;
-
-        let revokedAt: Int = msg.loadUint(64);
-        self.revokedAt = revokedAt;
+        self.owner = msg.loadAddress();
+        self.content = msg.loadRef();
+        self.authorityAddress = msg.loadAddress();
+        self.revokedAt = msg.loadUint(64);
     }
 
     receive(msg: RequestOwner) {
@@ -105,7 +98,7 @@ contract SBTItem {
         });
     }
 
-    bounced(msg: bounced<ProveOwnershipOut>) { 
+    bounced(msg: bounced<ProveOwnershipOut>) {
         message(MessageParameters {
             to: self.owner!!,
             value: 0,
@@ -150,7 +143,7 @@ contract SBTItem {
         });
     }
 
-    receive(msg: Destroy) { 
+    receive(msg: Destroy) {
         throwUnless(NotInit, self.owner != null);
         throwUnless(IncorrectSender, self.owner == sender());
 
@@ -168,7 +161,7 @@ contract SBTItem {
         self.authorityAddress = null;
     }
 
-    receive(msg: Revoke) { 
+    receive(msg: Revoke) {
         throwUnless(NotInit, self.owner != null);
         throwUnless(IncorrectSender, self.authorityAddress == sender());
         throwUnless(AlreadyRevoked, self.revokedAt == 0);
