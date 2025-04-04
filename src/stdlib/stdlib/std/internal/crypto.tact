@@ -167,15 +167,17 @@ asm fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool { CHKS
 ///
 asm fun checkDataSignature(data: Slice, signature: Slice, publicKey: Int): Bool { CHKSIGNS }
 
-/// A struct that contains the 512-bit Ed25519 `signature` and the `signedData` obtained with that signature from the enclosing struct or message struct.
+/// A struct that contains a 512-bit [Ed25519] signature and the data it signs.
 ///
 /// ```tact
 /// message MessageWithSignedData {
-///     // The bundle.signedData is obtained by signing all the remaining
-///     // data fields of this message. In this case, of `walletId` and `seqno`.
+///     // The `bundle.signature` contains the 512-bit Ed25519 signature
+///     // of the remaining data fields of this message struct,
+///     // while `bundle.signedData` references those data fields.
+///     // In this case, the fields are `walletId` and `seqno`.
 ///     bundle: SignedBundle;
 ///
-///     // The fields common to external messages to user wallets
+///     // These fields are common to external messages to user wallets.
 ///     walletId: Int as int32;
 ///     seqno: Int as uint32;
 /// }
@@ -185,11 +187,14 @@ asm fun checkDataSignature(data: Slice, signature: Slice, publicKey: Int): Bool 
 /// * https://docs.tact-lang.org/ref/core-crypto#signedbundle
 /// * https://docs.tact-lang.org/ref/core-crypto#signedbundleverifysignature
 ///
+/// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+///
 struct SignedBundle {
-    /// The 512-bit Ed25519 signature of the data.
+    /// A 512-bit Ed25519 signature of the `signedData`.
     signature: Slice as bytes64;
 
-    /// The signed data Slice obtained from the enclosing struct or message struct.
+    /// The remaining data of the enclosing struct or message struct,
+    /// which was used to obtain the 512-bit Ed25519 `signature`.
     signedData: Slice as remaining;
 }
 
@@ -211,11 +216,13 @@ struct SignedBundle {
 /// }
 ///
 /// message MessageWithSignedData {
-///     // The bundle.signedData is obtained by signing all the remaining
-///     // data fields of this message. In this case, of `walletId` and `seqno`.
+///     // The `bundle.signature` contains the 512-bit Ed25519 signature
+///     // of the remaining data fields of this message struct,
+///     // while `bundle.signedData` references those data fields.
+///     // In this case, the fields are `walletId` and `seqno`.
 ///     bundle: SignedBundle;
 ///
-///     // The fields common to external messages to user wallets
+///     // These fields are common to external messages to user wallets.
 ///     walletId: Int as int32;
 ///     seqno: Int as uint32;
 /// }
