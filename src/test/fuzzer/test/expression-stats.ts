@@ -255,7 +255,10 @@ function statistics(
         incrementKey(treeName, totalPreTraversals, height, size);
     }
 
-    fs.writeFileSync(fileName, getRows(totalPreTraversals).join("\n"));
+    fs.writeFileSync(
+        fileName,
+        `count height size\n${getRows(totalPreTraversals).join("\n")}`,
+    );
 }
 
 function main() {
