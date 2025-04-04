@@ -60,11 +60,7 @@ contract SBTItem {
     receive(msg: RequestOwner) {
         throwUnless(NotInit, self.owner != null);
 
-        let content: Cell? = self.content!!;
-
-        if (!msg.withContent) {
-            content = null;
-        }
+        let content: Cell? = msg.withContent ? self.content!! : null;
 
         let msgBody = RequestOwnerOut {
             queryId: msg.queryId,
@@ -89,11 +85,7 @@ contract SBTItem {
         throwUnless(NotInit, null != self.owner);
         throwUnless(IncorrectSender, self.owner == sender());
 
-        let content: Cell? = self.content!!;
-
-        if (!msg.withContent) {
-            content = emptyCell();
-        }
+        let content: Cell? = msg.withContent ? self.content!! : null;
 
         let msgBody = ProveOwnershipOut {
             queryId: msg.queryId,

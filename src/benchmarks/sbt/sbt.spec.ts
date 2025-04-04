@@ -2,7 +2,7 @@ import "@ton/test-utils";
 import { Cell, beginCell, toNano, contractAddress, SendMode } from "@ton/core";
 
 import type { Sender } from "@ton/core";
-import { Blockchain } from "@ton/sandbox";
+import { Blockchain, BlockchainSnapshot } from "@ton/sandbox";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import {
     generateResults,
@@ -23,7 +23,7 @@ import {
     type Destroy,
     type Revoke,
     type TakeExcess,
-} from "@/benchmarks/contracts/SBT/output/sbt-item_SBTItem";
+} from "@/benchmarks/contracts/sbt/output/sbt-item_SBTItem";
 
 import benchmarkResults from "@/benchmarks/sbt/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/sbt/results_code_size.json";
@@ -77,7 +77,8 @@ describe("itemSBT", () => {
     let blockchain: Blockchain;
 
     let owner: SandboxContract<TreasuryContract>;
-    let _notOwner: SandboxContract<TreasuryContract>;
+    
+    let snapshot: BlockchainSnapshot
 
     let itemSBT: SandboxContract<SBTItem>;
     let funcItemSBT: SandboxContract<SBTItem>;
@@ -150,7 +151,12 @@ describe("itemSBT", () => {
                 owner.address,
             );
         }
-    });
+        snapshot = blockchain.snapshot()
+    })
+
+    beforeEach(async () => {
+        await blockchain.loadFrom(snapshot)
+    })
 
     afterAll(() => {
         printBenchmarkTable(results, codeSizeResults, {
