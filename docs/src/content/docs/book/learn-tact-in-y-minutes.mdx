@@ -257,16 +257,16 @@ fun showcase() {
     let myMap: map<Int, Int> = emptyMap();
 
     // Maps have a number of built-in methods.
-    myMap.set(0, 10);        // key 0 now points to value 10
-    myMap.set(0, 42);        // overriding the value under key 0 with 42
-    myMap.get(0)!!;          // 42, because get can return null if the key doesn't exist
-    myMap.replace(1, 55);    // false, because there was no key 1 and map didn't change
-    myMap.replaceGet(0, 10); // 42, because the key 0 exists and the old value there was 42
-    myMap.get(0)!!;          // 10, since we've just replaced the value with .replaceGet
-    myMap.del(0);            // true, because the map contained an entry under key 0
-    myMap.del(0);            // false and not an error, because deletion is idempotent
-    myMap.exists(0);         // false, there is no entry under key 0
-    myMap.isEmpty();         // true, there is no other entries
+    myMap.set(0, 10);          // key 0 now points to value 10
+    myMap.set(0, 42);          // overriding the value under key 0 with 42
+    myMap.get(0)!!;            // 42, because get can return null if the key doesn't exist
+    myMap.replace(1, 55);      // false, because there was no key 1 and map didn't change
+    myMap.replaceGet(0, 10)!!; // 42, because the key 0 exists and the old value there was 42
+    myMap.get(0)!!;            // 10, since we've just replaced the value with .replaceGet
+    myMap.del(0);              // true, because the map contained an entry under key 0
+    myMap.del(0);              // false and not an error, because deletion is idempotent
+    myMap.exists(0);           // false, there is no entry under key 0
+    myMap.isEmpty();           // true, there is no other entries
 
     // In most cases, to compare two maps it's sufficient to use the shallow
     // comparison via the equality == and inequality != operators.
