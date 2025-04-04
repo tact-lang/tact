@@ -42,8 +42,8 @@ describe("itemSBT", () => {
     let blockchain: Blockchain;
 
     let owner: SandboxContract<TreasuryContract>;
-    
-    let snapshot: BlockchainSnapshot
+
+    let snapshot: BlockchainSnapshot;
 
     let itemSBT: SandboxContract<SBTItem>;
     let funcItemSBT: SandboxContract<SBTItem>;
@@ -57,14 +57,13 @@ describe("itemSBT", () => {
     const expectedResult = results.at(-1)!;
     const funcResult = results.at(0)!;
 
-    let funcInit: {code: Cell, data: Cell};
+    let funcInit: { code: Cell; data: Cell };
 
     const sendDeploy = async (
         via: SandboxContract<TreasuryContract>,
         itemSBT: SandboxContract<SBTItem>,
-        init: {code: Cell, data: Cell} | null,
+        init: { code: Cell; data: Cell } | null,
     ) => {
-
         return await via.send({
             to: itemSBT.address,
             value: toNano("1"),
@@ -86,22 +85,21 @@ describe("itemSBT", () => {
     ) => {
         const sbtData = loadFunCSBTBoc();
         const itemCode = Cell.fromBoc(sbtData.bocItem)[0]!;
-    
+
         const initData = beginCell()
             .storeUint(index, 64) // itemIndex
             .storeAddress(via.address) // collectionAddress
             .endCell();
-    
+
         const init = { code: itemCode, data: initData };
-            
+
         const itemAddress = contractAddress(0, init);
         const itemSBTScope: SandboxContract<SBTItem> = blockchain.openContract(
             await SBTItem.fromAddress(itemAddress),
         );
-    
-        return {itemSBTScope, init};
+
+        return { itemSBTScope, init };
     };
-    
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
@@ -122,7 +120,11 @@ describe("itemSBT", () => {
                 }),
             );
 
-            const deployResult = await sendDeploy(owner, itemSBT, itemSBT.init!);
+            const deployResult = await sendDeploy(
+                owner,
+                itemSBT,
+                itemSBT.init!,
+            );
 
             expect(deployResult.transactions).toHaveTransaction({
                 from: owner.address,
@@ -155,12 +157,12 @@ describe("itemSBT", () => {
                 owner.address,
             );
         }
-        snapshot = blockchain.snapshot()
-    })
+        snapshot = blockchain.snapshot();
+    });
 
     beforeEach(async () => {
-        await blockchain.loadFrom(snapshot)
-    })
+        await blockchain.loadFrom(snapshot);
+    });
 
     afterAll(() => {
         printBenchmarkTable(results, codeSizeResults, {
@@ -193,11 +195,7 @@ describe("itemSBT", () => {
             const newFuncInit = funcResult.init;
 
             const sendResult = await step("deploy", async () =>
-                sendDeploy(
-                    owner,
-                    newFuncItemSBT,
-                    newFuncInit,
-                )
+                sendDeploy(owner, newFuncItemSBT, newFuncInit),
             );
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
@@ -208,13 +206,8 @@ describe("itemSBT", () => {
         const deployGasUsedTact = await runDeployTactTest();
         const deployGasUsedFunC = await runDeployFuncTest();
 
-        expect(deployGasUsedTact).toEqual(
-            expectedResult.gas["deploy"],
-        );
-        expect(deployGasUsedFunC).toEqual(
-            funcResult.gas["deploy"],
-        );
-
+        expect(deployGasUsedTact).toEqual(expectedResult.gas["deploy"]);
+        expect(deployGasUsedFunC).toEqual(funcResult.gas["deploy"]);
     });
 
     it("request owner", async () => {
