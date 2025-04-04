@@ -12,8 +12,8 @@
       "label": "Tact",
       "pr": "https://github.com/tact-lang/tact/pull/2560",
       "size": {
-        "item cells": "24",
-        "item bits": "13891"
+        "item cells": "23",
+        "item bits": "13867"
       }
     }
   ]

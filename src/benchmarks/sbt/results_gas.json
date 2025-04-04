@@ -4,6 +4,7 @@
       "label": "FunC",
       "pr": "https://github.com/getgems-io/nft-contracts/blob/main/packages/contracts/sources/sbt-item.fc",
       "gas": {
+        "deploy": "3204",
         "request owner": "5548",
         "prove ownership": "5667",
         "get static data": "5291",
@@ -16,8 +17,9 @@
       "label": "Tact",
       "pr": "https://github.com/tact-lang/tact/pull/2560",
       "gas": {
-        "request owner": "7934",
-        "prove ownership": "8104",
+        "deploy": "5006",
+        "request owner": "7939",
+        "prove ownership": "8109",
         "get static data": "7269",
         "destroy": "8020",
         "revoke": "5449",
