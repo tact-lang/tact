@@ -357,6 +357,30 @@ exports[`local-type-inference should automatically set types for let statements 
     {
       "fields": [
         {
+          "name": "signature",
+          "type": {
+            "format": 64,
+            "kind": "simple",
+            "optional": false,
+            "type": "fixed-bytes",
+          },
+        },
+        {
+          "name": "signedData",
+          "type": {
+            "format": "remainder",
+            "kind": "simple",
+            "optional": false,
+            "type": "slice",
+          },
+        },
+      ],
+      "header": null,
+      "name": "SignedBundle",
+    },
+    {
+      "fields": [
+        {
           "name": "code",
           "type": {
             "kind": "simple",
