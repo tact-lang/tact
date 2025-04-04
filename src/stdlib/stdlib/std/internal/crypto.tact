@@ -193,7 +193,7 @@ struct SignedBundle {
     /// A 512-bit Ed25519 signature of the `signedData`.
     signature: Slice as bytes64;
 
-    /// The remaining data of the enclosing struct or message struct,
+    /// The remaining non-serialized data of the enclosing struct or message struct,
     /// which was used to obtain the 512-bit Ed25519 `signature`.
     signedData: Slice as remaining;
 }
