@@ -185,6 +185,8 @@ struct SignedBundle {
     signedData: Slice as remaining;
 }
 
+/// Extension function for the `SignedBundle` type. Available since Tact 1.6.6.
+///
 /// Checks whether `self.signedData` was signed by the 512-bit [Ed25519] signature `self.signature`,
 /// using the given `publicKey`.
 ///

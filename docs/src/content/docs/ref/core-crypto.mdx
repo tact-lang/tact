@@ -80,6 +80,44 @@ let check: Bool = checkDataSignature(data, signature, publicKey);
 
 :::
 
+## SignedBundle
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+A struct that contains a cryptographic signature and the data it signs.
+
+Usage example:
+
+ ```tact
+message MessageWithSignedData {
+    bundle: SignedBundle;
+    // bundle.signedData is the non-serialized representation
+    // of the rest of the data fields: `walletId` and `seqno`.
+    walletId: Int as int32;
+    seqno: Int as uint32;
+}
+
+struct SignedBundle {
+    /// The 512-bit Ed25519 signature of the data.
+    signature: Slice as bytes64;
+    /// The slice with signed data obtained from the enclosing struct or message.
+    signedData: Slice as remaining;
+}
+```
+
+## verifySignature
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+Checks whether `self.signedData` was signed by the 512-bit [Ed25519][ed] signature `self.signature`,
+using the given `publicKey`.
+
+Returns `true` if the signature is valid, `false` otherwise.
+
+```tact
+inline extends fun verifySignature(self: SignedBundle, publicKey: Int): Bool;
+```
+
 ## sha256
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
