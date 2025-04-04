@@ -15950,7 +15950,7 @@ return ok;",
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
 build_0 = build_0.store_ref(v'a);
-build_0 = ~ null?(v'b) ? build_0.store_int(true, 1).store_ref(v'b) : build_0.store_int(false, 1);
+build_0 = build_0.store_maybe_ref(v'b);
 var build_1 = begin_cell();
 build_1 = ~ null?(v'c) ? build_1.store_int(true, 1).store_ref(begin_cell().store_slice(v'c).end_cell()) : build_1.store_int(false, 1);
 build_1 = ~ null?(v'd) ? build_1.store_int(true, 1).store_ref(begin_cell().store_slice(v'd).end_cell()) : build_1.store_int(false, 1);
