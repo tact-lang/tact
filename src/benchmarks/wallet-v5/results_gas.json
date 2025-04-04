@@ -59,6 +59,16 @@
         "internalTransfer": "8707",
         "extensionTransfer": "4666"
       }
+    },
+    {
+      "label": "1.6.5 with msg.toSlice() serialization only once",
+      "pr": "https://github.com/tact-lang/tact/pull/TODO",
+      "gas": {
+        "externalTransfer": "6668",
+        "addExtension": "7147",
+        "internalTransfer": "7510",
+        "extensionTransfer": "4666"
+      }
     }
   ]
 }
