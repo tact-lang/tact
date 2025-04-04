@@ -44,6 +44,15 @@
         "addPlugin": "5970",
         "pluginTransfer": "3874"
       }
+    },
+    {
+      "label": "1.6.5 with contract state save before commit()",
+      "pr": "https://github.com/tact-lang/tact/pull/2648",
+      "gas": {
+        "externalTransfer": "4613",
+        "addPlugin": "6778",
+        "pluginTransfer": "3874"
+      }
     }
   ]
 }
