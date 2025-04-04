@@ -1,0 +1,1464 @@
+---
+title: Learn Tact in Y minutes
+description: "Take a whirlwind tour of the Tact smart contract programming language. A scenic voyage inspired by the famous learnXinYminutes website."
+---
+
+Tact is a fresh programming language for TON Blockchain that is focused on efficiency and ease of development. It is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
+
+You can try Tact without installing anything locally using the [Web IDE](https://ide.ton.org). In addition, most examples below have an "Open in Web IDE" button for your convenience.
+
+## Comments
+
+```tact
+// Single-line (//) comments for occasional and casual annotations
+
+/// Documentation comments that support Markdown
+```
+
+:::note
+
+  There are also C-like multiline comments `/* ... */`, but their use is discouraged in favor of consecutive single-line documentation comments `///`.
+
+:::
+
+## "Hello, World!" {#hello-world}
+
+```tact
+// Defining a contract
+contract HelloWorld {
+    // Listens to incoming Ping messages
+    receive(_: Ping) {
+        // Sends a Pong reply message
+        reply(Pong {}.toCell());
+    }
+
+    // Listens to incoming Hello messages
+    receive(_: Hello) {
+        // Sends a Pong reply message
+        reply(Hello {}.toCell());
+    }
+
+    // Listens to incoming empty messages,
+    // which are very handy and cheap for the deployments.
+    receive() {
+        // Forward the remaining value in the
+        // incoming message back to the sender.
+        cashback(sender());
+    }
+}
+
+// A helper inlined function to send binary messages.
+// See the "Primitive types" section below for more info about cells.
+inline fun reply(msgBody: Cell) {
+    message(MessageParameters {
+        to: sender(),
+        value: 0,
+        mode: SendRemainingValue | SendIgnoreErrors,
+        body: msgBody,
+    });
+}
+
+// Empty message structs with specified 32-bit integer prefix.
+// See the "Structs and message structs" section below for more info.
+message(1) Ping {}
+message(2) Pong {}
+message(3) Hello {}
+```
+
+## Primitive types
+
+```tact
+fun showcase() {
+    // There are two main groups of primitive types in Tact: integers and cells.
+    // All other primitive types are derivatives of those two.
+
+    // ---
+    // Integers,
+    // always 257-bit signed in runtime operations,
+    // but may have different lengths in persistent contract's state (storage)
+    // ---
+
+    let one_plus_one: Int = 1 + 1; // 2
+    let two_by_two: Int = 2 / 2;   // 1
+    let three_by_two: Int = 3 / 2; // 1, because the division operator rounds
+                                   // toward -∞, which is identical to // operator
+                                   // from Python
+
+    let one_billion = 1_000_000_000; // decimal
+    let binary_mask = 0b1_1111_1111; // binary
+    let permissions = 0o7_5_5;       // octal
+    let heHex = 0xFF80_0000_0000;    // hexadecimal
+
+    let nanoToncoin: Int = 1;    // 1 nanoToncoin = 0.000,000,001 Toncoin
+    let toncoin: Int = ton("1"); // 1 Toncoin = 1,000,000,000 nanoToncoin
+
+
+    // ---
+    // Booleans: true and false.
+    // They take only 1 bit in persistent storage.
+    // ---
+
+    let factual: Bool = !!(true || false);
+    let fax: Bool = true && factual;
+
+
+    // ---
+    // Addresses of smart contracts,
+    // deterministically obtained by combining the initial code and initial data.
+    // ---
+
+    // Address of the current contract
+    let myAddr: Address = myAddress();
+
+    // You can parse the Address to view components of the standard address:
+    // * a workchain ID: 8-bit signed Int
+    // * and an account ID: 256-bit unsigned Int
+    let addrComponents: StdAddress = parseStdAddress(myAddr.asSlice());
+    addrComponents.workchain; // 0, basechain: the most commonly used workchain on TON
+    addrComponents.address;   // ...lots of digits...
+
+
+    // ---
+    // Cells, Builders, Slices.
+    // ---
+
+    // Cell is an immutable data structure that can contain up to 1023 bits
+    // with up to 4 reference to other cells. Cyclic references are prohibited.
+    let emptyC: Cell = emptyCell();
+
+    // Cells are a fundamental primitive and data structure on TON Blockchain:
+    // contracts communicate and interact by sending and receiving cells while
+    // their code and data are themselves stored as cells on the blockchain
+    // the code and the data of each contract are cells and contracts
+    // communicate and interact by sending and receiving cells.
+    //
+    // Furthermore, all data layouts are also expressed in terms of cells and
+    // cell (de)serialization primitives. That said, Tact provides declarative means
+    // to express (de)serialization to and from cells conveniently —
+    // see the "Structs and message structs" subsection below for more info.
+
+    // Builder is an immutable primitive to construct (compose) cells.
+    let bb: Builder = beginCell()
+        .storeUint(42, 6)  // storing 42 using 6 bits
+        .storeInt(42, 7)   // storing 42 using 7 bits (signed Int)
+        .storeBool(true)   // writing 1 as a single bit
+        .storeBit(true)    // alias to storeBool()
+        .storeCoins(40)    // common way of storing nanoToncoins
+        .storeAddress(myAddress())
+        .storeRef(emptyC); // storing a reference
+    let composed: Cell = bb.endCell();
+
+    // Slice is a mutable primitive to deconstruct (parse) cells.
+    let target: Slice = composed.asSlice(); // let's start parsing `composed` Cell
+
+    // The type ascription is optional for most cases except for maps
+    // and optional types, but we'll discuss those in the
+    // "Composite types" section below.
+    let fortyTwo = target.loadUint(6); // taking 6 bits out of the `target` Slice,
+                                       // mutating it in the process
+
+    // If you don't want the result, you can ignore it with a wildcard.
+    let _ = target.loadInt(7);
+
+    // Finally, there are methods to skip the value, i.e., to discard it.
+    target.skipBool();
+
+    // Manual composition and parsing of Cells is tedious,
+    // error-prone and is generally not recommended.
+    // Instead, prefer using structures: struct and message struct types.
+    // See the "Composite types" section below for more info.
+
+
+    // ---
+    // Strings are immutable sequences of characters,
+    // which are used mainly to send and receive text message bodies.
+    // ---
+
+    // String literals are wrapped in double-quotes and can contain escape sequences,
+    // but they intentionally cannot be concatenated via any operators.
+    let str: String = "I am a string literal, 👻!"; // see the "Expressions" section for more
+
+    // Strings are useful for storing text,
+    // so they can be converted to a Cell type to be used as message bodies.
+    let noComments: Cell = "yes comments".asComment(); // prefixes a string with 32 zero bits
+}
+
+// Finally, under the hood, Address and String types are a Slice,
+// although with a well-defined distinct data layout for each.
+//
+// While implicit type conversions aren't allowed in Tact,
+// there are extension functions that can be used for those purposes,
+// such as String.asSlice() or Address.asSlice().
+//
+// Advanced users can introduce their own casts by using assembly functions.
+// See the "Functions" section below for more info.
+
+// An empty contract needed for the showcase above to work.
+contract MyContract() {}
+```
+
+Read more: [Primitive types](/book/types#primitive-types).
+
+## Composite types
+
+### Optionals {#composite-optionals}
+
+```tact
+fun showcase() {
+    // An optional is a value than can be of any type or null.
+    // Null is a special value that represents the intentional
+    // absence of any other value.
+
+    // Int keys to Int values.
+    // Type ascription of optionals is mandatory.
+    let optionalVal: Int? = null;
+    optionalVal = 255;
+
+    // If you're certain that the value isn't null at a given moment,
+    // use the non-null assertion operator !! to access it.
+    dump(optionalVal!!);
+
+    // If you are not certain, then it is better to explicitly compare
+    // the value to null to avoid errors at runtime.
+    if (optionalVal != null) {
+        // here we go!
+    } else {
+        // not happening right now
+    }
+
+    // Declared but not explicitly defined optional variables and fields
+    // implicitly hold the null value by default.
+    let veryOptional: Bool? = null; // null
+    if (veryOptional != null) {
+        // not happening
+    } else {
+        // here we go
+    }
+}
+
+// You can make almost any variable or field optional by adding
+// a question mark (?) after its type declaration.
+// The only exceptions are map<K, V> and bounced<Message>,
+// in which you cannot make the inner key/value type (in the case of a map)
+// or the inner message struct (in the case of a bounced) optional.
+```
+
+Read more: [Optionals](/book/optionals).
+
+### Maps {#composite-maps}
+
+```tact
+fun showcase() {
+    // The composite type map<K, V> is used to associate
+    // keys of type K with corresponding values of type V.
+
+    // A map of Int keys to Int values.
+    // Type ascription is mandatory.
+    let myMap: map<Int, Int> = emptyMap();
+
+    // Maps have a number of built-in methods.
+    myMap.set(0, 10);        // key 0 now points to value 10
+    myMap.set(0, 42);        // overriding the value under key 0 with 42
+    myMap.get(0)!!;          // 42, because get can return null if the key doesn't exist
+    myMap.replace(1, 55);    // false, because there was no key 1 and map didn't change
+    myMap.replaceGet(0, 10); // 42, because the key 0 exists and the old value there was 42
+    myMap.get(0)!!;          // 10, since we've just replaced the value with .replaceGet
+    myMap.del(0);            // true, because the map contained an entry under key 0
+    myMap.del(0);            // false and not an error, because deletion is idempotent
+    myMap.exists(0);         // false, there is no entry under key 0
+    myMap.isEmpty();         // true, there is no other entries
+
+    // In most cases, to compare two maps it's sufficient to use the shallow
+    // comparison via the equality == and inequality != operators.
+    myMap == emptyMap(); // true
+
+    // To traverse maps, the foreach statement is used.
+    // See the "Statements" section below for more info.
+    foreach (k, v in myMap) {
+        // ...do something for each entry, if any
+    }
+
+    // There are many other allowed kinds of map value types for Int keys
+    let _: map<Int, Bool> = emptyMap();    // Int keys to Bool values
+    let _: map<Int, Cell> = emptyMap();    // Ints to Cells
+    let _: map<Int, Address> = emptyMap(); // Ints to Addresses
+    let _: map<Int, AnyStruct> = emptyMap();  // Ints to some structs
+    let _: map<Int, AnyMessage> = emptyMap(); // Ints to some message structs
+
+    // And all the same value types for maps with Address keys are also allowed.
+    let _: map<Address, Int> = emptyMap();     // Address keys to Int values
+    let _: map<Address, Bool> = emptyMap();    // Addresses to Bools
+    let _: map<Address, Cell> = emptyMap();    // Addresses to Cells
+    let _: map<Address, Address> = emptyMap(); // Addresses to Addresses
+    let _: map<Address, AnyStruct> = emptyMap();  // Addresses to some structs
+    let _: map<Address, AnyMessage> = emptyMap(); // Addresses to some message structs
+
+    // Under the hood, empty maps are nulls, which is why it's important to provide a type ascription.
+    let _: map<Int, Int> = null; // like emptyMap(), but less descriptive and generally discouraged
+
+    // Furthermore, as with many other types, maps are just Cells with a distinct data layout.
+    // Therefore, you can type cast any map back to its underlying Cell type.
+    myMap.asCell();
+}
+
+// Serialization of integer keys or values is possible but only meaningful
+// for maps as fields of structures and maps in the contract's persistent state.
+// See the "Structs and message structs" and "Persistent state"
+// sections below for more info.
+
+// Finally, mind the limits — maps are quite gas-expensive
+// and have an upper limit of around 32k entries for the whole contract.
+//
+// On TON, contracts are very limited in their state, and for large
+// or unbounded (infinitely large) maps, it is better to use contract sharding
+// and essentially make the entire blockchain part of your maps.
+//
+// See this approach in action for the Jetton (token)
+// contract system by the end of this tour.
+
+// The following are dummy structures needed for the showcase above to work.
+struct AnyStruct { field: Int }
+message AnyMessage { field: Int }
+```
+
+Read more:
+
+* [Maps in the Book](/book/maps).
+* [Map-based array data structure in the Cookbook](/cookbook/data-structures#array).
+
+### Structs and message structs {#composite-structures}
+
+```tact
+// Structs and message structs allow multiple values to be packed together
+// in a single type. They are very useful for (de)serialization of Cells
+// and for usage as parameters or return types in functions.
+
+// Struct containing a single value
+struct One { number: Int; }
+
+// Struct with default fields, fields of optional types, and nested structs
+struct Params {
+    name: String = "Satoshi"; // default value
+
+    age: Int?; // field with an optional type Int?
+               // and an implicit default value of null
+
+    val: One; // nested struct One
+}
+
+// You can instruct how to (de)compose the Cells to and from structs
+// by specifying certain serialization options after the `as` keyword.
+struct SeriesXX {
+    i64: Int as int64;  // signed 64-bit integer
+    u32: Int as uint32; // unsigned 32-bit integer
+    ufo51: Int as uint51; // uneven formats are allowed too,
+                          // so this is an unsigned 51-bit integer
+
+    // In general, uint1 through uint256 and int1 through int257
+    // are valid serialization formats for integer values.
+    maxi: Int as int257; // Int is serialized as int257 by default,
+                         // but now it is explicitly specified
+
+    // If this struct will be obtained from some Slice,
+    // you can instruct the compiler to place the remainder of that Slice
+    // as the last field of the struct, and even type cast the value
+    // of that field to Cell, Builder or Slice at runtime.
+    lastFieldName: Cell as remaining; // there can only be a single `remaining` field,
+                                      // and it must be the last one in the struct
+}
+
+// The order of fields matters, as it corresponds to the resulting
+// memory layout when the struct will be used to compose a Cell
+// or to parse a Slice back to the struct.
+struct Order {
+    first: Int;     // 257 continuously laid out bits
+    second: Cell;   // up to 1023 bits,
+                    // which will be placed in a separate ref
+                    // when composing a Cell
+    third: Address; // 267 bits
+}
+
+// Message structs are almost the same as regular structs,
+// but they have a 32-bit integer header in their serialization.
+// This unique numeric ID is commonly referred to as an opcode (operation code),
+// and it allows message structs to be used with special receiver functions
+// that distinguish incoming messages based on this ID.
+message ImplicitlyAssignedId {} // no fields,
+                                // but not empty because of the automatically
+                                // generated and implicitly set 32-bit Int opcode
+
+// You can manually override an opcode with any compile-time expression
+// that evaluates to a non-negative 32-bit integer.
+
+// This message has an opcode of 898001897, which is the evaluated
+// integer value of the specified compile-time expression.
+message((crc32("Tact") + 42) & 0xFFFF_FFFF) MsgWithExprOpcode {
+    // All the contents are defined identical to regular structs.
+    field1: Int as uint4;         // serialization
+    field2: Bool?;                // optionals
+    field3: One;                  // nested structs
+    field4: ImplicitlyAssignedId; // nested message structs
+}
+
+// Some usage examples.
+fun usage() {
+    // Instantiation of a struct.
+    // Notice the lack of the "new" keyword used for this in many
+    // other traditional languages.
+    let val: One = One{ number: 50 };
+
+    // You can omit the fields with default values.
+    let _ = Params{ val }; // the field punning works —
+                           // instead of `val: val` you could write just `val`
+
+    // Convert a struct to a Cell or a Slice.
+    let valCell = val.toCell();
+    let valSlice = val.toSlice();
+
+    // Obtain a struct from a Cell or a Slice.
+    let _ = One.fromCell(valCell);
+    let _ = One.fromSlice(valSlice);
+
+    // Conversion works both ways.
+    One.fromCell(val.toCell()).toCell() == valCell;
+    One.fromSlice(val.toSlice()).toSlice() == valSlice;
+}
+```
+
+Read more: [Structs and Messages](/book/structs-and-messages).
+
+## Operators
+
+```tact
+fun showcase() {
+    // Let's omit the type ascriptions and let the compiler infer the types.
+    let five = 5; // = is an assignment operator,
+                  // but it can be a part of the assignment statement only,
+                  // because there is no assignment expression
+    let four = 4;
+
+    // Most operators below have augmented assignment versions, like +=, -=, etc.
+    // See the "Statements" section below for more info.
+
+    // Common arithmetic operators have predictable precedences.
+    five + four - five * four / five % four; // 9
+
+    // You can change order of operations with parentheses.
+    (five + (four - five)) * four / (five % four); // 16
+
+    // The % is the modulo, not the remainder operator.
+    1 % five;  // 1
+    1 % -five; // -4
+
+    // Negation and bitwise NOT.
+    -five;    // -5: negation of 5
+    ~five;    // -6: bitwise NOT of 5
+    -(~five); // 6: bitwise NOT, then negation
+    ~(-five); // 4: negation, then bitwise NOT
+
+    // Bitwise shifts.
+    five << 2; // 20
+    four >> 2; // 1
+    -four >> 2; // -1, because negation is applied first
+                // and >> performs arithmetic or sign-propagating right shift
+
+    // Other common bitwise operators.
+    five & four; // 4, due to bitwise AND
+    five | four; // 5, due to bitwise OR
+    five ^ four; // 1, due to bitwise XOR
+
+    // Relations.
+    five == four;     // false
+    five != four;     // true
+    five > four;      // true
+    five < four;      // false
+    five - 1 >= four; // true
+    five - 1 <= four; // true
+
+    // Logical checks.
+    !(five == 5);       // false, because of the inverse ! operator
+    false && five == 5; // false, because && is short-circuited
+    true || five != 5;  // true, because || is also short-circuited
+
+    // The non-null assertion operator raises a compilation error if the value
+    // is null or if the type of the value is not optional,
+    // i.e., it can never be null.
+    let maybeFive: Int? = five;
+    maybeFive!!; // 5
+
+    // Ternary operator ?: is right-associative.
+    false ? 1 : (false ? 2 : 3); // 3
+    false ? 1 : true ? 2 : 3;    // 2
+}
+```
+
+Read more: [Operators](/book/operators).
+
+## Expressions
+
+```tact /StdAddress/
+contract MyContract() {
+    fun showcase() {
+        // Integer literals.
+        0; 42; 1_000; 020; // decimal, base 10
+        0xABC; 0xf; 0x001; // hexadecimal, base 16
+        0o777; 0o00000001; // octal, base 8
+        0b111010101111010; // binary, base 2
+
+        // Boolean literals.
+        true; false;
+
+        // String literals.
+        "You can be The Good Guy or the guy who saves the world... You can't be both.";
+        "1234"; // a string, not a number
+        "👻"; // strings support Unicode
+        "\\ \" \n \r \t \v \b \f \x00 through \xFF"; // common escape sequences
+        "\u0000 through \uFFFF and \u{0} through \u{10FFFF}"; // unicode escape sequences
+
+        // `null` and `self` literals.
+        null; // not an instance of a primitive type, but
+              // a special value that represents the intentional absence
+              // of any other value
+
+        self; // used to reference the current contract from within
+              // and the value of the currently extended type inside
+              // the extension function. See the "Functions" section below for more.
+
+        // Identifiers, with usual naming conventions:
+        // They may contain Latin lowercase letters `a-z`,
+        // Latin uppercase letters `A-Z`, underscores `_`,
+        // and digits 0 - 9, but may not start with a digit.
+        // No other symbols are allowed, and Unicode identifiers are prohibited.
+        // They also cannot start with __gen or __tact since those prefixes
+        // are reserved by the Tact compiler.
+        let azAZ09_ = 5; azAZ09_;
+
+        // Instantiations or instance expressions of structs and message structs.
+        let addr = BasechainAddress{ hash: null, };
+
+        // Field access.
+        addr.hash; // null
+        self.MOON_RADIUS_KM; // 1738, a contract-level constant
+                             // defined below this function
+
+        // Extension function calls (methods).
+        self.MOON_RADIUS_KM.toString(); // "1738"
+        self.notify("Cashback".asComment()); // rather expensive,
+                                             // use cashback() instead
+        "hey".asComment(); // allowed on literals
+
+        // Global function calls.
+        now(); // UNIX timestamp in seconds
+        cashback(sender());
+
+        // Some of the functions can be computed at compile-time given enough data.
+        sha256("hey, I'll produce the SHA256 number at compile-time");
+
+        // But there are special, compile-time-only functions.
+        let _: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+        let _: Cell = cell("te6cckEBAQEAAgAAAEysuc0="); // an empty Cell
+        let _: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="); // a Slice with Hello world!
+        let _: Slice = rawSlice("000DEADBEEF000"); // CS{Cell{03f...430} bits: 588..644; refs: 1..1}
+        let _: Int = ascii("⚡"); // 14850721 or 0xE29AA1, 3 bytes in total
+        let _: Int = crc32("000DEADBEEF000"); // 1821923098
+        let _: Int = ton("1"); // 10^9 nanoToncoin = one Toncoin,
+                               // the main currency of TON Blockchain
+
+        // initOf, which obtains the initial code and initial data
+        // of the given contract, i.e., it's initial state.
+        initOf MyContract(); // StateInit{ code, data }
+
+        // codeOf, which only obtains the code.
+        codeOf MyContract;
+    }
+
+    // Constants support compile-time expressions
+    const MOON_RADIUS_KM: Int = 1730 + (8 | 8);
+}
+```
+
+Read more: [Expressions](/book/expressions).
+
+## Statements and control flow {#statements}
+
+```tact
+fun showcase() {
+    // let statement to define new variables, as we've seen above.
+    let theAnswer = 42;                // type ascription is optional for everything,
+    let m: map<Int, Int> = emptyMap(); // except for optionals and maps
+
+    // Block statement creates an enclosed scope.
+    {
+        // theAnswer is accessible here
+        let privateVal = theAnswer + 27;
+        // but privateVal is no longer visible after this block ends.
+    }
+
+    // Assignment statement allows reassigning variables.
+    theAnswer = -(~theAnswer + 1);
+
+    // Almost every binary operator can form an augmented assignment,
+    // except for relational and equality ones,
+    // and excluding the assignment operator itself.
+    theAnswer += 5; // equivalent to: theAnswer = theAnswer + 5;
+    theAnswer -= 5; // equivalent to: theAnswer = theAnswer - 5;
+    theAnswer *= 5; // and so on, see the Operators page for more.
+
+    // Destructuring assignment is a concise way to
+    // unpack structures into distinct variables.
+    let st = StdAddress{ workchain: 0, address: 0 }; // let statement
+    let StdAddress{ address, .. } = st;              // destructuring statement
+    //              -------  --
+    //              ↑        ↑
+    //              |        ignores all unspecified fields
+    //              Int as uint256,
+    //              a variable out of the second field of StdAddress struct
+    address; // 0
+
+    // You can also define new names for variables
+    // derived from the struct fields.
+    let StdAddress { address: someNewName, .. } = st;
+    someNewName; // 0
+
+    // Conditional branching with if...else.
+    if (false) { // curly brackets (code blocks) are required!
+        // ...then branch
+    } else if (false) {
+        // ...else branch
+    } else {
+        // ...last else
+    }
+
+    // Try and try...catch, with partial rollback.
+    try {
+        throw(777);
+    } catch (exitCode) { // 777
+        // An exit code is an integer that indicates whether the transaction
+        // was successful, and if not — holds the code of the exception that occurred.
+        //
+        // The catch block that can catch run-time (compute phase) exit codes
+        // will roll back almost all changes made in the try block,
+        // except for: codepage changes, gas usage counters, etc.
+        //
+        // See the "Testing and debugging" section below for more info.
+    }
+
+    // Repeat something N times.
+    repeat (2003) {
+        dump("mine"); // greet the Nemo
+    }
+
+    // Loop with a pre-condition: while.
+    while (theAnswer > 42) {
+        theAnswer /= 5;
+    }
+
+    // Loop with a post-condition: do...until.
+    do {
+        // This block will be executed at least once,
+        // because the condition in the until close
+        // is checked after each iteration.
+        m = emptyMap();
+    } until (false);
+
+    // Traverse over all map entries with foreach.
+    m.set(100, 456);
+    m.set(23, 500);
+    foreach (key, value in m) { // or just k, v: naming is up to you
+        // Goes from smaller to bigger keys:
+        // first iteration key = 23
+        // second iteration key = 100
+    }
+
+    // If you don't want key, value, or both, then use a wildcard.
+    let len = 0;
+    foreach (_, _ in m) {
+        len += 1; // don't mind me, just counting the size of the map
+    }
+
+    // Finally, return statement works as usual.
+    return; // implicitly produces nothing (named "void" in the compiler)
+    // return 5; // would explicitly produce 5
+}
+```
+
+Read more: [Statements](/book/statements).
+
+## Constants
+
+```tact
+// Global, top-level constants.
+// Type ascription is mandatory.
+const MY_CONSTANT: Int =
+    ascii("⚡"); // expressions are computed at compile-time
+
+// Trait-level constants.
+trait MyTrait {
+    const I_AM_ON_THE_TRAIT_LEVEL: Int = 420;
+
+    // On the trait-level, you can make constants abstract,
+    // which requires the contracts that inherit this trait
+    // to override those constants with some values.
+    abstract const OVERRIDE_ME: Int;
+
+    // Virtual constants allow overrides, but do not require them.
+    virtual const YOU_CAN_OVERRIDE_ME: Int = crc32("babecafe");
+}
+
+// Contract-level constants.
+contract MyContract() with MyTrait {
+    const iAmOnTheContractLevel: Int = 4200;
+
+    // Because this contract inherits from MyTrait,
+    // the I_AM_ON_THE_TRAIT_LEVEL constant is also in scope of this contract,
+    // but we cannot override it.
+
+    // However, we can override the virtual constant.
+    override const YOU_CAN_OVERRIDE_ME: Int = crc32("deadbeef");
+
+    // And we MUST override and define the value of the abstract constant.
+    override const OVERRIDE_ME: Int = ton("0.5");
+}
+
+// All constants are inlined, i.e., their values are embedded in the resulting
+// code in all places where their values are referenced in Tact code.
+//
+// The main difference is the scope — global can be referenced
+// from anywhere, while contract and trait-level constants are
+// only accessible within them via `self` references.
+```
+
+Read more: [Constants](/book/constants).
+
+## Functions
+
+```tact
+// Global function with parameters and return type.
+fun add(a: Int, b: Int): Int {
+    return a + b;
+}
+
+// Global function have a set of optional attributes that can change their demeanor.
+// For example, inline attribute will make the body of this
+// function inlined in all places where this function is called,
+// increasing the total code size and possibly reducing computational fees.
+inline fun reply(str: String) {
+    message(MessageParameters{
+        to: sender(),
+        value: 0,
+        mode: SendRemainingValue | SendIgnoreErrors,
+        body: str.asComment(),
+    });
+}
+
+// The extends attribute allows to implement extension functions for any type.
+// Its first parameter in the signature must be named self,
+// and its type is the type this function is extending.
+// Think of extension functions as very flexible method definitions
+// in popular programming languages.
+extends fun toCoinsString2(self: Int): String {
+    return self.toFloatString(9);
+}
+
+/// On top of the extends attribute, you may add the mutates attribute,
+/// which would allow mutating the value of the currently extended type.
+extends mutates fun hippityHoppity(self: Int) {
+    // ...something that would mutate `self`
+    self += 1;
+}
+
+/// Tact allows you to import Tact and FunC files.
+/// To bind to or wrap the respective functions in FunC,
+/// the so-called native functions are used.
+///
+/// Prior to defining them, make sure to add the
+/// required `import "./path/to/file.fc";` on top of the file.
+@name(get_data) // here, import is not needed,
+                // because the stdlib.fc is always implicitly imported
+native getData(): Cell;
+
+/// Finally, there are advanced module-level functions that allow you
+/// to write Tat assembly. Unlike all other functions, their bodies consist
+/// only of TVM instructions and some other primitives as arguments to instructions.
+asm fun rawReserveExtra(amount: Int, extraAmount: Cell, mode: Int) { RAWRESERVEX }
+
+// Examples of calling the functions defined above
+fun showcase() {
+    // Global function
+    add(1, 2); // 3
+
+    // Inlined global function
+    reply("Viltrum Empire");
+
+    // Extension function
+    5.toCoinsString2(); // 0.000000005
+
+    // Extension mutation function
+    let val = 10;
+    val.hippityHoppity();
+    val; // 11
+
+    // Native function, called just like global functions
+    getData(); // Cell with the contract's persistent storage data.
+
+    // Assembly function, called just like global functions
+    rawReserveExtra(ton("0.1"), emptyCell(), 0);
+}
+
+// The functions discussed above are helpful but not mandatory for
+// the contracts to operate, unlike the receiver functions,
+// which can only be defined at the contract and trait level.
+//
+// See the "Contracts and traits" section below for more info.
+```
+
+Read more: [Functions](/book/functions).
+
+## Message exchange and communication {#messaging}
+
+```tact
+// On TON, contracts cannot read each other's states and cannot synchronously
+// call each other's functions. Instead, the actor model of communication is
+// applied — contracts send or receive asynchronous messages that may or may not
+// influence each other's state.
+//
+// Each message is a Cell with a well-defined, complex structure of serialization.
+// However, Tact provides you with simple abstractions to send, receive, and
+// (de)serialize messages to and from various structures.
+//
+// Each message has a so-called message body,
+// which can be represented by message structs with certain opcodes.
+message(123) MyMsg { someVal: Int as uint8 }
+
+// Messages can also omit their bodies, or have them be empty,
+// in which case they won't have any opcode and could only be handled
+// by the empty message body receiver or "empty receiver" for short.
+//
+// See the "Contracts and traits" section below for more info.
+
+// Finally, sending messages is not free and requires
+// some forward fees to be paid upfront.
+fun examples() {
+    // To keep some amount of nanoToncoins on the balance,
+    // use nativeReserve() prior to calling message-sending functions:
+    nativeReserve(ton("0.01"), ReserveAtMost);
+
+    // There are many message-sending functions for various cases.
+    // See the links given right after this code block.
+    //
+    // This is most general and simple function to send an internal message:
+    message(MessageParameters{
+        // Recipient address.
+        to: address("UQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p9dz"),
+
+        // Optional message body.
+        body: null, // empty body, no opcodes, nothing
+
+        // Some nanoToncoins to send, possibly none.
+        value: 0, // do not attach any nanoToncoins to the message
+
+        // Configure various modes of sending the message in regards to how
+        // the funds will be charged, how message will be processed, etc.
+        mode: SendPayGasSeparately | SendIgnoreErrors,
+
+        // Whether to allow this message to bounce back to this contract
+        // in case the recipient contract doesn't exist or wasn't able to
+        // process the message.
+        bounce: true, // to handle messages that bounced back, a special bounced
+                      // receiver function is used. See the "Contracts and traits"
+                      // section below for more info.
+    });
+
+    // To do refunds and forward excess values from the incoming message
+    // back to the original sender, use the cashback message-sending function:
+    cashback(sender());
+
+    // Note that all message-sending functions only queue the messages when called.
+    // The actual processing and sending will be done in the next, action phase
+    // of the transaction, where many messages can fail for various reasons.
+    //
+    // For example, if the remaining value from the incoming message was used by
+    // the first function, the subsequent functions that would try to do the same
+    // will fail. The optional SendIgnoreErrors flag seen above hides those failures
+    // and ignores the unprocessed messages. It's not a silver bullet, and you're
+    // advised to always double-check the message flow in your contracts.
+}
+
+// Already bounced messages cannot be sent by any contract and are guaranteed
+// to be received only by the current contract that did sent them as internal
+// messages first.
+//
+// Additionally, external messages cannot be sent by the contract,
+// only processed by it.
+//
+// To receive internal messages (bounced or sent directly) and external messages,
+// provide corresponding receiver functions. See the "Contracts and traits"
+// section below for more info.
+//
+// To organize child-parent contract message exchange, see the "Jetton contracts"
+// section below.
+```
+
+Read more:
+
+* [Receive messages](/book/receive).
+* [Send messages](/book/send).
+* [Message-sending functions](/book/send#message-sending-functions).
+* [Message mode](/book/message-mode).
+
+## Contracts and traits
+
+```tact
+// Tact allows you to import Tact and FunC code.
+// Additionally, there's a versatile set of standard libraries
+// which come bundled in with a compiler, but are not included
+// in projects right away.
+//
+// To import a standard library, instead of specifying a path to a file
+// start the import string with @stdlib/.
+import "@stdlib/ownable"; // for the Ownable trait
+
+// Traits have the same structure as contracts and are used
+// to provide some means of inheritance and common code reuse.
+//
+// Like contracts, traits can also inherit other traits.
+trait MyTrait with Ownable {
+    owner: Address; // required field from the Ownable trait
+
+    // Within traits and contracts, you can define scoped functions
+    // and only accessible from them or their successors. Those functions
+    // are often called internal functions.
+    //
+    // If you won't be using any contract fields, it's better to define
+    // such functions as global, i.e., on the top-level.
+    fun addIfOwner(a: Int, b: Int): Int {
+        self.requireOwner();
+        return a + b;
+    }
+
+    // Adding an abstract attribute to the internal function requires us
+    // to omit their body definitions and demand that from contracts that
+    // will inherit the trait.
+    abstract fun trust(msg: MyMsg);
+
+    // Adding a virtual attribute to the internal function allows their
+    // body definitions to be be overridden in the contracts that will
+    // inherit the trait.
+    virtual fun verify(msg: MyMsg) {
+        self.requireOwner();
+        require(msg.someVal > 42, "Too low!");
+    }
+}
+
+// Contract definitions in Tact conveniently represent smart contracts
+// on TON Blockchain. They hold all variables, functions, getters and receivers,
+// while providing accessible abstractions for working with them.
+contract MyContract(
+    // Persistent state variables of the contract:
+    owner: Address, // required field from the Ownable trait
+    accumulator: Int as uint8,
+    // Their default or initial values are supplied during deployment.
+) with MyTrait, Ownable {
+
+    // The internal message receiver is a function that handles messages received
+    // by this contract on-chain: from other contracts and never from outside.
+    receive(msg: MyMsg) {
+        self.requireOwner();
+        self.accumulator += msg.someVal;
+
+        // Send a message back to the sender() with MyMsg
+        message(MessageParameters{
+            to: sender(),
+            value: ton("0.04"),
+            body: MyMsg{ someVal: self.accumulator }.toCell(),
+        });
+    }
+
+    // For deployments, it is common to use the following receiver
+    // often called an "empty receiver", which handles `null` (empty)
+    // message bodies of internal messages.
+    receive() {
+        // Forward the remaining value in the
+        // incoming message (surplus) back to the sender.
+        cashback(sender());
+    }
+
+    // The bounced message receiver is a function that handles messages sent
+    // from this contract and bounced back to it because of a malformed payload or
+    // some issues on the recipient side.
+    bounced(msg: bounced<MyMsg>) {
+        // Bounced message bodies are limited by their first 256 bits, which
+        // means that excluding their 32-bit opcode there are only 224 bits left
+        // for other contents of MyMsg.
+        //
+        // Thus, in message structs prefer to put small important fields first.
+        require(msg.someVal > 42, "Unexpected bounce!");
+        self.accumulator = msg.someVal;
+    }
+
+    // The external message receiver is a function that handles messages sent
+    // to this contract from outside the blockchain. That is often the case
+    // for user wallets, where apps that present some UI for them have to
+    // communicate with contracts on chain to perform transfers on their behalf.
+    external(msg: MyMsg) {
+        // There is no sender, i.e., calling sender() here won't work.
+        // Additionally, there are no guarantees that the received message
+        // is authentic and is not malicious. Therefore, when receiving
+        // such messages one has to first check the signature to validate the sender,
+        // and explicitly agree to accept the message and fund its processing
+        // in the current transaction with acceptMessage() function.
+        require(msg.someVal > 42, "Nothing short of 42 is allowed!");
+        self.accumulator = msg.someVal;
+        acceptMessage();
+    }
+
+    // Getter functions or get methods are special functions that can only
+    // be called from within this contract or off-chain, and never by other contracts.
+    // They cannot modify the contract's state and they do not affect its balance.
+    // The IO analogy would be that they can only "read", not "write".
+    get fun data(): MyContract {
+        // This getter returns the current state of the contract's variables,
+        // which is convenient for tests but not advised for production.
+        return self;
+    }
+
+    // Finally, for each inherited trait contract may override its virtual internal
+    // functions and it MUST override its abstract internal functions as to provide
+    // their defined bodies.
+    override fun trust(msg: MyMsg) {
+        require(msg.someVal == 42, "Always bring your towel with you");
+    }
+}
+
+// Message struct with 123 as its 32-bit opcode.
+message(123) MyMsg {
+    someVal: Int as uint8;
+}
+```
+
+Read more: [Contracts](/book/contracts).
+
+## Persistent state {#state}
+
+```tact
+// Contracts can define state variables that persist between contract calls,
+// and thus commonly referred to as storage variables.
+// Contracts in TON pay rent in proportion to the amount of persistent space
+// they consume, so compact representations via serialization are encouraged.
+
+contract StateActor(
+    // Persistent state variables
+    oneByte: Int as uint8,  // ranges from -128 to 127
+    twoBytes: Int as int16, // ranges from -32,768 to 32,767
+    currency: Int as coins, // variable bit-width format, which occupies
+                            // between 4 and 124 bits
+                            // and ranges from 0 to 2^120 - 1
+) {
+
+    receive() {
+        // Serialization to smaller values only applies for the state between
+        // transactions and incoming or outgoing message bodies.
+        // This is because at runtime everything is computed
+        // at their maximum capacity and all integers are assumed to
+        // be 257-bit signed ones.
+        //
+        // That is, the following would not cause any runtime overflows,
+        // but will throw an out of range error only after the execution of
+        // this receiver is completed.
+        self.oneByte = -1;  // this won't fail immediately
+        self.oneByte = 500; // and this won't fail right away either
+
+    } // only here, at the end of the compute phase,
+      // would an error be thrown with exit code 5:
+      // Integer out of expected range
+}
+```
+
+Read more: [Persistent state variables](/book/contracts#variables).
+
+## Testing and debugging {#debug}
+
+```tact
+fun showcase() {
+    // An exit code is an integer that indicates whether the transaction
+    // was successful and, if not — holds the code of the exception that occurred.
+    //
+    // They are the simplest litmus tests for your contracts,
+    // indicating what happened and, if you are lucky, where, and why.
+    try {
+        dump(
+            beginCell()
+            .storeInt(0, 250)
+            .storeInt(0, 250)
+            .storeInt(0, 250)
+            .storeInt(0, 250)
+            .storeUint(0, 24) // oh no, we're trying to store 1024 bits,
+                              // while cells can only store up to 1023 bits
+        );
+    } catch (exitCode) {
+        // exitCode is 8, which means the cell overflow has happened somewhere.
+        // However, there is no clear indication there just from the code alone —
+        // you need to either view transaction logs or know many pitfalls in advance.
+        //
+        // Additionally, runtime computations aren't free and require gas to be spent.
+        // The catch block can revert the state before the try block,
+        // but it cannot revert the gas spent for computations in the try block.
+    }
+
+    // Contrary to this reactive approach, we can be proactive and state
+    // our expectations upfront with require() function.
+    // It will also throw an exit code, but this time we can map that exit code
+    // onto the error message and trace our way back to the this call to require().
+    require(now() >= 1000, "We're too early, now() is less than 1000");
+
+    // Sometimes, its also helpful to log the events as they unfold to view
+    // the data off-chain. Use the emit() message-sending function for this.
+    emit("Doing X, then Y, currently at R".asComment());
+}
+
+// Those tools are handy, but they are not enough.
+// To fully understand what went wrong, you might need to read the TON Virtual
+// Machine (TVM) execution logs when running contracts in the Sandbox.
+// And to ensure that encountered issues won't happen again, do write tests
+// in Tact and TypeScript using the Sandbox + Jest toolkit provided by
+// the Blueprint framework or tact-template.
+```
+
+Read more:
+
+* [Debugging and testing](/book/debug).
+* [Exit codes](/book/exit-codes).
+* [Gas best practices](/book/gas-best-practices).
+* [Security best practices](/book/security-best-practices).
+* [Transaction retracer on retracer.ton.org](https://retracer.ton.org/).
+* [Blueprint framework on GitHub](https://github.com/ton-org/blueprint).
+* [tact-template on GitHub](https://github.com/tact-lang/tact-template).
+
+## Contract deployment {#deploy}
+
+```tact
+fun showcase() {
+    // Contract deployment is done by sending messages. For deployments,
+    // one must send the new contract's initial state, i.e.,
+    // its initial code and initial data, to its Address,
+    // which is deterministically obtained from the initial state.
+    deploy(DeployParameters{
+        // Use initOf expression to provide initial code and data
+        init: initOf MyContract(),
+        // Attaching 1 Toncoin, which will be used to pay various fees
+        value: ton("1"),
+        // Notice that we do not need to explicitly specify the Address.
+        // That's because it will be computed on the fly from the initial package.
+    });
+}
+
+// However, before your contracts can start deploying other contracts on-chain,
+// it is common to first send an external message to your TON wallet from off-chain.
+// Then, your wallet will be the contract that deploys the target one.
+
+// An empty contract needed for the showcase above to work.
+contract MyContract() {}
+```
+
+Read more: [Deployment](/book/deploy).
+
+## Example contracts {#examples}
+
+Let's put our newly acquired information of syntax and some semantics to the test.
+
+### Counter contract {#examples-counter}
+
+```tact
+// Defining a new Message type, which has one field
+// and an automatically assigned 32-bit opcode prefix
+message Add {
+    // unsigned integer value stored in 4 bytes
+    amount: Int as uint32;
+}
+
+// Defining a contract
+contract SimpleCounter(
+    // Persistent state variables of the contract:
+    counter: Int as uint32, // actual value of the counter
+    id: Int as uint32, // a unique id to deploy multiple instances
+                       // of this contract in a same workchain
+    // Their default or initial values are supplied during deployment.
+) {
+    // Registers a receiver of empty messages from other contracts.
+    // It handles internal messages with `null` body
+    // and is very handy and cheap for the deployments.
+    receive() {
+        // Forward the remaining value in the
+        // incoming message back to the sender.
+        cashback(sender());
+    }
+
+    // Registers a binary receiver of the Add message bodies.
+    receive(msg: Add) {
+        self.counter += msg.amount; // <- increase the counter
+        // Forward the remaining value in the
+        // incoming message back to the sender.
+        cashback(sender());
+    }
+
+    // A getter function, which can only be called from off-chain
+    // and never by other contracts. This one is useful to see the counter state.
+    get fun counter(): Int {
+        return self.counter; // <- return the counter value
+    }
+
+    // Another getter function, but for the id:
+    get fun id(): Int {
+        return self.id; // <- return the id value
+    }
+}
+```
+
+### Jetton contracts {#examples-jetton}
+
+The tokens on TON Blockchain are commonly called Jettons. The distinction is made because they work differently from ERC-20 tokens or others.
+
+This is due to the scalable and distributed approach that works best on TON: instead of having a single giant contract with a big hashmap of addresses of token holders, Jettons instead have a single minter contract that creates individual contracts called Jetton wallets per each holder.
+
+For more, refer to the following resources:
+
+* [TON Jettons Processing](https://docs.ton.org/v3/guidelines/dapps/asset-processing/jettons) in TON Docs.
+* Jetton standards: [TEP-64](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md), [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md), and [TEP-89](https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md).
+
+#### JettonWallet
+
+```tact
+/// Child contract per each holder of N amount of given Jetton (token)
+contract JettonWallet(
+    /// Balance in Jettons.
+    balance: Int as coins,
+
+    /// Address of the user's wallet which owns this JettonWallet, and messages
+    /// from whom should be recognized and fully processed.
+    owner: Address,
+
+    /// Address of the main minting contract,
+    /// which deployed this Jetton wallet for the specific user's wallet.
+    master: Address,
+) {
+    /// Registers a binary receiver of the JettonTransfer message body.
+    /// Transfers Jettons from the current owner to the target user's JettonWallet.
+    /// If that wallet does not exist, it is deployed on-chain in the same transfer.
+    receive(msg: JettonTransfer) {
+        // Ensure the basechain (workchain ID = 0)
+        require(parseStdAddress(msg.destination.asSlice()).workchain == 0, "Invalid destination workchain");
+        // Ensure the owner.
+        require(sender() == self.owner, "Incorrect sender");
+
+        // Ensure the balance does not go negative.
+        self.balance -= msg.amount;
+        require(self.balance >= 0, "Incorrect balance after send");
+        // Ensure the payload has enough bits.
+        require(msg.forwardPayload.bits() >= 1, "Invalid forward payload");
+
+        let ctx = context();
+        // msg.forwardTonAmount cannot be negative
+        // because its serialized as "coins"
+        let fwdCount = 1 + sign(msg.forwardTonAmount);
+
+        // Ensure there are enough Toncoin for transferring Jettons.
+        require(
+            ctx.value >
+            msg.forwardTonAmount + fwdCount * ctx.readForwardFee() +
+            (2 * getComputeFee(GAS_FOR_TRANSFER, false) + MIN_TONCOIN_FOR_STORAGE),
+            "Insufficient amount of TON attached",
+        );
+
+        // Transfer Jetton from the current owner to the target user's JettonWallet.
+        // If that wallet does not exist, it is deployed on-chain in the same transfer.
+        deploy(DeployParameters{
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: JettonTransferInternal{
+                queryId: msg.queryId,
+                amount: msg.amount,
+                sender: self.owner,
+                responseDestination: msg.responseDestination,
+                forwardTonAmount: msg.forwardTonAmount,
+                forwardPayload: msg.forwardPayload,
+            }.toCell(),
+            // Notice that we do not need to explicitly specify the Address,
+            // because it will be computed on the fly from the initial package.
+            init: initOf JettonWallet(0, msg.destination, self.master),
+        });
+    }
+
+    /// Registers a binary receiver of messages with JettonTransferInternal opcode.
+    /// Those are expected to be sent from the JettonMinter
+    /// or from other JettonWallets, and indicate incoming Jetton transfers.
+    receive(msg: JettonTransferInternal) {
+        self.balance += msg.amount;
+
+        // This message should come only from JettonMinter,
+        // or from other JettonWallet.
+        let wallet: StateInit = initOf JettonWallet(0, msg.sender, self.master);
+        if (sender() != contractAddress(wallet)) {
+            require(self.master == sender(), "Incorrect sender");
+        }
+
+        let ctx: Context = context();
+        let msgValue: Int = ctx.value;
+        let tonBalanceBeforeMsg = myBalance() - msgValue;
+
+        // If there are some funds to forward a message
+        // let's notify the user's wallet about the Jetton transfer we just got.
+        if (msg.forwardTonAmount > 0) {
+            let fwdFee: Int = ctx.readForwardFee();
+            msgValue -= msg.forwardTonAmount + fwdFee;
+            message(MessageParameters{
+                to: self.owner,
+                value: msg.forwardTonAmount,
+                mode: SendPayGasSeparately,
+                bounce: false,
+                body: JettonNotification{
+                    queryId: msg.queryId,
+                    amount: msg.amount,
+                    sender: msg.sender,
+                    forwardPayload: msg.forwardPayload,
+                }.toCell(),
+            });
+        }
+
+        // In general, let's try to reserve minimal amount of Toncoin
+        // to keep this contract running and paying storage fees.
+        nativeReserve(max(tonBalanceBeforeMsg, MIN_TONCOIN_FOR_STORAGE), ReserveAtMost);
+
+        // And forward excesses (cashback) to the original sender.
+        if (msg.responseDestination != null && msgValue > 0) {
+            message(MessageParameters{
+                to: msg.responseDestination!!,
+                value: msgValue,
+                mode: SendRemainingBalance + SendIgnoreErrors,
+                bounce: false,
+                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+            });
+        }
+    }
+
+    /// Registers a binary receiver of messages with JettonBurn opcode.
+    receive(msg: JettonBurn) {
+        // Ensure the owner.
+        require(sender() == self.owner, "Incorrect sender");
+
+        // Ensure the balance does not go negative.
+        self.balance -= msg.amount;
+        require(self.balance >= 0, "Incorrect balance after send");
+
+        // Ensure there are enough Toncoin for transferring Jettons.
+        let ctx = context();
+        let fwdFee: Int = ctx.readForwardFee();
+        require(
+            ctx.value >
+            (fwdFee + 2 * getComputeFee(GAS_FOR_BURN, false)),
+            "Insufficient amount of TON attached",
+        );
+
+        // Send a message to the JettonMinter to reduce the total supply
+        // of the Jettons. That is, to burn some.
+        message(MessageParameters{
+            to: self.master,
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: JettonBurnNotification{
+                queryId: msg.queryId,
+                amount: msg.amount,
+                sender: self.owner,
+                responseDestination: msg.responseDestination,
+            }.toCell(),
+        });
+    }
+
+    /// Registers a bounced binary receiver of messages
+    /// with the JettonTransferInternal opcode.
+    /// It handles such outgoing messages that bounced back to this contract.
+    bounced(msg: bounced<JettonTransferInternal>) { self.balance += msg.amount; }
+
+    /// Registers a bounced binary receiver of messages
+    /// with the JettonBurnNotification opcode.
+    /// It handles such outgoing messages that bounced back to this contract.
+    bounced(msg: bounced<JettonBurnNotification>) { self.balance += msg.amount; }
+
+    /// An off-chain getter function which returns useful data about this wallet.
+    get fun get_wallet_data(): JettonWalletData {
+        return JettonWalletData{
+            balance: self.balance,
+            owner: self.owner,
+            master: self.master,
+            code: myCode(),
+        };
+    }
+}
+
+//
+// Helper structs, message structs and constants,
+// which would otherwise be imported from another file
+//
+
+struct JettonWalletData {
+    balance: Int;
+    owner: Address;
+    master: Address;
+    code: Cell;
+}
+
+message(0xf8a7ea5) JettonTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Slice as remaining;
+}
+
+message(0x178d4519) JettonTransferInternal {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    responseDestination: Address?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Slice as remaining;
+}
+
+message(0x7362d09c) JettonNotification {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    forwardPayload: Slice as remaining;
+}
+
+message(0x595f07bc) JettonBurn {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    responseDestination: Address?;
+    customPayload: Cell?;
+}
+
+message(0x7bdd97de) JettonBurnNotification {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    responseDestination: Address?;
+}
+
+message(0xd53276db) JettonExcesses {
+    queryId: Int as uint64;
+}
+
+const GAS_FOR_BURN: Int = 6000;
+const GAS_FOR_TRANSFER: Int = 8000;
+const MIN_TONCOIN_FOR_STORAGE: Int = ton("0.01");
+```
+
+#### JettonMinter
+
+It is a parent contract that deploys individual [Jetton wallets](#jettonwallet) per each holder.
+
+See: [`JettonMinter` in tact-lang/jetton repository](https://github.com/tact-lang/jetton/blob/9db75a5a828e9093be5c425605c5f5c9903f505d/src/contracts/jetton-minter.tact).

@@ -65,6 +65,8 @@ guarantor
 Héctor
 hehe
 heisenbugs
+hippity
+Hoppity
 idict
 Ikko
 Ilya
@@ -94,6 +96,7 @@ Laika
 langle
 langtools
 letrec
+learnXinYminutes
 Liskov
 logomark
 lparen
@@ -115,6 +118,7 @@ mktemp
 multiformats
 nanoton
 nanotons
+Nemo
 Neovim
 nextra
 nobounce
@@ -205,6 +209,7 @@ varint
 varuint
 verytactical
 viiii
+Viltrum
 vogons
 Vsevolod
 workchain
