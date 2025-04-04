@@ -49,6 +49,16 @@
         "item cells": "11",
         "item bits": "6850"
       }
+    },
+    {
+      "label": "1.6.5 with store optional cells with store_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/TODO",
+      "size": {
+        "collection cells": "42",
+        "collection bits": "23690",
+        "item cells": "11",
+        "item bits": "6794"
+      }
     }
   ]
 }

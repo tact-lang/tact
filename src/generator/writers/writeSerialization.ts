@@ -191,7 +191,7 @@ function writeSerializerField(
                     {
                         if (op.optional) {
                             ctx.append(
-                                `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(${fieldName}) : build_${gen}.store_int(false, 1);`,
+                                `build_${gen} = build_${gen}.store_maybe_ref(${fieldName});`,
                             );
                         } else {
                             ctx.append(
