@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed code example of the `initOf` expression to highlight support for contract parameters: PR [#2550](https://github.com/tact-lang/tact/pull/2550)
 - Fixed the description of the Tact-reserved exit code 129 and expanded descriptions of functions that can throw it, such as `Message.fromCell()` and `Message.fromSlice()`: PR [#2604](https://github.com/tact-lang/tact/pull/2604)
+- Added "Learn Tact in Y minutes" page to the Book: PR [#2375](https://github.com/tact-lang/tact/pull/2375)
 
 ### Release contributors
 
