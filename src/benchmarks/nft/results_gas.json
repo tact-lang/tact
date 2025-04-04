@@ -51,8 +51,8 @@
       }
     },
     {
-      "label": "1.6.5 with store optional cells with store_maybe_ref",
-      "pr": "https://github.com/tact-lang/tact/pull/TODO",
+      "label": "1.6.5 store optional cells with store_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2647",
       "gas": {
         "transfer": "7840",
         "get static data": "5882",
