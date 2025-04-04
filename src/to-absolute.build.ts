@@ -36,6 +36,7 @@ const main = async () => {
         }
     }
     if (hadChanges) {
+        console.error("Fixed relative imports, stage changes");
         process.exit(30);
     }
 };
