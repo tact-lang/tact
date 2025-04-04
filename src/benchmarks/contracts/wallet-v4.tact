@@ -36,16 +36,20 @@ struct RawMsgWithDeploy {
     body: Cell;
 }
 
+struct ContractState {
+    seqno: Int as uint32;
+    walletId: Int as int32;
+    publicKey: Int as uint256;
+    extensions: map<Address, Bool>;
+}
+
 contract WalletV4(
-    seqno: Int as uint32,
-    walletId: Int as int32,
-    publicKey: Int as uint256,
-    extensions: map<Address, Bool>,
+    state: ContractState,
 ) {
     receive(msg: PluginRequestFunds) {
         let addr = sender(); // check gas for ctx
 
-        if (!self.extensions.exists(addr)) {
+        if (!self.state.extensions.exists(addr)) {
             return;
         }
 
@@ -69,11 +73,11 @@ contract WalletV4(
     receive(msg: RemovePlugin) {
         let addr = sender(); // check gas for ctx
 
-        if (!self.extensions.exists(addr)) {
+        if (!self.state.extensions.exists(addr)) {
             return;
         }
 
-        self.extensions.del(addr);
+        self.state.extensions.del(addr);
 
         if (context().bounceable) {
             nativeSendMessage(
@@ -91,13 +95,14 @@ contract WalletV4(
 
     external(msg: ExternalRequest) {
         throwIf(36, msg.validUntil < now());
-        throwUnless(33, msg.seqno == self.seqno);
-        throwUnless(34, msg.walletId == self.walletId);
-        throwUnless(35, msg.bundle.verifySignature(self.publicKey));
+        throwUnless(33, msg.seqno == self.state.seqno);
+        throwUnless(34, msg.walletId == self.state.walletId);
+        throwUnless(35, msg.bundle.verifySignature(self.state.publicKey));
 
         acceptMessage();
-        self.seqno += 1;
-        commit(); // NOTE: fix, blocked by #2073
+        self.state.seqno += 1;
+        setData(self.state.toCell());
+        commit();
 
         // simple transfer
         if (msg.op == 0) {
@@ -135,17 +140,15 @@ contract WalletV4(
                 3,
             );
 
-            self.extensions.set(addr, true);
-        }
-
-        // add plugin
-        if (msg.op == 2) {
+            self.state.extensions.set(addr, true);
+        } else if (msg.op == 2) {
+            // add plugin
             let payload = msg.payload;
             let addr = payload.loadAddress();
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
 
-            self.extensions.set(addr, true);
+            self.state.extensions.set(addr, true);
 
             nativeSendMessage(
                 RawMsg {
@@ -157,16 +160,14 @@ contract WalletV4(
                 }.toCell(),
                 64,
             );
-        }
-
-        // remove plugin
-        if (msg.op == 3) {
+        } else if (msg.op == 3) {
+            // remove plugin
             let payload = msg.payload;
             let addr = payload.loadAddress();
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
 
-            throwUnless(39, self.extensions.del(addr));
+            throwUnless(39, self.state.extensions.del(addr));
 
             nativeSendMessage(
                 RawMsg {
@@ -186,23 +187,25 @@ contract WalletV4(
     }
 
     get fun seqno(): Int {
-        return self.seqno;
+        return self.state.seqno;
     }
 
     get fun get_subwallet_id(): Int {
-        return self.walletId;
+        return self.state.walletId;
     }
 
     get fun get_public_key(): Int {
-        return self.publicKey;
+        return self.state.publicKey;
     }
 
     get fun is_plugin_installed(wc: Int, hash: Int): Bool {
-        return self.extensions.exists(newAddress(wc, hash));
+        return self.state.extensions.exists(newAddress(wc, hash));
     }
 
     // this is different from FunC version, awaiting unbounded tuple impl in Tact
     get fun get_plugin_list(): map<Address, Bool> {
-        return self.extensions;
+        return self.state.extensions;
     }
 }
+
+asm fun setData(data: Cell) { c4 POP }
