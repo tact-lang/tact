@@ -1,0 +1,7 @@
+contract Test {
+    const MY_CONSTANT: Int = 42;
+
+    get fun getConstant(): Int {
+         return self.MY_CONSTANT;
+    }
+}

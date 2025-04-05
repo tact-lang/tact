@@ -1,0 +1,1 @@
+contract A { receive(")") { dump(1); } }

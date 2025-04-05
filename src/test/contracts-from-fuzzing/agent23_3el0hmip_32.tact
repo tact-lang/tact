@@ -1,0 +1,1 @@
+contract await() { receive() {} }

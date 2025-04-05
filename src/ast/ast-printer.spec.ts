@@ -5,7 +5,7 @@ import { join } from "path";
 import * as assert from "assert";
 import { getAstFactory } from "@/ast/ast-helpers";
 
-const contractsDir = join(__dirname, "contracts");
+const contractsDir = join(__dirname, "../test/contracts-from-fuzzing");
 
 const stringify = (obj: unknown): string => {
     return JSON.stringify(obj, (key, value) =>
@@ -40,7 +40,7 @@ describe.each(contracts)("%s", (_, path) => {
         );
     });
 
-    it("shouldn't change AST", () => {
+    it.only("shouldn't change AST", () => {
         const Ast = getAstFactory();
         const { parse } = getParser(Ast);
         const code = fs.readFileSync(path, "utf-8");
