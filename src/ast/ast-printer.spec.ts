@@ -33,7 +33,7 @@ function getContractsFromDir(dir: string): readonly [string, string][] {
 const contracts = getContractsFromDir(contractsDir);
 const contractsFromFuzzing = getContractsFromDir(contractsFromFuzzingDir);
 
-describe.each(contracts.concat(contractsFromFuzzing))("%s", (_, path) => {
+describe.each(contracts)("%s", (_, path) => {
     it("shouldn't change proper formatting", () => {
         const Ast = getAstFactory();
         const { parse } = getParser(Ast);
@@ -46,7 +46,9 @@ describe.each(contracts.concat(contractsFromFuzzing))("%s", (_, path) => {
             `The formatted AST comparison failed for ${path}`,
         );
     });
+});
 
+describe.each(contracts.concat(contractsFromFuzzing))("%s", (_, path) => {
     it("shouldn't change AST", () => {
         const Ast = getAstFactory();
         const { parse } = getParser(Ast);
