@@ -11,6 +11,7 @@ import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack
 import { funcIdOf } from "@/generator/writers/id";
 import {
     writeExpression,
+    writeExpressionInCondition,
     writePathExpression,
 } from "@/generator/writers/writeExpression";
 import { cast } from "@/generator/writers/cast";
@@ -207,7 +208,9 @@ export function writeStatement(
             return;
         }
         case "statement_while": {
-            ctx.append(`while (${writeExpression(f.condition, ctx)}) {`);
+            ctx.append(
+                `while (${writeExpressionInCondition(f.condition, ctx)}) {`,
+            );
             ctx.inIndent(() => {
                 for (const s of f.statements) {
                     writeStatement(s, self, returns, ctx);
@@ -223,7 +226,9 @@ export function writeStatement(
                     writeStatement(s, self, returns, ctx);
                 }
             });
-            ctx.append(`} until (${writeExpression(f.condition, ctx)});`);
+            ctx.append(
+                `} until (${writeExpressionInCondition(f.condition, ctx)});`,
+            );
             return;
         }
         case "statement_repeat": {
@@ -560,7 +565,7 @@ function writeCondition(
     ctx: WriterContext,
 ) {
     ctx.append(
-        `${elseif ? "} else" : ""}if (${writeExpression(f.condition, ctx)}) {`,
+        `${elseif ? "} else" : ""}if (${writeExpressionInCondition(f.condition, ctx)}) {`,
     );
     ctx.inIndent(() => {
         for (const s of f.trueStatements) {
