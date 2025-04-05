@@ -59,6 +59,26 @@
         "internalTransfer": "8707",
         "extensionTransfer": "4666"
       }
+    },
+    {
+      "label": "1.6.5 with msg.toSlice() serialization only once",
+      "pr": "https://github.com/tact-lang/tact/pull/2643",
+      "gas": {
+        "externalTransfer": "6668",
+        "addExtension": "7147",
+        "internalTransfer": "7510",
+        "extensionTransfer": "4666"
+      }
+    },
+    {
+      "label": "1.6.5 store optional cells with store_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2647",
+      "gas": {
+        "externalTransfer": "6629",
+        "addExtension": "7126",
+        "internalTransfer": "7471",
+        "extensionTransfer": "4666"
+      }
     }
   ]
 }

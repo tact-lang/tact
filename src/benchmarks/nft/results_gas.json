@@ -49,6 +49,16 @@
         "deploy nft": "11657",
         "batch deploy nft": "722774"
       }
+    },
+    {
+      "label": "1.6.5 store optional cells with store_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2647",
+      "gas": {
+        "transfer": "7840",
+        "get static data": "5882",
+        "deploy nft": "11490",
+        "batch deploy nft": "706074"
+      }
     }
   ]
 }
