@@ -450,15 +450,25 @@ export const ppAstStruct: Printer<Ast.StructDecl> =
         ]);
 
 export const ppAstContract: Printer<Ast.Contract> =
-    ({ name, traits, declarations, attributes }) =>
+    ({ name, traits, declarations, attributes, params }) =>
     (c) => {
         const attrsCode = attributes
             .map(({ name: { value } }) => `@interface("${value}") `)
             .join("");
         const traitsCode = traits.map((trait) => trait.text).join(", ");
+        const paramsCode = params
+            ? `(${params
+                  .map((param) => {
+                      const asAlias = param.as
+                          ? ` as ${ppAstId(param.as)}`
+                          : "";
+                      return `${ppAstOptionalId(param.name)}: ${ppAstType(param.type)}${asAlias}`;
+                  })
+                  .join(", ")})`
+            : "";
         const header = traitsCode
-            ? `contract ${ppAstId(name)} with ${traitsCode}`
-            : `contract ${ppAstId(name)}`;
+            ? `contract ${ppAstId(name)}${paramsCode} with ${traitsCode}`
+            : `contract ${ppAstId(name)}${paramsCode}`;
         return c.concat([
             c.row(`${attrsCode}${header} `),
             c.braced(
