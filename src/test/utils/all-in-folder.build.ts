@@ -75,14 +75,14 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
 
     const logger = new Logger();
 
-    const importRegex = /#include\s+"([^"]+)"/g;
-    const isContractRegex = /\(\)\s+recv_internal/g;
-
     const compileFuncContract = async (contractInfo: {
         name: string;
         path: string;
         output: string;
     }) => {
+        const importRegex = /#include\s+"([^"]+)"/g;
+        const isContractRegex = /\(\)\s+recv_internal/g;
+
         const stdlibPath = stdlib.resolve("std/stdlib.fc");
         const stdlibCode = stdlib.readFile(stdlibPath).toString();
         const stdlibExPath = stdlib.resolve("std/stdlib_ex.fc");
