@@ -1,1 +1,0 @@
-contract A { receive("\u{110000}") {} }
