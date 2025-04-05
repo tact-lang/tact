@@ -844,7 +844,7 @@ export function writeExpressionInCondition(
 ): string {
     if (expr.kind === "op_binary") {
         const leftTy = getExpType(wCtx.ctx, expr.left);
-        const rightTy = getExpType(wCtx.ctx, expr.left);
+        const rightTy = getExpType(wCtx.ctx, expr.right);
         const left = constEval(expr.left, wCtx.ctx);
         const right = constEval(expr.right, wCtx.ctx);
 
