@@ -16782,7 +16782,7 @@ if (null?(loaded)) {
   {
     "code": {
       "code": "var v'a = sc_0~load_ref();
-var v'b = sc_0~load_int(1) ? sc_0~load_ref() : null();
+var v'b = sc_0~load_maybe_ref();
 slice sc_1 = sc_0~load_ref().begin_parse();
 var v'c = sc_1~load_int(1) ? sc_1~load_ref().begin_parse() : null();
 var v'd = sc_1~load_int(1) ? sc_1~load_ref().begin_parse() : null();
