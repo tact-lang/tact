@@ -47,6 +47,22 @@
         "cells": "20",
         "bits": "12503"
       }
+    },
+    {
+      "label": "1.6.5 store optional cells with store_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2647",
+      "size": {
+        "cells": "20",
+        "bits": "11951"
+      }
+    },
+    {
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
+      "size": {
+        "cells": "21",
+        "bits": "11727"
+      }
     }
   ]
 }

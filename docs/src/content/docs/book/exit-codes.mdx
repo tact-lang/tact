@@ -64,7 +64,7 @@ Exit code     | Origin                              | Brief description
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
 [$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid standard address.
 ~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6.
-[$138$](#138) | Tact compiler ([Compute phase][c])  | Not a basechain address.
+[$138$](#138) | Tact compiler ([Compute phase][c])  | Not a basechain address. Available since Tact 1.6.3.
 
 :::note
 
@@ -546,7 +546,7 @@ Tact utilizes exit codes from $128$ to $255$. Note that exit codes used by Tact 
 
 If there is a non-null assertion, such as the [`!!{:tact}`](/book/operators#unary-non-null-assert) operator, and the checked value is [`null{:tact}`](/book/optionals), an error with exit code $128$ is thrown: `Null reference exception`.
 
-This behavior can be modified by setting the [`nullChecks`](/book/config#safety-nullChecks) option to `false`, which will disable runtime null checks and would allow to save some gas. However, it is recommended to use it only for well-tested contracts, as it can lead to less recognizable type errors reported by TVM.
+This behavior can be modified by setting the [`nullChecks`](/book/config#safety-nullchecks) option to `false`, which will disable runtime null checks and would allow to save some gas. However, it is recommended to use it only for well-tested contracts, as it can lead to less recognizable type errors reported by TVM.
 
 ```tact
 let gotcha: String? = null;
@@ -559,13 +559,46 @@ try {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 128 with the `TactExitCodeNullReferenceException` [constant][const].
+
 ### 129: Invalid serialization prefix {#129}
 
-Reserved, but due to a number of prior checks, it cannot be thrown unless one hijacks the contract code before deployment and changes the opcodes of the [Messages][message] expected to be received in the contract.
+If there is an attempt to parse (deserialize) a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] into a [message struct][message] and the parsed opcode prefix doesn't match the expected target one, an error with exit code $129$ is thrown: `Invalid serialization prefix`.
+
+Thus, this error can occur whenever there is an opcode mismatch when using either of the following functions:
+
+1. [`Message.fromCell{:tact}`](/ref/core-cells#messagefromcell)
+2. [`Message.fromSlice(){:tact}`](/ref/core-cells#messagefromslice)
+
+```tact
+fun example() {
+    // This cell contains a 32-bit opcode prefix (0x00000001)
+    let cellOne = MsgOne {}.toCell();
+
+    try {
+        // This is a failed attempt to parse one message that has an opcode of 1 (0x00000001)
+        // from a Cell with another message that has an opcode of 2 (0x00000002)
+        let msgTwo = MsgTwo.fromCell(cellOne);
+        dump(msgTwo.toCell());
+    } catch (exitCode) {
+        // exitCode is 129
+    }
+}
+
+// An empty message struct with an opcode of 1 (0x00000001)
+message(1) MsgOne {}
+
+// An empty message struct with an opcode of 2 (0x00000002)
+message(2) MsgTwo {}
+```
+
+Additionally, this error can happen if one hijacks the contract code before deployment and changes the opcodes of the [message structs][message] expected to be received in the contract.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 129 with the `TactExitCodeInvalidSerializationPrefix` [constant][const].
 
 ### 130: Invalid incoming message {#130}
 
-If the received internal or external message is not handled by the contract, an error with exit code $130$ is thrown: `Invalid incoming message`. It usually happens when the contract does not have a receiver for the particular message and its opcode prefix (32-bit integer header).
+If the received internal or external message is not handled by the contract, an error with exit code $130$ is thrown: `Invalid incoming message`. It usually happens when the contract does not have a receiver for the particular message and its opcode prefix: a 32-bit integer header.
 
 Consider the following contract:
 
@@ -577,9 +610,13 @@ contract Dummy with Deployable {}
 
 If you try to send any message except for [`Deploy{:tact}`](/ref/stdlib-deploy#deploy), provided by [`@stdlib/deploy`](/ref/stdlib-deploy), the contract will not have a receiver for it and thus will throw an error with exit code $130$.
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 130 with the `TactExitCodeInvalidIncomingMessage` [constant][const].
+
 ### 131: Constraints error {#131}
 
 Constraints error. Reserved, but never thrown.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 131 with the `TactExitCodeConstraintsError` [constant][const].
 
 ### 132: Access denied {#132}
 
@@ -605,9 +642,13 @@ contract Hal9k with Ownable {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 132 with the `TactExitCodeAccessDenied` [constant][const].
+
 ### 133: Contract stopped {#133}
 
 A message has been sent to a "stopped" contract: a contract that inherits the [`Stoppable{:tact}`](/ref/stdlib-stoppable#stoppable) trait and has the `self.stopped{:tact}` flag set to `true{:tact}`.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 133 with the `ContractStopped` [constant][const].
 
 ### 134: Invalid argument {#134}
 
@@ -628,9 +669,13 @@ try {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 134 with the `TactExitCodeInvalidArgument` [constant][const].
+
 ### 135: Code of a contract was not found {#135}
 
-If the code of the contract does not match the one saved in TypeScript wrappers, an error with exit code $135$ will be thrown: `Code of a contract was not found`.
+If the code of the contract is missing or does not match the one saved in TypeScript wrappers, an error with exit code $135$ will be thrown: `Code of a contract was not found`.
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 135 with the `TactExitCodeContractCodeNotFound` [constant][const].
 
 ### 136: Invalid standard address {#136}
 
@@ -656,6 +701,8 @@ try {
     // exitCode is 136
 }
 ```
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 136 with the `TactExitCodeInvalidStandardAddress` [constant][const].
 
 ### 137: Masterchain support is not enabled for this contract {#137}
 
@@ -700,12 +747,15 @@ try {
 }
 ```
 
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 138 with the `TactExitCodeNotBasechainAddress` [constant][const].
+
 [p]: /book/types#primitive-types
 [trait]: /book/types/#traits
 [cell]: /book/cells
 [builder]: /book/cells#builders
 [slice]: /book/cells#slices
 [message]: /book/structs-and-messages#messages
+[const]: /book/constants
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview

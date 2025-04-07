@@ -173,9 +173,17 @@ function calculateChanges<
     }, []);
 }
 
+/**
+ * Defines the modes for printing benchmark results:
+ * - `"first-last"`: Displays only the first and last benchmark results for comparison.
+ * - `"full"`: Displays all benchmark results in detail.
+ * - `"last-diff"`: Displays the last three benchmark results to highlight recent changes.
+ */
+type BenchmarkPrintMode = "first-last" | "full" | "last-diff";
+
 type BenchmarkTableArgs = {
     implementationName: string;
-    printMode: "first-last" | "full" | "last-diff";
+    printMode: BenchmarkPrintMode;
 };
 
 function createTable<
@@ -217,16 +225,33 @@ function createTable<
 }
 
 const handleTablePrintMode = (
-    results: BenchmarkResult[],
-    arg: BenchmarkTableArgs,
+    results: BenchmarkResult[] | CodeSizeResult[],
+    printMode: BenchmarkPrintMode,
 ) => {
-    switch (arg.printMode) {
+    switch (printMode) {
         case "first-last":
             return [results.at(0)!, results.at(-1)!];
-        case "full":
-            return results;
         case "last-diff":
             return results.slice(results.length - 3);
+        case "full":
+            return results;
+    }
+};
+
+const handlePrintModeEnv = (
+    argPrintMode: BenchmarkPrintMode,
+): BenchmarkPrintMode => {
+    if (typeof process.env.PRINT_MODE === "undefined") {
+        return argPrintMode;
+    }
+
+    switch (process.env.PRINT_MODE) {
+        case "first-last":
+        case "full":
+        case "last-diff":
+            return process.env.PRINT_MODE;
+        default:
+            return argPrintMode;
     }
 };
 
@@ -242,11 +267,13 @@ export function printBenchmarkTable(
         return;
     }
 
+    const printMode = handlePrintModeEnv(args.printMode);
+
     const METRICS: readonly string[] = Object.keys(results[0]!.gas);
     const first = results.at(0)!;
     const last = results.at(-1)!;
 
-    const tableResults = handleTablePrintMode(results, args);
+    const tableResults = handleTablePrintMode(results, printMode);
 
     if (tableResults.length === 0) {
         console.log("No benchmark results to display.");
@@ -256,19 +283,28 @@ export function printBenchmarkTable(
     const gasTable = createTable(tableResults, METRICS, "gas");
 
     const output = [];
-    output.push("Gas Usage Results:");
+    output.push(`Gas Usage Results (print mode ${printMode}):`);
     output.push(gasTable);
 
     if (typeof codeSizeResults !== "undefined") {
         const codeSizeMetrics = Object.keys(codeSizeResults[0]!.size);
+        const codeSizeTableResults = handleTablePrintMode(
+            codeSizeResults,
+            printMode,
+        );
+
+        if (codeSizeTableResults.length === 0) {
+            console.log("No code size benchmark results to display.");
+            return;
+        }
 
         const codeSizeTable = createTable(
-            codeSizeResults,
+            codeSizeTableResults,
             codeSizeMetrics,
             "size",
         );
 
-        output.push("\nCode Size Results:");
+        output.push(`\nCode size Results (print mode ${printMode}):`);
         output.push(codeSizeTable);
     }
 

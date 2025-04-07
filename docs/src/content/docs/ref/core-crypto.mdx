@@ -80,6 +80,64 @@ let check: Bool = checkDataSignature(data, signature, publicKey);
 
 :::
 
+## SignedBundle
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+```tact
+struct SignedBundle {
+    /// A 512-bit Ed25519 signature of the `signedData`.
+    signature: Slice as bytes64;
+
+    /// The remaining non-serialized data of the enclosing struct or message struct,
+    /// which was used to obtain the 512-bit Ed25519 `signature`.
+    signedData: Slice as remaining;
+}
+```
+
+A [struct][struct] that contains a 512-bit [Ed25519][ed] signature and the data it signs.
+
+See the usage example for the [`SignedBundle.verifySignature(){:tact}`](#signedbundleverifysignature) function.
+
+## SignedBundle.verifySignature
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun verifySignature(self: SignedBundle, publicKey: Int): Bool;
+```
+
+Extension function for the [`SignedBundle{:tact}`](#signedbundle) [struct][struct].
+
+Checks whether `self.signedData` was signed by the 512-bit [Ed25519][ed] signature `self.signature`, using the given `publicKey`. Returns `true` if the signature is valid, `false` otherwise.
+
+Usage example:
+
+```tact
+contract Example(publicKey: Int as uint256) {
+    external(msg: MessageWithSignedData) {
+        // Checks that the signature of the SignedBundle from the incoming external
+        // message wasn't forged and made by the owner of this self.publicKey with
+        // its respective private key managed elsewhere.
+        throwUnless(35, msg.bundle.verifySignature(self.publicKey));
+
+        // ...rest of the checks and code...
+    }
+}
+
+message MessageWithSignedData {
+    // The `bundle.signature` contains the 512-bit Ed25519 signature
+    // of the remaining data fields of this message struct,
+    // while `bundle.signedData` references those data fields.
+    // In this case, the fields are `walletId` and `seqno`.
+    bundle: SignedBundle;
+
+    // These fields are common to external messages to user wallets.
+    walletId: Int as int32;
+    seqno: Int as uint32;
+}
+```
+
 ## sha256
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
@@ -127,6 +185,8 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 [cell]: /book/cells#cells
 [builder]: /book/cells#builders
 [slice]: /book/cells#slices
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [ed]: https://en.wikipedia.org/wiki/EdDSA#Ed25519

@@ -26,7 +26,7 @@ trait Stoppable with Ownable {
     owner: Address;
 
     fun requireNotStopped() {
-        throwUnless(133, !self.stopped);
+        throwUnless(TactExitCodeContractStopped, !self.stopped);
     }
 
     fun requireStopped() {
