@@ -23,7 +23,7 @@ import {
     storeExcessOut,
 } from "@/benchmarks/contracts/sbt/output/sbt-item_SBTItem";
 
-import type { 
+import type {
     ReportStaticData,
     RequestOwner,
     ProveOwnership,
