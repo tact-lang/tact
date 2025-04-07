@@ -15,3 +15,7 @@ int __tact_sha256(slice data) {
     }
     return __tact_sha_hash_ext();
 }
+
+() __mark(int val) impure inline {
+    ;; return val;
+}

@@ -67,6 +67,8 @@ export function writeStatement(
 ) {
     switch (f.kind) {
         case "statement_return": {
+            ctx.appendDebugMark(f.loc);
+
             if (f.expression) {
                 if (typeof returns === "string" || returns === null) {
                     throwInternalCompilerError(
@@ -108,6 +110,8 @@ export function writeStatement(
             return;
         }
         case "statement_let": {
+            ctx.appendDebugMark(f.loc);
+
             // Underscore name case
             if (f.name.kind === "wildcard") {
                 ctx.append(`${writeExpression(f.expression, ctx)};`);
@@ -142,6 +146,8 @@ export function writeStatement(
             return;
         }
         case "statement_assign": {
+            ctx.appendDebugMark(f.loc);
+
             // Prepare lvalue
             const lvaluePath = tryExtractPath(f.path);
             if (lvaluePath === null) {
@@ -171,6 +177,8 @@ export function writeStatement(
             return;
         }
         case "statement_augmentedassign": {
+            ctx.appendDebugMark(f.loc);
+
             const lvaluePath = tryExtractPath(f.path);
             if (lvaluePath === null) {
                 // typechecker is supposed to catch this
@@ -198,15 +206,18 @@ export function writeStatement(
             return;
         }
         case "statement_condition": {
+            ctx.appendDebugMark(f.loc);
             writeCondition(f, self, false, returns, ctx);
             return;
         }
         case "statement_expression": {
+            ctx.appendDebugMark(f.loc);
             const exp = writeExpression(f.expression, ctx);
             ctx.append(`${exp};`);
             return;
         }
         case "statement_while": {
+            ctx.appendDebugMark(f.loc);
             ctx.append(`while (${writeExpression(f.condition, ctx)}) {`);
             ctx.inIndent(() => {
                 for (const s of f.statements) {
@@ -217,6 +228,7 @@ export function writeStatement(
             return;
         }
         case "statement_until": {
+            ctx.appendDebugMark(f.loc);
             ctx.append(`do {`);
             ctx.inIndent(() => {
                 for (const s of f.statements) {
@@ -227,6 +239,7 @@ export function writeStatement(
             return;
         }
         case "statement_repeat": {
+            ctx.appendDebugMark(f.loc);
             ctx.append(`repeat (${writeExpression(f.iterations, ctx)}) {`);
             ctx.inIndent(() => {
                 for (const s of f.statements) {
@@ -237,6 +250,7 @@ export function writeStatement(
             return;
         }
         case "statement_try": {
+            ctx.appendDebugMark(f.loc);
             ctx.append(`try {`);
             ctx.inIndent(() => {
                 for (const s of f.statements) {
@@ -266,6 +280,7 @@ export function writeStatement(
             return;
         }
         case "statement_foreach": {
+            ctx.appendDebugMark(f.loc);
             const mapPath = tryExtractPath(f.map);
             if (mapPath === null) {
                 // typechecker is supposed to catch this
@@ -489,6 +504,8 @@ export function writeStatement(
             return;
         }
         case "statement_destruct": {
+            ctx.appendDebugMark(f.loc);
+
             const t = getExpType(ctx.ctx, f.expression);
             if (t.kind !== "ref") {
                 throwInternalCompilerError(
@@ -540,6 +557,7 @@ export function writeStatement(
             return;
         }
         case "statement_block": {
+            ctx.appendDebugMark(f.loc);
             for (const s of f.statements) {
                 writeStatement(s, self, returns, ctx);
             }

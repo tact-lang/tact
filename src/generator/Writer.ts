@@ -3,6 +3,7 @@ import { escapeUnicodeControlCodes, trimIndent } from "@/utils/text";
 import { topologicalSort } from "@/utils/utils";
 import { Writer } from "@/utils/Writer";
 import { TactInternalCompilerError } from "@/error/errors";
+import { SrcInfo } from "@/grammar";
 
 type Flag = "inline" | "impure" | "inline_ref";
 
@@ -48,9 +49,24 @@ export class WriterContext {
     // #headers: string[] = [];
     #rendered: Set<string> = new Set();
 
+    #nextStatementId = 123456789123456789n;
+
+    #debugMapping: Map<string, SrcInfo> = new Map();
+
     constructor(ctx: CompilerContext, name: string) {
         this.ctx = ctx;
         this.#name = name;
+    }
+
+    public appendDebugMark(loc: SrcInfo) {
+        this.#nextStatementId++;
+        this.append(`__mark(${this.#nextStatementId});`);
+
+        this.#debugMapping.set(this.#nextStatementId.toString(), loc);
+    }
+
+    get debugMapping(): Map<string, SrcInfo> {
+        return this.#debugMapping;
     }
 
     get name() {

@@ -32,6 +32,7 @@ import { idToHex } from "@/utils/idToHex";
 import { trimIndent } from "@/utils/text";
 import type { ContractsCodes } from "@/generator/writers/writeContract";
 import { writeTypescriptValue } from "@/generator/writers/writeExpression";
+import { writeFileSync } from "fs";
 
 export async function writeProgram(
     ctx: CompilerContext,
@@ -54,6 +55,22 @@ export async function writeProgram(
     const wCtx = new WriterContext(ctx, abiSrc.name!);
     writeAll(ctx, wCtx, abiSrc.name!, abiLink, contractCodes);
     const functions = wCtx.extract(debug);
+
+    const mapping = wCtx.debugMapping;
+
+    const entries = [...mapping.entries()];
+    const res: Record<string, { path: string; line: number; column: number }> =
+        {};
+    entries.forEach(([key, value]) => {
+        const lineAndColumn = value.interval.getLineAndColumn();
+        res[key] = {
+            path: value.file ?? "",
+            line: lineAndColumn.lineNum,
+            column: lineAndColumn.colNum,
+        };
+    });
+
+    writeFileSync("mapping.json", JSON.stringify(res, null, 4));
 
     //
     // Emit files
