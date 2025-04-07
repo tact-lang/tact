@@ -539,9 +539,7 @@ function writeFieldParser(
                 if (op.format !== "default") {
                     throw new Error(`Impossible`);
                 }
-                ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref() : null();`,
-                );
+                ctx.append(`${varName} = sc_${gen}~load_maybe_ref();`);
             } else {
                 switch (op.format) {
                     case "default":

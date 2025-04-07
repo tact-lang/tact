@@ -61,13 +61,23 @@
       }
     },
     {
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
+      "size": {
+        "collection cells": "44",
+        "collection bits": "23354",
+        "item cells": "12",
+        "item bits": "6626"
+      }
+    },
+    {
       "label": "1.6.5 with zero comparison optimization",
       "pr": "https://github.com/tact-lang/tact/pull/2655",
       "size": {
-        "collection cells": "42",
-        "collection bits": "23578",
-        "item cells": "11",
-        "item bits": "6746"
+        "collection cells": "44",
+        "collection bits": "23242",
+        "item cells": "12",
+        "item bits": "6578"
       }
     }
   ]

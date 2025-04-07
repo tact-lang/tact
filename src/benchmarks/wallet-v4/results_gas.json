@@ -55,12 +55,21 @@
       }
     },
     {
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
+      "gas": {
+        "externalTransfer": "4613",
+        "addPlugin": "6778",
+        "pluginTransfer": "3761"
+      }
+    },
+    {
       "label": "1.6.5 with zero comparison optimization",
       "pr": "https://github.com/tact-lang/tact/pull/2655",
       "gas": {
         "externalTransfer": "4561",
         "addPlugin": "6778",
-        "pluginTransfer": "3874"
+        "pluginTransfer": "3761"
       }
     }
   ]

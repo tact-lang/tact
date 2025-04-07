@@ -61,13 +61,23 @@
       }
     },
     {
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
+      "gas": {
+        "transfer": "7660",
+        "get static data": "5815",
+        "deploy nft": "11500",
+        "batch deploy nft": "707074"
+      }
+    },
+    {
       "label": "1.6.5 with zero comparison optimization",
       "pr": "https://github.com/tact-lang/tact/pull/2655",
       "gas": {
-        "transfer": "7814",
-        "get static data": "5856",
-        "deploy nft": "11490",
-        "batch deploy nft": "703448"
+        "transfer": "7634",
+        "get static data": "5789",
+        "deploy nft": "11500",
+        "batch deploy nft": "704448"
       }
     }
   ]
