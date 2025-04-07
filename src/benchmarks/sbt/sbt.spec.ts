@@ -17,12 +17,20 @@ import { posixNormalize } from "@/utils/filePath";
 import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     SBTItem,
+    type ReportStaticData,
     type RequestOwner,
     type ProveOwnership,
+    type ProveOwnershipOut,
     type GetStaticData,
     type Destroy,
     type Revoke,
     type TakeExcess,
+    type RequestOwnerOut,
+    storeReportStaticData,
+    storeRequestOwnerOut,
+    storeProveOwnershipOut,
+    ExcessOut,
+    storeExcessOut,
 } from "@/benchmarks/contracts/sbt/output/sbt-item_SBTItem";
 
 import benchmarkResults from "@/benchmarks/sbt/results_gas.json";
@@ -183,6 +191,10 @@ describe("itemSBT", () => {
             const sendResult = await step("request owner", async () =>
                 sendDeploy(owner, newItemSBT, newItemSBT.init!),
             );
+
+            expect(sendResult.transactions).toHaveTransaction({
+                deploy: true,
+            });
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
@@ -197,6 +209,11 @@ describe("itemSBT", () => {
             const sendResult = await step("deploy", async () =>
                 sendDeploy(owner, newFuncItemSBT, newFuncInit),
             );
+
+            expect(sendResult.transactions).toHaveTransaction({
+                deploy: true,
+            });
+
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
@@ -233,9 +250,31 @@ describe("itemSBT", () => {
             const sendResult = await step("request owner", async () =>
                 sendRequestOwner(scopeItemSBT, owner.getSender(), toNano(1)),
             );
+
+            const expectedBody: RequestOwnerOut = {
+                $$type: "RequestOwnerOut",
+                queryId: 0n,
+                index: 0n,
+                senderAddress: owner.address,
+                ownerAddress: owner.address,
+                body: beginCell().endCell(),
+                revokedAt: 0n,
+                content: beginCell().endCell(),
+            };
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: scopeItemSBT.address,
+                to: owner.address,
+                body: beginCell()
+                    .store(storeRequestOwnerOut(expectedBody))
+                    .endCell(),
+                inMessageBounceable: true,
+            });
+
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
+
             return getUsedGas(sendResult, "internal");
         };
 
@@ -273,6 +312,26 @@ describe("itemSBT", () => {
             const sendResult = await step("prove ownership", async () =>
                 sendProveOwnership(scopeItemSBT, owner.getSender(), toNano(1)),
             );
+
+            const expectedBody: ProveOwnershipOut = {
+                $$type: "ProveOwnershipOut",
+                queryId: 0n,
+                index: 0n,
+                ownerAddress: owner.address,
+                body: beginCell().endCell(),
+                revokedAt: 0n,
+                content: beginCell().endCell(),
+            };
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: scopeItemSBT.address,
+                to: owner.address,
+                body: beginCell()
+                    .store(storeProveOwnershipOut(expectedBody))
+                    .endCell(),
+                inMessageBounceable: true,
+            });
+
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
@@ -312,6 +371,22 @@ describe("itemSBT", () => {
                 sendGetStaticData(scopeItemSBT, owner.getSender(), toNano(1)),
             );
 
+            const expectedBody: ReportStaticData = {
+                $$type: "ReportStaticData",
+                queryId: 0n,
+                index: 0n,
+                collectionAddress: owner.address,
+            };
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: scopeItemSBT.address,
+                to: owner.address,
+                body: beginCell()
+                    .store(storeReportStaticData(expectedBody))
+                    .endCell(),
+                inMessageBounceable: false,
+            });
+
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
@@ -326,39 +401,6 @@ describe("itemSBT", () => {
             expectedResult.gas["get static data"],
         );
         expect(getStaticGasUsedFunC).toEqual(funcResult.gas["get static data"]);
-    });
-
-    it("revoke", async () => {
-        const sendRevoke = async (
-            itemSBT: SandboxContract<SBTItem>,
-            from: Sender,
-            value: bigint,
-        ) => {
-            const msg: Revoke = {
-                $$type: "Revoke",
-                queryId: 0n,
-            };
-
-            return await itemSBT.send(from, { value }, msg);
-        };
-
-        const runRevokeTest = async (
-            scopeItemSBT: SandboxContract<SBTItem>,
-        ) => {
-            const sendResult = await step("revoke", async () =>
-                sendRevoke(scopeItemSBT, owner.getSender(), toNano(1)),
-            );
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
-            return getUsedGas(sendResult, "internal");
-        };
-
-        const revokeGasUsedTact = await runRevokeTest(itemSBT);
-        const revokeGasUsedFunC = await runRevokeTest(funcItemSBT);
-
-        expect(revokeGasUsedTact).toEqual(expectedResult.gas["revoke"]);
-        expect(revokeGasUsedFunC).toEqual(funcResult.gas["revoke"]);
     });
 
     it("take excess", async () => {
@@ -381,6 +423,19 @@ describe("itemSBT", () => {
             const sendResult = await step("take excess", async () =>
                 sendTakeExcess(scopeItemSBT, owner.getSender(), toNano(1)),
             );
+
+            const expectedBody: ExcessOut = {
+                $$type: "ExcessOut",
+                queryId: 0n,
+            };
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: scopeItemSBT.address,
+                to: owner.address,
+                body: beginCell().store(storeExcessOut(expectedBody)).endCell(),
+                inMessageBounceable: false,
+            });
+
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
@@ -394,26 +449,6 @@ describe("itemSBT", () => {
             expectedResult.gas["take excess"],
         );
         expect(takeExcessGasUsedFunC).toEqual(funcResult.gas["take excess"]);
-    });
-
-    it("item cells", async () => {
-        expect(
-            (await getStateSizeForAccount(blockchain, itemSBT.address)).cells,
-        ).toEqual(expectedCodeSize.size["item cells"]);
-        expect(
-            (await getStateSizeForAccount(blockchain, funcItemSBT.address))
-                .cells,
-        ).toEqual(funcCodeSize.size["item cells"]);
-    });
-
-    it("item bits", async () => {
-        expect(
-            (await getStateSizeForAccount(blockchain, itemSBT.address)).bits,
-        ).toEqual(expectedCodeSize.size["item bits"]);
-        expect(
-            (await getStateSizeForAccount(blockchain, funcItemSBT.address))
-                .bits,
-        ).toEqual(funcCodeSize.size["item bits"]);
     });
 
     it("destroy", async () => {
@@ -436,6 +471,19 @@ describe("itemSBT", () => {
             const sendResult = await step("destroy", async () =>
                 sendDestroy(scopeItemSBT, owner.getSender(), toNano(1)),
             );
+
+            const expectedBody: ExcessOut = {
+                $$type: "ExcessOut",
+                queryId: 0n,
+            };
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: scopeItemSBT.address,
+                to: owner.address,
+                body: beginCell().store(storeExcessOut(expectedBody)).endCell(),
+                inMessageBounceable: false,
+            });
+
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
@@ -447,5 +495,64 @@ describe("itemSBT", () => {
 
         expect(destroyGasUsedTact).toEqual(expectedResult.gas["destroy"]);
         expect(destroyGasUsedFunC).toEqual(funcResult.gas["destroy"]);
+    });
+
+    it("revoke", async () => {
+        const sendRevoke = async (
+            itemSBT: SandboxContract<SBTItem>,
+            from: Sender,
+            value: bigint,
+        ) => {
+            const msg: Revoke = {
+                $$type: "Revoke",
+                queryId: 0n,
+            };
+
+            return await itemSBT.send(from, { value }, msg);
+        };
+
+        const runRevokeTest = async (
+            scopeItemSBT: SandboxContract<SBTItem>,
+        ) => {
+            const sendResult = await step("revoke", async () =>
+                sendRevoke(scopeItemSBT, owner.getSender(), toNano(1)),
+            );
+
+            expect(sendResult.transactions).not.toHaveTransaction({
+                from: scopeItemSBT.address,
+            });
+
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
+
+            return getUsedGas(sendResult, "internal");
+        };
+
+        const revokeGasUsedTact = await runRevokeTest(itemSBT);
+        const revokeGasUsedFunC = await runRevokeTest(funcItemSBT);
+
+        expect(revokeGasUsedTact).toEqual(expectedResult.gas["revoke"]);
+        expect(revokeGasUsedFunC).toEqual(funcResult.gas["revoke"]);
+    });
+
+    it("item cells", async () => {
+        expect(
+            (await getStateSizeForAccount(blockchain, itemSBT.address)).cells,
+        ).toEqual(expectedCodeSize.size["item cells"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, funcItemSBT.address))
+                .cells,
+        ).toEqual(funcCodeSize.size["item cells"]);
+    });
+
+    it("item bits", async () => {
+        expect(
+            (await getStateSizeForAccount(blockchain, itemSBT.address)).bits,
+        ).toEqual(expectedCodeSize.size["item bits"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, funcItemSBT.address))
+                .bits,
+        ).toEqual(funcCodeSize.size["item bits"]);
     });
 });

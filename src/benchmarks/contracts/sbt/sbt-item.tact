@@ -1,22 +1,6 @@
 import "./constants";
 import "./messages-sbt";
 
-inline fun sendMsg(bounce: Bool, toAddress: Address, amount: Int, op: Int, queryId: Int, payload: Builder, sendMode: Int) {
-    let msgBody = beginCell().storeUint(op, 32).storeUint(queryId, 64);
-
-    if (payload.bits() != 0) {
-        msgBody.storeBuilder(payload);
-    }
-
-    message(MessageParameters {
-        bounce: bounce,
-        to: toAddress,
-        value: amount,
-        body: msgBody.endCell(),
-        mode: sendMode,
-    });
-}
-
 contract SBTItem {
     itemIndex: Int as uint64;
     collectionAddress: Address;
@@ -115,6 +99,8 @@ contract SBTItem {
 
         let msgBody = ReportStaticData {
             queryId: msg.queryId,
+            index: self.itemIndex,
+            collectionAddress: self.collectionAddress,
         };
 
         message(MessageParameters {

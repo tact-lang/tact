@@ -58,6 +58,8 @@ message(0x2fcb26a2) GetStaticData {
 
 message(0x8b771735) ReportStaticData {
     queryId: Int as uint64;
+    index: Int as uint256;
+    collectionAddress: Address;
 }
 
 message(0xd136d3b3) TakeExcess {

@@ -20,10 +20,10 @@
         "deploy": "4877",
         "request owner": "7338",
         "prove ownership": "7636",
-        "get static data": "7145",
+        "get static data": "7303",
         "destroy": "7796",
         "revoke": "5253",
-        "take excess": "8032"
+        "take excess": "8132"
       }
     }
   ]
