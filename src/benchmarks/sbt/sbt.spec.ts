@@ -17,20 +17,23 @@ import { posixNormalize } from "@/utils/filePath";
 import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     SBTItem,
-    type ReportStaticData,
-    type RequestOwner,
-    type ProveOwnership,
-    type ProveOwnershipOut,
-    type GetStaticData,
-    type Destroy,
-    type Revoke,
-    type TakeExcess,
-    type RequestOwnerOut,
     storeReportStaticData,
     storeRequestOwnerOut,
     storeProveOwnershipOut,
-    ExcessOut,
     storeExcessOut,
+} from "@/benchmarks/contracts/sbt/output/sbt-item_SBTItem";
+
+import type { 
+    ReportStaticData,
+    RequestOwner,
+    ProveOwnership,
+    ProveOwnershipOut,
+    GetStaticData,
+    Destroy,
+    Revoke,
+    TakeExcess,
+    RequestOwnerOut,
+    ExcessOut,
 } from "@/benchmarks/contracts/sbt/output/sbt-item_SBTItem";
 
 import benchmarkResults from "@/benchmarks/sbt/results_gas.json";
