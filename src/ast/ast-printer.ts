@@ -449,6 +449,35 @@ export const ppAstStruct: Printer<Ast.StructDecl> =
             c.braced(c.list(fields, ppAstFieldDecl)),
         ]);
 
+// Format contract parameters based on number of parameters
+const formatContractParams = (
+    params: readonly Ast.FieldDecl[] | undefined,
+): string => {
+    if (!params) {
+        return "";
+    }
+
+    if (params.length <= 1) {
+        // Single parameter or empty params stays on the same line
+        return `(${params
+            .map((param) => {
+                const asAlias = param.as ? ` as ${ppAstId(param.as)}` : "";
+                return `${ppAstOptionalId(param.name)}: ${ppAstType(param.type)}${asAlias}`;
+            })
+            .join(", ")})`;
+    }
+
+    // Multiple parameters - each on its own line
+    const paramLines = params
+        .map((param) => {
+            const asAlias = param.as ? ` as ${ppAstId(param.as)}` : "";
+            return `    ${ppAstOptionalId(param.name)}: ${ppAstType(param.type)}${asAlias}`;
+        })
+        .join(",\n");
+
+    return `(\n${paramLines}\n)`;
+};
+
 export const ppAstContract: Printer<Ast.Contract> =
     ({ name, traits, declarations, attributes, params }) =>
     (c) => {
@@ -456,32 +485,7 @@ export const ppAstContract: Printer<Ast.Contract> =
             .map(({ name: { value } }) => `@interface("${value}") `)
             .join("");
         const traitsCode = traits.map((trait) => trait.text).join(", ");
-
-        let paramsCode = "";
-        if (params) {
-            if (params.length <= 1) {
-                // Single parameter or empty params stays on the same line
-                paramsCode = `(${params
-                    .map((param) => {
-                        const asAlias = param.as
-                            ? ` as ${ppAstId(param.as)}`
-                            : "";
-                        return `${ppAstOptionalId(param.name)}: ${ppAstType(param.type)}${asAlias}`;
-                    })
-                    .join(", ")})`;
-            } else {
-                // Multiple parameters - each on its own line
-                const paramLines = params
-                    .map((param) => {
-                        const asAlias = param.as
-                            ? ` as ${ppAstId(param.as)}`
-                            : "";
-                        return `    ${ppAstOptionalId(param.name)}: ${ppAstType(param.type)}${asAlias}`;
-                    })
-                    .join(",\n");
-                paramsCode = `(\n${paramLines}\n)`;
-            }
-        }
+        const paramsCode = formatContractParams(params);
 
         const header = traitsCode
             ? `contract ${ppAstId(name)}${paramsCode} with ${traitsCode}`
