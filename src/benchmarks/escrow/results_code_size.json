@@ -55,6 +55,14 @@
         "cells": "20",
         "bits": "11951"
       }
+    },
+    {
+      "label": "1.6.5 with native load maybe ref",
+      "pr": null,
+      "size": {
+        "cells": "21",
+        "bits": "11727"
+      }
     }
   ]
 }

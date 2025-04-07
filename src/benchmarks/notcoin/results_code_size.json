@@ -49,6 +49,16 @@
         "wallet cells": "15",
         "wallet bits": "8316"
       }
+    },
+    {
+      "label": "1.6.5 with native load maybe ref",
+      "pr": null,
+      "size": {
+        "minter cells": "30",
+        "minter bits": "16238",
+        "wallet cells": "14",
+        "wallet bits": "8084"
+      }
     }
   ]
 }

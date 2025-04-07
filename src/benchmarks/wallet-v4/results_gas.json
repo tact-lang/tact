@@ -53,6 +53,15 @@
         "addPlugin": "6778",
         "pluginTransfer": "3874"
       }
+    },
+    {
+      "label": "1.6.5 with native load maybe ref",
+      "pr": null,
+      "gas": {
+        "externalTransfer": "4613",
+        "addPlugin": "6778",
+        "pluginTransfer": "3761"
+      }
     }
   ]
 }

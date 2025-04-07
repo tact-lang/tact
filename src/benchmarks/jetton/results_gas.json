@@ -332,6 +332,15 @@
         "burn": "11943",
         "discovery": "6161"
       }
+    },
+    {
+      "label": "1.6.5 with native load maybe ref",
+      "pr": null,
+      "gas": {
+        "transfer": "15153",
+        "burn": "11830",
+        "discovery": "6161"
+      }
     }
   ]
 }
