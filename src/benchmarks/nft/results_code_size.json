@@ -62,7 +62,7 @@
     },
     {
       "label": "1.6.5 with native load maybe ref",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
       "size": {
         "collection cells": "44",
         "collection bits": "23354",

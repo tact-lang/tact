@@ -202,7 +202,7 @@
     },
     {
       "label": "1.6.5 with native load maybe ref",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
       "gas": {
         "fundingTon": "4399",
         "changeCode": "4490",
