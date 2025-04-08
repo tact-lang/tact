@@ -53,7 +53,7 @@ export function evalComptimeExpressions(
                 {
                     for (const field of aggregateTy.fields) {
                         if (field.ast.initializer !== undefined) {
-                            field.default = evalConstantExpression(
+                            field.default ??= evalConstantExpression(
                                 field.ast.initializer,
                                 ctx,
                                 util,
