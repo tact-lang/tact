@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should fail abstract-const-without-modifier.fail 1`] = `
-"<unknown>:2:5: Abstract constant doesn't have abstract modifier
+"<unknown>:2:5: Abstract constant can only be declared inside traits and should have the abstract modifier
   1 | trait t {
 > 2 |     const c: Int;
           ^~~~~~~~~~~~~
@@ -525,7 +525,7 @@ exports[`should fail item-fun-void-trailing-comma-no-params.fail 1`] = `
 `;
 
 exports[`should fail item-fun-without-body.fail 1`] = `
-"<unknown>:1:1: Abstract function doesn't have abstract modifier
+"<unknown>:1:1: Abstract function can only be declared inside traits and should have the abstract modifier
 > 1 | fun testFunc(): Int;
       ^~~~~~~~~~~~~~~~~~~~
 "
