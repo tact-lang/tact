@@ -22,7 +22,7 @@ If you discover a security vulnerability in the Tact compiler, standard library,
 
 Please send us a detailed report using either email or the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/tact-lang/tact/security/advisories/new) tab.
 
-📧 **Email:** `it+tact@tonstudio.io@tact-lang.org`
+📧 **Email:** `it+tact@tonstudio.io`
 🔒 Please encrypt your email using our [PGP key](#pgp-key-to-use-if-reporting-via-email).
 
 Your report should include:
