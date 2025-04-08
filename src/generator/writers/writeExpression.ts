@@ -539,7 +539,11 @@ export function writeExpression(
             // Getter instead of direct field access
             return `${ops.typeField(srcT.name, field.name, wCtx)}(${writeExpression(f.aggregate, wCtx)})`;
         } else {
-            return writeValue(cst!.value!, false, wCtx);
+            return writeValue(
+                cst!.value!,
+                cst!.type.kind === "ref" ? cst!.type.optional : false,
+                wCtx,
+            );
         }
     }
 
