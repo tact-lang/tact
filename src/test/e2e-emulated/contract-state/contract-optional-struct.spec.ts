@@ -3,6 +3,7 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { TestGetterOptional } from "./output/contract-optional-struct_TestGetterOptional";
 import { TestGetterOptional as TestGetterOptional2 } from "./output/contract-optional-struct-2_TestGetterOptional";
+import { TestGetterOptional as TestGetterOptional3 } from "./output/contract-optional-struct-3_TestGetterOptional";
 import "@ton/test-utils";
 
 describe("contract optional struct field", () => {
@@ -10,6 +11,7 @@ describe("contract optional struct field", () => {
     let treasure: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<TestGetterOptional>;
     let contract2: SandboxContract<TestGetterOptional2>;
+    let contract3: SandboxContract<TestGetterOptional3>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -18,6 +20,9 @@ describe("contract optional struct field", () => {
         contract = blockchain.openContract(await TestGetterOptional.fromInit());
         contract2 = blockchain.openContract(
             await TestGetterOptional2.fromInit(),
+        );
+        contract3 = blockchain.openContract(
+            await TestGetterOptional3.fromInit(),
         );
 
         const result = await contract.send(
@@ -49,6 +54,21 @@ describe("contract optional struct field", () => {
             success: true,
             deploy: true,
         });
+
+        const result3 = await contract3.send(
+            treasure.getSender(),
+            {
+                value: toNano("10"),
+            },
+            null,
+        );
+
+        expect(result3.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract3.address,
+            success: true,
+            deploy: true,
+        });
     });
 
     it("should return value correctly", async () => {
@@ -58,5 +78,6 @@ describe("contract optional struct field", () => {
             b: 2n,
             c: { a: 10n },
         });
+        expect(await contract3.getS()).toEqual(null);
     });
 });
