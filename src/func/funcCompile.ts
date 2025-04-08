@@ -1,6 +1,6 @@
 import type { ILogger } from "@/context/logger";
-import { execSync } from "child_process";
 import path from "path";
+import net from "net";
 
 // Wasm Imports
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -65,16 +65,21 @@ export async function funcCompile(args: {
 }): Promise<FuncCompilationResult> {
     const USE_NATIVE = process.env.USE_NATIVE === "true";
     if (USE_NATIVE) {
-        return funcCompileNative(args);
+        const startTime = performance.now()
+        const res = await funcCompileNative(args);
+        const endTime = performance.now()
+        const time = endTime - startTime
+        console.info(`compile: ${time}ms`)
+        return res
     }
     return funcCompileWasm(args);
 }
 
-export function funcCompileNative(args: {
+export async function funcCompileNative(args: {
     entries: string[];
     sources: { path: string; content: string }[];
     logger: ILogger;
-}): FuncCompilationResult {
+}): Promise<FuncCompilationResult> {
     const TACT_PATH = process.env.TACT_PATH;
     if (typeof TACT_PATH === "undefined") {
         throw new Error("TACT_PATH is not set");
@@ -97,32 +102,49 @@ export function funcCompileNative(args: {
         fiftPath: FIFT_LIBS_PATH,
     });
 
-    const retJson = execSync(
-        [FUNC_FIFT_COMPILER_PATH, `'${configStr}'`].join(" "),
-    );
+    return new Promise((resolve, reject) => {
+        const client = new net.Socket();
+        client.connect(8333, "127.0.0.1", () => {
+            client.write(configStr);
+        });
 
-    const result = JSON.parse(retJson.toString()) as CompileResult;
+        let resultData = "";
+        client.on("data", (data) => {
+            resultData += data.toString();
+        });
 
-    switch (result.status) {
-        case "error": {
-            return {
-                ok: false,
-                log: "",
-                fift: null,
-                output: null,
-            };
-        }
-        case "ok": {
-            return {
-                ok: true,
-                log: "",
-                fift: cutFirstLine(result.fiftCode.replaceAll("\\n", "\n")),
-                output: Buffer.from(result.codeBoc, "base64"),
-            };
-        }
-    }
+        client.on("end", () => {
+            try {
+                const result = JSON.parse(resultData) as CompileResult;
+                switch (result.status) {
+                    case "error": {
+                        resolve({
+                            ok: false,
+                            log: "",
+                            fift: null,
+                            output: null,
+                        });
+                        break;
+                    }
+                    case "ok": {
+                        resolve({
+                            ok: true,
+                            log: "",
+                            fift: cutFirstLine(result.fiftCode.replaceAll("\\n", "\n")),
+                            output: Buffer.from(result.codeBoc, "base64"),
+                        });
+                        break;
+                    }
+                }
+            } catch (e) {
+                reject(new Error("Failed to parse response"));
+            }
+        });
 
-    throw Error("Unexpected compiler response");
+        client.on("error", (err) => {
+            reject(new Error(`Socket error: ${err.message}`));
+        });
+    });
 }
 
 export async function funcCompileWasm(args: {
