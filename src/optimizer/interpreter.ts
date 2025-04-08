@@ -1015,8 +1015,15 @@ export class Interpreter {
         const resultMap: Map<string, Ast.Literal> = new Map();
 
         for (const field of structTy.fields) {
-            if (typeof field.default !== "undefined") {
-                resultMap.set(field.name, field.default);
+            const fieldInit = field.ast.initializer;
+            if (fieldInit) {
+                const defaultValue =
+                    field.default ??
+                    evalConstantExpression(fieldInit, this.context, this.util);
+
+                if (typeof defaultValue !== "undefined") {
+                    resultMap.set(field.name, defaultValue);
+                }
             } else {
                 if (field.type.kind === "ref" && field.type.optional) {
                     resultMap.set(
