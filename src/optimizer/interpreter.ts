@@ -8,6 +8,7 @@ import {
     idTextErr,
     TactCompilationError,
     TactConstEvalError,
+    throwCompilationError,
     throwConstEvalError,
     throwInternalCompilerError,
 } from "@/error/errors";
@@ -1157,6 +1158,12 @@ export class Interpreter {
                 const tons = ensureString(
                     this.interpretExpressionInternal(ast.args[0]!),
                 );
+                if (tons.value.trim().length === 0) {
+                    throwCompilationError(
+                        "ton() function requires a non-empty value",
+                        tons.loc,
+                    );
+                }
                 try {
                     return ensureInt(
                         this.util.makeNumberLiteral(

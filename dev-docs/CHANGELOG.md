@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Language features
 
 - Optimized message deserialization with native loading of `Maybe Cell` fields: PR [#2661](https://github.com/tact-lang/tact/pull/2661)
+- [fix] Compiler now disallows `ton()` with empty or blank string: PR [#2681](https://github.com/tact-lang/tact/pull/2681)
 
 ### Standard Library
 
