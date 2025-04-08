@@ -933,6 +933,24 @@ exports[`resolveDescriptors should fail descriptors for struct-field-with-contra
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for ton-with-blank-string 1`] = `
+"<unknown>:3:22: ton() function requires a non-empty value
+  2 | 
+> 3 | const FOO: Int = ton("      ");
+                           ^~~~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for ton-with-empty-string 1`] = `
+"<unknown>:3:22: ton() function requires a non-empty value
+  2 | 
+> 3 | const FOO: Int = ton("");
+                           ^~
+  4 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for trait-circular-deps 1`] = `
 "<unknown>:3:1: Circular dependency detected for type "A"
   2 | 
