@@ -978,6 +978,15 @@ exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-11-diigits-after-dot 1`] = `
+"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+  2 | 
+> 3 | const FOO: Int = ton("1.12345678901");
+                           ^~~~~~~~~~~~~~~
+  4 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for trait-circular-deps 1`] = `
 "<unknown>:3:1: Circular dependency detected for type "A"
   2 | 
