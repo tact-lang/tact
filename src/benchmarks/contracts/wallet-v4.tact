@@ -43,6 +43,20 @@ struct ContractState {
     extensions: map<Address, Bool>;
 }
 
+// Exit codes
+const LowBalance: Int = 80;
+const Expired: Int = 36;
+const SeqnoMismatch: Int = 33;
+const WalletIdMismatch: Int = 34;
+const SignatureMismatch: Int = 35;
+const PluginWasNotDeleted: Int = 39;
+
+// Op
+const PluginTakeFunds: Int = 0x706c7567 | 0x80000000;
+const PluginRemove: Int = 0x64737472 | 0x80000000;
+const AddPluginAction: Int = 0x6e6f7465;
+const RemovePluginAction: Int = 0x64737472;
+
 contract WalletV4(
     state: ContractState,
 ) {
@@ -53,7 +67,7 @@ contract WalletV4(
             return;
         }
 
-        throwUnless(80, myBalance() - context().value >= msg.amount);
+        throwUnless(LowBalance, myBalance() - context().value >= msg.amount);
 
         // NOTE: Here and later we use RawMsg with nativeSendMessage because
         // in v4 wallet implementation message bodies are stored as slices in the same cell
@@ -61,7 +75,7 @@ contract WalletV4(
         nativeSendMessage(
             RawMsg {
                 queryId: msg.queryId,
-                op: 0x706c7567 | 0x80000000,
+                op: PluginTakeFunds,
                 extra: msg.extra,
                 amount: msg.amount,
                 receiver: addr,
@@ -83,7 +97,7 @@ contract WalletV4(
             nativeSendMessage(
                 RawMsg {
                     queryId: msg.queryId,
-                    op: 0x64737472 | 0x80000000,
+                    op: PluginRemove,
                     extra: null,
                     amount: 0,
                     receiver: addr,
@@ -95,10 +109,10 @@ contract WalletV4(
 
     external(msg: Slice) {
         let data = ExtRequest.fromSlice(msg);
-        throwIf(36, data.validUntil < now());
-        throwUnless(33, data.seqno == self.state.seqno);
-        throwUnless(34, data.walletId == self.state.walletId);
-        throwUnless(35, data.bundle.verifySignature(self.state.publicKey));
+        throwIf(Expired, data.validUntil < now());
+        throwUnless(SeqnoMismatch, data.seqno == self.state.seqno);
+        throwUnless(WalletIdMismatch, data.walletId == self.state.walletId);
+        throwUnless(SignatureMismatch, data.bundle.verifySignature(self.state.publicKey));
 
         acceptMessage();
         self.state.seqno += 1;
@@ -158,7 +172,7 @@ contract WalletV4(
             nativeSendMessage(
                 RawMsg {
                     queryId,
-                    op: 0x6e6f7465,
+                    op: AddPluginAction,
                     extra: null,
                     amount,
                     receiver: addr,
@@ -176,12 +190,12 @@ contract WalletV4(
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
 
-            throwUnless(39, self.state.extensions.del(addr));
+            throwUnless(PluginWasNotDeleted, self.state.extensions.del(addr));
 
             nativeSendMessage(
                 RawMsg {
                     queryId,
-                    op: 0x64737472,
+                    op: RemovePluginAction,
                     extra: null,
                     amount: amount,
                     receiver: addr,
