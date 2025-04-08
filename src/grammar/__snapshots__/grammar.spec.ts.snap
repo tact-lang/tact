@@ -10,7 +10,7 @@ exports[`should fail abstract-const-without-modifier.fail 1`] = `
 `;
 
 exports[`should fail asm-function-in-contract.fail 1`] = `
-"<unknown>:2:5: Assembly functions are only allowed at the module level
+"<unknown>:2:5: Assembly functions are only allowed at the module level (outside contracts/traits)
   1 | contract AssemblyTest {
 > 2 |     asm fun depth(): Int { DEPTH }
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,7 +19,7 @@ exports[`should fail asm-function-in-contract.fail 1`] = `
 `;
 
 exports[`should fail asm-function-in-trait.fail 1`] = `
-"<unknown>:2:5: Assembly functions are only allowed at the module level
+"<unknown>:2:5: Assembly functions are only allowed at the module level (outside contracts/traits)
   1 | trait AssemblyTest {
 > 2 |     asm fun depth(): Int { DEPTH }
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,7 +28,7 @@ exports[`should fail asm-function-in-trait.fail 1`] = `
 `;
 
 exports[`should fail asm-getter.fail 1`] = `
-"<unknown>:7:5: Assembly functions are only allowed at the module level
+"<unknown>:7:5: Assembly functions are only allowed at the module level (outside contracts/traits)
   6 | contract Foo {
 > 7 |     asm get fun illegalGetter(): Int {
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
