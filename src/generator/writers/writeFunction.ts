@@ -171,6 +171,7 @@ export function writeStatement(
             return;
         }
         case "statement_augmentedassign": {
+            // throw new Error("unexpected statement");
             const lvaluePath = tryExtractPath(f.path);
             if (lvaluePath === null) {
                 // typechecker is supposed to catch this

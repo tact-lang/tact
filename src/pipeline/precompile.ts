@@ -12,6 +12,7 @@ import type { FactoryAst } from "@/ast/ast-helpers";
 import type { Parser } from "@/grammar";
 import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
 import { computeReceiversEffects } from "@/types/effects";
+import {desugar} from "@/desugar/desugar";
 
 export function precompile(
     ctx: CompilerContext,
@@ -59,6 +60,8 @@ export function precompile(
        it is hard to extract the call to evalConstantExpression in resolveSignatures.
     */
     evalComptimeExpressions(ctx, ast);
+
+    ctx = desugar(ctx)
 
     // This creates TLB-style type definitions
     ctx = resolveSignatures(ctx, ast);

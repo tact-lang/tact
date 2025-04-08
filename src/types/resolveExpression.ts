@@ -37,7 +37,7 @@ export function getExpType(ctx: CompilerContext, exp: Ast.Expression) {
     return t.description;
 }
 
-function registerExpType(
+export function registerExpType(
     ctx: CompilerContext,
     exp: Ast.Expression,
     description: TypeRef,
