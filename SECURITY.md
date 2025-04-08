@@ -2,6 +2,16 @@
 
 The Tact team and community take security bugs in Tact seriously. We appreciate your efforts to disclose your findings responsibly and will make every effort to acknowledge your contributions and fix your findings as soon as possible.
 
+## Table of Contents
+
+- [Supported Versions](#supported-versions)
+- [Reporting Security Issues](#reporting-security-issues)
+  - [How to Report](#how-to-report)
+- [In scope](#in-scope)
+- [Out of scope](#out-of-scope)
+- [Responsible Disclosure](#responsible-disclosure)
+- [PGP key to use if reporting via email](#pgp-key-to-use-if-reporting-via-email)
+
 ## Supported Versions
 
 We currently support the latest stable release of the Tact compiler and infrastructure libraries.
@@ -45,7 +55,7 @@ Please include all details necessary to reproduce the vulnerability, such as:
 
 Please include steps to reproduce the bug you have found in as much detail as possible.
 
-We will acknowledge your report within three business days and aim to provide a resolution or mitigation plan within 30 days.
+We will acknowledge your report within three business days and aim to provide a resolution or mitigation plan within 30 days. If a resolution requires more time, we will keep you updated on the progress.
 
 ## In scope
 
@@ -62,9 +72,9 @@ A security issue, in this case, may stem from miscompilation, incorrect document
 
 ## Out of scope
 
-Only the targets listed under in-scope are part of the Security Policy and its related Bug Bounty program. This means that, for example, our infrastructure, such as webpages, is not part of the bounty scope.
+Only the targets listed under in-scope are part of the security policy. This means that, for example, our infrastructure, such as webpages, is not part of the scope.
 
-Please note that Tact does not hold security guarantees regarding the compilation of untrusted input, and we do not issue rewards for compiler crashes on maliciously generated data.
+Please note that Tact does not hold security guarantees regarding the compilation of untrusted input, and we do not consider compiler crashes on maliciously generated data as security issues.
 
 This policy does _not_ cover third-party tools, libraries, or smart contracts written by individual developers or companies using Tact.
 
@@ -77,6 +87,8 @@ We appreciate responsible disclosure and are committed to working with the secur
 **Thank you for helping us make Tact safer for everyone building on TON.**
 
 ## PGP key to use if reporting via email
+
+To encrypt your email, use the following PGP key:
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
