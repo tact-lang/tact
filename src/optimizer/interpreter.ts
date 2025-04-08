@@ -465,17 +465,17 @@ class EnvironmentStack {
 
     /*
     Sets a binding for "name" in the **current** environment of the stack.
-    If a binding for "name" already exists in the current environment, it 
+    If a binding for "name" already exists in the current environment, it
     overwrites the binding with the provided value.
     As a special case, name "_" is ignored.
 
-    Note that this method does not check if binding "name" already exists in 
+    Note that this method does not check if binding "name" already exists in
     a parent environment.
-    This means that if binding "name" already exists in a parent environment, 
+    This means that if binding "name" already exists in a parent environment,
     it will be shadowed by the provided value in the current environment.
     This shadowing behavior is useful for modelling recursive function calls.
-    For example, consider the recursive implementation of factorial 
-    (for simplification purposes, it returns 1 for the factorial of 
+    For example, consider the recursive implementation of factorial
+    (for simplification purposes, it returns 1 for the factorial of
     negative numbers):
 
     1  fun factorial(a: Int): Int {
@@ -496,7 +496,7 @@ class EnvironmentStack {
 
     When factorial(1) = 1 finishes execution, the environment at the top
     of the stack is popped:
-    
+
     a = 4 <------- a = 3 <-------- a = 2
 
     and execution resumes at line 5 in the environment where a = 2,
@@ -506,7 +506,7 @@ class EnvironmentStack {
 
     a = 4 <------- a = 3
 
-    so that the return at line 5 (now in the environment a = 3) will 
+    so that the return at line 5 (now in the environment a = 3) will
     produce 3 * 2 = 6, and so on.
     */
     public setNewBinding(name: string, val: Ast.Literal) {
@@ -517,7 +517,7 @@ class EnvironmentStack {
 
     /*
     Searches the binding "name" in the stack, starting at the current
-    environment and moving towards the parent environments. 
+    environment and moving towards the parent environments.
     If it finds the binding, it updates its value
     to "val". If it does not find "name", the stack is unchanged.
     As a special case, name "_" is always ignored.
@@ -533,7 +533,7 @@ class EnvironmentStack {
 
     /*
     Searches the binding "name" in the stack, starting at the current
-    environment and moving towards the parent environments. 
+    environment and moving towards the parent environments.
     If it finds "name", it returns its value.
     If it does not find "name", it returns undefined.
     As a special case, name "_" always returns undefined.
@@ -626,19 +626,19 @@ const defaultInterpreterConfig: InterpreterConfig = {
 };
 
 /*
-Interprets Tact AST trees. 
-The constructor receives an optional CompilerContext which includes 
+Interprets Tact AST trees.
+The constructor receives an optional CompilerContext which includes
 all external declarations that the interpreter will use during interpretation.
-If no CompilerContext is provided, the interpreter will use an empty 
+If no CompilerContext is provided, the interpreter will use an empty
 CompilerContext.
 
-**IMPORTANT**: if a custom CompilerContext is provided, it should be the 
-CompilerContext provided by the typechecker. 
+**IMPORTANT**: if a custom CompilerContext is provided, it should be the
+CompilerContext provided by the typechecker.
 
-The reason for requiring a CompilerContext is that the interpreter should work 
+The reason for requiring a CompilerContext is that the interpreter should work
 in the use case where the interpreter only knows part of the code.
-For example, consider the following code (I marked with brackets [ ] the places 
-where the interpreter gets called during expression simplification in the 
+For example, consider the following code (I marked with brackets [ ] the places
+where the interpreter gets called during expression simplification in the
 compilation phase):
 
 const C: Int = [1];
@@ -650,10 +650,10 @@ contract TestContract {
    }
 }
 
-When the interpreter gets called inside the brackets, it does not know what 
-other code is surrounding those brackets, because the interpreter did not execute the 
-code outside the brackets. Hence, it relies on the typechecker to receive the 
-CompilerContext that includes the declarations in the code 
+When the interpreter gets called inside the brackets, it does not know what
+other code is surrounding those brackets, because the interpreter did not execute the
+code outside the brackets. Hence, it relies on the typechecker to receive the
+CompilerContext that includes the declarations in the code
 (the constant C for example).
 
 Since the interpreter relies on the typechecker, it assumes that the given AST tree
@@ -1164,12 +1164,24 @@ export class Interpreter {
                         tons.loc,
                     );
                 }
+
+                const value = this.parseTonBuiltinValue(tons);
+                if (typeof value === "undefined") {
+                    throwCompilationError(
+                        "ton() function requires a valid number with no more than 10 digits after the decimal point",
+                        tons.loc,
+                    );
+                }
+                if (value < 0) {
+                    throwCompilationError(
+                        "ton() function requires a non-negative number",
+                        tons.loc,
+                    );
+                }
+
                 try {
                     return ensureInt(
-                        this.util.makeNumberLiteral(
-                            BigInt(toNano(tons.value).toString(10)),
-                            ast.loc,
-                        ),
+                        this.util.makeNumberLiteral(value, ast.loc),
                     );
                 } catch (e) {
                     if (e instanceof Error && e.message === "Invalid number") {
@@ -1488,6 +1500,15 @@ export class Interpreter {
                         ast.loc,
                     );
                 }
+        }
+    }
+
+    private parseTonBuiltinValue(tons: Ast.String): bigint | undefined {
+        try {
+            const value = toNano(tons.value);
+            return BigInt(value.toString(10));
+        } catch {
+            return undefined;
         }
     }
 
