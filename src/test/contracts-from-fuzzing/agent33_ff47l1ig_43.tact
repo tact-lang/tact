@@ -1,0 +1,1 @@
+contract Test { init(main: Int,) { main += 1; } }

@@ -1,0 +1,12 @@
+contract BoolIntMix {
+    a: Int;
+    b: Bool;
+    c: Int;
+    d: Bool;
+    init() {
+        self.a = 1;
+        self.b = true;
+        self.c = 2;
+        self.d = false;
+    }
+}

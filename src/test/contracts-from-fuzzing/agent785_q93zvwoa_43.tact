@@ -1,0 +1,3 @@
+contract EmptyParamOpt(
+    val: Int?,
+) {}

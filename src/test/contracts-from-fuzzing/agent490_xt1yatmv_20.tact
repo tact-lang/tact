@@ -1,0 +1,19 @@
+// contract param syntax, many params of mixed types
+contract ParamsContract(
+  i1: Int,
+  b1: Bool,
+  s1: String,
+  a1: Address,
+  i2: Int,
+  b2: Bool,
+  s2: String,
+  a2: Address,
+  i3: Int,
+  b3: Bool,
+  s3: String,
+  a3: Address,
+  i4: Int,
+  b4: Bool,
+  s4: String,
+  a4: Address
+) {}

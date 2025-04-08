@@ -1,0 +1,3 @@
+@interface("iface")
+contract InterfaceParam() {
+}

@@ -1,0 +1,1 @@
+contract Broken { fun f(_:Int, ): Int { return 0; } }

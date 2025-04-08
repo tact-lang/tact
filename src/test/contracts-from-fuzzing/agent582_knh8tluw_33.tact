@@ -1,0 +1,3 @@
+contract UninitializedOptional {
+    o: Int?;
+}

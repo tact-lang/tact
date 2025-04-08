@@ -1,0 +1,23 @@
+// very long contract parameter list
+contract LongParams(
+ p1: Int,
+ p2: Int?,
+ p3: Bool,
+ p4: Bool?,
+ p5: Address,
+ p6: Address?,
+ p7: String,
+ p8: String?,
+ p9: Cell,
+ p10: Cell?,
+ p11: Slice,
+ p12: Slice?,
+ p13: Builder,
+ p14: Builder?,
+ p15: Int,
+ p16: Int?,
+ p17: Bool,
+ p18: Bool?,
+ p19: Address,
+ p20: Address?
+) {}

@@ -1,0 +1,5 @@
+contract C {
+    receive() {
+        let x = 5
+    }
+}

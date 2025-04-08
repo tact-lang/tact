@@ -1,0 +1,3 @@
+contract OptionalFieldNoInit {
+    optNum: Int?;
+}

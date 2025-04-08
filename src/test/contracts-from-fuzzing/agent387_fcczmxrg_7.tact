@@ -1,0 +1,3 @@
+contract OptionalPrimitiveUninit {
+    val: Int?;
+}

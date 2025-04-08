@@ -1,0 +1,4 @@
+contract T {
+    receive() {
+    }
+}

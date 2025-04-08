@@ -1,0 +1,9 @@
+contract OnlyOptionals(
+    a: Int?,
+    b: Bool?,
+    c: String?,
+    d: Address?,
+    e: Cell?,
+    f: Builder?,
+    g: Slice?
+) {}

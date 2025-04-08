@@ -1,0 +1,11 @@
+contract StringFields {
+    a: String;
+    b: String;
+    c: String;
+
+    init() {
+        self.a = "hello";
+        self.b = "world";
+        self.c = "!";
+    }
+}

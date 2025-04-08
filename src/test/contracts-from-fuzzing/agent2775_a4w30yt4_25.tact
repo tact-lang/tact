@@ -1,0 +1,7 @@
+contract DefaultOptionalString {
+    s: String?;
+
+    init() {
+        self.s = null;
+    }
+}

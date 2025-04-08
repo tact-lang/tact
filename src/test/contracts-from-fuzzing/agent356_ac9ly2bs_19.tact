@@ -1,0 +1,1 @@
+contract Test { init(a: Int, ) {} }

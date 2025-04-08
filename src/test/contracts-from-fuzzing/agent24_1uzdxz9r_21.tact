@@ -1,0 +1,4 @@
+contract X {
+    fun broken(//
+    ) {}
+}

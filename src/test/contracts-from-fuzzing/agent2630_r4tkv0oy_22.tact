@@ -1,0 +1,1 @@
+contract DefaultEmptyString { s: String = ""; init() { self.s = ""; }}

@@ -1,0 +1,12 @@
+contract TestContract(
+    f1: Int,
+    f2: Int,
+    f3: Int,
+    f4: Int,
+    f5: Int,
+    f6: Bool,
+    f7: Bool,
+    f8: String,
+    f9: String,
+    f10: Bool
+) {}

@@ -1,0 +1,1 @@
+contract Test { const MY_CONST: Int = 42 }

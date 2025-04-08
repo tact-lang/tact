@@ -1,0 +1,11 @@
+contract Test {
+    sum256: Int as uint256 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+    neg257: Int as int257 = -1;
+
+    init() {
+        self.sum256 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+        self.neg257 = -1;
+    }
+
+    receive() {}
+}

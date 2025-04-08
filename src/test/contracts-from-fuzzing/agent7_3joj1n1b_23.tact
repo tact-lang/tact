@@ -1,0 +1,1 @@
+contract Test { receive(hello:String) { let _x = 1; } }

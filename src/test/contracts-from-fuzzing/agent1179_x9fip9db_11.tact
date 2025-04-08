@@ -1,0 +1,19 @@
+contract LargeParams(
+    a: Int,
+    b: Bool,
+    c: String,
+    d: Int?,
+    e: Bool?,
+    f: String?,
+    g: Int,
+    h: Bool,
+    i: String,
+    j: Int,
+    k: Bool,
+    l: Int?,
+    m: String?,
+    n: Bool?,
+    o: Int
+) {
+    receive() {}
+}

@@ -1,0 +1,1 @@
+contract Test { const x: Int = 5 }

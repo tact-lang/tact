@@ -1,0 +1,21 @@
+struct ManyOptionals {
+    a: Int?;
+    b: String?;
+    c: Bool?;
+    d: Cell?;
+    e: Slice?;
+}
+
+contract OptionalStructFields {
+    data: ManyOptionals;
+
+    init() {
+        self.data = ManyOptionals{
+            a: null,
+            b: null,
+            c: null,
+            d: null,
+            e: null
+        };
+    }
+}

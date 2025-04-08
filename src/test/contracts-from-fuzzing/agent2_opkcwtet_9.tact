@@ -1,0 +1,1 @@
+contract Test( balance: Int as uint32, ) {}

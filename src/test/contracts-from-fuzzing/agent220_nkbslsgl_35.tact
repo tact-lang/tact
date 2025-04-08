@@ -1,0 +1,1 @@
+fun foo() { let x = 1 }

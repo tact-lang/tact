@@ -1,0 +1,19 @@
+contract ManyTypes {
+    a: Int;
+    b: Bool;
+    c: Address;
+    d: Cell;
+    e: Slice;
+    f: String;
+
+    init() {
+        self.a = 1;
+        self.b = true;
+        self.c = myAddress();
+        self.d = emptyCell();
+        self.e = self.d.asSlice();
+        self.f = "hi";
+    }
+
+    receive() {}
+}

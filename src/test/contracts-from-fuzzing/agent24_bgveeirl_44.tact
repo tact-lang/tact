@@ -1,0 +1,4 @@
+contract X(a: Int,
+
+
+b: Int) {}

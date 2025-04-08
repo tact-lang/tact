@@ -1,0 +1,3 @@
+contract EmptyString {
+  s: String = "";
+}

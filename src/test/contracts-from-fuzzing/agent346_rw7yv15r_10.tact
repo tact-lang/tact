@@ -1,0 +1,1 @@
+contract Test(one: Int, ) {}

@@ -1,0 +1,14 @@
+contract BigMix(
+    a: Int,
+    b: Bool,
+    c: String,
+    d: Cell,
+    e: Slice,
+    f: Address,
+    opt1: Int?,
+    opt2: Bool?,
+    opt3: String?,
+    opt4: Cell?,
+    opt5: Slice?,
+    opt6: Address?,
+) {}

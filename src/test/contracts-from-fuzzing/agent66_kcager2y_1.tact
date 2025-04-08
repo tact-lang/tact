@@ -1,0 +1,1 @@
+contract SingleInt { x: Int = 1; }

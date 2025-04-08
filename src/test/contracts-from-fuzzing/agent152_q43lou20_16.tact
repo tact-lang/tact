@@ -1,0 +1,1 @@
+contract Test { external("hello") {} }

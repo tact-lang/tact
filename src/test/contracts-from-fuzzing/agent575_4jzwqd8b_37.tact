@@ -1,0 +1,4 @@
+contract OptParam(
+    maybe: Int?,
+) {
+}

@@ -1,0 +1,14 @@
+contract ParamsLarge(
+    p1: Int,
+    p2: Bool,
+    p3: Address,
+    p4: String,
+    p5: Int,
+    p6: Bool,
+    p7: Address,
+    p8: String,
+    p9: Int,
+    p10: Bool,
+    p11: Address,
+    p12: String
+) {}

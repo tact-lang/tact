@@ -1,0 +1,1 @@
+fun bounced(): Int { return 1; } contract Test { }

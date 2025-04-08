@@ -1,0 +1,3 @@
+contract NullableOpt {
+    optInt: Int?;
+}

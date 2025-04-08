@@ -1,0 +1,3 @@
+contract OptionalAddr {
+    owner: Address?;
+}

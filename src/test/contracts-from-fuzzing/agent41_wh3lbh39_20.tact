@@ -1,0 +1,1 @@
+primitive VeryLongTypeName9_with_weirdSuffix;

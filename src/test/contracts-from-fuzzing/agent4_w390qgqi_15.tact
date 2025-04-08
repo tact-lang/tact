@@ -1,0 +1,1 @@
+contract P { receive() { if (true) { } } }

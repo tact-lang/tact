@@ -1,0 +1,3 @@
+contract TestOptionalDefault {
+    x: Int?;
+}

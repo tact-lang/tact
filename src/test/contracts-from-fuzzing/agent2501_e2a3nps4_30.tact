@@ -1,0 +1,12 @@
+contract NestedParams(
+    p1: Int,
+    p2: Int?,
+    s1: String,
+    s2: String?,
+    slice1: Slice,
+    slice2: Slice?,
+    cell1: Cell,
+    cell2: Cell?,
+    addr1: Address,
+    addr2: Address?
+) {}

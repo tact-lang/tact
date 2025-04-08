@@ -1,0 +1,1 @@
+contract Test { fun foo() { if true { let a = 1 } else { let b = 2 } } }

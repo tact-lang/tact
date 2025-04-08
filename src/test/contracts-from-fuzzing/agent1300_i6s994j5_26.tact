@@ -1,0 +1,3 @@
+contract ImplicitOptNull {
+    val: Int?;
+}

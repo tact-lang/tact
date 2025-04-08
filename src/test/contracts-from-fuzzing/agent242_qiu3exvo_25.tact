@@ -1,0 +1,4 @@
+contract SerialBoundaries {
+    a: Int as uint1 = 1;
+    b: Int as uint256 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+}

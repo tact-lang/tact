@@ -1,0 +1,9 @@
+contract EmptyOptionalParams(
+    a: Int?,
+    b: String?,
+    c: Bool?,
+    d: Cell?,
+    e: Slice?,
+    f: Builder?,
+    g: Address?
+) {}

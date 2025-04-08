@@ -1,0 +1,9 @@
+contract MixedParamFields(
+  x: Int,
+  y: Bool,
+  z: Int?,
+  t: String?,
+  u: Cell?,
+  v: Address?,
+  w: Slice?
+) {}

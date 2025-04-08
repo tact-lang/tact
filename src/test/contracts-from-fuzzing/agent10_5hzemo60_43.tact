@@ -1,0 +1,1 @@
+contract X { } primitive Foo; contract Y { }

@@ -1,0 +1,3 @@
+contract LazyInit {
+  // no init
+}

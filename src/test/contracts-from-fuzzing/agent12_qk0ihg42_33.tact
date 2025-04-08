@@ -1,0 +1,1 @@
+contract Test { receive() { do { let x = 5; } until (true) } }

@@ -1,0 +1,3 @@
+contract OptionalEmptyInit {
+    a: Int?;
+}

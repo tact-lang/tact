@@ -1,0 +1,1 @@
+contract X() { receive("abc, def") {} }

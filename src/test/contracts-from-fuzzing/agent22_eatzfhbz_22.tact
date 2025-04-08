@@ -1,0 +1,1 @@
+fun foo(): Int { return 42 } fun bar(): Int { return 21; } contract X { receive() { foo(); bar(); } }

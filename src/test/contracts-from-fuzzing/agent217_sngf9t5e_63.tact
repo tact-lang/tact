@@ -1,0 +1,1 @@
+contract X { get fun foo(): Int { return 1; } }
