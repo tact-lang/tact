@@ -170,6 +170,11 @@ export const syntaxErrorSchema = <T, U>(
         undefinedUnicodeCodepoint: () => {
             return handle(text(`Undefined Unicode code-point`));
         },
+        unsupportedAsmFunctionInContracts: () => {
+            return handle(
+                sub`Assembly functions are only allowed at the module level`,
+            );
+        },
     };
 };
 
