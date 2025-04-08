@@ -79,6 +79,16 @@
         "internalTransfer": "7471",
         "extensionTransfer": "4666"
       }
+    },
+    {
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
+      "gas": {
+        "externalTransfer": "6534",
+        "addExtension": "7013",
+        "internalTransfer": "7376",
+        "extensionTransfer": "4666"
+      }
     }
   ]
 }
