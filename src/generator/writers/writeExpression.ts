@@ -250,7 +250,11 @@ export function writeExpression(
         // Handle constant
         if (hasStaticConstant(wCtx.ctx, f.text)) {
             const c = getStaticConstant(wCtx.ctx, f.text);
-            return writeValue(c.value!, false, wCtx);
+            return writeValue(
+                c.value!,
+                c.type.kind === "ref" ? c.type.optional : false,
+                wCtx,
+            );
         }
 
         return funcIdOf(f.text);
