@@ -87,7 +87,6 @@ describe("WalletV4 Gas Tests", () => {
     async function sendSignedActionBody(
         walletAddress: Address,
         payload: Slice,
-        kind: "func" | "tact",
     ) {
         const seqnoValue = seqno();
 
@@ -101,11 +100,6 @@ describe("WalletV4 Gas Tests", () => {
         const signature = sign(operationHash, keypair.secretKey);
 
         const dataCell = beginCell();
-
-        if (kind === "tact") {
-            // store opcode for Tact external receiver, doesn't affect signing
-            dataCell.storeUint(WalletV4.opcodes.ExternalRequest, 32);
-        }
 
         const msg = dataCell
             .storeBuffer(signature, 64)
@@ -237,10 +231,7 @@ describe("WalletV4 Gas Tests", () => {
     });
 
     it("externalTransfer", async () => {
-        const runExternalTransferTest = async (
-            walletAddress: Address,
-            kind: "func" | "tact",
-        ) => {
+        const runExternalTransferTest = async (walletAddress: Address) => {
             const testReceiver = receiver.address;
             const forwardValue = toNano(1);
 
@@ -256,7 +247,6 @@ describe("WalletV4 Gas Tests", () => {
             const externalTransferSendResult = await sendSignedActionBody(
                 walletAddress,
                 sendTxActionsList,
-                kind,
             );
 
             expect(externalTransferSendResult.transactions).toHaveTransaction({
@@ -286,10 +276,8 @@ describe("WalletV4 Gas Tests", () => {
             return getUsedGas(externalTransferSendResult, "external");
         };
 
-        const externalTransferGasUsedFunC = await runExternalTransferTest(
-            walletFuncAddress,
-            "func",
-        );
+        const externalTransferGasUsedFunC =
+            await runExternalTransferTest(walletFuncAddress);
 
         expect(externalTransferGasUsedFunC).toEqual(
             funcResult.gas["externalTransfer"],
@@ -297,7 +285,6 @@ describe("WalletV4 Gas Tests", () => {
 
         const externalTransferGasUsedTact = await runExternalTransferTest(
             walletTact.address,
-            "tact",
         );
 
         expect(externalTransferGasUsedTact).toEqual(
@@ -320,7 +307,6 @@ describe("WalletV4 Gas Tests", () => {
             const addPluginSendResult = await sendSignedActionBody(
                 walletAddress,
                 addExtActionsList,
-                kind,
             );
 
             expect(addPluginSendResult.transactions).toHaveTransaction({
@@ -370,7 +356,7 @@ describe("WalletV4 Gas Tests", () => {
                 10000000n,
                 kind,
             );
-            await sendSignedActionBody(walletAddress, addExtActionsList, kind);
+            await sendSignedActionBody(walletAddress, addExtActionsList);
 
             const walletTest = blockchain.openContract(
                 WalletV4.fromAddress(walletAddress),

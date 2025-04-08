@@ -17,6 +17,15 @@ message ExternalRequest {
     payload: Slice as remaining;
 }
 
+struct ExtRequest {
+    bundle: SignedBundle;
+    walletId: Int as int32;
+    validUntil: Int as uint32;
+    seqno: Int as uint32;
+    op: Int as uint8;
+    payload: Slice as remaining;
+}
+
 struct RawMsg {
     bits: Int as uint6 = 0x18;
     receiver: Address;
@@ -77,7 +86,7 @@ contract WalletV4(
             return;
         }
 
-        self.state.extensions.del(addr);
+        let _ = self.state.extensions.del(addr);
 
         if (context().bounceable) {
             nativeSendMessage(
@@ -93,11 +102,12 @@ contract WalletV4(
         }
     }
 
-    external(msg: ExternalRequest) {
-        throwIf(36, msg.validUntil < now());
-        throwUnless(33, msg.seqno == self.state.seqno);
-        throwUnless(34, msg.walletId == self.state.walletId);
-        throwUnless(35, msg.bundle.verifySignature(self.state.publicKey));
+    external(msg: Slice) {
+        let data = ExtRequest.fromSlice(msg);
+        throwIf(36, data.validUntil < now());
+        throwUnless(33, data.seqno == self.state.seqno);
+        throwUnless(34, data.walletId == self.state.walletId);
+        throwUnless(35, data.bundle.verifySignature(self.state.publicKey));
 
         acceptMessage();
         self.state.seqno += 1;
@@ -105,8 +115,8 @@ contract WalletV4(
         commit();
 
         // simple transfer
-        if (msg.op == 0) {
-            let payload = msg.payload;
+        if (data.op == 0) {
+            let payload = data.payload;
             /*
             foreach (ref in payload.refs) {
                 let mode = payload.loadUint(8);
@@ -121,8 +131,8 @@ contract WalletV4(
         }
 
         // deploy and add plugin
-        if (msg.op == 1) {
-            let payload = msg.payload;
+        if (data.op == 1) {
+            let payload = data.payload;
             let wc = payload.loadUint(8);
             let amount = payload.loadCoins();
             let stateInit = payload.loadRef();
@@ -141,9 +151,9 @@ contract WalletV4(
             );
 
             self.state.extensions.set(addr, true);
-        } else if (msg.op == 2) {
+        } else if (data.op == 2) {
             // add plugin
-            let payload = msg.payload;
+            let payload = data.payload;
             let addr = payload.loadAddress();
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
@@ -160,9 +170,9 @@ contract WalletV4(
                 }.toCell(),
                 64,
             );
-        } else if (msg.op == 3) {
+        } else if (data.op == 3) {
             // remove plugin
-            let payload = msg.payload;
+            let payload = data.payload;
             let addr = payload.loadAddress();
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
