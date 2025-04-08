@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimized message deserialization with native loading of `Maybe Cell` fields: PR [#2661](https://github.com/tact-lang/tact/pull/2661)
 - [fix] Compiler now disallows `ton()` with empty or blank string: PR [#2681](https://github.com/tact-lang/tact/pull/2681)
 - [fix] Compiler now disallows `ton()` with invalid number value or negative numbers: PR [#2684](https://github.com/tact-lang/tact/pull/2684)
+- [fix] Compiler now shows a more informative error message for abstract functions and constants without a body: PR [#2688](https://github.com/tact-lang/tact/pull/2688)
+- [fix] Compiler now correctly processes nested structs with default values in the interpreter: PR [#2687](https://github.com/tact-lang/tact/pull/2687)
+- [fix] Compiler now correctly compiles contracts with optional struct fields with default values: PR [#2683](https://github.com/tact-lang/tact/pull/2683)
 - [fix] Compiler now shows a more informative error message for unsupported assembly functions inside traits and contracts: PR [#2689](https://github.com/tact-lang/tact/pull/2689)
 
 ### Standard Library

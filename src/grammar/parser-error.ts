@@ -10,7 +10,7 @@ const attributeSchema =
         },
         notAbstract: () => {
             return handle(
-                sub`Abstract ${text(name)} doesn't have abstract modifier`,
+                sub`Abstract ${text(name)} can only be declared inside traits and should have the abstract modifier`,
             );
         },
         tooAbstract: () => {
