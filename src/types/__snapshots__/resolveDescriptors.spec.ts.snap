@@ -951,6 +951,33 @@ exports[`resolveDescriptors should fail descriptors for ton-with-empty-string 1`
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string 1`] = `
+"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+  2 | 
+> 3 | const FOO: Int = ton("45,67");
+                           ^~~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-2 1`] = `
+"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+  2 | 
+> 3 | const FOO: Int = ton("40+2");
+                           ^~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-3 1`] = `
+"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+  2 | 
+> 3 | const FOO: Int = ton("hello");
+                           ^~~~~~~
+  4 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for trait-circular-deps 1`] = `
 "<unknown>:3:1: Circular dependency detected for type "A"
   2 | 
