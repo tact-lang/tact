@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimized message deserialization with native loading of `Maybe Cell` fields: PR [#2661](https://github.com/tact-lang/tact/pull/2661)
 - [fix] Compiler now disallows `ton()` with empty or blank string: PR [#2681](https://github.com/tact-lang/tact/pull/2681)
 - [fix] Compiler now disallows `ton()` with invalid number value or negative numbers: PR [#2684](https://github.com/tact-lang/tact/pull/2684)
+- [fix] Compiler now shows a more informative error message for unsupported assembly functions inside traits and contracts: PR [#2689](https://github.com/tact-lang/tact/pull/2689)
 
 ### Standard Library
 
