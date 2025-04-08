@@ -53,14 +53,8 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved0 = resolved[0]!;
-                const tons = ensureString(resolved0);
-                if (tons.value.trim().length === 0) {
-                    throwCompilationError(
-                        "ton() function requires a non-empty value",
-                        tons.loc,
-                    );
-                }
-                return toNano(tons.value).toString(10);
+                const str = ensureString(resolved0).value;
+                return toNano(str).toString(10);
             },
         },
     ],
