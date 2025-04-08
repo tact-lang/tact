@@ -46,24 +46,16 @@ function createSimpleTransferBody(testReceiver: Address, forwardValue: bigint) {
         .asSlice();
 }
 
-function createAddPluginBody(
-    pluginAddress: Address,
-    amount: bigint,
-    kind: "func" | "tact",
-) {
+function createAddPluginBody(pluginAddress: Address, amount: bigint) {
     const msg = beginCell().storeUint(2, 8);
 
-    if (kind === "func") {
-        // old way of ~store_msg_address
-        const address = beginCell()
-            .storeInt(pluginAddress.workChain, 8)
-            .storeUint(bufferToBigInt(pluginAddress.hash), 256)
-            .endCell();
+    // old way of ~store_msg_address
+    const address = beginCell()
+        .storeInt(pluginAddress.workChain, 8)
+        .storeUint(bufferToBigInt(pluginAddress.hash), 256)
+        .endCell();
 
-        msg.storeSlice(address.asSlice());
-    } else {
-        msg.storeAddress(pluginAddress);
-    }
+    msg.storeSlice(address.asSlice());
 
     return msg.storeCoins(amount).storeUint(0, 64).asSlice();
 }
@@ -293,16 +285,12 @@ describe("WalletV4 Gas Tests", () => {
     });
 
     it("addPlugin", async () => {
-        const runAddPluginTest = async (
-            walletAddress: Address,
-            kind: "func" | "tact",
-        ) => {
+        const runAddPluginTest = async (walletAddress: Address) => {
             const testPlugin = receiver.address;
 
             const addExtActionsList = createAddPluginBody(
                 testPlugin,
                 10000000n,
-                kind,
             );
             const addPluginSendResult = await sendSignedActionBody(
                 walletAddress,
@@ -328,33 +316,23 @@ describe("WalletV4 Gas Tests", () => {
             return getUsedGas(addPluginSendResult, "external");
         };
 
-        const addPluginGasUsedFunC = await runAddPluginTest(
-            walletFuncAddress,
-            "func",
-        );
+        const addPluginGasUsedFunC = await runAddPluginTest(walletFuncAddress);
 
         expect(addPluginGasUsedFunC).toEqual(funcResult.gas["addPlugin"]);
 
-        const addPluginGasUsedTact = await runAddPluginTest(
-            walletTact.address,
-            "tact",
-        );
+        const addPluginGasUsedTact = await runAddPluginTest(walletTact.address);
 
         expect(addPluginGasUsedTact).toEqual(expectedResult.gas["addPlugin"]);
     });
 
     it("pluginTransfer", async () => {
-        const runPluginTransferTest = async (
-            walletAddress: Address,
-            kind: "func" | "tact",
-        ) => {
+        const runPluginTransferTest = async (walletAddress: Address) => {
             // add deployer as plugin
             const deployerAsPlugin = deployer.address;
 
             const addExtActionsList = createAddPluginBody(
                 deployerAsPlugin,
                 10000000n,
-                kind,
             );
             await sendSignedActionBody(walletAddress, addExtActionsList);
 
@@ -393,10 +371,8 @@ describe("WalletV4 Gas Tests", () => {
             return getUsedGas(pluginTransferResult, "internal");
         };
 
-        const pluginTransferGasUsedFunC = await runPluginTransferTest(
-            walletFuncAddress,
-            "func",
-        );
+        const pluginTransferGasUsedFunC =
+            await runPluginTransferTest(walletFuncAddress);
 
         expect(pluginTransferGasUsedFunC).toEqual(
             funcResult.gas["pluginTransfer"],
@@ -404,7 +380,6 @@ describe("WalletV4 Gas Tests", () => {
 
         const pluginTransferGasUsedTact = await runPluginTransferTest(
             walletTact.address,
-            "tact",
         );
 
         expect(pluginTransferGasUsedTact).toEqual(

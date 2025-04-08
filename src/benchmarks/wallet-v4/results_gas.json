@@ -62,6 +62,15 @@
         "addPlugin": "6778",
         "pluginTransfer": "3761"
       }
+    },
+    {
+      "label": "1.6.5 with compatible with FunC",
+      "pr": "https://github.com/tact-lang/tact/pull/1111",
+      "gas": {
+        "externalTransfer": "4494",
+        "addPlugin": "7279",
+        "pluginTransfer": "3761"
+      }
     }
   ]
 }

@@ -8,15 +8,6 @@ message(0x706c7567) PluginRequestFunds {
     extra: Cell?;
 }
 
-message ExternalRequest {
-    bundle: SignedBundle;
-    walletId: Int as int32;
-    validUntil: Int as uint32;
-    seqno: Int as uint32;
-    op: Int as uint8;
-    payload: Slice as remaining;
-}
-
 struct ExtRequest {
     bundle: SignedBundle;
     walletId: Int as int32;
@@ -154,7 +145,11 @@ contract WalletV4(
         } else if (data.op == 2) {
             // add plugin
             let payload = data.payload;
-            let addr = payload.loadAddress();
+
+            let wc = payload.loadUint(8);
+            let addrHash = payload.loadUint(256);
+            let addr = newAddress(wc, addrHash);
+
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
 
@@ -173,7 +168,11 @@ contract WalletV4(
         } else if (data.op == 3) {
             // remove plugin
             let payload = data.payload;
-            let addr = payload.loadAddress();
+
+            let wc = payload.loadUint(8);
+            let addrHash = payload.loadUint(256);
+            let addr = newAddress(wc, addrHash);
+
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
 
@@ -213,6 +212,7 @@ contract WalletV4(
     }
 
     // this is different from FunC version, awaiting unbounded tuple impl in Tact
+    // also we need to return it as map of <wc, hash> instead of Address (skip first 4 bytes)
     get fun get_plugin_list(): map<Address, Bool> {
         return self.state.extensions;
     }
