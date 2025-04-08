@@ -1,4 +1,6 @@
 import type { ILogger } from "@/context/logger";
+import { execSync } from "child_process";
+import path from "path";
 
 // Wasm Imports
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -57,6 +59,73 @@ type CompileResult =
       };
 
 export async function funcCompile(args: {
+    entries: string[];
+    sources: { path: string; content: string }[];
+    logger: ILogger;
+}): Promise<FuncCompilationResult> {
+    const USE_NATIVE = process.env.USE_NATIVE === "true";
+    if (USE_NATIVE) {
+        return funcCompileNative(args);
+    }
+    return funcCompileWasm(args);
+}
+
+export function funcCompileNative(args: {
+    entries: string[];
+    sources: { path: string; content: string }[];
+    logger: ILogger;
+}): FuncCompilationResult {
+    const TACT_PATH = process.env.TACT_PATH;
+    if (typeof TACT_PATH === "undefined") {
+        throw new Error("TACT_PATH is not set");
+    }
+    const FIFT_LIBS_PATH = process.env.FIFT_LIBS_PATH;
+    if (typeof FIFT_LIBS_PATH === "undefined") {
+        throw new Error("FIFT_LIBS_PATH is not set");
+    }
+    const FUNC_FIFT_COMPILER_PATH = process.env.FUNC_FIFT_COMPILER_PATH;
+    if (typeof FUNC_FIFT_COMPILER_PATH === "undefined") {
+        throw new Error("FUNC_FIFT_COMPILER_PATH is not set");
+    }
+
+    const files: string[] = args.entries;
+    const configStr = JSON.stringify({
+        sources: files.map((f) =>
+            f.replace("@stdlib/", path.join(TACT_PATH, "src/stdlib/stdlib/")),
+        ),
+        optLevel: 2,
+        fiftPath: FIFT_LIBS_PATH,
+    });
+
+    const retJson = execSync(
+        [FUNC_FIFT_COMPILER_PATH, `'${configStr}'`].join(" "),
+    );
+
+    const result = JSON.parse(retJson.toString()) as CompileResult;
+
+    switch (result.status) {
+        case "error": {
+            return {
+                ok: false,
+                log: "",
+                fift: null,
+                output: null,
+            };
+        }
+        case "ok": {
+            return {
+                ok: true,
+                log: "",
+                fift: cutFirstLine(result.fiftCode.replaceAll("\\n", "\n")),
+                output: Buffer.from(result.codeBoc, "base64"),
+            };
+        }
+    }
+
+    throw Error("Unexpected compiler response");
+}
+
+export async function funcCompileWasm(args: {
     entries: string[];
     sources: { path: string; content: string }[];
     logger: ILogger;
