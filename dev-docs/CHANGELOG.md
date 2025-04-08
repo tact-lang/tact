@@ -81,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Special thanks
 
-- [Ilya Aksakov](https://github.com/lexent3010) and the [RSquad](https://github.com/rsquad) team
+- [Ilya Aksakov](https://github.com/ilyaAksakov) and the [RSquad](https://github.com/rsquad) team
 
 ## [1.6.4] - 2025-03-18
 
