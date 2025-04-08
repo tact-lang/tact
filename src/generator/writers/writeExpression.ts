@@ -97,7 +97,11 @@ function writeStructConstructor(
                 if (arg) {
                     return avoidFunCKeywordNameClash(arg);
                 } else if (v.default !== undefined) {
-                    return writeValue(v.default, ctx);
+                    return writeValue(
+                        v.default,
+                        v.type.kind === "ref" ? v.type.optional : false,
+                        ctx,
+                    );
                 } else {
                     throw Error(
                         `Missing argument for field "${v.name}" in struct "${type.name}"`,
@@ -115,7 +119,11 @@ function writeStructConstructor(
     return name;
 }
 
-export function writeValue(val: Ast.Literal, wCtx: WriterContext): string {
+export function writeValue(
+    val: Ast.Literal,
+    optional: boolean,
+    wCtx: WriterContext,
+): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(10);
@@ -160,10 +168,10 @@ export function writeValue(val: Ast.Literal, wCtx: WriterContext): string {
                     if (field.type.kind === "ref" && field.type.optional) {
                         const ft = getType(wCtx.ctx, field.type.name);
                         if (ft.kind === "struct" && v.kind !== "null") {
-                            return `${ops.typeAsOptional(ft.name, wCtx)}(${writeValue(v, wCtx)})`;
+                            return writeValue(v, true, wCtx);
                         }
                     }
-                    return writeValue(v, wCtx);
+                    return writeValue(v, false, wCtx);
                 } else {
                     throwInternalCompilerError(
                         `Struct value is missing a field: ${field.name}`,
@@ -171,7 +179,11 @@ export function writeValue(val: Ast.Literal, wCtx: WriterContext): string {
                     );
                 }
             });
-            return `${id}(${fieldValues.join(", ")})`;
+            const value = `${id}(${fieldValues.join(", ")})`;
+            if (optional) {
+                return `${ops.typeAsOptional(structDescription.name, wCtx)}(${value})`;
+            }
+            return value;
         }
         default:
             throwInternalCompilerError("Unrecognized ast literal kind");
@@ -202,7 +214,7 @@ export function writeExpression(
         const value = evalConstantExpression(f, wCtx.ctx, util, {
             maxLoopIterations: 2n ** 12n,
         });
-        return writeValue(value, wCtx);
+        return writeValue(value, false, wCtx);
     } catch (error) {
         if (!(error instanceof TactConstEvalError) || error.fatal) throw error;
     }
@@ -238,7 +250,7 @@ export function writeExpression(
         // Handle constant
         if (hasStaticConstant(wCtx.ctx, f.text)) {
             const c = getStaticConstant(wCtx.ctx, f.text);
-            return writeValue(c.value!, wCtx);
+            return writeValue(c.value!, false, wCtx);
         }
 
         return funcIdOf(f.text);
@@ -523,7 +535,7 @@ export function writeExpression(
             // Getter instead of direct field access
             return `${ops.typeField(srcT.name, field.name, wCtx)}(${writeExpression(f.aggregate, wCtx)})`;
         } else {
-            return writeValue(cst!.value!, wCtx);
+            return writeValue(cst!.value!, false, wCtx);
         }
     }
 

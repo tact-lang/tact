@@ -1,0 +1,62 @@
+import { toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
+import { TestGetterOptional } from "./output/contract-optional-struct_TestGetterOptional";
+import { TestGetterOptional as TestGetterOptional2 } from "./output/contract-optional-struct-2_TestGetterOptional";
+import "@ton/test-utils";
+
+describe("contract optional struct field", () => {
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<TestGetterOptional>;
+    let contract2: SandboxContract<TestGetterOptional2>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
+        contract = blockchain.openContract(await TestGetterOptional.fromInit());
+        contract2 = blockchain.openContract(
+            await TestGetterOptional2.fromInit(),
+        );
+
+        const result = await contract.send(
+            treasure.getSender(),
+            {
+                value: toNano("10"),
+            },
+            null,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+
+        const result2 = await contract2.send(
+            treasure.getSender(),
+            {
+                value: toNano("10"),
+            },
+            null,
+        );
+
+        expect(result2.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract2.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should return value correctly", async () => {
+        expect(await contract.getS()).toMatchObject({ a: 1n, b: 2n });
+        expect(await contract2.getS()).toMatchObject({
+            a: 1n,
+            b: 2n,
+            c: { a: 10n },
+        });
+    });
+});
