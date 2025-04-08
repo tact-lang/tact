@@ -1164,21 +1164,22 @@ export class Interpreter {
                         tons.loc,
                     );
                 }
-                try {
-                    const value = this.parseTonBuiltinValue(tons);
-                    if (typeof value === "undefined") {
-                        throwCompilationError(
-                            "ton() function requires a valid number with no more than 10 digits after the decimal point",
-                            tons.loc,
-                        );
-                    }
-                    if (value < 0) {
-                        throwCompilationError(
-                            "ton() function requires a non-negative number",
-                            tons.loc,
-                        );
-                    }
 
+                const value = this.parseTonBuiltinValue(tons);
+                if (typeof value === "undefined") {
+                    throwCompilationError(
+                        "ton() function requires a valid number with no more than 10 digits after the decimal point",
+                        tons.loc,
+                    );
+                }
+                if (value < 0) {
+                    throwCompilationError(
+                        "ton() function requires a non-negative number",
+                        tons.loc,
+                    );
+                }
+
+                try {
                     return ensureInt(
                         this.util.makeNumberLiteral(value, ast.loc),
                     );
