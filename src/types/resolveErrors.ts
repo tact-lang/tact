@@ -1,7 +1,7 @@
 import type { CompilerContext } from "@/context/context";
 import { createContextStore } from "@/context/context";
 import type { AstNode } from "@/ast/ast";
-import type {FactoryAst } from "@/ast/ast-helpers";
+import type { FactoryAst } from "@/ast/ast-helpers";
 import { isRaise } from "@/ast/ast-helpers";
 import { isRequire } from "@/ast/ast-helpers";
 import { traverse } from "@/ast/iterators";
