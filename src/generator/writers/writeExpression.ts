@@ -40,6 +40,7 @@ import {
     tryExtractPath,
 } from "@/ast/ast-helpers";
 import { enabledDebug, enabledNullChecks } from "@/config/features";
+import type { CompilerContext } from "@/context/context";
 
 function isNull(wCtx: WriterContext, expr: Ast.Expression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -56,9 +57,9 @@ function handleStructNullTernary(
         const type = getType(wCtx.ctx, structType.name);
         if (type.kind === "struct" || type.kind === "contract") {
             if (isStructInThenBranch) {
-                return `(${writeExpression(condition, wCtx)} ? ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(structExpr, wCtx)}) : null())`;
+                return `(${writeExpressionInCondition(condition, wCtx)} ? ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(structExpr, wCtx)}) : null())`;
             } else {
-                return `(${writeExpression(condition, wCtx)} ? null() : ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(structExpr, wCtx)}))`;
+                return `(${writeExpressionInCondition(condition, wCtx)} ? null() : ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(structExpr, wCtx)}))`;
             }
         }
     }
@@ -826,7 +827,7 @@ export function writeExpression(
         }
 
         // Default case
-        return `(${writeExpression(f.condition, wCtx)} ? ${writeExpression(f.thenBranch, wCtx)} : ${writeExpression(f.elseBranch, wCtx)})`;
+        return `(${writeExpressionInCondition(f.condition, wCtx)} ? ${writeExpression(f.thenBranch, wCtx)} : ${writeExpression(f.elseBranch, wCtx)})`;
     }
 
     //
@@ -834,6 +835,61 @@ export function writeExpression(
     //
 
     throw Error("Unknown expression");
+}
+
+// Evaluate the `expr` expression and return the resulting literal,
+// or the original expression if the evaluation fails.
+function constEval(
+    expr: Ast.Expression,
+    ctx: CompilerContext,
+): Ast.Literal | Ast.Expression {
+    try {
+        const util = getAstUtil(getAstFactory());
+        const value = evalConstantExpression(expr, ctx, util, {
+            maxLoopIterations: 2n ** 12n,
+        });
+        return value;
+    } catch (error) {
+        if (!(error instanceof TactConstEvalError) || error.fatal) throw error;
+        return expr;
+    }
+}
+
+// This performs various boolean-related optimizations in conditional expressions
+// in `if`, `do-until`, and `while` statements, which consider any non-zero integer as true,
+// and also in the conditional expression (ternary operator).
+export function writeExpressionInCondition(
+    expr: Ast.Expression,
+    wCtx: WriterContext,
+): string {
+    if (expr.kind === "op_binary") {
+        const leftTy = getExpType(wCtx.ctx, expr.left);
+        const rightTy = getExpType(wCtx.ctx, expr.right);
+        const left = constEval(expr.left, wCtx.ctx);
+        const right = constEval(expr.right, wCtx.ctx);
+
+        // Zero inequality comparison optimization for non-optional integers
+        if (
+            leftTy.kind === "ref" &&
+            leftTy.name === "Int" &&
+            !leftTy.optional &&
+            rightTy.kind === "ref" &&
+            rightTy.name === "Int" &&
+            !rightTy.optional
+        ) {
+            if (expr.op === "!=") {
+                if (right.kind === "number" && right.value === 0n) {
+                    // left != 0
+                    return `(${writeExpression(left, wCtx)})`;
+                } else if (left.kind === "number" && left.value === 0n) {
+                    // 0 != right
+                    return `(${writeExpression(right, wCtx)})`;
+                }
+            }
+        }
+    }
+    // fallback: no optimization found
+    return writeExpression(expr, wCtx);
 }
 
 export function writeTypescriptValue(
