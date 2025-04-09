@@ -617,9 +617,12 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             resolveFuncType(self, ctx, isSelfOpt) + " " + funcIdOf("self"),
         );
     }
-    for (const a of f.params) {
-        params.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
-    }
+
+    f.params.forEach((a, index) => {
+        const name =
+            a.name.kind === "wildcard" ? `_${index}` : funcIdOf(a.name);
+        params.push(resolveFuncType(a.type, ctx) + " " + name);
+    });
 
     const fAst = f.ast;
     switch (fAst.kind) {
