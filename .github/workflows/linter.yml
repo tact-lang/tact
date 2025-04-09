@@ -41,6 +41,10 @@ jobs:
         run: |
           npm pkg fix && git diff --exit-code
 
+      - name: Check there are no relative (./) imports
+        run: |
+          yarn to-absolute
+
       - name: Check there are no errors reported by ESLint
         run: |
           yarn lint

@@ -1,8 +1,8 @@
 import fs from "fs";
 import { join, relative } from "path";
 import glob from "glob";
-import { posixNormalize } from "../utils/filePath";
-import { stdlibPath } from "./path";
+import { posixNormalize } from "@/utils/filePath";
+import { stdlibPath } from "@/stdlib/path";
 
 const libFiles = join(__dirname, "stdlib", "**", "*.@(tact|fc)");
 const targetPath = join(__dirname, "stdlib.ts");

@@ -1,7 +1,7 @@
-import { throwInternal } from "../error/errors";
-import type { Logger, SourceLogger } from "../error/logger-util";
-import type { Range } from "../error/range";
-import { runServer } from "./run-server";
+import { throwInternal } from "@/error/errors";
+import type { Logger, SourceLogger } from "@/error/logger-util";
+import type { Range } from "@/error/range";
+import { runServer } from "@/server/run-server";
 
 describe("runServer", () => {
     test("only first error without error recovery", () => {

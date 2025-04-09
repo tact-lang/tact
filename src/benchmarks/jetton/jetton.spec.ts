@@ -10,11 +10,11 @@ import {
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 
-import { JettonMinter } from "../contracts/output/jetton-minter-discoverable_JettonMinter";
+import { JettonMinter } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 
 import "@ton/test-utils";
-import benchmarkCodeSizeResults from "./results_code_size.json";
-import type { JettonUpdateContent } from "../contracts/output/jetton-minter-discoverable_JettonMinter";
+import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json";
+import type { JettonUpdateContent } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 
 import {
     generateCodeSizeResults,
@@ -22,19 +22,19 @@ import {
     getStateSizeForAccount,
     getUsedGas,
     printBenchmarkTable,
-} from "../utils/gas";
-import benchmarkResults from "./results_gas.json";
+} from "@/benchmarks/utils/gas";
+import benchmarkResults from "@/benchmarks/jetton/results_gas.json";
 import { join, resolve } from "path";
 import { readFileSync } from "fs";
-import { posixNormalize } from "../../utils/filePath";
-import { type Step, writeLog } from "../../test/utils/write-vm-log";
+import { posixNormalize } from "@/utils/filePath";
+import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     getJettonWalletRaw,
     sendBurnRaw,
     sendDiscoveryRaw,
     sendMintRaw,
     sendTransferRaw,
-} from "../utils/jetton";
+} from "@/benchmarks/utils/jetton";
 
 const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
@@ -155,11 +155,6 @@ describe("Jetton", () => {
         printBenchmarkTable(results, codeSizeResults, {
             implementationName: "FunC",
             printMode: "full",
-        });
-
-        printBenchmarkTable(results.slice(1), undefined, {
-            implementationName: "NotCoin",
-            printMode: "first-last",
         });
     });
 

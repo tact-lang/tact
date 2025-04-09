@@ -1,9 +1,9 @@
-import type * as Ast from "./ast";
-import { groupBy, intercalate, isUndefined } from "../utils/array";
-import { makeVisitor } from "../utils/tricks";
-import { astNumToString, idText } from "./ast-helpers";
-import { asString } from "../imports/path";
-import { throwInternalCompilerError } from "../error/errors";
+import type * as Ast from "@/ast/ast";
+import { groupBy, intercalate, isUndefined } from "@/utils/array";
+import { makeVisitor } from "@/utils/tricks";
+import { astNumToString, idText } from "@/ast/ast-helpers";
+import { asString } from "@/imports/path";
+import { throwInternalCompilerError } from "@/error/errors";
 
 //
 // Types
@@ -190,10 +190,10 @@ export const ppAstCodeOf = ({ contract }: Ast.CodeOf) =>
 export const ppAstNumber = astNumToString;
 export const ppAstBoolean = ({ value }: Ast.Boolean) => value.toString();
 export const ppAstId = ({ text }: Ast.Id) => text;
+export const ppAstOptionalId = (node: Ast.OptionalId) =>
+    node.kind === "id" ? ppAstId(node) : "_";
 export const ppAstNull = (_expr: Ast.Null) => "null";
-export const ppAstString = ({ value }: Ast.String) => `"${value}"`;
-export const ppAstSimplifiedString = ({ value }: Ast.SimplifiedString) =>
-    JSON.stringify(value);
+export const ppAstString = ({ value }: Ast.String) => JSON.stringify(value);
 export const ppAstAddress = ({ value }: Ast.Address) =>
     `addr("${value.toRawString()}")`;
 export const ppAstCell = ({ value }: Ast.Cell) => `cell("${value.toString()}")`;
@@ -265,7 +265,6 @@ export const ppAstExpressionNested = makeVisitor<Ast.Expression>()({
     code_of: ppLeaf(ppAstCodeOf),
     string: ppLeaf(ppAstString),
     static_call: ppLeaf(ppAstStaticCall),
-    simplified_string: ppLeaf(ppAstSimplifiedString),
     address: ppLeaf(ppAstAddress),
     cell: ppLeaf(ppAstCell),
     slice: ppLeaf(ppAstSlice),
@@ -283,6 +282,8 @@ export const ppAstExpressionNested = makeVisitor<Ast.Expression>()({
 export const ppAstExpression = (expr: Ast.Expression): string => {
     return ppAstExpressionNested(expr)(lowestPrecedence.child);
 };
+
+export const ppAstWildcard = (_expr: Ast.Wildcard): string => "_";
 
 /**
  * An intermediate language that is only concerned of spacing and indentation
@@ -448,16 +449,47 @@ export const ppAstStruct: Printer<Ast.StructDecl> =
             c.braced(c.list(fields, ppAstFieldDecl)),
         ]);
 
+// Format contract parameters based on number of parameters
+const formatContractParams = (
+    params: readonly Ast.FieldDecl[] | undefined,
+): string => {
+    if (!params) {
+        return "";
+    }
+
+    if (params.length <= 1) {
+        // Single parameter or empty params stays on the same line
+        return `(${params
+            .map((param) => {
+                const asAlias = param.as ? ` as ${ppAstId(param.as)}` : "";
+                return `${ppAstOptionalId(param.name)}: ${ppAstType(param.type)}${asAlias}`;
+            })
+            .join(", ")})`;
+    }
+
+    // Multiple parameters - each on its own line
+    const paramLines = params
+        .map((param) => {
+            const asAlias = param.as ? ` as ${ppAstId(param.as)}` : "";
+            return `    ${ppAstOptionalId(param.name)}: ${ppAstType(param.type)}${asAlias}`;
+        })
+        .join(",\n");
+
+    return `(\n${paramLines}\n)`;
+};
+
 export const ppAstContract: Printer<Ast.Contract> =
-    ({ name, traits, declarations, attributes }) =>
+    ({ name, traits, declarations, attributes, params }) =>
     (c) => {
         const attrsCode = attributes
             .map(({ name: { value } }) => `@interface("${value}") `)
             .join("");
         const traitsCode = traits.map((trait) => trait.text).join(", ");
+        const paramsCode = formatContractParams(params);
+
         const header = traitsCode
-            ? `contract ${ppAstId(name)} with ${traitsCode}`
-            : `contract ${ppAstId(name)}`;
+            ? `contract ${ppAstId(name)}${paramsCode} with ${traitsCode}`
+            : `contract ${ppAstId(name)}${paramsCode}`;
         return c.concat([
             c.row(`${attrsCode}${header} `),
             c.braced(
@@ -512,7 +544,10 @@ export const ppAstNativeFunction: Printer<Ast.NativeFunctionDecl> =
     (c) => {
         const attrs = attributes.map(({ type }) => type + " ").join("");
         const argsCode = params
-            .map(({ name, type }) => `${ppAstId(name)}: ${ppAstType(type)}`)
+            .map(
+                ({ name, type }) =>
+                    `${ppAstOptionalId(name)}: ${ppAstType(type)}`,
+            )
             .join(", ");
         const returnType = retTy ? `: ${ppAstType(retTy)}` : "";
         return c.block([
@@ -627,7 +662,10 @@ export const ppAstInitFunction: Printer<Ast.ContractInit> =
     ({ params, statements }) =>
     (c) => {
         const argsCode = params
-            .map(({ name, type }) => `${ppAstId(name)}: ${ppAstType(type)}`)
+            .map(
+                ({ name, type }) =>
+                    `${ppAstOptionalId(name)}: ${ppAstType(type)}`,
+            )
             .join(", ");
         if (statements.length === 0) {
             return c.row(`init(${argsCode}) {}`);
@@ -671,7 +709,7 @@ export const ppAstFunctionSignature = ({
     params,
 }: Ast.FunctionDef | Ast.AsmFunctionDef | Ast.FunctionDecl): string => {
     const argsCode = params
-        .map(({ name, type }) => `${ppAstId(name)}: ${ppAstType(type)}`)
+        .map(({ name, type }) => `${ppAstOptionalId(name)}: ${ppAstType(type)}`)
         .join(", ");
     const attrsCode = attributes
         .map((attr) => ppAstFunctionAttribute(attr) + " ")
@@ -721,7 +759,7 @@ export const ppAstStatementLet: Printer<Ast.StatementLet> =
     (c) => {
         const tyAnnotation = type === undefined ? "" : `: ${ppAstType(type)}`;
         return c.row(
-            `let ${ppAstId(name)}${tyAnnotation} = ${ppAstExpression(expression)};`,
+            `let ${ppAstOptionalId(name)}${tyAnnotation} = ${ppAstExpression(expression)};`,
         );
     };
 
@@ -795,7 +833,7 @@ export const ppAstStatementForEach: Printer<Ast.StatementForEach> =
     (c) =>
         c.concat([
             c.row(
-                `foreach (${ppAstId(keyName)}, ${ppAstId(valueName)} in ${ppAstExpression(map)}) `,
+                `foreach (${ppAstOptionalId(keyName)}, ${ppAstOptionalId(valueName)} in ${ppAstExpression(map)}) `,
             ),
             ppStatementBlock(statements)(c),
         ]);
@@ -806,7 +844,9 @@ export const ppAstStatementTry: Printer<Ast.StatementTry> =
         const catchBlocks =
             catchBlock !== undefined
                 ? [
-                      c.row(` catch (${ppAstId(catchBlock.catchName)}) `),
+                      c.row(
+                          ` catch (${ppAstOptionalId(catchBlock.catchName)}) `,
+                      ),
                       ppStatementBlock(catchBlock.catchStatements)(c),
                   ]
                 : [];
@@ -824,9 +864,9 @@ export const ppAstStatementDestruct: Printer<Ast.StatementDestruct> =
         const ids: string[] = [];
         for (const [field, name] of identifiers.values()) {
             const id =
-                field.text === name.text
+                name.kind === "id" && field.text === name.text
                     ? ppAstId(name)
-                    : `${ppAstId(field)}: ${ppAstId(name)}`;
+                    : `${ppAstId(field)}: ${ppAstOptionalId(name)}`;
             ids.push(id);
         }
         const restPattern = ignoreUnspecifiedFields ? ", .." : "";
@@ -836,7 +876,7 @@ export const ppAstStatementDestruct: Printer<Ast.StatementDestruct> =
     };
 
 const typedParameter = ({ name, type }: Ast.TypedParameter) =>
-    `${ppAstId(name)}: ${ppAstType(type)}`;
+    `${ppAstOptionalId(name)}: ${ppAstType(type)}`;
 
 export const ppTypedParameter: Printer<Ast.TypedParameter> = (param) => (c) =>
     c.row(typedParameter(param));
@@ -884,7 +924,6 @@ export const ppAstNode: Printer<Ast.AstNode> = makeVisitor<Ast.AstNode>()({
     id: exprNode(ppAstExpression),
     boolean: exprNode(ppAstExpression),
     string: exprNode(ppAstExpression),
-    simplified_string: exprNode(ppAstExpression),
     null: exprNode(ppAstExpression),
     address: exprNode(ppAstExpression),
     cell: exprNode(ppAstExpression),
@@ -907,6 +946,8 @@ export const ppAstNode: Printer<Ast.AstNode> = makeVisitor<Ast.AstNode>()({
     bounce: exprNode(ppAstReceiverKind),
     internal: exprNode(ppAstReceiverKind),
     external: exprNode(ppAstReceiverKind),
+
+    wildcard: exprNode(ppAstWildcard),
 
     module: ppAstModule,
     struct_decl: ppAstStruct,

@@ -184,17 +184,26 @@ let lumpPrice = fee - feeNoLump;
 fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int;
 ```
 
-Calculates and returns the so-called _original_ [forward fee][forward-fee] in [nanoToncoin][nano] [`Int{:tact}`][int] for an outgoing message based on the `fwdFee` obtained from the incoming message. If both the source and the destination addresses are in the [basechain][basechain], specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
+Calculates and returns the so-called _original_ [forward fee][forward-fee] in [nanoToncoin][nano] [`Int{:tact}`][int] for a message based on the given `fwdFee` of this message, which can be obtained by calling [`getForwardFee(){:tact}`](#getforwardfee). If both the source and the destination addresses are in the [basechain][basechain], specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
 
-This function is useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using [`getForwardFee(){:tact}`](#getforwardfee) alone. Even if you could, calculating the exact fee with [nanoToncoin][nano]-level precision can be very expensive, so the approximation given by this function is often good enough.
+The result is computed using the [`first_frac`][param-24-25] value, which is obtained from [config param 24 for the masterchain and config param 25 for the basechain][param-24-25] of TON Blockchain. Due to the current value of `first_frac` for all workchains, this function performs a cheaper equivalent calculation of `fwdFee * 3 / 2`. This ratio might change, so it is better not to hardcode it and use this function instead.
+
+This function can be useful when the outgoing message depends heavily on the structure of the incoming message, so you can try to approximate the forward fee for your outgoing message based on the fee the sender paid. Calculating the exact fee with [nanoToncoin][nano]-level precision can be very expensive, so the approximation given by this function is often good enough.
 
 Attempts to specify a negative value of `fwdFee` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
 ```tact
-let fwdFee: Int = context().readForwardFee();
-let origFee: Int = getOriginalFwdFee(fwdFee, false);
+// Context.readForwardFee() applies getOriginalFwdFee() at the end
+let origFwdFee: Int = context().readForwardFee();
+
+// Therefore, calling getOriginalFwdFee() on that value is redundant
+let origFwdFee2: Int = getOriginalFwdFee(origFwdFee, false);
+
+// ⌈(2 * origFwdFee2) / origFwdFee⌉ is equal to 3
+muldivc(2, origFwdFee2, origFwdFee) == 3; // true, but this relation
+                                          // can change in the future
 ```
 
 :::note[Useful links:]

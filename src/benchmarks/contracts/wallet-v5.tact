@@ -67,8 +67,9 @@ contract WalletV5(
     extensions: map<Int as uint256, Bool>
 ) {
     inline fun processSignedRequestExternal(msg: ExternalSignedRequest, isExternal: Bool) {
-        let signature = msg.toSlice().lastBits(512);
-        let signedSlice = msg.toSlice().skipLastBits(512);
+        let msgSlice = msg.toSlice();
+        let signature = msgSlice.lastBits(512);
+        let signedSlice = msgSlice.skipLastBits(512);
 
         let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
         if (!isSignatureValid) {
@@ -98,8 +99,9 @@ contract WalletV5(
 
     // duplicate of processSignedRequestExternal, but with InternalSignedRequest
     inline fun processSignedRequestInternal(msg: InternalSignedRequest, isExternal: Bool) {
-        let signature = msg.toSlice().lastBits(512);
-        let signedSlice = msg.toSlice().skipLastBits(512);
+        let msgSlice = msg.toSlice();
+        let signature = msgSlice.lastBits(512);
+        let signedSlice = msgSlice.skipLastBits(512);
 
         let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
         if (!isSignatureValid) {
@@ -138,7 +140,7 @@ contract WalletV5(
     inline fun processActions(actions: Slice, isExternal: Bool, isExtension: Bool) {
         let outActions = actions.loadMaybeRef();
         if (outActions != null) {
-            setC5(self.processSendMessages(outActions!!, isExternal));
+            setC5(processSendMessages(outActions!!, isExternal));
         }
 
         if (!actions.loadBool()) {
@@ -183,27 +185,6 @@ contract WalletV5(
         }
     }
 
-    inline fun processSendMessages(outActions: Cell, isExternal: Bool): Cell {
-        let cs = outActions.beginParseExotic().data;
-        let count = 0;
-
-        while (!cs.empty()) {
-            cs.enforceAndRemoveActionSendMsgPrefix();
-
-            throwUnless(147, cs.bits() == 8);
-            throwUnless(147, cs.refs() == 2);
-            throwIf(137, isExternal && (countTrailingZeroes(cs.preloadBits(7)) > 0));
-
-            cs = cs.preloadRef().beginParseExotic().data;
-            count += 1;
-        }
-
-        throwUnless(147, count <= 255);
-        throwUnless(147, cs.refs() == 0);
-
-        return outActions;
-    }
-
     receive(msg: InternalExtensionRequest) {
         let myAddr = parseStdAddress(myAddress().asSlice());
         let addr = parseStdAddress(sender().asSlice());
@@ -241,4 +222,25 @@ contract WalletV5(
     get fun get_extensions(): map<Int as uint256, Bool> {
         return self.extensions;
     }
+}
+
+inline fun processSendMessages(outActions: Cell, isExternal: Bool): Cell {
+    let cs = outActions.beginParseExotic().data;
+    let count = 0;
+
+    while (!cs.empty()) {
+        cs.enforceAndRemoveActionSendMsgPrefix();
+
+        throwUnless(147, cs.bits() == 8);
+        throwUnless(147, cs.refs() == 2);
+        throwIf(137, isExternal && (countTrailingZeroes(cs.preloadBits(7)) > 0));
+
+        cs = cs.preloadRef().beginParseExotic().data;
+        count += 1;
+    }
+
+    throwUnless(147, count <= 255);
+    throwUnless(147, cs.refs() == 0);
+
+    return outActions;
 }

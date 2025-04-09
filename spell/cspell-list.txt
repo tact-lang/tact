@@ -1,3 +1,4 @@
+Aksakov
 Aliaksandr
 alnum
 Ashimine
@@ -15,8 +16,6 @@ bitstrings
 blockstore
 bocchi
 bounceable
-bounceable
-bounceable
 Brujin
 CCITT
 cheatsheet
@@ -24,6 +23,7 @@ Cheatsheet
 cheatsheets
 Cheatsheets
 cleanall
+CNFT
 codegen
 compilables
 Compilables
@@ -51,7 +51,6 @@ Epva
 errno
 Esorat
 extracurrency
-extracurrency
 forall
 formedness
 frontmatter
@@ -62,12 +61,14 @@ Georgiy
 getsimpleforwardfee
 gettest
 guarantor
-guarantor
 Héctor
 hehe
 heisenbugs
+hippity
+Hoppity
 idict
 Ikko
+Ilya
 infixl
 infixr
 initof
@@ -94,6 +95,7 @@ Laika
 langle
 langtools
 letrec
+learnXinYminutes
 Liskov
 logomark
 lparen
@@ -115,9 +117,9 @@ mktemp
 multiformats
 nanoton
 nanotons
+Nemo
 Neovim
 nextra
-nobounce
 nobounce
 nocheck
 noexcept
@@ -160,7 +162,7 @@ shardchains
 shiki
 Shvetc
 skywardboundd
-Stateinit   
+Stateinit
 statinit
 stdlib
 stdlibs
@@ -206,6 +208,7 @@ varint
 varuint
 verytactical
 viiii
+Viltrum
 vogons
 Vsevolod
 workchain

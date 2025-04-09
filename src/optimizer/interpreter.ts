@@ -1,41 +1,42 @@
 import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
-import { crc32 } from "../utils/crc32";
-import type * as Ast from "../ast/ast";
-import { evalConstantExpression } from "./constEval";
-import { CompilerContext } from "../context/context";
+import { crc32 } from "@/utils/crc32";
+import type * as Ast from "@/ast/ast";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { CompilerContext } from "@/context/context";
 import {
     idTextErr,
     TactCompilationError,
     TactConstEvalError,
+    throwCompilationError,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../error/errors";
-import type { AstUtil } from "../ast/util";
-import { binaryOperationFromAugmentedAssignOperation } from "../ast/util";
-import { getAstUtil } from "../ast/util";
+} from "@/error/errors";
+import type { AstUtil } from "@/ast/util";
+import { binaryOperationFromAugmentedAssignOperation } from "@/ast/util";
+import { getAstUtil } from "@/ast/util";
 import {
     getStaticConstant,
     getStaticFunction,
     getType,
     hasStaticConstant,
     hasStaticFunction,
-} from "../types/resolveDescriptors";
-import { getExpType } from "../types/resolveExpression";
-import type { TypeRef } from "../types/types";
-import { showValue } from "../types/types";
-import { getParser, type Parser, type SrcInfo } from "../grammar";
-import { dummySrcInfo } from "../grammar";
-import type { FactoryAst } from "../ast/ast-helpers";
+} from "@/types/resolveDescriptors";
+import { getExpType } from "@/types/resolveExpression";
+import type { TypeRef } from "@/types/types";
+import { showValue } from "@/types/types";
+import { getParser, type Parser, type SrcInfo } from "@/grammar";
+import { dummySrcInfo } from "@/grammar";
+import type { FactoryAst } from "@/ast/ast-helpers";
 import {
     eqExpressions,
     eqNames,
     getAstFactory,
     idText,
     isSelfId,
-} from "../ast/ast-helpers";
-import { divFloor, modFloor } from "./util";
-import { sha256 } from "../utils/sha256";
+} from "@/ast/ast-helpers";
+import { divFloor, modFloor } from "@/optimizer/util";
+import { sha256 } from "@/utils/sha256";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -101,7 +102,7 @@ function ensureArgumentForEquality(val: Ast.Literal): Ast.Literal {
         case "cell":
         case "null":
         case "number":
-        case "simplified_string":
+        case "string":
         case "slice":
             return val;
         case "struct_value":
@@ -146,18 +147,6 @@ export function ensureString(val: Ast.Expression): Ast.String {
     if (val.kind !== "string") {
         throwErrorConstEval(
             `string expected, but got expression of kind '${val.kind}'`,
-            val.loc,
-        );
-    }
-    return val;
-}
-
-export function ensureSimplifiedString(
-    val: Ast.Expression,
-): Ast.SimplifiedString {
-    if (val.kind !== "simplified_string") {
-        throwErrorConstEval(
-            `simplified string expected, but got expression of kind '${val.kind}'`,
             val.loc,
         );
     }
@@ -427,61 +416,6 @@ export function evalBinaryOp(
     }
 }
 
-/**
- * @deprecated Strings in Tact fully follow JS grammar. Use JSON.parse(`"${value}"`) instead.
- */
-export function interpretEscapeSequences(
-    stringLiteral: string,
-    source: SrcInfo,
-): string {
-    return stringLiteral.replace(
-        /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]{1,6})}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
-        (match, unicodeCodePoint, unicodeEscape, hexEscape) => {
-            switch (match) {
-                case "\\\\":
-                    return "\\";
-                case '\\"':
-                    return '"';
-                case "\\n":
-                    return "\n";
-                case "\\r":
-                    return "\r";
-                case "\\t":
-                    return "\t";
-                case "\\v":
-                    return "\v";
-                case "\\b":
-                    return "\b";
-                case "\\f":
-                    return "\f";
-                default:
-                    // Handle Unicode code point escape
-                    if (unicodeCodePoint) {
-                        const codePoint = parseInt(unicodeCodePoint, 16);
-                        if (codePoint > 0x10ffff) {
-                            throwErrorConstEval(
-                                `unicode code point is outside of valid range 000000-10FFFF: ${stringLiteral}`,
-                                source,
-                            );
-                        }
-                        return String.fromCodePoint(codePoint);
-                    }
-                    // Handle Unicode escape
-                    if (unicodeEscape) {
-                        const codeUnit = parseInt(unicodeEscape, 16);
-                        return String.fromCharCode(codeUnit);
-                    }
-                    // Handle hex escape
-                    if (hexEscape) {
-                        const hexValue = parseInt(hexEscape, 16);
-                        return String.fromCharCode(hexValue);
-                    }
-                    return match;
-            }
-        },
-    );
-}
-
 class ReturnSignal extends Error {
     private value?: Ast.Literal;
 
@@ -531,17 +465,17 @@ class EnvironmentStack {
 
     /*
     Sets a binding for "name" in the **current** environment of the stack.
-    If a binding for "name" already exists in the current environment, it 
+    If a binding for "name" already exists in the current environment, it
     overwrites the binding with the provided value.
     As a special case, name "_" is ignored.
 
-    Note that this method does not check if binding "name" already exists in 
+    Note that this method does not check if binding "name" already exists in
     a parent environment.
-    This means that if binding "name" already exists in a parent environment, 
+    This means that if binding "name" already exists in a parent environment,
     it will be shadowed by the provided value in the current environment.
     This shadowing behavior is useful for modelling recursive function calls.
-    For example, consider the recursive implementation of factorial 
-    (for simplification purposes, it returns 1 for the factorial of 
+    For example, consider the recursive implementation of factorial
+    (for simplification purposes, it returns 1 for the factorial of
     negative numbers):
 
     1  fun factorial(a: Int): Int {
@@ -562,7 +496,7 @@ class EnvironmentStack {
 
     When factorial(1) = 1 finishes execution, the environment at the top
     of the stack is popped:
-    
+
     a = 4 <------- a = 3 <-------- a = 2
 
     and execution resumes at line 5 in the environment where a = 2,
@@ -572,7 +506,7 @@ class EnvironmentStack {
 
     a = 4 <------- a = 3
 
-    so that the return at line 5 (now in the environment a = 3) will 
+    so that the return at line 5 (now in the environment a = 3) will
     produce 3 * 2 = 6, and so on.
     */
     public setNewBinding(name: string, val: Ast.Literal) {
@@ -583,7 +517,7 @@ class EnvironmentStack {
 
     /*
     Searches the binding "name" in the stack, starting at the current
-    environment and moving towards the parent environments. 
+    environment and moving towards the parent environments.
     If it finds the binding, it updates its value
     to "val". If it does not find "name", the stack is unchanged.
     As a special case, name "_" is always ignored.
@@ -599,7 +533,7 @@ class EnvironmentStack {
 
     /*
     Searches the binding "name" in the stack, starting at the current
-    environment and moving towards the parent environments. 
+    environment and moving towards the parent environments.
     If it finds "name", it returns its value.
     If it does not find "name", it returns undefined.
     As a special case, name "_" always returns undefined.
@@ -692,19 +626,19 @@ const defaultInterpreterConfig: InterpreterConfig = {
 };
 
 /*
-Interprets Tact AST trees. 
-The constructor receives an optional CompilerContext which includes 
+Interprets Tact AST trees.
+The constructor receives an optional CompilerContext which includes
 all external declarations that the interpreter will use during interpretation.
-If no CompilerContext is provided, the interpreter will use an empty 
+If no CompilerContext is provided, the interpreter will use an empty
 CompilerContext.
 
-**IMPORTANT**: if a custom CompilerContext is provided, it should be the 
-CompilerContext provided by the typechecker. 
+**IMPORTANT**: if a custom CompilerContext is provided, it should be the
+CompilerContext provided by the typechecker.
 
-The reason for requiring a CompilerContext is that the interpreter should work 
+The reason for requiring a CompilerContext is that the interpreter should work
 in the use case where the interpreter only knows part of the code.
-For example, consider the following code (I marked with brackets [ ] the places 
-where the interpreter gets called during expression simplification in the 
+For example, consider the following code (I marked with brackets [ ] the places
+where the interpreter gets called during expression simplification in the
 compilation phase):
 
 const C: Int = [1];
@@ -716,10 +650,10 @@ contract TestContract {
    }
 }
 
-When the interpreter gets called inside the brackets, it does not know what 
-other code is surrounding those brackets, because the interpreter did not execute the 
-code outside the brackets. Hence, it relies on the typechecker to receive the 
-CompilerContext that includes the declarations in the code 
+When the interpreter gets called inside the brackets, it does not know what
+other code is surrounding those brackets, because the interpreter did not execute the
+code outside the brackets. Hence, it relies on the typechecker to receive the
+CompilerContext that includes the declarations in the code
 (the constant C for example).
 
 Since the interpreter relies on the typechecker, it assumes that the given AST tree
@@ -897,8 +831,6 @@ export class Interpreter {
                 return this.interpretNumber(ast);
             case "string":
                 return this.interpretString(ast);
-            case "simplified_string":
-                return this.interpretSimplifiedString(ast);
             case "address":
                 return this.interpretAddress(ast);
             case "cell":
@@ -970,7 +902,7 @@ export class Interpreter {
         switch (idText(ast.method)) {
             case "asComment": {
                 ensureMethodArity(0, ast.args, ast.loc);
-                const comment = ensureSimplifiedString(
+                const comment = ensureString(
                     this.interpretExpressionInternal(ast.self),
                 ).value;
                 return this.util.makeCellLiteral(
@@ -1015,17 +947,8 @@ export class Interpreter {
         return ensureInt(ast);
     }
 
-    private interpretString(ast: Ast.String): Ast.SimplifiedString {
-        return this.util.makeSimplifiedStringLiteral(
-            interpretEscapeSequences(ast.value, ast.loc),
-            ast.loc,
-        );
-    }
-
-    private interpretSimplifiedString(
-        ast: Ast.SimplifiedString,
-    ): Ast.SimplifiedString {
-        return ast;
+    private interpretString(ast: Ast.String): Ast.String {
+        return ensureString(ast);
     }
 
     private interpretAddress(ast: Ast.Address): Ast.Address {
@@ -1092,8 +1015,15 @@ export class Interpreter {
         const resultMap: Map<string, Ast.Literal> = new Map();
 
         for (const field of structTy.fields) {
-            if (typeof field.default !== "undefined") {
-                resultMap.set(field.name, field.default);
+            const fieldInit = field.ast.initializer;
+            if (fieldInit) {
+                const defaultValue =
+                    field.default ??
+                    evalConstantExpression(fieldInit, this.context, this.util);
+
+                if (typeof defaultValue !== "undefined") {
+                    resultMap.set(field.name, defaultValue);
+                }
             } else {
                 if (field.type.kind === "ref" && field.type.optional) {
                     resultMap.set(
@@ -1232,15 +1162,33 @@ export class Interpreter {
         switch (idText(ast.function)) {
             case "ton": {
                 ensureFunArity(1, ast.args, ast.loc);
-                const tons = ensureSimplifiedString(
+                const tons = ensureString(
                     this.interpretExpressionInternal(ast.args[0]!),
                 );
+                if (tons.value.trim().length === 0) {
+                    throwCompilationError(
+                        "ton() function requires a non-empty value",
+                        tons.loc,
+                    );
+                }
+
+                const value = this.parseTonBuiltinValue(tons);
+                if (typeof value === "undefined") {
+                    throwCompilationError(
+                        "ton() function requires a valid number with no more than 10 digits after the decimal point",
+                        tons.loc,
+                    );
+                }
+                if (value < 0) {
+                    throwCompilationError(
+                        "ton() function requires a non-negative number",
+                        tons.loc,
+                    );
+                }
+
                 try {
                     return ensureInt(
-                        this.util.makeNumberLiteral(
-                            BigInt(toNano(tons.value).toString(10)),
-                            ast.loc,
-                        ),
+                        this.util.makeNumberLiteral(value, ast.loc),
                     );
                 } catch (e) {
                     if (e instanceof Error && e.message === "Invalid number") {
@@ -1318,7 +1266,7 @@ export class Interpreter {
                         ast.loc,
                     );
                 }
-                const str = ensureSimplifiedString(expr);
+                const str = ensureString(expr);
                 return this.util.makeNumberLiteral(
                     sha256(str.value).value,
                     ast.loc,
@@ -1331,7 +1279,7 @@ export class Interpreter {
             case "cell":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureSimplifiedString(
+                    const str = ensureString(
                         this.interpretExpressionInternal(ast.args[0]!),
                     );
                     try {
@@ -1350,7 +1298,7 @@ export class Interpreter {
             case "slice":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureSimplifiedString(
+                    const str = ensureString(
                         this.interpretExpressionInternal(ast.args[0]!),
                     );
                     try {
@@ -1369,7 +1317,7 @@ export class Interpreter {
             case "rawSlice":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureSimplifiedString(
+                    const str = ensureString(
                         this.interpretExpressionInternal(ast.args[0]!),
                     );
 
@@ -1426,7 +1374,7 @@ export class Interpreter {
             case "ascii":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureSimplifiedString(
+                    const str = ensureString(
                         this.interpretExpressionInternal(ast.args[0]!),
                     );
                     const hex = Buffer.from(str.value).toString("hex");
@@ -1451,7 +1399,7 @@ export class Interpreter {
             case "crc32":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureSimplifiedString(
+                    const str = ensureString(
                         this.interpretExpressionInternal(ast.args[0]!),
                     );
                     return this.util.makeNumberLiteral(
@@ -1463,7 +1411,7 @@ export class Interpreter {
             case "address":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureSimplifiedString(
+                    const str = ensureString(
                         this.interpretExpressionInternal(ast.args[0]!),
                     );
                     try {
@@ -1562,6 +1510,15 @@ export class Interpreter {
         }
     }
 
+    private parseTonBuiltinValue(tons: Ast.String): bigint | undefined {
+        try {
+            const value = toNano(tons.value);
+            return BigInt(value.toString(10));
+        } catch {
+            return undefined;
+        }
+    }
+
     private evalStaticFunction(
         functionCode: Ast.FunctionDef,
         args: readonly Ast.Expression[],
@@ -1570,8 +1527,8 @@ export class Interpreter {
         // Evaluate the arguments in the current environment
         const argValues = args.map(this.interpretExpressionInternal, this);
         // Extract the parameter names
-        const paramNames = functionCode.params.map((param) =>
-            idText(param.name),
+        const paramNames = functionCode.params.flatMap((param) =>
+            param.name.kind === "id" ? [idText(param.name)] : [],
         );
         // Check parameter names do not shadow constants
         if (
@@ -1672,23 +1629,32 @@ export class Interpreter {
     }
 
     private interpretLetStatement(ast: Ast.StatementLet) {
-        if (hasStaticConstant(this.context, idText(ast.name))) {
+        if (ast.name.kind === "wildcard") {
+            this.interpretExpressionInternal(ast.expression);
+            return;
+        }
+        const id = idText(ast.name);
+        if (hasStaticConstant(this.context, id)) {
             // Attempt of shadowing a constant in a let declaration
             throwInternalCompilerError(
-                `declaration of ${idText(ast.name)} shadows a constant with the same name`,
+                `declaration of ${id} shadows a constant with the same name`,
                 ast.loc,
             );
         }
         const val = this.interpretExpressionInternal(ast.expression);
-        this.envStack.setNewBinding(idText(ast.name), val);
+        this.envStack.setNewBinding(id, val);
     }
 
     private interpretDestructStatement(ast: Ast.StatementDestruct) {
         for (const [_, name] of ast.identifiers.values()) {
-            if (hasStaticConstant(this.context, idText(name))) {
+            if (name.kind !== "id") {
+                continue;
+            }
+            const id = idText(name);
+            if (hasStaticConstant(this.context, id)) {
                 // Attempt of shadowing a constant in a destructuring declaration
                 throwInternalCompilerError(
-                    `declaration of ${idText(name)} shadows a constant with the same name`,
+                    `declaration of ${id} shadows a constant with the same name`,
                     ast.loc,
                 );
             }
@@ -1708,7 +1674,7 @@ export class Interpreter {
         val.args.forEach((f) => valAsMap.set(idText(f.field), f.initializer));
 
         for (const [field, name] of ast.identifiers.values()) {
-            if (name.text === "_") {
+            if (name.kind === "wildcard") {
                 continue;
             }
             const v = valAsMap.get(idText(field));

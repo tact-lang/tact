@@ -9,6 +9,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Language features
 
+- Optimized message deserialization with native loading of `Maybe Cell` fields: PR [#2661](https://github.com/tact-lang/tact/pull/2661)
+- [fix] Compiler now disallows `ton()` with empty or blank string: PR [#2681](https://github.com/tact-lang/tact/pull/2681)
+- [fix] Compiler now disallows `ton()` with invalid number value or negative numbers: PR [#2684](https://github.com/tact-lang/tact/pull/2684)
+- [fix] Compiler now shows a more informative error message for abstract functions and constants without a body: PR [#2688](https://github.com/tact-lang/tact/pull/2688)
+- [fix] Compiler now correctly processes nested structs with default values in the interpreter: PR [#2687](https://github.com/tact-lang/tact/pull/2687)
+- [fix] Compiler now correctly compiles contracts with optional struct fields with default values: PR [#2683](https://github.com/tact-lang/tact/pull/2683)
+- [fix] Compiler now shows a more informative error message for unsupported assembly functions inside traits and contracts: PR [#2689](https://github.com/tact-lang/tact/pull/2689)
+
+### Standard Library
+
+- Added compute phase exit code constants reserved by the Tact compiler: `TactExitCodeNullReferenceException`, `TactExitCodeInvalidSerializationPrefix`, `TactExitCodeInvalidIncomingMessage`, `TactExitCodeConstraintsError`, `TactExitCodeAccessDenied`, `TactExitCodeContractStopped`, `TactExitCodeInvalidArgument`, `TactExitCodeContractCodeNotFound`, `TactExitCodeInvalidStandardAddress`, `TactExitCodeNotBasechainAddress`: PR [#2527](https://github.com/tact-lang/tact/pull/2527)
+- Added the `SignedBundle` struct and the corresponding `verifySignature` method: PR [#2627](https://github.com/tact-lang/tact/pull/2627)
+
+### TypeScript third-party API
+
+- Support contract parameters in the AST printer: PR [#2658](https://github.com/tact-lang/tact/pull/2658)
+
+### Docs
+
+- Fixed code example of the `initOf` expression to highlight support for contract parameters: PR [#2550](https://github.com/tact-lang/tact/pull/2550)
+- Fixed the description of the Tact-reserved exit code 129 and expanded descriptions of functions that can throw it, such as `Message.fromCell()` and `Message.fromSlice()`: PR [#2604](https://github.com/tact-lang/tact/pull/2604)
+- Added "Learn Tact in Y minutes" page to the Book: PR [#2375](https://github.com/tact-lang/tact/pull/2375)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+- [skywardboundd](https://github.com/skywardboundd)
+- [Petr Makhnev](https://github.com/i582)
+
+## [1.6.5] - 2025-03-28
+
+### Language features
+
 - Optimized `Context().sender` to use `sender()` function for better gas efficiency: PR [#2427](https://github.com/tact-lang/tact/pull/2427)
 - [fix] Ternary operator with struct and null: PR [#2432](https://github.com/tact-lang/tact/pull/2432)
 - [fix] Show an error message for assembly functions with the `get` attribute: PR [#2484](https://github.com/tact-lang/tact/pull/2484)
@@ -16,10 +49,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Always show an error when calling the `dump()` function with an argument of the unsupported `StringBuilder` type: PR [#2491](https://github.com/tact-lang/tact/pull/2491)
 - [fix] The grammar now disallows the augmented assignment operators with whitespace between the operator and the equals sign: PR [#2492](https://github.com/tact-lang/tact/pull/2492)
 - [fix] Generated code now short-circuits `&&=` and `||=` operators: PR [#2494](https://github.com/tact-lang/tact/pull/2494)
+- [fix] Get methods that return optional contract state now work correctly: PR [#2512](https://github.com/tact-lang/tact/pull/2512)
+- [fix] Get methods that return contract state for empty contracts now work correctly: PR [#2517](https://github.com/tact-lang/tact/pull/2517)
+- [fix] Skip checking if the slice has been parsed completely when parsing a message (`Message.fromSlice()`) with the last field of the type `Slice as remaining`: PR [#2524](https://github.com/tact-lang/tact/pull/2524)
+- [fix] The wildcard symbol (`_`) cannot be used as an identifier in any context, including struct/message fields or contract names: PR [#2519](https://github.com/tact-lang/tact/pull/2519)
 
 ### Standard Library
 
 - Deprecated the `SendPayGasSeparately` constant in favor of `SendPayFwdFeesSeparately`: PR [#2483](https://github.com/tact-lang/tact/pull/2483)
+- Time-related functions are now located in the `std/internal/time.tact` file: PR [#2507](https://github.com/tact-lang/tact/pull/2507)
 - [fix] The `Stoppable` trait now uses `throwUnless` with exit code 133 instead of `require` with "Contract stopped" message: PR [#2503](https://github.com/tact-lang/tact/pull/2503)
 
 ### Code generation
@@ -28,13 +66,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Internal infrastructure
 
-- `internalExternalReceiversOutsideMethodsMap` have been reworked to ensure compatibility with explorers: PR [#2398](https://github.com/tact-lang/tact/pull/2398)
+- `internalExternalReceiversOutsideMethodsMap` has been reworked to ensure compatibility with explorers: PR [#2398](https://github.com/tact-lang/tact/pull/2398)
 
 ### Docs
 
 - Fixed description of the `dump()` function, which does not support values of `StringBuilder` type: PR [#2463](https://github.com/tact-lang/tact/pull/2463)
 - Explicitly stated that structs cannot be empty, while message structs can: PR [#2464](https://github.com/tact-lang/tact/pull/2464)
 - Fixed description of the `contractAddressExt()` function, which currently does not resolve constant values at compile-time and allows specifying arbitrary `chain` IDs: PR [#2497](https://github.com/tact-lang/tact/pull/2497)
+- Fixed description of `getOriginalFwdFee()` and `Context.readForwardFee()` functions, where the latter calls the former at the end of its execution: PR [#2521](https://github.com/tact-lang/tact/pull/2521)
 
 ### Release contributors
 
@@ -44,6 +83,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Petr Makhnev](https://github.com/i582)
 - [skywardboundd](https://github.com/skywardboundd)
 - [Anton Trunov](https://github.com/anton-trunov)
+
+### Special thanks
+
+- [Ilya Aksakov](https://github.com/ilyaAksakov) and the [RSquad](https://github.com/rsquad) team
 
 ## [1.6.4] - 2025-03-18
 

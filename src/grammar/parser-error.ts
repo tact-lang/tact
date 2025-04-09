@@ -1,4 +1,4 @@
-import type { ErrorDisplay } from "../error/display";
+import type { ErrorDisplay } from "@/error/display";
 
 const attributeSchema =
     (name: string) =>
@@ -10,7 +10,7 @@ const attributeSchema =
         },
         notAbstract: () => {
             return handle(
-                sub`Abstract ${text(name)} doesn't have abstract modifier`,
+                sub`Abstract ${text(name)} can only be declared inside traits and should have the abstract modifier`,
             );
         },
         tooAbstract: () => {
@@ -163,6 +163,17 @@ export const syntaxErrorSchema = <T, U>(
         },
         unknownGeneric: () => {
             return handle(sub`Unknown generic type`);
+        },
+        noWildcard: () => {
+            return handle(text(`Wildcard not allowed here`));
+        },
+        undefinedUnicodeCodepoint: () => {
+            return handle(text(`Undefined Unicode code-point`));
+        },
+        unsupportedAsmFunctionInContracts: () => {
+            return handle(
+                sub`Assembly functions are only allowed at the module level - outside contracts or traits`,
+            );
         },
     };
 };

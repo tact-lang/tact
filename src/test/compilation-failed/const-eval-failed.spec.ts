@@ -1,4 +1,4 @@
-import { itShouldNotCompile } from "./util";
+import { itShouldNotCompile } from "@/test/compilation-failed/util";
 
 describe("fail-const-eval", () => {
     itShouldNotCompile({
@@ -48,7 +48,7 @@ describe("fail-const-eval", () => {
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-ton1",
-        errorMessage: `Cannot evaluate expression to a constant: invalid "ton" argument`,
+        errorMessage: `ton() function requires a valid number with no more than 10 digits after the decimal point`,
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-ton2",

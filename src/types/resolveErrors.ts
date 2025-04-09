@@ -1,20 +1,20 @@
-import type { CompilerContext } from "../context/context";
-import { createContextStore } from "../context/context";
-import type { AstNode } from "../ast/ast";
-import type { FactoryAst } from "../ast/ast-helpers";
-import { isRequire } from "../ast/ast-helpers";
-import { traverse } from "../ast/iterators";
-import { evalConstantExpression } from "../optimizer/constEval";
-import { throwInternalCompilerError } from "../error/errors";
+import type { CompilerContext } from "@/context/context";
+import { createContextStore } from "@/context/context";
+import type { AstNode } from "@/ast/ast";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { isRequire } from "@/ast/ast-helpers";
+import { traverse } from "@/ast/iterators";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { throwInternalCompilerError } from "@/error/errors";
 import {
     getAllStaticFunctions,
     getAllTypes,
     getAllStaticConstants,
-} from "./resolveDescriptors";
-import { ensureSimplifiedString } from "../optimizer/interpreter";
-import type { AstUtil } from "../ast/util";
-import { getAstUtil } from "../ast/util";
-import { sha256, highest32ofSha256 } from "../utils/sha256";
+} from "@/types/resolveDescriptors";
+import type { AstUtil } from "@/ast/util";
+import { getAstUtil } from "@/ast/util";
+import { sha256, highest32ofSha256 } from "@/utils/sha256";
+import { ensureString } from "@/optimizer/interpreter";
 
 type Exception = { value: string; id: number };
 
@@ -38,7 +38,7 @@ function resolveStringsInAST(
             if (node.args.length !== 2) {
                 return;
             }
-            const resolved = ensureSimplifiedString(
+            const resolved = ensureString(
                 evalConstantExpression(node.args[1]!, ctx, util),
             ).value;
             if (!exceptions.get(ctx, resolved)) {

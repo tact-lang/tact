@@ -26,16 +26,16 @@
 extends fun asAddress(self: Slice, chain: Int): Address {
     // 11 bits for the prefix,
     // 256 bits for the address itself
-    throwUnless(136, self.bits() == 267);
+    throwUnless(TactExitCodeInvalidStandardAddress, self.bits() == 267);
 
     if (chain == -1) {
         // 1279 = 0b100_1111_1111,
         // i.e. internal address prefix and chain ID -1
-        throwUnless(136, self.preloadUint(11) == 1279);
+        throwUnless(TactExitCodeInvalidStandardAddress, self.preloadUint(11) == 1279);
     } else {
         // Only check the correct internal address prefix,
         // but do not verify the chain ID
-        throwUnless(136, self.preloadUint(3) == 4);
+        throwUnless(TactExitCodeInvalidStandardAddress, self.preloadUint(3) == 4);
     }
 
     // Proceed with the cast
@@ -230,7 +230,7 @@ asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 /// * 8: [Cell overflow] — Thrown when attempting to skip an `Address` when `Slice` doesn't contain it.
 /// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceskipaddress
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9

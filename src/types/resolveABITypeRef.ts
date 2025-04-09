@@ -1,5 +1,5 @@
 import type { ABITypeRef } from "@ton/core";
-import type * as Ast from "../ast/ast";
+import type * as Ast from "@/ast/ast";
 import {
     eqNames,
     idText,
@@ -11,16 +11,16 @@ import {
     isSlice,
     isString,
     isStringBuilder,
-} from "../ast/ast-helpers";
+} from "@/ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
-import type { TypeRef } from "./types";
-import type { CompilerContext } from "../context/context";
-import { getType } from "./resolveDescriptors";
-import type { SrcInfo } from "../grammar";
+} from "@/error/errors";
+import type { TypeRef } from "@/types/types";
+import type { CompilerContext } from "@/context/context";
+import { getType } from "@/types/resolveDescriptors";
+import type { SrcInfo } from "@/grammar";
 
 type FormatDef = Record<
     string,

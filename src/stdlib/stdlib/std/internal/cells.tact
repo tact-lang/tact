@@ -424,7 +424,7 @@ asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 /// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadref
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipref
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
@@ -517,7 +517,7 @@ asm(-> 1 0) extends mutates fun loadMaybeRef(self: Slice): Cell? { LDOPTREF }
 /// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadmayberef
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipmayberef
 /// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
@@ -841,7 +841,7 @@ asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
 /// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipcoins
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
@@ -895,8 +895,8 @@ asm( -> 1 0) extends mutates fun loadVarUint16(self: Slice): Int { LDVARUINT16 }
 /// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint16
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipvaruint16
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipcoins
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
@@ -949,7 +949,7 @@ asm( -> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
 /// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadvarint16
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipvarint16
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
@@ -1002,7 +1002,7 @@ asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
 /// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint32
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipvaruint32
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
@@ -1055,7 +1055,7 @@ asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
 /// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint32
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipvaruint32
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
