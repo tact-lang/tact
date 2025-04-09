@@ -229,15 +229,15 @@ type TreeStats = {
     size: number;
 };
 
-function getRows<K>(dist: Map<K, TreeStats>): string[] {
+function getRows(dist: Map<string, TreeStats>): string[] {
     const rows: string[] = [];
-    for (const [_, stats] of dist) {
-        rows.push(`${stats.count} ${stats.height} ${stats.size}`);
+    for (const [tree, stats] of dist) {
+        rows.push(`${tree} ${stats.count} ${stats.height} ${stats.size}`);
     }
     return rows;
 }
 
-function statistics(
+export function statistics(
     gen: fc.Arbitrary<Ast.Expression>,
     numberOfSamples: number,
     fileName: string,
@@ -257,7 +257,7 @@ function statistics(
 
     fs.writeFileSync(
         fileName,
-        `count height size\n${getRows(totalPreTraversals).join("\n")}`,
+        `tree count height size\n${getRows(totalPreTraversals).join("\n")}`,
     );
 }
 

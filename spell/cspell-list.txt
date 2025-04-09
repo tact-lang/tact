@@ -114,6 +114,7 @@ mintable
 misparse
 misparsed
 mktemp
+mult
 multiformats
 nanoton
 nanotons
