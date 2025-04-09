@@ -94,7 +94,7 @@ export type CompilationCtx = {
 
 export type CompileTactRes = {
     readonly abi: string;
-    readonly codeFunC: FuncSources[];
+    readonly funcSources: FuncSources;
     readonly entrypointPath: string;
     readonly constants: {
         readonly name: string;
@@ -278,7 +278,7 @@ async function compileContract(contract: TypeDescription, ctx: CompilationCtx) {
         ctx,
         contractName,
         compileRes.entrypointPath,
-        compileRes.codeFunC,
+        compileRes.funcSources,
     );
 
     if (typeof codeBoc === "undefined") {
@@ -329,7 +329,7 @@ async function compileFunc(
     ctx: CompilationCtx,
     contract: string,
     entrypointPath: string,
-    codeFunC: FuncSources[],
+    funcSources: FuncSources,
 ): Promise<Buffer | undefined> {
     const { project, config, logger, errorMessages, stdlib } = ctx;
 
@@ -367,7 +367,7 @@ async function compileFunc(
                     path: stdlibExPath,
                     content: stdlibExCode,
                 },
-                ...codeFunC,
+                funcSources,
             ],
             logger,
         });
@@ -405,11 +405,6 @@ async function compileTact(
 ): Promise<CompileTactRes | undefined> {
     const { project, config, built } = ctx;
 
-    const pathAbi = project.resolve(
-        config.output,
-        `${config.name}_${contract}.abi`,
-    );
-
     try {
         const res = await compile(
             ctx.ctx,
@@ -418,22 +413,27 @@ async function compileTact(
             built,
         );
 
-        for (const files of res.output.files) {
-            const ffc = project.resolve(config.output, files.name);
-            project.writeFile(ffc, files.code);
-        }
+        const { funcFile } = res.output;
 
+        const pathFunc = project.resolve(config.output, funcFile.name);
+        project.writeFile(pathFunc, funcFile.code);
+
+        const pathAbi = project.resolve(
+            config.output,
+            `${config.name}_${contract}.abi`,
+        );
         project.writeFile(pathAbi, res.output.abi);
-        const abi = res.output.abi;
-        const codeFunC: FuncSources[] = res.output.files.map((v) => ({
-            path: posixNormalize(project.resolve(config.output, v.name)),
-            content: v.code,
-        }));
 
+        const funcSources: FuncSources = {
+            path: posixNormalize(project.resolve(config.output, funcFile.name)),
+            content: funcFile.code,
+        };
+
+        const abi = res.output.abi;
         const entrypointPath = res.output.entrypoint;
         const constants = [...res.output.constants];
 
-        return { abi, codeFunC, entrypointPath, constants };
+        return { abi, funcSources, entrypointPath, constants };
     } catch (e) {
         ctx.logger.error("Tact compilation failed");
         // show an error with a backtrace only in verbose mode
@@ -443,8 +443,8 @@ async function compileTact(
             ctx.logger.error(e as Error);
         }
         ctx.errorMessages.push(e as Error);
-        return undefined;
     }
+    return undefined;
 }
 
 function doPackaging(ctx: CompilationCtx): Packages | undefined {
