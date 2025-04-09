@@ -960,6 +960,15 @@ exports[`resolveDescriptors should fail descriptors for struct-field-with-contra
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for struct-field-with-trait-type 1`] = `
+"<unknown>:6:5: Fields with a trait type are not supported
+  5 | struct TakeData {
+> 6 |     data: Test;
+          ^~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for ton-with-blank-string 1`] = `
 "<unknown>:3:22: ton() function requires a non-empty value
   2 | 
