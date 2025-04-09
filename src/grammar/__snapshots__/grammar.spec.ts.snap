@@ -19,7 +19,7 @@ exports[`should fail asm-function-in-contract.fail 1`] = `
 `;
 
 exports[`should fail asm-function-in-trait.fail 1`] = `
-"<unknown>:2:5: Assembly functions are only allowed at the module level (outside contracts/traits)
+"<unknown>:2:5: Assembly functions are only allowed at the module level - outside contracts or traits
   1 | trait AssemblyTest {
 > 2 |     asm fun depth(): Int { DEPTH }
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
