@@ -46,11 +46,11 @@
       }
     },
     {
-      "label": "1.6.4 with With stdlib jetton",
-      "pr": "https://github.com/tact-lang/tact/pull/2509",
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
       "gas": {
-        "transfer": "15904",
-        "burn": "12391",
+        "transfer": "15791",
+        "burn": "11919",
         "discovery": "5870"
       }
     }

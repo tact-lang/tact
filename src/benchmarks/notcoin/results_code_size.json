@@ -51,13 +51,13 @@
       }
     },
     {
-      "label": "1.6.4 with With stdlib jetton",
-      "pr": "https://github.com/tact-lang/tact/pull/2509",
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
       "size": {
         "minter cells": "30",
-        "minter bits": "16798",
+        "minter bits": "16238",
         "wallet cells": "14",
-        "wallet bits": "8524"
+        "wallet bits": "8084"
       }
     }
   ]

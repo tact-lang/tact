@@ -67,8 +67,9 @@ contract WalletV5(
     extensions: map<Int as uint256, Bool>
 ) {
     inline fun processSignedRequestExternal(msg: ExternalSignedRequest, isExternal: Bool) {
-        let signature = msg.toSlice().lastBits(512);
-        let signedSlice = msg.toSlice().skipLastBits(512);
+        let msgSlice = msg.toSlice();
+        let signature = msgSlice.lastBits(512);
+        let signedSlice = msgSlice.skipLastBits(512);
 
         let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
         if (!isSignatureValid) {
@@ -98,8 +99,9 @@ contract WalletV5(
 
     // duplicate of processSignedRequestExternal, but with InternalSignedRequest
     inline fun processSignedRequestInternal(msg: InternalSignedRequest, isExternal: Bool) {
-        let signature = msg.toSlice().lastBits(512);
-        let signedSlice = msg.toSlice().skipLastBits(512);
+        let msgSlice = msg.toSlice();
+        let signature = msgSlice.lastBits(512);
+        let signedSlice = msgSlice.skipLastBits(512);
 
         let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
         if (!isSignatureValid) {

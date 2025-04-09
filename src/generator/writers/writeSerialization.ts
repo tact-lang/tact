@@ -191,7 +191,7 @@ function writeSerializerField(
                     {
                         if (op.optional) {
                             ctx.append(
-                                `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(${fieldName}) : build_${gen}.store_int(false, 1);`,
+                                `build_${gen} = build_${gen}.store_maybe_ref(${fieldName});`,
                             );
                         } else {
                             ctx.append(
@@ -539,9 +539,7 @@ function writeFieldParser(
                 if (op.format !== "default") {
                     throw new Error(`Impossible`);
                 }
-                ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref() : null();`,
-                );
+                ctx.append(`${varName} = sc_${gen}~load_maybe_ref();`);
             } else {
                 switch (op.format) {
                     case "default":

@@ -9,7 +9,7 @@ message(0x706c7567) PluginRequestFunds {
 }
 
 message ExternalRequest {
-    signature: Slice as bytes64;
+    bundle: SignedBundle;
     walletId: Int as int32;
     validUntil: Int as uint32;
     seqno: Int as uint32;
@@ -36,16 +36,20 @@ struct RawMsgWithDeploy {
     body: Cell;
 }
 
+struct ContractState {
+    seqno: Int as uint32;
+    walletId: Int as int32;
+    publicKey: Int as uint256;
+    extensions: map<Address, Bool>;
+}
+
 contract WalletV4(
-    seqno: Int as uint32,
-    walletId: Int as int32,
-    publicKey: Int as uint256,
-    extensions: map<Address, Bool>
+    state: ContractState,
 ) {
     receive(msg: PluginRequestFunds) {
         let addr = sender(); // check gas for ctx
 
-        if (!self.extensions.exists(addr)) {
+        if (!self.state.extensions.exists(addr)) {
             return;
         }
 
@@ -54,50 +58,51 @@ contract WalletV4(
         // NOTE: Here and later we use RawMsg with nativeSendMessage because
         // in v4 wallet implementation message bodies are stored as slices in the same cell
         // instead of separate cell with ref. Our send built-ins (message, send) doesn't support such serialization
-        nativeSendMessage(RawMsg {
+        nativeSendMessage(
+            RawMsg {
                 queryId: msg.queryId,
                 op: 0x706c7567 | 0x80000000,
                 extra: msg.extra,
                 amount: msg.amount,
                 receiver: addr,
             }.toCell(),
-            64
+            64,
         );
     }
 
     receive(msg: RemovePlugin) {
         let addr = sender(); // check gas for ctx
 
-        if (!self.extensions.exists(addr)) {
+        if (!self.state.extensions.exists(addr)) {
             return;
         }
 
-        self.extensions.del(addr);
+        self.state.extensions.del(addr);
 
         if (context().bounceable) {
-            nativeSendMessage(RawMsg {
+            nativeSendMessage(
+                RawMsg {
                     queryId: msg.queryId,
                     op: 0x64737472 | 0x80000000,
                     extra: null,
                     amount: 0,
                     receiver: addr,
                 }.toCell(),
-                64
+                64,
             );
         }
     }
 
     external(msg: ExternalRequest) {
         throwIf(36, msg.validUntil < now());
-        throwUnless(33, msg.seqno == self.seqno);
-        throwUnless(34, msg.walletId == self.walletId);
-        let msgSlice = msg.toSlice();
-        msgSlice.skipBits(32 + 512); // tact receiver op + signature skip
-        throwUnless(35, checkSignature(msgSlice.hash(), msg.signature, self.publicKey));
+        throwUnless(33, msg.seqno == self.state.seqno);
+        throwUnless(34, msg.walletId == self.state.walletId);
+        throwUnless(35, msg.bundle.verifySignature(self.state.publicKey));
 
         acceptMessage();
-        self.seqno += 1;
-        commit(); // NOTE: fix, blocked by #2073
+        self.state.seqno += 1;
+        setData(self.state.toCell());
+        commit();
 
         // simple transfer
         if (msg.op == 0) {
@@ -108,7 +113,7 @@ contract WalletV4(
                 nativeSendMessage(ref, mode);
             }
             */
-            while (payload.refs() > 0) {
+            while (payload.refs() != 0) {
                 let mode = payload.loadUint(8);
                 nativeSendMessage(payload.loadRef(), mode);
             }
@@ -122,84 +127,85 @@ contract WalletV4(
             let amount = payload.loadCoins();
             let stateInit = payload.loadRef();
             let body = payload.loadRef();
-                        
+
             let addr = newAddress(wc, stateInit.hash());
             // cant use deploy here because of only basechain support
-            nativeSendMessage(RawMsgWithDeploy {
+            nativeSendMessage(
+                RawMsgWithDeploy {
                     stateInit,
                     body,
                     amount,
                     receiver: addr,
                 }.toCell(),
-            3
+                3,
             );
 
-            self.extensions.set(addr, true);
-        }
-
-        // add plugin
-        if (msg.op == 2) {
+            self.state.extensions.set(addr, true);
+        } else if (msg.op == 2) {
+            // add plugin
             let payload = msg.payload;
             let addr = payload.loadAddress();
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
 
-            self.extensions.set(addr, true);
+            self.state.extensions.set(addr, true);
 
-            nativeSendMessage(RawMsg {
+            nativeSendMessage(
+                RawMsg {
                     queryId,
                     op: 0x6e6f7465,
                     extra: null,
                     amount,
                     receiver: addr,
                 }.toCell(),
-                64
+                64,
             );
-        }
-
-        // remove plugin
-        if (msg.op == 3) {
+        } else if (msg.op == 3) {
+            // remove plugin
             let payload = msg.payload;
             let addr = payload.loadAddress();
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
 
-            throwUnless(39, self.extensions.del(addr));
+            throwUnless(39, self.state.extensions.del(addr));
 
-            nativeSendMessage(RawMsg {
+            nativeSendMessage(
+                RawMsg {
                     queryId,
                     op: 0x64737472,
                     extra: null,
                     amount: amount,
                     receiver: addr,
                 }.toCell(),
-                64
+                64,
             );
         }
     }
-    
+
     receive(_: Slice) {
         // Fallback
     }
 
     get fun seqno(): Int {
-        return self.seqno;
+        return self.state.seqno;
     }
 
     get fun get_subwallet_id(): Int {
-        return self.walletId;
+        return self.state.walletId;
     }
 
     get fun get_public_key(): Int {
-        return self.publicKey;
+        return self.state.publicKey;
     }
 
     get fun is_plugin_installed(wc: Int, hash: Int): Bool {
-        return self.extensions.exists(newAddress(wc, hash));
+        return self.state.extensions.exists(newAddress(wc, hash));
     }
 
     // this is different from FunC version, awaiting unbounded tuple impl in Tact
     get fun get_plugin_list(): map<Address, Bool> {
-        return self.extensions;
+        return self.state.extensions;
     }
 }
+
+asm fun setData(data: Cell) { c4 POP }

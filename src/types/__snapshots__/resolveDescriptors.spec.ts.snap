@@ -261,6 +261,15 @@ exports[`resolveDescriptors should fail descriptors for contract-duplicates-in-t
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-field-with-trait-type 1`] = `
+"<unknown>:6:5: Fields with a trait type are not supported
+  5 | contract TestContract {
+> 6 |     data: Test? = null;
+          ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-getter-override-virtual-no-keyword 1`] = `
 "<unknown>:9:3: Function "getter" is defined as virtual in trait "T": you are probably missing "override" keyword
    8 | contract TestContract with T {
@@ -446,6 +455,24 @@ exports[`resolveDescriptors should fail descriptors for message-decl-remainder-i
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for message-decl-remaining-field-with-optional-type 1`] = `
+"<unknown>:8:8: The "as remaining" field cannot have optional type
+  7 |     a: Int;
+> 8 |     s: Cell? as remaining;
+             ^~~~~
+  9 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-decl-remaining-field-with-optional-type-2 1`] = `
+"<unknown>:7:5: The "as remaining" field can only be the last field of the message
+  6 | message Test {
+> 7 |     s: Cell? as remaining;
+          ^~~~~~~~~~~~~~~~~~~~~
+  8 |     a: Int;
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for message-field-with-contract-type 1`] = `
 "<unknown>:6:5: Fields with a contract type are not supported yet
   5 | message TakeEscrowData {
@@ -460,6 +487,24 @@ exports[`resolveDescriptors should fail descriptors for message-field-with-optio
   5 | message TakeEscrowData {
 > 6 |     escrowData: Escrow?;
           ^~~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-field-with-optional-trait-type 1`] = `
+"<unknown>:6:5: Fields with a trait type are not supported
+  5 | message TakeData {
+> 6 |     data: Test?;
+          ^~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-field-with-trait-type 1`] = `
+"<unknown>:6:5: Fields with a trait type are not supported
+  5 | message TakeData {
+> 6 |     data: Test;
+          ^~~~~~~~~~
   7 | }
 "
 `;
@@ -930,6 +975,69 @@ exports[`resolveDescriptors should fail descriptors for struct-field-with-contra
 > 6 |     escrowData: Escrow;
           ^~~~~~~~~~~~~~~~~~
   7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-field-with-trait-type 1`] = `
+"<unknown>:6:5: Fields with a trait type are not supported
+  5 | struct TakeData {
+> 6 |     data: Test;
+          ^~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for ton-with-blank-string 1`] = `
+"<unknown>:3:22: ton() function requires a non-empty value
+  2 | 
+> 3 | const FOO: Int = ton("      ");
+                           ^~~~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for ton-with-empty-string 1`] = `
+"<unknown>:3:22: ton() function requires a non-empty value
+  2 | 
+> 3 | const FOO: Int = ton("");
+                           ^~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string 1`] = `
+"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+  2 | 
+> 3 | const FOO: Int = ton("45,67");
+                           ^~~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-2 1`] = `
+"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+  2 | 
+> 3 | const FOO: Int = ton("40+2");
+                           ^~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-3 1`] = `
+"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+  2 | 
+> 3 | const FOO: Int = ton("hello");
+                           ^~~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-11-diigits-after-dot 1`] = `
+"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+  2 | 
+> 3 | const FOO: Int = ton("1.12345678901");
+                           ^~~~~~~~~~~~~~~
+  4 | 
 "
 `;
 

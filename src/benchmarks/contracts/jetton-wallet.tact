@@ -1,9 +1,9 @@
 import "@stdlib/jetton";
 
 contract JettonWallet(
-    balance: Int as coins,
     owner: Address,
-    minter: Address,
+    master: Address,
+    balance: Int as coins,
 ) {
     const minTonsForStorage: Int = ton("0.01");
     const gasConsumption: Int = ton("0.015");
@@ -39,15 +39,15 @@ contract JettonWallet(
                 forwardTonAmount: msg.forwardTonAmount,
                 forwardPayload: msg.forwardPayload,
             }.toCell(),
-            init: initOf JettonWallet(0, msg.destination, self.minter),
+            init: initOf JettonWallet(msg.destination, self.master, 0),
         });
     }
 
     receive(msg: JettonTransferInternal) {
         self.balance += msg.amount;
 
-        // This message should come only from minter, or from other JettonWallet
-        let wallet: StateInit = initOf JettonWallet(0, msg.sender, self.minter);
+        // This message should come only from master, or from other JettonWallet
+        let wallet: StateInit = initOf JettonWallet(msg.sender, self.master, 0);
         if (!wallet.hasSameBasechainAddress(sender())) {
             throwUnless(707, self.minter == sender());
         }
