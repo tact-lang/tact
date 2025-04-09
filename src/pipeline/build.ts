@@ -87,14 +87,15 @@ export type CompilationCtx = {
     readonly logger: ILogger;
     readonly compilerInfo: string;
 
+    readonly built: BuildRecord;
+    readonly errorMessages: TactErrorCollection[];
+
     ctx: CompilerContext;
-    built: BuildRecord;
-    errorMessages: TactErrorCollection[];
 };
 
 export type CompileTactRes = {
     readonly abi: string;
-    readonly funcSources: FuncSources;
+    readonly funcSource: Readonly<FuncSource>;
     readonly entrypointPath: string;
     readonly constants: {
         readonly name: string;
@@ -103,18 +104,18 @@ export type CompileTactRes = {
     }[];
 };
 
-export type FuncSources = {
+export type FuncSource = {
     readonly path: string;
     readonly content: string;
 };
 
-export type Packages = PackageFileFormat[];
+export type Packages = readonly PackageFileFormat[];
 
 export type BuiltContract = {
-    codeBoc: Buffer;
-    abi: string;
-    constants: WrappersConstantDescription[];
-    contract: TypeDescription;
+    readonly abi: string;
+    readonly codeBoc: Buffer;
+    readonly constants: readonly WrappersConstantDescription[];
+    readonly contract: TypeDescription;
 };
 
 export type BuildRecord = Record<string, BuiltContract | undefined>;
@@ -125,13 +126,13 @@ export type CompiledContract =
     | CompilationFailed;
 
 export type GeneratedOnlyFunc = {
-    $: "GeneratedOnlyFunc";
+    readonly $: "GeneratedOnlyFunc";
 };
 export const GeneratedOnlyFunc: GeneratedOnlyFunc = { $: "GeneratedOnlyFunc" };
 
 export type CompiledSuccessfully = {
-    $: "CompiledSuccessfully";
-    built: BuiltContract;
+    readonly $: "CompiledSuccessfully";
+    readonly built: Readonly<BuiltContract>;
 };
 export const CompiledSuccessfully = (
     built: BuiltContract,
@@ -141,15 +142,15 @@ export const CompiledSuccessfully = (
 });
 
 export type CompilationFailed = {
-    $: "CompilationFailed";
+    readonly $: "CompilationFailed";
 };
 export const CompilationFailed: CompilationFailed = { $: "CompilationFailed" };
 
 export type SystemCell = NonEmptySystemCell | EmptySystemCell;
 
 export type NonEmptySystemCell = {
-    $: "NonEmptySystemCell";
-    cell: Cell;
+    readonly $: "NonEmptySystemCell";
+    readonly cell: Cell;
 };
 export const NonEmptySystemCell = (cell: Cell): NonEmptySystemCell => ({
     $: "NonEmptySystemCell",
@@ -157,7 +158,7 @@ export const NonEmptySystemCell = (cell: Cell): NonEmptySystemCell => ({
 });
 
 export type EmptySystemCell = {
-    $: "EmptySystemCell";
+    readonly $: "EmptySystemCell";
 };
 export const EmptySystemCell: EmptySystemCell = { $: "EmptySystemCell" };
 
@@ -173,12 +174,12 @@ export const BuildFail = (error: TactErrorCollection[]): BuildResult => ({
 });
 
 export async function build(args: {
-    config: Project;
-    project: VirtualFileSystem;
-    stdlib: string | VirtualFileSystem;
-    logger?: ILogger;
-    parser?: Parser;
-    ast?: FactoryAst;
+    readonly config: Project;
+    readonly project: VirtualFileSystem;
+    readonly stdlib: string | VirtualFileSystem;
+    readonly logger?: ILogger;
+    readonly parser?: Parser;
+    readonly ast?: FactoryAst;
 }): Promise<BuildResult> {
     const { config, project } = args;
     const stdlib =
@@ -188,11 +189,6 @@ export async function build(args: {
     const ast: FactoryAst = args.ast ?? getAstFactory();
     const parser: Parser = args.parser ?? getParser(ast);
     const logger: ILogger = args.logger ?? new Logger();
-
-    const compilerInfo: string = JSON.stringify({
-        entrypoint: posixNormalize(config.path),
-        options: config.options ?? {},
-    });
 
     // Configure context
     let ctx = new CompilerContext();
@@ -221,6 +217,11 @@ export async function build(args: {
         logger.info("✔️ Syntax and type checking succeeded.");
         return BuildOk();
     }
+
+    const compilerInfo: string = JSON.stringify({
+        entrypoint: posixNormalize(config.path),
+        options: config.options ?? {},
+    });
 
     const compilationCtx: CompilationCtx = {
         config,
@@ -318,7 +319,7 @@ async function compileContract(
         ctx,
         contractName,
         compileRes.entrypointPath,
-        compileRes.funcSources,
+        compileRes.funcSource,
     );
 
     if (typeof codeBoc === "undefined") {
@@ -380,7 +381,7 @@ async function compileFunc(
     ctx: CompilationCtx,
     contract: string,
     entrypointPath: string,
-    funcSources: FuncSources,
+    funcSource: FuncSource,
 ): Promise<Buffer | undefined> {
     const { project, config, logger, errorMessages, stdlib } = ctx;
 
@@ -407,7 +408,7 @@ async function compileFunc(
                     path: stdlibExPath,
                     content: stdlibExCode,
                 },
-                funcSources,
+                funcSource,
             ],
             logger,
         });
@@ -475,7 +476,7 @@ async function compileTact(
         );
         project.writeFile(pathAbi, res.output.abi);
 
-        const funcSources: FuncSources = {
+        const funcSource: FuncSource = {
             path: posixNormalize(project.resolve(config.output, funcFile.name)),
             content: funcFile.code,
         };
@@ -484,7 +485,7 @@ async function compileTact(
         const entrypointPath = res.output.entrypoint;
         const constants = [...res.output.constants];
 
-        return { abi, funcSources, entrypointPath, constants };
+        return { abi, funcSource, entrypointPath, constants };
     } catch (e) {
         ctx.logger.error("Tact compilation failed");
         // show an error with a backtrace only in verbose mode
@@ -502,7 +503,7 @@ async function compileTact(
 function doPackaging(ctx: CompilationCtx): Packages | undefined {
     ctx.logger.info("   > Packaging");
 
-    const packages: Packages = [];
+    const packages: PackageFileFormat[] = [];
 
     const contracts = getContracts(ctx.ctx);
     for (const contract of contracts) {
@@ -638,13 +639,14 @@ function packageContract(
     return pkg;
 }
 
-function doBindings(ctx: CompilationCtx, packages: PackageFileFormat[]) {
+function doBindings(ctx: CompilationCtx, packages: Packages) {
     const { project, config, logger } = ctx;
 
     logger.info("   > Bindings");
 
     for (const pkg of packages) {
         logger.info(`   > ${pkg.name}`);
+
         if (pkg.init.deployment.kind !== "system-cell") {
             const message = `   > ${pkg.name}: unsupported deployment kind ${pkg.init.deployment.kind}`;
             logger.error(message);
@@ -665,13 +667,11 @@ function doBindings(ctx: CompilationCtx, packages: PackageFileFormat[]) {
                     args: pkg.init.args,
                 },
             );
-            project.writeFile(
-                project.resolve(
-                    config.output,
-                    config.name + "_" + pkg.name + ".ts",
-                ),
-                bindingsServer,
+            const bindingPath = project.resolve(
+                config.output,
+                config.name + "_" + pkg.name + ".ts",
             );
+            project.writeFile(bindingPath, bindingsServer);
         } catch (e) {
             const error = e as Error;
             error.message = `Bindings compiler crashed: ${error.message}`;
@@ -684,10 +684,7 @@ function doBindings(ctx: CompilationCtx, packages: PackageFileFormat[]) {
     return true;
 }
 
-function doReports(
-    ctx: CompilationCtx,
-    packages: PackageFileFormat[],
-): boolean {
+function doReports(ctx: CompilationCtx, packages: Packages): boolean {
     const { project, config, logger } = ctx;
 
     logger.info("   > Reports");
