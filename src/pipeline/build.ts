@@ -110,16 +110,40 @@ export type FuncSources = {
 
 export type Packages = PackageFileFormat[];
 
-export type BuildRecord = Record<
-    string,
-    | {
-          codeBoc: Buffer;
-          abi: string;
-          constants: WrappersConstantDescription[];
-          contract: TypeDescription;
-      }
-    | undefined
->;
+export type BuiltContract = {
+    codeBoc: Buffer;
+    abi: string;
+    constants: WrappersConstantDescription[];
+    contract: TypeDescription;
+};
+
+export type BuildRecord = Record<string, BuiltContract | undefined>;
+
+export type CompiledContract =
+    | GeneratedOnlyFunc
+    | CompiledSuccessfully
+    | CompilationFailed;
+
+export type GeneratedOnlyFunc = {
+    $: "GeneratedOnlyFunc";
+};
+export const GeneratedOnlyFunc: GeneratedOnlyFunc = { $: "GeneratedOnlyFunc" };
+
+export type CompiledSuccessfully = {
+    $: "CompiledSuccessfully";
+    built: BuiltContract;
+};
+export const CompiledSuccessfully = (
+    built: BuiltContract,
+): CompiledSuccessfully => ({
+    $: "CompiledSuccessfully",
+    built,
+});
+
+export type CompilationFailed = {
+    $: "CompilationFailed";
+};
+export const CompilationFailed: CompilationFailed = { $: "CompilationFailed" };
 
 export type SystemCell = NonEmptySystemCell | EmptySystemCell;
 
@@ -213,22 +237,7 @@ export async function build(args: {
 }
 
 async function mainCompile(ctx: CompilationCtx): Promise<BuildResult> {
-    const allContracts = getContracts(ctx.ctx);
-
-    // Sort contracts in topological order
-    // If a cycle is found, topSortContracts returns undefined
-    const sortedContracts = topSortContracts(allContracts);
-    if (sortedContracts !== undefined) {
-        ctx.ctx = featureEnable(ctx.ctx, "optimizedChildCode");
-    }
-
-    const contracts = sortedContracts ?? allContracts;
-
-    let ok = true;
-    for (const contract of contracts) {
-        ok &&= await compileContract(ctx, contract);
-    }
-
+    const ok = await doCompileContracts(ctx);
     if (!ok) {
         ctx.logger.info("💥 Compilation failed. Skipping packaging");
         return BuildFail(ctx.errorMessages);
@@ -257,10 +266,39 @@ async function mainCompile(ctx: CompilationCtx): Promise<BuildResult> {
     return BuildOk();
 }
 
+async function doCompileContracts(ctx: CompilationCtx) {
+    const allContracts = getContracts(ctx.ctx);
+
+    // Sort contracts in topological order
+    // If a cycle is found, topSortContracts returns undefined
+    const sortedContracts = topSortContracts(allContracts);
+    if (sortedContracts !== undefined) {
+        ctx.ctx = featureEnable(ctx.ctx, "optimizedChildCode");
+    }
+
+    const contracts = sortedContracts ?? allContracts;
+
+    let ok = true;
+    for (const contract of contracts) {
+        const res = await compileContract(ctx, contract);
+        if (res.$ === "CompilationFailed") {
+            ok = false;
+            continue;
+        }
+        if (res.$ === "GeneratedOnlyFunc") {
+            continue;
+        }
+
+        ctx.built[contract.name] = res.built;
+    }
+
+    return ok;
+}
+
 async function compileContract(
     ctx: CompilationCtx,
     contract: TypeDescription,
-): Promise<boolean> {
+): Promise<CompiledContract> {
     const { config, logger } = ctx;
 
     const contractName = contract.name;
@@ -269,11 +307,11 @@ async function compileContract(
 
     const compileRes = await compileTact(ctx, contractName);
     if (!compileRes) {
-        return false;
+        return CompilationFailed;
     }
 
     if (config.mode === "funcOnly") {
-        return true;
+        return GeneratedOnlyFunc;
     }
 
     const codeBoc = await compileFunc(
@@ -284,23 +322,22 @@ async function compileContract(
     );
 
     if (typeof codeBoc === "undefined") {
-        return false;
+        return CompilationFailed;
+    }
+
+    if (ctx.config.mode === "fullWithDecompilation") {
+        // TODO: should we return error if it fails?
+        decompileContract(ctx, contractName, codeBoc);
     }
 
     const { abi, constants } = compileRes;
 
-    ctx.built[contractName] = {
+    return CompiledSuccessfully({
         codeBoc,
         abi,
         constants,
         contract,
-    };
-
-    if (ctx.config.mode === "fullWithDecompilation") {
-        return decompileContract(ctx, contractName, codeBoc);
-    }
-
-    return true;
+    });
 }
 
 function decompileContract(
