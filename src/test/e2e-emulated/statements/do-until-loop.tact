@@ -7,6 +7,6 @@ contract Tester {
             x += 1;
             y += 42;
         } until (x != 0);
-        return y;  // 42, if x = 0
+        return y; // 42, if x = 0
     }
 }

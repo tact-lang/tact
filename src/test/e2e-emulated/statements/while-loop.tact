@@ -7,6 +7,6 @@ contract Tester {
             x -= 1;
             y += 2;
         }
-        return y;  // = 2 * x
+        return y; // = 2 * x
     }
 }
