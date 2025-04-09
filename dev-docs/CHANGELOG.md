@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now shows a more informative error message for unsupported assembly functions inside traits and contracts: PR [#2689](https://github.com/tact-lang/tact/pull/2689)
 - [fix] Compiler now shows a more informative error message for `Slice? as remaining` fields: PR [#2694](https://github.com/tact-lang/tact/pull/2694)
 - [fix] Compiler now shows a more informative error message for fields with unsupported trait types: PR [#2695](https://github.com/tact-lang/tact/pull/2695)
+- [fix] Compiler now shows a more informative error message for `if` statements without an expression: PR [#2707](https://github.com/tact-lang/tact/pull/2707)
 
 ### Standard Library
 
