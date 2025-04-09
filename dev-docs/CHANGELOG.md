@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now correctly processes nested structs with default values in the interpreter: PR [#2687](https://github.com/tact-lang/tact/pull/2687)
 - [fix] Compiler now correctly compiles contracts with optional struct fields with default values: PR [#2683](https://github.com/tact-lang/tact/pull/2683)
 - [fix] Compiler now shows a more informative error message for unsupported assembly functions inside traits and contracts: PR [#2689](https://github.com/tact-lang/tact/pull/2689)
+- [fix] Compiler now shows a more informative error message for fields with unsupported trait types: PR [#2695](https://github.com/tact-lang/tact/pull/2695)
 
 ### Standard Library
 
