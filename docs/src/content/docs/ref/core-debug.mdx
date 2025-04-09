@@ -42,6 +42,28 @@ try {
 }
 ```
 
+## raise
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun raise(error: String);
+```
+
+Unconditionally raises an error with an [exit code](/book/exit-codes) generated from the `error` message, following the same algorithm as the [`require(){:tact}`](#require) function.
+
+The generated exit code is guaranteed to be outside the common 0–255 range reserved for TVM and Tact contract errors, which makes it possible to distinguish exit codes from `raise(){:tact}` and any other [standard exit codes](/book/exit-codes).
+
+Usage example:
+
+```tact
+try {
+    raise("Arise! Erect!");
+} catch (exitCode) {
+    // exitCode is 62361
+}
+```
+
 ## dump
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
