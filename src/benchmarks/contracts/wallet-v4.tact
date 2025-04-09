@@ -128,7 +128,7 @@ contract WalletV4(
                 nativeSendMessage(ref, mode);
             }
             */
-            while (payload.refs() > 0) {
+            while (payload.refs() != 0) {
                 let mode = payload.loadUint(8);
                 nativeSendMessage(payload.loadRef(), mode);
             }
