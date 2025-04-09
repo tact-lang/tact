@@ -425,7 +425,6 @@ async function compileTact(
 }
 
 function doPackage(ctx: CompilationCtx): PackageFileFormat[] | undefined {
-    // Package
     ctx.logger.info("   > Packaging");
 
     const packages: PackageFileFormat[] = [];
