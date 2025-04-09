@@ -93,12 +93,19 @@ describe("Escrow Gas Tests", () => {
             await Escrow.fromAddress(escrowAddress),
         );
 
-        await deployer.send({
+        const deployResult = await deployer.send({
             to: escrowAddress,
             value: toNano("0.1"),
             init,
             body: beginCell().endCell(),
             sendMode: SendMode.PAY_GAS_SEPARATELY,
+        });
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: escrowAddress,
+            success: true,
+            deploy: true,
         });
 
         return escrowContract;
@@ -123,9 +130,20 @@ describe("Escrow Gas Tests", () => {
 
         const contract = blockchain.openContract(contractInit);
 
-        await contract.send(deployer.getSender(), { value: toNano("0.1") }, {
-            $$type: "ProvideEscrowData",
-        } as ProvideEscrowData);
+        const deployResult = await contract.send(
+            deployer.getSender(),
+            { value: toNano("0.1") },
+            {
+                $$type: "ProvideEscrowData",
+            } as ProvideEscrowData,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
 
         return contract;
     }
@@ -152,7 +170,6 @@ describe("Escrow Gas Tests", () => {
 
     beforeEach(async () => {
         escrowContractFunC = await deployFuncContract(null, dealAmount, 1n);
-
         escrowContractTact = await deployTactContract(null, dealAmount, 1n);
     });
 
