@@ -75,9 +75,9 @@
       "pr": "https://github.com/tact-lang/tact/pull/2655",
       "size": {
         "collection cells": "44",
-        "collection bits": "23242",
+        "collection bits": "23146",
         "item cells": "12",
-        "item bits": "6578"
+        "item bits": "6530"
       }
     }
   ]

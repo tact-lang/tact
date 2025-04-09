@@ -75,7 +75,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/2655",
       "gas": {
         "transfer": "7634",
-        "get static data": "5789",
+        "get static data": "5763",
         "deploy nft": "11500",
         "batch deploy nft": "704448"
       }
