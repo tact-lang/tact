@@ -709,7 +709,8 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                             !resolveFuncPrimitive(
                                 resolveTypeRef(ctx.ctx, a.type),
                                 ctx,
-                            )
+                            ) &&
+                            a.name.kind !== "wildcard"
                         ) {
                             ctx.append(
                                 `var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), funcIdOf(a.name), ctx)}) = ${funcIdOf(a.name)};`,
