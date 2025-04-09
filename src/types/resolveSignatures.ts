@@ -217,6 +217,18 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             }
         }
 
+        for (const field of t.fields) {
+            if (field.as === "remaining") {
+                const type = field.type;
+                if (type.kind === "ref" && type.optional) {
+                    throwCompilationError(
+                        `The "as remaining" field cannot have optional type`,
+                        field.ast.type.loc,
+                    );
+                }
+            }
+        }
+
         const fields = t.fields.map((v) => createTLBField(v.abi));
 
         // Calculate signature and method id
