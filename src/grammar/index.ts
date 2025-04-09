@@ -569,6 +569,11 @@ const parseStatementCondition =
         loc,
     }: $ast.StatementCondition): Handler<Ast.StatementCondition> =>
     (ctx) => {
+        if (typeof condition === "undefined") {
+            ctx.err.expectedExpression("after if keyword")(loc);
+            condition = trueLiteral;
+        }
+
         if (typeof falseBranch === "undefined") {
             return ctx.ast.StatementCondition(
                 parseExpression(condition)(ctx),
@@ -1456,6 +1461,15 @@ const parseJustImports =
     (ctx) => {
         return map(imports, parseImport)(ctx);
     };
+
+const dummyLoc: $.Loc = {
+    $: "range",
+    start: 0,
+    end: 0,
+};
+
+// prettier-ignore
+const trueLiteral: $ast.Conditional = {$:"Conditional",head:{$:"Binary",exprs:{head:{$:"Binary",exprs:{head:{$:"Binary",exprs:{head:{$:"Binary",exprs:{head:{$:"Binary",exprs:{head:{$:"Binary",exprs:{head:{$:"Binary",exprs:{head:{$:"Binary",exprs:{head:{$:"Binary",exprs:{head:{$:"Binary",exprs:{head:{$:"Unary",prefixes:[],expression:{$:"Suffix",expression:{$:"BoolLiteral",value:"true",loc:dummyLoc},suffixes:[],loc:dummyLoc},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:[]},loc:dummyLoc},tail:undefined,loc:dummyLoc};
 
 export const getParser = (ast: FactoryAst) => {
     const display = displayToString;

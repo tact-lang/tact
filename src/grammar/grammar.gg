@@ -206,7 +206,7 @@ StatementBlock      = body:statements;
 StatementReturn     = keyword<"return"> expression:expression? semicolon;
 StatementExpression = expression:expression semicolon;
 StatementAssign     = left:expression operator:(augmentedOp / "=") right:expression semicolon;
-StatementCondition  = keyword<"if"> condition:expression trueBranch:statements falseBranch:(keyword<"else"> @(FalseBranch / StatementCondition))?;
+StatementCondition  = keyword<"if"> condition:expression? trueBranch:statements falseBranch:(keyword<"else"> @(FalseBranch / StatementCondition))?;
 StatementWhile      = keyword<"while"> condition:parens body:statements;
 StatementRepeat     = keyword<"repeat"> condition:parens body:statements;
 StatementUntil      = keyword<"do"> body:statements keyword<"until"> condition:parens semicolon;

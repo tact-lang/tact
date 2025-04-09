@@ -175,6 +175,9 @@ export const syntaxErrorSchema = <T, U>(
                 sub`Assembly functions are only allowed at the module level - outside contracts or traits`,
             );
         },
+        expectedExpression: (where: string) => {
+            return handle(sub`expected expression ${text(where)}`);
+        },
     };
 };
 

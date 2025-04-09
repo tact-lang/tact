@@ -518,6 +518,15 @@ exports[`should fail ident-struct-cannot-start-with-__gen.fail 1`] = `
 "
 `;
 
+exports[`should fail if-without-expression.fail 1`] = `
+"<unknown>:3:9: expected expression after if keyword
+  2 |     receive() {
+> 3 |         if {}
+              ^~~~~
+  4 |     }
+"
+`;
+
 exports[`should fail incomplete-return.fail 1`] = `
 "<unknown>:3:1: Expected "!", "(", "+", "-", "0", ";", "\\"", "codeOf", "false", "initOf", "null", "true", "}", "~", capitalized identifier, digit, or identifier
   2 |     return

@@ -227,7 +227,7 @@ export namespace $ast {
   }>;
   export type StatementCondition = $.Located<{
     readonly $: "StatementCondition";
-    readonly condition: expression;
+    readonly condition: expression | undefined;
     readonly trueBranch: statements;
     readonly falseBranch: FalseBranch | StatementCondition | undefined;
   }>;
@@ -473,7 +473,7 @@ export const StatementLet: $.Parser<$ast.StatementLet> = $.loc($.field($.pure("S
 export const StatementDestruct: $.Parser<$ast.StatementDestruct> = $.loc($.field($.pure("StatementDestruct"), "$", $.right(keyword($.str("let")), $.field(TypeId, "type", $.right($.str("{"), $.field(inter($.lazy(() => destructItem), $.str(",")), "fields", $.field($.lazy(() => optionalRest), "rest", $.right($.str("}"), $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps)))))))))));
 export const StatementBlock: $.Parser<$ast.StatementBlock> = $.loc($.field($.pure("StatementBlock"), "$", $.field($.lazy(() => statements), "body", $.eps)));
 export const StatementReturn: $.Parser<$ast.StatementReturn> = $.loc($.field($.pure("StatementReturn"), "$", $.right(keyword($.str("return")), $.field($.opt($.lazy(() => expression)), "expression", $.right(semicolon, $.eps)))));
-export const StatementCondition: $.Parser<$ast.StatementCondition> = $.loc($.field($.pure("StatementCondition"), "$", $.right(keyword($.str("if")), $.field($.lazy(() => expression), "condition", $.field($.lazy(() => statements), "trueBranch", $.field($.opt($.right(keyword($.str("else")), $.alt($.lazy(() => FalseBranch), $.lazy(() => StatementCondition)))), "falseBranch", $.eps))))));
+export const StatementCondition: $.Parser<$ast.StatementCondition> = $.loc($.field($.pure("StatementCondition"), "$", $.right(keyword($.str("if")), $.field($.opt($.lazy(() => expression)), "condition", $.field($.lazy(() => statements), "trueBranch", $.field($.opt($.right(keyword($.str("else")), $.alt($.lazy(() => FalseBranch), $.lazy(() => StatementCondition)))), "falseBranch", $.eps))))));
 export const StatementWhile: $.Parser<$ast.StatementWhile> = $.loc($.field($.pure("StatementWhile"), "$", $.right(keyword($.str("while")), $.field($.lazy(() => parens), "condition", $.field($.lazy(() => statements), "body", $.eps)))));
 export const StatementRepeat: $.Parser<$ast.StatementRepeat> = $.loc($.field($.pure("StatementRepeat"), "$", $.right(keyword($.str("repeat")), $.field($.lazy(() => parens), "condition", $.field($.lazy(() => statements), "body", $.eps)))));
 export const StatementUntil: $.Parser<$ast.StatementUntil> = $.loc($.field($.pure("StatementUntil"), "$", $.right(keyword($.str("do")), $.field($.lazy(() => statements), "body", $.right(keyword($.str("until")), $.field($.lazy(() => parens), "condition", $.right(semicolon, $.eps)))))));
