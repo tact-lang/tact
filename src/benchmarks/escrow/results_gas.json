@@ -189,6 +189,26 @@
         "approveTon": "6861",
         "cancelTon": "4890"
       }
+    },
+    {
+      "label": "1.6.5 store optional cells with store_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2647",
+      "gas": {
+        "fundingTon": "4494",
+        "changeCode": "4585",
+        "approveTon": "6833",
+        "cancelTon": "4762"
+      }
+    },
+    {
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
+      "gas": {
+        "fundingTon": "4399",
+        "changeCode": "4490",
+        "approveTon": "6738",
+        "cancelTon": "4639"
+      }
     }
   ]
 }

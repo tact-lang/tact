@@ -542,7 +542,7 @@
             "name": "keyword.other.struct.tact"
           },
           {
-            "match": "(?<!\\.)\\b(message)\\b",
+            "match": "(?<!\\.)\\b(message(?!\\s*\\((?:MessageParameters|\\))))\\b",
             "name": "keyword.other.message.tact"
           },
           {

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should fail abstract-const-without-modifier.fail 1`] = `
-"<unknown>:2:5: Abstract constant doesn't have abstract modifier
+"<unknown>:2:5: Abstract constant can only be declared inside traits and should have the abstract modifier
   1 | trait t {
 > 2 |     const c: Int;
           ^~~~~~~~~~~~~
@@ -9,11 +9,29 @@ exports[`should fail abstract-const-without-modifier.fail 1`] = `
 "
 `;
 
+exports[`should fail asm-function-in-contract.fail 1`] = `
+"<unknown>:2:5: Assembly functions are only allowed at the module level - outside contracts or traits
+  1 | contract AssemblyTest {
+> 2 |     asm fun depth(): Int { DEPTH }
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  3 | 
+"
+`;
+
+exports[`should fail asm-function-in-trait.fail 1`] = `
+"<unknown>:2:5: Assembly functions are only allowed at the module level - outside contracts or traits
+  1 | trait AssemblyTest {
+> 2 |     asm fun depth(): Int { DEPTH }
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  3 | }
+"
+`;
+
 exports[`should fail asm-getter.fail 1`] = `
-"<unknown>:7:9: Expected ":"
+"<unknown>:7:5: Assembly functions are only allowed at the module level - outside contracts or traits
   6 | contract Foo {
 > 7 |     asm get fun illegalGetter(): Int {
-              ^
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   8 |         DEPTH
 "
 `;
@@ -525,7 +543,7 @@ exports[`should fail item-fun-void-trailing-comma-no-params.fail 1`] = `
 `;
 
 exports[`should fail item-fun-without-body.fail 1`] = `
-"<unknown>:1:1: Abstract function doesn't have abstract modifier
+"<unknown>:1:1: Abstract function can only be declared inside traits and should have the abstract modifier
 > 1 | fun testFunc(): Int;
       ^~~~~~~~~~~~~~~~~~~~
 "
