@@ -199,6 +199,12 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
                     field.loc,
                 );
             }
+            if (t.kind === "trait") {
+                throwCompilationError(
+                    `Fields with a trait type are not supported`,
+                    field.loc,
+                );
+            }
         }
 
         // Check for no "as remaining" in the middle of the struct or contract
