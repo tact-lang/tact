@@ -1,7 +1,10 @@
 import { beginCell, toNano, type Cell } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain, type BlockchainSnapshot } from "@ton/sandbox";
-import { TraitsConstantContract } from "./output/base-trait-constant-override-1_TraitsConstantContract";
+import { Blockchain } from "@ton/sandbox";
+import {
+    TraitsConstantContract,
+    TraitsConstantContract_errors_backward,
+} from "./output/base-trait-constant-override-1_TraitsConstantContract";
 import { TraitsConstantContractZeroReserve } from "./output/base-trait-constant-override-1_TraitsConstantContractZeroReserve";
 import type {
     Reply,
@@ -16,13 +19,28 @@ import "@ton/test-utils";
 
 describe("base-trait-constant-override-1", () => {
     let blockchain: Blockchain;
+
+    const reserved: bigint = TraitsConstantContract.storageReserve;
+
     let treasure: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<TraitsConstantContract>;
-    let zeroContract: SandboxContract<TraitsConstantContractZeroReserve>;
-    let snapshot: BlockchainSnapshot;
+    let zeroContract: SandboxContract<TraitsConstantContractZeroReserve>; // contract with storageReserve = 0
 
     let balanceBeforeContractZero: bigint;
-    const reserved: bigint = toNano("0.1");
+    const deployValue = toNano("0.05");
+    const lowSendValue = toNano("0.5");
+    const highSendValue = toNano("10");
+    const NotEnoughToncoin =
+        TraitsConstantContract_errors_backward["Not enough Toncoin"];
+
+    const SendRemainingValue = 64n;
+    const SendPayFwdFeesSeparately = 1n;
+
+    const ReserveExact = 0n;
+    const ReserveAddOriginalBalance = 4n;
+
+    const initCode: Cell = beginCell().endCell();
+    const initData: Cell = beginCell().endCell();
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -34,7 +52,7 @@ describe("base-trait-constant-override-1", () => {
 
         const deployResult = await contract.send(
             treasure.getSender(),
-            { value: toNano("0.05") },
+            { value: deployValue },
             null,
         );
 
@@ -51,7 +69,7 @@ describe("base-trait-constant-override-1", () => {
 
         const deployResultZero = await zeroContract.send(
             treasure.getSender(),
-            { value: toNano("0.05") },
+            { value: deployValue },
             null,
         );
 
@@ -65,472 +83,537 @@ describe("base-trait-constant-override-1", () => {
         balanceBeforeContractZero = (
             await blockchain.getContract(zeroContract.address)
         ).balance;
-
-        snapshot = blockchain.snapshot();
     });
 
     it("should override constant correctly", async () => {
+        // Verifying that the storageReserve constant is correctly overridden
+        // and returns the expected value
         expect(await contract.getConstant()).toEqual(reserved);
     });
 
-    describe("reply test", () => {
-        it("zeroContract", async () => {
-            const replyMessage: Reply = {
-                $$type: "Reply",
-                body: beginCell().endCell(),
-            };
+    it("Reply / zeroContract", async () => {
+        const replyMessage: Reply = {
+            $$type: "Reply",
+            body: beginCell().endCell(),
+        };
 
-            const result = await zeroContract.send(
-                treasure.getSender(),
-                { value: toNano("0.5") },
-                replyMessage,
-            );
+        // Send a Reply message to the contract with zero reserve
+        // and verify it correctly sends a reply message to the treasury
+        const result = await zeroContract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            replyMessage,
+        );
 
-            expect(result.transactions).toHaveTransaction({
-                from: zeroContract.address,
-                to: treasure.address,
-                inMessageBounceable: true,
-            });
-
-            const balance: bigint = (
-                await blockchain.getContract(zeroContract.address)
-            ).balance;
-            expect(balance).toEqual(balanceBeforeContractZero);
+        expect(result.transactions).toHaveTransaction({
+            from: zeroContract.address,
+            to: treasure.address,
+            inMessageBounceable: true,
         });
 
-        it("contract", async () => {
-            const replyMessage: Reply = {
-                $$type: "Reply",
-                body: beginCell().endCell(),
-            };
+        const balance: bigint = (
+            await blockchain.getContract(zeroContract.address)
+        ).balance;
 
-            const result = await contract.send(
-                treasure.getSender(),
-                { value: toNano("0.5") },
-                replyMessage,
-            );
+        expect(balance).toEqual(balanceBeforeContractZero);
+    });
 
-            expect(result.transactions).toHaveTransaction({
-                from: contract.address,
-                to: treasure.address,
-                inMessageBounceable: true,
-            });
-            const balance: bigint = (
-                await blockchain.getContract(contract.address)
-            ).balance;
-            expect(balance).toEqual(reserved);
+    it("Reply / contract", async () => {
+        const replyMessage: Reply = {
+            $$type: "Reply",
+            body: beginCell().endCell(),
+        };
+
+        // Send a Reply message to the contract
+        // and verify that after sending the reply message, the balance equals the reserved amount
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            replyMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasure.address,
+            inMessageBounceable: true,
+        });
+        const balance: bigint = (await blockchain.getContract(contract.address))
+            .balance;
+
+        expect(balance).toEqual(reserved);
+    });
+
+    it("Notify / zeroContract", async () => {
+        const notifyMessage: Notify = {
+            $$type: "Notify",
+            body: beginCell().endCell(),
+        };
+
+        // Send a Notify message to the contract with zero reserve
+        // and verify that a non-bounceable message is sent
+        const result = await zeroContract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            notifyMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: zeroContract.address,
+            to: treasure.address,
+            inMessageBounceable: false,
+        });
+
+        const balance: bigint = (
+            await blockchain.getContract(zeroContract.address)
+        ).balance;
+
+        expect(balance).toEqual(balanceBeforeContractZero);
+    });
+
+    it("Notify / contract", async () => {
+        const notifyMessage: Notify = {
+            $$type: "Notify",
+            body: beginCell().endCell(),
+        };
+
+        // Send a Notify message to the main contract
+        // and verify that after sending, the balance equals the reserved amount
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            notifyMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasure.address,
+            inMessageBounceable: false,
+        });
+
+        const balance: bigint = (await blockchain.getContract(contract.address))
+            .balance;
+
+        expect(balance).toEqual(reserved);
+    });
+
+    it("Forward / should send init", async () => {
+        const initCode: Cell = beginCell().endCell();
+        const initData: Cell = beginCell().endCell();
+
+        const init: StateInit = {
+            $$type: "StateInit",
+            code: initCode,
+            data: initData,
+        };
+
+        // Create a Forward message with initialization and verify
+        // that the message is sent with init code and data
+        const forwardMessage: Forward = {
+            $$type: "Forward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: init,
+        };
+
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            forwardMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasure.address,
+            initCode: initCode,
+            initData: initData,
+        });
+
+        const balance: bigint = (await blockchain.getContract(contract.address))
+            .balance;
+
+        expect(balance).toEqual(reserved);
+    });
+
+    it("Forward / contact / default message", async () => {
+        const forwardMessage: Forward = {
+            $$type: "Forward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+        };
+
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            forwardMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasure.address,
+            inMessageBounceable: false,
+        });
+
+        const balance: bigint = (await blockchain.getContract(contract.address))
+            .balance;
+
+        expect(balance).toEqual(reserved);
+    });
+
+    it("Forward / contract / balance after < reserved, should not send message", async () => {
+        const forwardMessage: Forward = {
+            $$type: "Forward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+        };
+
+        // Try to send a message with insufficient balance
+        // and verify that a NotEnoughToncoin error is thrown
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: reserved - deployValue - 1n }, // because we want balance < reserved
+            forwardMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            actionResultCode: NotEnoughToncoin,
         });
     });
 
-    describe("notify test", () => {
-        it("zeroContract", async () => {
-            const notifyMessage: Notify = {
-                $$type: "Notify",
-                body: beginCell().endCell(),
-            };
-            const result = await zeroContract.send(
-                treasure.getSender(),
-                { value: toNano("0.5") },
-                notifyMessage,
-            );
-            expect(result.transactions).toHaveTransaction({
-                from: zeroContract.address,
-                to: treasure.address,
-                inMessageBounceable: false,
-            });
+    it("Forward/ contract / should leave all tons except of self.storageReserve", async () => {
+        await contract.send(
+            treasure.getSender(),
+            { value: highSendValue },
+            null,
+        );
 
-            const balance: bigint = (
-                await blockchain.getContract(zeroContract.address)
-            ).balance;
-            expect(balance).toEqual(balanceBeforeContractZero);
+        const forwardMessage: Forward = {
+            $$type: "Forward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+        };
+
+        // Send another message and verify
+        // that the balance after sending the message is not equal reserved amount
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            forwardMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            exitCode: 0,
+            actionResultCode: 0,
         });
 
-        it("contract", async () => {
-            const notifyMessage: Notify = {
-                $$type: "Notify",
-                body: beginCell().endCell(),
-            };
-            const result = await contract.send(
-                treasure.getSender(),
-                { value: toNano("0.5") },
-                notifyMessage,
-            );
+        const balance: bigint = (await blockchain.getContract(contract.address))
+            .balance;
 
-            expect(result.transactions).toHaveTransaction({
-                from: contract.address,
-                to: treasure.address,
-                inMessageBounceable: false,
-            });
-            const balance: bigint = (
-                await blockchain.getContract(contract.address)
-            ).balance;
-            expect(balance).toEqual(reserved);
+        expect(balance).not.toEqual(reserved); // 10 in fact
+    });
+
+    it("Forward/ zeroContract / should send init", async () => {
+        const init: StateInit = {
+            $$type: "StateInit",
+            code: initCode,
+            data: initData,
+        };
+
+        // Create a Forward message with init and verify
+        // that after sending, we send Remaining Value
+        const forwardMessage: Forward = {
+            $$type: "Forward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: init,
+        };
+
+        const result = await zeroContract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            forwardMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: zeroContract.address,
+            to: treasure.address,
+            inMessageBounceable: false,
+            initCode: initCode,
+            initData: initData,
+        });
+
+        const balance: bigint = (
+            await blockchain.getContract(zeroContract.address)
+        ).balance;
+
+        expect(balance).toEqual(balanceBeforeContractZero);
+    });
+
+    it("Forward/ contract / should send init", async () => {
+        const init: StateInit = {
+            $$type: "StateInit",
+            code: initCode,
+            data: initData,
+        };
+
+        // Create a Forward message with init and verify
+        // that after sending, the balance equals the reserved amount
+        const forwardMessage: Forward = {
+            $$type: "Forward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: init,
+        };
+
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            forwardMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasure.address,
+            inMessageBounceable: false,
+            initCode: initCode,
+            initData: initData,
+        });
+
+        const balance: bigint = (await blockchain.getContract(contract.address))
+            .balance;
+
+        expect(balance).toEqual(reserved);
+    });
+
+    it("DoubleForward/ zeroContract / tests double forwarding", async () => {
+        const doubleForwardMessage: DoubleForward = {
+            $$type: "DoubleForward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+        };
+
+        // Test sending a DoubleForward message to the contract with zero reserve
+        // and ensure that the balance remains unchanged and contract send only 1 message
+        const result = await zeroContract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            doubleForwardMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: zeroContract.address,
+            to: treasure.address,
+            inMessageBounceable: false,
+        });
+
+        const balance: bigint = (
+            await blockchain.getContract(zeroContract.address)
+        ).balance;
+
+        expect(balance).toEqual(balanceBeforeContractZero);
+
+        // treasure -> zeroContract
+        // zeroContract -> treasure
+        expect(result.events.length).toEqual(2);
+    });
+
+    it("DoubleForward/ contract / test double forwarding", async () => {
+        const doubleForwardMessage: DoubleForward = {
+            $$type: "DoubleForward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+        };
+
+        // Test sending a DoubleForward message to the main contract
+        // and ensure that an error occurs due to insufficient funds
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            doubleForwardMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            actionResultCode: NotEnoughToncoin,
         });
     });
 
-    describe("forward test", () => {
-        beforeEach(async () => {
-            await blockchain.loadFrom(snapshot);
+    it("MessageAndForward/ zeroContract / test message sending with forward", async () => {
+        const messageAndForwardMessage: MessageAndForward = {
+            $$type: "MessageAndForward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+            mode: SendPayFwdFeesSeparately,
+            value: 1n,
+        };
+
+        // Send a MessageAndForward message to the contract with zero reserve
+        // and verify that balance decreased
+        const result = await zeroContract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            messageAndForwardMessage,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: zeroContract.address,
+            to: treasure.address,
+            inMessageBounceable: false,
         });
 
-        it("should send init", async () => {
-            const initCode: Cell = beginCell().endCell();
-            const initData: Cell = beginCell().endCell();
+        const balance: bigint = (
+            await blockchain.getContract(zeroContract.address)
+        ).balance;
 
-            const init: StateInit = {
-                $$type: "StateInit",
-                code: initCode,
-                data: initData,
-            };
+        //  SendRemainingValue mode only calculate gas correct when it only 1 message
+        expect(balance).toBeLessThan(balanceBeforeContractZero);
 
-            const forwardMessage: Forward = {
-                $$type: "Forward",
-                to: treasure.address,
-                body: beginCell().endCell(),
-                bounce: false,
-                init: init,
-            };
+        // treasure -> zeroContract
+        // zeroContract -> treasure SendPayFwdFeesSeparately mode
+        // zeroContract -> treasure  SendRemainingValue mode
+        expect(result.events.length).toEqual(3);
+    });
 
-            const result = await contract.send(
-                treasure.getSender(),
-                { value: toNano("0.5") },
-                forwardMessage,
-            );
+    it("MessageAndForward/ contract / test message sending with forward", async () => {
+        const messageAndForwardMessage: MessageAndForward = {
+            $$type: "MessageAndForward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+            mode: SendPayFwdFeesSeparately,
+            value: 1n,
+        };
 
-            expect(result.transactions).toHaveTransaction({
-                from: contract.address,
-                to: treasure.address,
-                initCode: initCode,
-                initData: initData,
-            });
+        // Send a MessageAndForward message to the contract
+        // and verify that balance equals reserved amount
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: highSendValue },
+            messageAndForwardMessage,
+        );
 
-            const balance: bigint = (
-                await blockchain.getContract(contract.address)
-            ).balance;
-            expect(balance).toEqual(reserved);
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasure.address,
+            inMessageBounceable: false,
         });
 
-        describe("contract", () => {
-            it("default message", async () => {
-                const forwardMessage: Forward = {
-                    $$type: "Forward",
-                    to: treasure.address,
-                    body: beginCell().endCell(),
-                    bounce: false,
-                    init: null,
-                };
+        const balance: bigint = (await blockchain.getContract(contract.address))
+            .balance;
 
-                const result = await contract.send(
-                    treasure.getSender(),
-                    { value: toNano("0.5") },
-                    forwardMessage,
-                );
+        expect(balance).toEqual(reserved);
 
-                expect(result.transactions).toHaveTransaction({
-                    from: contract.address,
-                    to: treasure.address,
-                    inMessageBounceable: false,
-                });
-                const balance: bigint = (
-                    await blockchain.getContract(contract.address)
-                ).balance;
-                expect(balance).toEqual(reserved);
-            });
+        // treasure -> contract
+        // contract -> treasure SendPayFwdFeesSeparately mode
+        // contract -> treasure   SendRemainingBalance mode with reserve
+        expect(result.events.length).toEqual(3);
+    });
 
-            it("balance after < reserved, should not send message", async () => {
-                const forwardMessage: Forward = {
-                    $$type: "Forward",
-                    to: treasure.address,
-                    body: beginCell().endCell(),
-                    bounce: false,
-                    init: null,
-                };
+    it("MessageAndForward/ contract / with mode SendRemainingValue", async () => {
+        const messageAndForwardMessage: MessageAndForward = {
+            $$type: "MessageAndForward",
+            to: treasure.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+            mode: SendRemainingValue,
+            value: 0n,
+        };
 
-                const result = await contract.send(
-                    treasure.getSender(),
-                    { value: toNano("0.05") },
-                    forwardMessage,
-                );
+        // Send a MessageAndForward message with mode SendRemainingValue
+        // and verify that an error occurs due to insufficient funds
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: highSendValue },
+            messageAndForwardMessage,
+        );
 
-                expect(result.transactions).toHaveTransaction({
-                    from: treasure.address,
-                    to: contract.address,
-                    actionResultCode: 37,
-                });
-            });
-
-            it("should leave all tons except of self.storageReserve", async () => {
-                await contract.send(
-                    treasure.getSender(),
-                    { value: toNano("10") },
-                    null,
-                );
-
-                const forwardMessage: Forward = {
-                    $$type: "Forward",
-                    to: treasure.address,
-                    body: beginCell().endCell(),
-                    bounce: false,
-                    init: null,
-                };
-
-                const result = await contract.send(
-                    treasure.getSender(),
-                    { value: toNano("0.05") },
-                    forwardMessage,
-                );
-
-                expect(result.transactions).toHaveTransaction({
-                    from: treasure.address,
-                    to: contract.address,
-                    exitCode: 0,
-                    actionResultCode: 0,
-                });
-
-                const balance: bigint = (
-                    await blockchain.getContract(contract.address)
-                ).balance;
-
-                expect(balance).toBeGreaterThan(reserved); // 10 in fact
-            });
-
-            it("should send init with reserved value", async () => {
-                const initCode: Cell = beginCell().endCell();
-                const initData: Cell = beginCell().endCell();
-
-                const init: StateInit = {
-                    $$type: "StateInit",
-                    code: initCode,
-                    data: initData,
-                };
-
-                const forwardMessage: Forward = {
-                    $$type: "Forward",
-                    to: treasure.address,
-                    body: beginCell().endCell(),
-                    bounce: false,
-                    init: init,
-                };
-
-                const result = await contract.send(
-                    treasure.getSender(),
-                    { value: toNano("0.5") },
-                    forwardMessage,
-                );
-
-                expect(result.transactions).toHaveTransaction({
-                    from: contract.address,
-                    to: treasure.address,
-                    inMessageBounceable: false,
-                    initCode: initCode,
-                    initData: initData,
-                });
-                const balance: bigint = (
-                    await blockchain.getContract(contract.address)
-                ).balance;
-                expect(balance).toEqual(reserved);
-            });
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            actionResultCode: NotEnoughToncoin,
         });
     });
 
-    describe("Double forward test", () => {
-        it("zeroContract", async () => {
-            const doubleForwardMessage: DoubleForward = {
-                $$type: "DoubleForward",
-                to: treasure.address,
-                body: beginCell().endCell(),
-                bounce: false,
-                init: null,
-            };
+    it("Reserving/ zeroContract test", async () => {
+        const reservedMessage: Reserving = {
+            $$type: "Reserving",
+            reserve: lowSendValue,
+            reserveMode: ReserveExact,
+            to: treasure.address,
+            body: null,
+            bounce: false,
+            init: null,
+        };
 
-            const result = await zeroContract.send(
-                treasure.getSender(),
-                { value: toNano("0.5") },
-                doubleForwardMessage,
-            );
+        // Send a Reserving message to the contract with zero reserve
+        // and verify that rawReserve(X, 0) and  SendRemainingValue mode will calculate incorrectly
+        const result = await zeroContract.send(
+            treasure.getSender(),
+            { value: highSendValue },
+            reservedMessage,
+        );
 
-            expect(result.transactions).toHaveTransaction({
-                from: zeroContract.address,
-                to: treasure.address,
-                inMessageBounceable: false,
-            });
-
-            const balance: bigint = (
-                await blockchain.getContract(zeroContract.address)
-            ).balance;
-            expect(balance).toEqual(balanceBeforeContractZero);
-
-            expect(result.events.length).toEqual(2);
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: zeroContract.address,
+            success: true,
         });
 
-        it("contract", async () => {
-            const doubleForwardMessage: DoubleForward = {
-                $$type: "DoubleForward",
-                to: treasure.address,
-                body: beginCell().endCell(),
-                bounce: false,
-                init: null,
-            };
+        const balance: bigint = (
+            await blockchain.getContract(zeroContract.address)
+        ).balance;
 
-            const result = await contract.send(
-                treasure.getSender(),
-                { value: toNano("0.5") },
-                doubleForwardMessage,
-            );
-
-            expect(result.transactions).toHaveTransaction({
-                from: treasure.address,
-                to: contract.address,
-                actionResultCode: 37,
-            });
-        });
+        expect(balance).toBeGreaterThan(lowSendValue);
     });
+    it("Reserving/ contract test", async () => {
+        const reservedMessage: Reserving = {
+            $$type: "Reserving",
+            reserve: ReserveExact,
+            reserveMode: ReserveAddOriginalBalance,
+            to: treasure.address,
+            body: null,
+            bounce: false,
+            init: null,
+        };
 
-    describe("message and forward test", () => {
-        it("zeroContract", async () => {
-            const messageAndForwardMessage: MessageAndForward = {
-                $$type: "MessageAndForward",
-                to: treasure.address,
-                body: beginCell().endCell(),
-                bounce: false,
-                init: null,
-                mode: 1n,
-                value: 1n,
-            };
+        // Send a Reserving message to the main contract
+        // and verify that the balance increased ( it calculate gas incorrectly )
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: highSendValue },
+            reservedMessage,
+        );
 
-            const result = await zeroContract.send(
-                treasure.getSender(),
-                { value: toNano("0.5") },
-                messageAndForwardMessage,
-            );
-
-            expect(result.transactions).toHaveTransaction({
-                from: zeroContract.address,
-                to: treasure.address,
-                inMessageBounceable: false,
-            });
-
-            const balance: bigint = (
-                await blockchain.getContract(zeroContract.address)
-            ).balance;
-            expect(balance).toBeLessThan(balanceBeforeContractZero);
-
-            expect(result.events.length).toEqual(3);
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
         });
 
-        it("contract", async () => {
-            const messageAndForwardMessage: MessageAndForward = {
-                $$type: "MessageAndForward",
-                to: treasure.address,
-                body: beginCell().endCell(),
-                bounce: false,
-                init: null,
-                mode: 1n,
-                value: 1n,
-            };
+        const balance: bigint = (await blockchain.getContract(contract.address))
+            .balance;
 
-            const result = await contract.send(
-                treasure.getSender(),
-                { value: toNano("5") },
-                messageAndForwardMessage,
-            );
-
-            expect(result.transactions).toHaveTransaction({
-                from: contract.address,
-                to: treasure.address,
-                inMessageBounceable: false,
-            });
-            const balance: bigint = (
-                await blockchain.getContract(contract.address)
-            ).balance;
-            expect(balance).toEqual(reserved);
-
-            expect(result.events.length).toEqual(3);
-        });
-
-        it("contract with mode 64", async () => {
-            const messageAndForwardMessage: MessageAndForward = {
-                $$type: "MessageAndForward",
-                to: treasure.address,
-                body: beginCell().endCell(),
-                bounce: false,
-                init: null,
-                mode: 64n,
-                value: 1n,
-            };
-
-            const result = await contract.send(
-                treasure.getSender(),
-                { value: toNano("5") },
-                messageAndForwardMessage,
-            );
-
-            expect(result.transactions).toHaveTransaction({
-                from: treasure.address,
-                to: contract.address,
-                actionResultCode: 37,
-            });
-        });
-    });
-
-    describe("with reserved value", () => {
-        it("zeroContract", async () => {
-            const reservedMessage: Reserving = {
-                $$type: "Reserving",
-                reserve: 0n,
-                reserveMode: 4n,
-                to: treasure.address,
-                body: null,
-                bounce: false,
-                init: null,
-            };
-
-            const result = await zeroContract.send(
-                treasure.getSender(),
-                { value: toNano("5") },
-                reservedMessage,
-            );
-
-            expect(result.transactions).toHaveTransaction({
-                from: treasure.address,
-                to: zeroContract.address,
-                success: true,
-            });
-
-            const balance: bigint = (
-                await blockchain.getContract(zeroContract.address)
-            ).balance;
-
-            expect(balance).toEqual(balanceBeforeContractZero);
-        });
-        it("contract", async () => {
-            const reservedMessage: Reserving = {
-                $$type: "Reserving",
-                reserve: 0n,
-                reserveMode: 4n,
-                to: treasure.address,
-                body: null,
-                bounce: false,
-                init: null,
-            };
-
-            const result = await contract.send(
-                treasure.getSender(),
-                { value: toNano("5") },
-                reservedMessage,
-            );
-
-            expect(result.transactions).toHaveTransaction({
-                from: treasure.address,
-                to: contract.address,
-                success: true,
-            });
-
-            const balance: bigint = (
-                await blockchain.getContract(contract.address)
-            ).balance;
-
-            expect(balance).toBeGreaterThan(balanceBeforeContractZero);
-        });
+        expect(balance).toBeGreaterThan(balanceBeforeContractZero);
     });
 });
