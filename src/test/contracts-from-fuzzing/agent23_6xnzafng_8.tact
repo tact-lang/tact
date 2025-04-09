@@ -1,0 +1,1 @@
+contract A { fun foo(a: Int, ): Int { return 1; } receive() {} }

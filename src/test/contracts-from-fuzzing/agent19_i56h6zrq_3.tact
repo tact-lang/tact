@@ -1,0 +1,1 @@
+asm fun badInstruction(): Int { 42 pushint }

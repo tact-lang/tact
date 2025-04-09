@@ -1,0 +1,1 @@
+contract X(field1: Int, field2: Bool, ) {}

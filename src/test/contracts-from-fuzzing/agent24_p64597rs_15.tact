@@ -1,0 +1,13 @@
+message Parent {
+    child: Child;
+}
+
+contract Test {
+    receive(msg: Parent) {
+        let v = msg.child.value;
+    }
+}
+
+message Child {
+    value: Int;
+}

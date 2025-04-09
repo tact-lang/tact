@@ -1,0 +1,6 @@
+contract ParamSerialization(
+    a: Int as uint8,
+    b: Int as int16,
+    c: Int as uint4,
+    d: Int as int1,
+) {}

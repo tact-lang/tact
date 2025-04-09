@@ -1,0 +1,1 @@
+contract Test { receive("ping") { if true { let x = 1; } } }

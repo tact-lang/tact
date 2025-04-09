@@ -1,0 +1,1 @@
+contract TestContract { get(-5) fun funname(): Int { return 1; } }

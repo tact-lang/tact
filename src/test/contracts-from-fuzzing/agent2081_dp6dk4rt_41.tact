@@ -1,0 +1,9 @@
+contract OnlyContractParams(
+    a: Int,
+    b: Int,
+    c: Bool,
+    d: String,
+    e: Int?,
+    f: Bool?,
+    g: String?
+) {}

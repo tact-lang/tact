@@ -1,0 +1,3 @@
+contract OptionalField {
+    maybeVal: Int?;
+}

@@ -1,0 +1,25 @@
+contract ManyOptionals {
+    a: Int?;
+    b: Bool?;
+    c: Address?;
+    d: String?;
+    e: Cell?;
+    f: Slice?;
+    g: Builder?;
+
+    init() {
+        self.a = null;
+        self.b = true;
+        self.c = null;
+        self.d = null;
+        self.e = null;
+        self.f = null;
+        self.g = null;
+    }
+
+    receive() {
+        if (self.b != null) {
+            let _ = self.b!!;
+        }
+    }
+}

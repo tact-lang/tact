@@ -1,0 +1,1 @@
+asm fun add(x: Int, y: Int): Int { ADD }

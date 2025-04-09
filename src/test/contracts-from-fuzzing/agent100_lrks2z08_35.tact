@@ -1,0 +1,1 @@
+contract X { fun f() { if true { return; } else { return; } } }

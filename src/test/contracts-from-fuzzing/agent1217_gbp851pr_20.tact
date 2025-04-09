@@ -1,0 +1,20 @@
+contract LargeParamList(
+    a: Int,
+    b: Int,
+    c: Int,
+    d: Int,
+    e: Bool,
+    f: Bool,
+    g: String,
+    h: String,
+    i: Int,
+    j: Bool,
+    k: String,
+    l: Bool,
+    m: Int,
+    n: String,
+    o: Bool,
+    p: String,
+    q: Int,
+) {
+}

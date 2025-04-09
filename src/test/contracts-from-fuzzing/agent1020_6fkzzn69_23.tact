@@ -1,0 +1,3 @@
+contract InitialOptNull {
+    f: Int?;
+}

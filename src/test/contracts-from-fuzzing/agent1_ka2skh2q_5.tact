@@ -1,0 +1,1 @@
+contract D(some: Int, ) { receive() {} }

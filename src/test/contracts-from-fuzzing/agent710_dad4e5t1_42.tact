@@ -1,0 +1,3 @@
+contract EmptyParams() {
+    // no fields
+}

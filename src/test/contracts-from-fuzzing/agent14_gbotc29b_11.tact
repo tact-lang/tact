@@ -1,0 +1,1 @@
+asm fun multiStep(): Int { 5 PUSHINT 3 PUSHINT ADD }

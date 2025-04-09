@@ -1,0 +1,12 @@
+contract Opts(
+    a: Int?,
+    b: Bool?,
+    s: String?,
+    c: Cell?,
+    d: Address?,
+    e: Int?,
+    f: Bool?,
+    g: String?,
+    h: Cell?,
+    i: Address?,
+) {}

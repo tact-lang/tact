@@ -1,0 +1,1 @@
+contract Q { fun f(a: Int,): Int { return a; } receive() {} }

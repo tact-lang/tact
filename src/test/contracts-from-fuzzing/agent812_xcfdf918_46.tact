@@ -1,0 +1,3 @@
+contract OptionalNoDefaultNoInit {
+    a: Int?;
+}

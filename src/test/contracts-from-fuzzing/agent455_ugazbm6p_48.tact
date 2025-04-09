@@ -1,0 +1,1 @@
+contract X { receive() { let a = 1 + + 3; } }

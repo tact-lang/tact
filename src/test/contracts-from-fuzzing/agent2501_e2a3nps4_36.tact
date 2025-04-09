@@ -1,0 +1,3 @@
+contract OptionalDefaults {
+    x: Int?;
+}

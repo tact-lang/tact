@@ -1,0 +1,4 @@
+contract Test {
+    fun test(a: Int, ) {
+    }
+}

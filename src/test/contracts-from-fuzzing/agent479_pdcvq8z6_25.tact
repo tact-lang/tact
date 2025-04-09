@@ -1,0 +1,1 @@
+contract Test (intState: Int as uint32,) {}

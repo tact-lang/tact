@@ -1,0 +1,4 @@
+contract MalformedTest {
+    receive() {}
+    external() {}
+}

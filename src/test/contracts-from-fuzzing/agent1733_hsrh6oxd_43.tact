@@ -1,0 +1,5 @@
+contract Pointless {
+    init() {
+        // empty
+    }
+}

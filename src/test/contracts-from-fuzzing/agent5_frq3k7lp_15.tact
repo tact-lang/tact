@@ -1,0 +1,1 @@
+asm fun badParamRef(BOC: Cell): Cell { BOC }

@@ -1,0 +1,3 @@
+contract JustInit {
+    init() {}
+}

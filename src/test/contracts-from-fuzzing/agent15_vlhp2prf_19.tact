@@ -1,0 +1,1 @@
+contract MyContract { fun foo() { return ; } }
