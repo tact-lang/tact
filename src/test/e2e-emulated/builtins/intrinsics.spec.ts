@@ -402,4 +402,17 @@ describe("intrinsics", () => {
             input256bytesHASHEXTSHA256.toString(),
         );
     });
+
+    it("Should throw correct exit code in raise()", async () => {
+        const sendRes = await contract.send(
+            treasure.getSender(),
+            { value: toNano(0.1) },
+            { $$type: "TestRaise" },
+        );
+        expect(sendRes.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            exitCode: IntrinsicsTester.errors["Text to test raise()"],
+        });
+    });
 });

@@ -1,3 +1,5 @@
+message TestRaise{}
+
 contract IntrinsicsTester {
 
     a: Int = ton("10.1234");
@@ -27,6 +29,10 @@ contract IntrinsicsTester {
 
     init() {
 
+    }
+
+    receive(_: TestRaise) {
+        raise("Text to test raise()");
     }
 
     receive("Deploy") {

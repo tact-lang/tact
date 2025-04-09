@@ -1,7 +1,8 @@
 import type { CompilerContext } from "@/context/context";
 import { createContextStore } from "@/context/context";
 import type { AstNode } from "@/ast/ast";
-import type { FactoryAst } from "@/ast/ast-helpers";
+import type {FactoryAst } from "@/ast/ast-helpers";
+import { isRaise } from "@/ast/ast-helpers";
 import { isRequire } from "@/ast/ast-helpers";
 import { traverse } from "@/ast/iterators";
 import { evalConstantExpression } from "@/optimizer/constEval";
@@ -34,13 +35,25 @@ function resolveStringsInAST(
     util: AstUtil,
 ) {
     traverse(ast, (node) => {
-        if (node.kind === "static_call" && isRequire(node.function)) {
-            if (node.args.length !== 2) {
+        if (node.kind === "static_call" && (isRequire(node.function) || isRaise(node.function))) {
+            if (((node.args.length !== 2) && isRequire(node.function)) ||
+                (node.args.length !== 1 && isRaise(node.function))) {
                 return;
             }
-            const resolved = ensureString(
-                evalConstantExpression(node.args[1]!, ctx, util),
-            ).value;
+            let resolved: string | undefined = undefined;
+            if(isRequire(node.function)) {
+                resolved = ensureString(
+                    evalConstantExpression(node.args[1]!, ctx, util),
+                ).value;
+            }
+            if(isRaise(node.function)) {
+                resolved = ensureString(
+                    evalConstantExpression(node.args[0]!, ctx, util),
+                ).value;
+            }
+            if (!resolved) {
+                return;
+            }
             if (!exceptions.get(ctx, resolved)) {
                 const id = exceptionId(resolved);
                 if (
