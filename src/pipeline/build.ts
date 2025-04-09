@@ -147,12 +147,13 @@ export async function build(args: {
     const parser: Parser = args.parser ?? getParser(ast);
     const logger: ILogger = args.logger ?? new Logger();
 
-    // Configure context
-    let ctx: CompilerContext = new CompilerContext();
-    const cfg: string = JSON.stringify({
+    const compilerInfo: string = JSON.stringify({
         entrypoint: posixNormalize(config.path),
         options: config.options ?? {},
     });
+
+    // Configure context
+    let ctx = new CompilerContext();
     ctx = enableFeatures(ctx, logger, config);
 
     // Precompile
@@ -171,22 +172,22 @@ export async function build(args: {
         } else {
             logger.error(e as Error);
         }
-        return { ok: false, error: [e as Error] };
+        return BuildFail([e as Error]);
     }
 
     if (config.mode === "checkOnly") {
         logger.info("✔️ Syntax and type checking succeeded.");
-        return { ok: true, error: [] };
+        return BuildOk();
     }
 
     const compilationCtx: CompilationCtx = {
-        ctx,
         config,
         logger,
-        built: {},
         project,
         stdlib,
-        compilerInfo: cfg,
+        compilerInfo,
+        ctx,
+        built: {},
         errorMessages: [],
     };
 
@@ -218,10 +219,10 @@ async function mainCompile(ctx: CompilationCtx): Promise<BuildResult> {
 
     if (ctx.config.mode === "funcOnly") {
         ctx.logger.info("✔️ FunC code generation succeeded.");
-        return BuildFail(ctx.errorMessages);
+        return BuildOk();
     }
 
-    const packages = doPackage(ctx);
+    const packages = doPackaging(ctx);
     if (!packages) {
         return BuildFail(ctx.errorMessages);
     }
@@ -231,7 +232,12 @@ async function mainCompile(ctx: CompilationCtx): Promise<BuildResult> {
         return BuildFail(ctx.errorMessages);
     }
 
-    return doReports(ctx, packages);
+    const reportsRes = doReports(ctx, packages);
+    if (!reportsRes) {
+        return BuildFail(ctx.errorMessages);
+    }
+
+    return BuildOk();
 }
 
 async function compileContract(contract: TypeDescription, ctx: CompilationCtx) {
@@ -424,7 +430,7 @@ async function compileTact(
     }
 }
 
-function doPackage(ctx: CompilationCtx): PackageFileFormat[] | undefined {
+function doPackaging(ctx: CompilationCtx): PackageFileFormat[] | undefined {
     ctx.logger.info("   > Packaging");
 
     const packages: PackageFileFormat[] = [];
@@ -548,7 +554,6 @@ function packageContract(
 function doBindings(ctx: CompilationCtx, packages: PackageFileFormat[]) {
     const { project, config, logger, built } = ctx;
 
-    // Bindings
     logger.info("   > Bindings");
 
     for (const pkg of packages) {
@@ -595,10 +600,9 @@ function doBindings(ctx: CompilationCtx, packages: PackageFileFormat[]) {
 function doReports(
     ctx: CompilationCtx,
     packages: PackageFileFormat[],
-): BuildResult {
+): boolean {
     const { project, config, logger } = ctx;
 
-    // Reports
     logger.info("   > Reports");
 
     for (const pkg of packages) {
@@ -615,9 +619,9 @@ function doReports(
             error.message = `Report generation crashed: ${error.message}`;
             logger.error(error);
             ctx.errorMessages.push(error);
-            return BuildFail(ctx.errorMessages);
+            return false;
         }
     }
 
-    return BuildOk();
+    return true;
 }
