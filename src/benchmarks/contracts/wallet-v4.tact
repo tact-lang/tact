@@ -107,12 +107,12 @@ contract WalletV4(
         }
     }
 
-    external(msg: Slice) {
-        let data = ExtRequest.fromSlice(msg);
-        throwIf(Expired, data.validUntil < now());
-        throwUnless(SeqnoMismatch, data.seqno == self.state.seqno);
-        throwUnless(WalletIdMismatch, data.walletId == self.state.walletId);
-        throwUnless(SignatureMismatch, data.bundle.verifySignature(self.state.publicKey));
+    external(msgSlice: Slice) {
+        let msg = ExtRequest.fromSlice(msgSlice);
+        throwIf(Expired, msg.validUntil < now());
+        throwUnless(SeqnoMismatch, msg.seqno == self.state.seqno);
+        throwUnless(WalletIdMismatch, msg.walletId == self.state.walletId);
+        throwUnless(SignatureMismatch, msg.bundle.verifySignature(self.state.publicKey));
 
         acceptMessage();
         self.state.seqno += 1;
@@ -120,8 +120,8 @@ contract WalletV4(
         commit();
 
         // simple transfer
-        if (data.op == 0) {
-            let payload = data.payload;
+        if (msg.op == 0) {
+            let payload = msg.payload;
             /*
             foreach (ref in payload.refs) {
                 let mode = payload.loadUint(8);
@@ -136,8 +136,8 @@ contract WalletV4(
         }
 
         // deploy and add plugin
-        if (data.op == 1) {
-            let payload = data.payload;
+        if (msg.op == 1) {
+            let payload = msg.payload;
             let wc = payload.loadUint(8);
             let amount = payload.loadCoins();
             let stateInit = payload.loadRef();
@@ -156,9 +156,9 @@ contract WalletV4(
             );
 
             self.state.extensions.set(addr, true);
-        } else if (data.op == 2) {
+        } else if (msg.op == 2) {
             // add plugin
-            let payload = data.payload;
+            let payload = msg.payload;
 
             let wc = payload.loadUint(8);
             let addrHash = payload.loadUint(256);
@@ -179,9 +179,9 @@ contract WalletV4(
                 }.toCell(),
                 64,
             );
-        } else if (data.op == 3) {
+        } else if (msg.op == 3) {
             // remove plugin
-            let payload = data.payload;
+            let payload = msg.payload;
 
             let wc = payload.loadUint(8);
             let addrHash = payload.loadUint(256);
