@@ -63,4 +63,9 @@ describe("ternary", () => {
         expect(await contract.getTest10(0n)).toEqual(45n);
         expect(await contract.getTest10(42n)).toEqual(45n);
     });
+    it("should implement zero inequality comparison correctly", async () => {
+        expect(
+            await contract.getConditionZeroComparisonOptimization(3n),
+        ).toEqual(42n);
+    });
 });
