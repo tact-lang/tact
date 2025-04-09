@@ -1,8 +1,8 @@
 import { beginCell, Cell, Dictionary } from "@ton/core";
 import {
-    disassembleRoot,
-    Cell as OpcodeCell,
     AssemblyWriter,
+    Cell as OpcodeCell,
+    disassembleRoot,
 } from "@tact-lang/opcode";
 import type { WrappersConstantDescription } from "@/bindings/writeTypescript";
 import { writeTypescript } from "@/bindings/writeTypescript";
@@ -108,6 +108,8 @@ export type FuncSources = {
     readonly content: string;
 };
 
+export type Packages = PackageFileFormat[];
+
 export type BuildRecord = Record<
     string,
     | {
@@ -118,6 +120,22 @@ export type BuildRecord = Record<
       }
     | undefined
 >;
+
+export type SystemCell = NonEmptySystemCell | EmptySystemCell;
+
+export type NonEmptySystemCell = {
+    $: "NonEmptySystemCell";
+    cell: Cell;
+};
+export const NonEmptySystemCell = (cell: Cell): NonEmptySystemCell => ({
+    $: "NonEmptySystemCell",
+    cell,
+});
+
+export type EmptySystemCell = {
+    $: "EmptySystemCell";
+};
+export const EmptySystemCell: EmptySystemCell = { $: "EmptySystemCell" };
 
 export type BuildResult = {
     readonly ok: boolean;
@@ -195,11 +213,10 @@ export async function build(args: {
 }
 
 async function mainCompile(ctx: CompilationCtx): Promise<BuildResult> {
-    // Compile contracts
     const allContracts = getContracts(ctx.ctx);
 
     // Sort contracts in topological order
-    // If a cycle is found, return undefined
+    // If a cycle is found, topSortContracts returns undefined
     const sortedContracts = topSortContracts(allContracts);
     if (sortedContracts !== undefined) {
         ctx.ctx = featureEnable(ctx.ctx, "optimizedChildCode");
@@ -430,19 +447,52 @@ async function compileTact(
     }
 }
 
-function doPackaging(ctx: CompilationCtx): PackageFileFormat[] | undefined {
+function doPackaging(ctx: CompilationCtx): Packages | undefined {
     ctx.logger.info("   > Packaging");
 
-    const packages: PackageFileFormat[] = [];
+    const packages: Packages = [];
 
-    const contracts = getContracts(ctx.ctx).map((v) => v.name);
+    const contracts = getContracts(ctx.ctx);
     for (const contract of contracts) {
-        const pkg = packageContract(ctx, contract);
+        const pkg = packageContract(ctx, contract.name);
         if (!pkg) continue;
         packages.push(pkg);
     }
 
     return packages;
+}
+
+function buildSystemCell(
+    ctx: CompilationCtx,
+    contract: string,
+): SystemCell | undefined {
+    const depends = Dictionary.empty(
+        Dictionary.Keys.Uint(16),
+        Dictionary.Values.Cell(),
+    );
+
+    const contractType = getType(ctx.ctx, contract);
+
+    for (const dependencyContract of contractType.dependsOn) {
+        const dependencyContractBuild = ctx.built[dependencyContract.name];
+        if (!dependencyContractBuild) {
+            const message = `   > ${dependencyContract.name}: no artifacts found`;
+            ctx.logger.error(message);
+            ctx.errorMessages.push(new Error(message));
+            return undefined;
+        }
+
+        const dependencyContractCell = Cell.fromBoc(
+            dependencyContractBuild.codeBoc,
+        )[0]!;
+        depends.set(dependencyContract.uid, dependencyContractCell);
+    }
+
+    if (contractType.dependsOn.length === 0) {
+        return EmptySystemCell;
+    }
+
+    return NonEmptySystemCell(beginCell().storeDict(depends).endCell());
 }
 
 function packageContract(
@@ -460,28 +510,10 @@ function packageContract(
         return undefined;
     }
 
-    // System cell
-    const depends = Dictionary.empty(
-        Dictionary.Keys.Uint(16),
-        Dictionary.Values.Cell(),
-    );
-
-    const ct = getType(ctx.ctx, contract);
-    for (const c of ct.dependsOn) {
-        const cd = built[c.name];
-        if (!cd) {
-            const message = `   > ${c.name}: no artifacts found`;
-            logger.error(message);
-            errorMessages.push(new Error(message));
-            return undefined;
-        }
-        depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]!);
+    const systemCell = buildSystemCell(ctx, contract);
+    if (systemCell === undefined) {
+        return undefined;
     }
-
-    const systemCell =
-        ct.dependsOn.length > 0
-            ? beginCell().storeDict(depends).endCell()
-            : null;
 
     // Collect sources
     const sources: Record<string, string> = {};
@@ -530,7 +562,10 @@ function packageContract(
                     : undefined,
             deployment: {
                 kind: "system-cell",
-                system: systemCell?.toBoc().toString("base64") ?? null,
+                system:
+                    systemCell.$ === "NonEmptySystemCell"
+                        ? systemCell.cell.toBoc().toString("base64")
+                        : null,
             },
         },
         sources,
