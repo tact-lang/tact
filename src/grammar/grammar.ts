@@ -97,8 +97,8 @@ export namespace $ast {
   }>;
   export type semicolon = ";" | "}";
   export type storageVar = FieldDecl;
-  export type contractItemDecl = ContractInit | Receiver | $Function | Constant | storageVar;
-  export type traitItemDecl = Receiver | $Function | Constant | storageVar;
+  export type contractItemDecl = ContractInit | Receiver | $Function | AsmFunction | Constant | storageVar;
+  export type traitItemDecl = Receiver | $Function | AsmFunction | Constant | storageVar;
   export type FunctionDefinition = $.Located<{
     readonly $: "FunctionDefinition";
     readonly body: statements;
@@ -431,8 +431,8 @@ export const Receiver: $.Parser<$ast.Receiver> = $.loc($.field($.pure("Receiver"
 export const FieldDecl: $.Parser<$ast.FieldDecl> = $.loc($.field($.pure("FieldDecl"), "$", $.field($.lazy(() => Id), "name", $.field($.lazy(() => ascription), "type", $.field($.opt($.right($.str("="), $.lazy(() => expression))), "expression", $.eps)))));
 export const semicolon: $.Parser<$ast.semicolon> = $.alt($.str(";"), $.lookPos($.str("}")));
 export const storageVar: $.Parser<$ast.storageVar> = $.left(FieldDecl, semicolon);
-export const contractItemDecl: $.Parser<$ast.contractItemDecl> = $.alt(ContractInit, $.alt(Receiver, $.alt($Function, $.alt(Constant, storageVar))));
-export const traitItemDecl: $.Parser<$ast.traitItemDecl> = $.alt(Receiver, $.alt($Function, $.alt(Constant, storageVar)));
+export const contractItemDecl: $.Parser<$ast.contractItemDecl> = $.alt(ContractInit, $.alt(Receiver, $.alt($Function, $.alt(AsmFunction, $.alt(Constant, storageVar)))));
+export const traitItemDecl: $.Parser<$ast.traitItemDecl> = $.alt(Receiver, $.alt($Function, $.alt(AsmFunction, $.alt(Constant, storageVar))));
 export const FunctionDefinition: $.Parser<$ast.FunctionDefinition> = $.loc($.field($.pure("FunctionDefinition"), "$", $.field($.lazy(() => statements), "body", $.eps)));
 export const FunctionDeclaration: $.Parser<$ast.FunctionDeclaration> = $.loc($.field($.pure("FunctionDeclaration"), "$", $.right(semicolon, $.eps)));
 export const Id: $.Parser<$ast.Id> = $.named("identifier", $.loc($.field($.pure("Id"), "$", $.field($.lex($.stry($.right($.lookNeg($.lazy(() => reservedWord)), $.right($.regex<string | string | "_">("a-zA-Z_", [$.ExpRange("a", "z"), $.ExpRange("A", "Z"), $.ExpString("_")]), $.right($.star($.lazy(() => idPart)), $.eps))))), "name", $.eps))));

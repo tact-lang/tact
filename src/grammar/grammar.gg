@@ -22,12 +22,14 @@ contractItemDecl
     = ContractInit
     / Receiver
     / Function
+    / AsmFunction
     / Constant
     / storageVar;
 
 traitItemDecl
     = Receiver
     / Function
+    / AsmFunction
     / Constant
     / storageVar;
 
@@ -48,7 +50,7 @@ FunctionDefinition = body:statements;
 
 FunctionDeclaration = semicolon;
 
-AsmFunction = 
+AsmFunction =
     "asm"
     shuffle:shuffle?
     attributes:FunctionAttribute*
