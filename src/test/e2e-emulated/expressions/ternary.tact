@@ -59,4 +59,8 @@ contract TernaryTester {
             : (a == 3) ? 44
             : 45;
     }
+
+    get fun conditionZeroComparisonOptimization(a: Int): Int {
+        return (a != 0 ? 42 : 0) != 0 ? 42 : 41;
+    }
 }
