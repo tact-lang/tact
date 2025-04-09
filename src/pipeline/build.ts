@@ -226,7 +226,7 @@ async function mainCompile(ctx: CompilationCtx): Promise<BuildResult> {
 
     let ok = true;
     for (const contract of contracts) {
-        ok &&= await compileContract(contract, ctx);
+        ok &&= await compileContract(ctx, contract);
     }
 
     if (!ok) {
@@ -257,12 +257,14 @@ async function mainCompile(ctx: CompilationCtx): Promise<BuildResult> {
     return BuildOk();
 }
 
-async function compileContract(contract: TypeDescription, ctx: CompilationCtx) {
-    const { project, config, logger, built, errorMessages } = ctx;
+async function compileContract(
+    ctx: CompilationCtx,
+    contract: TypeDescription,
+): Promise<boolean> {
+    const { config, logger, built } = ctx;
 
     const contractName = contract.name;
 
-    // Compiling contract to func
     logger.info(`   > ${contractName}: tact compiler`);
 
     const compileRes = await compileTact(ctx, contractName);
@@ -286,7 +288,7 @@ async function compileContract(contract: TypeDescription, ctx: CompilationCtx) {
     }
 
     const { abi, constants } = compileRes;
-    // Add to built map
+
     built[contractName] = {
         codeBoc,
         abi,
@@ -294,35 +296,47 @@ async function compileContract(contract: TypeDescription, ctx: CompilationCtx) {
         contract,
     };
 
-    if (config.mode === "fullWithDecompilation") {
-        // Fift decompiler for generated code debug
-        logger.info(`   > ${contractName}: fift decompiler`);
-        let codeFiftDecompiled: string;
-        try {
-            const cell = OpcodeCell.fromBoc(codeBoc).at(0);
-            if (typeof cell === "undefined") {
-                throw new Error("Cannot create Cell from BoC file");
-            }
-
-            const program = disassembleRoot(cell, { computeRefs: true });
-            codeFiftDecompiled = AssemblyWriter.write(program, {
-                useAliases: true,
-            });
-
-            const pathCodeFifDec = project.resolve(
-                config.output,
-                `${config.name}_${contractName}.rev.fif`,
-            );
-
-            project.writeFile(pathCodeFifDec, codeFiftDecompiled);
-        } catch (e) {
-            logger.error("Fift decompiler crashed");
-            logger.error(e as Error);
-            errorMessages.push(e as Error);
-            return false;
-        }
+    if (ctx.config.mode === "fullWithDecompilation") {
+        return decompileContract(ctx, contractName, codeBoc);
     }
+
     return true;
+}
+
+function decompileContract(
+    ctx: CompilationCtx,
+    contractName: string,
+    codeBoc: Buffer,
+) {
+    const { project, config, logger, errorMessages } = ctx;
+
+    logger.info(`   > ${contractName}: fift decompiler`);
+
+    try {
+        const cell = OpcodeCell.fromBoc(codeBoc).at(0);
+        if (typeof cell === "undefined") {
+            throw new Error("Cannot create Cell from BoC file");
+        }
+
+        const program = disassembleRoot(cell, { computeRefs: true });
+        const codeFiftDecompiled = AssemblyWriter.write(program, {
+            useAliases: true,
+        });
+
+        const pathCodeFifDec = project.resolve(
+            config.output,
+            `${config.name}_${contractName}.rev.fif`,
+        );
+
+        project.writeFile(pathCodeFifDec, codeFiftDecompiled);
+        return true;
+    } catch (e) {
+        logger.error("Fift decompiler crashed");
+        logger.error(e as Error);
+        errorMessages.push(e as Error);
+    }
+
+    return false;
 }
 
 async function compileFunc(
@@ -333,17 +347,6 @@ async function compileFunc(
 ): Promise<Buffer | undefined> {
     const { project, config, logger, errorMessages, stdlib } = ctx;
 
-    const pathCodeBoc = project.resolve(
-        config.output,
-        // need to keep `.code.boc` here because Blueprint looks for this pattern
-        `${config.name}_${contract}.code.boc`,
-    );
-    const pathCodeFif = project.resolve(
-        config.output,
-        `${config.name}_${contract}.fif`,
-    );
-
-    // Compiling contract to TVM
     logger.info(`   > ${contract}: func compiler`);
 
     try {
@@ -388,6 +391,16 @@ async function compileFunc(
             return undefined;
         }
 
+        const pathCodeBoc = project.resolve(
+            config.output,
+            // need to keep `.code.boc` here because Blueprint looks for this pattern
+            `${config.name}_${contract}.code.boc`,
+        );
+        const pathCodeFif = project.resolve(
+            config.output,
+            `${config.name}_${contract}.fif`,
+        );
+
         project.writeFile(pathCodeFif, c.fift);
         project.writeFile(pathCodeBoc, c.output);
         return c.output;
@@ -395,8 +408,9 @@ async function compileFunc(
         logger.error("FunC compiler crashed");
         logger.error(e as Error);
         errorMessages.push(e as Error);
-        return undefined;
     }
+
+    return undefined;
 }
 
 async function compileTact(
@@ -444,6 +458,7 @@ async function compileTact(
         }
         ctx.errorMessages.push(e as Error);
     }
+
     return undefined;
 }
 
