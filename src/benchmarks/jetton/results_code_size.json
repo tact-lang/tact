@@ -109,6 +109,16 @@
         "wallet cells": "16",
         "wallet bits": "8211"
       }
+    },
+    {
+      "label": "1.6.5 with reordered wallet fields",
+      "pr": null,
+      "size": {
+        "minter cells": "30",
+        "minter bits": "14688",
+        "wallet cells": "16",
+        "wallet bits": "8211"
+      }
     }
   ]
 }
