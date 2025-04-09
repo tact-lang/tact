@@ -163,12 +163,13 @@ describe("WalletV4 Gas Tests", () => {
         seqno = createSeqnoCounter();
 
         walletTact = blockchain.openContract(
-            await WalletV4.fromInit(
-                0n,
-                SUBWALLET_ID,
-                bufferToBigInt(keypair.publicKey),
-                Dictionary.empty(),
-            ),
+            await WalletV4.fromInit({
+                $$type: "ContractState",
+                seqno: 0n,
+                walletId: SUBWALLET_ID,
+                publicKey: bufferToBigInt(keypair.publicKey),
+                extensions: Dictionary.empty(),
+            }),
         );
 
         const deployResult = await walletTact.send(

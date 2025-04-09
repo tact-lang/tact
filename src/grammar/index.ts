@@ -1070,6 +1070,13 @@ const parseAsmShuffle =
         };
     };
 
+const parseUnsupportedAsmFunction =
+    (node: $ast.AsmFunction): Handler<Ast.AsmFunctionDef> =>
+    (ctx) => {
+        ctx.err.unsupportedAsmFunctionInContracts()(node.loc);
+        return parseAsmFunction(node)(ctx);
+    };
+
 const parseAsmFunction =
     (node: $ast.AsmFunction): Handler<Ast.AsmFunctionDef> =>
     (ctx) => {
@@ -1329,6 +1336,7 @@ const parseContractItem: (
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseFunctionDef,
+    AsmFunction: parseUnsupportedAsmFunction,
     Constant: parseConstantDefLocal,
 });
 
@@ -1338,6 +1346,7 @@ const parseTraitItem: (
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseFunction,
+    AsmFunction: parseUnsupportedAsmFunction,
     Constant: parseConstantLocal,
 });
 

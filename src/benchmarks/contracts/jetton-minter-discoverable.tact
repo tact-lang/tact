@@ -48,7 +48,7 @@ contract JettonMinter(
 
         let targetJettonWallet: BasechainAddress =
             (ownerWorkchain == Workchain) ?
-            contractBasechainAddress(initOf JettonWallet(0, msg.ownerAddress, myAddress()))
+            contractBasechainAddress(initOf JettonWallet(msg.ownerAddress, myAddress(), 0))
             : emptyBasechainAddress();
 
         message(MessageParameters {
@@ -112,7 +112,7 @@ inline fun makeTakeWalletAddressMsg(targetJettonWallet: BasechainAddress, msg: P
 }
 
 inline fun getJettonWalletInit(address: Address): StateInit {
-    return initOf JettonWallet(0, address, myAddress());
+    return initOf JettonWallet(address, myAddress(), 0);
 }
 
 inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
