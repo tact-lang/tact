@@ -464,15 +464,6 @@ exports[`resolveDescriptors should fail descriptors for message-field-with-contr
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-field-with-optiona-trait-type 1`] = `
-"<unknown>:6:5: Fields with a trait type are not supported
-  5 | message TakeEscrowData {
-> 6 |     data: Test?;
-          ^~~~~~~~~~~
-  7 | }
-"
-`;
-
 exports[`resolveDescriptors should fail descriptors for message-field-with-optional-contract-type 1`] = `
 "<unknown>:6:5: Fields with a contract type are not supported yet
   5 | message TakeEscrowData {
@@ -482,9 +473,18 @@ exports[`resolveDescriptors should fail descriptors for message-field-with-optio
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for message-field-with-optional-trait-type 1`] = `
+"<unknown>:6:5: Fields with a trait type are not supported
+  5 | message TakeData {
+> 6 |     data: Test?;
+          ^~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for message-field-with-trait-type 1`] = `
 "<unknown>:6:5: Fields with a trait type are not supported
-  5 | message TakeEscrowData {
+  5 | message TakeData {
 > 6 |     data: Test;
           ^~~~~~~~~~
   7 | }

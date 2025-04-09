@@ -2,6 +2,6 @@ trait BaseTrait {}
 
 trait Test {}
 
-message TakeEscrowData {
+message TakeData {
     data: Test?;
 }
