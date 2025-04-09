@@ -702,6 +702,24 @@ exports[`resolveDescriptors should fail descriptors for override-for-non-existin
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for override-for-non-virtual-abstract-constant 1`] = `
+"<unknown>:10:5: Cannot override constant "X" because constant "X" does not have a virtual or abstract modifier in parent trait
+   9 | contract C with T {
+> 10 |     override const X: Int = 20;
+           ^~~~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-for-non-virtual-abstract-function-in-contract 1`] = `
+"<unknown>:6:5: Cannot override function "foo" because function "foo" does not have a virtual or abstract modifier in parent trait
+  5 | contract Test {
+> 6 |     override fun foo() {}
+          ^~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for read-self-in-init-function 1`] = `
 "<unknown>:5:17: cannot read whole \`self\` in \`init\` function
   4 |     init() {
@@ -15304,6 +15322,754 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
 
 exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 2`] = `[]`;
 
+exports[`resolveDescriptors should resolve descriptors for override-for-abstract-constant 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 8,
+          "kind": "constant_decl",
+          "loc": abstract const X: Int;,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": X,
+            "text": "X",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 9,
+      "kind": "trait",
+      "loc": trait T {
+    abstract const X: Int;
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": T,
+        "text": "T",
+      },
+      "traits": [],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 8,
+          "kind": "constant_decl",
+          "loc": abstract const X: Int;,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": X,
+            "text": "X",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "loc": abstract const X: Int;,
+        "name": "X",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "value": undefined,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 6769,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 15,
+          "initializer": {
+            "base": 10,
+            "id": 14,
+            "kind": "number",
+            "loc": 20,
+            "value": 20n,
+          },
+          "kind": "constant_def",
+          "loc": override const X: Int = 20;,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": X,
+            "text": "X",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 16,
+      "kind": "contract",
+      "loc": contract C with T {
+    override const X: Int = 20;
+},
+      "name": {
+        "id": 10,
+        "kind": "id",
+        "loc": C,
+        "text": "C",
+      },
+      "params": undefined,
+      "traits": [
+        {
+          "id": 11,
+          "kind": "id",
+          "loc": T,
+          "text": "T",
+        },
+      ],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 15,
+          "initializer": {
+            "base": 10,
+            "id": 14,
+            "kind": "number",
+            "loc": 20,
+            "value": 20n,
+          },
+          "kind": "constant_def",
+          "loc": override const X: Int = 20;,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": X,
+            "text": "X",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "loc": override const X: Int = 20;,
+        "name": "X",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "value": undefined,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 18,
+        "kind": "contract_init",
+        "loc": contract C with T {
+    override const X: Int = 20;
+},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "C",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "C{}",
+    "tlb": "_  = C",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 8,
+              "kind": "constant_decl",
+              "loc": abstract const X: Int;,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": X,
+                "text": "X",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 9,
+          "kind": "trait",
+          "loc": trait T {
+    abstract const X: Int;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": T,
+            "text": "T",
+          },
+          "traits": [],
+        },
+        "constants": [
+          {
+            "ast": {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 8,
+              "kind": "constant_decl",
+              "loc": abstract const X: Int;,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": X,
+                "text": "X",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "loc": abstract const X: Int;,
+            "name": "X",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "value": undefined,
+          },
+        ],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 6769,
+      },
+    ],
+    "uid": 30887,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for override-for-abstract-constant 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for override-for-abstract-function-in-contract 1`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 5,
+          "kind": "function_decl",
+          "loc": abstract fun foo();,
+          "name": {
+            "id": 4,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": undefined,
+        },
+      ],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait T {
+    abstract fun foo();
+},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": T,
+        "text": "T",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "foo" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 5,
+          "kind": "function_decl",
+          "loc": abstract fun foo();,
+          "name": {
+            "id": 4,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": undefined,
+        },
+        "isAbstract": true,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "foo",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "void",
+        },
+        "self": {
+          "kind": "ref",
+          "name": "T",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 6769,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 10,
+          "kind": "function_def",
+          "loc": override fun foo() {},
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": undefined,
+          "statements": [],
+        },
+      ],
+      "id": 11,
+      "kind": "trait",
+      "loc": trait Test with T {
+    override fun foo() {}
+},
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [
+        {
+          "id": 8,
+          "kind": "id",
+          "loc": T,
+          "text": "T",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "foo" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 10,
+          "kind": "function_def",
+          "loc": override fun foo() {},
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": undefined,
+          "statements": [],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": true,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "foo",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "void",
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Test",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "Test",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 5,
+              "kind": "function_decl",
+              "loc": abstract fun foo();,
+              "name": {
+                "id": 4,
+                "kind": "id",
+                "loc": foo,
+                "text": "foo",
+              },
+              "params": [],
+              "return": undefined,
+            },
+          ],
+          "id": 6,
+          "kind": "trait",
+          "loc": trait T {
+    abstract fun foo();
+},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": T,
+            "text": "T",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "foo" => {
+            "ast": {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 5,
+              "kind": "function_decl",
+              "loc": abstract fun foo();,
+              "name": {
+                "id": 4,
+                "kind": "id",
+                "loc": foo,
+                "text": "foo",
+              },
+              "params": [],
+              "return": undefined,
+            },
+            "isAbstract": true,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "foo",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "void",
+            },
+            "self": {
+              "kind": "ref",
+              "name": "T",
+              "optional": false,
+            },
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 6769,
+      },
+    ],
+    "uid": 44104,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for override-for-abstract-function-in-contract 2`] = `[]`;
+
 exports[`resolveDescriptors should resolve descriptors for override-for-existing-constant-in-contract 1`] = `
 [
   {
@@ -15372,7 +16138,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 9,
           "initializer": {
             "base": 10,
@@ -15382,7 +16153,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 10n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 10;,
+          "loc": virtual const BAR: Int = 10;,
           "name": {
             "id": 6,
             "kind": "id",
@@ -15400,7 +16171,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 10,
       "kind": "trait",
       "loc": trait T {
-    const BAR: Int = 10;
+    virtual const BAR: Int = 10;
 },
       "name": {
         "id": 5,
@@ -15413,7 +16184,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 9,
           "initializer": {
             "base": 10,
@@ -15423,7 +16199,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 10n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 10;,
+          "loc": virtual const BAR: Int = 10;,
           "name": {
             "id": 6,
             "kind": "id",
@@ -15437,7 +16213,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 10;,
+        "loc": virtual const BAR: Int = 10;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -15624,7 +16400,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -15634,7 +16415,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 10n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 10;,
+              "loc": virtual const BAR: Int = 10;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -15652,7 +16433,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 10,
           "kind": "trait",
           "loc": trait T {
-    const BAR: Int = 10;
+    virtual const BAR: Int = 10;
 },
           "name": {
             "id": 5,
@@ -15665,7 +16446,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -15675,7 +16461,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 10n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 10;,
+              "loc": virtual const BAR: Int = 10;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -15689,7 +16475,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 10;,
+            "loc": virtual const BAR: Int = 10;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -15759,7 +16545,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "initializer": {
             "base": 10,
@@ -15769,7 +16560,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 4,
             "kind": "id",
@@ -15787,7 +16578,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 8,
       "kind": "trait",
       "loc": trait BaseTrait {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
       "name": {
         "id": 3,
@@ -15800,7 +16591,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "initializer": {
             "base": 10,
@@ -15810,7 +16606,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 4,
             "kind": "id",
@@ -15824,7 +16620,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 100;,
+        "loc": virtual const BAR: Int = 100;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -15979,7 +16775,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -15989,7 +16790,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -16007,7 +16808,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 8,
           "kind": "trait",
           "loc": trait BaseTrait {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
           "name": {
             "id": 3,
@@ -16020,7 +16821,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -16030,7 +16836,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -16044,7 +16850,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -16178,7 +16984,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 11,
           "initializer": {
             "base": 10,
@@ -16188,7 +16999,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 8,
             "kind": "id",
@@ -16206,7 +17017,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 12,
       "kind": "trait",
       "loc": trait T2 {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
       "name": {
         "id": 7,
@@ -16219,7 +17030,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 11,
           "initializer": {
             "base": 10,
@@ -16229,7 +17045,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 8,
             "kind": "id",
@@ -16243,7 +17059,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 100;,
+        "loc": virtual const BAR: Int = 100;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -16468,7 +17284,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 11,
               "initializer": {
                 "base": 10,
@@ -16478,7 +17299,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 8,
                 "kind": "id",
@@ -16496,7 +17317,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 12,
           "kind": "trait",
           "loc": trait T2 {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
           "name": {
             "id": 7,
@@ -16509,7 +17330,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 11,
               "initializer": {
                 "base": 10,
@@ -16519,7 +17345,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 8,
                 "kind": "id",
@@ -16533,7 +17359,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -16603,7 +17429,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "initializer": {
             "base": 10,
@@ -16613,7 +17444,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const FOO: Int = 100;,
+          "loc": virtual const FOO: Int = 100;,
           "name": {
             "id": 4,
             "kind": "id",
@@ -16631,7 +17462,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 8,
       "kind": "trait",
       "loc": trait BaseTrait {
-    const FOO: Int = 100;
+    virtual const FOO: Int = 100;
 },
       "name": {
         "id": 3,
@@ -16644,7 +17475,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "initializer": {
             "base": 10,
@@ -16654,7 +17490,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const FOO: Int = 100;,
+          "loc": virtual const FOO: Int = 100;,
           "name": {
             "id": 4,
             "kind": "id",
@@ -16668,7 +17504,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const FOO: Int = 100;,
+        "loc": virtual const FOO: Int = 100;,
         "name": "FOO",
         "type": {
           "kind": "ref",
@@ -17091,7 +17927,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -17101,7 +17942,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const FOO: Int = 100;,
+              "loc": virtual const FOO: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -17119,7 +17960,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 8,
           "kind": "trait",
           "loc": trait BaseTrait {
-    const FOO: Int = 100;
+    virtual const FOO: Int = 100;
 },
           "name": {
             "id": 3,
@@ -17132,7 +17973,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -17142,7 +17988,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const FOO: Int = 100;,
+              "loc": virtual const FOO: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -17156,7 +18002,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const FOO: Int = 100;,
+            "loc": virtual const FOO: Int = 100;,
             "name": "FOO",
             "type": {
               "kind": "ref",
@@ -17450,7 +18296,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 9,
           "initializer": {
             "base": 10,
@@ -17460,7 +18311,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 10n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 10;,
+          "loc": virtual const BAR: Int = 10;,
           "name": {
             "id": 6,
             "kind": "id",
@@ -17478,7 +18329,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 10,
       "kind": "trait",
       "loc": trait T {
-    const BAR: Int = 10;
+    virtual const BAR: Int = 10;
 },
       "name": {
         "id": 5,
@@ -17491,7 +18342,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 9,
           "initializer": {
             "base": 10,
@@ -17501,7 +18357,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 10n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 10;,
+          "loc": virtual const BAR: Int = 10;,
           "name": {
             "id": 6,
             "kind": "id",
@@ -17515,7 +18371,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 10;,
+        "loc": virtual const BAR: Int = 10;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -17657,7 +18513,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -17667,7 +18528,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 10n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 10;,
+              "loc": virtual const BAR: Int = 10;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -17685,7 +18546,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 10,
           "kind": "trait",
           "loc": trait T {
-    const BAR: Int = 10;
+    virtual const BAR: Int = 10;
 },
           "name": {
             "id": 5,
@@ -17698,7 +18559,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -17708,7 +18574,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 10n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 10;,
+              "loc": virtual const BAR: Int = 10;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -17722,7 +18588,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 10;,
+            "loc": virtual const BAR: Int = 10;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -17792,7 +18658,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "initializer": {
             "base": 10,
@@ -17802,7 +18673,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 4,
             "kind": "id",
@@ -17820,7 +18691,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 8,
       "kind": "trait",
       "loc": trait BaseTrait {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
       "name": {
         "id": 3,
@@ -17833,7 +18704,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "initializer": {
             "base": 10,
@@ -17843,7 +18719,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 4,
             "kind": "id",
@@ -17857,7 +18733,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 100;,
+        "loc": virtual const BAR: Int = 100;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -17999,7 +18875,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -18009,7 +18890,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -18027,7 +18908,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 8,
           "kind": "trait",
           "loc": trait BaseTrait {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
           "name": {
             "id": 3,
@@ -18040,7 +18921,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -18050,7 +18936,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -18064,7 +18950,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -18198,7 +19084,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 12,
           "initializer": {
             "base": 10,
@@ -18208,7 +19099,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 9,
             "kind": "id",
@@ -18225,7 +19116,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       ],
       "id": 13,
       "kind": "trait",
-      "loc": trait T2 with T1 { const BAR: Int = 100; },
+      "loc": trait T2 with T1 { virtual const BAR: Int = 100; },
       "name": {
         "id": 7,
         "kind": "id",
@@ -18244,7 +19135,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 12,
           "initializer": {
             "base": 10,
@@ -18254,7 +19150,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 9,
             "kind": "id",
@@ -18268,7 +19164,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 100;,
+        "loc": virtual const BAR: Int = 100;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -18352,7 +19248,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 27,
           "initializer": {
             "base": 10,
@@ -18362,7 +19263,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 9,
             "kind": "id",
@@ -18376,7 +19277,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 100;,
+        "loc": virtual const BAR: Int = 100;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -18405,7 +19306,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 12,
               "initializer": {
                 "base": 10,
@@ -18415,7 +19321,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 9,
                 "kind": "id",
@@ -18432,7 +19338,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           ],
           "id": 13,
           "kind": "trait",
-          "loc": trait T2 with T1 { const BAR: Int = 100; },
+          "loc": trait T2 with T1 { virtual const BAR: Int = 100; },
           "name": {
             "id": 7,
             "kind": "id",
@@ -18451,7 +19357,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 12,
               "initializer": {
                 "base": 10,
@@ -18461,7 +19372,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 9,
                 "kind": "id",
@@ -18475,7 +19386,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -18705,7 +19616,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 27,
               "initializer": {
                 "base": 10,
@@ -18715,7 +19631,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 9,
                 "kind": "id",
@@ -18729,7 +19645,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -18758,7 +19674,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 12,
                   "initializer": {
                     "base": 10,
@@ -18768,7 +19689,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "value": 100n,
                   },
                   "kind": "constant_def",
-                  "loc": const BAR: Int = 100;,
+                  "loc": virtual const BAR: Int = 100;,
                   "name": {
                     "id": 9,
                     "kind": "id",
@@ -18785,7 +19706,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               ],
               "id": 13,
               "kind": "trait",
-              "loc": trait T2 with T1 { const BAR: Int = 100; },
+              "loc": trait T2 with T1 { virtual const BAR: Int = 100; },
               "name": {
                 "id": 7,
                 "kind": "id",
@@ -18804,7 +19725,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "constants": [
               {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 12,
                   "initializer": {
                     "base": 10,
@@ -18814,7 +19740,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "value": 100n,
                   },
                   "kind": "constant_def",
-                  "loc": const BAR: Int = 100;,
+                  "loc": virtual const BAR: Int = 100;,
                   "name": {
                     "id": 9,
                     "kind": "id",
@@ -18828,7 +19754,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "Int",
                   },
                 },
-                "loc": const BAR: Int = 100;,
+                "loc": virtual const BAR: Int = 100;,
                 "name": "BAR",
                 "type": {
                   "kind": "ref",
@@ -18927,7 +19853,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 12,
               "initializer": {
                 "base": 10,
@@ -18937,7 +19868,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 9,
                 "kind": "id",
@@ -18954,7 +19885,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           ],
           "id": 13,
           "kind": "trait",
-          "loc": trait T2 with T1 { const BAR: Int = 100; },
+          "loc": trait T2 with T1 { virtual const BAR: Int = 100; },
           "name": {
             "id": 7,
             "kind": "id",
@@ -18973,7 +19904,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 12,
               "initializer": {
                 "base": 10,
@@ -18983,7 +19919,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 9,
                 "kind": "id",
@@ -18997,7 +19933,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -19164,7 +20100,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 9,
           "initializer": {
             "base": 10,
@@ -19174,7 +20115,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 6,
             "kind": "id",
@@ -19192,7 +20133,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 10,
       "kind": "trait",
       "loc": trait T {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
       "name": {
         "id": 5,
@@ -19205,7 +20146,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 9,
           "initializer": {
             "base": 10,
@@ -19215,7 +20161,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 6,
             "kind": "id",
@@ -19229,7 +20175,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 100;,
+        "loc": virtual const BAR: Int = 100;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -19260,7 +20206,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 16,
           "initializer": {
             "base": 10,
@@ -19270,7 +20221,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAZ: Int = 100;,
+          "loc": virtual const BAZ: Int = 100;,
           "name": {
             "id": 13,
             "kind": "id",
@@ -19288,7 +20239,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 17,
       "kind": "trait",
       "loc": trait T2 with T {
-    const BAZ: Int = 100;
+    virtual const BAZ: Int = 100;
 },
       "name": {
         "id": 11,
@@ -19308,7 +20259,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 16,
           "initializer": {
             "base": 10,
@@ -19318,7 +20274,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAZ: Int = 100;,
+          "loc": virtual const BAZ: Int = 100;,
           "name": {
             "id": 13,
             "kind": "id",
@@ -19332,7 +20288,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAZ: Int = 100;,
+        "loc": virtual const BAZ: Int = 100;,
         "name": "BAZ",
         "type": {
           "kind": "ref",
@@ -19343,7 +20299,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       },
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 39,
           "initializer": {
             "base": 10,
@@ -19353,7 +20314,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 6,
             "kind": "id",
@@ -19367,7 +20328,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 100;,
+        "loc": virtual const BAR: Int = 100;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -19396,7 +20357,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -19406,7 +20372,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -19424,7 +20390,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 10,
           "kind": "trait",
           "loc": trait T {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
           "name": {
             "id": 5,
@@ -19437,7 +20403,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -19447,7 +20418,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -19461,7 +20432,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -19606,7 +20577,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -19616,7 +20592,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -19634,7 +20610,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 10,
           "kind": "trait",
           "loc": trait T {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
           "name": {
             "id": 5,
@@ -19647,7 +20623,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -19657,7 +20638,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -19671,7 +20652,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -19804,7 +20785,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       },
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 36,
           "initializer": {
             "base": 10,
@@ -19814,7 +20800,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAZ: Int = 100;,
+          "loc": virtual const BAZ: Int = 100;,
           "name": {
             "id": 13,
             "kind": "id",
@@ -19828,7 +20814,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAZ: Int = 100;,
+        "loc": virtual const BAZ: Int = 100;,
         "name": "BAZ",
         "type": {
           "kind": "ref",
@@ -19857,7 +20843,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 16,
               "initializer": {
                 "base": 10,
@@ -19867,7 +20858,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAZ: Int = 100;,
+              "loc": virtual const BAZ: Int = 100;,
               "name": {
                 "id": 13,
                 "kind": "id",
@@ -19885,7 +20876,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 17,
           "kind": "trait",
           "loc": trait T2 with T {
-    const BAZ: Int = 100;
+    virtual const BAZ: Int = 100;
 },
           "name": {
             "id": 11,
@@ -19905,7 +20896,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 16,
               "initializer": {
                 "base": 10,
@@ -19915,7 +20911,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAZ: Int = 100;,
+              "loc": virtual const BAZ: Int = 100;,
               "name": {
                 "id": 13,
                 "kind": "id",
@@ -19929,7 +20925,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAZ: Int = 100;,
+            "loc": virtual const BAZ: Int = 100;,
             "name": "BAZ",
             "type": {
               "kind": "ref",
@@ -19940,7 +20936,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           },
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 39,
               "initializer": {
                 "base": 10,
@@ -19950,7 +20951,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -19964,7 +20965,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -19993,7 +20994,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 9,
                   "initializer": {
                     "base": 10,
@@ -20003,7 +21009,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "value": 100n,
                   },
                   "kind": "constant_def",
-                  "loc": const BAR: Int = 100;,
+                  "loc": virtual const BAR: Int = 100;,
                   "name": {
                     "id": 6,
                     "kind": "id",
@@ -20021,7 +21027,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "id": 10,
               "kind": "trait",
               "loc": trait T {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
               "name": {
                 "id": 5,
@@ -20034,7 +21040,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "constants": [
               {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 9,
                   "initializer": {
                     "base": 10,
@@ -20044,7 +21055,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "value": 100n,
                   },
                   "kind": "constant_def",
-                  "loc": const BAR: Int = 100;,
+                  "loc": virtual const BAR: Int = 100;,
                   "name": {
                     "id": 6,
                     "kind": "id",
@@ -20058,7 +21069,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "Int",
                   },
                 },
-                "loc": const BAR: Int = 100;,
+                "loc": virtual const BAR: Int = 100;,
                 "name": "BAR",
                 "type": {
                   "kind": "ref",
@@ -20092,7 +21103,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -20102,7 +21118,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -20120,7 +21136,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 10,
           "kind": "trait",
           "loc": trait T {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
           "name": {
             "id": 5,
@@ -20133,7 +21149,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 9,
               "initializer": {
                 "base": 10,
@@ -20143,7 +21164,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -20157,7 +21178,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -20299,7 +21320,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 9,
                   "initializer": {
                     "base": 10,
@@ -20309,7 +21335,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "value": 100n,
                   },
                   "kind": "constant_def",
-                  "loc": const BAR: Int = 100;,
+                  "loc": virtual const BAR: Int = 100;,
                   "name": {
                     "id": 6,
                     "kind": "id",
@@ -20327,7 +21353,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "id": 10,
               "kind": "trait",
               "loc": trait T {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
               "name": {
                 "id": 5,
@@ -20340,7 +21366,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "constants": [
               {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 9,
                   "initializer": {
                     "base": 10,
@@ -20350,7 +21381,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "value": 100n,
                   },
                   "kind": "constant_def",
-                  "loc": const BAR: Int = 100;,
+                  "loc": virtual const BAR: Int = 100;,
                   "name": {
                     "id": 6,
                     "kind": "id",
@@ -20364,7 +21395,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "Int",
                   },
                 },
-                "loc": const BAR: Int = 100;,
+                "loc": virtual const BAR: Int = 100;,
                 "name": "BAR",
                 "type": {
                   "kind": "ref",
@@ -20501,7 +21532,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 11,
           "initializer": {
             "base": 10,
@@ -20511,7 +21547,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 8,
             "kind": "id",
@@ -20529,7 +21565,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 12,
       "kind": "trait",
       "loc": trait T2 {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
       "name": {
         "id": 7,
@@ -20542,7 +21578,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 11,
           "initializer": {
             "base": 10,
@@ -20552,7 +21593,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const BAR: Int = 100;,
+          "loc": virtual const BAR: Int = 100;,
           "name": {
             "id": 8,
             "kind": "id",
@@ -20566,7 +21607,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const BAR: Int = 100;,
+        "loc": virtual const BAR: Int = 100;,
         "name": "BAR",
         "type": {
           "kind": "ref",
@@ -20746,7 +21787,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 11,
               "initializer": {
                 "base": 10,
@@ -20756,7 +21802,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 8,
                 "kind": "id",
@@ -20774,7 +21820,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 12,
           "kind": "trait",
           "loc": trait T2 {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 },
           "name": {
             "id": 7,
@@ -20787,7 +21833,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 11,
               "initializer": {
                 "base": 10,
@@ -20797,7 +21848,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const BAR: Int = 100;,
+              "loc": virtual const BAR: Int = 100;,
               "name": {
                 "id": 8,
                 "kind": "id",
@@ -20811,7 +21862,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const BAR: Int = 100;,
+            "loc": virtual const BAR: Int = 100;,
             "name": "BAR",
             "type": {
               "kind": "ref",
@@ -20881,7 +21932,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "initializer": {
             "base": 10,
@@ -20891,7 +21947,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const FOO: Int = 100;,
+          "loc": virtual const FOO: Int = 100;,
           "name": {
             "id": 4,
             "kind": "id",
@@ -20909,7 +21965,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 8,
       "kind": "trait",
       "loc": trait BaseTrait {
-    const FOO: Int = 100;
+    virtual const FOO: Int = 100;
 },
       "name": {
         "id": 3,
@@ -20922,7 +21978,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "constants": [
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "initializer": {
             "base": 10,
@@ -20932,7 +21993,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const FOO: Int = 100;,
+          "loc": virtual const FOO: Int = 100;,
           "name": {
             "id": 4,
             "kind": "id",
@@ -20946,7 +22007,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const FOO: Int = 100;,
+        "loc": virtual const FOO: Int = 100;,
         "name": "FOO",
         "type": {
           "kind": "ref",
@@ -21060,7 +22121,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       },
       {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 39,
           "initializer": {
             "base": 10,
@@ -21070,7 +22136,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "value": 100n,
           },
           "kind": "constant_def",
-          "loc": const FOO: Int = 100;,
+          "loc": virtual const FOO: Int = 100;,
           "name": {
             "id": 4,
             "kind": "id",
@@ -21084,7 +22150,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "loc": const FOO: Int = 100;,
+        "loc": virtual const FOO: Int = 100;,
         "name": "FOO",
         "type": {
           "kind": "ref",
@@ -21113,7 +22179,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -21123,7 +22194,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const FOO: Int = 100;,
+              "loc": virtual const FOO: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -21141,7 +22212,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 8,
           "kind": "trait",
           "loc": trait BaseTrait {
-    const FOO: Int = 100;
+    virtual const FOO: Int = 100;
 },
           "name": {
             "id": 3,
@@ -21154,7 +22225,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -21164,7 +22240,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const FOO: Int = 100;,
+              "loc": virtual const FOO: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -21178,7 +22254,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const FOO: Int = 100;,
+            "loc": virtual const FOO: Int = 100;,
             "name": "FOO",
             "type": {
               "kind": "ref",
@@ -21578,7 +22654,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           },
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 39,
               "initializer": {
                 "base": 10,
@@ -21588,7 +22669,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const FOO: Int = 100;,
+              "loc": virtual const FOO: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -21602,7 +22683,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const FOO: Int = 100;,
+            "loc": virtual const FOO: Int = 100;,
             "name": "FOO",
             "type": {
               "kind": "ref",
@@ -21631,7 +22712,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 7,
                   "initializer": {
                     "base": 10,
@@ -21641,7 +22727,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "value": 100n,
                   },
                   "kind": "constant_def",
-                  "loc": const FOO: Int = 100;,
+                  "loc": virtual const FOO: Int = 100;,
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -21659,7 +22745,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "id": 8,
               "kind": "trait",
               "loc": trait BaseTrait {
-    const FOO: Int = 100;
+    virtual const FOO: Int = 100;
 },
               "name": {
                 "id": 3,
@@ -21672,7 +22758,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "constants": [
               {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 7,
                   "initializer": {
                     "base": 10,
@@ -21682,7 +22773,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "value": 100n,
                   },
                   "kind": "constant_def",
-                  "loc": const FOO: Int = 100;,
+                  "loc": virtual const FOO: Int = 100;,
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -21696,7 +22787,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "Int",
                   },
                 },
-                "loc": const FOO: Int = 100;,
+                "loc": virtual const FOO: Int = 100;,
                 "name": "FOO",
                 "type": {
                   "kind": "ref",
@@ -21730,7 +22821,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -21740,7 +22836,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const FOO: Int = 100;,
+              "loc": virtual const FOO: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -21758,7 +22854,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 8,
           "kind": "trait",
           "loc": trait BaseTrait {
-    const FOO: Int = 100;
+    virtual const FOO: Int = 100;
 },
           "name": {
             "id": 3,
@@ -21771,7 +22867,12 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "constants": [
           {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "initializer": {
                 "base": 10,
@@ -21781,7 +22882,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "value": 100n,
               },
               "kind": "constant_def",
-              "loc": const FOO: Int = 100;,
+              "loc": virtual const FOO: Int = 100;,
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -21795,7 +22896,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "loc": const FOO: Int = 100;,
+            "loc": virtual const FOO: Int = 100;,
             "name": "FOO",
             "type": {
               "kind": "ref",
@@ -21964,10 +23065,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 5,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -21982,7 +23089,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 6,
       "kind": "trait",
       "loc": trait T {
-    fun foo() {}
+    virtual fun foo() {}
 },
       "name": {
         "id": 3,
@@ -21998,10 +23105,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 5,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -22017,7 +23130,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -22153,10 +23266,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -22171,7 +23290,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 6,
           "kind": "trait",
           "loc": trait T {
-    fun foo() {}
+    virtual fun foo() {}
 },
           "name": {
             "id": 3,
@@ -22187,10 +23306,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -22206,7 +23331,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -22249,10 +23374,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 3,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 2,
             "kind": "id",
@@ -22267,7 +23398,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 4,
       "kind": "trait",
       "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
       "name": {
         "id": 1,
@@ -22283,10 +23414,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 3,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 2,
             "kind": "id",
@@ -22302,7 +23439,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -22438,10 +23575,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -22456,7 +23599,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 4,
           "kind": "trait",
           "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
           "name": {
             "id": 1,
@@ -22472,10 +23615,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -22491,7 +23640,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -22598,10 +23747,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 6,
             "kind": "id",
@@ -22616,7 +23771,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 8,
       "kind": "trait",
       "loc": trait T2 {
-    fun foo() {}
+    virtual fun foo() {}
 },
       "name": {
         "id": 5,
@@ -22632,10 +23787,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 6,
             "kind": "id",
@@ -22651,7 +23812,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -22870,10 +24031,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -22888,7 +24055,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 8,
           "kind": "trait",
           "loc": trait T2 {
-    fun foo() {}
+    virtual fun foo() {}
 },
           "name": {
             "id": 5,
@@ -22904,10 +24071,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -22923,7 +24096,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -22966,10 +24139,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 3,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 2,
             "kind": "id",
@@ -22984,7 +24163,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 4,
       "kind": "trait",
       "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
       "name": {
         "id": 1,
@@ -23000,10 +24179,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 3,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 2,
             "kind": "id",
@@ -23019,7 +24204,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -23416,10 +24601,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -23434,7 +24625,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 4,
           "kind": "trait",
           "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
           "name": {
             "id": 1,
@@ -23450,10 +24641,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -23469,7 +24666,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -23716,10 +24913,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 5,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -23734,7 +24937,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 6,
       "kind": "trait",
       "loc": trait T {
-    fun foo() {}
+    virtual fun foo() {}
 },
       "name": {
         "id": 3,
@@ -23750,10 +24953,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 5,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -23769,7 +24978,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -23950,10 +25159,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -23968,7 +25183,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 6,
           "kind": "trait",
           "loc": trait T {
-    fun foo() {}
+    virtual fun foo() {}
 },
           "name": {
             "id": 3,
@@ -23984,10 +25199,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -24003,7 +25224,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -24046,10 +25267,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 3,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 2,
             "kind": "id",
@@ -24064,7 +25291,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 4,
       "kind": "trait",
       "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
       "name": {
         "id": 1,
@@ -24080,10 +25307,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 3,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 2,
             "kind": "id",
@@ -24099,7 +25332,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -24241,10 +25474,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -24259,7 +25498,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 4,
           "kind": "trait",
           "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
           "name": {
             "id": 1,
@@ -24275,10 +25514,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -24294,7 +25539,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -24369,10 +25614,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 5,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -24386,7 +25637,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       ],
       "id": 6,
       "kind": "trait",
-      "loc": trait T1 { fun foo() {} },
+      "loc": trait T1 { virtual fun foo() {} },
       "name": {
         "id": 3,
         "kind": "id",
@@ -24401,10 +25652,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 5,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -24420,7 +25677,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -24476,10 +25733,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 21,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -24495,7 +25758,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -24526,10 +25789,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -24543,7 +25812,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           ],
           "id": 6,
           "kind": "trait",
-          "loc": trait T1 { fun foo() {} },
+          "loc": trait T1 { virtual fun foo() {} },
           "name": {
             "id": 3,
             "kind": "id",
@@ -24558,10 +25827,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -24577,7 +25852,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -24636,10 +25911,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 20,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -24655,7 +25936,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -24709,10 +25990,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 21,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -24728,7 +26015,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -24759,10 +26046,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -24776,7 +26069,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               ],
               "id": 6,
               "kind": "trait",
-              "loc": trait T1 { fun foo() {} },
+              "loc": trait T1 { virtual fun foo() {} },
               "name": {
                 "id": 3,
                 "kind": "id",
@@ -24791,10 +26084,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "functions": Map {
               "foo" => {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -24810,7 +26109,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "isInline": false,
                 "isMutating": true,
                 "isOverride": false,
-                "isVirtual": false,
+                "isVirtual": true,
                 "methodId": null,
                 "name": "foo",
                 "origin": "user",
@@ -24846,10 +26145,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -24863,7 +26168,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           ],
           "id": 6,
           "kind": "trait",
-          "loc": trait T1 { fun foo() {} },
+          "loc": trait T1 { virtual fun foo() {} },
           "name": {
             "id": 3,
             "kind": "id",
@@ -24878,10 +26183,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -24897,7 +26208,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -25104,10 +26415,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 20,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -25123,7 +26440,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -25177,10 +26494,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "functions": Map {
               "foo" => {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 21,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -25196,7 +26519,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "isInline": false,
                 "isMutating": true,
                 "isOverride": false,
-                "isVirtual": false,
+                "isVirtual": true,
                 "methodId": null,
                 "name": "foo",
                 "origin": "user",
@@ -25227,10 +26550,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                   "attributes": [],
                   "declarations": [
                     {
-                      "attributes": [],
+                      "attributes": [
+                        {
+                          "kind": "function_attribute",
+                          "loc": virtual,
+                          "type": "virtual",
+                        },
+                      ],
                       "id": 5,
                       "kind": "function_def",
-                      "loc": fun foo() {},
+                      "loc": virtual fun foo() {},
                       "name": {
                         "id": 4,
                         "kind": "id",
@@ -25244,7 +26573,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                   ],
                   "id": 6,
                   "kind": "trait",
-                  "loc": trait T1 { fun foo() {} },
+                  "loc": trait T1 { virtual fun foo() {} },
                   "name": {
                     "id": 3,
                     "kind": "id",
@@ -25259,10 +26588,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "functions": Map {
                   "foo" => {
                     "ast": {
-                      "attributes": [],
+                      "attributes": [
+                        {
+                          "kind": "function_attribute",
+                          "loc": virtual,
+                          "type": "virtual",
+                        },
+                      ],
                       "id": 5,
                       "kind": "function_def",
-                      "loc": fun foo() {},
+                      "loc": virtual fun foo() {},
                       "name": {
                         "id": 4,
                         "kind": "id",
@@ -25278,7 +26613,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "isInline": false,
                     "isMutating": true,
                     "isOverride": false,
-                    "isVirtual": false,
+                    "isVirtual": true,
                     "methodId": null,
                     "name": "foo",
                     "origin": "user",
@@ -25314,10 +26649,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -25331,7 +26672,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               ],
               "id": 6,
               "kind": "trait",
-              "loc": trait T1 { fun foo() {} },
+              "loc": trait T1 { virtual fun foo() {} },
               "name": {
                 "id": 3,
                 "kind": "id",
@@ -25346,10 +26687,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "functions": Map {
               "foo" => {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -25365,7 +26712,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "isInline": false,
                 "isMutating": true,
                 "isOverride": false,
-                "isVirtual": false,
+                "isVirtual": true,
                 "methodId": null,
                 "name": "foo",
                 "origin": "user",
@@ -25424,10 +26771,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 21,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -25443,7 +26796,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -25474,10 +26827,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -25491,7 +26850,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               ],
               "id": 6,
               "kind": "trait",
-              "loc": trait T1 { fun foo() {} },
+              "loc": trait T1 { virtual fun foo() {} },
               "name": {
                 "id": 3,
                 "kind": "id",
@@ -25506,10 +26865,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "functions": Map {
               "foo" => {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -25525,7 +26890,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "isInline": false,
                 "isMutating": true,
                 "isOverride": false,
-                "isVirtual": false,
+                "isVirtual": true,
                 "methodId": null,
                 "name": "foo",
                 "origin": "user",
@@ -25561,10 +26926,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -25578,7 +26949,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           ],
           "id": 6,
           "kind": "trait",
-          "loc": trait T1 { fun foo() {} },
+          "loc": trait T1 { virtual fun foo() {} },
           "name": {
             "id": 3,
             "kind": "id",
@@ -25593,10 +26964,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -25612,7 +26989,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -25719,10 +27096,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 8,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 7,
             "kind": "id",
@@ -25736,7 +27119,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       ],
       "id": 9,
       "kind": "trait",
-      "loc": trait T2 with T1 { fun foo() {} },
+      "loc": trait T2 with T1 { virtual fun foo() {} },
       "name": {
         "id": 5,
         "kind": "id",
@@ -25758,10 +27141,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 8,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 7,
             "kind": "id",
@@ -25777,7 +27166,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -25866,10 +27255,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 20,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 7,
             "kind": "id",
@@ -25885,7 +27280,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -25916,10 +27311,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 8,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 7,
                 "kind": "id",
@@ -25933,7 +27334,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           ],
           "id": 9,
           "kind": "trait",
-          "loc": trait T2 with T1 { fun foo() {} },
+          "loc": trait T2 with T1 { virtual fun foo() {} },
           "name": {
             "id": 5,
             "kind": "id",
@@ -25955,10 +27356,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 8,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 7,
                 "kind": "id",
@@ -25974,7 +27381,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -26246,10 +27653,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 20,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 7,
                 "kind": "id",
@@ -26265,7 +27678,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -26296,10 +27709,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 8,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 7,
                     "kind": "id",
@@ -26313,7 +27732,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               ],
               "id": 9,
               "kind": "trait",
-              "loc": trait T2 with T1 { fun foo() {} },
+              "loc": trait T2 with T1 { virtual fun foo() {} },
               "name": {
                 "id": 5,
                 "kind": "id",
@@ -26335,10 +27754,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "functions": Map {
               "foo" => {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 8,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 7,
                     "kind": "id",
@@ -26354,7 +27779,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "isInline": false,
                 "isMutating": true,
                 "isOverride": false,
-                "isVirtual": false,
+                "isVirtual": true,
                 "methodId": null,
                 "name": "foo",
                 "origin": "user",
@@ -26455,10 +27880,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 8,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 7,
                 "kind": "id",
@@ -26472,7 +27903,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           ],
           "id": 9,
           "kind": "trait",
-          "loc": trait T2 with T1 { fun foo() {} },
+          "loc": trait T2 with T1 { virtual fun foo() {} },
           "name": {
             "id": 5,
             "kind": "id",
@@ -26494,10 +27925,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 8,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 7,
                 "kind": "id",
@@ -26513,7 +27950,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -26653,10 +28090,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 5,
           "kind": "function_def",
-          "loc": fun bar() {},
+          "loc": virtual fun bar() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -26671,7 +28114,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 6,
       "kind": "trait",
       "loc": trait T {
-    fun bar() {}
+    virtual fun bar() {}
 },
       "name": {
         "id": 3,
@@ -26687,10 +28130,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "bar" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 5,
           "kind": "function_def",
-          "loc": fun bar() {},
+          "loc": virtual fun bar() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -26706,7 +28155,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "bar",
         "origin": "user",
@@ -26815,10 +28264,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       },
       "bar" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 26,
           "kind": "function_def",
-          "loc": fun bar() {},
+          "loc": virtual fun bar() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -26834,7 +28289,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "bar",
         "origin": "user",
@@ -26865,10 +28320,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun bar() {},
+              "loc": virtual fun bar() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -26883,7 +28344,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 6,
           "kind": "trait",
           "loc": trait T {
-    fun bar() {}
+    virtual fun bar() {}
 },
           "name": {
             "id": 3,
@@ -26899,10 +28360,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "bar" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun bar() {},
+              "loc": virtual fun bar() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -26918,7 +28385,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "bar",
             "origin": "user",
@@ -27030,10 +28497,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       },
       "bar" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 27,
           "kind": "function_def",
-          "loc": fun bar() {},
+          "loc": virtual fun bar() {},
           "name": {
             "id": 4,
             "kind": "id",
@@ -27049,7 +28522,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "bar",
         "origin": "user",
@@ -27080,10 +28553,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun bar() {},
+              "loc": virtual fun bar() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -27098,7 +28577,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 6,
           "kind": "trait",
           "loc": trait T {
-    fun bar() {}
+    virtual fun bar() {}
 },
           "name": {
             "id": 3,
@@ -27114,10 +28593,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "bar" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun bar() {},
+              "loc": virtual fun bar() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -27133,7 +28618,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "bar",
             "origin": "user",
@@ -27424,10 +28909,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           },
           "bar" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 26,
               "kind": "function_def",
-              "loc": fun bar() {},
+              "loc": virtual fun bar() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -27443,7 +28934,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "bar",
             "origin": "user",
@@ -27474,10 +28965,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun bar() {},
+                  "loc": virtual fun bar() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -27492,7 +28989,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "id": 6,
               "kind": "trait",
               "loc": trait T {
-    fun bar() {}
+    virtual fun bar() {}
 },
               "name": {
                 "id": 3,
@@ -27508,10 +29005,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "functions": Map {
               "bar" => {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun bar() {},
+                  "loc": virtual fun bar() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -27527,7 +29030,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "isInline": false,
                 "isMutating": true,
                 "isOverride": false,
-                "isVirtual": false,
+                "isVirtual": true,
                 "methodId": null,
                 "name": "bar",
                 "origin": "user",
@@ -27563,10 +29066,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun bar() {},
+              "loc": virtual fun bar() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -27581,7 +29090,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 6,
           "kind": "trait",
           "loc": trait T {
-    fun bar() {}
+    virtual fun bar() {}
 },
           "name": {
             "id": 3,
@@ -27597,10 +29106,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "bar" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 5,
               "kind": "function_def",
-              "loc": fun bar() {},
+              "loc": virtual fun bar() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -27616,7 +29131,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "bar",
             "origin": "user",
@@ -27725,10 +29240,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           },
           "bar" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 27,
               "kind": "function_def",
-              "loc": fun bar() {},
+              "loc": virtual fun bar() {},
               "name": {
                 "id": 4,
                 "kind": "id",
@@ -27744,7 +29265,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "bar",
             "origin": "user",
@@ -27775,10 +29296,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun bar() {},
+                  "loc": virtual fun bar() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -27793,7 +29320,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "id": 6,
               "kind": "trait",
               "loc": trait T {
-    fun bar() {}
+    virtual fun bar() {}
 },
               "name": {
                 "id": 3,
@@ -27809,10 +29336,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "functions": Map {
               "bar" => {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 5,
                   "kind": "function_def",
-                  "loc": fun bar() {},
+                  "loc": virtual fun bar() {},
                   "name": {
                     "id": 4,
                     "kind": "id",
@@ -27828,7 +29361,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "isInline": false,
                 "isMutating": true,
                 "isOverride": false,
-                "isVirtual": false,
+                "isVirtual": true,
                 "methodId": null,
                 "name": "bar",
                 "origin": "user",
@@ -27938,10 +29471,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 6,
             "kind": "id",
@@ -27956,7 +29495,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 8,
       "kind": "trait",
       "loc": trait T2 {
-    fun foo() {}
+    virtual fun foo() {}
 },
       "name": {
         "id": 5,
@@ -27972,10 +29511,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 7,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 6,
             "kind": "id",
@@ -27991,7 +29536,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -28165,10 +29710,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -28183,7 +29734,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 8,
           "kind": "trait",
           "loc": trait T2 {
-    fun foo() {}
+    virtual fun foo() {}
 },
           "name": {
             "id": 5,
@@ -28199,10 +29750,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 7,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 6,
                 "kind": "id",
@@ -28218,7 +29775,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -28261,10 +29818,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "attributes": [],
       "declarations": [
         {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 3,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 2,
             "kind": "id",
@@ -28279,7 +29842,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       "id": 4,
       "kind": "trait",
       "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
       "name": {
         "id": 1,
@@ -28295,10 +29858,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "functions": Map {
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 3,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 2,
             "kind": "id",
@@ -28314,7 +29883,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -28423,10 +29992,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
       },
       "foo" => {
         "ast": {
-          "attributes": [],
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
           "id": 23,
           "kind": "function_def",
-          "loc": fun foo() {},
+          "loc": virtual fun foo() {},
           "name": {
             "id": 2,
             "kind": "id",
@@ -28442,7 +30017,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "isInline": false,
         "isMutating": true,
         "isOverride": false,
-        "isVirtual": false,
+        "isVirtual": true,
         "methodId": null,
         "name": "foo",
         "origin": "user",
@@ -28473,10 +30048,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -28491,7 +30072,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 4,
           "kind": "trait",
           "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
           "name": {
             "id": 1,
@@ -28507,10 +30088,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -28526,7 +30113,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -28903,10 +30490,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           },
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 23,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -28922,7 +30515,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -28953,10 +30546,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "attributes": [],
               "declarations": [
                 {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 3,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 2,
                     "kind": "id",
@@ -28971,7 +30570,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
               "id": 4,
               "kind": "trait",
               "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
               "name": {
                 "id": 1,
@@ -28987,10 +30586,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "functions": Map {
               "foo" => {
                 "ast": {
-                  "attributes": [],
+                  "attributes": [
+                    {
+                      "kind": "function_attribute",
+                      "loc": virtual,
+                      "type": "virtual",
+                    },
+                  ],
                   "id": 3,
                   "kind": "function_def",
-                  "loc": fun foo() {},
+                  "loc": virtual fun foo() {},
                   "name": {
                     "id": 2,
                     "kind": "id",
@@ -29006,7 +30611,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "isInline": false,
                 "isMutating": true,
                 "isOverride": false,
-                "isVirtual": false,
+                "isVirtual": true,
                 "methodId": null,
                 "name": "foo",
                 "origin": "user",
@@ -29042,10 +30647,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "attributes": [],
           "declarations": [
             {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -29060,7 +30671,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
           "id": 4,
           "kind": "trait",
           "loc": trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 },
           "name": {
             "id": 1,
@@ -29076,10 +30687,16 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "functions": Map {
           "foo" => {
             "ast": {
-              "attributes": [],
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
               "id": 3,
               "kind": "function_def",
-              "loc": fun foo() {},
+              "loc": virtual fun foo() {},
               "name": {
                 "id": 2,
                 "kind": "id",
@@ -29095,7 +30712,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "isInline": false,
             "isMutating": true,
             "isOverride": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "methodId": null,
             "name": "foo",
             "origin": "user",
@@ -29216,6 +30833,786 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
 `;
 
 exports[`resolveDescriptors should resolve descriptors for override-for-existing-function-in-trait-with-multi-inheritance-from-base-trait 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 9,
+          "initializer": {
+            "base": 10,
+            "id": 8,
+            "kind": "number",
+            "loc": 10,
+            "value": 10n,
+          },
+          "kind": "constant_def",
+          "loc": virtual const X: Int = 10;,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": X,
+            "text": "X",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "trait",
+      "loc": trait T {
+    virtual const X: Int = 10;
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": T,
+        "text": "T",
+      },
+      "traits": [],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 9,
+          "initializer": {
+            "base": 10,
+            "id": 8,
+            "kind": "number",
+            "loc": 10,
+            "value": 10n,
+          },
+          "kind": "constant_def",
+          "loc": virtual const X: Int = 10;,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": X,
+            "text": "X",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "loc": virtual const X: Int = 10;,
+        "name": "X",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "value": undefined,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 6769,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 16,
+          "initializer": {
+            "base": 10,
+            "id": 15,
+            "kind": "number",
+            "loc": 20,
+            "value": 20n,
+          },
+          "kind": "constant_def",
+          "loc": override const X: Int = 20;,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": X,
+            "text": "X",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 17,
+      "kind": "contract",
+      "loc": contract C with T {
+    override const X: Int = 20;
+},
+      "name": {
+        "id": 11,
+        "kind": "id",
+        "loc": C,
+        "text": "C",
+      },
+      "params": undefined,
+      "traits": [
+        {
+          "id": 12,
+          "kind": "id",
+          "loc": T,
+          "text": "T",
+        },
+      ],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 16,
+          "initializer": {
+            "base": 10,
+            "id": 15,
+            "kind": "number",
+            "loc": 20,
+            "value": 20n,
+          },
+          "kind": "constant_def",
+          "loc": override const X: Int = 20;,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": X,
+            "text": "X",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "loc": override const X: Int = 20;,
+        "name": "X",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "value": undefined,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 19,
+        "kind": "contract_init",
+        "loc": contract C with T {
+    override const X: Int = 20;
+},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "C",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "C{}",
+    "tlb": "_  = C",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 9,
+              "initializer": {
+                "base": 10,
+                "id": 8,
+                "kind": "number",
+                "loc": 10,
+                "value": 10n,
+              },
+              "kind": "constant_def",
+              "loc": virtual const X: Int = 10;,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": X,
+                "text": "X",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 10,
+          "kind": "trait",
+          "loc": trait T {
+    virtual const X: Int = 10;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": T,
+            "text": "T",
+          },
+          "traits": [],
+        },
+        "constants": [
+          {
+            "ast": {
+              "attributes": [
+                {
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 9,
+              "initializer": {
+                "base": 10,
+                "id": 8,
+                "kind": "number",
+                "loc": 10,
+                "value": 10n,
+              },
+              "kind": "constant_def",
+              "loc": virtual const X: Int = 10;,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": X,
+                "text": "X",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "loc": virtual const X: Int = 10;,
+            "name": "X",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "value": undefined,
+          },
+        ],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 6769,
+      },
+    ],
+    "uid": 30887,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract 1`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 5,
+          "kind": "function_def",
+          "loc": virtual fun foo() {},
+          "name": {
+            "id": 4,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": undefined,
+          "statements": [],
+        },
+      ],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait T {
+    virtual fun foo() {}
+},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": T,
+        "text": "T",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "foo" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 5,
+          "kind": "function_def",
+          "loc": virtual fun foo() {},
+          "name": {
+            "id": 4,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": undefined,
+          "statements": [],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": true,
+        "methodId": null,
+        "name": "foo",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "void",
+        },
+        "self": {
+          "kind": "ref",
+          "name": "T",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 6769,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 10,
+          "kind": "function_def",
+          "loc": override fun foo() {},
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": undefined,
+          "statements": [],
+        },
+      ],
+      "id": 11,
+      "kind": "trait",
+      "loc": trait Test with T {
+    override fun foo() {}
+},
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [
+        {
+          "id": 8,
+          "kind": "id",
+          "loc": T,
+          "text": "T",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "foo" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 10,
+          "kind": "function_def",
+          "loc": override fun foo() {},
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": undefined,
+          "statements": [],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": true,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "foo",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "void",
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Test",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "Test",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 5,
+              "kind": "function_def",
+              "loc": virtual fun foo() {},
+              "name": {
+                "id": 4,
+                "kind": "id",
+                "loc": foo,
+                "text": "foo",
+              },
+              "params": [],
+              "return": undefined,
+              "statements": [],
+            },
+          ],
+          "id": 6,
+          "kind": "trait",
+          "loc": trait T {
+    virtual fun foo() {}
+},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": T,
+            "text": "T",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "foo" => {
+            "ast": {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 5,
+              "kind": "function_def",
+              "loc": virtual fun foo() {},
+              "name": {
+                "id": 4,
+                "kind": "id",
+                "loc": foo,
+                "text": "foo",
+              },
+              "params": [],
+              "return": undefined,
+              "statements": [],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": true,
+            "methodId": null,
+            "name": "foo",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "void",
+            },
+            "self": {
+              "kind": "ref",
+              "name": "T",
+              "optional": false,
+            },
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 6769,
+      },
+    ],
+    "uid": 44104,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for receive-message-with-biggest-allowed-size 1`] = `
 [

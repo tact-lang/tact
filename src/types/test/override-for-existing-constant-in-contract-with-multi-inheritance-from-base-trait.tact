@@ -1,7 +1,7 @@
 primitive Int;
 
 trait BaseTrait {
-    const FOO: Int = 100;
+    virtual const FOO: Int = 100;
 }
 
 trait T {

@@ -1,5 +1,5 @@
 trait BaseTrait {
-    virtual fun foo() {}
+    fun foo() {}
 }
 
 contract Test {

@@ -2,7 +2,7 @@ trait BaseTrait {}
 trait T {}
 
 trait T2 {
-    fun foo() {}
+    virtual fun foo() {}
 }
 
 trait Test with T, T2 {

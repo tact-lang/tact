@@ -1,7 +1,7 @@
 trait BaseTrait {}
 
 trait T {
-    fun bar() {}
+    virtual fun bar() {}
 }
 
 trait T2 with T {

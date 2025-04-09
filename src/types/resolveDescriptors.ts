@@ -1709,17 +1709,38 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 continue;
             }
 
-            const foundOverriddenFunction = contractOrTrait.traits.some((t) =>
-                t.functions.has(funInContractOrTrait.name),
-            );
+            const overriddenFunction = contractOrTrait.traits
+                .flatMap((t) => {
+                    const fun = t.functions.get(funInContractOrTrait.name);
+                    if (!fun) return [];
+                    return [fun];
+                })
+                .at(0);
 
-            if (!foundOverriddenFunction) {
+            if (typeof overriddenFunction === "undefined") {
                 const msg =
                     contractOrTrait.traits.length === 0 || inheritOnlyBaseTrait
                         ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
                         : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
 
                 throwCompilationError(msg, funInContractOrTrait.ast.loc);
+            }
+
+            if (
+                !overriddenFunction.isAbstract &&
+                !overriddenFunction.isVirtual
+            ) {
+                // override fun foo() { ... }
+                // ^^^^^^^^
+                const overrideLoc =
+                    funInContractOrTrait.ast.attributes.find(
+                        (it) => it.type === "override",
+                    )?.loc ?? funInContractOrTrait.ast.loc;
+
+                throwCompilationError(
+                    `Cannot override function "${funInContractOrTrait.name}" because function "${funInContractOrTrait.name}" does not have a virtual or abstract modifier in parent trait`,
+                    overrideLoc,
+                );
             }
         }
 
@@ -1732,19 +1753,41 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 continue;
             }
 
-            const foundOverriddenConstant = contractOrTrait.traits.some((t) =>
-                t.constants.some(
-                    (c) => c.name === constantInContractOrTrait.name,
-                ),
-            );
+            const overriddenConstant = contractOrTrait.traits
+                .flatMap((t) => {
+                    const constant = t.constants.find(
+                        (it) => it.name == constantInContractOrTrait.name,
+                    );
+                    if (!constant) return [];
+                    return [constant];
+                })
+                .at(0);
 
-            if (!foundOverriddenConstant) {
+            if (typeof overriddenConstant === "undefined") {
                 const msg =
                     contractOrTrait.traits.length === 0 || inheritOnlyBaseTrait
                         ? `Constant "${constantInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this constant`
                         : `Constant "${constantInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
 
                 throwCompilationError(msg, constantInContractOrTrait.ast.loc);
+            }
+
+            const iaAbstractOrVirtual = overriddenConstant.ast.attributes.find(
+                (a) => a.type === "virtual" || a.type === "abstract",
+            );
+
+            if (!iaAbstractOrVirtual) {
+                // override const A: Int = 10;
+                // ^^^^^^^^
+                const overrideLoc =
+                    constantInContractOrTrait.ast.attributes.find(
+                        (it) => it.type === "override",
+                    )?.loc ?? constantInContractOrTrait.ast.loc;
+
+                throwCompilationError(
+                    `Cannot override constant "${constantInContractOrTrait.name}" because constant "${constantInContractOrTrait.name}" does not have a virtual or abstract modifier in parent trait`,
+                    overrideLoc,
+                );
             }
         }
 

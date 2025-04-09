@@ -1,6 +1,6 @@
 trait BaseTrait {}
 trait T {
-    fun foo() {}
+    virtual fun foo() {}
 }
 
 trait Test with T {

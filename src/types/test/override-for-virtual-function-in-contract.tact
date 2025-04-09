@@ -1,7 +1,9 @@
-trait BaseTrait {
+trait BaseTrait {}
+
+trait T {
     virtual fun foo() {}
 }
 
-contract Test {
+trait Test with T {
     override fun foo() {}
 }
