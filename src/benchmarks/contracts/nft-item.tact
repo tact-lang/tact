@@ -5,7 +5,7 @@ inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, paylo
     let msgBody = beginCell().storeUint(op, 32).storeUint(queryId, 64);
 
     if (payload.bits() != 0) {
-        msgBody.storeBuilder(payload);
+        msgBody = msgBody.storeBuilder(payload);
     }
 
     message(MessageParameters {
