@@ -172,7 +172,7 @@ export const syntaxErrorSchema = <T, U>(
         },
         unsupportedAsmFunctionInContracts: () => {
             return handle(
-                sub`Assembly functions are only allowed at the module level (outside contracts/traits)`,
+                sub`Assembly functions are only allowed at the module level - outside contracts or traits`,
             );
         },
     };
