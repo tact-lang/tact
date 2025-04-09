@@ -1727,6 +1727,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
 
             if (
+                !overriddenFunction.isOverride &&
                 !overriddenFunction.isAbstract &&
                 !overriddenFunction.isVirtual
             ) {
@@ -1773,7 +1774,11 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
 
             const iaAbstractOrVirtual = overriddenConstant.ast.attributes.find(
-                (a) => a.type === "virtual" || a.type === "abstract",
+                (a) =>
+                    a.type === "virtual" ||
+                    a.type === "abstract" ||
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                    a.type === "override",
             );
 
             if (!iaAbstractOrVirtual) {
