@@ -7,7 +7,7 @@ export async function compile(
     ctx: CompilerContext,
     name: string,
     basename: string,
-    contractCodes: ContractsCodes,
+    contractCodes: Readonly<ContractsCodes>,
 ) {
     const abi = createABI(ctx, name);
     const output = await writeProgram(ctx, abi, basename, contractCodes, false);

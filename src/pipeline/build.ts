@@ -261,7 +261,7 @@ async function compileContract(
     ctx: CompilationCtx,
     contract: TypeDescription,
 ): Promise<boolean> {
-    const { config, logger, built } = ctx;
+    const { config, logger } = ctx;
 
     const contractName = contract.name;
 
@@ -289,7 +289,7 @@ async function compileContract(
 
     const { abi, constants } = compileRes;
 
-    built[contractName] = {
+    ctx.built[contractName] = {
         codeBoc,
         abi,
         constants,
@@ -417,14 +417,14 @@ async function compileTact(
     ctx: CompilationCtx,
     contract: string,
 ): Promise<CompileTactRes | undefined> {
-    const { project, config, built } = ctx;
+    const { project, config } = ctx;
 
     try {
         const res = await compile(
             ctx.ctx,
             contract,
             `${config.name}_${contract}`,
-            built,
+            ctx.built,
         );
 
         const { funcFile } = res.output;
@@ -514,10 +514,10 @@ function packageContract(
     ctx: CompilationCtx,
     contract: string,
 ): PackageFileFormat | undefined {
-    const { project, config, logger, built, errorMessages, stdlib } = ctx;
+    const { project, config, logger, errorMessages, stdlib } = ctx;
 
     logger.info("   > " + contract);
-    const artifacts = built[contract];
+    const artifacts = ctx.built[contract];
     if (!artifacts) {
         const message = `   > ${contract}: no artifacts found`;
         logger.error(message);
@@ -602,7 +602,7 @@ function packageContract(
 }
 
 function doBindings(ctx: CompilationCtx, packages: PackageFileFormat[]) {
-    const { project, config, logger, built } = ctx;
+    const { project, config, logger } = ctx;
 
     logger.info("   > Bindings");
 
@@ -619,8 +619,8 @@ function doBindings(ctx: CompilationCtx, packages: PackageFileFormat[]) {
             const bindingsServer = writeTypescript(
                 JSON.parse(pkg.abi),
                 ctx.ctx,
-                built[pkg.name]?.constants ?? [],
-                built[pkg.name]?.contract,
+                ctx.built[pkg.name]?.constants ?? [],
+                ctx.built[pkg.name]?.contract,
                 {
                     code: pkg.code,
                     prefix: pkg.init.prefix,
