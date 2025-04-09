@@ -261,6 +261,15 @@ exports[`resolveDescriptors should fail descriptors for contract-duplicates-in-t
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-field-with-trait-type 1`] = `
+"<unknown>:6:5: Fields with a trait type are not supported
+  5 | contract TestContract {
+> 6 |     data: Test? = null;
+          ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-getter-override-virtual-no-keyword 1`] = `
 "<unknown>:9:3: Function "getter" is defined as virtual in trait "T": you are probably missing "override" keyword
    8 | contract TestContract with T {
