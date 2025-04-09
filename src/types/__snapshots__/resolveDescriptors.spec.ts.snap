@@ -446,6 +446,15 @@ exports[`resolveDescriptors should fail descriptors for message-decl-remainder-i
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for message-decl-remaining-field-with-optional-type 1`] = `
+"<unknown>:8:8: The "as remaining" field cannot have optional type
+  7 |     a: Int;
+> 8 |     s: Cell? as remaining;
+             ^~~~~
+  9 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for message-field-with-contract-type 1`] = `
 "<unknown>:6:5: Fields with a contract type are not supported yet
   5 | message TakeEscrowData {
