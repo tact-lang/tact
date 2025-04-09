@@ -147,8 +147,8 @@ struct JettonWalletData {
 ///
 message(0xf8a7ea5) JettonTransfer {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// Amount of tokens to be transferred.
     amount: Int as coins;
@@ -249,8 +249,8 @@ message(0xf8a7ea5) JettonTransfer {
 ///
 message(0x178d4519) JettonTransferInternal {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// Amount of transferred tokens.
     amount: Int as coins;
@@ -330,8 +330,8 @@ message(0x178d4519) JettonTransferInternal {
 ///
 message(0x7362d09c) JettonTransferNotification {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// Amount of transferred tokens.
     amount: Int as coins;
@@ -388,8 +388,8 @@ message(0x7362d09c) JettonTransferNotification {
 ///
 message(0x595f07bc) JettonBurn {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// Amount of burned tokens.
     amount: Int as coins;
@@ -459,8 +459,8 @@ message(0x595f07bc) JettonBurn {
 ///
 message(0x7bdd97de) JettonBurnNotification {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// Amount of burned tokens.
     amount: Int as coins;
@@ -517,8 +517,8 @@ message(0x7bdd97de) JettonBurnNotification {
 ///
 message(0xd53276db) JettonExcesses {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 }
 
 /// Message struct. Available since Tact 1.6.6.
@@ -559,8 +559,8 @@ message(0xd53276db) JettonExcesses {
 ///
 message(0x2c76b973) ProvideWalletAddress {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// Owner of the requested Jetton Wallet — the regular TON wallet address.
     ownerAddress: Address;
@@ -592,8 +592,8 @@ message(0x2c76b973) ProvideWalletAddress {
 ///
 message(0xd1735400) TakeWalletAddress {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// Address of the requested Jetton Wallet.
     walletAddress: Address;
@@ -633,8 +633,8 @@ message(0xd1735400) TakeWalletAddress {
 ///
 message(4) JettonUpdateContent {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// New Jetton content metadata, such as its name, description, symbol, etc.
     ///
@@ -673,8 +673,8 @@ message(4) JettonUpdateContent {
 ///
 message(21) Mint {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// Recipient of the minted tokens — the regular TON wallet address.
     receiver: Address;
@@ -744,8 +744,8 @@ message(22) CloseMinting {}
 ///
 message(3) ChangeOwner {
     /// Unique identifier used to trace transactions across multiple contracts.
-    /// Defaults to 0, which means we don't mark messages to trace requests.
-    queryId: Int as uint64 = 0;
+    /// Setting it to 0 means we don't mark messages to trace requests.
+    queryId: Int as uint64;
 
     /// New owner of the contract — the regular TON wallet address.
     newOwner: Address;

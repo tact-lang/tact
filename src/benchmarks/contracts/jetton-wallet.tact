@@ -49,7 +49,7 @@ contract JettonWallet(
         // This message should come only from master, or from other JettonWallet
         let wallet: StateInit = initOf JettonWallet(msg.sender, self.master, 0);
         if (!wallet.hasSameBasechainAddress(sender())) {
-            throwUnless(707, self.minter == sender());
+            throwUnless(707, self.master == sender());
         }
 
         let ctx: Context = context();
@@ -98,7 +98,7 @@ contract JettonWallet(
         throwUnless(707, ctx.value > (fwdFee + 2 * self.gasConsumption));
 
         message(MessageParameters {
-            to: self.minter,
+            to: self.master,
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
@@ -125,7 +125,7 @@ contract JettonWallet(
         return JettonWalletData {
             balance: self.balance,
             owner: self.owner,
-            minter: self.minter,
+            minter: self.master,
             code: myCode(),
         };
     }
