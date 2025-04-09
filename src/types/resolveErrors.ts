@@ -35,18 +35,23 @@ function resolveStringsInAST(
     util: AstUtil,
 ) {
     traverse(ast, (node) => {
-        if (node.kind === "static_call" && (isRequire(node.function) || isRaise(node.function))) {
-            if (((node.args.length !== 2) && isRequire(node.function)) ||
-                (node.args.length !== 1 && isRaise(node.function))) {
+        if (
+            node.kind === "static_call" &&
+            (isRequire(node.function) || isRaise(node.function))
+        ) {
+            if (
+                (node.args.length !== 2 && isRequire(node.function)) ||
+                (node.args.length !== 1 && isRaise(node.function))
+            ) {
                 return;
             }
             let resolved: string | undefined = undefined;
-            if(isRequire(node.function)) {
+            if (isRequire(node.function)) {
                 resolved = ensureString(
                     evalConstantExpression(node.args[1]!, ctx, util),
                 ).value;
             }
-            if(isRaise(node.function)) {
+            if (isRaise(node.function)) {
                 resolved = ensureString(
                     evalConstantExpression(node.args[0]!, ctx, util),
                 ).value;

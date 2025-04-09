@@ -1,7 +1,6 @@
-message TestRaise{}
+message TestRaise {}
 
 contract IntrinsicsTester {
-
     a: Int = ton("10.1234");
     b: String = "Hello world";
     c: Address = address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N");
@@ -27,17 +26,13 @@ contract IntrinsicsTester {
     v: Slice = rawSlice("00_");
     x: Int = ascii("\n\t\r\b\f\"\\\v\u{4242}\xA9");
 
-    init() {
-
-    }
+    init() {}
 
     receive(_: TestRaise) {
         raise("Text to test raise()");
     }
 
-    receive("Deploy") {
-
-    }
+    receive("Deploy") {}
 
     get fun getTons(): Int {
         return ton("10.1234");
