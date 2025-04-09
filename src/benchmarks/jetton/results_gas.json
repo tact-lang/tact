@@ -344,7 +344,7 @@
     },
     {
       "label": "1.6.5 with reordered wallet fields",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2699",
       "gas": {
         "transfer": "15143",
         "burn": "11812",
