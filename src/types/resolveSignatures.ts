@@ -199,6 +199,12 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
                     field.loc,
                 );
             }
+            if (t.kind === "trait") {
+                throwCompilationError(
+                    `Fields with a trait type are not supported`,
+                    field.loc,
+                );
+            }
         }
 
         // Check for no "as remaining" in the middle of the struct or contract
@@ -214,6 +220,18 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
                     `The "as remaining" field can only be the last field of the ${kind}`,
                     field.loc,
                 );
+            }
+        }
+
+        for (const field of t.fields) {
+            if (field.as === "remaining") {
+                const type = field.type;
+                if (type.kind === "ref" && type.optional) {
+                    throwCompilationError(
+                        `The "as remaining" field cannot have optional type`,
+                        field.ast.type.loc,
+                    );
+                }
             }
         }
 
