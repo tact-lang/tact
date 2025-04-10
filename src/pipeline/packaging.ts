@@ -15,25 +15,25 @@ import type { BuildContext } from "@/pipeline/build";
 export type Packages = readonly PackageFileFormat[];
 
 // Represent dictionary with child contracts code or empty if no child contracts
-export type ChildContractsDict = NonEmptyChildContractsDict | NoChildContracts;
+type ChildContractsDict = NonEmptyChildContractsDict | NoChildContracts;
 
-export type NonEmptyChildContractsDict = {
+type NonEmptyChildContractsDict = {
     readonly $: "NonEmptyChildContractsDict";
     readonly cell: Cell;
 };
 
-export const NonEmptyChildContractsDict = (
+const NonEmptyChildContractsDict = (
     cell: Cell,
 ): NonEmptyChildContractsDict => ({
     $: "NonEmptyChildContractsDict",
     cell,
 });
 
-export type NoChildContracts = {
+type NoChildContracts = {
     readonly $: "NoChildContracts";
 };
 
-export const NoChildContracts: NoChildContracts = { $: "NoChildContracts" };
+const NoChildContracts: NoChildContracts = { $: "NoChildContracts" };
 
 export function doPackaging(bCtx: BuildContext): Packages | undefined {
     bCtx.logger.info("   > Packaging");

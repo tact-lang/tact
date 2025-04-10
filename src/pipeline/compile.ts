@@ -19,34 +19,32 @@ import { funcCompile } from "@/func/funcCompile";
 import { posixNormalize } from "@/utils/filePath";
 import { TactError } from "@/error/errors";
 
-export type CompiledContract =
+type CompiledContract =
     | GeneratedOnlyFunc
     | CompiledSuccessfully
     | CompilationFailed;
 
-export type GeneratedOnlyFunc = {
+type GeneratedOnlyFunc = {
     readonly $: "GeneratedOnlyFunc";
 };
 
-export const GeneratedOnlyFunc: GeneratedOnlyFunc = { $: "GeneratedOnlyFunc" };
+const GeneratedOnlyFunc: GeneratedOnlyFunc = { $: "GeneratedOnlyFunc" };
 
-export type CompiledSuccessfully = {
+type CompiledSuccessfully = {
     readonly $: "CompiledSuccessfully";
     readonly built: Readonly<BuiltContract>;
 };
 
-export const CompiledSuccessfully = (
-    built: BuiltContract,
-): CompiledSuccessfully => ({
+const CompiledSuccessfully = (built: BuiltContract): CompiledSuccessfully => ({
     $: "CompiledSuccessfully",
     built,
 });
 
-export type CompilationFailed = {
+type CompilationFailed = {
     readonly $: "CompilationFailed";
 };
 
-export const CompilationFailed: CompilationFailed = { $: "CompilationFailed" };
+const CompilationFailed: CompilationFailed = { $: "CompilationFailed" };
 
 export async function doCompileContracts(bCtx: BuildContext): Promise<boolean> {
     const allContracts = getContracts(bCtx.ctx);
