@@ -10,7 +10,12 @@ import {
     type RawCodeSizeResult,
 } from "@/benchmarks/utils/gas";
 import { createInterface } from "readline/promises";
-import { globSync } from "@/test/utils/all-in-folder.build";
+import { glob } from "glob";
+
+// node.js 20+ builtin
+const globSync = (globs: string[], options: { cwd: string }) => {
+    return globs.flatMap((g) => glob.sync(g, options));
+};
 
 const runBenchmark = (specPath: string): Promise<string> => {
     return new Promise((resolve) => {
