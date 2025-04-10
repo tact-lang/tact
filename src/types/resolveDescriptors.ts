@@ -2247,10 +2247,8 @@ export function getAllTypes(ctx: CompilerContext): TypeDescription[] {
     return Array.from(getTypeStore(ctx).values());
 }
 
-export function getContracts(ctx: CompilerContext): string[] {
-    return getAllTypes(ctx)
-        .filter((v) => v.kind === "contract")
-        .map((v) => v.name);
+export function getContracts(ctx: CompilerContext): TypeDescription[] {
+    return getAllTypes(ctx).filter((v) => v.kind === "contract");
 }
 
 export function getStaticFunction(
