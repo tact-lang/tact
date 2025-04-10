@@ -88,7 +88,9 @@ export function createProperty<Ts extends [unknown, ...unknown[]]>(
 /**
  * Create parameters for custom property checking.
  */
-function makeParams<T>(numRuns: number | undefined): fc.Parameters<T> {
+function makeParams(
+    numRuns: number | undefined,
+): fc.Parameters<Ast.AstNode | Ast.AstNode[]> {
     return {
         numRuns: numRuns ?? GlobalContext.config.numRuns,
         seed: GlobalContext.config.seed,
@@ -98,11 +100,10 @@ function makeParams<T>(numRuns: number | undefined): fc.Parameters<T> {
                     out.counterexample !== null &&
                     out.errorInstance instanceof Error
                 ) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    let generated: any = out.counterexample;
-                    if (!generated.kind && generated[0]?.kind) {
-                        generated = generated[0];
-                    }
+                    const generated =
+                        "kind" in out.counterexample
+                            ? out.counterexample
+                            : out.counterexample[0]!;
                     out.errorInstance.message += `\n-----\nGenerated program:\n${GlobalContext.format(generated)}\n-----\n`;
                 }
                 throw new Error(fc.defaultReportMessage(out));
@@ -114,8 +115,8 @@ function makeParams<T>(numRuns: number | undefined): fc.Parameters<T> {
 /**
  * Checks the given property enhancing `fc.assert` with additional functionality.
  */
-export function checkProperty<T>(
-    property: fc.IPropertyWithHooks<T>,
+export function checkProperty(
+    property: fc.IPropertyWithHooks<Ast.AstNode | Ast.AstNode[]>,
     numRuns: number | undefined = undefined,
 ) {
     fc.assert(property, makeParams(numRuns));
@@ -125,7 +126,7 @@ export function checkProperty<T>(
  * Checks the given async property enhancing `fc.assert` with additional functionality.
  */
 export async function checkAsyncProperty<T>(
-    property: fc.IAsyncPropertyWithHooks<T>,
+    property: fc.IAsyncPropertyWithHooks<Ast.AstNode | Ast.AstNode[]>,
     numRuns: number | undefined = undefined,
 ) {
     await fc.assert(property, makeParams(numRuns));
