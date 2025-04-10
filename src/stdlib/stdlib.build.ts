@@ -34,7 +34,7 @@ const listFiles = (dir: string) => {
 };
 
 const lines: string[] = [
-    "const files: Record<string, string> = {};\n",
+    "export const files: Record<string, string> = {};\n",
     ...listFiles(libFiles).map(({ absolute, relative }) => {
         const chunks = chunk(fs.readFileSync(absolute).toString("base64"), 128);
         const chunkedBase64 = chunks
