@@ -269,7 +269,7 @@ async function compileTact(
             content: funcFile.code,
         };
 
-        return { abi, funcSource, entrypointPath, stdlibConstants, constants };
+        return { abi, funcSource, entrypointPath, constants, stdlibConstants };
     } catch (e) {
         bCtx.logger.error("Tact compilation failed");
         // show an error with a backtrace only in verbose mode
