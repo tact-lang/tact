@@ -1,6 +1,7 @@
 primitive Int;
 
 trait BaseTrait {}
+
 trait T {
     virtual const BAR: Int = 10;
 }

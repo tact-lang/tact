@@ -16,10 +16,10 @@ trait Animal with BaseTrait {
 }
 
 trait Dog with Animal {
-    override fun getType(): String {
+    override virtual fun getType(): String {
         return "Dog";
     }
-    override fun getSound(): String {
+    override virtual fun getSound(): String {
         return "Woof";
     }
 }

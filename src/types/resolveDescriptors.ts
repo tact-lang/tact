@@ -786,12 +786,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 isAbstract.loc,
             );
         }
-        if (isVirtual && isOverride) {
-            throwCompilationError(
-                "Overrides functions cannot be virtual",
-                isOverride.loc,
-            );
-        }
         if (isAbstract && isOverride) {
             throwCompilationError(
                 "Overrides functions cannot be abstract",
@@ -1727,7 +1721,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
 
             if (
-                !overriddenFunction.isOverride &&
                 !overriddenFunction.isAbstract &&
                 !overriddenFunction.isVirtual
             ) {
@@ -1774,11 +1767,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
 
             const iaAbstractOrVirtual = overriddenConstant.ast.attributes.find(
-                (a) =>
-                    a.type === "virtual" ||
-                    a.type === "abstract" ||
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    a.type === "override",
+                (a) => a.type === "virtual" || a.type === "abstract",
             );
 
             if (!iaAbstractOrVirtual) {
