@@ -18,7 +18,7 @@ tuple $MainContract$_contract_init() impure inline;
 tuple $MainContract$_contract_load() impure inline;
 
 ;; $MainContract$_fun_testAugmentedAssignOperators
-(tuple, int) $MainContract$_fun_testAugmentedAssignOperators(tuple $self, int $intVal, int $boolVal) impure inline_ref;
+(tuple, int) $MainContract$_fun_testAugmentedAssignOperators(tuple $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref;
 
 
 ;; main_MainContract.stdlib.fc
@@ -53,14 +53,14 @@ tuple $MainContract$_contract_init() impure inline {
     return $self;
 }
 
-(tuple, int) $MainContract$_fun_testAugmentedAssignOperators(tuple $self, int $intVal, int $boolVal) impure inline_ref {
+(tuple, int) $MainContract$_fun_testAugmentedAssignOperators(tuple $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref {
     var ($self) = $self;
-    int $a = 100;
-    $a = $a + $intVal;
-    $a = $a - $intVal;
-    int $b = true;
-    $b = ($b ? $boolVal : (false));
-    $b = ($b ? (true) : $boolVal);
+    int $a = $intVal;
+    $a = $a + $intVal2;
+    $a = $a - $intVal2;
+    int $b = $boolVal;
+    $b = ($b ? $boolVal2 : (false));
+    $b = ($b ? (true) : $boolVal2);
     var $fresh$ret_0 = ($a + ($b ? 10 : 20));
     return ($self, $fresh$ret_0);
 }
@@ -69,11 +69,13 @@ tuple $MainContract$_contract_init() impure inline {
 ;; Get methods of a Contract MainContract
 ;;
 
-_ %testAugmentedAssignOperators(int $intVal, int $boolVal) method_id(87226) {
+_ %testAugmentedAssignOperators(int $intVal, int $intVal2, int $boolVal, int $boolVal2) method_id(87226) {
     int $intVal = $intVal;
+    int $intVal2 = $intVal2;
     int $boolVal = $boolVal;
+    int $boolVal2 = $boolVal2;
     var self = $MainContract$_contract_load();
-    var res = self~$MainContract$_fun_testAugmentedAssignOperators($intVal, $boolVal);
+    var res = self~$MainContract$_fun_testAugmentedAssignOperators($intVal, $intVal2, $boolVal, $boolVal2);
     return res;
 }
 
