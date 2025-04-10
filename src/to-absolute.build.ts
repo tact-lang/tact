@@ -23,11 +23,12 @@ const main = async () => {
                 ) {
                     return `from "${importedName}"`;
                 }
-                const x = relative(
+                console.error(file);
+                const renamed = relative(
                     "src/",
                     join(dirname(fullPath), importedName),
                 );
-                return `from "@/${x}"`;
+                return `from "@/${renamed}"`;
             },
         );
         if (source !== newSource) {
