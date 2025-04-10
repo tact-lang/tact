@@ -37,14 +37,17 @@ describe("wildcard-parameters", () => {
         expect(Number(await contract.getGlobalAddThreeWildcards())).toEqual(0);
         expect(Number(await contract.getGlobalAddMixedParams())).toEqual(3);
         expect(Number(await contract.getGlobalAddMixedParams2())).toEqual(3);
+        expect(Number(await contract.getGlobalAddMixedParams3())).toEqual(3);
         expect(Number(await contract.getGlobalAsmAddThreeWildcards())).toEqual(
             3,
         );
         expect(Number(await contract.getGlobalAsmAddMixedParams())).toEqual(3);
+        expect(Number(await contract.getGlobalAsmAddMixedParams2())).toEqual(3);
 
         expect(Number(await contract.getContractAddThreeWildcards())).toEqual(
             0,
         );
         expect(Number(await contract.getContractAddMixedParams())).toEqual(4);
+        expect(Number(await contract.getContractAddMixedParams2())).toEqual(4);
     });
 });
