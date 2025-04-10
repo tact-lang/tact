@@ -7,7 +7,7 @@ import { Badge } from '@astrojs/starlight/components';
 
 <Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
 
-The `@stdlib/jetton` library provides primary and auxiliary structures and utilities for working with [Jetton standards](#sources). However, support of the [stablecoin contract and standard](https://github.com/ton-blockchain/stablecoin-contract) is out of the scope of this library.
+The `@stdlib/jetton` library provides primary and auxiliary structures and utilities for working with [Jetton standards](#sources). However, support of the [stablecoin contract and standard][stablecoin] is out of the scope of this library.
 
 Jettons are fungible tokens similar to ERC-20 tokens on Ethereum but implemented specifically for the TON Blockchain. They use an actor model of contract communication and a parent-child-like contract sharding, where a Jetton Master (or Minter) acts like a parent contract, and Jetton Wallets are child contracts created for each user's wallet.
 
@@ -19,9 +19,11 @@ import "@stdlib/jetton";
 
 :::note
 
-  See how to apply this library in your contracts: [Common examples of working with Jettons in the Cookbook](/cookbook/jettons).
+  See how to apply this library in your contracts:
+  * [Common examples of working with Jettons in the Cookbook](/cookbook/jettons).
+  * [An official standalone defi-cookbook repository with common cases, Tact examples and tests](https://github.com/tact-lang/defi-cookbook/tree/main/jettons).
 
-  Notice that support of the [stablecoin contract and standard](https://github.com/ton-blockchain/stablecoin-contract) is out of the scope of this library.
+  Notice that support of the [stablecoin contract and standard][stablecoin] is out of the scope of this library.
 
 :::
 
@@ -601,6 +603,12 @@ contract JettonMinter(
 
 :::
 
+:::note
+
+  The [stablecoin][stablecoin] standard and contracts and some other Jetton implementations might use a different [opcode for this message](/book/structs-and-messages#message-opcodes), namely `0x642b7d07{:tact}`.
+
+:::
+
 ### CloseMinting
 
 ```tact
@@ -686,3 +694,5 @@ contract JettonMinter(
 [tep-74]: https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md
 [tep-64]: https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md
 [tep-89]: https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
+
+[stablecoin]: https://github.com/ton-blockchain/stablecoin-contract
