@@ -21,6 +21,7 @@ import { freshIdentifier } from "@/generator/writers/freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "@/error/errors";
 import { ppAsmShuffle } from "@/ast/ast-printer";
 import { zip } from "@/utils/array";
+import { binaryOperationFromAugmentedAssignOperation } from "@/ast/util";
 
 export function writeCastedExpression(
     expression: Ast.Expression,
@@ -193,8 +194,9 @@ export function writeStatement(
                 return;
             }
 
+            const op = binaryOperationFromAugmentedAssignOperation(f.op);
             ctx.append(
-                `${path} = ${cast(t, t, `${path} ${f.op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
+                `${path} = ${cast(t, t, `${path} ${op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
             );
             return;
         }
