@@ -29,6 +29,7 @@ compilables
 Compilables
 comptime
 Comptime
+CSBT
 Daniil
 Danil
 decompilation
