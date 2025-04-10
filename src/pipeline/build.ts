@@ -14,6 +14,8 @@ import type { TypeDescription } from "@/types/types";
 import { doPackaging } from "@/pipeline/packaging";
 import { doBindings } from "@/pipeline/bindings";
 import { doReports } from "@/pipeline/reports";
+import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
+import files from "@/stdlib/stdlib";
 
 export type BuildContext = {
     readonly project: VirtualFileSystem;
@@ -67,10 +69,15 @@ export const BuildFail = (error: TactErrorCollection[]): BuildResult => ({
 export async function build(args: {
     readonly config: Project;
     readonly project: VirtualFileSystem;
-    readonly stdlib: VirtualFileSystem;
+    readonly stdlib: string | VirtualFileSystem;
     readonly logger?: ILogger;
 }): Promise<BuildResult> {
-    const { config, stdlib, project, logger = new Logger() } = args;
+    const { config, project, logger = new Logger() } = args;
+
+    const stdlib =
+        typeof args.stdlib === "string"
+            ? createVirtualFileSystem(args.stdlib, files)
+            : args.stdlib;
 
     // Configure context
     let ctx = new CompilerContext();
