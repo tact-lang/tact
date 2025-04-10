@@ -235,7 +235,7 @@ describe("base-trait-constant-override-1", () => {
         expect(balance).toEqual(reservedAmount);
     });
 
-    it("Forward / contact / default message", async () => {
+    it("Forward / contract / default message", async () => {
         const forwardMessage: Forward = {
             $$type: "Forward",
             to: treasure.address,
