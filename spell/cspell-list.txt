@@ -95,8 +95,8 @@ Lagus
 Laika
 langle
 langtools
-letrec
 learnXinYminutes
+letrec
 Liskov
 logomark
 lparen
@@ -112,6 +112,7 @@ memecoin
 Merkle
 minmax
 mintable
+miscompilation
 misparse
 misparsed
 mktemp
