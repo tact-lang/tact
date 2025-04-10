@@ -2445,4 +2445,3 @@ files["std/stdlib.tact"] =
     "bnRyYWN0IjsKaW1wb3J0ICIuL2ludGVybmFsL2RlYnVnIjsKaW1wb3J0ICIuL2ludGVybmFsL2NvbnRleHQiOwppbXBvcnQgIi4vaW50ZXJuYWwvcmVzZXJ2ZSI7Cmlt" +
     "cG9ydCAiLi9pbnRlcm5hbC9zZW5kIjsKaW1wb3J0ICIuL2ludGVybmFsL2NvbmZpZyI7CmltcG9ydCAiLi9pbnRlcm5hbC9iYXNlIjsKaW1wb3J0ICIuL2ludGVybmFs" +
     "L2FkZHJlc3MiOwppbXBvcnQgIi4vaW50ZXJuYWwvdGltZSI7Cg==";
-export default files;

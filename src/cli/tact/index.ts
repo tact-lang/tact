@@ -16,7 +16,7 @@ import { entries } from "@/utils/tricks";
 import { Logger, LogLevel } from "@/context/logger";
 import { build } from "@/pipeline/build";
 import type { TactErrorCollection } from "@/error/errors";
-import files from "@/stdlib/stdlib";
+import * as Stdlib from "@/stdlib/stdlib";
 import { cwd } from "process";
 import { getVersion, showCommit } from "@/cli/version";
 import { watchAndCompile } from "@/cli/tact/watch";
@@ -268,7 +268,7 @@ const compile = async (
     }
     setConfigOptions(config, options);
 
-    const stdlib = createVirtualFileSystem("@stdlib", files);
+    const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
 
     if (await noUnknownParams(Errors, Args)) {
         // TODO: all flags on the cli should take precedence over flags in the config

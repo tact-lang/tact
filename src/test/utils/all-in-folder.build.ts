@@ -4,7 +4,7 @@ import type { Options, Project } from "@/config/parseConfig";
 import { basename, dirname, extname, join, resolve } from "path";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 import { Logger } from "@/context/logger";
-import files from "@/stdlib/stdlib";
+import * as Stdlib from "@/stdlib/stdlib";
 import { posixNormalize } from "@/utils/filePath";
 import { funcCompile } from "@/func/funcCompile";
 import { Worker } from "worker_threads";
@@ -104,7 +104,7 @@ export const runParallel = async (
 };
 
 const runFuncBuild = async (folder: string, globs: string[]) => {
-    const stdlib = createVirtualFileSystem("@stdlib", files);
+    const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
 
     const contractsPaths = globSync(globs, { cwd: folder });
 

@@ -42,7 +42,6 @@ const lines: string[] = [
             .join(" +\n");
         return `files["${relative}"] =\n${chunkedBase64};\n`;
     }),
-    "export default files;\n",
 ];
 
 fs.writeFileSync(targetPath, lines.join(""));
