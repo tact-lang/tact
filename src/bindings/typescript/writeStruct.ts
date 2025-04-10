@@ -149,7 +149,7 @@ function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
 }
 
 export function writeTupleParser(s: ABIType, w: Writer) {
-    w.append(`function loadTuple${s.name}(source: TupleReader) {`);
+    w.append(`export function loadTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
         if (s.fields.length <= maxTupleSize) {
             for (const f of s.fields) {
@@ -177,7 +177,7 @@ export function writeTupleParser(s: ABIType, w: Writer) {
 }
 
 export function writeGetterTupleParser(s: ABIType, w: Writer) {
-    w.append(`function loadGetterTuple${s.name}(source: TupleReader) {`);
+    w.append(`export function loadGetterTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
         for (const f of s.fields) {
             writeTupleFieldParser("_" + f.name, f.type, w, true);
@@ -211,7 +211,7 @@ function writeTupleFieldParser(
 }
 
 export function writeTupleSerializer(s: ABIType, w: Writer) {
-    w.append(`function storeTuple${s.name}(source: ${s.name}) {`);
+    w.append(`export function storeTuple${s.name}(source: ${s.name}) {`);
     w.inIndent(() => {
         w.append(`const builder = new TupleBuilder();`);
         for (const f of s.fields) {
