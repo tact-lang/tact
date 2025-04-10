@@ -1,17 +1,64 @@
 import { glob } from "glob";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
-import type { Options } from "@/config/parseConfig";
-import { basename, dirname, extname, join } from "path";
+import type { Options, Project } from "@/config/parseConfig";
+import { basename, dirname, extname, join, resolve } from "path";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
-import { Logger, LogLevel } from "@/context/logger";
-import { run } from "@/cli/tact";
-import files from "@/stdlib/stdlib";
+import { Logger } from "@/context/logger";
+import * as Stdlib from "@/stdlib/stdlib";
 import { posixNormalize } from "@/utils/filePath";
 import { funcCompile } from "@/func/funcCompile";
+import { Worker } from "worker_threads";
+import type { WorkerInput, WorkerOutput } from "@/test/utils/worker.build";
+
+const numThreads = parseInt(process.env.BUILD_THREADS ?? "", 10) || 4;
 
 // node.js 20+ builtin
-export const globSync = (globs: string[], options: { cwd: string }) => {
+const globSync = (globs: string[], options: { cwd: string }) => {
     return globs.flatMap((g) => glob.sync(g, options));
+};
+
+function splitIntoParts<T>(
+    n: number,
+    xs: readonly T[],
+): readonly (readonly T[])[] {
+    const len = xs.length;
+    const q = Math.floor(len / n);
+    const r = len % n;
+
+    const sizes = [...Array(r).fill(q + 1), ...Array(n - r).fill(q)].slice(
+        0,
+        len,
+    ); // avoid extra empty groups if n > xs.length
+
+    const splits = sizes.reduce<number[]>(
+        (acc, size) => [...acc, acc[acc.length - 1] + size],
+        [0],
+    );
+
+    return splits.slice(1).map((end, i) => xs.slice(splits[i], end));
+}
+
+const runWorker = (input: WorkerInput): Promise<WorkerOutput> => {
+    return new Promise<WorkerOutput>((res, rej) => {
+        const worker = new Worker(resolve(__dirname, "worker.build.ts"), {
+            execArgv: ["-r", "ts-node/register/transpile-only"],
+        });
+        worker.once("message", (result) => {
+            if (result && typeof result === "object" && "error" in result) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                rej(new Error((result as any).error));
+            } else {
+                res(result as WorkerOutput);
+            }
+        });
+        worker.once("error", rej);
+        worker.once("exit", (code) => {
+            if (code !== 0) {
+                rej(new Error(`Worker exited with code ${code}`));
+            }
+        });
+        worker.postMessage(input);
+    });
 };
 
 export const allInFolder = async (
@@ -20,8 +67,6 @@ export const allInFolder = async (
     options: Options = { debug: true, external: true },
 ) => {
     try {
-        const stdlib = createVirtualFileSystem("@stdlib", files);
-
         const contracts = globSync(globs, { cwd: folder });
 
         const projects = contracts.map((contractPath) => {
@@ -34,25 +79,32 @@ export const allInFolder = async (
             };
         });
 
-        const project = createNodeFileSystem(folder, false);
-
-        const compileResult = await run({
-            config: { projects },
-            logger: new Logger(LogLevel.INFO),
-            project,
-            stdlib,
-        });
-        if (!compileResult.ok) {
-            throw new Error("Tact projects compilation failed");
-        }
+        await runParallel(projects, folder);
     } catch (error) {
         console.error(error);
         process.exit(1);
     }
 };
 
+export const runParallel = async (
+    projects: readonly Project[],
+    folder: string,
+) => {
+    const projectGroups = splitIntoParts(numThreads, projects);
+
+    const results = await Promise.all(
+        Array.from(projectGroups.entries()).map(([id, projects]) =>
+            runWorker({ id, folder, projects }),
+        ),
+    );
+
+    if (results.some((result) => !result.ok)) {
+        throw new Error("Tact projects compilation failed");
+    }
+};
+
 const runFuncBuild = async (folder: string, globs: string[]) => {
-    const stdlib = createVirtualFileSystem("@stdlib", files);
+    const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
 
     const contractsPaths = globSync(globs, { cwd: folder });
 
@@ -75,14 +127,14 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
 
     const logger = new Logger();
 
-    const importRegex = /#include\s+"([^"]+)"/g;
-    const isContractRegex = /\(\)\s+recv_internal/g;
-
     const compileFuncContract = async (contractInfo: {
         name: string;
         path: string;
         output: string;
     }) => {
+        const importRegex = /#include\s+"([^"]+)"/g;
+        const isContractRegex = /\(\)\s+recv_internal/g;
+
         const stdlibPath = stdlib.resolve("std/stdlib.fc");
         const stdlibCode = stdlib.readFile(stdlibPath).toString();
         const stdlibExPath = stdlib.resolve("std/stdlib_ex.fc");
