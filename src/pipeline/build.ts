@@ -2,11 +2,9 @@ import type { WrappersConstantDescription } from "@/bindings/writeTypescript";
 import { featureEnable } from "@/config/features";
 import type { Project } from "@/config/parseConfig";
 import { CompilerContext } from "@/context/context";
-import files from "@/stdlib/stdlib";
 import type { ILogger } from "@/context/logger";
 import { Logger } from "@/context/logger";
 import { posixNormalize } from "@/utils/filePath";
-import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
 import { doCompileContracts } from "@/pipeline/compile";
 import { precompile } from "@/pipeline/precompile";
@@ -69,17 +67,10 @@ export const BuildFail = (error: TactErrorCollection[]): BuildResult => ({
 export async function build(args: {
     readonly config: Project;
     readonly project: VirtualFileSystem;
-    readonly stdlib: string | VirtualFileSystem;
+    readonly stdlib: VirtualFileSystem;
     readonly logger?: ILogger;
 }): Promise<BuildResult> {
-    const { config, project } = args;
-
-    const stdlib =
-        typeof args.stdlib === "string"
-            ? createVirtualFileSystem(args.stdlib, files)
-            : args.stdlib;
-
-    const logger: ILogger = args.logger ?? new Logger();
+    const { config, stdlib, project, logger = new Logger() } = args;
 
     // Configure context
     let ctx = new CompilerContext();
