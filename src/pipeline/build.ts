@@ -10,12 +10,8 @@ import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
 import { doCompileContracts } from "@/pipeline/compile";
 import { precompile } from "@/pipeline/precompile";
-import type { FactoryAst } from "@/ast/ast-helpers";
-import { getAstFactory } from "@/ast/ast-helpers";
 import type { TactErrorCollection } from "@/error/errors";
 import { TactError } from "@/error/errors";
-import type { Parser } from "@/grammar";
-import { getParser } from "@/grammar";
 import type { TypeDescription } from "@/types/types";
 import { doPackaging } from "@/pipeline/packaging";
 import { doBindings } from "@/pipeline/bindings";
@@ -75,16 +71,14 @@ export async function build(args: {
     readonly project: VirtualFileSystem;
     readonly stdlib: string | VirtualFileSystem;
     readonly logger?: ILogger;
-    readonly parser?: Parser;
-    readonly ast?: FactoryAst;
 }): Promise<BuildResult> {
     const { config, project } = args;
+
     const stdlib =
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
-    const ast: FactoryAst = args.ast ?? getAstFactory();
-    const parser: Parser = args.parser ?? getParser(ast);
+
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
@@ -93,7 +87,7 @@ export async function build(args: {
 
     // Precompile
     try {
-        ctx = precompile(ctx, project, stdlib, config.path, parser, ast);
+        ctx = precompile(ctx, project, stdlib, config.path);
     } catch (e) {
         logger.error(
             config.mode === "checkOnly" || config.mode === "funcOnly"
