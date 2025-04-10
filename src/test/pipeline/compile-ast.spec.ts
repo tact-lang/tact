@@ -57,8 +57,8 @@ describe("compilation of ASTs", () => {
     const mF = getMakeAst(astF);
 
     it("should compile AST to BoC", async () => {
-        const contractAst = makeModule(mF);
-        const codeBoc = await compileModule(contractAst, "Test");
+        const moduleAst = makeModule(mF);
+        const codeBoc = await compileModule(moduleAst, "Test");
 
         if (!codeBoc) {
             fail("Cannot compile FunC");
@@ -70,17 +70,14 @@ describe("compilation of ASTs", () => {
         expect(codeFiftDecompiled).toMatchSnapshot();
     });
 
-    async function compileModule(
-        contractAst: Ast.Module,
-        contractName: string,
-    ) {
+    async function compileModule(moduleAst: Ast.Module, contractName: string) {
         const fileSystem = { ["dummy.tact"]: "" };
 
         const project = createVirtualFileSystem("/", fileSystem, false);
         const stdlib = createVirtualFileSystem("@stdlib", files);
 
         let ctx = new CompilerContext();
-        ctx = precompile(ctx, project, stdlib, "dummy.tact", [contractAst]);
+        ctx = precompile(ctx, project, stdlib, "dummy.tact", [moduleAst]);
 
         const bCtx: BuildContext = {
             config: {
