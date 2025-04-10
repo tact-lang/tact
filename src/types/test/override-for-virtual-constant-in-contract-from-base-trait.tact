@@ -1,7 +1,7 @@
 primitive Int;
 
 trait BaseTrait {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 }
 
 contract Test with BaseTrait {

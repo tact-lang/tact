@@ -1,5 +1,5 @@
 trait BaseTrait {
-    fun foo() {}
+    virtual fun foo() {}
 }
 trait T {
     fun bar() {}

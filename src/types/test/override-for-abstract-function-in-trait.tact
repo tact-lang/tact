@@ -1,6 +1,7 @@
 trait BaseTrait {}
+
 trait T {
-    fun foo() {}
+    abstract fun foo();
 }
 
 trait Test with T {

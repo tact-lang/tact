@@ -2,7 +2,7 @@ primitive Int;
 
 trait BaseTrait {}
 trait T {
-    const BAR: Int = 10;
+    virtual const BAR: Int = 10;
 }
 
 trait Test with T {
