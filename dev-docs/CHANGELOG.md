@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support contract parameters in the AST printer: PR [#2658](https://github.com/tact-lang/tact/pull/2658)
 
+### TypeScript wrappers
+
+- TypeScript wrappers now include all constants from the standard library: PR [#2715](https://github.com/tact-lang/tact/pull/2715)
+
 ### Docs
 
 - Fixed code example of the `initOf` expression to highlight support for contract parameters: PR [#2550](https://github.com/tact-lang/tact/pull/2550)
