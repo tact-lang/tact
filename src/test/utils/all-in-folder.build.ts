@@ -10,14 +10,14 @@ import { funcCompile } from "@/func/funcCompile";
 import { Worker } from "worker_threads";
 import type { WorkerInput, WorkerOutput } from "@/test/utils/worker.build";
 
-export const numThreads = parseInt(process.env.BUILD_THREADS ?? "", 10) || 4;
+const numThreads = parseInt(process.env.BUILD_THREADS ?? "", 10) || 4;
 
 // node.js 20+ builtin
-export const globSync = (globs: string[], options: { cwd: string }) => {
+const globSync = (globs: string[], options: { cwd: string }) => {
     return globs.flatMap((g) => glob.sync(g, options));
 };
 
-export function splitIntoParts<T>(
+function splitIntoParts<T>(
     n: number,
     xs: readonly T[],
 ): readonly (readonly T[])[] {
