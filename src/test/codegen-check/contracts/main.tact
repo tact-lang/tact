@@ -1,13 +1,15 @@
 contract MainContract {
-    receive("augmented assign operators") {
+    get fun testAugmentedAssignOperators(intVal: Int, boolVal: Bool): Int {
         let a = 100;
 
-        a += 10;
-        a -= 10;
+        a += intVal;
+        a -= intVal;
 
         let b = true;
 
-        b &&= true;
-        b ||= true;
+        b &&= boolVal;
+        b ||= boolVal;
+
+        return a + (b ? 10 : 20);
     }
 }

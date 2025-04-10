@@ -17,8 +17,8 @@ tuple $MainContract$_contract_init() impure inline;
 ;; $MainContract$_contract_load
 tuple $MainContract$_contract_load() impure inline;
 
-;; $MainContract$_contract_store
-() $MainContract$_contract_store(tuple v) impure inline;
+;; $MainContract$_fun_testAugmentedAssignOperators
+(tuple, int) $MainContract$_fun_testAugmentedAssignOperators(tuple $self, int $intVal, int $boolVal) impure inline_ref;
 
 
 ;; main_MainContract.stdlib.fc
@@ -44,12 +44,6 @@ tuple $MainContract$_contract_load() impure inline {
     }
 }
 
-() $MainContract$_contract_store(tuple v) impure inline {
-    builder b = begin_cell();
-    b = b.store_int(true, 1);
-    set_data(b.end_cell());
-}
-
 ;;
 ;; Contract MainContract functions
 ;;
@@ -59,9 +53,29 @@ tuple $MainContract$_contract_init() impure inline {
     return $self;
 }
 
+(tuple, int) $MainContract$_fun_testAugmentedAssignOperators(tuple $self, int $intVal, int $boolVal) impure inline_ref {
+    var ($self) = $self;
+    int $a = 100;
+    $a = $a + $intVal;
+    $a = $a - $intVal;
+    int $b = true;
+    $b = ($b ? $boolVal : (false));
+    $b = ($b ? (true) : $boolVal);
+    var $fresh$ret_0 = ($a + ($b ? 10 : 20));
+    return ($self, $fresh$ret_0);
+}
+
 ;;
 ;; Get methods of a Contract MainContract
 ;;
+
+_ %testAugmentedAssignOperators(int $intVal, int $boolVal) method_id(87226) {
+    int $intVal = $intVal;
+    int $boolVal = $boolVal;
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testAugmentedAssignOperators($intVal, $boolVal);
+    return res;
+}
 
 ;;
 ;; Routing of a Contract MainContract
@@ -87,25 +101,6 @@ tuple $MainContract$_contract_init() impure inline {
     
     ;; Handle bounced messages
     if (msg_bounced) { return (); }
-    int op = 0;
-    int in_msg_length = slice_bits(in_msg);
-    if (in_msg_length >= 32) {
-        op = in_msg~load_uint(32);
-    }
-    ;; Empty Receiver and Text Receivers
-    var text_op = slice_hash(in_msg);
-    ;; Receive "augmented assign operators" message
-    if (text_op == 0xd1e75bf475f63a2322664f698f9b4df50d3aefc3672494e564fe95c95021bc29) {
-        int $a = 100;
-        $a = $a + 10;
-        $a = $a - 10;
-        int $b = true;
-        $b = ($b ? true : (false));
-        $b = ($b ? (true) : true);
-        $MainContract$_contract_store($self);
-        return ();
-    }
-    ;; Throw if not handled
     throw(130);
 }
 
