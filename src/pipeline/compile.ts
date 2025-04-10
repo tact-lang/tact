@@ -110,11 +110,12 @@ async function compileContract(
         decompileContract(bCtx, contractName, codeBoc);
     }
 
-    const { abi, constants } = compileRes;
+    const { abi, stdlibConstants, constants } = compileRes;
 
     return CompiledSuccessfully({
         codeBoc,
         abi,
+        stdlibConstants,
         constants,
         contract,
     });
@@ -246,7 +247,13 @@ async function compileTact(
             false,
         );
 
-        const { abi, funcFile, constants, entrypoint: entrypointPath } = res;
+        const {
+            abi,
+            funcFile,
+            stdlibConstants,
+            constants,
+            entrypoint: entrypointPath,
+        } = res;
 
         const pathFunc = project.resolve(config.output, funcFile.name);
         project.writeFile(pathFunc, funcFile.code);
@@ -262,7 +269,7 @@ async function compileTact(
             content: funcFile.code,
         };
 
-        return { abi, funcSource, entrypointPath, constants };
+        return { abi, funcSource, entrypointPath, stdlibConstants, constants };
     } catch (e) {
         bCtx.logger.error("Tact compilation failed");
         // show an error with a backtrace only in verbose mode

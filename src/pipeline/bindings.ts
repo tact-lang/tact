@@ -18,11 +18,15 @@ export function doBindings(bCtx: BuildContext, packages: Packages) {
         }
 
         try {
+            const builtContract = bCtx.built[pkg.name];
+            const constants = builtContract?.constants ?? [];
+            const stdlibConstants = builtContract?.stdlibConstants ?? [];
+
             const bindingsServer = writeTypescript(
                 JSON.parse(pkg.abi),
                 bCtx.ctx,
-                bCtx.built[pkg.name]?.constants ?? [],
-                bCtx.built[pkg.name]?.contract,
+                [...constants, ...stdlibConstants],
+                builtContract?.contract,
                 {
                     code: pkg.code,
                     prefix: pkg.init.prefix,

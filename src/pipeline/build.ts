@@ -34,15 +34,18 @@ export type BuildContext = {
     ctx: CompilerContext;
 };
 
+export type CompiledConstant = {
+    readonly name: string;
+    readonly value: string | undefined;
+    readonly fromContract: boolean;
+};
+
 export type CompileTactRes = {
     readonly abi: string;
     readonly funcSource: Readonly<FuncSource>;
     readonly entrypointPath: string;
-    readonly constants: {
-        readonly name: string;
-        readonly value: string | undefined;
-        readonly fromContract: boolean;
-    }[];
+    readonly constants: CompiledConstant[];
+    readonly stdlibConstants: CompiledConstant[];
 };
 
 export type FuncSource = {
@@ -53,6 +56,7 @@ export type FuncSource = {
 export type BuiltContract = {
     readonly abi: string;
     readonly codeBoc: Buffer;
+    readonly stdlibConstants: readonly WrappersConstantDescription[];
     readonly constants: readonly WrappersConstantDescription[];
     readonly contract: TypeDescription;
 };

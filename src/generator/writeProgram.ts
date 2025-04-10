@@ -59,7 +59,17 @@ export async function writeProgram(
     // Emit files
     //
 
-    const constants = getAllStaticConstants(ctx)
+    const allStaticConstants = getAllStaticConstants(ctx);
+
+    const stdlibConstants = allStaticConstants
+        .filter((it) => it.loc.origin === "stdlib")
+        .map((it) => ({
+            name: it.name,
+            value: writeTypescriptValue(it.value),
+            fromContract: false,
+        }));
+
+    const constants = allStaticConstants
         .filter((it) => it.loc.origin === "user")
         .map((it) => ({
             name: it.name,
@@ -264,6 +274,7 @@ export async function writeProgram(
         entrypoint: `${basename}.fc`,
         funcFile: { name: `${basename}.fc`, code },
         constants,
+        stdlibConstants,
         abi,
     };
 }
