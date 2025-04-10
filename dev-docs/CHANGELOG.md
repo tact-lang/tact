@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now shows a more informative error message for fields with unsupported trait types: PR [#2695](https://github.com/tact-lang/tact/pull/2695)
 - [fix] Generated TypeScript wrappers now export all functions for serialization/deserialization: PR [#2706](https://github.com/tact-lang/tact/pull/2706)
 - [fix] Compiler now correctly generates code for functions with several wildcard parameters: PR [#2703](https://github.com/tact-lang/tact/pull/2703)
+- [fix] Compiler now correctly generates code for augmented assignment operators: PR [#2710](https://github.com/tact-lang/tact/pull/2710)
 
 ### Standard Library
 
