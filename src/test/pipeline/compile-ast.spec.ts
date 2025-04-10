@@ -7,7 +7,7 @@ import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import type { MakeAstFactory } from "@/ast/generated/make-factory";
 import { getMakeAst } from "@/ast/generated/make-factory";
 import type { BuildContext } from "@/pipeline/build";
-import { Logger } from "@/context/logger";
+import { Logger, LogLevel } from "@/context/logger";
 import { compileFunc, compileTact } from "@/pipeline/compile";
 import { AssemblyWriter, disassembleRoot } from "@tact-lang/opcode";
 import { Cell } from "@ton/core";
@@ -86,7 +86,7 @@ describe("compilation of ASTs", () => {
                 mode: "full",
                 output: "./out",
             },
-            logger: new Logger(),
+            logger: new Logger(LogLevel.NONE),
             project,
             stdlib,
             ctx,
