@@ -27,13 +27,13 @@ export function precompile(
     const imported = resolveImports({ entrypoint, project, stdlib, parser });
 
     // Parse the sources and attach the given parsed modules
-    const nodules = [
+    const modules = [
         ...parseModules(imported.tact, parser),
         ...(parsedModules ?? []),
     ];
 
     // Add information about all the source code entries to the context
-    ctx = openContext(ctx, imported.tact, imported.func, nodules);
+    ctx = openContext(ctx, imported.tact, imported.func, modules);
 
     // First load type descriptors and check that
     //       they all have valid signatures
