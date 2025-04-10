@@ -3,15 +3,12 @@ import path from "path";
 import { glob } from "glob";
 import { verify } from "../src/verify";
 import { Logger } from "../src/context/logger";
-import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
 import { allInFolder } from "../src/test/utils/all-in-folder.build";
 
 const packagesPath = path.resolve(__dirname, "output", "*.pkg");
 
 // Read cases
 const main = async () => {
-    // Disable version number in packages
-
     const logger = new Logger();
 
     // Compile projects
