@@ -40,12 +40,6 @@ runs:
       run: |
         yarn coverage
 
-    - name: Show an example .pkg file on Windows
-      shell: pwsh
-      if: runner.os == 'Windows'
-      run: |
-        type src\test\benchmarks\contracts\output\jetton_minter_discoverable_JettonMinter.pkg
-
     - name: Link Tact yarn package
       shell: bash
       run: |

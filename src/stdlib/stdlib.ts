@@ -1,4 +1,4 @@
-const files: Record<string, string> = {};
+export const files: Record<string, string> = {};
 files["libs/config.tact"] =
     "Ly8vIFJldHJpZXZlcyBjb25maWcgcGFyYW1ldGVyIGAwYCBhcyBhbiBgQWRkcmVzc2AuCi8vLwovLy8gU2VlOiBodHRwczovL2RvY3MudGFjdC1sYW5nLm9yZy9yZWYv" +
     "c3RkbGliLWNvbmZpZyNnZXRjb25maWdhZGRyZXNzCi8vLwpmdW4gZ2V0Q29uZmlnQWRkcmVzcygpOiBBZGRyZXNzIHsKICAgIGxldCBjZWxsOiBDZWxsID0gZ2V0Q29u" +
