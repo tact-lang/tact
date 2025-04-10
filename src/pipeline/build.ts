@@ -80,7 +80,7 @@ export function enableFeatures(
     }, ctx);
 }
 
-export type CompilationCtx = {
+export type BuildContext = {
     readonly project: VirtualFileSystem;
     readonly stdlib: VirtualFileSystem;
     readonly config: Project;
@@ -146,21 +146,24 @@ export type CompilationFailed = {
 };
 export const CompilationFailed: CompilationFailed = { $: "CompilationFailed" };
 
-export type SystemCell = NonEmptySystemCell | EmptySystemCell;
+// Represent dictionary with child contracts code or empty if no child contracts
+export type ChildContractsDict = NonEmptyChildContractsDict | NoChildContracts;
 
-export type NonEmptySystemCell = {
-    readonly $: "NonEmptySystemCell";
+export type NonEmptyChildContractsDict = {
+    readonly $: "NonEmptyChildContractsDict";
     readonly cell: Cell;
 };
-export const NonEmptySystemCell = (cell: Cell): NonEmptySystemCell => ({
-    $: "NonEmptySystemCell",
+export const NonEmptyChildContractsDict = (
+    cell: Cell,
+): NonEmptyChildContractsDict => ({
+    $: "NonEmptyChildContractsDict",
     cell,
 });
 
-export type EmptySystemCell = {
-    readonly $: "EmptySystemCell";
+export type NoChildContracts = {
+    readonly $: "NoChildContracts";
 };
-export const EmptySystemCell: EmptySystemCell = { $: "EmptySystemCell" };
+export const NoChildContracts: NoChildContracts = { $: "NoChildContracts" };
 
 export type BuildResult = {
     readonly ok: boolean;
@@ -223,7 +226,7 @@ export async function build(args: {
         options: config.options ?? {},
     });
 
-    const compilationCtx: CompilationCtx = {
+    const compilationCtx: BuildContext = {
         config,
         logger,
         project,
@@ -237,51 +240,51 @@ export async function build(args: {
     return mainCompile(compilationCtx);
 }
 
-async function mainCompile(ctx: CompilationCtx): Promise<BuildResult> {
-    const ok = await doCompileContracts(ctx);
+async function mainCompile(bCtx: BuildContext): Promise<BuildResult> {
+    const ok = await doCompileContracts(bCtx);
     if (!ok) {
-        ctx.logger.info("💥 Compilation failed. Skipping packaging");
-        return BuildFail(ctx.errorMessages);
+        bCtx.logger.info("💥 Compilation failed. Skipping packaging");
+        return BuildFail(bCtx.errorMessages);
     }
 
-    if (ctx.config.mode === "funcOnly") {
-        ctx.logger.info("✔️ FunC code generation succeeded.");
+    if (bCtx.config.mode === "funcOnly") {
+        bCtx.logger.info("✔️ FunC code generation succeeded.");
         return BuildOk();
     }
 
-    const packages = doPackaging(ctx);
+    const packages = doPackaging(bCtx);
     if (!packages) {
-        return BuildFail(ctx.errorMessages);
+        return BuildFail(bCtx.errorMessages);
     }
 
-    const bindingsRes = doBindings(ctx, packages);
+    const bindingsRes = doBindings(bCtx, packages);
     if (!bindingsRes) {
-        return BuildFail(ctx.errorMessages);
+        return BuildFail(bCtx.errorMessages);
     }
 
-    const reportsRes = doReports(ctx, packages);
+    const reportsRes = doReports(bCtx, packages);
     if (!reportsRes) {
-        return BuildFail(ctx.errorMessages);
+        return BuildFail(bCtx.errorMessages);
     }
 
     return BuildOk();
 }
 
-async function doCompileContracts(ctx: CompilationCtx) {
-    const allContracts = getContracts(ctx.ctx);
+async function doCompileContracts(bCtx: BuildContext) {
+    const allContracts = getContracts(bCtx.ctx);
 
     // Sort contracts in topological order
     // If a cycle is found, topSortContracts returns undefined
     const sortedContracts = topSortContracts(allContracts);
     if (sortedContracts !== undefined) {
-        ctx.ctx = featureEnable(ctx.ctx, "optimizedChildCode");
+        bCtx.ctx = featureEnable(bCtx.ctx, "optimizedChildCode");
     }
 
     const contracts = sortedContracts ?? allContracts;
 
     let ok = true;
     for (const contract of contracts) {
-        const res = await compileContract(ctx, contract);
+        const res = await compileContract(bCtx, contract);
         if (res.$ === "CompilationFailed") {
             ok = false;
             continue;
@@ -290,23 +293,23 @@ async function doCompileContracts(ctx: CompilationCtx) {
             continue;
         }
 
-        ctx.built[contract.name] = res.built;
+        bCtx.built[contract.name] = res.built;
     }
 
     return ok;
 }
 
 async function compileContract(
-    ctx: CompilationCtx,
+    bCtx: BuildContext,
     contract: TypeDescription,
 ): Promise<CompiledContract> {
-    const { config, logger } = ctx;
+    const { config, logger } = bCtx;
 
     const contractName = contract.name;
 
     logger.info(`   > ${contractName}: tact compiler`);
 
-    const compileRes = await compileTact(ctx, contractName);
+    const compileRes = await compileTact(bCtx, contractName);
     if (!compileRes) {
         return CompilationFailed;
     }
@@ -316,7 +319,7 @@ async function compileContract(
     }
 
     const codeBoc = await compileFunc(
-        ctx,
+        bCtx,
         contractName,
         compileRes.entrypointPath,
         compileRes.funcSource,
@@ -326,9 +329,9 @@ async function compileContract(
         return CompilationFailed;
     }
 
-    if (ctx.config.mode === "fullWithDecompilation") {
-        // TODO: should we return error if it fails?
-        decompileContract(ctx, contractName, codeBoc);
+    if (bCtx.config.mode === "fullWithDecompilation") {
+        // TODO: return error on fail
+        decompileContract(bCtx, contractName, codeBoc);
     }
 
     const { abi, constants } = compileRes;
@@ -342,11 +345,11 @@ async function compileContract(
 }
 
 function decompileContract(
-    ctx: CompilationCtx,
+    bCtx: BuildContext,
     contractName: string,
     codeBoc: Buffer,
 ) {
-    const { project, config, logger, errorMessages } = ctx;
+    const { project, config, logger, errorMessages } = bCtx;
 
     logger.info(`   > ${contractName}: fift decompiler`);
 
@@ -378,12 +381,12 @@ function decompileContract(
 }
 
 async function compileFunc(
-    ctx: CompilationCtx,
+    bCtx: BuildContext,
     contract: string,
     entrypointPath: string,
     funcSource: FuncSource,
 ): Promise<Buffer | undefined> {
-    const { project, config, logger, errorMessages, stdlib } = ctx;
+    const { project, config, logger, errorMessages, stdlib } = bCtx;
 
     logger.info(`   > ${contract}: func compiler`);
 
@@ -452,17 +455,17 @@ async function compileFunc(
 }
 
 async function compileTact(
-    ctx: CompilationCtx,
+    bCtx: BuildContext,
     contract: string,
 ): Promise<CompileTactRes | undefined> {
-    const { project, config } = ctx;
+    const { project, config } = bCtx;
 
     try {
         const res = await compile(
-            ctx.ctx,
+            bCtx.ctx,
             contract,
             `${config.name}_${contract}`,
-            ctx.built,
+            bCtx.built,
         );
 
         const { funcFile } = res.output;
@@ -487,27 +490,27 @@ async function compileTact(
 
         return { abi, funcSource, entrypointPath, constants };
     } catch (e) {
-        ctx.logger.error("Tact compilation failed");
+        bCtx.logger.error("Tact compilation failed");
         // show an error with a backtrace only in verbose mode
         if (e instanceof TactError && config.verbose && config.verbose < 2) {
-            ctx.logger.error(e.message);
+            bCtx.logger.error(e.message);
         } else {
-            ctx.logger.error(e as Error);
+            bCtx.logger.error(e as Error);
         }
-        ctx.errorMessages.push(e as Error);
+        bCtx.errorMessages.push(e as Error);
     }
 
     return undefined;
 }
 
-function doPackaging(ctx: CompilationCtx): Packages | undefined {
-    ctx.logger.info("   > Packaging");
+function doPackaging(bCtx: BuildContext): Packages | undefined {
+    bCtx.logger.info("   > Packaging");
 
     const packages: PackageFileFormat[] = [];
 
-    const contracts = getContracts(ctx.ctx);
+    const contracts = getContracts(bCtx.ctx);
     for (const contract of contracts) {
-        const pkg = packageContract(ctx, contract.name);
+        const pkg = packageContract(bCtx, contract.name);
         if (!pkg) continue;
         packages.push(pkg);
     }
@@ -515,23 +518,23 @@ function doPackaging(ctx: CompilationCtx): Packages | undefined {
     return packages;
 }
 
-function buildSystemCell(
-    ctx: CompilationCtx,
+function buildChildContractsDict(
+    bCtx: BuildContext,
     contract: string,
-): SystemCell | undefined {
+): ChildContractsDict | undefined {
     const depends = Dictionary.empty(
         Dictionary.Keys.Uint(16),
         Dictionary.Values.Cell(),
     );
 
-    const contractType = getType(ctx.ctx, contract);
+    const contractType = getType(bCtx.ctx, contract);
 
     for (const dependencyContract of contractType.dependsOn) {
-        const dependencyContractBuild = ctx.built[dependencyContract.name];
+        const dependencyContractBuild = bCtx.built[dependencyContract.name];
         if (!dependencyContractBuild) {
             const message = `   > ${dependencyContract.name}: no artifacts found`;
-            ctx.logger.error(message);
-            ctx.errorMessages.push(new Error(message));
+            bCtx.logger.error(message);
+            bCtx.errorMessages.push(new Error(message));
             return undefined;
         }
 
@@ -542,20 +545,20 @@ function buildSystemCell(
     }
 
     if (contractType.dependsOn.length === 0) {
-        return EmptySystemCell;
+        return NoChildContracts;
     }
 
-    return NonEmptySystemCell(beginCell().storeDict(depends).endCell());
+    return NonEmptyChildContractsDict(beginCell().storeDict(depends).endCell());
 }
 
 function packageContract(
-    ctx: CompilationCtx,
+    bCtx: BuildContext,
     contract: string,
 ): PackageFileFormat | undefined {
-    const { project, config, logger, errorMessages, stdlib } = ctx;
+    const { project, config, logger, errorMessages, stdlib } = bCtx;
 
     logger.info("   > " + contract);
-    const artifacts = ctx.built[contract];
+    const artifacts = bCtx.built[contract];
     if (!artifacts) {
         const message = `   > ${contract}: no artifacts found`;
         logger.error(message);
@@ -563,14 +566,14 @@ function packageContract(
         return undefined;
     }
 
-    const systemCell = buildSystemCell(ctx, contract);
-    if (systemCell === undefined) {
+    const childContractsDict = buildChildContractsDict(bCtx, contract);
+    if (childContractsDict === undefined) {
         return undefined;
     }
 
     // Collect sources
     const sources: Record<string, string> = {};
-    const rawAst = getRawAST(ctx.ctx);
+    const rawAst = getRawAST(bCtx.ctx);
     for (const source of [...rawAst.funcSources, ...rawAst.sources]) {
         if (
             source.path.startsWith(project.root) &&
@@ -583,7 +586,7 @@ function packageContract(
         }
     }
 
-    const descriptor = getType(ctx.ctx, contract);
+    const descriptor = getType(bCtx.ctx, contract);
     const init = descriptor.init!;
 
     const args =
@@ -591,7 +594,7 @@ function packageContract(
             ? init.params.map((v) => ({
                   // FIXME: wildcards in ABI?
                   name: v.name.kind === "id" ? v.name.text : "_",
-                  type: createABITypeRefFromTypeRef(ctx.ctx, v.type, v.loc),
+                  type: createABITypeRefFromTypeRef(bCtx.ctx, v.type, v.loc),
               }))
             : (init.contract.params ?? []).map((v) => ({
                   name: idText(v.name),
@@ -616,8 +619,8 @@ function packageContract(
             deployment: {
                 kind: "system-cell",
                 system:
-                    systemCell.$ === "NonEmptySystemCell"
-                        ? systemCell.cell.toBoc().toString("base64")
+                    childContractsDict.$ === "NonEmptyChildContractsDict"
+                        ? childContractsDict.cell.toBoc().toString("base64")
                         : null,
             },
         },
@@ -625,7 +628,7 @@ function packageContract(
         compiler: {
             name: "tact",
             version: getCompilerVersion(),
-            parameters: ctx.compilerInfo,
+            parameters: bCtx.compilerInfo,
         },
     };
 
@@ -639,8 +642,8 @@ function packageContract(
     return pkg;
 }
 
-function doBindings(ctx: CompilationCtx, packages: Packages) {
-    const { project, config, logger } = ctx;
+function doBindings(bCtx: BuildContext, packages: Packages) {
+    const { project, config, logger } = bCtx;
 
     logger.info("   > Bindings");
 
@@ -650,16 +653,16 @@ function doBindings(ctx: CompilationCtx, packages: Packages) {
         if (pkg.init.deployment.kind !== "system-cell") {
             const message = `   > ${pkg.name}: unsupported deployment kind ${pkg.init.deployment.kind}`;
             logger.error(message);
-            ctx.errorMessages.push(new Error(message));
+            bCtx.errorMessages.push(new Error(message));
             return false;
         }
 
         try {
             const bindingsServer = writeTypescript(
                 JSON.parse(pkg.abi),
-                ctx.ctx,
-                ctx.built[pkg.name]?.constants ?? [],
-                ctx.built[pkg.name]?.contract,
+                bCtx.ctx,
+                bCtx.built[pkg.name]?.constants ?? [],
+                bCtx.built[pkg.name]?.contract,
                 {
                     code: pkg.code,
                     prefix: pkg.init.prefix,
@@ -676,7 +679,7 @@ function doBindings(ctx: CompilationCtx, packages: Packages) {
             const error = e as Error;
             error.message = `Bindings compiler crashed: ${error.message}`;
             logger.error(error);
-            ctx.errorMessages.push(error);
+            bCtx.errorMessages.push(error);
             return false;
         }
     }
@@ -684,15 +687,15 @@ function doBindings(ctx: CompilationCtx, packages: Packages) {
     return true;
 }
 
-function doReports(ctx: CompilationCtx, packages: Packages): boolean {
-    const { project, config, logger } = ctx;
+function doReports(bCtx: BuildContext, packages: Packages): boolean {
+    const { project, config, logger } = bCtx;
 
     logger.info("   > Reports");
 
     for (const pkg of packages) {
         logger.info("   > " + pkg.name);
         try {
-            const report = writeReport(ctx.ctx, pkg);
+            const report = writeReport(bCtx.ctx, pkg);
             const pathBindings = project.resolve(
                 config.output,
                 config.name + "_" + pkg.name + ".md",
@@ -702,7 +705,7 @@ function doReports(ctx: CompilationCtx, packages: Packages): boolean {
             const error = e as Error;
             error.message = `Report generation crashed: ${error.message}`;
             logger.error(error);
-            ctx.errorMessages.push(error);
+            bCtx.errorMessages.push(error);
             return false;
         }
     }
