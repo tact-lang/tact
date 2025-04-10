@@ -1,11 +1,9 @@
-import { createSingleFileConfig, run } from "@/cli/tact";
 import {
     keyTypes,
     valTypes,
 } from "@/test/e2e-slow/map-property-tests/map-properties-key-value-types";
 import { mkdir, writeFile } from "fs/promises";
 import path, { basename, dirname, extname } from "path";
-import { exit } from "node:process";
 import {
     descriptionToString,
     intKeyFormats,
@@ -14,10 +12,8 @@ import {
     minInt,
 } from "@/test/e2e-slow/map-property-tests/map-int-limits-key-value-types";
 import { readFile } from "node:fs/promises";
-import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
-import files from "@/stdlib/stdlib";
-import { Logger, LogLevel } from "@/context/logger";
-import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
+import type { Project } from "@/config/config";
+import { runParallel } from "@/test/utils/all-in-folder.build";
 
 type TestKind = "map-properties" | "map-int-limits";
 
@@ -60,25 +56,7 @@ const instantiateContractAndSpecTemplates = async (
     return tactFilePath;
 };
 
-const stdlib = createVirtualFileSystem("@stdlib", files);
-
-const compileAndExitOnError = async (tactFilePath: string) => {
-    const compilationResult = await run({
-        config: createSingleFileConfig(
-            basename(tactFilePath, extname(tactFilePath)),
-            dirname(tactFilePath),
-        ),
-        logger: new Logger(LogLevel.NONE),
-        stdlib,
-        project: createNodeFileSystem(dirname(tactFilePath), false),
-    });
-    if (!compilationResult.ok) {
-        console.error(compilationResult.error);
-        exit(1);
-    }
-};
-
-const generatePropertyTests = async () => {
+const generatePropertyTests = async (projects: Project[]) => {
     const templateTactSourceCodeProperties: string = (
         await readFile(pwd("map-properties.tact.template"))
     ).toString();
@@ -88,7 +66,7 @@ const generatePropertyTests = async () => {
     for (const key of keyTypes) {
         for (const val of valTypes) {
             const testName = `${key.type}_${val.type}`;
-            const tactFilePath = await instantiateContractAndSpecTemplates(
+            const contractPath = await instantiateContractAndSpecTemplates(
                 "map-properties",
                 testName,
                 {
@@ -108,12 +86,25 @@ const generatePropertyTests = async () => {
                     ]),
                 },
             );
-            await compileAndExitOnError(tactFilePath);
+            projects.push({
+                name: basename(contractPath, extname(contractPath)),
+                path: contractPath,
+                output: path.join(dirname(contractPath), "output"),
+                options: {
+                    debug: true,
+                    external: true,
+                    ipfsAbiGetter: false,
+                    interfacesGetter: false,
+                    safety: {
+                        nullChecks: true,
+                    },
+                },
+            });
         }
     }
 };
 
-const generateIntLimitsTests = async () => {
+const generateIntLimitsTests = async (projects: Project[]) => {
     const templateTactSourceCodeLimits: string = (
         await readFile(pwd("map-int-limits.tact.template"))
     ).toString();
@@ -123,7 +114,7 @@ const generateIntLimitsTests = async () => {
     for (const key of intKeyFormats) {
         for (const val of intValFormats) {
             const testName = `${descriptionToString(key)}_${descriptionToString(val)}`;
-            const tactFilePath = await instantiateContractAndSpecTemplates(
+            const contractPath = await instantiateContractAndSpecTemplates(
                 "map-int-limits",
                 testName,
                 {
@@ -142,15 +133,30 @@ const generateIntLimitsTests = async () => {
                     subst: new Map(),
                 },
             );
-            await compileAndExitOnError(tactFilePath);
+            projects.push({
+                name: basename(contractPath, extname(contractPath)),
+                path: contractPath,
+                output: path.join(dirname(contractPath), "output"),
+                options: {
+                    debug: true,
+                    external: true,
+                    ipfsAbiGetter: false,
+                    interfacesGetter: false,
+                    safety: {
+                        nullChecks: true,
+                    },
+                },
+            });
         }
     }
 };
 
 const main = async () => {
     try {
-        await generatePropertyTests();
-        await generateIntLimitsTests();
+        const projects: Project[] = [];
+        await generatePropertyTests(projects);
+        await generateIntLimitsTests(projects);
+        await runParallel(projects, path.join(__dirname, 'build'));
     } catch (e) {
         console.error(e);
         process.exit(1);

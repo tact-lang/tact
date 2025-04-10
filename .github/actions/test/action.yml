@@ -32,7 +32,7 @@ runs:
       shell: bash
       run: |
         yarn clean
-        yarn gen
+        time yarn cross-env BUILD_THREADS=4 yarn gen
         yarn build
 
     - name: Test Tact compiler

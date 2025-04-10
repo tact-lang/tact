@@ -1,6 +1,6 @@
 import { glob } from "glob";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
-import type { Options } from "@/config/parseConfig";
+import type { Options, Project } from "@/config/parseConfig";
 import { basename, dirname, extname, join, resolve } from "path";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 import { Logger } from "@/context/logger";
@@ -10,12 +10,14 @@ import { funcCompile } from "@/func/funcCompile";
 import { Worker } from 'worker_threads';
 import type { WorkerInput, WorkerOutput } from "@/test/utils/worker.build";
 
+export const numThreads = parseInt(process.env.BUILD_THREADS ?? '', 10) || 4;
+
 // node.js 20+ builtin
 export const globSync = (globs: string[], options: { cwd: string }) => {
     return globs.flatMap((g) => glob.sync(g, options));
 };
 
-export function splitIntoParts<T>(n: number, xs: T[]): T[][] {
+export function splitIntoParts<T>(n: number, xs: readonly T[]): readonly (readonly T[])[] {
     const len = xs.length;
     const q = Math.floor(len / n);
     const r = len % n;
@@ -64,33 +66,40 @@ export const allInFolder = async (
     options: Options = { debug: true, external: true },
 ) => {
     try {
+
         const contracts = globSync(globs, { cwd: folder });
 
-        const projectGroups = splitIntoParts(
-            4, // Math.floor(cpus().length / 2)
-            contracts.map((contractPath) => {
-                const contractOptions: Options = structuredClone(options);
-                return {
-                    name: basename(contractPath, extname(contractPath)),
-                    path: contractPath,
-                    output: join(dirname(contractPath), "output"),
-                    options: contractOptions,
-                };
-            })
-        );
+        const projects = contracts.map((contractPath) => {
+            const contractOptions: Options = structuredClone(options);
+            return {
+                name: basename(contractPath, extname(contractPath)),
+                path: contractPath,
+                output: join(dirname(contractPath), "output"),
+                options: contractOptions,
+            };
+        });
 
-        const results = await Promise.all(
-            Array.from(projectGroups.entries()).map(([id, projects]) =>
-                runWorker({ id, folder, projects })
-            )
-        );
-
-        if (results.some(result => !result.ok)) {
-            throw new Error("Tact projects compilation failed");
-        }
+        await runParallel(projects, folder);
     } catch (error) {
         console.error(error);
         process.exit(1);
+    }
+};
+
+export const runParallel = async (projects: readonly Project[], folder: string) => {
+    const projectGroups = splitIntoParts(
+        numThreads,
+        projects
+    );
+
+    const results = await Promise.all(
+        Array.from(projectGroups.entries()).map(([id, projects]) =>
+            runWorker({ id, folder, projects })
+        )
+    );
+
+    if (results.some(result => !result.ok)) {
+        throw new Error("Tact projects compilation failed");
     }
 };
 

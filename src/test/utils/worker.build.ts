@@ -6,6 +6,8 @@ import files from "@/stdlib/stdlib";
 import type { Project } from '@/config/config';
 import { Logger, LogLevel } from '@/context/logger';
 
+process.setMaxListeners(0);
+
 if (!parentPort) {
     throw new Error('Not running in a worker thread');
 }
@@ -23,11 +25,11 @@ const main = async ({ id, folder, projects }: WorkerInput): Promise<WorkerOutput
     const stdlib = createVirtualFileSystem("@stdlib", files);
     const project = createNodeFileSystem(folder, false);
 
-    console.log(`Worker #${id}: compiling ${projects.length}`);
+    console.log(`Worker #${id}: compiling ${projects.length} projects`);
 
     const compileResult = await run({
         config: { projects },
-        logger: new Logger(LogLevel.INFO),
+        logger: new Logger(LogLevel.WARN),
         project,
         stdlib,
     });

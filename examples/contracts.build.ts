@@ -11,7 +11,7 @@ const packagesPath = path.resolve(__dirname, "output", "*.pkg");
 // Read cases
 const main = async () => {
     // Disable version number in packages
-    __DANGER__disableVersionNumber();
+    // __DANGER__disableVersionNumber();
 
     const logger = new Logger();
 
