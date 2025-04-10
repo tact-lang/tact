@@ -56,8 +56,8 @@ export type FuncSource = {
 export type BuiltContract = {
     readonly abi: string;
     readonly codeBoc: Buffer;
-    readonly stdlibConstants: readonly WrappersConstantDescription[];
     readonly constants: readonly WrappersConstantDescription[];
+    readonly stdlibConstants: readonly WrappersConstantDescription[];
     readonly contract: TypeDescription;
 };
 

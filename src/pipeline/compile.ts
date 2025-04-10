@@ -110,13 +110,13 @@ async function compileContract(
         decompileContract(bCtx, contractName, codeBoc);
     }
 
-    const { abi, stdlibConstants, constants } = compileRes;
+    const { abi, constants, stdlibConstants } = compileRes;
 
     return CompiledSuccessfully({
         codeBoc,
         abi,
-        stdlibConstants,
         constants,
+        stdlibConstants,
         contract,
     });
 }
@@ -250,8 +250,8 @@ async function compileTact(
         const {
             abi,
             funcFile,
-            stdlibConstants,
             constants,
+            stdlibConstants,
             entrypoint: entrypointPath,
         } = res;
 
