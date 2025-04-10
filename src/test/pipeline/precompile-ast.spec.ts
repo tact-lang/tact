@@ -6,7 +6,6 @@ import { precompile } from "@/pipeline/precompile";
 import files from "@/stdlib/stdlib";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import fs from "fs";
-import { getParser } from "@/grammar";
 import { getMakeAst } from "@/ast/generated/make-factory";
 import type { MakeAstFactory } from "@/ast/generated/make-factory";
 
@@ -65,11 +64,8 @@ describe("pre-compilation of ASTs", () => {
 
         const project = createVirtualFileSystem("/", fileSystem, false);
         const stdlib = createVirtualFileSystem("@stdlib", files);
-        const parser = getParser(astF);
 
-        precompile(ctx, project, stdlib, "empty.tact", parser, astF, [
-            makeModule(mF),
-        ]);
+        precompile(ctx, project, stdlib, "empty.tact", [makeModule(mF)]);
     });
 
     it("should pass pre-compilation with no manual AST", () => {
@@ -85,9 +81,8 @@ describe("pre-compilation of ASTs", () => {
 
         const project = createVirtualFileSystem("/", fileSystem, false);
         const stdlib = createVirtualFileSystem("@stdlib", files);
-        const parser = getParser(astF);
 
-        precompile(ctx, project, stdlib, "dummy.tact", parser, astF, []);
+        precompile(ctx, project, stdlib, "dummy.tact", []);
     });
 
     it("should fail pre-compilation when source files and a manual AST have declaration clashes", () => {
@@ -103,13 +98,10 @@ describe("pre-compilation of ASTs", () => {
 
         const project = createVirtualFileSystem("/", fileSystem, false);
         const stdlib = createVirtualFileSystem("@stdlib", files);
-        const parser = getParser(astF);
 
         // So, a clash should occur here, since dummy.tact and makeModule() both declare the contract Test.
         expect(() =>
-            precompile(ctx, project, stdlib, "dummy.tact", parser, astF, [
-                makeModule(mF),
-            ]),
+            precompile(ctx, project, stdlib, "dummy.tact", [makeModule(mF)]),
         ).toThrowErrorMatchingSnapshot();
     });
 });
