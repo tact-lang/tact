@@ -24,12 +24,20 @@ import {
 } from "@/test/fuzzer/src/util";
 import { FactoryAst, getAstFactory } from "@/ast/ast-helpers";
 import { getMakeAst, MakeAstFactory } from "@/ast/generated/make-factory";
-import { Blockchain, SandboxContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import fc from "fast-check";
 import { evalConstantExpression } from "@/optimizer/constEval";
 import { AstUtil, getAstUtil } from "@/ast/util";
+import {
+    AllowedType,
+    AllowedTypeEnum,
+    GenContext,
+    initializeGenerator,
+    NonTerminal,
+} from "../src/generators/uniform-expr-gen";
+import { Sender, toNano } from "@ton/core";
 
-function emptyContext(): StatementContext {
+function emptyStatementContext(): StatementContext {
     return {
         root: dummySrcInfoPrintable,
         returns: { kind: "void" },
@@ -41,7 +49,7 @@ function emptyContext(): StatementContext {
 
 function setupContexts(): [CompilerContext, StatementContext] {
     const ctx: CompilerContext = new CompilerContext();
-    const sctx = emptyContext();
+    const sctx = emptyStatementContext();
     return [ctx, sctx];
 }
 
@@ -78,18 +86,67 @@ describe("generation properties", () => {
     });
 });
 
-function getExprGenerator(): fc.Arbitrary<Ast.Expression> { // TODO: replace this function with the actual one when it is ready
-    throw new Error("getExprGenerator is not implemented yet");
+type Binding = {
+    name: string;
+    type: string;
+    expr: Ast.Expression;
+};
+
+function makeExpressionGetter(
+    makeF: MakeAstFactory,
+    getterName: string,
+    bindings: Binding[],
+    returnExpr: Ast.Expression,
+): Ast.FunctionDef {
+    return makeF.makeDummyFunctionDef(
+        [makeF.makeDummyFunctionAttributeGet(undefined)],
+        makeF.makeDummyId(getterName),
+        makeF.makeDummyTypeId("Int"),
+        [],
+        bindings
+            .map(
+                ({ name, type, expr }): Ast.Statement =>
+                    makeF.makeDummyStatementLet(
+                        makeF.makeDummyId(name),
+                        makeF.makeDummyTypeId(type),
+                        expr,
+                    ),
+            )
+            .concat([makeF.makeDummyStatementReturn(returnExpr)]),
+    );
 }
 
 function createContractWithExpressionGetter(
     makeF: MakeAstFactory,
     contractName: string,
-    expr: Ast.Expression,
+    getterName: string,
+    bindings: Binding[],
+    returnExpr: Ast.Expression,
 ): Ast.Contract {
-    throw new Error("createContract is not implemented yet"); // TODO: implement, probably should place this function in a different file
-    // makeF.makeContract(contractName, [], [], [], )
+    // throw new Error("createContract is not implemented yet"); // TODO: implement, probably should place this function in a different file
+    return makeF.makeDummyContract(
+        makeF.makeDummyId(contractName),
+        [],
+        [],
+        [],
+        [makeExpressionGetter(makeF, getterName, bindings, returnExpr)],
+    );
 }
+
+const initializersMapping = {
+    Int: NonTerminal.LiteralInt,
+    "Int?": NonTerminal.LiteralInt,
+    Bool: NonTerminal.LiteralBool,
+    "Bool?": NonTerminal.LiteralBool,
+    Cell: NonTerminal.LiteralCell,
+    "Cell?": NonTerminal.LiteralCell,
+    Address: NonTerminal.LiteralAddress,
+    "Address?": NonTerminal.LiteralAddress,
+    Slice: NonTerminal.LiteralSlice,
+    "Slice?": NonTerminal.LiteralSlice,
+    String: NonTerminal.LiteralString,
+    "String?": NonTerminal.LiteralString,
+} as const;
 
 describe("evaluation properties", () => {
     let astF: FactoryAst;
@@ -98,6 +155,7 @@ describe("evaluation properties", () => {
     let blockchain: Blockchain;
     let emptyCompileContext: CompilerContext;
     let astUtil: AstUtil;
+    let sender: Sender;
 
     beforeAll(async () => {
         astF = getAstFactory();
@@ -143,33 +201,92 @@ describe("evaluation properties", () => {
         blockchain = await Blockchain.create();
         emptyCompileContext = new CompilerContext();
         astUtil = getAstUtil(astF);
+        sender = (await blockchain.treasury("treasury")).getSender();
     });
 
-    test("compiler and interpreter evaluate pure generated expressions equally", async () => {
-        const contractName = "pureExpressionContract";
-        const property = fc.asyncProperty(getExprGenerator(), async (expr) => {
-            const contractModule = makeF.makeModule(
-                [],
-                [createContractWithExpressionGetter(makeF, contractName, expr)],
-            );
-            const contractMap = await buildModule(
-                astF,
-                contractModule,
-                customStdlib,
-                blockchain,
-            );
-            const contract = contractMap.get(contractName)!;
-            const compiledValue = await contract.getInt();
+    test(
+        "compiler and interpreter evaluate generated expressions equally",
+        async () => {
+            const contractName = "PureExpressionContract";
 
-            const intrepretedValue = evalConstantExpression(
-                expr,
-                emptyCompileContext,
-                astUtil,
-            );
-            expect(intrepretedValue.kind).toBe("number");
+            const expressionGenerationIds: Map<AllowedTypeEnum, string[]> =
+                new Map();
+            expressionGenerationIds.set(AllowedType.Int, ["int1"]);
+            expressionGenerationIds.set(AllowedType.OptInt, ["o_int1"]);
+            expressionGenerationIds.set(AllowedType.Bool, ["bool1"]);
+            expressionGenerationIds.set(AllowedType.OptBool, ["o_bool1"]);
+            expressionGenerationIds.set(AllowedType.Cell, ["cell1"]);
+            expressionGenerationIds.set(AllowedType.OptCell, ["o_cell1"]);
+            expressionGenerationIds.set(AllowedType.Slice, ["slice1"]);
+            expressionGenerationIds.set(AllowedType.OptSlice, ["o_slice1"]);
+            expressionGenerationIds.set(AllowedType.Address, ["address1"]);
+            expressionGenerationIds.set(AllowedType.OptAddress, ["o_address1"]);
+            expressionGenerationIds.set(AllowedType.String, ["string1"]);
+            expressionGenerationIds.set(AllowedType.OptString, ["o_string1"]);
 
-            expect(compiledValue).toBe((intrepretedValue as Ast.Number).value);
-        });
-        await checkAsyncProperty(property);
-    });
+            const expressionGenerationCtx: GenContext = {
+                identifiers: expressionGenerationIds,
+                contractNames: [contractName],
+            };
+            const generator = initializeGenerator(
+                1,
+                10,
+                expressionGenerationCtx,
+            );
+
+            const bindingsGenretor = fc.tuple(
+                ...expressionGenerationIds.entries().flatMap(([type, names]) =>
+                    names.map((name) =>
+                        fc.record<Binding>({
+                            type: fc.constant(type),
+                            name: fc.constant(name),
+                            expr: generator(initializersMapping[type]),
+                        }),
+                    ),
+                ),
+            );
+
+            const property = fc.asyncProperty(
+                bindingsGenretor,
+                generator(NonTerminal.Int),
+                async (initExprs, expr) => {
+                    const contractModule = makeF.makeModule(
+                        [],
+                        [
+                            createContractWithExpressionGetter(
+                                makeF,
+                                contractName,
+                                "getInt",
+                                initExprs,
+                                expr,
+                            ),
+                        ],
+                    );
+                    const contractMap = await buildModule(
+                        astF,
+                        contractModule,
+                        customStdlib,
+                        blockchain,
+                    );
+                    const contract = contractMap.get(contractName)!;
+                    await contract.send(sender, { value: toNano(1) });
+
+                    const compiledValue = await contract.getInt();
+
+                    const intrepretedValue = evalConstantExpression(
+                        expr,
+                        emptyCompileContext,
+                        astUtil,
+                    );
+                    expect(intrepretedValue.kind).toBe("number");
+
+                    expect(compiledValue).toBe(
+                        (intrepretedValue as Ast.Number).value,
+                    );
+                },
+            );
+            await checkAsyncProperty(property);
+        },
+        20 * 1000,
+    );
 });

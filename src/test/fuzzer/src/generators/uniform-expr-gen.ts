@@ -9,7 +9,7 @@ import { sha256_sync } from "@ton/crypto";
 import { TreasuryContract } from "@ton/sandbox";
 import * as fc from "fast-check";
 
-const AllowedType = {
+export const AllowedType = {
     Int: "Int",
     OptInt: "Int?",
     Bool: "Bool",
@@ -24,9 +24,9 @@ const AllowedType = {
     OptString: "String?",
 } as const;
 
-type AllowedTypeEnum = (typeof AllowedType)[keyof typeof AllowedType];
+export type AllowedTypeEnum = (typeof AllowedType)[keyof typeof AllowedType];
 
-type GenContext = {
+export type GenContext = {
     // Identifier names to choose from, by type
     identifiers: Map<AllowedTypeEnum, string[]>;
 
@@ -34,7 +34,7 @@ type GenContext = {
     contractNames: string[];
 };
 
-const NonTerminal = {
+export const NonTerminal = {
     Initial: { terminal: false, literal: false, index: 0 },
     Int: { terminal: false, literal: false, index: 1 },
     OptInt: { terminal: false, literal: false, index: 2 },

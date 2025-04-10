@@ -505,7 +505,7 @@ export class ProxyContract implements Contract {
         provider: ContractProvider,
         via: Sender,
         args: { value: bigint; bounce?: boolean | null | undefined },
-        body: Cell,
+        body?: Cell,
     ) {
         await provider.internal(via, { ...args, body: body });
     }
