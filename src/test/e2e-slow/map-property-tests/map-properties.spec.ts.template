@@ -4,7 +4,7 @@ import {
     KeyData,
     MapPropertiesTester,
     ValData,
-} from "./test_MapPropertiesTester";
+} from "./output/test_MapPropertiesTester";
 import "@ton/test-utils";
 
 // disable tests on MacOS

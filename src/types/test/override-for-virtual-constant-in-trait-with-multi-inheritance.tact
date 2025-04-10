@@ -4,7 +4,7 @@ trait BaseTrait {}
 trait T {}
 
 trait T2 {
-    const BAR: Int = 100;
+    virtual const BAR: Int = 100;
 }
 
 trait Test with T, T2 {

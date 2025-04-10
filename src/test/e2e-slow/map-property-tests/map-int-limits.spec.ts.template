@@ -1,6 +1,6 @@
 import { toNano } from "@ton/core";
 import { Blockchain, SandboxContract } from "@ton/sandbox";
-import { MapIntLimitTester } from "./test_MapIntLimitTester";
+import { MapIntLimitTester } from "./output/test_MapIntLimitTester";
 import "@ton/test-utils";
 
 // disable tests on MacOS

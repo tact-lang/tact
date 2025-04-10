@@ -21,6 +21,7 @@ import { freshIdentifier } from "@/generator/writers/freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "@/error/errors";
 import { ppAsmShuffle } from "@/ast/ast-printer";
 import { zip } from "@/utils/array";
+import { binaryOperationFromAugmentedAssignOperation } from "@/ast/util";
 
 export function writeCastedExpression(
     expression: Ast.Expression,
@@ -193,8 +194,9 @@ export function writeStatement(
                 return;
             }
 
+            const op = binaryOperationFromAugmentedAssignOperation(f.op);
             ctx.append(
-                `${path} = ${cast(t, t, `${path} ${f.op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
+                `${path} = ${cast(t, t, `${path} ${op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
             );
             return;
         }
@@ -617,9 +619,12 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             resolveFuncType(self, ctx, isSelfOpt) + " " + funcIdOf("self"),
         );
     }
-    for (const a of f.params) {
-        params.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
-    }
+
+    f.params.forEach((a, index) => {
+        const name =
+            a.name.kind === "wildcard" ? `_${index}` : funcIdOf(a.name);
+        params.push(resolveFuncType(a.type, ctx) + " " + name);
+    });
 
     const fAst = f.ast;
     switch (fAst.kind) {
@@ -706,7 +711,8 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                             !resolveFuncPrimitive(
                                 resolveTypeRef(ctx.ctx, a.type),
                                 ctx,
-                            )
+                            ) &&
+                            a.name.kind !== "wildcard"
                         ) {
                             ctx.append(
                                 `var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), funcIdOf(a.name), ctx)}) = ${funcIdOf(a.name)};`,
