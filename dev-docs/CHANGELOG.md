@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Language features
 
 - Optimized message deserialization with native loading of `Maybe Cell` fields: PR [#2661](https://github.com/tact-lang/tact/pull/2661)
+- Compiler now generates more readable code for augmented assignment operators: PR [#2710](https://github.com/tact-lang/tact/pull/2710)
 - [fix] Compiler now disallows `ton()` with empty or blank string: PR [#2681](https://github.com/tact-lang/tact/pull/2681)
 - [fix] Compiler now disallows `ton()` with invalid number value or negative numbers: PR [#2684](https://github.com/tact-lang/tact/pull/2684)
 - [fix] Compiler now shows a more informative error message for abstract functions and constants without a body: PR [#2688](https://github.com/tact-lang/tact/pull/2688)
@@ -20,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now shows a more informative error message for fields with unsupported trait types: PR [#2695](https://github.com/tact-lang/tact/pull/2695)
 - [fix] Generated TypeScript wrappers now export all functions for serialization/deserialization: PR [#2706](https://github.com/tact-lang/tact/pull/2706)
 - [fix] Compiler now correctly generates code for functions with several wildcard parameters: PR [#2703](https://github.com/tact-lang/tact/pull/2703)
-- [fix] Compiler now correctly generates code for augmented assignment operators: PR [#2710](https://github.com/tact-lang/tact/pull/2710)
 
 ### Standard Library
 
