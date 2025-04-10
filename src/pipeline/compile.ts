@@ -156,7 +156,7 @@ function decompileContract(
     return false;
 }
 
-async function compileFunc(
+export async function compileFunc(
     bCtx: BuildContext,
     contract: string,
     entrypointPath: string,
@@ -230,7 +230,7 @@ async function compileFunc(
     return undefined;
 }
 
-async function compileTact(
+export async function compileTact(
     bCtx: BuildContext,
     contract: string,
 ): Promise<CompileTactRes | undefined> {
