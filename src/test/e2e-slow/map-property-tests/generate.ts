@@ -156,7 +156,7 @@ const main = async () => {
         const projects: Project[] = [];
         await generatePropertyTests(projects);
         await generateIntLimitsTests(projects);
-        await runParallel(projects, path.join(__dirname, 'build'));
+        await runParallel(projects, path.join(__dirname, "build"));
     } catch (e) {
         console.error(e);
         process.exit(1);
