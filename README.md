@@ -65,7 +65,7 @@ The most prominent and distinctive features of Tact are:
 [sending messages]: https://docs.tact-lang.org/book/send/#message-sending-functions
 [traits]: https://docs.tact-lang.org/book/types/#traits
 [asmfun]: https://docs.tact-lang.org/book/assembly-functions/
-[TypeScript wrappers]: https://docs.tact-lang.org/book/compile/#wrap
+[single-file TypeScript wrappers]: https://docs.tact-lang.org/book/compile/#wrap
 [compilation report]: https://docs.tact-lang.org/book/compile/#report
 [stdlib]: https://docs.tact-lang.org/ref/
 [documentation]: https://docs.tact-lang.org/
