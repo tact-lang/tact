@@ -3,7 +3,7 @@ import type * as A from "@/ast/ast";
 import { getAstFactory } from "@/ast/ast-helpers";
 import { CompilerContext } from "@/context/context";
 import { precompile } from "@/pipeline/precompile";
-import files from "@/stdlib/stdlib";
+import * as Stdlib from "@/stdlib/stdlib";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import fs from "fs";
 import { getMakeAst } from "@/ast/generated/make-factory";
@@ -63,7 +63,7 @@ describe("pre-compilation of ASTs", () => {
         };
 
         const project = createVirtualFileSystem("/", fileSystem, false);
-        const stdlib = createVirtualFileSystem("@stdlib", files);
+        const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
 
         precompile(ctx, project, stdlib, "empty.tact", [makeModule(mF)]);
     });
@@ -80,7 +80,7 @@ describe("pre-compilation of ASTs", () => {
         };
 
         const project = createVirtualFileSystem("/", fileSystem, false);
-        const stdlib = createVirtualFileSystem("@stdlib", files);
+        const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
 
         precompile(ctx, project, stdlib, "dummy.tact", []);
     });
@@ -97,7 +97,7 @@ describe("pre-compilation of ASTs", () => {
         };
 
         const project = createVirtualFileSystem("/", fileSystem, false);
-        const stdlib = createVirtualFileSystem("@stdlib", files);
+        const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
 
         // So, a clash should occur here, since dummy.tact and makeModule() both declare the contract Test.
         expect(() =>

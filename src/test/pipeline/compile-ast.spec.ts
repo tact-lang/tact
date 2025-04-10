@@ -2,12 +2,12 @@ import type * as Ast from "@/ast/ast";
 import { getAstFactory } from "@/ast/ast-helpers";
 import { CompilerContext } from "@/context/context";
 import { precompile } from "@/pipeline/precompile";
-import files from "@/stdlib/stdlib";
+import * as Stdlib from "@/stdlib/stdlib";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import type { MakeAstFactory } from "@/ast/generated/make-factory";
 import { getMakeAst } from "@/ast/generated/make-factory";
 import type { BuildContext } from "@/pipeline/build";
-import { Logger } from "@/context/logger";
+import { Logger, LogLevel } from "@/context/logger";
 import { compileFunc, compileTact } from "@/pipeline/compile";
 import { AssemblyWriter, disassembleRoot } from "@tact-lang/opcode";
 import { Cell } from "@ton/core";
@@ -74,7 +74,7 @@ describe("compilation of ASTs", () => {
         const fileSystem = { ["dummy.tact"]: "" };
 
         const project = createVirtualFileSystem("/", fileSystem, false);
-        const stdlib = createVirtualFileSystem("@stdlib", files);
+        const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
 
         let ctx = new CompilerContext();
         ctx = precompile(ctx, project, stdlib, "dummy.tact", [moduleAst]);
@@ -86,7 +86,7 @@ describe("compilation of ASTs", () => {
                 mode: "full",
                 output: "./out",
             },
-            logger: new Logger(),
+            logger: new Logger(LogLevel.NONE),
             project,
             stdlib,
             ctx,

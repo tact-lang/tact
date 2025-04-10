@@ -1,4 +1,4 @@
-const files: Record<string, string> = {};
+export const files: Record<string, string> = {};
 files["libs/config.tact"] =
     "Ly8vIFJldHJpZXZlcyBjb25maWcgcGFyYW1ldGVyIGAwYCBhcyBhbiBgQWRkcmVzc2AuCi8vLwovLy8gU2VlOiBodHRwczovL2RvY3MudGFjdC1sYW5nLm9yZy9yZWYv" +
     "c3RkbGliLWNvbmZpZyNnZXRjb25maWdhZGRyZXNzCi8vLwpmdW4gZ2V0Q29uZmlnQWRkcmVzcygpOiBBZGRyZXNzIHsKICAgIGxldCBjZWxsOiBDZWxsID0gZ2V0Q29u" +
@@ -2445,4 +2445,3 @@ files["std/stdlib.tact"] =
     "bnRyYWN0IjsKaW1wb3J0ICIuL2ludGVybmFsL2RlYnVnIjsKaW1wb3J0ICIuL2ludGVybmFsL2NvbnRleHQiOwppbXBvcnQgIi4vaW50ZXJuYWwvcmVzZXJ2ZSI7Cmlt" +
     "cG9ydCAiLi9pbnRlcm5hbC9zZW5kIjsKaW1wb3J0ICIuL2ludGVybmFsL2NvbmZpZyI7CmltcG9ydCAiLi9pbnRlcm5hbC9iYXNlIjsKaW1wb3J0ICIuL2ludGVybmFs" +
     "L2FkZHJlc3MiOwppbXBvcnQgIi4vaW50ZXJuYWwvdGltZSI7Cg==";
-export default files;

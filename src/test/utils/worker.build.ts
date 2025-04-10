@@ -2,7 +2,7 @@ import { run } from "@/cli/tact";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import { parentPort } from "worker_threads";
-import files from "@/stdlib/stdlib";
+import * as Stdlib from "@/stdlib/stdlib";
 import type { Project } from "@/config/config";
 import { Logger, LogLevel } from "@/context/logger";
 
@@ -26,7 +26,7 @@ const main = async ({
     folder,
     projects,
 }: WorkerInput): Promise<WorkerOutput> => {
-    const stdlib = createVirtualFileSystem("@stdlib", files);
+    const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
     const project = createNodeFileSystem(folder, false);
 
     console.log(`Worker #${id}: compiling ${projects.length} projects`);

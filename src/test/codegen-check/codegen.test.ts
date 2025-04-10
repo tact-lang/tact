@@ -2,7 +2,7 @@ import type { Options } from "@/config/config";
 import { run } from "@/cli/tact";
 import { Logger, LogLevel } from "@/context/logger";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
-import files from "@/stdlib/stdlib";
+import * as Stdlib from "@/stdlib/stdlib";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 import path from "path";
 import * as fs from "fs";
@@ -29,7 +29,7 @@ describe("codegen", () => {
             },
             logger: new Logger(LogLevel.NONE),
             project: project,
-            stdlib: createVirtualFileSystem("@stdlib", files),
+            stdlib: createVirtualFileSystem("@stdlib", Stdlib.files),
         });
 
         const pathFuncCode = project.resolve(
