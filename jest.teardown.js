@@ -4,7 +4,6 @@ const path = require("path");
 module.exports = async () => {
     if (process.env.COVERAGE === "true") {
         coverage.completeCoverage([
-            path.resolve(__dirname, "examples", "output", "*.boc"),
             path.resolve(
                 __dirname,
                 "src",

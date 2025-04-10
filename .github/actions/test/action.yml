@@ -44,7 +44,7 @@ runs:
       shell: pwsh
       if: runner.os == 'Windows'
       run: |
-        type examples\output\echo_Echo.pkg
+        type src\test\benchmarks\contracts\output\jetton_minter_discoverable_JettonMinter.pkg
 
     - name: Link Tact yarn package
       shell: bash
