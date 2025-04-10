@@ -20,7 +20,7 @@ import "@ton/test-utils";
 describe("base-trait-constant-override-1", () => {
     let blockchain: Blockchain;
 
-    const reserved: bigint = TraitsConstantContract.storageReserve;
+    const reservedAmount: bigint = TraitsConstantContract.storageReserve;
 
     let treasure: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<TraitsConstantContract>;
@@ -88,7 +88,7 @@ describe("base-trait-constant-override-1", () => {
     it("should override constant correctly", async () => {
         // Verifying that the storageReserve constant is correctly overridden
         // and returns the expected value
-        expect(await contract.getConstant()).toEqual(reserved);
+        expect(await contract.getConstant()).toEqual(reservedAmount);
     });
 
     it("Reply / zeroContract", async () => {
@@ -125,7 +125,7 @@ describe("base-trait-constant-override-1", () => {
         };
 
         // Send a Reply message to the contract
-        // and verify that after sending the reply message, the balance equals the reserved amount
+        // and verify that after sending the reply message, the balance equals the reservedAmount amount
         const result = await contract.send(
             treasure.getSender(),
             { value: lowSendValue },
@@ -140,7 +140,7 @@ describe("base-trait-constant-override-1", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(reserved);
+        expect(balance).toEqual(reservedAmount);
     });
 
     it("Notify / zeroContract", async () => {
@@ -177,7 +177,7 @@ describe("base-trait-constant-override-1", () => {
         };
 
         // Send a Notify message to the main contract
-        // and verify that after sending, the balance equals the reserved amount
+        // and verify that after sending, the balance equals the reservedAmount amount
         const result = await contract.send(
             treasure.getSender(),
             { value: lowSendValue },
@@ -193,7 +193,7 @@ describe("base-trait-constant-override-1", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(reserved);
+        expect(balance).toEqual(reservedAmount);
     });
 
     it("Forward / should send init", async () => {
@@ -232,7 +232,7 @@ describe("base-trait-constant-override-1", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(reserved);
+        expect(balance).toEqual(reservedAmount);
     });
 
     it("Forward / contact / default message", async () => {
@@ -259,10 +259,10 @@ describe("base-trait-constant-override-1", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(reserved);
+        expect(balance).toEqual(reservedAmount);
     });
 
-    it("Forward / contract / balance after < reserved, should not send message", async () => {
+    it("Forward / contract / balance after < reservedAmount, should not send message", async () => {
         const forwardMessage: Forward = {
             $$type: "Forward",
             to: treasure.address,
@@ -275,7 +275,7 @@ describe("base-trait-constant-override-1", () => {
         // and verify that a NotEnoughToncoin error is thrown
         const result = await contract.send(
             treasure.getSender(),
-            { value: reserved - deployValue - 1n }, // because we want balance < reserved
+            { value: reservedAmount - deployValue - 1n }, // because we want balance < reservedAmount
             forwardMessage,
         );
 
@@ -302,7 +302,7 @@ describe("base-trait-constant-override-1", () => {
         };
 
         // Send another message and verify
-        // that the balance after sending the message is not equal reserved amount
+        // that the balance after sending the message is not equal reservedAmount amount
         const result = await contract.send(
             treasure.getSender(),
             { value: lowSendValue },
@@ -319,7 +319,7 @@ describe("base-trait-constant-override-1", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).not.toEqual(reserved); // 10 in fact
+        expect(balance).not.toEqual(reservedAmount); // 10 in fact
     });
 
     it("Forward/ zeroContract / should send init", async () => {
@@ -368,7 +368,7 @@ describe("base-trait-constant-override-1", () => {
         };
 
         // Create a Forward message with init and verify
-        // that after sending, the balance equals the reserved amount
+        // that after sending, the balance equals the reservedAmount amount
         const forwardMessage: Forward = {
             $$type: "Forward",
             to: treasure.address,
@@ -394,7 +394,7 @@ describe("base-trait-constant-override-1", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(reserved);
+        expect(balance).toEqual(reservedAmount);
     });
 
     it("DoubleForward/ zeroContract / tests double forwarding", async () => {
@@ -505,7 +505,7 @@ describe("base-trait-constant-override-1", () => {
         };
 
         // Send a MessageAndForward message to the contract
-        // and verify that balance equals reserved amount
+        // and verify that balance equals reservedAmount amount
         const result = await contract.send(
             treasure.getSender(),
             { value: highSendValue },
@@ -521,7 +521,7 @@ describe("base-trait-constant-override-1", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(reserved);
+        expect(balance).toEqual(reservedAmount);
 
         // treasure -> contract
         // contract -> treasure SendPayFwdFeesSeparately mode
