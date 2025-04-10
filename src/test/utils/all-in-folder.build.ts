@@ -1,18 +1,62 @@
 import { glob } from "glob";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import type { Options } from "@/config/parseConfig";
-import { basename, dirname, extname, join } from "path";
+import { basename, dirname, extname, join, resolve } from "path";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
-import { Logger, LogLevel } from "@/context/logger";
-import { run } from "@/cli/tact";
+import { Logger } from "@/context/logger";
 import files from "@/stdlib/stdlib";
 import { posixNormalize } from "@/utils/filePath";
 import { funcCompile } from "@/func/funcCompile";
+import { Worker } from 'worker_threads';
+import type { WorkerInput, WorkerOutput } from "@/test/utils/worker.build";
 
 // node.js 20+ builtin
 export const globSync = (globs: string[], options: { cwd: string }) => {
     return globs.flatMap((g) => glob.sync(g, options));
 };
+
+export function splitIntoParts<T>(n: number, xs: T[]): T[][] {
+    const len = xs.length;
+    const q = Math.floor(len / n);
+    const r = len % n;
+
+    const sizes = [
+        ...Array(r).fill(q + 1),
+        ...Array(n - r).fill(q)
+    ].slice(0, len); // avoid extra empty groups if n > xs.length
+
+    const splits = sizes.reduce<number[]>(
+        (acc, size) => [...acc, acc[acc.length - 1] + size],
+        [0]
+    );
+
+    return splits
+        .slice(1)
+        .map((end, i) => xs.slice(splits[i], end));
+}
+
+const runWorker = (input: WorkerInput): Promise<WorkerOutput> => {
+    return new Promise<WorkerOutput>((res, rej) => {
+        const worker = new Worker(resolve(__dirname, 'worker.build.ts'), {
+            execArgv: ['-r', 'ts-node/register/transpile-only'],
+        });
+        worker.once('message', (result) => {
+            if (result && typeof result === 'object' && 'error' in result) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                rej(new Error((result as any).error));
+            } else {
+                res(result as WorkerOutput);
+            }
+        });
+        worker.once('error', rej);
+        worker.once('exit', (code) => {
+            if (code !== 0) {
+                rej(new Error(`Worker exited with code ${code}`));
+            }
+        });
+        worker.postMessage(input);
+    });
+}
 
 export const allInFolder = async (
     folder: string,
@@ -20,29 +64,28 @@ export const allInFolder = async (
     options: Options = { debug: true, external: true },
 ) => {
     try {
-        const stdlib = createVirtualFileSystem("@stdlib", files);
-
         const contracts = globSync(globs, { cwd: folder });
 
-        const projects = contracts.map((contractPath) => {
-            const contractOptions: Options = structuredClone(options);
-            return {
-                name: basename(contractPath, extname(contractPath)),
-                path: contractPath,
-                output: join(dirname(contractPath), "output"),
-                options: contractOptions,
-            };
-        });
+        const projectGroups = splitIntoParts(
+            4, // Math.floor(cpus().length / 2)
+            contracts.map((contractPath) => {
+                const contractOptions: Options = structuredClone(options);
+                return {
+                    name: basename(contractPath, extname(contractPath)),
+                    path: contractPath,
+                    output: join(dirname(contractPath), "output"),
+                    options: contractOptions,
+                };
+            })
+        );
 
-        const project = createNodeFileSystem(folder, false);
+        const results = await Promise.all(
+            Array.from(projectGroups.entries()).map(([id, projects]) =>
+                runWorker({ id, folder, projects })
+            )
+        );
 
-        const compileResult = await run({
-            config: { projects },
-            logger: new Logger(LogLevel.INFO),
-            project,
-            stdlib,
-        });
-        if (!compileResult.ok) {
+        if (results.some(result => !result.ok)) {
             throw new Error("Tact projects compilation failed");
         }
     } catch (error) {
