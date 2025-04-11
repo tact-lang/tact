@@ -37,18 +37,15 @@ function getLoggingMethod(level: LogLevel): keyof ILogger | null {
 }
 
 export class Logger {
-    private level: LogLevel;
-    private logMethods: ILogger;
-
-    constructor(level: LogLevel = LogLevel.INFO) {
-        this.level = level;
-        this.logMethods = {
+    constructor(
+        private level: LogLevel = LogLevel.INFO,
+        private logMethods: ILogger = {
             debug: console.log,
             info: console.log,
             warn: console.warn,
             error: console.error,
-        };
-    }
+        },
+    ) {}
 
     protected log(level: LogLevel, message: messageType) {
         if (this.level === LogLevel.NONE) {

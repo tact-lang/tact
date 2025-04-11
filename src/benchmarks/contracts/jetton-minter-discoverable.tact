@@ -29,7 +29,7 @@ contract JettonMinter(
 
         if (msg.responseDestination.isNotNone()) {
             message(MessageParameters {
-                to: msg.responseDestination,
+                to: msg.responseDestination!!,
                 body: JettonExcesses{ queryId: msg.queryId }.toCell(),
                 value: 0,
                 bounce: false,
