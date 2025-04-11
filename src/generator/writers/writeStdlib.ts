@@ -191,27 +191,27 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun("__tact_debug", () => {
+    ctx.fun("__tact_dump", () => {
         ctx.signature(
-            `forall X -> () __tact_debug(X value, slice debug_print_1, slice debug_print_2)`,
+            `forall X -> () __tact_dump(X value, slice debug_print_1, slice debug_print_2)`,
         );
         ctx.flag("impure");
         ctx.context("stdlib");
         ctx.asm("", "STRDUMP DROP STRDUMP DROP s0 DUMP DROP");
     });
 
-    ctx.fun("__tact_debug_str", () => {
+    ctx.fun("__tact_dump_str", () => {
         ctx.signature(
-            `() __tact_debug_str(slice value, slice debug_print_1, slice debug_print_2)`,
+            `() __tact_dump_str(slice value, slice debug_print_1, slice debug_print_2)`,
         );
         ctx.flag("impure");
         ctx.context("stdlib");
         ctx.asm("", "STRDUMP DROP STRDUMP DROP STRDUMP DROP");
     });
 
-    ctx.fun("__tact_debug_bool", () => {
+    ctx.fun("__tact_dump_bool", () => {
         ctx.signature(
-            `() __tact_debug_bool(int value, slice debug_print_1, slice debug_print_2)`,
+            `() __tact_dump_bool(int value, slice debug_print_1, slice debug_print_2)`,
         );
         ctx.flag("impure");
         ctx.context("stdlib");
@@ -219,50 +219,50 @@ export function writeStdlib(ctx: WriterContext): void {
             ctx.write(`
                 if (null?(value)) {
                     ${ctx.used(
-                        "__tact_debug_str",
+                        "__tact_dump_str",
                     )}("null", debug_print_1, debug_print_2);
                 } elseif (value) {
                     ${ctx.used(
-                        "__tact_debug_str",
+                        "__tact_dump_str",
                     )}("true", debug_print_1, debug_print_2);
                 } else {
                     ${ctx.used(
-                        "__tact_debug_str",
+                        "__tact_dump_str",
                     )}("false", debug_print_1, debug_print_2);
                 }
             `);
         });
     });
 
-    ctx.fun("__tact_debug_string", () => {
+    ctx.fun("__tact_dump_string", () => {
         ctx.signature(
-            `() __tact_debug_string(slice str, slice debug_print_1, slice debug_print_2)`,
+            `() __tact_dump_string(slice str, slice debug_print_1, slice debug_print_2)`,
         );
         ctx.flag("impure");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(str)) {
-                    ${ctx.used("__tact_debug_str")}("null", debug_print_1, debug_print_2);
+                    ${ctx.used("__tact_dump_str")}("null", debug_print_1, debug_print_2);
                 } else {
-                    ${ctx.used("__tact_debug_str")}(str, debug_print_1, debug_print_2);
+                    ${ctx.used("__tact_dump_str")}(str, debug_print_1, debug_print_2);
                 }
             `);
         });
     });
 
-    ctx.fun("__tact_debug_int", () => {
+    ctx.fun("__tact_dump_int", () => {
         ctx.signature(
-            `() __tact_debug_int(int number, slice debug_print_1, slice debug_print_2)`,
+            `() __tact_dump_int(int number, slice debug_print_1, slice debug_print_2)`,
         );
         ctx.flag("impure");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(number)) {
-                    ${ctx.used("__tact_debug_str")}("null", debug_print_1, debug_print_2);
+                    ${ctx.used("__tact_dump_str")}("null", debug_print_1, debug_print_2);
                 } else {
-                    ${ctx.used("__tact_debug_str")}(${ctx.used(ops.extension("Int", "toString"))}(number), debug_print_1, debug_print_2);
+                    ${ctx.used("__tact_dump_str")}(${ctx.used(ops.extension("Int", "toString"))}(number), debug_print_1, debug_print_2);
                 }
             `);
         });
@@ -373,18 +373,18 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun("__tact_debug_address", () => {
+    ctx.fun("__tact_dump_address", () => {
         ctx.signature(
-            `() __tact_debug_address(slice address, slice debug_print_1, slice debug_print_2)`,
+            `() __tact_dump_address(slice address, slice debug_print_1, slice debug_print_2)`,
         );
         ctx.flag("impure");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(address)) {
-                    ${ctx.used("__tact_debug_str")}("null", debug_print_1, debug_print_2);
+                    ${ctx.used("__tact_dump_str")}("null", debug_print_1, debug_print_2);
                 } else {
-                    ${ctx.used("__tact_debug_str")}(${ctx.used(
+                    ${ctx.used("__tact_dump_str")}(${ctx.used(
                         "__tact_address_to_user_friendly",
                     )}(address), debug_print_1, debug_print_2);
                 }
@@ -392,9 +392,9 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun("__tact_debug_stack", () => {
+    ctx.fun("__tact_dump_stack", () => {
         ctx.signature(
-            `() __tact_debug_stack(slice debug_print_1, slice debug_print_2)`,
+            `() __tact_dump_stack(slice debug_print_1, slice debug_print_2)`,
         );
         ctx.flag("impure");
         ctx.context("stdlib");

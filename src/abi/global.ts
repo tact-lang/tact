@@ -259,31 +259,31 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 if (arg0.kind === "map") {
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `${ctx.used(`__tact_debug`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                    return `${ctx.used(`__tact_dump`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                 } else if (arg0.kind === "null") {
-                    return `${ctx.used(`__tact_debug_str`)}("null", ${debugPrint2}, "${debugPrint1}")`;
+                    return `${ctx.used(`__tact_dump_str`)}("null", ${debugPrint2}, "${debugPrint1}")`;
                 } else if (arg0.kind === "void") {
-                    return `${ctx.used(`__tact_debug_str`)}("void", ${debugPrint2}, "${debugPrint1}")`;
+                    return `${ctx.used(`__tact_dump_str`)}("void", ${debugPrint2}, "${debugPrint1}")`;
                 } else if (arg0.kind === "ref") {
                     if (arg0.name === "Int") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_int`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump_int`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "Bool") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_bool`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump_bool`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "String") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_string`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump_string`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "Address") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_address`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump_address`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (
                         arg0.name === "Builder" ||
                         arg0.name === "Slice" ||
                         arg0.name === "Cell"
                     ) {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     }
                     throwCompilationError(
                         "dump() not supported for type: " + arg0.name,
@@ -320,7 +320,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
                 const debugPrint1 = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}:`;
-                return `${ctx.used(`__tact_debug_stack`)}("dumpStack()", "${debugPrint1}")`;
+                return `${ctx.used(`__tact_dump_stack`)}("dumpStack()", "${debugPrint1}")`;
             },
         },
     ],
