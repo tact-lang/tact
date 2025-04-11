@@ -33,10 +33,14 @@ const main = async ({
 
     const compileResult = await run({
         config: { projects },
-        logger: new Logger(LogLevel.WARN),
+        logger: new Logger(LogLevel.INFO),
         project,
         stdlib,
     });
+
+    if (!compileResult.ok) {
+        debugger;
+    }
 
     return {
         ok: compileResult.ok,
