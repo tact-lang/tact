@@ -1,5 +1,4 @@
 import type * as Ast from "@/ast/ast";
-import { getAstFactory } from "@/ast/ast-helpers";
 import type { FactoryAst } from "@/ast/ast-helpers";
 import { getMakeAst } from "@/ast/generated/make-factory";
 import { getAstUtil } from "@/ast/util";
@@ -10,7 +9,7 @@ import { sha256_sync } from "@ton/crypto";
 import { TreasuryContract } from "@ton/sandbox";
 import * as fc from "fast-check";
 
-const AllowedType = {
+export const AllowedType = {
     Int: "Int",
     OptInt: "Int?",
     Bool: "Bool",
@@ -25,9 +24,9 @@ const AllowedType = {
     OptString: "String?",
 } as const;
 
-type AllowedTypeEnum = (typeof AllowedType)[keyof typeof AllowedType];
+export type AllowedTypeEnum = (typeof AllowedType)[keyof typeof AllowedType];
 
-type GenContext = {
+export type GenContext = {
     // Identifier names to choose from, by type
     identifiers: Map<AllowedTypeEnum, string[]>;
 
@@ -35,7 +34,7 @@ type GenContext = {
     contractNames: string[];
 };
 
-const NonTerminal = {
+export const NonTerminal = {
     Initial: { terminal: false, literal: false, id: 0 },
     Int: { terminal: false, literal: false, id: 1 },
     OptInt: { terminal: false, literal: false, id: 2 },
@@ -1537,6 +1536,7 @@ export function initializeGenerator(
     minSize: number,
     maxSize: number,
     ctx: GenContext,
+    astF: FactoryAst,
 ): (type: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
     const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
         computeCountTables(minSize, maxSize);
@@ -1546,7 +1546,7 @@ export function initializeGenerator(
         return fc.constant(0).map((_) => {
             const size = randomlyChooseIndex(sizes);
             return makeExpression(
-                getAstFactory(),
+                astF,
                 type,
                 ctx,
                 nonTerminalCounts,
