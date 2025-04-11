@@ -111,6 +111,45 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         },
     ],
     [
+        "raise",
+        {
+            name: "raise",
+            resolve: (_ctx, args, ref) => {
+                if (args.length !== 1) {
+                    throwCompilationError(
+                        "raise() expects single string argument",
+                        ref,
+                    );
+                }
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
+                    throwCompilationError(
+                        "raise() expects single string argument",
+                        ref,
+                    );
+                }
+                if (arg0.name !== "String") {
+                    throwCompilationError(
+                        "raise() expects single string argument",
+                        ref,
+                    );
+                }
+                return { kind: "void" };
+            },
+            generate: (ctx, _args, resolved, ref) => {
+                if (resolved.length !== 1) {
+                    throwCompilationError(
+                        "raise() expects single string argument",
+                        ref,
+                    );
+                }
+                const resolved0 = resolved[0]!;
+                const str = ensureString(resolved0).value;
+                return `throw(${getErrorId(str, ctx.ctx)})`;
+            },
+        },
+    ],
+    [
         "address",
         {
             name: "address",
