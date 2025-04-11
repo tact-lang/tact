@@ -6,7 +6,11 @@ import {
     createContext,
     enableFeatures,
 } from "@/test/fuzzer/test/testUtils";
-import { createProperty, checkProperty } from "@/test/fuzzer/src/util";
+import {
+    createProperty,
+    checkProperty,
+    astNodeCounterexamplePrinter,
+} from "@/test/fuzzer/src/util";
 import { GlobalContext } from "@/test/fuzzer/src/context";
 import { getAstFactory } from "@/ast/ast-helpers";
 
@@ -22,7 +26,7 @@ describe("properties", () => {
                 GlobalContext.resetDepth();
             },
         );
-        checkProperty(property);
+        checkProperty(property, astNodeCounterexamplePrinter);
     });
 
     it("generates reproducible AST", () => {
@@ -44,8 +48,8 @@ describe("properties", () => {
         });
 
         // Execute property twice
-        checkProperty(property, /*numRuns=*/ 1);
-        checkProperty(property, /*numRuns=*/ 1);
+        checkProperty(property, astNodeCounterexamplePrinter, /*numRuns=*/ 1);
+        checkProperty(property, astNodeCounterexamplePrinter, /*numRuns=*/ 1);
 
         assert.notEqual(
             program1,

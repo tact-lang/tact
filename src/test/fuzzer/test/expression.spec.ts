@@ -21,12 +21,12 @@ import {
     CustomStdlib,
     checkAsyncProperty,
     buildModule,
+    astNodeCounterexamplePrinter,
 } from "@/test/fuzzer/src/util";
 import { FactoryAst, getAstFactory } from "@/ast/ast-helpers";
 import { getMakeAst, MakeAstFactory } from "@/ast/generated/make-factory";
 import { Blockchain } from "@ton/sandbox";
 import fc from "fast-check";
-import { evalConstantExpression } from "@/optimizer/constEval";
 import { AstUtil, getAstUtil } from "@/ast/util";
 import {
     AllowedType,
@@ -36,6 +36,8 @@ import {
     NonTerminal,
 } from "../src/generators/uniform-expr-gen";
 import { Sender, toNano } from "@ton/core";
+import { GlobalContext } from "../src/context";
+import { Interpreter } from "@/optimizer/interpreter";
 
 function emptyStatementContext(): StatementContext {
     return {
@@ -81,21 +83,15 @@ describe("generation properties", () => {
                     assert.fail(`Unexpected type: ${resolvedTy.kind}`);
                 }
             });
-            checkProperty(property);
+            checkProperty(property, astNodeCounterexamplePrinter);
         }
     });
 });
 
-type Binding = {
-    name: string;
-    type: string;
-    expr: Ast.Expression;
-};
-
 function makeExpressionGetter(
     makeF: MakeAstFactory,
     getterName: string,
-    bindings: Binding[],
+    bindings: Ast.Statement[],
     returnExpr: Ast.Expression,
 ): Ast.FunctionDef {
     return makeF.makeDummyFunctionDef(
@@ -103,16 +99,7 @@ function makeExpressionGetter(
         makeF.makeDummyId(getterName),
         makeF.makeDummyTypeId("Int"),
         [],
-        bindings
-            .map(
-                ({ name, type, expr }): Ast.Statement =>
-                    makeF.makeDummyStatementLet(
-                        makeF.makeDummyId(name),
-                        makeF.makeDummyTypeId(type),
-                        expr,
-                    ),
-            )
-            .concat([makeF.makeDummyStatementReturn(returnExpr)]),
+        bindings.concat([makeF.makeDummyStatementReturn(returnExpr)]),
     );
 }
 
@@ -120,7 +107,7 @@ function createContractWithExpressionGetter(
     makeF: MakeAstFactory,
     contractName: string,
     getterName: string,
-    bindings: Binding[],
+    bindings: Ast.Statement[],
     returnExpr: Ast.Expression,
 ): Ast.Contract {
     // throw new Error("createContract is not implemented yet"); // TODO: implement, probably should place this function in a different file
@@ -153,7 +140,7 @@ describe("evaluation properties", () => {
     let makeF: MakeAstFactory;
     let customStdlib: CustomStdlib;
     let blockchain: Blockchain;
-    let emptyCompileContext: CompilerContext;
+    const emptyCompilerContext: CompilerContext = new CompilerContext();
     let astUtil: AstUtil;
     let sender: Sender;
 
@@ -170,8 +157,9 @@ describe("evaluation properties", () => {
                 "Cell",
                 "Context",
                 "Slice",
-                //"Builder",
-                //"String",
+                "Slice?",
+                "String",
+                "String?",
                 "StateInit",
                 "SendParameters",
                 "BaseTrait",
@@ -199,7 +187,6 @@ describe("evaluation properties", () => {
             ]),
         );
         blockchain = await Blockchain.create();
-        emptyCompileContext = new CompilerContext();
         astUtil = getAstUtil(astF);
         sender = (await blockchain.treasury("treasury")).getSender();
     });
@@ -207,7 +194,7 @@ describe("evaluation properties", () => {
     test(
         "compiler and interpreter evaluate generated expressions equally",
         async () => {
-            const contractName = "PureExpressionContract";
+            const contractName = "ExpressionContract";
 
             const expressionGenerationIds: Map<AllowedTypeEnum, string[]> =
                 new Map();
@@ -235,21 +222,31 @@ describe("evaluation properties", () => {
             );
 
             const bindingsGenretor = fc.tuple(
-                ...expressionGenerationIds.entries().flatMap(([type, names]) =>
-                    names.map((name) =>
-                        fc.record<Binding>({
-                            type: fc.constant(type),
-                            name: fc.constant(name),
-                            expr: generator(initializersMapping[type]),
-                        }),
+                ...expressionGenerationIds
+                    .entries()
+                    .flatMap(([type, names]) =>
+                        names.map((name) =>
+                            generator(initializersMapping[type]).map((expr) =>
+                                makeF.makeDummyStatementLet(
+                                    makeF.makeDummyId(name),
+                                    type.slice(-1) === "?"
+                                        ? makeF.makeDummyOptionalType(
+                                              makeF.makeDummyTypeId(
+                                                  type.slice(0, -1),
+                                              ),
+                                          )
+                                        : makeF.makeDummyTypeId(type),
+                                    expr,
+                                ),
+                            ),
+                        ),
                     ),
-                ),
             );
 
             const property = fc.asyncProperty(
                 bindingsGenretor,
                 generator(NonTerminal.Int),
-                async (initExprs, expr) => {
+                async (bindings, expr) => {
                     const contractModule = makeF.makeModule(
                         [],
                         [
@@ -257,35 +254,51 @@ describe("evaluation properties", () => {
                                 makeF,
                                 contractName,
                                 "getInt",
-                                initExprs,
+                                bindings,
                                 expr,
                             ),
                         ],
                     );
-                    const contractMap = await buildModule(
+
+                    let contractMapPromise = buildModule(
                         astF,
                         contractModule,
                         customStdlib,
                         blockchain,
                     );
+
+                    const contractMap = await contractMapPromise;
                     const contract = contractMap.get(contractName)!;
                     await contract.send(sender, { value: toNano(1) });
 
                     const compiledValue = await contract.getInt();
 
-                    const intrepretedValue = evalConstantExpression(
-                        expr,
-                        emptyCompileContext,
+                    const interpreter = new Interpreter(
                         astUtil,
+                        emptyCompilerContext,
                     );
-                    expect(intrepretedValue.kind).toBe("number");
+                    bindings.forEach((bind) => {
+                        interpreter.interpretStatement(bind);
+                    });
+                    const intrepretedValue =
+                        interpreter.interpretExpression(expr);
 
+                    expect(intrepretedValue.kind).toBe("number");
                     expect(compiledValue).toBe(
                         (intrepretedValue as Ast.Number).value,
                     );
                 },
             );
-            await checkAsyncProperty(property);
+            checkAsyncProperty(property, ([bindings, expr]) => {
+                return (
+                    `\n-----\nGenerated bindings:\n` +
+                    bindings
+                        .map((bind) => GlobalContext.format(bind))
+                        .join("\n") +
+                    `Generated expression:\n` +
+                    GlobalContext.format(expr)
+                );
+            });
         },
         20 * 1000,
     );

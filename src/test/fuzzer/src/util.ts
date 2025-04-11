@@ -88,9 +88,10 @@ export function createProperty<Ts extends [unknown, ...unknown[]]>(
 /**
  * Create parameters for custom property checking.
  */
-function makeParams(
+function makeParams<T>(
+    counterexamplePrinter: (generated: T) => string,
     numRuns: number | undefined,
-): fc.Parameters<Ast.AstNode | Ast.AstNode[]> {
+): fc.Parameters<T> {
     return {
         numRuns: numRuns ?? GlobalContext.config.numRuns,
         seed: GlobalContext.config.seed,
@@ -100,11 +101,9 @@ function makeParams(
                     out.counterexample !== null &&
                     out.errorInstance instanceof Error
                 ) {
-                    const generated =
-                        "kind" in out.counterexample
-                            ? out.counterexample
-                            : out.counterexample[0]!;
-                    out.errorInstance.message += `\n-----\nGenerated program:\n${GlobalContext.format(generated)}\n-----\n`;
+                    out.errorInstance.message += counterexamplePrinter(
+                        out.counterexample,
+                    );
                 }
                 throw new Error(fc.defaultReportMessage(out));
             }
@@ -115,21 +114,30 @@ function makeParams(
 /**
  * Checks the given property enhancing `fc.assert` with additional functionality.
  */
-export function checkProperty(
-    property: fc.IPropertyWithHooks<Ast.AstNode | Ast.AstNode[]>,
+export function checkProperty<T>(
+    property: fc.IPropertyWithHooks<T>,
+    counterexamplePrinter: (generated: T) => string,
     numRuns: number | undefined = undefined,
 ) {
-    fc.assert(property, makeParams(numRuns));
+    fc.assert(property, makeParams(counterexamplePrinter, numRuns));
 }
 
 /**
  * Checks the given async property enhancing `fc.assert` with additional functionality.
  */
 export async function checkAsyncProperty<T>(
-    property: fc.IAsyncPropertyWithHooks<Ast.AstNode | Ast.AstNode[]>,
+    property: fc.IAsyncPropertyWithHooks<T>,
+    counterexamplePrinter: (generated: T) => string,
     numRuns: number | undefined = undefined,
 ) {
-    await fc.assert(property, makeParams(numRuns));
+    await fc.assert(property, makeParams(counterexamplePrinter, numRuns));
+}
+
+export function astNodeCounterexamplePrinter(
+    generated: Ast.AstNode | Ast.AstNode[],
+) {
+    const node = "kind" in generated ? generated : generated[0]!;
+    return `\n-----\nGenerated ${node.kind}:\n${GlobalContext.format(node)}\n-----\n`;
 }
 
 /**

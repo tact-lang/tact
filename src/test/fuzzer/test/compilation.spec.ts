@@ -7,7 +7,11 @@ import fc from "fast-check";
 
 import { Program } from "@/test/fuzzer/src/generators";
 import { StdlibCode, StdlibPath } from "@/test/fuzzer/src/stdlib";
-import { withNodeFS, checkAsyncProperty } from "@/test/fuzzer/src/util";
+import {
+    withNodeFS,
+    checkAsyncProperty,
+    astNodeCounterexamplePrinter,
+} from "@/test/fuzzer/src/util";
 import {
     compile,
     precompile,
@@ -108,7 +112,11 @@ describe("properties", () => {
                     new Program({ addStdlib: true }).generate(),
                     compileProgram,
                 );
-                await checkAsyncProperty(property, /*numRuns=*/ 1);
+                await checkAsyncProperty(
+                    property,
+                    astNodeCounterexamplePrinter,
+                    /*numRuns=*/ 1,
+                );
             };
 
             if (numRuns === Infinity) {
