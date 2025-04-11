@@ -177,7 +177,6 @@ jobs:
           yarn build
 
       - name: (${{ matrix.package-manager }}) Setup a new Blueprint project
-        continue-on-error: true
         run: |
           # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
           ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || '' }}
@@ -244,20 +243,7 @@ jobs:
           }}
 
           # Create a new contract and all related facilities
-          ${{
-            matrix.package-manager == 'bun'
-            && 'bunx'
-            || 'npx'
-          }} blueprint create --type tact-counter Counter
-
-      - name: Display npm logs (DEBUGGING!)
-        shell: bash
-        run: |
-          if [ -d "C:/npm/cache/_logs" ]; then
-            cat "C:/npm/cache/_logs/"*-debug-0.log
-          elif [ -d "~/.npm/_logs" ]; then
-            cat ~/.npm/_logs/*-debug-0.log
-          fi
+          ${{ matrix.package-manager == 'bun' && 'bunx' || 'npx' }} blueprint create --type tact-counter Counter
 
       - name: (npm) Test a new Blueprint project
         if: ${{ matrix.package-manager == 'npm' }}
