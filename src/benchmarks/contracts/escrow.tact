@@ -1,4 +1,4 @@
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 inline fun calculateJettonWalletAddress(owner: Address, minter: Address, code: Cell): Address {
     let initData = JettonWalletData { balance: 0, owner, minter, code };

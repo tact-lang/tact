@@ -1,5 +1,5 @@
 ---
-title: "@stdlib/jetton"
+title: "@stdlib/jetton-interface"
 description: "Provides primary and auxiliary structures for working with the TON Jetton standard"
 ---
 
@@ -7,14 +7,14 @@ import { Badge } from '@astrojs/starlight/components';
 
 <Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
 
-The `@stdlib/jetton` library provides primary and auxiliary structures and utilities for working with [Jetton standards](#sources). However, support of the [stablecoin contract and standard][stablecoin] is out of the scope of this library.
+The `@stdlib/jetton-interface` library provides primary and auxiliary structures and utilities for working with [Jetton standards](#sources). However, support of the [stablecoin contract and standard][stablecoin] is out of the scope of this library.
 
 Jettons are fungible tokens similar to ERC-20 tokens on Ethereum but implemented specifically for the TON Blockchain. They use an actor model of contract communication and a parent-child-like contract sharding, where a Jetton Master (or Minter) acts like a parent contract, and Jetton Wallets are child contracts created for each user's wallet.
 
-To use this library, import `@stdlib/jetton`:
+To use this library, import `@stdlib/jetton-interface`:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 ```
 
 :::note
@@ -56,7 +56,7 @@ Describes the data returned by the Jetton Minter getter function [`get_jetton_da
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonMinter(
     totalSupply: Int as coins,
@@ -101,7 +101,7 @@ Describes the data returned by the Jetton Wallet getter function [`get_wallet_da
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonWallet(
     owner: Address,
@@ -157,7 +157,7 @@ Represents a message body defined in [TEP-74][tep-74]: it is sent to one Jetton 
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonWallet(
     owner: Address,
@@ -214,7 +214,7 @@ Represents a message body defined in [TEP-74][tep-74]: it is sent and received b
 Usage examples:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonWallet(
     owner: Address,
@@ -292,7 +292,7 @@ Represents a message body defined in [TEP-74][tep-74]: it is sent from the Jetto
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonWallet(
     owner: Address,
@@ -350,7 +350,7 @@ Represents a message body defined in [TEP-74][tep-74]: it is sent to the Jetton 
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonWallet(
     owner: Address,
@@ -398,7 +398,7 @@ Represents a message body defined in [TEP-74][tep-74]: it is sent from the Jetto
 Usage examples:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonMinter(
     // ...
@@ -443,7 +443,7 @@ Represents a message body defined in [TEP-74][tep-74]: it is sent from either Je
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonMinter(
     // ...
@@ -485,7 +485,7 @@ Represents a message body defined in [TEP-89][tep-89]: it is sent to the Jetton 
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonMinter(
     // ...
@@ -533,7 +533,7 @@ Represents a message body often used in Jetton implementations: it is sent to th
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonMinter(
     owner: Address,
@@ -580,7 +580,7 @@ Represents a message body often used in Jetton implementations: it is sent to th
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonMinter(
     owner: Address,
@@ -620,7 +620,7 @@ Represents a message body often used in Jetton implementations: it is sent to th
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonMinter(
     owner: Address,
@@ -660,7 +660,7 @@ Represents a message body often used in Jetton implementations: it is sent to th
 Usage example:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonMinter(
     owner: Address,
@@ -686,7 +686,7 @@ contract JettonMinter(
 * [TEP-74: Fungible tokens (Jettons) standard][tep-74].
 * [TEP-64: Token Data Standard][tep-64].
 * [TEP-89: Discoverable Jetton Wallets][tep-89].
-* [`@stdlib/jetton` Tact source](https://github.com/tact-lang/tact/blob/main/stdlib/libs/jetton.tact).
+* [`@stdlib/jetton-interface` Tact source](https://github.com/tact-lang/tact/blob/main/stdlib/libs/jetton.tact).
 
 [jetton-minter]: https://github.com/tact-lang/jetton/blob/4267da0e015edc8e65c846663641432c34e1fe53/src/contracts/base/jetton-minter.tact
 [jetton-wallet]: https://github.com/tact-lang/jetton/blob/4267da0e015edc8e65c846663641432c34e1fe53/src/contracts/base/jetton-wallet.tact

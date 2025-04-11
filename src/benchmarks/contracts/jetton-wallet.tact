@@ -1,4 +1,4 @@
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 contract JettonWallet(
     owner: Address,

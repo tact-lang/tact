@@ -1,4 +1,4 @@
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 import "./messages";
 import "./jetton-wallet-notcoin";
 
@@ -33,7 +33,7 @@ contract JettonMinterNotcoin(
         let ownerWorkchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
 
         let targetJettonWallet: BasechainAddress = (ownerWorkchain == Workchain)
-            ? contractBasechainAddress(initOf JettonWalletNotcoin(0, msg.ownerAddress, myAddress()))
+            ? contractBasechainAddress(initOf JettonWalletNotcoin(msg.ownerAddress, myAddress(), 0))
             : emptyBasechainAddress();
 
         message(MessageParameters {
@@ -115,7 +115,7 @@ inline fun makeTakeWalletAddressMsg(targetJettonWallet: BasechainAddress, msg: P
 }
 
 inline fun getJettonWalletInit(address: Address): StateInit {
-    return initOf JettonWalletNotcoin(0, address, myAddress());
+    return initOf JettonWalletNotcoin(address, myAddress(), 0);
 }
 
 inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {

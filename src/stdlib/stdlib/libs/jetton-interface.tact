@@ -4,7 +4,7 @@
 /// which is defined in TEP-74 and should be present in every Jetton Minter implementation.
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonMinter(
 ///     totalSupply: Int as coins,
@@ -27,7 +27,7 @@
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonminterdata
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettonminterdata
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods-1
 ///
 struct JettonMinterData {
@@ -57,7 +57,7 @@ struct JettonMinterData {
 /// which is defined in TEP-74 and should be present in every Jetton Wallet implementation.
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonWallet(
 ///     owner: Address,
@@ -78,7 +78,7 @@ struct JettonMinterData {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonwalletdata
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettonwalletdata
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#get-methods
 ///
 struct JettonWalletData {
@@ -119,7 +119,7 @@ struct JettonWalletData {
 /// #### Usage example
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonWallet(
 ///     owner: Address,
@@ -141,8 +141,8 @@ struct JettonWalletData {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransfer
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransferinternal
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettontransfer
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettontransferinternal
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer
 ///
 message(0xf8a7ea5) JettonTransfer {
@@ -193,7 +193,7 @@ message(0xf8a7ea5) JettonTransfer {
 /// #### Usage examples
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonWallet(
 ///     owner: Address,
@@ -243,8 +243,8 @@ message(0xf8a7ea5) JettonTransfer {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransferinternal
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransfer
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettontransferinternal
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettontransfer
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#tl-b-schema
 ///
 message(0x178d4519) JettonTransferInternal {
@@ -289,7 +289,7 @@ message(0x178d4519) JettonTransferInternal {
 /// #### Usage example
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonWallet(
 ///     owner: Address,
@@ -324,8 +324,8 @@ message(0x178d4519) JettonTransferInternal {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransfernotification
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettontransferinternal
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettontransfernotification
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettontransferinternal
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer
 ///
 message(0x7362d09c) JettonTransferNotification {
@@ -364,7 +364,7 @@ message(0x7362d09c) JettonTransferNotification {
 /// #### Usage example
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonWallet(
 ///     owner: Address,
@@ -383,7 +383,7 @@ message(0x7362d09c) JettonTransferNotification {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonburn
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettonburn
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#2-burn
 ///
 message(0x595f07bc) JettonBurn {
@@ -422,7 +422,7 @@ message(0x595f07bc) JettonBurn {
 /// #### Usage examples
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonMinter(
 ///     // ...
@@ -454,7 +454,7 @@ message(0x595f07bc) JettonBurn {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonburnnotification
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettonburnnotification
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#tl-b-schema
 ///
 message(0x7bdd97de) JettonBurnNotification {
@@ -489,7 +489,7 @@ message(0x7bdd97de) JettonBurnNotification {
 /// #### Usage example
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonMinter(
 ///     // ...
@@ -512,7 +512,7 @@ message(0x7bdd97de) JettonBurnNotification {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonexcesses
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettonexcesses
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer
 ///
 message(0xd53276db) JettonExcesses {
@@ -539,7 +539,7 @@ message(0xd53276db) JettonExcesses {
 /// #### Usage example
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonMinter(
 ///     // ...
@@ -554,7 +554,7 @@ message(0xd53276db) JettonExcesses {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#providewalletaddress
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#providewalletaddress
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md#scheme
 ///
 message(0x2c76b973) ProvideWalletAddress {
@@ -586,8 +586,8 @@ message(0x2c76b973) ProvideWalletAddress {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#takewalletaddress
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#providewalletaddress
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#takewalletaddress
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#providewalletaddress
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md#scheme
 ///
 message(0xd1735400) TakeWalletAddress {
@@ -611,7 +611,7 @@ message(0xd1735400) TakeWalletAddress {
 /// NOTE: Always verify the sender of the message before taking any further actions.
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonMinter(
 ///     owner: Address,
@@ -628,7 +628,7 @@ message(0xd1735400) TakeWalletAddress {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-jetton#jettonupdatecontent
+/// * https://docs.tact-lang.org/ref/stdlib-jetton-interface#jettonupdatecontent
 /// * https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md
 ///
 message(4) JettonUpdateContent {
@@ -652,7 +652,7 @@ message(4) JettonUpdateContent {
 /// NOTE: Always verify the sender of the message before taking any further actions.
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonMinter(
 ///     owner: Address,
@@ -669,7 +669,7 @@ message(4) JettonUpdateContent {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/stdlib-jetton#mint
+/// See: https://docs.tact-lang.org/ref/stdlib-jetton-interface#mint
 ///
 message(21) Mint {
     /// Unique identifier used to trace transactions across multiple contracts.
@@ -696,7 +696,7 @@ message(21) Mint {
 /// NOTE: Always verify the sender of the message before taking any further actions.
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonMinter(
 ///     owner: Address,
@@ -713,7 +713,7 @@ message(21) Mint {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/stdlib-jetton#closeminting
+/// See: https://docs.tact-lang.org/ref/stdlib-jetton-interface#closeminting
 ///
 message(22) CloseMinting {}
 
@@ -725,7 +725,7 @@ message(22) CloseMinting {}
 /// NOTE: Always verify the sender of the message before taking any further actions.
 ///
 /// ```tact
-/// import "@stdlib/jetton";
+/// import "@stdlib/jetton-interface";
 ///
 /// contract JettonMinter(
 ///     owner: Address,
@@ -740,7 +740,7 @@ message(22) CloseMinting {}
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/stdlib-jetton#changeowner
+/// See: https://docs.tact-lang.org/ref/stdlib-jetton-interface#changeowner
 ///
 message(3) ChangeOwner {
     /// Unique identifier used to trace transactions across multiple contracts.

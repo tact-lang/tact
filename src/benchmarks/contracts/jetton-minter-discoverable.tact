@@ -1,6 +1,6 @@
 // https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
 
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 import "./jetton-wallet";
 import "./messages";
 

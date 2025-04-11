@@ -20,11 +20,11 @@ Read more about Jetton standards:
 
 :::tip
 
-  Since Tact 1.6.6, primary and auxiliary structures for working with Jetton standards are available in the `@stdlib/jetton` library:
+  Since Tact 1.6.6, primary and auxiliary structures for working with Jetton standards are available in the `@stdlib/jetton-interface` library:
 
   ```tact
-  // This would include everything from @stdlib/jetton
-  import "@stdlib/jetton";
+  // This would include everything from @stdlib/jetton-interface
+  import "@stdlib/jetton-interface";
   ```
 
 :::
@@ -106,7 +106,7 @@ Since notifications originate from your contract's Jetton wallet, the function [
 :::
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 fun calculateJettonWalletAddress(
     ownerAddress: Address,
@@ -169,7 +169,7 @@ A Jetton transfer is the process of sending a specified amount of Jettons from o
 To send a Jetton transfer, use the [`send(){:tact}`](/book/send) function.
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 const JettonTransferGas: Int = ton("0.05");
 
@@ -261,7 +261,7 @@ The process is different in Jettons with or without a governance mechanism, e.g.
 The following example is given for the non-governance Jettons:
 
 ```tact
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 const JettonBurnGas: Int = ton("0.05");
 
 fun calculateJettonWalletAddress(

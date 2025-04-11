@@ -1,4 +1,4 @@
-import "@stdlib/jetton";
+import "@stdlib/jetton-interface";
 
 // gas
 const SEND_TRANSFER_GAS_CONSUMPTION: Int = 10065;
@@ -42,9 +42,9 @@ inline fun checkAmountIsEnoughToBurn(msgValue: Int) {
 }
 
 contract JettonWalletNotcoin(
-    balance: Int as coins,
     owner: Address,
     minter: Address,
+    balance: Int as coins,
 ) {
     receive(msg: JettonTransfer) {
         forceBasechain(msg.destination);
@@ -69,7 +69,7 @@ contract JettonWalletNotcoin(
                 forwardTonAmount: msg.forwardTonAmount,
                 forwardPayload: msg.forwardPayload,
             }.toCell(),
-            init: initOf JettonWalletNotcoin(0, msg.destination, self.minter),
+            init: initOf JettonWalletNotcoin(msg.destination, self.minter, 0),
         });
     }
 
@@ -77,7 +77,7 @@ contract JettonWalletNotcoin(
         self.balance += msg.amount;
 
         // This message should come only from master, or from other JettonWallet
-        let wallet: StateInit = initOf JettonWalletNotcoin(0, msg.sender, self.minter);
+        let wallet: StateInit = initOf JettonWalletNotcoin(msg.sender, self.minter, 0);
         if (!wallet.hasSameBasechainAddress(sender())) {
             throwUnless(707, self.minter == sender());
         }
