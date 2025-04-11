@@ -3,7 +3,7 @@ title: Fungible Tokens (Jettons)
 description: "Common examples of working with Fungible Tokens (Jettons) in Tact"
 ---
 
-This page lists common examples of working with [Fungible Tokens (Jettons)](https://docs.ton.org/develop/dapps/asset-processing/jettons). That said, the [stablecoin contract](https://github.com/ton-blockchain/stablecoin-contract) is out of the scope of this page.
+This page lists common examples of working with [Fungible Tokens (Jettons)](https://docs.ton.org/develop/dapps/asset-processing/jettons).
 
 Jettons are token standards on the TON Blockchain, designed to create fungible tokens (similar to ERC-20 on Ethereum) using a decentralized approach. They are implemented as a pair of smart contracts, typically consisting of two core components:
 
@@ -114,6 +114,9 @@ fun calculateJettonWalletAddress(
     jettonWalletCode: Cell
 ): Address {
 
+    // Notice that the data layout of Jettons isn't fixed and can change.
+    // For an example of a different JettonWalletData,
+    // see the "USDT Jetton operations" section below.
     let initData = JettonWalletData {
         balance: 0,
         owner: ownerAddress,
@@ -129,7 +132,7 @@ fun calculateJettonWalletAddress(
 
 
 contract ExampleJettonReceiver {
-    myJettonWalletAddress: Address;
+    myJettonWalletAddress: Address?;
     myJettonAmount: Int as coins = 0;
 
     init(jettonWalletCode: Cell, jettonMasterAddress: Address) {
@@ -146,7 +149,7 @@ contract ExampleJettonReceiver {
 
     receive(msg: JettonTransferNotification) {
         require(
-            sender() == self.myJettonWalletAddress,
+            sender() == self.myJettonWalletAddress!!,
             "Notification not from your jetton wallet!",
         );
 
@@ -176,6 +179,9 @@ fun calculateJettonWalletAddress(
     jettonWalletCode: Cell
 ): Address {
 
+    // Notice that the data layout of Jettons isn't fixed and can change.
+    // For an example of a different JettonWalletData,
+    // see the "USDT Jetton operations" section below.
     let initData = JettonWalletData {
         balance: 0,
         owner: ownerAddress,
@@ -194,7 +200,7 @@ message Withdraw {
 }
 
 contract ExampleJettonSender {
-    myJettonWalletAddress: Address;
+    myJettonWalletAddress: Address?;
     myJettonAmount: Int as coins = 0;
 
     init(jettonWalletCode: Cell, jettonMasterAddress: Address) {
@@ -216,7 +222,7 @@ contract ExampleJettonSender {
         );
 
         send(SendParameters {
-            to: self.myJettonWalletAddress,
+            to: self.myJettonWalletAddress!!,
             value: JettonTransferGas,
             body: JettonTransfer{
                 // Unique identifier used to trace transactions across multiple contracts
@@ -248,7 +254,11 @@ contract ExampleJettonSender {
 
 ### Burning Jetton
 
-Jetton burning is the process of permanently removing a specified amount of Jettons from circulation, with no possibility of recovery.
+Jetton burning permanently removes a specified amount of Jettons from circulation, with no possibility of recovery.
+
+The process is different in Jettons with or without a governance mechanism, e.g., the [stablecoin](https://github.com/ton-blockchain/stablecoin-contract): the former can burn tokens in their Jetton Wallets, but the latter only allows burning from within the Jetton Masters (Minters).
+
+The following example is given for the non-governance Jettons:
 
 ```tact
 import "@stdlib/jetton";
@@ -260,6 +270,9 @@ fun calculateJettonWalletAddress(
     jettonWalletCode: Cell
 ): Address {
 
+    // Notice that the data layout of Jettons isn't fixed and can change.
+    // For an example of a different JettonWalletData,
+    // see the "USDT Jetton operations" section below.
     let initData = JettonWalletData {
         balance: 0,
         owner: ownerAddress,
@@ -278,7 +291,7 @@ message ThrowAway {
 }
 
 contract ExampleJettonBurner {
-    myJettonWalletAddress: Address;
+    myJettonWalletAddress: Address?;
     myJettonAmount: Int as coins = 0;
 
     init(jettonWalletCode: Cell, jettonMasterAddress: Address) {
@@ -300,7 +313,7 @@ contract ExampleJettonBurner {
         );
 
         send(SendParameters{
-            to: self.myJettonWalletAddress,
+            to: self.myJettonWalletAddress!!,
             value: JettonBurnGas,
             body: JettonBurn {
                 // Unique identifier used to trace transactions across multiple contracts

@@ -160,14 +160,14 @@ message(0xf8a7ea5) JettonTransfer {
     /// and the remaining Toncoin from the incoming message.
     responseDestination: Address?;
 
-    /// Optional custom data that was attached by the `sender`.
+    /// Optional custom data received from another Jetton Wallet.
     customPayload: Cell?;
 
-    /// The amount of nanotons to be sent to the `responseDestination` address.
+    /// The amount of nanotons to be sent to the `destination` address.
     forwardTonAmount: Int as coins;
 
-    /// Optional custom data to be sent to the `responseDestination` address.
-    forwardPayload: Slice as remaining;
+    /// Optional custom data to be sent to the `destination` address.
+    forwardPayload: Slice as remaining; // (Either Cell ^Cell)
 }
 
 /// Message struct. Available since Tact 1.6.6.
@@ -262,11 +262,11 @@ message(0x178d4519) JettonTransferInternal {
     /// and the remaining Toncoin from the incoming message.
     responseDestination: Address?;
 
-    /// The amount of nanotons to be sent to the `responseDestination` address.
+    /// The amount of nanotons to be sent to the new owner's address.
     forwardTonAmount: Int as coins;
 
-    /// Optional custom data to be sent to the `responseDestination` address.
-    forwardPayload: Slice as remaining;
+    /// Optional custom data to be sent to the new owner's address.
+    forwardPayload: Slice as remaining; // (Either Cell ^Cell)
 }
 
 /// Message struct. Available since Tact 1.6.6.
@@ -339,8 +339,8 @@ message(0x7362d09c) JettonTransferNotification {
     /// Previous owner of the transferred tokens — the regular TON wallet address.
     sender: Address;
 
-    /// Optional custom data that was attached by the `sender`.
-    forwardPayload: Slice as remaining;
+    /// Optional custom data to be sent to the new owner's address.
+    forwardPayload: Slice as remaining; // (Either Cell ^Cell)
 }
 
 /// Message struct. Available since Tact 1.6.6.
@@ -398,7 +398,7 @@ message(0x595f07bc) JettonBurn {
     /// and the remaining Toncoin from the incoming message.
     responseDestination: Address?;
 
-    /// Optional custom data.
+    /// Optional custom data received from another Jetton Wallet.
     customPayload: Cell?;
 }
 
