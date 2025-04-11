@@ -144,6 +144,21 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         if: ${{ matrix.package-manager == 'bun' }}
 
+      - name: Setup PNPM
+        if: ${{ matrix.package-manager == 'pnpm' }}
+        run: |
+          # Installing the specific pnpm version to work around https://github.com/pnpm/pnpm/issues/5000
+          # and not fail suddenly when a release comes that fixes this
+          # NOTE: revisit and simplify this step if/when those bugs with pnpm are resolved
+          npm i -g pnpm@9.12.2
+          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
+          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || '' }}
+          pnpm setup -f
+          # To source .bashrc on Linux:
+          ${{ matrix.os == 'ubuntu-latest' && 'source ~/.bashrc' || '' }}
+          # To expose stuff for pnpm directly on macOS (because otherwise the pre-installed Node.js version gets used):
+          ${{ matrix.os == 'macos-latest' && 'export PNPM_HOME=~/Library/pnpm; export PATH=$PNPM_HOME:$PATH' || '' }}
+
       - name: Check that `build:fast` works in the clean repo
         run: |
           yarn install
@@ -161,15 +176,83 @@ jobs:
           ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
           yarn build
 
-      - name: (npm) Test creation of new Blueprint projects
-        if: ${{ matrix.package-manager == 'npm' }}
+      - name: (${{ matrix.package-manager }}) Setup a new Blueprint project
         run: |
-          npm link
-          # for end-users 'npm create ton@latest' works fine even in PowerShell,
+          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
+          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || '' }}
+
+          # Linkage for npm, yarn, bun, pnpm
+          ${{ matrix.package-manager == 'npm' && 'npm link' || '' }}
+          ${{ matrix.package-manager == 'yarn' && 'yarn link' || '' }}
+          ${{ matrix.package-manager == 'bun' && 'bun link' || '' }}
+          ${{ matrix.package-manager == 'pnpm' && 'pnpm link -g' || '' }}
+
+          # Create an empty Blueprint project
+          #
+          # The 'npm create ton@latest' command works fine even in PowerShell,
           # but it fails on Windows in GitHub Actions because of weird -- expansion
-          npx create-ton@latest test-project --type tact-counter --contractName Counter
+          ${{
+            matrix.package-manager == 'npm'
+            && 'npx create-ton@latest test-project --no-ci'
+            || ''
+          }}
+          ${{
+            matrix.package-manager == 'yarn'
+            && 'yarn create ton test-project --no-ci'
+            || ''
+          }}
+          ${{
+            matrix.package-manager == 'bun'
+            && 'bun create ton@latest test-project --no-ci'
+            || ''
+          }}
+          ${{
+            matrix.package-manager == 'pnpm'
+            && 'cd ..; pnpm create ton@latest test-project --no-ci'
+            || ''
+          }}
+
+          # Hijack dependencies on Tact to avoid redundant npm downloads
           cd test-project
-          npm link @tact-lang/compiler
+          jq 'to_entries | map(if .value | type == "object" then .value |= del(."@tact-lang/compiler") else . end) | from_entries' package.json ${{
+            matrix.os == 'windows-latest'
+            && '-M | Set-Content'
+            || '>' }} temp.json
+          ${{
+            matrix.os == 'windows-latest'
+            && 'Move-Item -Force'
+            || 'mv -f'
+          }} temp.json package.json
+
+          # Install dependencies and setup the linkage to Tact compiler
+          ${{
+            matrix.package-manager == 'npm'
+            && 'npm install; npm link @tact-lang/compiler'
+            || ''
+          }}
+          ${{
+            matrix.package-manager == 'yarn'
+            && 'yarn install; yarn link @tact-lang/compiler'
+            || ''
+          }}
+          ${{
+            matrix.package-manager == 'bun'
+            && 'bun install; bun link @tact-lang/compiler'
+            || ''
+          }}
+          ${{
+            matrix.package-manager == 'pnpm'
+            && 'pnpm install; pnpm link -g @tact-lang/compiler'
+            || ''
+          }}
+
+          # Create a new contract and all related facilities
+          npx blueprint create --type tact-counter Counter
+
+      - name: (npm) Test a new Blueprint project
+        if: ${{ matrix.package-manager == 'npm' }}
+        working-directory: "test-project"
+        run: |
           npm run build
           npm run test
 
@@ -183,44 +266,25 @@ jobs:
           npm i ../  # installing compiler relatively
           npm i @ton/blueprint
 
-      - name: (yarn) Test creation of new Blueprint projects
+      - name: (yarn) Test a new Blueprint project
         if: ${{ matrix.package-manager == 'yarn' }}
+        working-directory: "test-project"
         run: |
-          yarn link
-          yarn create ton test-project --type tact-counter --contractName Counter
-          cd test-project
-          yarn link @tact-lang/compiler
           yarn build
           yarn test
 
-      - name: (pnpm) Test creation of new Blueprint projects
-        if: ${{ matrix.package-manager == 'pnpm' }}
-        run: |
-          # Installing the specific pnpm version to work around https://github.com/pnpm/pnpm/issues/5000
-          # and not fail suddenly when a release comes that fixes this
-          # NOTE: revisit and simplify this step if/when those bugs with pnpm are resolved
-          npm i -g pnpm@9.12.2
-          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
-          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || 'echo windows_noop' }}
-          pnpm setup -f
-          # To source .bashrc on Linux:
-          ${{ matrix.os == 'ubuntu-latest' && 'source ~/.bashrc' || 'echo noop' }}
-          # To expose stuff for pnpm directly on macOS (because otherwise the pre-installed Node.js version gets used):
-          ${{ matrix.os == 'macos-latest' && 'export PNPM_HOME=~/Library/pnpm; export PATH=$PNPM_HOME:$PATH' || 'echo noop' }}
-          pnpm link -g
-          cd ..
-          pnpm create ton@latest test-project --type tact-counter --contractName Counter
-          cd test-project
-          pnpm link -g @tact-lang/compiler
-          pnpm build
-          pnpm test
-
-      - name: (bun) Test creation of new Blueprint projects
+      - name: (bun) Test a new Blueprint project
         if: ${{ matrix.package-manager == 'bun' }}
+        working-directory: "test-project"
         run: |
-          bun link
-          bun create ton@latest test-project --type tact-counter --contractName Counter
-          cd test-project
-          bun link @tact-lang/compiler
           bun run build # without 'run' Bun will use its own bundler
           bun run test  # without 'run' Bun will use its own test runner
+
+      - name: (pnpm) Test a new Blueprint project
+        if: ${{ matrix.package-manager == 'pnpm' }}
+        working-directory: "../test-project"
+        run: |
+          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
+          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || '' }}
+          pnpm build
+          pnpm test
