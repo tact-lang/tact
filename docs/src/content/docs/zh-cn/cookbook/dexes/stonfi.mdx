@@ -318,7 +318,7 @@ message(0xf8a7ea5) JettonTransfer {
 /// https://github.com/ston-fi/sdk/blob/786ece758794bd5c575db8b38f5e5de19f43f0d1/packages/sdk/src/contracts/pTON/v2_1/PtonV2_1.ts
 message(0x01f3835d) ProxyToncoinTransfer {
     // Unique identifier used to trace transactions across multiple contracts
-    // Defaults to 0, which means we don't mark messages to trace their chains
+    // Defaults to 0, which means we don't mark messages to trace requests
     queryId: Int as uint64 = 0;
 
     // Toncoin amount for the swap

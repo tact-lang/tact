@@ -1,12 +1,5 @@
 import "@ton/test-utils";
-import {
-    Address,
-    beginCell,
-    Cell,
-    contractAddress,
-    SendMode,
-    toNano,
-} from "@ton/core";
+import { Address, beginCell, Cell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 
@@ -24,66 +17,16 @@ import {
     printBenchmarkTable,
 } from "@/benchmarks/utils/gas";
 import benchmarkResults from "@/benchmarks/jetton/results_gas.json";
-import { join, resolve } from "path";
-import { readFileSync } from "fs";
-import { posixNormalize } from "@/utils/filePath";
+import { join } from "path";
 import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
+    deployFuncJettonMinter,
     getJettonWalletRaw,
     sendBurnRaw,
     sendDiscoveryRaw,
     sendMintRaw,
     sendTransferRaw,
 } from "@/benchmarks/utils/jetton";
-
-const loadFunCJettonsBoc = () => {
-    const bocMinter = readFileSync(
-        posixNormalize(
-            resolve(
-                __dirname,
-                "../contracts/func/output/jetton-minter-discoverable.boc",
-            ),
-        ),
-    );
-
-    const bocWallet = readFileSync(
-        posixNormalize(
-            resolve(__dirname, "../contracts/func/output/jetton-wallet.boc"),
-        ),
-    );
-
-    return { bocMinter, bocWallet };
-};
-
-const deployFuncJettonMinter = async (
-    via: SandboxContract<TreasuryContract>,
-) => {
-    const jettonData = loadFunCJettonsBoc();
-    const minterCell = Cell.fromBoc(jettonData.bocMinter)[0]!;
-    const walletCell = Cell.fromBoc(jettonData.bocWallet)[0]!;
-
-    const stateInitMinter = beginCell()
-        .storeCoins(0)
-        .storeAddress(via.address)
-        .storeRef(beginCell().storeUint(1, 1).endCell()) // as salt
-        .storeRef(walletCell)
-        .endCell();
-
-    const init = { code: minterCell, data: stateInitMinter };
-
-    const minterAddress = contractAddress(0, init);
-
-    return {
-        minterAddress,
-        result: await via.send({
-            to: minterAddress,
-            value: toNano("0.1"),
-            init,
-            body: beginCell().endCell(),
-            sendMode: SendMode.PAY_GAS_SEPARATELY,
-        }),
-    };
-};
 
 describe("Jetton", () => {
     let blockchain: Blockchain;
@@ -131,7 +74,7 @@ describe("Jetton", () => {
         const msg: JettonUpdateContent = {
             $$type: "JettonUpdateContent",
             queryId: 0n,
-            content: new Cell(),
+            newContent: new Cell(),
         };
 
         jettonMinter = blockchain.openContract(
