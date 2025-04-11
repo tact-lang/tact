@@ -27,7 +27,7 @@ contract JettonMinterNotcoin(
 
         if (msg.responseDestination.isNotNone()) {
             message(MessageParameters {
-                to: msg.responseDestination,
+                to: msg.responseDestination!!,
                 body: JettonExcesses{ queryId: msg.queryId }.toCell(),
                 value: 0,
                 bounce: false,
@@ -56,7 +56,7 @@ contract JettonMinterNotcoin(
         let ctx = context();
         throwUnless(73, ctx.sender == self.owner);
         self.totalSupply += msg.mintMessage.amount;
-        
+
         forceBasechain(msg.receiver);
         checkAmountIsEnoughToTransfer(ctx.value, msg.mintMessage.forwardTonAmount, ctx.readForwardFee());
 

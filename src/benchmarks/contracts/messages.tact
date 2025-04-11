@@ -51,7 +51,7 @@ message(0x7362d09c) JettonNotification {
 message(0x595f07bc) JettonBurn {
     queryId: Int as uint64;
     amount: Int as coins;
-    responseDestination: Address;
+    responseDestination: Address?;
     customPayload: Cell?;
 }
 
@@ -59,7 +59,7 @@ message(0x7bdd97de) JettonBurnNotification {
     queryId: Int as uint64;
     amount: Int as coins;
     sender: Address;
-    responseDestination: Address;
+    responseDestination: Address?;
 }
 
 message(0xd53276db) JettonExcesses {
