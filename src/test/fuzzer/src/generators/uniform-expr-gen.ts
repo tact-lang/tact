@@ -63,7 +63,7 @@ export const NonTerminal = {
     LiteralOptString: { terminal: false, literal: true, id: 24 },
 } as const;
 
-type NonTerminalEnum = (typeof NonTerminal)[keyof typeof NonTerminal];
+export type NonTerminalEnum = (typeof NonTerminal)[keyof typeof NonTerminal];
 
 const Terminal = {
     integer: { terminal: true, id: 1 },
