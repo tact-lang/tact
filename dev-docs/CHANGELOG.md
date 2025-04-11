@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Language features
 
 - Optimized message deserialization with native loading of `Maybe Cell` fields: PR [#2661](https://github.com/tact-lang/tact/pull/2661)
+- Optimized message serialization with native stores of `Maybe Cell` fields: PR [#2647](https://github.com/tact-lang/tact/pull/2647)
+- Zero inequality comparison optimization: PR [#2655](https://github.com/tact-lang/tact/pull/2655)
 - Compiler now generates more readable code for augmented assignment operators: PR [#2710](https://github.com/tact-lang/tact/pull/2710)
 - [fix] Compiler now disallows `ton()` with empty or blank string: PR [#2681](https://github.com/tact-lang/tact/pull/2681)
 - [fix] Compiler now disallows `ton()` with invalid number value or negative numbers: PR [#2684](https://github.com/tact-lang/tact/pull/2684)
@@ -22,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Generated TypeScript wrappers now export all functions for serialization/deserialization: PR [#2706](https://github.com/tact-lang/tact/pull/2706)
 - [fix] Compiler now correctly generates code for functions with several wildcard parameters: PR [#2703](https://github.com/tact-lang/tact/pull/2703)
 - [fix] Compiler now checks that "override" functions and constants have a virtual or abstract modifier in the parent trait: PR [#2700](https://github.com/tact-lang/tact/pull/2700)
+- [fix] Processing of `null` values of optional types in the `dump` builtin: PR [#2730](https://github.com/tact-lang/tact/pull/2730)
 
 ### Standard Library
 
@@ -43,6 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Novus Nota](https://github.com/novusnota)
 - [skywardboundd](https://github.com/skywardboundd)
 - [Petr Makhnev](https://github.com/i582)
+- [Anton Trunov](https://github.com/anton-trunov)
+- [verytactical](https://github.com/verytactical)
 
 ## [1.6.5] - 2025-03-28
 
