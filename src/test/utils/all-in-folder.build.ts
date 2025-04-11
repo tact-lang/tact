@@ -100,6 +100,12 @@ export const runParallel = async (
         ),
     );
 
+    for (const { type, message } of results.flatMap(
+        (result) => result.messages,
+    )) {
+        console[type](message);
+    }
+
     if (results.some((result) => !result.ok)) {
         throw new Error("Tact projects compilation failed");
     }
