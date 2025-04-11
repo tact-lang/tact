@@ -585,10 +585,10 @@ Read more: [Expressions](/book/expressions).
 fun showcase() {
     // As we've seen above, the let statement defines new variables.
     // You must always provide an initial value, but type ascriptions
-    // aren't mandatory for most cases, except for optionals and maps.
+    // aren't mandatory except for maps and null values.
     let theAnswer = 42;                // type ascription is not required here,
     let m: map<Int, Int> = emptyMap(); // but we must specify it for maps
-                                       // and nullable types (optionals)
+    let opt: Int? = null;              // and when assigning a null value.
 
     // Block statement creates an enclosed scope.
     {

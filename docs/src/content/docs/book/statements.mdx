@@ -21,12 +21,13 @@ let vExplicitCtx: Context = context(); // explicit type Context, a built-in Stru
 let vCtx = context();                  // inferred type Context
 ```
 
-Note that the initial value of `null{:tact}` can mean either an empty [`map<K, V>{:tact}`](/book/maps) with arbitrary `K{:tact}` and `V{:tact}` types or the intentional absence of any other value for the [optional](/book/optionals) type. Therefore, whenever you declare an [optional](/book/optionals) or a [`map<K, V>{:tact}`](/book/maps), you must explicitly specify the type, as it cannot be inferred:
+Note that the initial value of `null{:tact}` can mean either an empty [`map<K, V>{:tact}`](/book/maps) with arbitrary `K{:tact}` and `V{:tact}` types or the intentional absence of any other value for the [optional](/book/optionals) type. Therefore, whenever you declare a [`map<K, V>{:tact}`](/book/maps) or assign a [`null{:tact}`](/book/optionals) value, you must explicitly specify the type, as it cannot be inferred:
 
 ```tact
 let vOptional: Int? = null; // explicit type Int or null
 let vOptInt = 42;           // implicit type Int
-vOptInt = null;             // COMPILATION ERROR!
+vOptInt = null;             // COMPILATION ERROR, type mismatch!
+let vOpt = null;            // COMPILATION ERROR, cannot infer type!
 
 let vMap: map<Int, Int> = emptyMap(); // explicit type map<Int, Int>
 let vMapWithSerialization: map<Int as uint8, Int as uint8> = emptyMap();
