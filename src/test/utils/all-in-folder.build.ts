@@ -1,6 +1,6 @@
 import { glob } from "glob";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
-import type { Options, Project } from "@/config/parseConfig";
+import type { Mode, Options, Project } from "@/config/parseConfig";
 import { basename, dirname, extname, join, resolve } from "path";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 import { Logger } from "@/context/logger";
@@ -65,17 +65,19 @@ export const allInFolder = async (
     folder: string,
     globs: string[],
     options: Options = { debug: true, external: true },
+    mode: Mode = "full",
 ) => {
     try {
         const contracts = globSync(globs, { cwd: folder });
 
-        const projects = contracts.map((contractPath) => {
+        const projects: Project[] = contracts.map((contractPath) => {
             const contractOptions: Options = structuredClone(options);
             return {
                 name: basename(contractPath, extname(contractPath)),
                 path: contractPath,
                 output: join(dirname(contractPath), "output"),
                 options: contractOptions,
+                mode,
             };
         });
 
