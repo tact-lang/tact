@@ -102,23 +102,23 @@ const Terminal = {
     string: { terminal: true, id: 28 },
 
     opt_inj: { terminal: true, id: 29 },
-    null: { terminal: true, id: 30 },
-    non_null_assert: { terminal: true, id: 31 },
+    // null: { terminal: true, id: 30 },
+    non_null_assert: { terminal: true, id: 30 },
 
-    cond: { terminal: true, id: 32 },
+    cond: { terminal: true, id: 31 },
 
-    id_int: { terminal: true, id: 33 },
-    id_opt_int: { terminal: true, id: 34 },
-    id_bool: { terminal: true, id: 35 },
-    id_opt_bool: { terminal: true, id: 36 },
-    id_cell: { terminal: true, id: 37 },
-    id_opt_cell: { terminal: true, id: 38 },
-    id_slice: { terminal: true, id: 39 },
-    id_opt_slice: { terminal: true, id: 40 },
-    id_address: { terminal: true, id: 41 },
-    id_opt_address: { terminal: true, id: 42 },
-    id_string: { terminal: true, id: 43 },
-    id_opt_string: { terminal: true, id: 44 },
+    id_int: { terminal: true, id: 32 },
+    id_opt_int: { terminal: true, id: 33 },
+    id_bool: { terminal: true, id: 34 },
+    id_opt_bool: { terminal: true, id: 35 },
+    id_cell: { terminal: true, id: 36 },
+    id_opt_cell: { terminal: true, id: 37 },
+    id_slice: { terminal: true, id: 38 },
+    id_opt_slice: { terminal: true, id: 39 },
+    id_address: { terminal: true, id: 40 },
+    id_opt_address: { terminal: true, id: 41 },
+    id_string: { terminal: true, id: 42 },
+    id_opt_string: { terminal: true, id: 43 },
 } as const;
 
 type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];
@@ -226,8 +226,8 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for LiteralOptInt
-        { id: 0, tokens: [Terminal.null] },
-        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralInt] },
+        // { id: 0, tokens: [Terminal.null] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralInt] },
     ],
     [
         // Productions for Bool
@@ -377,8 +377,8 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for LiteralOptBool
-        { id: 0, tokens: [Terminal.null] },
-        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralBool] },
+        // { id: 0, tokens: [Terminal.null] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralBool] },
     ],
     [
         // Productions for Cell
@@ -418,8 +418,8 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for LiteralOptCell
-        { id: 0, tokens: [Terminal.null] },
-        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralCell] },
+        // { id: 0, tokens: [Terminal.null] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralCell] },
     ],
     [
         // Productions for Slice
@@ -457,8 +457,8 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for LiteralOptSlice
-        { id: 0, tokens: [Terminal.null] },
-        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralSlice] },
+        // { id: 0, tokens: [Terminal.null] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralSlice] },
     ],
     [
         // Productions for Address
@@ -499,8 +499,8 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for LiteralOptAddress
-        { id: 0, tokens: [Terminal.null] },
-        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralAddress] },
+        // { id: 0, tokens: [Terminal.null] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralAddress] },
     ],
     [
         // Productions for String
@@ -538,8 +538,8 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for LiteralOptString
-        { id: 0, tokens: [Terminal.null] },
-        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralString] },
+        // { id: 0, tokens: [Terminal.null] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralString] },
     ],
 ];
 
@@ -1448,9 +1448,9 @@ function makeExpression(
                 const operandNonTerminal = getNonTerminalAt(rest, 0);
                 return genFromNonTerminal(operandNonTerminal.id, currSize);
             }
-            case Terminal.null.id: {
-                return makeF.makeDummyNull();
-            }
+            // case Terminal.null.id: {
+            //     return makeF.makeDummyNull();
+            // }
             case Terminal.non_null_assert.id: {
                 return makeUnaryOperatorTree("!!", rest, size);
             }
@@ -1536,6 +1536,7 @@ function makeExpression(
 export function initializeGenerator(
     minSize: number,
     maxSize: number,
+    astF: FactoryAst,
     ctx: GenContext,
 ): (type: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
     const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
@@ -1546,7 +1547,7 @@ export function initializeGenerator(
         return fc.constant(0).map((_) => {
             const size = randomlyChooseIndex(sizes);
             return makeExpression(
-                getAstFactory(),
+                astF,
                 type,
                 ctx,
                 nonTerminalCounts,

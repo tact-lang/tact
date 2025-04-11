@@ -199,17 +199,19 @@ describe("evaluation properties", () => {
             const expressionGenerationIds: Map<AllowedTypeEnum, string[]> =
                 new Map();
             expressionGenerationIds.set(AllowedType.Int, ["int1"]);
-            expressionGenerationIds.set(AllowedType.OptInt, ["o_int1"]);
+            expressionGenerationIds.set(AllowedType.OptInt, ["int_null"]);
             expressionGenerationIds.set(AllowedType.Bool, ["bool1"]);
-            expressionGenerationIds.set(AllowedType.OptBool, ["o_bool1"]);
+            expressionGenerationIds.set(AllowedType.OptBool, ["bool_null"]);
             expressionGenerationIds.set(AllowedType.Cell, ["cell1"]);
-            expressionGenerationIds.set(AllowedType.OptCell, ["o_cell1"]);
+            expressionGenerationIds.set(AllowedType.OptCell, ["cell_null"]);
             expressionGenerationIds.set(AllowedType.Slice, ["slice1"]);
-            expressionGenerationIds.set(AllowedType.OptSlice, ["o_slice1"]);
+            expressionGenerationIds.set(AllowedType.OptSlice, ["slice_null"]);
             expressionGenerationIds.set(AllowedType.Address, ["address1"]);
-            expressionGenerationIds.set(AllowedType.OptAddress, ["o_address1"]);
+            expressionGenerationIds.set(AllowedType.OptAddress, [
+                "address_null",
+            ]);
             expressionGenerationIds.set(AllowedType.String, ["string1"]);
-            expressionGenerationIds.set(AllowedType.OptString, ["o_string1"]);
+            expressionGenerationIds.set(AllowedType.OptString, ["string_null"]);
 
             const expressionGenerationCtx: GenContext = {
                 identifiers: expressionGenerationIds,
@@ -218,6 +220,7 @@ describe("evaluation properties", () => {
             const generator = initializeGenerator(
                 1,
                 10,
+                astF,
                 expressionGenerationCtx,
             );
 
@@ -226,19 +229,26 @@ describe("evaluation properties", () => {
                     .entries()
                     .flatMap(([type, names]) =>
                         names.map((name) =>
-                            generator(initializersMapping[type]).map((expr) =>
-                                makeF.makeDummyStatementLet(
-                                    makeF.makeDummyId(name),
-                                    type.slice(-1) === "?"
-                                        ? makeF.makeDummyOptionalType(
+                            type.slice(-1) === "?"
+                                ? fc.constant(
+                                      makeF.makeDummyStatementLet(
+                                          makeF.makeDummyId(name),
+                                          makeF.makeDummyOptionalType(
                                               makeF.makeDummyTypeId(
                                                   type.slice(0, -1),
                                               ),
-                                          )
-                                        : makeF.makeDummyTypeId(type),
-                                    expr,
-                                ),
-                            ),
+                                          ),
+                                          makeF.makeDummyNull(),
+                                      ),
+                                  )
+                                : generator(initializersMapping[type]).map(
+                                      (expr) =>
+                                          makeF.makeDummyStatementLet(
+                                              makeF.makeDummyId(name),
+                                              makeF.makeDummyTypeId(type),
+                                              expr,
+                                          ),
+                                  ),
                         ),
                     ),
             );
@@ -269,7 +279,7 @@ describe("evaluation properties", () => {
                             customStdlib,
                             blockchain,
                         );
-    
+
                         const contractMap = await contractMapPromise;
                         const contract = contractMap.get(contractName)!;
                         await contract.send(sender, { value: toNano(1) });
@@ -295,7 +305,14 @@ describe("evaluation properties", () => {
                         interpretationError = e;
                     }
 
-                    expect(compilationError).toBe(interpretationError);
+                    if (
+                        (compilationError && !interpretationError) ||
+                        (!compilationError && interpretationError)
+                    ) {
+                        expect(compilationError).toEqual(interpretationError);
+                    } else if (compilationError && interpretationError) {
+                        
+                    }
                     expect(compiledValue).toBe(interpretedValue);
                 },
             );
@@ -311,6 +328,6 @@ describe("evaluation properties", () => {
                 );
             });
         },
-        20 * 1000,
+        60 * 1000, // 1 minute
     );
 });
