@@ -15,15 +15,20 @@ const main = async () => {
         // Directory does not exist, no need to remove
     }
 
-    await allInFolder(__dirname, ["contracts/**/*.tact"], {
-        debug: false,
-        experimental: { inline: true },
-        safety: { nullChecks: false },
-        optimizations: {
-            alwaysSaveContractData: false,
-            internalExternalReceiversOutsideMethodsMap: true,
+    await allInFolder(
+        __dirname,
+        ["contracts/**/*.tact"],
+        {
+            debug: false,
+            experimental: { inline: true },
+            safety: { nullChecks: false },
+            optimizations: {
+                alwaysSaveContractData: false,
+                internalExternalReceiversOutsideMethodsMap: true,
+            },
         },
-    });
+        "fullWithDecompilation",
+    );
 };
 
 void main();
