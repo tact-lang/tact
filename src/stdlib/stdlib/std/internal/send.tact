@@ -476,9 +476,9 @@ asm fun cashback(to: Address) {
 
 /// Global function.
 ///
-/// Queues the message to be sent by specifying the complete `cell` and the message `mode`.
+/// Queues the message to be sent by specifying the complete `msg` cell and the message `mode`.
 ///
-/// Prefer using a much more common and user-friendly `send()` function unless you have a complex logic that can't be expressed otherwise.
+/// Prefer using a much more common and user-friendly `send()` function unless you have a complex logic that cannot be expressed otherwise.
 ///
 /// #### Exit codes
 ///
@@ -490,7 +490,7 @@ asm fun cashback(to: Address) {
 ///
 /// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
-asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
+asm fun nativeSendMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 
 /// Global function. Available since Tact 1.5.0.
 ///
