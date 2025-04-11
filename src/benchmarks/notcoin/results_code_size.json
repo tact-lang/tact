@@ -61,8 +61,8 @@
       }
     },
     {
-      "label": "1.6.5 with fixed TLB API",
-      "pr": "https://github.com/tact-lang/tact/pull/123",
+      "label": "1.6.5 with fixed TLB types",
+      "pr": "https://github.com/tact-lang/tact/pull/2735",
       "size": {
         "minter cells": "31",
         "minter bits": "16678",
