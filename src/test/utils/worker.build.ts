@@ -33,7 +33,7 @@ const main = async ({
 
     const compileResult = await run({
         config: { projects },
-        logger: new Logger(LogLevel.INFO),
+        logger: new Logger(LogLevel.WARN),
         project,
         stdlib,
     });
