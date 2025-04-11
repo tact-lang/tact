@@ -37,7 +37,7 @@ jobs:
           # Install dependencies, gen and build the compiler
           yarn install
           yarn clean
-          ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
+          yarn cross-env BUILD_THREADS=4 yarn gen
           yarn build
           # Test some specific things for backwards compatibility.
           # It's important to restrain from using too much of Node.js 22+ features
@@ -93,8 +93,8 @@ jobs:
           # Hijack the dependency on Tact to avoid redundant npm downloads
           jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
           mv temp.json package.json
-          yarn install
           yarn link @tact-lang/compiler
+          yarn install
           yarn build
           yarn test
 
@@ -117,8 +117,8 @@ jobs:
           # Hijack the dependency on Tact to avoid redundant npm downloads
           jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
           Move-Item temp.json package.json -Force
-          yarn install
           yarn link @tact-lang/compiler
+          yarn install
           yarn build
           yarn test
 
@@ -173,7 +173,7 @@ jobs:
           # corepack enable
           yarn install
           yarn clean
-          ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
+          yarn cross-env BUILD_THREADS=4 yarn gen
           yarn build
 
       - name: (${{ matrix.package-manager }}) Setup a new Blueprint project
@@ -218,31 +218,27 @@ jobs:
             matrix.os == 'windows-latest'
             && '-M | Set-Content'
             || '>' }} temp.json
-          ${{
-            matrix.os == 'windows-latest'
-            && 'Move-Item -Force'
-            || 'mv -f'
-          }} temp.json package.json
+          ${{ matrix.os == 'windows-latest' && 'Move-Item -Force' || 'mv -f' }} temp.json package.json
 
-          # Install dependencies and setup the linkage to Tact compiler
+          # Setup the linkage to Tact compiler and install dependencies
           ${{
             matrix.package-manager == 'npm'
-            && 'npm install; npm link @tact-lang/compiler'
+            && 'npm link @tact-lang/compiler; npm install'
             || ''
           }}
           ${{
             matrix.package-manager == 'yarn'
-            && 'yarn install; yarn link @tact-lang/compiler'
+            && 'yarn link @tact-lang/compiler; yarn install'
             || ''
           }}
           ${{
             matrix.package-manager == 'bun'
-            && 'bun install; bun link @tact-lang/compiler'
+            && 'bun link @tact-lang/compiler; bun install'
             || ''
           }}
           ${{
             matrix.package-manager == 'pnpm'
-            && 'pnpm install; pnpm link -g @tact-lang/compiler'
+            && 'pnpm link -g @tact-lang/compiler; pnpm install'
             || ''
           }}
 
