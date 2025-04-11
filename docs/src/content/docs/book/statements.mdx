@@ -11,11 +11,11 @@ The following statements can appear anywhere in a [function](/book/functions) bo
 
 The `let{:tact}` statement allows local and [block](#block)-scoped variable declaration.
 
-In Tact, declaring a local variable always requires an initial value. However, the type ascription can be omitted, and Tact will try to infer it from the initial value:
+In Tact, declaring a local variable always **requires** an initial value. However, the type ascription can be omitted, and Tact will try to infer it from the initial value:
 
 ```tact
 let value: Int = 123; // full declaration with type and value
-let vInferred = 123;  // inferred type Int
+let vInferred = 123;  // inferred type Int from the mandatory value
 
 let vExplicitCtx: Context = context(); // explicit type Context, a built-in Struct
 let vCtx = context();                  // inferred type Context

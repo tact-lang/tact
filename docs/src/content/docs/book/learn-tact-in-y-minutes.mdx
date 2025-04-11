@@ -583,9 +583,12 @@ Read more: [Expressions](/book/expressions).
 
 ```tact
 fun showcase() {
-    // let statement to define new variables, as we've seen above.
-    let theAnswer = 42;                // type ascription is optional for everything,
-    let m: map<Int, Int> = emptyMap(); // except for optionals and maps
+    // As we've seen above, the let statement defines new variables.
+    // You must always provide an initial value, but type ascriptions
+    // aren't mandatory for most cases, except for optionals and maps.
+    let theAnswer = 42;                // type ascription is not required here,
+    let m: map<Int, Int> = emptyMap(); // but we must specify it for maps
+                                       // and nullable types (optionals)
 
     // Block statement creates an enclosed scope.
     {
