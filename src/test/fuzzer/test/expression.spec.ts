@@ -295,8 +295,8 @@ describe("evaluation properties", () => {
                         interpretationError = e;
                     }
 
-                    expect(compiledValue).toBe(interpretedValue);
                     expect(compilationError).toBe(interpretationError);
+                    expect(compiledValue).toBe(interpretedValue);
                 },
             );
             await checkAsyncProperty(property, ([bindings, expr]) => {

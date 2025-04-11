@@ -35,7 +35,7 @@ export type GenContext = {
     contractNames: string[];
 };
 
-const NonTerminal = {
+export const NonTerminal = {
     Initial: { terminal: false, literal: false, id: 0 },
     Int: { terminal: false, literal: false, id: 1 },
     OptInt: { terminal: false, literal: false, id: 2 },
