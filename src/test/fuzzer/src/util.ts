@@ -97,15 +97,36 @@ function makeParams<T>(
         seed: GlobalContext.config.seed,
         reporter(out) {
             if (out.failed) {
-                if (
-                    out.counterexample !== null &&
-                    out.errorInstance instanceof Error
-                ) {
-                    out.errorInstance.message += counterexamplePrinter(
-                        out.counterexample,
-                    );
+                let errorSufffix = "";
+                if (out.counterexample !== null) {
+                    errorSufffix = counterexamplePrinter(out.counterexample);
                 }
-                throw new Error(fc.defaultReportMessage(out));
+                throw new Error(fc.defaultReportMessage(out) + errorSufffix);
+            }
+        },
+    };
+}
+/**
+ * Create parameters for custom property checking.
+ */
+function makeAsyncParams<T>(
+    counterexamplePrinter: (generated: T) => string,
+    numRuns: number | undefined,
+): fc.Parameters<T> {
+    return {
+        numRuns: numRuns ?? GlobalContext.config.numRuns,
+        seed: GlobalContext.config.seed,
+        reporter: undefined,
+        async asyncReporter(out) {
+            if (out.failed) {
+                let errorSuffix = "";
+                if (out.counterexample !== null) {
+                    errorSuffix = counterexamplePrinter(out.counterexample);
+                    out.error;
+                }
+                throw new Error(
+                    (await fc.asyncDefaultReportMessage(out)) + errorSuffix,
+                );
             }
         },
     };
@@ -130,7 +151,7 @@ export async function checkAsyncProperty<T>(
     counterexamplePrinter: (generated: T) => string,
     numRuns: number | undefined = undefined,
 ) {
-    await fc.assert(property, makeParams(counterexamplePrinter, numRuns));
+    await fc.assert(property, makeAsyncParams(counterexamplePrinter, numRuns));
 }
 
 export function astNodeCounterexamplePrinter(

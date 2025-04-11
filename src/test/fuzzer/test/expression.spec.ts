@@ -260,43 +260,54 @@ describe("evaluation properties", () => {
                         ],
                     );
 
-                    let contractMapPromise = buildModule(
-                        astF,
-                        contractModule,
-                        customStdlib,
-                        blockchain,
-                    );
+                    let compiledValue: bigint | undefined;
+                    let compilationError: Error | undefined;
+                    try {
+                        let contractMapPromise = buildModule(
+                            astF,
+                            contractModule,
+                            customStdlib,
+                            blockchain,
+                        );
+    
+                        const contractMap = await contractMapPromise;
+                        const contract = contractMap.get(contractName)!;
+                        await contract.send(sender, { value: toNano(1) });
+                        compiledValue = await contract.getInt();
+                    } catch (e: any) {
+                        compilationError = e;
+                    }
 
-                    const contractMap = await contractMapPromise;
-                    const contract = contractMap.get(contractName)!;
-                    await contract.send(sender, { value: toNano(1) });
+                    let interpretedValue: bigint | undefined;
+                    let interpretationError: Error | undefined;
+                    try {
+                        const interpreter = new Interpreter(
+                            astUtil,
+                            emptyCompilerContext,
+                        );
+                        bindings.forEach((bind) => {
+                            interpreter.interpretStatement(bind);
+                        });
+                        const result = interpreter.interpretExpression(expr);
+                        expect(result.kind).toBe("number");
+                        interpretedValue = (result as Ast.Number).value;
+                    } catch (e: any) {
+                        interpretationError = e;
+                    }
 
-                    const compiledValue = await contract.getInt();
-
-                    const interpreter = new Interpreter(
-                        astUtil,
-                        emptyCompilerContext,
-                    );
-                    bindings.forEach((bind) => {
-                        interpreter.interpretStatement(bind);
-                    });
-                    const intrepretedValue =
-                        interpreter.interpretExpression(expr);
-
-                    expect(intrepretedValue.kind).toBe("number");
-                    expect(compiledValue).toBe(
-                        (intrepretedValue as Ast.Number).value,
-                    );
+                    expect(compiledValue).toBe(interpretedValue);
+                    expect(compilationError).toBe(interpretationError);
                 },
             );
-            checkAsyncProperty(property, ([bindings, expr]) => {
+            await checkAsyncProperty(property, ([bindings, expr]) => {
                 return (
                     `\n-----\nGenerated bindings:\n` +
                     bindings
                         .map((bind) => GlobalContext.format(bind))
                         .join("\n") +
-                    `Generated expression:\n` +
-                    GlobalContext.format(expr)
+                    `\nGenerated expression:\n` +
+                    GlobalContext.format(expr) +
+                    `\n-----\n`
                 );
             });
         },

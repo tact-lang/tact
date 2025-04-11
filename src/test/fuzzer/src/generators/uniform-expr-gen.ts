@@ -76,48 +76,48 @@ const Terminal = {
     bit_and: { terminal: true, id: 9 },
     bit_or: { terminal: true, id: 10 },
     bit_xor: { terminal: true, id: 11 },
-    unary_plus: { terminal: true, id: 12 },
-    unary_minus: { terminal: true, id: 13 },
-    bit_not: { terminal: true, id: 14 },
+    // unary_plus: { terminal: true, id: 12 },
+    unary_minus: { terminal: true, id: 12 },
+    bit_not: { terminal: true, id: 13 },
 
-    bool: { terminal: true, id: 15 },
-    eq: { terminal: true, id: 16 },
-    neq: { terminal: true, id: 17 },
-    lt: { terminal: true, id: 18 },
-    le: { terminal: true, id: 19 },
-    gt: { terminal: true, id: 20 },
-    ge: { terminal: true, id: 21 },
-    and: { terminal: true, id: 22 },
-    or: { terminal: true, id: 23 },
-    not: { terminal: true, id: 24 },
+    bool: { terminal: true, id: 14 },
+    eq: { terminal: true, id: 15 },
+    neq: { terminal: true, id: 16 },
+    lt: { terminal: true, id: 17 },
+    le: { terminal: true, id: 18 },
+    gt: { terminal: true, id: 19 },
+    ge: { terminal: true, id: 20 },
+    and: { terminal: true, id: 21 },
+    or: { terminal: true, id: 22 },
+    not: { terminal: true, id: 23 },
 
-    cell: { terminal: true, id: 25 },
-    code_of: { terminal: true, id: 26 },
+    cell: { terminal: true, id: 24 },
+    code_of: { terminal: true, id: 25 },
 
-    slice: { terminal: true, id: 27 },
+    slice: { terminal: true, id: 26 },
 
-    address: { terminal: true, id: 28 },
+    address: { terminal: true, id: 27 },
 
-    string: { terminal: true, id: 29 },
+    string: { terminal: true, id: 28 },
 
-    opt_inj: { terminal: true, id: 30 },
-    null: { terminal: true, id: 31 },
-    non_null_assert: { terminal: true, id: 32 },
+    opt_inj: { terminal: true, id: 29 },
+    null: { terminal: true, id: 30 },
+    non_null_assert: { terminal: true, id: 31 },
 
-    cond: { terminal: true, id: 33 },
+    cond: { terminal: true, id: 32 },
 
-    id_int: { terminal: true, id: 34 },
-    id_opt_int: { terminal: true, id: 35 },
-    id_bool: { terminal: true, id: 36 },
-    id_opt_bool: { terminal: true, id: 37 },
-    id_cell: { terminal: true, id: 38 },
-    id_opt_cell: { terminal: true, id: 39 },
-    id_slice: { terminal: true, id: 40 },
-    id_opt_slice: { terminal: true, id: 41 },
-    id_address: { terminal: true, id: 42 },
-    id_opt_address: { terminal: true, id: 43 },
-    id_string: { terminal: true, id: 44 },
-    id_opt_string: { terminal: true, id: 45 },
+    id_int: { terminal: true, id: 33 },
+    id_opt_int: { terminal: true, id: 34 },
+    id_bool: { terminal: true, id: 35 },
+    id_opt_bool: { terminal: true, id: 36 },
+    id_cell: { terminal: true, id: 37 },
+    id_opt_cell: { terminal: true, id: 38 },
+    id_slice: { terminal: true, id: 39 },
+    id_opt_slice: { terminal: true, id: 40 },
+    id_address: { terminal: true, id: 41 },
+    id_opt_address: { terminal: true, id: 42 },
+    id_string: { terminal: true, id: 43 },
+    id_opt_string: { terminal: true, id: 44 },
 } as const;
 
 type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];
@@ -187,13 +187,13 @@ const productions: ExprProduction[][] = [
             index: 9,
             tokens: [Terminal.bit_xor, NonTerminal.Int, NonTerminal.Int],
         },
-        { index: 10, tokens: [Terminal.unary_plus, NonTerminal.Int] },
-        { index: 11, tokens: [Terminal.unary_minus, NonTerminal.Int] },
-        { index: 12, tokens: [Terminal.bit_not, NonTerminal.Int] },
+        // { index: 10, tokens: [Terminal.unary_plus, NonTerminal.Int] },
+        { index: 10, tokens: [Terminal.unary_minus, NonTerminal.Int] },
+        { index: 11, tokens: [Terminal.bit_not, NonTerminal.Int] },
 
-        { index: 13, tokens: [Terminal.non_null_assert, NonTerminal.OptInt] },
+        { index: 12, tokens: [Terminal.non_null_assert, NonTerminal.OptInt] },
         {
-            index: 14,
+            index: 13,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -201,8 +201,8 @@ const productions: ExprProduction[][] = [
                 NonTerminal.Int,
             ],
         },
-        { index: 15, tokens: [Terminal.id_int] },
-        { index: 16, tokens: [NonTerminal.LiteralInt] },
+        { index: 14, tokens: [Terminal.id_int] },
+        { index: 15, tokens: [NonTerminal.LiteralInt] },
     ],
     [
         // Productions for OptInt
@@ -1218,9 +1218,9 @@ function makeExpression(
                     size,
                 );
             }
-            case Terminal.unary_plus.id: {
-                return makeUnaryOperatorTree("+", rest, size);
-            }
+            // case Terminal.unary_plus.id: {
+            //     return makeUnaryOperatorTree("+", rest, size);
+            // }
             case Terminal.unary_minus.id: {
                 return makeUnaryOperatorTree("-", rest, size);
             }
