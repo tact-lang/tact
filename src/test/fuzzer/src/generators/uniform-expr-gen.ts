@@ -1,7 +1,9 @@
 import type * as Ast from "@/ast/ast";
 import { getAstFactory } from "@/ast/ast-helpers";
+import type { FactoryAst } from "@/ast/ast-helpers";
 import { getMakeAst } from "@/ast/generated/make-factory";
-import type { MakeAstFactory } from "@/ast/generated/make-factory";
+import { getAstUtil } from "@/ast/util";
+import { Interpreter } from "@/optimizer/interpreter";
 import { beginCell } from "@ton/core";
 import type { Address, Cell } from "@ton/core";
 import { sha256_sync } from "@ton/crypto";
@@ -1070,13 +1072,16 @@ function getProductionAt(prods: ExprProduction[], id: number): ExprProduction {
 }
 
 function makeExpression(
-    makeF: MakeAstFactory,
+    astF: FactoryAst,
     type: NonTerminalEnum,
     ctx: GenContext,
     nonTerminalCounts: number[][][],
     sizeSplitCounts: number[][][][][],
     size: number,
 ): Ast.Expression {
+    const makeF = getMakeAst(astF);
+    const interpreter = new Interpreter(getAstUtil(astF));
+
     function genFromNonTerminal(id: number, size: number): Ast.Expression {
         const prods = getProductions(id);
         const nonTerminalOptions = lookupNonTerminalCounts(
@@ -1128,6 +1133,41 @@ function makeExpression(
         return randomlyChooseIndex(sizeSplits) + 1;
     }
 
+    function handleShiftOperators(
+        op: Ast.BinaryOperation,
+        expr: Ast.Expression,
+    ): Ast.Expression {
+        if (op === "<<" || op === ">>") {
+            try {
+                const literal = interpreter.interpretExpression(expr);
+                if (literal.kind !== "number") {
+                    // Generate an integer of size 8 bits, unsigned
+                    return fc.sample(
+                        _generateIntBitLength(8, false).map((n) =>
+                            makeF.makeDummyNumber(10, n),
+                        ),
+                        1,
+                    )[0]!;
+                }
+                if (literal.value >= 0n && literal.value <= 256n) {
+                    return expr;
+                } else {
+                    // Generate an integer of size 8 bits, unsigned
+                    return fc.sample(
+                        _generateIntBitLength(8, false).map((n) =>
+                            makeF.makeDummyNumber(10, n),
+                        ),
+                        1,
+                    )[0]!;
+                }
+            } catch (_) {
+                // Any kind of error, leave the expr as is
+                return expr;
+            }
+        }
+        return expr;
+    }
+
     function makeBinaryOperatorTree(
         op: Ast.BinaryOperation,
         nonTerminalIndex: number,
@@ -1151,7 +1191,10 @@ function makeExpression(
             rightNonTerminal.id,
             currSize - sizeSplit,
         );
-        return makeF.makeDummyOpBinary(op, leftOperand, rightOperand);
+        // We need special logic to handle the shift operators, because they check
+        // at compile time if their right-hand side is within the range [0..256].
+        const squashedRightOperand = handleShiftOperators(op, rightOperand);
+        return makeF.makeDummyOpBinary(op, leftOperand, squashedRightOperand);
     }
 
     function makeUnaryOperatorTree(
@@ -1186,7 +1229,9 @@ function makeExpression(
         switch (head.id) {
             case Terminal.integer.id: {
                 return fc.sample(
-                    fc.bigInt().map((i) => makeF.makeDummyNumber(10, i)),
+                    _generateIntBitLength(257, true).map((i) =>
+                        makeF.makeDummyNumber(10, i),
+                    ),
                     1,
                 )[0]!;
             }
@@ -1495,14 +1540,13 @@ export function initializeGenerator(
 ): (type: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
     const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
         computeCountTables(minSize, maxSize);
-    const makeF = getMakeAst(getAstFactory());
 
     return (type: NonTerminalEnum) => {
         const sizes = lookupTotalCounts(totalCounts, type.id);
         return fc.constant(0).map((_) => {
             const size = randomlyChooseIndex(sizes);
             return makeExpression(
-                makeF,
+                getAstFactory(),
                 type,
                 ctx,
                 nonTerminalCounts,
@@ -1539,4 +1583,19 @@ function _generateCell(): fc.Arbitrary<Cell> {
     return fc.int8Array().map((buf) => {
         return beginCell().storeBuffer(Buffer.from(buf.buffer)).endCell();
     });
+}
+
+function _generateIntBitLength(
+    bitLength: number,
+    signed: boolean,
+): fc.Arbitrary<bigint> {
+    const maxUnsigned = (1n << BigInt(bitLength)) - 1n;
+
+    if (signed) {
+        const minSigned = -maxUnsigned / 2n - 1n;
+        const maxSigned = maxUnsigned / 2n;
+        return fc.bigInt(minSigned, maxSigned);
+    } else {
+        return fc.bigInt(0n, maxUnsigned);
+    }
 }
