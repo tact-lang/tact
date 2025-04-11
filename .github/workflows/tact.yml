@@ -244,7 +244,11 @@ jobs:
           }}
 
           # Create a new contract and all related facilities
-          npx blueprint create --type tact-counter Counter
+          ${{
+            matrix.package-manager == 'bun'
+            && 'bunx'
+            || 'npx'
+          }} blueprint create --type tact-counter Counter
 
       - name: Display npm logs (DEBUGGING!)
         shell: bash
