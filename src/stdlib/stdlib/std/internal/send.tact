@@ -476,7 +476,7 @@ asm fun cashback(to: Address) {
 
 /// Global function.
 ///
-/// Queues the `msg` message to be sent by specifying the complete message cell. 
+/// Queues the `msg` message to be sent by specifying the complete message cell.
 /// The `mode` parameter configures how to send a message, see: https://docs.tact-lang.org/book/message-mode.
 ///
 /// Prefer using a much more common and user-friendly `send()` function unless you have a complex logic that cannot be expressed otherwise.
