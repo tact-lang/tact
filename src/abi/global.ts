@@ -16,7 +16,6 @@ import { posixNormalize } from "@/utils/filePath";
 import { ensureString } from "@/optimizer/interpreter";
 import { isLiteral } from "@/ast/ast-helpers";
 import { sha256 } from "@/utils/sha256";
-import { ops } from "@/generator/writers/ops";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -268,13 +267,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 } else if (arg0.kind === "ref") {
                     if (arg0.name === "Int") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_str`)}(${ctx.used(ops.extension("Int", "toString"))}(${exp}), ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_debug_int`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "Bool") {
                         const exp = writeExpression(resolved[0]!, ctx);
                         return `${ctx.used(`__tact_debug_bool`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "String") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_str`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_debug_string`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "Address") {
                         const exp = writeExpression(resolved[0]!, ctx);
                         return `${ctx.used(`__tact_debug_address`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;

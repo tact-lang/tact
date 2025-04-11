@@ -2,6 +2,7 @@ import { contractErrors } from "@/abi/errors";
 import { maxTupleSize } from "@/bindings/typescript/writeStruct";
 import { match } from "@/utils/tricks";
 import type { WriterContext } from "@/generator/Writer";
+import { ops } from "@/generator/writers/ops";
 
 export function writeStdlib(ctx: WriterContext): void {
     //
@@ -216,7 +217,11 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                if (value) {
+                if (null?(value)) {
+                    ${ctx.used(
+                        "__tact_debug_str",
+                    )}("null", debug_print_1, debug_print_2);
+                } elseif (value) {
                     ${ctx.used(
                         "__tact_debug_str",
                     )}("true", debug_print_1, debug_print_2);
@@ -224,6 +229,40 @@ export function writeStdlib(ctx: WriterContext): void {
                     ${ctx.used(
                         "__tact_debug_str",
                     )}("false", debug_print_1, debug_print_2);
+                }
+            `);
+        });
+    });
+
+    ctx.fun("__tact_debug_string", () => {
+        ctx.signature(
+            `() __tact_debug_string(slice str, slice debug_print_1, slice debug_print_2)`,
+        );
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                if (null?(str)) {
+                    ${ctx.used("__tact_debug_str")}("null", debug_print_1, debug_print_2);
+                } else {
+                    ${ctx.used("__tact_debug_str")}(str, debug_print_1, debug_print_2);
+                }
+            `);
+        });
+    });
+
+    ctx.fun("__tact_debug_int", () => {
+        ctx.signature(
+            `() __tact_debug_int(int number, slice debug_print_1, slice debug_print_2)`,
+        );
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                if (null?(number)) {
+                    ${ctx.used("__tact_debug_str")}("null", debug_print_1, debug_print_2);
+                } else {
+                    ${ctx.used("__tact_debug_str")}(${ctx.used(ops.extension("Int", "toString"))}(number), debug_print_1, debug_print_2);
                 }
             `);
         });
@@ -342,9 +381,13 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                ${ctx.used("__tact_debug_str")}(${ctx.used(
-                    "__tact_address_to_user_friendly",
-                )}(address), debug_print_1, debug_print_2);
+                if (null?(address)) {
+                    ${ctx.used("__tact_debug_str")}("null", debug_print_1, debug_print_2);
+                } else {
+                    ${ctx.used("__tact_debug_str")}(${ctx.used(
+                        "__tact_address_to_user_friendly",
+                    )}(address), debug_print_1, debug_print_2);
+                }
             `);
         });
     });

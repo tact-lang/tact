@@ -11,6 +11,15 @@ exports[`codegen should correctly generate FunC code 1`] = `
 ;; NOTE: declarations are sorted for optimal order
 ;;
 
+;; $A$_to_external
+(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v) inline;
+
+;; $B$_to_external
+(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v) inline;
+
+;; $C$_to_external
+(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v) inline;
+
 ;; $MainContract$_contract_init
 tuple $MainContract$_contract_init() impure inline;
 
@@ -20,6 +29,24 @@ tuple $MainContract$_contract_load() impure inline;
 ;; $MainContract$_fun_testAugmentedAssignOperators
 (tuple, int) $MainContract$_fun_testAugmentedAssignOperators(tuple $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref;
 
+;; $A$_constructor_a_b_c_d_e_f_g
+((int, int, int, int, int, int, int)) $A$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline;
+
+;; $MainContract$_fun_writeSerializationForA
+(tuple, (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForA(tuple $self) impure inline_ref;
+
+;; $B$_constructor_a_b_c_d_e_f_g
+((int, int, int, int, int, int, int)) $B$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline;
+
+;; $MainContract$_fun_writeSerializationForB
+(tuple, (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForB(tuple $self) impure inline_ref;
+
+;; $C$_constructor_a_b_c_d_e_f_g_h
+((cell, cell, slice, slice, int, int, int, slice)) $C$_constructor_a_b_c_d_e_f_g_h(cell $a, cell $b, slice $c, slice $d, int $e, int $f, int $g, slice $h) inline;
+
+;; $MainContract$_fun_writeSerializationForC
+(tuple, (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC(tuple $self) impure inline_ref;
+
 
 ;; main_MainContract.stdlib.fc
 global (int, slice, int, slice) __tact_context;
@@ -27,7 +54,61 @@ global slice __tact_context_sender;
 global cell __tact_child_contract_codes;
 global int __tact_randomized;
 
+builder $global_beginCell() impure asm """
+    NEWC
+""";
+
+slice $global_myAddress() impure asm """
+    MYADDR
+""";
+
+cell $Builder$_fun_endCell(builder $self) impure asm """
+    ENDC
+""";
+
 ;; main_MainContract.storage.fc
+;;
+;; Type: A
+;; TLB: _ a:int257 b:int257 c:Maybe int257 d:bool e:Maybe bool f:int257 g:int257 = A
+;;
+
+(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
+    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
+}
+
+((int, int, int, int, int, int, int)) $A$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline {
+    return ($a, $b, $c, $d, $e, $f, $g);
+}
+
+;;
+;; Type: B
+;; TLB: _ a:int257 b:int257 c:Maybe int257 d:bool e:Maybe bool f:int257 g:int257 = B
+;;
+
+(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
+    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
+}
+
+((int, int, int, int, int, int, int)) $B$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline {
+    return ($a, $b, $c, $d, $e, $f, $g);
+}
+
+;;
+;; Type: C
+;; TLB: _ a:^cell b:Maybe ^cell c:Maybe ^slice d:Maybe ^slice e:bool f:int257 g:int257 h:address = C
+;;
+
+(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v; 
+    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
+}
+
+((cell, cell, slice, slice, int, int, int, slice)) $C$_constructor_a_b_c_d_e_f_g_h(cell $a, cell $b, slice $c, slice $d, int $e, int $f, int $g, slice $h) inline {
+    return ($a, $b, $c, $d, $e, $f, $g, $h);
+}
+
 ;;
 ;; Type: MainContract
 ;; TLB: _  = MainContract
@@ -65,6 +146,24 @@ tuple $MainContract$_contract_init() impure inline {
     return ($self, $fresh$ret_0);
 }
 
+(tuple, (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForA(tuple $self) impure inline_ref {
+    var ($self) = $self;
+    var $fresh$ret_1 = $A$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, true, 3, 4);
+    return ($self, $fresh$ret_1);
+}
+
+(tuple, (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForB(tuple $self) impure inline_ref {
+    var ($self) = $self;
+    var $fresh$ret_2 = $B$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, null(), 3, 4);
+    return ($self, $fresh$ret_2);
+}
+
+(tuple, (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC(tuple $self) impure inline_ref {
+    var ($self) = $self;
+    var $fresh$ret_3 = $C$_constructor_a_b_c_d_e_f_g_h($Builder$_fun_endCell(store_int($global_beginCell(), 0, 32)), null(), null(), null(), true, 1, 2, $global_myAddress());
+    return ($self, $fresh$ret_3);
+}
+
 ;;
 ;; Get methods of a Contract MainContract
 ;;
@@ -77,6 +176,24 @@ _ %testAugmentedAssignOperators(int $intVal, int $intVal2, int $boolVal, int $bo
     var self = $MainContract$_contract_load();
     var res = self~$MainContract$_fun_testAugmentedAssignOperators($intVal, $intVal2, $boolVal, $boolVal2);
     return res;
+}
+
+_ %writeSerializationForA() method_id(121635) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_writeSerializationForA();
+    return $A$_to_external(res);
+}
+
+_ %writeSerializationForB() method_id(125760) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_writeSerializationForB();
+    return $B$_to_external(res);
+}
+
+_ %writeSerializationForC() method_id(129889) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_writeSerializationForC();
+    return $C$_to_external(res);
 }
 
 ;;
