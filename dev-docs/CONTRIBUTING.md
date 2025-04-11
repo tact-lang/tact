@@ -135,7 +135,7 @@ To rebuild the compiler and run end-to-end tests, the usual workflow is as follo
 yarn build:fast
 # build the test contracts and benchmarks
 yarn gen:fast
-# run all tests, expect the slow property-based map tests
+# run all tests except the slow property-based map tests
 yarn test:fast
 ```
 
