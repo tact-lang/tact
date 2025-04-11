@@ -38,10 +38,6 @@ const main = async ({
         stdlib,
     });
 
-    if (!compileResult.ok) {
-        debugger;
-    }
-
     return {
         ok: compileResult.ok,
     };
