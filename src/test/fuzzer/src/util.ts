@@ -546,6 +546,13 @@ export class ProxyContract implements Contract {
         return result.readBigNumber();
     }
 
+    async getIndexed(provider: ContractProvider, index: number) {
+        const builder = new TupleBuilder();
+        const result = (await provider.get(`getInt${index}`, builder.build()))
+            .stack;
+        return result.readBigNumber();
+    }
+
     async getGeneric(
         provider: ContractProvider,
         getterName: string,

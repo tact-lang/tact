@@ -1,8 +1,9 @@
 import type * as Ast from "@/ast/ast";
 import { getAstFactory } from "@/ast/ast-helpers";
+import type { FactoryAst } from "@/ast/ast-helpers";
 import { getMakeAst } from "@/ast/generated/make-factory";
-import type { MakeAstFactory } from "@/ast/generated/make-factory";
-import { statistics } from "@/test/fuzzer/test/expression-stats";
+import { getAstUtil } from "@/ast/util";
+import { Interpreter } from "@/optimizer/interpreter";
 import { beginCell } from "@ton/core";
 import type { Address, Cell } from "@ton/core";
 import { sha256_sync } from "@ton/crypto";
@@ -34,32 +35,32 @@ export type GenContext = {
     contractNames: string[];
 };
 
-export const NonTerminal = {
-    Initial: { terminal: false, literal: false, index: 0 },
-    Int: { terminal: false, literal: false, index: 1 },
-    OptInt: { terminal: false, literal: false, index: 2 },
-    LiteralInt: { terminal: false, literal: true, index: 3 },
-    LiteralOptInt: { terminal: false, literal: true, index: 4 },
-    Bool: { terminal: false, literal: false, index: 5 },
-    OptBool: { terminal: false, literal: false, index: 6 },
-    LiteralBool: { terminal: false, literal: true, index: 7 },
-    LiteralOptBool: { terminal: false, literal: true, index: 8 },
-    Cell: { terminal: false, literal: false, index: 9 },
-    OptCell: { terminal: false, literal: false, index: 10 },
-    LiteralCell: { terminal: false, literal: true, index: 11 },
-    LiteralOptCell: { terminal: false, literal: true, index: 12 },
-    Slice: { terminal: false, literal: false, index: 13 },
-    OptSlice: { terminal: false, literal: false, index: 14 },
-    LiteralSlice: { terminal: false, literal: true, index: 15 },
-    LiteralOptSlice: { terminal: false, literal: true, index: 16 },
-    Address: { terminal: false, literal: false, index: 17 },
-    OptAddress: { terminal: false, literal: false, index: 18 },
-    LiteralAddress: { terminal: false, literal: true, index: 19 },
-    LiteralOptAddress: { terminal: false, literal: true, index: 20 },
-    String: { terminal: false, literal: false, index: 21 },
-    OptString: { terminal: false, literal: false, index: 22 },
-    LiteralString: { terminal: false, literal: true, index: 23 },
-    LiteralOptString: { terminal: false, literal: true, index: 24 },
+const NonTerminal = {
+    Initial: { terminal: false, literal: false, id: 0 },
+    Int: { terminal: false, literal: false, id: 1 },
+    OptInt: { terminal: false, literal: false, id: 2 },
+    LiteralInt: { terminal: false, literal: true, id: 3 },
+    LiteralOptInt: { terminal: false, literal: true, id: 4 },
+    Bool: { terminal: false, literal: false, id: 5 },
+    OptBool: { terminal: false, literal: false, id: 6 },
+    LiteralBool: { terminal: false, literal: true, id: 7 },
+    LiteralOptBool: { terminal: false, literal: true, id: 8 },
+    Cell: { terminal: false, literal: false, id: 9 },
+    OptCell: { terminal: false, literal: false, id: 10 },
+    LiteralCell: { terminal: false, literal: true, id: 11 },
+    LiteralOptCell: { terminal: false, literal: true, id: 12 },
+    Slice: { terminal: false, literal: false, id: 13 },
+    OptSlice: { terminal: false, literal: false, id: 14 },
+    LiteralSlice: { terminal: false, literal: true, id: 15 },
+    LiteralOptSlice: { terminal: false, literal: true, id: 16 },
+    Address: { terminal: false, literal: false, id: 17 },
+    OptAddress: { terminal: false, literal: false, id: 18 },
+    LiteralAddress: { terminal: false, literal: true, id: 19 },
+    LiteralOptAddress: { terminal: false, literal: true, id: 20 },
+    String: { terminal: false, literal: false, id: 21 },
+    OptString: { terminal: false, literal: false, id: 22 },
+    LiteralString: { terminal: false, literal: true, id: 23 },
+    LiteralOptString: { terminal: false, literal: true, id: 24 },
 } as const;
 
 type NonTerminalEnum = (typeof NonTerminal)[keyof typeof NonTerminal];
@@ -126,74 +127,74 @@ type Token = TerminalEnum | NonTerminalEnum;
 
 type ExprProduction = {
     tokens: Token[];
-    index: number;
+    id: number;
 };
 
-const productions: ExprProduction[][] = [
+const allProductions: ExprProduction[][] = [
     [
         // Productions for Initial
-        { index: 0, tokens: [NonTerminal.Int] },
-        { index: 1, tokens: [NonTerminal.OptInt] },
-        { index: 2, tokens: [NonTerminal.LiteralInt] },
-        { index: 3, tokens: [NonTerminal.LiteralOptInt] },
-        { index: 4, tokens: [NonTerminal.Bool] },
-        { index: 5, tokens: [NonTerminal.OptBool] },
-        { index: 6, tokens: [NonTerminal.LiteralBool] },
-        { index: 7, tokens: [NonTerminal.LiteralOptBool] },
-        { index: 8, tokens: [NonTerminal.Cell] },
-        { index: 9, tokens: [NonTerminal.OptCell] },
-        { index: 10, tokens: [NonTerminal.LiteralCell] },
-        { index: 11, tokens: [NonTerminal.LiteralOptCell] },
-        { index: 12, tokens: [NonTerminal.Slice] },
-        { index: 13, tokens: [NonTerminal.OptSlice] },
-        { index: 14, tokens: [NonTerminal.LiteralSlice] },
-        { index: 15, tokens: [NonTerminal.LiteralOptSlice] },
-        { index: 16, tokens: [NonTerminal.Address] },
-        { index: 17, tokens: [NonTerminal.OptAddress] },
-        { index: 18, tokens: [NonTerminal.LiteralAddress] },
-        { index: 19, tokens: [NonTerminal.LiteralOptAddress] },
-        { index: 20, tokens: [NonTerminal.String] },
-        { index: 21, tokens: [NonTerminal.LiteralString] },
-        { index: 22, tokens: [NonTerminal.OptString] },
-        { index: 23, tokens: [NonTerminal.LiteralOptString] },
+        { id: 0, tokens: [NonTerminal.Int] },
+        { id: 1, tokens: [NonTerminal.OptInt] },
+        { id: 2, tokens: [NonTerminal.LiteralInt] },
+        { id: 3, tokens: [NonTerminal.LiteralOptInt] },
+        { id: 4, tokens: [NonTerminal.Bool] },
+        { id: 5, tokens: [NonTerminal.OptBool] },
+        { id: 6, tokens: [NonTerminal.LiteralBool] },
+        { id: 7, tokens: [NonTerminal.LiteralOptBool] },
+        { id: 8, tokens: [NonTerminal.Cell] },
+        { id: 9, tokens: [NonTerminal.OptCell] },
+        { id: 10, tokens: [NonTerminal.LiteralCell] },
+        { id: 11, tokens: [NonTerminal.LiteralOptCell] },
+        { id: 12, tokens: [NonTerminal.Slice] },
+        { id: 13, tokens: [NonTerminal.OptSlice] },
+        { id: 14, tokens: [NonTerminal.LiteralSlice] },
+        { id: 15, tokens: [NonTerminal.LiteralOptSlice] },
+        { id: 16, tokens: [NonTerminal.Address] },
+        { id: 17, tokens: [NonTerminal.OptAddress] },
+        { id: 18, tokens: [NonTerminal.LiteralAddress] },
+        { id: 19, tokens: [NonTerminal.LiteralOptAddress] },
+        { id: 20, tokens: [NonTerminal.String] },
+        { id: 21, tokens: [NonTerminal.LiteralString] },
+        { id: 22, tokens: [NonTerminal.OptString] },
+        { id: 23, tokens: [NonTerminal.LiteralOptString] },
     ],
     [
         // Productions for Int
-        { index: 0, tokens: [Terminal.add, NonTerminal.Int, NonTerminal.Int] },
+        { id: 0, tokens: [Terminal.add, NonTerminal.Int, NonTerminal.Int] },
         {
-            index: 1,
+            id: 1,
             tokens: [Terminal.minus, NonTerminal.Int, NonTerminal.Int],
         },
-        { index: 2, tokens: [Terminal.mult, NonTerminal.Int, NonTerminal.Int] },
-        { index: 3, tokens: [Terminal.div, NonTerminal.Int, NonTerminal.Int] },
-        { index: 4, tokens: [Terminal.mod, NonTerminal.Int, NonTerminal.Int] },
+        { id: 2, tokens: [Terminal.mult, NonTerminal.Int, NonTerminal.Int] },
+        { id: 3, tokens: [Terminal.div, NonTerminal.Int, NonTerminal.Int] },
+        { id: 4, tokens: [Terminal.mod, NonTerminal.Int, NonTerminal.Int] },
         {
-            index: 5,
+            id: 5,
             tokens: [Terminal.shift_r, NonTerminal.Int, NonTerminal.Int],
         },
         {
-            index: 6,
+            id: 6,
             tokens: [Terminal.shift_l, NonTerminal.Int, NonTerminal.Int],
         },
         {
-            index: 7,
+            id: 7,
             tokens: [Terminal.bit_and, NonTerminal.Int, NonTerminal.Int],
         },
         {
-            index: 8,
+            id: 8,
             tokens: [Terminal.bit_or, NonTerminal.Int, NonTerminal.Int],
         },
         {
-            index: 9,
+            id: 9,
             tokens: [Terminal.bit_xor, NonTerminal.Int, NonTerminal.Int],
         },
-        // { index: 10, tokens: [Terminal.unary_plus, NonTerminal.Int] },
-        { index: 10, tokens: [Terminal.unary_minus, NonTerminal.Int] },
-        { index: 11, tokens: [Terminal.bit_not, NonTerminal.Int] },
+        // { id: 10, tokens: [Terminal.unary_plus, NonTerminal.Int] },
+        { id: 10, tokens: [Terminal.unary_minus, NonTerminal.Int] },
+        { id: 11, tokens: [Terminal.bit_not, NonTerminal.Int] },
 
-        { index: 12, tokens: [Terminal.non_null_assert, NonTerminal.OptInt] },
+        { id: 12, tokens: [Terminal.non_null_assert, NonTerminal.OptInt] },
         {
-            index: 13,
+            id: 13,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -201,14 +202,14 @@ const productions: ExprProduction[][] = [
                 NonTerminal.Int,
             ],
         },
-        { index: 14, tokens: [Terminal.id_int] },
-        { index: 15, tokens: [NonTerminal.LiteralInt] },
+        { id: 14, tokens: [Terminal.id_int] },
+        { id: 15, tokens: [NonTerminal.LiteralInt] },
     ],
     [
         // Productions for OptInt
-        { index: 0, tokens: [Terminal.opt_inj, NonTerminal.Int] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Int] },
         {
-            index: 1,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -216,83 +217,83 @@ const productions: ExprProduction[][] = [
                 NonTerminal.OptInt,
             ],
         },
-        { index: 2, tokens: [Terminal.id_opt_int] },
-        { index: 3, tokens: [NonTerminal.LiteralOptInt] },
+        { id: 2, tokens: [Terminal.id_opt_int] },
+        { id: 3, tokens: [NonTerminal.LiteralOptInt] },
     ],
     [
         // Productions for LiteralInt
-        { index: 0, tokens: [Terminal.integer] },
+        { id: 0, tokens: [Terminal.integer] },
     ],
     [
         // Productions for LiteralOptInt
-        { index: 0, tokens: [Terminal.null] },
-        { index: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralInt] },
+        { id: 0, tokens: [Terminal.null] },
+        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralInt] },
     ],
     [
         // Productions for Bool
-        { index: 0, tokens: [Terminal.eq, NonTerminal.Int, NonTerminal.Int] },
+        { id: 0, tokens: [Terminal.eq, NonTerminal.Int, NonTerminal.Int] },
         {
-            index: 1,
+            id: 1,
             tokens: [Terminal.eq, NonTerminal.OptInt, NonTerminal.OptInt],
         },
-        { index: 2, tokens: [Terminal.eq, NonTerminal.Bool, NonTerminal.Bool] },
+        { id: 2, tokens: [Terminal.eq, NonTerminal.Bool, NonTerminal.Bool] },
         {
-            index: 3,
+            id: 3,
             tokens: [Terminal.eq, NonTerminal.OptBool, NonTerminal.OptBool],
         },
         {
-            index: 4,
+            id: 4,
             tokens: [Terminal.eq, NonTerminal.Address, NonTerminal.Address],
         },
         {
-            index: 5,
+            id: 5,
             tokens: [
                 Terminal.eq,
                 NonTerminal.OptAddress,
                 NonTerminal.OptAddress,
             ],
         },
-        { index: 6, tokens: [Terminal.eq, NonTerminal.Cell, NonTerminal.Cell] },
+        { id: 6, tokens: [Terminal.eq, NonTerminal.Cell, NonTerminal.Cell] },
         {
-            index: 7,
+            id: 7,
             tokens: [Terminal.eq, NonTerminal.OptCell, NonTerminal.OptCell],
         },
         {
-            index: 8,
+            id: 8,
             tokens: [Terminal.eq, NonTerminal.Slice, NonTerminal.Slice],
         },
         {
-            index: 9,
+            id: 9,
             tokens: [Terminal.eq, NonTerminal.OptSlice, NonTerminal.OptSlice],
         },
         {
-            index: 10,
+            id: 10,
             tokens: [Terminal.eq, NonTerminal.String, NonTerminal.String],
         },
         {
-            index: 11,
+            id: 11,
             tokens: [Terminal.eq, NonTerminal.OptString, NonTerminal.OptString],
         },
 
-        { index: 12, tokens: [Terminal.neq, NonTerminal.Int, NonTerminal.Int] },
+        { id: 12, tokens: [Terminal.neq, NonTerminal.Int, NonTerminal.Int] },
         {
-            index: 13,
+            id: 13,
             tokens: [Terminal.neq, NonTerminal.OptInt, NonTerminal.OptInt],
         },
         {
-            index: 14,
+            id: 14,
             tokens: [Terminal.neq, NonTerminal.Bool, NonTerminal.Bool],
         },
         {
-            index: 15,
+            id: 15,
             tokens: [Terminal.neq, NonTerminal.OptBool, NonTerminal.OptBool],
         },
         {
-            index: 16,
+            id: 16,
             tokens: [Terminal.neq, NonTerminal.Address, NonTerminal.Address],
         },
         {
-            index: 17,
+            id: 17,
             tokens: [
                 Terminal.neq,
                 NonTerminal.OptAddress,
@@ -300,27 +301,27 @@ const productions: ExprProduction[][] = [
             ],
         },
         {
-            index: 18,
+            id: 18,
             tokens: [Terminal.neq, NonTerminal.Cell, NonTerminal.Cell],
         },
         {
-            index: 19,
+            id: 19,
             tokens: [Terminal.neq, NonTerminal.OptCell, NonTerminal.OptCell],
         },
         {
-            index: 20,
+            id: 20,
             tokens: [Terminal.neq, NonTerminal.Slice, NonTerminal.Slice],
         },
         {
-            index: 21,
+            id: 21,
             tokens: [Terminal.neq, NonTerminal.OptSlice, NonTerminal.OptSlice],
         },
         {
-            index: 22,
+            id: 22,
             tokens: [Terminal.neq, NonTerminal.String, NonTerminal.String],
         },
         {
-            index: 23,
+            id: 23,
             tokens: [
                 Terminal.neq,
                 NonTerminal.OptString,
@@ -328,23 +329,23 @@ const productions: ExprProduction[][] = [
             ],
         },
 
-        { index: 24, tokens: [Terminal.lt, NonTerminal.Int, NonTerminal.Int] },
-        { index: 25, tokens: [Terminal.le, NonTerminal.Int, NonTerminal.Int] },
-        { index: 26, tokens: [Terminal.gt, NonTerminal.Int, NonTerminal.Int] },
-        { index: 27, tokens: [Terminal.ge, NonTerminal.Int, NonTerminal.Int] },
+        { id: 24, tokens: [Terminal.lt, NonTerminal.Int, NonTerminal.Int] },
+        { id: 25, tokens: [Terminal.le, NonTerminal.Int, NonTerminal.Int] },
+        { id: 26, tokens: [Terminal.gt, NonTerminal.Int, NonTerminal.Int] },
+        { id: 27, tokens: [Terminal.ge, NonTerminal.Int, NonTerminal.Int] },
         {
-            index: 28,
+            id: 28,
             tokens: [Terminal.and, NonTerminal.Bool, NonTerminal.Bool],
         },
         {
-            index: 29,
+            id: 29,
             tokens: [Terminal.or, NonTerminal.Bool, NonTerminal.Bool],
         },
-        { index: 30, tokens: [Terminal.not, NonTerminal.Bool] },
+        { id: 30, tokens: [Terminal.not, NonTerminal.Bool] },
 
-        { index: 31, tokens: [Terminal.non_null_assert, NonTerminal.OptBool] },
+        { id: 31, tokens: [Terminal.non_null_assert, NonTerminal.OptBool] },
         {
-            index: 32,
+            id: 32,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -352,14 +353,14 @@ const productions: ExprProduction[][] = [
                 NonTerminal.Bool,
             ],
         },
-        { index: 33, tokens: [Terminal.id_bool] },
-        { index: 34, tokens: [NonTerminal.LiteralBool] },
+        { id: 33, tokens: [Terminal.id_bool] },
+        { id: 34, tokens: [NonTerminal.LiteralBool] },
     ],
     [
         // Productions for OptBool
-        { index: 0, tokens: [Terminal.opt_inj, NonTerminal.Bool] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Bool] },
         {
-            index: 1,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -367,25 +368,25 @@ const productions: ExprProduction[][] = [
                 NonTerminal.OptBool,
             ],
         },
-        { index: 2, tokens: [Terminal.id_opt_bool] },
-        { index: 3, tokens: [NonTerminal.LiteralOptBool] },
+        { id: 2, tokens: [Terminal.id_opt_bool] },
+        { id: 3, tokens: [NonTerminal.LiteralOptBool] },
     ],
     [
         // Productions for LiteralBool
-        { index: 0, tokens: [Terminal.bool] },
+        { id: 0, tokens: [Terminal.bool] },
     ],
     [
         // Productions for LiteralOptBool
-        { index: 0, tokens: [Terminal.null] },
-        { index: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralBool] },
+        { id: 0, tokens: [Terminal.null] },
+        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralBool] },
     ],
     [
         // Productions for Cell
-        { index: 0, tokens: [Terminal.code_of] },
+        { id: 0, tokens: [Terminal.code_of] },
 
-        { index: 1, tokens: [Terminal.non_null_assert, NonTerminal.OptCell] },
+        { id: 1, tokens: [Terminal.non_null_assert, NonTerminal.OptCell] },
         {
-            index: 2,
+            id: 2,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -393,14 +394,14 @@ const productions: ExprProduction[][] = [
                 NonTerminal.Cell,
             ],
         },
-        { index: 3, tokens: [Terminal.id_cell] },
-        { index: 4, tokens: [NonTerminal.LiteralCell] },
+        { id: 3, tokens: [Terminal.id_cell] },
+        { id: 4, tokens: [NonTerminal.LiteralCell] },
     ],
     [
         // Productions for OptCell
-        { index: 0, tokens: [Terminal.opt_inj, NonTerminal.Cell] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Cell] },
         {
-            index: 1,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -408,23 +409,23 @@ const productions: ExprProduction[][] = [
                 NonTerminal.OptCell,
             ],
         },
-        { index: 2, tokens: [Terminal.id_opt_cell] },
-        { index: 3, tokens: [NonTerminal.LiteralOptCell] },
+        { id: 2, tokens: [Terminal.id_opt_cell] },
+        { id: 3, tokens: [NonTerminal.LiteralOptCell] },
     ],
     [
         // Productions for LiteralCell
-        { index: 0, tokens: [Terminal.cell] },
+        { id: 0, tokens: [Terminal.cell] },
     ],
     [
         // Productions for LiteralOptCell
-        { index: 0, tokens: [Terminal.null] },
-        { index: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralCell] },
+        { id: 0, tokens: [Terminal.null] },
+        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralCell] },
     ],
     [
         // Productions for Slice
-        { index: 0, tokens: [Terminal.non_null_assert, NonTerminal.OptSlice] },
+        { id: 0, tokens: [Terminal.non_null_assert, NonTerminal.OptSlice] },
         {
-            index: 1,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -432,14 +433,14 @@ const productions: ExprProduction[][] = [
                 NonTerminal.Slice,
             ],
         },
-        { index: 2, tokens: [Terminal.id_slice] },
-        { index: 3, tokens: [NonTerminal.LiteralSlice] },
+        { id: 2, tokens: [Terminal.id_slice] },
+        { id: 3, tokens: [NonTerminal.LiteralSlice] },
     ],
     [
         // Productions for OptSlice
-        { index: 0, tokens: [Terminal.opt_inj, NonTerminal.Slice] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Slice] },
         {
-            index: 1,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -447,26 +448,26 @@ const productions: ExprProduction[][] = [
                 NonTerminal.OptSlice,
             ],
         },
-        { index: 2, tokens: [Terminal.id_opt_slice] },
-        { index: 3, tokens: [NonTerminal.LiteralOptSlice] },
+        { id: 2, tokens: [Terminal.id_opt_slice] },
+        { id: 3, tokens: [NonTerminal.LiteralOptSlice] },
     ],
     [
         // Productions for LiteralSlice
-        { index: 0, tokens: [Terminal.slice] },
+        { id: 0, tokens: [Terminal.slice] },
     ],
     [
         // Productions for LiteralOptSlice
-        { index: 0, tokens: [Terminal.null] },
-        { index: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralSlice] },
+        { id: 0, tokens: [Terminal.null] },
+        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralSlice] },
     ],
     [
         // Productions for Address
         {
-            index: 0,
+            id: 0,
             tokens: [Terminal.non_null_assert, NonTerminal.OptAddress],
         },
         {
-            index: 1,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -474,14 +475,14 @@ const productions: ExprProduction[][] = [
                 NonTerminal.Address,
             ],
         },
-        { index: 2, tokens: [Terminal.id_address] },
-        { index: 3, tokens: [NonTerminal.LiteralAddress] },
+        { id: 2, tokens: [Terminal.id_address] },
+        { id: 3, tokens: [NonTerminal.LiteralAddress] },
     ],
     [
         // Productions for OptAddress
-        { index: 0, tokens: [Terminal.opt_inj, NonTerminal.Address] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Address] },
         {
-            index: 1,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -489,23 +490,23 @@ const productions: ExprProduction[][] = [
                 NonTerminal.OptAddress,
             ],
         },
-        { index: 2, tokens: [Terminal.id_opt_address] },
-        { index: 3, tokens: [NonTerminal.LiteralOptAddress] },
+        { id: 2, tokens: [Terminal.id_opt_address] },
+        { id: 3, tokens: [NonTerminal.LiteralOptAddress] },
     ],
     [
         // Productions for LiteralAddress
-        { index: 0, tokens: [Terminal.address] },
+        { id: 0, tokens: [Terminal.address] },
     ],
     [
         // Productions for LiteralOptAddress
-        { index: 0, tokens: [Terminal.null] },
-        { index: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralAddress] },
+        { id: 0, tokens: [Terminal.null] },
+        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralAddress] },
     ],
     [
         // Productions for String
-        { index: 0, tokens: [Terminal.non_null_assert, NonTerminal.OptString] },
+        { id: 0, tokens: [Terminal.non_null_assert, NonTerminal.OptString] },
         {
-            index: 1,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -513,14 +514,14 @@ const productions: ExprProduction[][] = [
                 NonTerminal.String,
             ],
         },
-        { index: 2, tokens: [Terminal.id_string] },
-        { index: 3, tokens: [NonTerminal.LiteralString] },
+        { id: 2, tokens: [Terminal.id_string] },
+        { id: 3, tokens: [NonTerminal.LiteralString] },
     ],
     [
         // Productions for OptString
-        { index: 0, tokens: [Terminal.opt_inj, NonTerminal.String] },
+        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.String] },
         {
-            index: 1,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -528,22 +529,81 @@ const productions: ExprProduction[][] = [
                 NonTerminal.OptString,
             ],
         },
-        { index: 2, tokens: [Terminal.id_opt_string] },
-        { index: 3, tokens: [NonTerminal.LiteralOptString] },
+        { id: 2, tokens: [Terminal.id_opt_string] },
+        { id: 3, tokens: [NonTerminal.LiteralOptString] },
     ],
     [
         // Productions for LiteralString
-        { index: 0, tokens: [Terminal.string] },
+        { id: 0, tokens: [Terminal.string] },
     ],
     [
         // Productions for LiteralOptString
-        { index: 0, tokens: [Terminal.null] },
-        { index: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralString] },
+        { id: 0, tokens: [Terminal.null] },
+        { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralString] },
     ],
 ];
 
 function sum(counts: number[]): number {
-    return counts.reduce((prev, curr) => prev + curr, 0);
+    // If at least one array element (which are counts represented as logarithms) is -Inf, it means that they represent the count 0.
+    // therefore, they can be filtered out from the array, because they will not affect the final sum
+    const filteredCounts = counts.filter((n) => n !== Number.NEGATIVE_INFINITY);
+
+    if (filteredCounts.length === 0) {
+        // The sum would be 0. So, return -Inf
+        return Number.NEGATIVE_INFINITY;
+    }
+    if (filteredCounts.length === 1) {
+        return filteredCounts[0]!;
+    }
+    const first = filteredCounts[0]!;
+    // For the general case, we reduce the array thanks to the following formula:
+    // log(x + y) = log x + log(1 + 2^(log y - log x))
+    // which tells us how we should add counts when they are represented as logarithms
+    const bla = filteredCounts
+        .slice(1)
+        .reduce(
+            (prev, curr) => prev + Math.log2(1 + 2 ** (curr - prev)),
+            first,
+        );
+    return bla;
+}
+
+function normalizeArray(counts: number[]): number[] {
+    // Any -Inf represents a count of 0, which means that such index should never get selected.
+    // So, it is enough to transform -Inf back to 0.
+    // Any 0 represents a count of 1. Since such index has a non-zero probability to be selected,
+    // we change the 0s to 1s. The rest of numbers we take their ceil to transform them into integers.
+    const bla = counts.map((n) => {
+        if (n === Number.NEGATIVE_INFINITY) {
+            return 0;
+        }
+        if (n === 0) {
+            return 1;
+        }
+        return Math.ceil(n);
+    });
+    return bla;
+}
+
+function multiply(first: number, second: number): number {
+    // If at least one input (which are counts represented as logarithms) is -Inf, it means that they represent the count 0.
+    // therefore, their multiplication is also 0 (or -Inf in the logarithm representation)
+    if (
+        first === Number.NEGATIVE_INFINITY ||
+        second === Number.NEGATIVE_INFINITY
+    ) {
+        return Number.NEGATIVE_INFINITY;
+    } else {
+        // To multiply two counts represented as logarithms, it is enough to add their representations
+        // thanks to this formula:
+        // log(x * y) = log(x) + log(y)
+        return first + second;
+    }
+}
+
+function transform(n: number): number {
+    // We transform counts into their base-2 logarithmic representation
+    return Math.log2(n);
 }
 
 function computeCountTables(
@@ -653,15 +713,13 @@ function computeCountTables(
         ];
     }
 
-    function countFromNonTerminal(index: number, size: number): number[] {
-        const peekedCounts = peekNonTerminalCounts(index, size);
+    function countFromNonTerminal(id: number, size: number): number[] {
+        const peekedCounts = peekNonTerminalCounts(id, size);
         if (typeof peekedCounts !== "undefined") {
             return peekedCounts;
         }
-        const prods = getProductions(index);
-        return prods.map((prod) =>
-            sum(countFromProduction(index, prod, 0, size)),
-        );
+        const prods = getProductions(id);
+        return prods.map((prod) => sum(countFromProduction(id, prod, 0, size)));
     }
 
     function countFromProduction(
@@ -675,7 +733,7 @@ function computeCountTables(
         }
         const peekedCounts = peekSizeSplitCounts(
             nonTerminalIndex,
-            production.index,
+            production.id,
             tokenIndex,
             size,
         );
@@ -686,7 +744,8 @@ function computeCountTables(
         if (head.terminal) {
             if (tokenIndex === production.tokens.length - 1) {
                 // i.e., the head is the last symbol in the production
-                return size === 1 ? [1] : [0];
+                // Transform the values 1 and 0 to whatever representation of counts we are currently using
+                return size === 1 ? [transform(1)] : [transform(0)];
             } else {
                 return [
                     sum(
@@ -703,7 +762,7 @@ function computeCountTables(
         // head is not a terminal
         if (tokenIndex === production.tokens.length - 1) {
             // i.e., the head is the last symbol in the production
-            return [sum(countFromNonTerminal(head.index, size))];
+            return [sum(countFromNonTerminal(head.id, size))];
         } else {
             const result: number[] = [];
 
@@ -712,7 +771,7 @@ function computeCountTables(
                 l <= size - production.tokens.length + tokenIndex + 1;
                 l++
             ) {
-                const partition1 = sum(countFromNonTerminal(head.index, l));
+                const partition1 = sum(countFromNonTerminal(head.id, l));
                 const partition2 = sum(
                     countFromProduction(
                         nonTerminalIndex,
@@ -721,7 +780,7 @@ function computeCountTables(
                         size - l,
                     ),
                 );
-                result.push(partition1 * partition2);
+                result.push(multiply(partition1, partition2));
             }
             return result;
         }
@@ -732,14 +791,15 @@ function computeCountTables(
 
         // The first step is to initialize the tables for size 0
         for (const nonTerminal of nonTerminals) {
-            const nonTerminalIdx = nonTerminal.index;
+            const nonTerminalIdx = nonTerminal.id;
 
             const productions = getProductions(nonTerminalIdx);
 
+            // Transform count 0 to whatever representation of counts we are currently using
             updateNonTerminalCounts(
                 nonTerminalIdx,
                 0,
-                productions.map((_) => 0),
+                productions.map((_) => transform(0)),
             );
 
             for (const prod of productions) {
@@ -750,7 +810,7 @@ function computeCountTables(
                 ) {
                     updateSizeSplitCounts(
                         nonTerminalIdx,
-                        prod.index,
+                        prod.id,
                         tokenIndx,
                         0,
                         [],
@@ -762,7 +822,7 @@ function computeCountTables(
         // Now, for the rest of sizes
         for (let size = 1; size <= maxSize; size++) {
             for (const nonTerminal of nonTerminals) {
-                const nonTerminalIdx = nonTerminal.index;
+                const nonTerminalIdx = nonTerminal.id;
 
                 const productions = getProductions(nonTerminalIdx);
 
@@ -774,7 +834,7 @@ function computeCountTables(
                     ) {
                         updateSizeSplitCounts(
                             nonTerminalIdx,
-                            prod.index,
+                            prod.id,
                             tokenIndx,
                             size,
                             countFromProduction(
@@ -798,21 +858,22 @@ function computeCountTables(
 
     function doTotalCounts() {
         // From 0 to minSize-1, set counts to 0, since we are not going to choose those sizes
+        // Transform the count 0 to whatever representation we are currently using
         for (let size = 0; size < minSize; size++) {
             for (const nonTerminal of Object.values(NonTerminal)) {
-                updateTotalCounts(nonTerminal.index, size, 0);
+                updateTotalCounts(nonTerminal.id, size, transform(0));
             }
         }
 
         for (let size = minSize; size <= maxSize; size++) {
             for (const nonTerminal of Object.values(NonTerminal)) {
                 updateTotalCounts(
-                    nonTerminal.index,
+                    nonTerminal.id,
                     size,
                     sum(
                         lookupNonTerminalCounts(
                             nonTerminalCounts,
-                            nonTerminal.index,
+                            nonTerminal.id,
                             size,
                         ),
                     ),
@@ -821,7 +882,7 @@ function computeCountTables(
         }
     }
 
-    function accumulateArray(counts: number[]): number[] {
+    function computePartialSums(counts: number[]): number[] {
         if (counts.length === 0) {
             return counts;
         }
@@ -832,15 +893,15 @@ function computeCountTables(
         return result;
     }
 
-    function accumulateCounts() {
+    function normalizeCounts() {
         // The total counts
         for (const nonTerminal of Object.values(NonTerminal)) {
-            const counts = totalCounts[nonTerminal.index];
+            const counts = totalCounts[nonTerminal.id];
             if (typeof counts === "undefined") {
-                throw new Error(`Index ${nonTerminal.index} out of bounds`);
+                throw new Error(`Index ${nonTerminal.id} out of bounds`);
             }
-            const newCounts = accumulateArray(counts);
-            totalCounts[nonTerminal.index] = newCounts;
+            const newCounts = computePartialSums(normalizeArray(counts));
+            totalCounts[nonTerminal.id] = newCounts;
         }
 
         // The non-terminal counts
@@ -848,17 +909,17 @@ function computeCountTables(
             for (let size = 0; size <= maxSize; size++) {
                 const counts = lookupNonTerminalCounts(
                     nonTerminalCounts,
-                    nonTerminal.index,
+                    nonTerminal.id,
                     size,
                 );
-                const newCounts = accumulateArray(counts);
-                updateNonTerminalCounts(nonTerminal.index, size, newCounts);
+                const newCounts = computePartialSums(normalizeArray(counts));
+                updateNonTerminalCounts(nonTerminal.id, size, newCounts);
             }
         }
 
         // Split size counts
         for (const nonTerminal of Object.values(NonTerminal)) {
-            const nonTerminalIdx = nonTerminal.index;
+            const nonTerminalIdx = nonTerminal.id;
 
             const productions = getProductions(nonTerminalIdx);
 
@@ -871,15 +932,17 @@ function computeCountTables(
                     for (let size = 0; size <= maxSize; size++) {
                         const counts = lookupSizeSplitCounts(
                             sizeSplitCounts,
-                            nonTerminal.index,
-                            prod.index,
+                            nonTerminal.id,
+                            prod.id,
                             tokenIndx,
                             size,
                         );
-                        const newCounts = accumulateArray(counts);
+                        const newCounts = computePartialSums(
+                            normalizeArray(counts),
+                        );
                         updateSizeSplitCounts(
-                            nonTerminal.index,
-                            prod.index,
+                            nonTerminal.id,
+                            prod.id,
                             tokenIndx,
                             size,
                             newCounts,
@@ -898,7 +961,7 @@ function computeCountTables(
     // Now the rest of non-terminals, but not the initial non-terminal
     doCountsForNonTerminals(
         Object.values(NonTerminal).filter(
-            (nonTerminal) => !nonTerminal.literal && nonTerminal.index !== 0,
+            (nonTerminal) => !nonTerminal.literal && nonTerminal.id !== 0,
         ),
     );
 
@@ -907,7 +970,14 @@ function computeCountTables(
 
     doTotalCounts();
 
-    accumulateCounts();
+    // Now that the tables are filled, we need to normalize the counts
+    // into non-negative integers (because they may be currently encoded
+    // in a different way. For example, when using logarithms to represent
+    // counts, the numbers have fractional part, and may also include -Inf).
+    // Also, once they are normalized into non-negative integers,
+    // we need to compute their partial sums, in preparation for the generation
+    // process.
+    normalizeCounts();
 
     return {
         nonTerminalCounts,
@@ -970,59 +1040,59 @@ function lookupTotalCounts(
 }
 
 function getProductions(idx: number): ExprProduction[] {
-    const prods = productions[idx];
+    const prods = allProductions[idx];
     if (typeof prods === "undefined") {
-        throw new Error(`${idx} is not a valid index for a non-terminal`);
+        throw new Error(`${idx} is not a valid id for a non-terminal`);
     }
     return prods;
 }
 
-function getTokenAt(tokens: Token[], index: number): Token {
-    const token = tokens[index];
+function getTokenAt(tokens: Token[], id: number): Token {
+    const token = tokens[id];
     if (typeof token === "undefined") {
-        throw new Error(`Index ${index} is out of bounds`);
+        throw new Error(`Index ${id} is out of bounds`);
     }
     return token;
 }
 
-function getNonTerminalAt(tokens: Token[], index: number): NonTerminalEnum {
-    const token = getTokenAt(tokens, index);
+function getNonTerminalAt(tokens: Token[], id: number): NonTerminalEnum {
+    const token = getTokenAt(tokens, id);
     if (token.terminal) {
         throw new Error(`Was expecting a non-terminal`);
     }
     return token;
 }
 
-function getProductionAt(
-    prods: ExprProduction[],
-    index: number,
-): ExprProduction {
-    const prod = prods[index];
+function getProductionAt(prods: ExprProduction[], id: number): ExprProduction {
+    const prod = prods[id];
     if (typeof prod === "undefined") {
-        throw new Error(`Index ${index} out of bounds in productions array`);
+        throw new Error(`Index ${id} out of bounds in productions array`);
     }
     return prod;
 }
 
 function makeExpression(
-    makeF: MakeAstFactory,
+    astF: FactoryAst,
     type: NonTerminalEnum,
     ctx: GenContext,
     nonTerminalCounts: number[][][],
     sizeSplitCounts: number[][][][][],
     size: number,
 ): Ast.Expression {
-    function genFromNonTerminal(index: number, size: number): Ast.Expression {
-        const prods = getProductions(index);
+    const makeF = getMakeAst(astF);
+    const interpreter = new Interpreter(getAstUtil(astF));
+
+    function genFromNonTerminal(id: number, size: number): Ast.Expression {
+        const prods = getProductions(id);
         const nonTerminalOptions = lookupNonTerminalCounts(
             nonTerminalCounts,
-            index,
+            id,
             size,
         );
 
         const chosenProdIndex = randomlyChooseIndex(nonTerminalOptions);
         const production = getProductionAt(prods, chosenProdIndex);
-        return genFromProduction(index, production, size);
+        return genFromProduction(id, production, size);
     }
 
     function genFromProduction(
@@ -1036,7 +1106,7 @@ function makeExpression(
             // where head indicates the kind of tree we need to produce
             return makeTree(
                 nonTerminalIndex,
-                production.index,
+                production.id,
                 head,
                 production.tokens.slice(1),
                 size,
@@ -1044,7 +1114,7 @@ function makeExpression(
         }
         // head is not a terminal
         // The production must have the form N -> head
-        return genFromNonTerminal(head.index, size);
+        return genFromNonTerminal(head.id, size);
     }
 
     function chooseSizeSplit(
@@ -1061,6 +1131,41 @@ function makeExpression(
             size,
         );
         return randomlyChooseIndex(sizeSplits) + 1;
+    }
+
+    function handleShiftOperators(
+        op: Ast.BinaryOperation,
+        expr: Ast.Expression,
+    ): Ast.Expression {
+        if (op === "<<" || op === ">>") {
+            try {
+                const literal = interpreter.interpretExpression(expr);
+                if (literal.kind !== "number") {
+                    // Generate an integer of size 8 bits, unsigned
+                    return fc.sample(
+                        _generateIntBitLength(8, false).map((n) =>
+                            makeF.makeDummyNumber(10, n),
+                        ),
+                        1,
+                    )[0]!;
+                }
+                if (literal.value >= 0n && literal.value <= 256n) {
+                    return expr;
+                } else {
+                    // Generate an integer of size 8 bits, unsigned
+                    return fc.sample(
+                        _generateIntBitLength(8, false).map((n) =>
+                            makeF.makeDummyNumber(10, n),
+                        ),
+                        1,
+                    )[0]!;
+                }
+            } catch (_) {
+                // Any kind of error, leave the expr as is
+                return expr;
+            }
+        }
+        return expr;
     }
 
     function makeBinaryOperatorTree(
@@ -1081,15 +1186,15 @@ function makeExpression(
 
         const leftNonTerminal = getNonTerminalAt(rest, 0);
         const rightNonTerminal = getNonTerminalAt(rest, 1);
-        const leftOperand = genFromNonTerminal(
-            leftNonTerminal.index,
-            sizeSplit,
-        );
+        const leftOperand = genFromNonTerminal(leftNonTerminal.id, sizeSplit);
         const rightOperand = genFromNonTerminal(
-            rightNonTerminal.index,
+            rightNonTerminal.id,
             currSize - sizeSplit,
         );
-        return makeF.makeDummyOpBinary(op, leftOperand, rightOperand);
+        // We need special logic to handle the shift operators, because they check
+        // at compile time if their right-hand side is within the range [0..256].
+        const squashedRightOperand = handleShiftOperators(op, rightOperand);
+        return makeF.makeDummyOpBinary(op, leftOperand, squashedRightOperand);
     }
 
     function makeUnaryOperatorTree(
@@ -1100,7 +1205,7 @@ function makeExpression(
         const currSize = size - 1;
 
         const operandNonTerminal = getNonTerminalAt(rest, 0);
-        const operand = genFromNonTerminal(operandNonTerminal.index, currSize);
+        const operand = genFromNonTerminal(operandNonTerminal.id, currSize);
         return makeF.makeDummyOpUnary(op, operand);
     }
 
@@ -1124,7 +1229,9 @@ function makeExpression(
         switch (head.id) {
             case Terminal.integer.id: {
                 return fc.sample(
-                    fc.bigInt().map((i) => makeF.makeDummyNumber(10, i)),
+                    _generateIntBitLength(257, true).map((i) =>
+                        makeF.makeDummyNumber(10, i),
+                    ),
                     1,
                 )[0]!;
             }
@@ -1339,7 +1446,7 @@ function makeExpression(
             case Terminal.opt_inj.id: {
                 const currSize = size - 1;
                 const operandNonTerminal = getNonTerminalAt(rest, 0);
-                return genFromNonTerminal(operandNonTerminal.index, currSize);
+                return genFromNonTerminal(operandNonTerminal.id, currSize);
             }
             case Terminal.null.id: {
                 return makeF.makeDummyNull();
@@ -1367,15 +1474,15 @@ function makeExpression(
                 const thenNonTerminal = getNonTerminalAt(rest, 1);
                 const elseNonTerminal = getNonTerminalAt(rest, 2);
                 const condOperand = genFromNonTerminal(
-                    condNonTerminal.index,
+                    condNonTerminal.id,
                     sizeSplit1,
                 );
                 const thenOperand = genFromNonTerminal(
-                    thenNonTerminal.index,
+                    thenNonTerminal.id,
                     sizeSplit2,
                 );
                 const elseOperand = genFromNonTerminal(
-                    elseNonTerminal.index,
+                    elseNonTerminal.id,
                     currSize - sizeSplit1 - sizeSplit2,
                 );
                 return makeF.makeDummyConditional(
@@ -1423,7 +1530,7 @@ function makeExpression(
         }
     }
 
-    return genFromNonTerminal(type.index, size);
+    return genFromNonTerminal(type.id, size);
 }
 
 export function initializeGenerator(
@@ -1433,14 +1540,13 @@ export function initializeGenerator(
 ): (type: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
     const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
         computeCountTables(minSize, maxSize);
-    const makeF = getMakeAst(getAstFactory());
 
     return (type: NonTerminalEnum) => {
-        const sizes = lookupTotalCounts(totalCounts, type.index);
+        const sizes = lookupTotalCounts(totalCounts, type.id);
         return fc.constant(0).map((_) => {
             const size = randomlyChooseIndex(sizes);
             return makeExpression(
-                makeF,
+                getAstFactory(),
                 type,
                 ctx,
                 nonTerminalCounts,
@@ -1479,31 +1585,17 @@ function _generateCell(): fc.Arbitrary<Cell> {
     });
 }
 
-// Uncomment this to show the bug in fast-check
-//console.log(genFromNonTerminal(0,66));
+function _generateIntBitLength(
+    bitLength: number,
+    signed: boolean,
+): fc.Arbitrary<bigint> {
+    const maxUnsigned = (1n << BigInt(bitLength)) - 1n;
 
-//statistics(heightGenerator(10), false);
-
-// Create a GenContext with allowed identifiers and contracts
-const ids: Map<AllowedTypeEnum, string[]> = new Map();
-ids.set(AllowedType.Int, ["intV1", "intV2", "intV3"]);
-ids.set(AllowedType.OptInt, ["o_intV1", "o_intV2", "o_intV3"]);
-ids.set(AllowedType.Bool, ["boolV1", "boolV2", "boolV3"]);
-ids.set(AllowedType.OptBool, ["o_boolV1", "o_boolV2", "o_boolV3"]);
-ids.set(AllowedType.Cell, ["cellV1", "cellV2", "cellV3"]);
-ids.set(AllowedType.OptCell, ["o_cellV1", "o_cellV2", "o_cellV3"]);
-ids.set(AllowedType.Slice, ["sliceV1", "sliceV2", "sliceV3"]);
-ids.set(AllowedType.OptSlice, ["o_sliceV1", "o_sliceV2", "o_sliceV3"]);
-ids.set(AllowedType.Address, ["addressV1", "addressV2", "addressV3"]);
-ids.set(AllowedType.OptAddress, ["o_addressV1", "o_addressV2", "o_addressV3"]);
-ids.set(AllowedType.String, ["stringV1", "stringV2", "stringV3"]);
-ids.set(AllowedType.OptString, ["o_stringV1", "o_stringV2", "o_stringV3"]);
-
-const ctx: GenContext = {
-    identifiers: ids,
-    contractNames: ["C1", "C2"],
-};
-
-const initialized = initializeGenerator(4, 5, ctx);
-
-statistics(initialized(NonTerminal.Int), 100, "stats.txt");
+    if (signed) {
+        const minSigned = -maxUnsigned / 2n - 1n;
+        const maxSigned = maxUnsigned / 2n;
+        return fc.bigInt(minSigned, maxSigned);
+    } else {
+        return fc.bigInt(0n, maxUnsigned);
+    }
+}
