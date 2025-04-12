@@ -1,5 +1,4 @@
 import type * as Ast from "@/ast/ast";
-import { getAstFactory } from "@/ast/ast-helpers";
 import type { FactoryAst } from "@/ast/ast-helpers";
 import { getMakeAst } from "@/ast/generated/make-factory";
 import { getAstUtil } from "@/ast/util";
@@ -1078,11 +1077,14 @@ function makeExpression(
     nonTerminalCounts: number[][][],
     sizeSplitCounts: number[][][][][],
     size: number,
-): Ast.Expression {
+): fc.Arbitrary<Ast.Expression> {
     const makeF = getMakeAst(astF);
     const interpreter = new Interpreter(getAstUtil(astF));
 
-    function genFromNonTerminal(id: number, size: number): Ast.Expression {
+    function genFromNonTerminal(
+        id: number,
+        size: number,
+    ): fc.Arbitrary<Ast.Expression> {
         const prods = getProductions(id);
         const nonTerminalOptions = lookupNonTerminalCounts(
             nonTerminalCounts,
@@ -1090,16 +1092,23 @@ function makeExpression(
             size,
         );
 
-        const chosenProdIndex = randomlyChooseIndex(nonTerminalOptions);
-        const production = getProductionAt(prods, chosenProdIndex);
-        return genFromProduction(id, production, size);
+        const weightedNonTerminalOptions: fc.WeightedArbitrary<number>[] =
+            nonTerminalOptions.map((w, i) => {
+                return { arbitrary: fc.constant(i), weight: w };
+            });
+        return fc
+            .oneof(...weightedNonTerminalOptions)
+            .chain((chosenProdIndex) => {
+                const production = getProductionAt(prods, chosenProdIndex);
+                return genFromProduction(id, production, size);
+            });
     }
 
     function genFromProduction(
         nonTerminalIndex: number,
         production: ExprProduction,
         size: number,
-    ): Ast.Expression {
+    ): fc.Arbitrary<Ast.Expression> {
         const head = getTokenAt(production.tokens, 0);
         if (head.terminal) {
             // The production must have the form: N -> head list_of_non_terminals
@@ -1122,7 +1131,7 @@ function makeExpression(
         prodIndex: number,
         tokenIndex: number,
         size: number,
-    ): number {
+    ): fc.Arbitrary<number> {
         const sizeSplits = lookupSizeSplitCounts(
             sizeSplitCounts,
             nonTerminalIndex,
@@ -1130,42 +1139,43 @@ function makeExpression(
             tokenIndex,
             size,
         );
-        return randomlyChooseIndex(sizeSplits) + 1;
+        // We need to add 1 to the result because sizes
+        // in splits are always positive. So, index 0
+        // represents size 1, and so on.
+        const weightedSizeSplits: fc.WeightedArbitrary<number>[] =
+            sizeSplits.map((w, i) => {
+                return { arbitrary: fc.constant(i + 1), weight: w };
+            });
+        return fc.oneof(...weightedSizeSplits);
     }
 
     function handleShiftOperators(
         op: Ast.BinaryOperation,
         expr: Ast.Expression,
-    ): Ast.Expression {
-        if (op === "<<" || op === ">>") {
-            try {
-                const literal = interpreter.interpretExpression(expr);
-                if (literal.kind !== "number") {
-                    // Generate an integer of size 8 bits, unsigned
-                    return fc.sample(
-                        _generateIntBitLength(8, false).map((n) =>
-                            makeF.makeDummyNumber(10, n),
-                        ),
-                        1,
-                    )[0]!;
-                }
-                if (literal.value >= 0n && literal.value <= 256n) {
-                    return expr;
-                } else {
-                    // Generate an integer of size 8 bits, unsigned
-                    return fc.sample(
-                        _generateIntBitLength(8, false).map((n) =>
-                            makeF.makeDummyNumber(10, n),
-                        ),
-                        1,
-                    )[0]!;
-                }
-            } catch (_) {
-                // Any kind of error, leave the expr as is
-                return expr;
-            }
+    ): fc.Arbitrary<Ast.Expression> {
+        if (op !== "<<" && op !== ">>") {
+            return fc.constant(expr);
         }
-        return expr;
+        try {
+            const literal = interpreter.interpretExpression(expr);
+            if (literal.kind !== "number") {
+                // Generate an integer in range [0..256]
+                return fc
+                    .bigInt(0n, 256n)
+                    .map((n) => makeF.makeDummyNumber(10, n));
+            }
+            if (literal.value >= 0n && literal.value <= 256n) {
+                return fc.constant(expr);
+            } else {
+                // Generate an integer in range [0..256]
+                return fc
+                    .bigInt(0n, 256n)
+                    .map((n) => makeF.makeDummyNumber(10, n));
+            }
+        } catch (_) {
+            // Any kind of error, leave the expr as is
+            return fc.constant(expr);
+        }
     }
 
     function makeBinaryOperatorTree(
@@ -1174,49 +1184,58 @@ function makeExpression(
         prodIndex: number,
         rest: Token[],
         size: number,
-    ): Ast.Expression {
+    ): fc.Arbitrary<Ast.Expression> {
         const currSize = size - 1;
         // Choose a single split for the size
-        const sizeSplit = chooseSizeSplit(
-            nonTerminalIndex,
-            prodIndex,
-            1,
-            currSize,
-        );
+        return chooseSizeSplit(nonTerminalIndex, prodIndex, 1, currSize).chain(
+            (sizeSplit) => {
+                const leftNonTerminal = getNonTerminalAt(rest, 0);
+                const rightNonTerminal = getNonTerminalAt(rest, 1);
 
-        const leftNonTerminal = getNonTerminalAt(rest, 0);
-        const rightNonTerminal = getNonTerminalAt(rest, 1);
-        const leftOperand = genFromNonTerminal(leftNonTerminal.id, sizeSplit);
-        const rightOperand = genFromNonTerminal(
-            rightNonTerminal.id,
-            currSize - sizeSplit,
+                return genFromNonTerminal(leftNonTerminal.id, sizeSplit).chain(
+                    (leftOperand) => {
+                        return genFromNonTerminal(
+                            rightNonTerminal.id,
+                            currSize - sizeSplit,
+                        ).chain((rightOperand) => {
+                            // We need special logic to handle the shift operators, because they check
+                            // at compile time if their right-hand side is within the range [0..256].
+                            return handleShiftOperators(op, rightOperand).map(
+                                (squashedRightOperand) =>
+                                    makeF.makeDummyOpBinary(
+                                        op,
+                                        leftOperand,
+                                        squashedRightOperand,
+                                    ),
+                            );
+                        });
+                    },
+                );
+            },
         );
-        // We need special logic to handle the shift operators, because they check
-        // at compile time if their right-hand side is within the range [0..256].
-        const squashedRightOperand = handleShiftOperators(op, rightOperand);
-        return makeF.makeDummyOpBinary(op, leftOperand, squashedRightOperand);
     }
 
     function makeUnaryOperatorTree(
         op: Ast.UnaryOperation,
         rest: Token[],
         size: number,
-    ): Ast.Expression {
+    ): fc.Arbitrary<Ast.Expression> {
         const currSize = size - 1;
 
         const operandNonTerminal = getNonTerminalAt(rest, 0);
-        const operand = genFromNonTerminal(operandNonTerminal.id, currSize);
-        return makeF.makeDummyOpUnary(op, operand);
+        return genFromNonTerminal(operandNonTerminal.id, currSize).map(
+            (operand) => makeF.makeDummyOpUnary(op, operand),
+        );
     }
 
-    function makeIdentifier(t: AllowedTypeEnum): Ast.Expression {
+    function makeIdentifier(t: AllowedTypeEnum): fc.Arbitrary<Ast.Expression> {
         const names = ctx.identifiers.get(t);
         if (typeof names === "undefined" || names.length === 0) {
             throw new Error(
                 `There must exist at least one identifier for type ${t}`,
             );
         }
-        return makeF.makeDummyId(fc.sample(fc.constantFrom(...names))[0]!);
+        return fc.constantFrom(...names).map((id) => makeF.makeDummyId(id));
     }
 
     function makeTree(
@@ -1225,15 +1244,12 @@ function makeExpression(
         head: TerminalEnum,
         rest: Token[],
         size: number,
-    ): Ast.Expression {
+    ): fc.Arbitrary<Ast.Expression> {
         switch (head.id) {
             case Terminal.integer.id: {
-                return fc.sample(
-                    _generateIntBitLength(257, true).map((i) =>
-                        makeF.makeDummyNumber(10, i),
-                    ),
-                    1,
-                )[0]!;
+                return _generateIntBitLength(257, true).map((i) =>
+                    makeF.makeDummyNumber(10, i),
+                );
             }
             case Terminal.add.id: {
                 return makeBinaryOperatorTree(
@@ -1335,10 +1351,7 @@ function makeExpression(
                 return makeUnaryOperatorTree("~", rest, size);
             }
             case Terminal.bool.id: {
-                return fc.sample(
-                    fc.boolean().map((b) => makeF.makeDummyBoolean(b)),
-                    1,
-                )[0]!;
+                return fc.boolean().map((b) => makeF.makeDummyBoolean(b));
             }
             case Terminal.eq.id: {
                 return makeBinaryOperatorTree(
@@ -1416,7 +1429,7 @@ function makeExpression(
                 return makeUnaryOperatorTree("!", rest, size);
             }
             case Terminal.cell.id: {
-                return makeF.makeDummyCell(fc.sample(_generateCell(), 1)[0]!);
+                return _generateCell().map((c) => makeF.makeDummyCell(c));
             }
             case Terminal.code_of.id: {
                 if (ctx.contractNames.length === 0) {
@@ -1424,72 +1437,75 @@ function makeExpression(
                         "There must exist at least one contract name in generator context",
                     );
                 }
-                return makeF.makeDummyCodeOf(
-                    makeF.makeDummyId(
-                        fc.sample(fc.constantFrom(...ctx.contractNames), 1)[0]!,
-                    ),
-                );
+                return fc
+                    .constantFrom(...ctx.contractNames)
+                    .map((name) =>
+                        makeF.makeDummyCodeOf(makeF.makeDummyId(name)),
+                    );
             }
             case Terminal.slice.id: {
-                return makeF.makeDummySlice(
-                    fc.sample(_generateCell(), 1)[0]!.asSlice(),
+                return _generateCell().map((c) =>
+                    makeF.makeDummySlice(c.asSlice()),
                 );
             }
             case Terminal.address.id: {
-                return makeF.makeDummyAddress(
-                    fc.sample(_generateAddress(), 1)[0]!,
-                );
+                return _generateAddress().map((a) => makeF.makeDummyAddress(a));
             }
             case Terminal.string.id: {
-                return makeF.makeDummyString(fc.sample(fc.string(), 1)[0]!);
+                return fc.string().map((s) => makeF.makeDummyString(s));
             }
             case Terminal.opt_inj.id: {
                 const currSize = size - 1;
                 const operandNonTerminal = getNonTerminalAt(rest, 0);
                 return genFromNonTerminal(operandNonTerminal.id, currSize);
             }
-            // case Terminal.null.id: {
-            //     return makeF.makeDummyNull();
-            // }
+            case Terminal.null.id: {
+                return fc.constant(makeF.makeDummyNull());
+            }
             case Terminal.non_null_assert.id: {
                 return makeUnaryOperatorTree("!!", rest, size);
             }
             case Terminal.cond.id: {
                 const currSize = size - 1;
                 // Choose two splits for the size
-                const sizeSplit1 = chooseSizeSplit(
+                return chooseSizeSplit(
                     nonTerminalIndex,
                     prodIndex,
                     1,
                     currSize,
-                );
-                const sizeSplit2 = chooseSizeSplit(
-                    nonTerminalIndex,
-                    prodIndex,
-                    2,
-                    currSize - sizeSplit1,
-                );
+                ).chain((sizeSplit1) => {
+                    return chooseSizeSplit(
+                        nonTerminalIndex,
+                        prodIndex,
+                        2,
+                        currSize - sizeSplit1,
+                    ).chain((sizeSplit2) => {
+                        const condNonTerminal = getNonTerminalAt(rest, 0);
+                        const thenNonTerminal = getNonTerminalAt(rest, 1);
+                        const elseNonTerminal = getNonTerminalAt(rest, 2);
 
-                const condNonTerminal = getNonTerminalAt(rest, 0);
-                const thenNonTerminal = getNonTerminalAt(rest, 1);
-                const elseNonTerminal = getNonTerminalAt(rest, 2);
-                const condOperand = genFromNonTerminal(
-                    condNonTerminal.id,
-                    sizeSplit1,
-                );
-                const thenOperand = genFromNonTerminal(
-                    thenNonTerminal.id,
-                    sizeSplit2,
-                );
-                const elseOperand = genFromNonTerminal(
-                    elseNonTerminal.id,
-                    currSize - sizeSplit1 - sizeSplit2,
-                );
-                return makeF.makeDummyConditional(
-                    condOperand,
-                    thenOperand,
-                    elseOperand,
-                );
+                        return genFromNonTerminal(
+                            condNonTerminal.id,
+                            sizeSplit1,
+                        ).chain((condOperand) => {
+                            return genFromNonTerminal(
+                                thenNonTerminal.id,
+                                sizeSplit2,
+                            ).chain((thenOperand) => {
+                                return genFromNonTerminal(
+                                    elseNonTerminal.id,
+                                    currSize - sizeSplit1 - sizeSplit2,
+                                ).map((elseOperand) =>
+                                    makeF.makeDummyConditional(
+                                        condOperand,
+                                        thenOperand,
+                                        elseOperand,
+                                    ),
+                                );
+                            });
+                        });
+                    });
+                });
             }
             case Terminal.id_int.id: {
                 return makeIdentifier("Int");
@@ -1538,14 +1554,20 @@ export function initializeGenerator(
     maxSize: number,
     astF: FactoryAst,
     ctx: GenContext,
+    astF: FactoryAst,
 ): (type: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
     const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
         computeCountTables(minSize, maxSize);
 
     return (type: NonTerminalEnum) => {
         const sizes = lookupTotalCounts(totalCounts, type.id);
-        return fc.constant(0).map((_) => {
-            const size = randomlyChooseIndex(sizes);
+        const weightedSizes: fc.WeightedArbitrary<number>[] = sizes.map(
+            (w, i) => {
+                return { arbitrary: fc.constant(i), weight: w };
+            },
+        );
+
+        return fc.oneof(...weightedSizes).chain((size) => {
             return makeExpression(
                 astF,
                 type,
@@ -1556,16 +1578,6 @@ export function initializeGenerator(
             );
         });
     };
-}
-
-function randomlyChooseIndex(array: number[]): number {
-    const random = Math.random() * array[array.length - 1]!;
-    for (let i = 0; i < array.length; i++) {
-        if (array[i]! > random) {
-            return i;
-        }
-    }
-    throw new Error("There must exist at least one element in the array");
 }
 
 function testSubwalletId(seed: string): bigint {

@@ -59,3 +59,9 @@ cell udict_set(cell dict, int key_len, int index, slice value) asm(value index d
 
 cell udict_set_ref(cell dict, int key_len, int index, cell value) asm(value index dict key_len) "DICTUSETREF";
 (cell, ()) ~udict_set_ref(cell dict, int key_len, int index, cell value) asm(value index dict key_len) "DICTUSETREF";
+
+int cell_hash(cell c) asm "HASHCU";
+
+int slice_hash(slice s) asm "HASHSU";
+
+int string_hash(slice s) asm "SHA256U";
