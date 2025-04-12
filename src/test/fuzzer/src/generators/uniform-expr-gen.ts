@@ -39,27 +39,27 @@ export const NonTerminal = {
     Int: { terminal: false, literal: false, id: 1 },
     OptInt: { terminal: false, literal: false, id: 2 },
     LiteralInt: { terminal: false, literal: true, id: 3 },
-    LiteralOptInt: { terminal: false, literal: true, id: 4 },
-    Bool: { terminal: false, literal: false, id: 5 },
-    OptBool: { terminal: false, literal: false, id: 6 },
-    LiteralBool: { terminal: false, literal: true, id: 7 },
-    LiteralOptBool: { terminal: false, literal: true, id: 8 },
-    Cell: { terminal: false, literal: false, id: 9 },
-    OptCell: { terminal: false, literal: false, id: 10 },
-    LiteralCell: { terminal: false, literal: true, id: 11 },
-    LiteralOptCell: { terminal: false, literal: true, id: 12 },
-    Slice: { terminal: false, literal: false, id: 13 },
-    OptSlice: { terminal: false, literal: false, id: 14 },
-    LiteralSlice: { terminal: false, literal: true, id: 15 },
-    LiteralOptSlice: { terminal: false, literal: true, id: 16 },
-    Address: { terminal: false, literal: false, id: 17 },
-    OptAddress: { terminal: false, literal: false, id: 18 },
-    LiteralAddress: { terminal: false, literal: true, id: 19 },
-    LiteralOptAddress: { terminal: false, literal: true, id: 20 },
-    String: { terminal: false, literal: false, id: 21 },
-    OptString: { terminal: false, literal: false, id: 22 },
-    LiteralString: { terminal: false, literal: true, id: 23 },
-    LiteralOptString: { terminal: false, literal: true, id: 24 },
+    // LiteralOptInt: { terminal: false, literal: true, id: 4 },
+    Bool: { terminal: false, literal: false, id: 4 },
+    OptBool: { terminal: false, literal: false, id: 5 },
+    LiteralBool: { terminal: false, literal: true, id: 6 },
+    // LiteralOptBool: { terminal: false, literal: true, id: 8 },
+    Cell: { terminal: false, literal: false, id: 7 },
+    OptCell: { terminal: false, literal: false, id: 8 },
+    LiteralCell: { terminal: false, literal: true, id: 9 },
+    // LiteralOptCell: { terminal: false, literal: true, id: 12 },
+    Slice: { terminal: false, literal: false, id: 10 },
+    OptSlice: { terminal: false, literal: false, id: 11 },
+    LiteralSlice: { terminal: false, literal: true, id: 12 },
+    // LiteralOptSlice: { terminal: false, literal: true, id: 16 },
+    Address: { terminal: false, literal: false, id: 13 },
+    OptAddress: { terminal: false, literal: false, id: 14 },
+    LiteralAddress: { terminal: false, literal: true, id: 15 },
+    // LiteralOptAddress: { terminal: false, literal: true, id: 20 },
+    String: { terminal: false, literal: false, id: 16 },
+    OptString: { terminal: false, literal: false, id: 17 },
+    LiteralString: { terminal: false, literal: true, id: 18 },
+    // LiteralOptString: { terminal: false, literal: true, id: 24 },
 } as const;
 
 export type NonTerminalEnum = (typeof NonTerminal)[keyof typeof NonTerminal];
@@ -100,24 +100,24 @@ const Terminal = {
 
     string: { terminal: true, id: 28 },
 
-    opt_inj: { terminal: true, id: 29 },
+    // opt_inj: { terminal: true, id: 30 },
     // null: { terminal: true, id: 30 },
-    non_null_assert: { terminal: true, id: 30 },
+    non_null_assert: { terminal: true, id: 29 },
 
-    cond: { terminal: true, id: 31 },
+    cond: { terminal: true, id: 30 },
 
-    id_int: { terminal: true, id: 32 },
-    id_opt_int: { terminal: true, id: 33 },
-    id_bool: { terminal: true, id: 34 },
-    id_opt_bool: { terminal: true, id: 35 },
-    id_cell: { terminal: true, id: 36 },
-    id_opt_cell: { terminal: true, id: 37 },
-    id_slice: { terminal: true, id: 38 },
-    id_opt_slice: { terminal: true, id: 39 },
-    id_address: { terminal: true, id: 40 },
-    id_opt_address: { terminal: true, id: 41 },
-    id_string: { terminal: true, id: 42 },
-    id_opt_string: { terminal: true, id: 43 },
+    id_int: { terminal: true, id: 31 },
+    id_opt_int: { terminal: true, id: 32 },
+    id_bool: { terminal: true, id: 33 },
+    id_opt_bool: { terminal: true, id: 34 },
+    id_cell: { terminal: true, id: 35 },
+    id_opt_cell: { terminal: true, id: 36 },
+    id_slice: { terminal: true, id: 37 },
+    id_opt_slice: { terminal: true, id: 38 },
+    id_address: { terminal: true, id: 39 },
+    id_opt_address: { terminal: true, id: 40 },
+    id_string: { terminal: true, id: 41 },
+    id_opt_string: { terminal: true, id: 42 },
 } as const;
 
 type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];
@@ -135,27 +135,27 @@ const allProductions: ExprProduction[][] = [
         { id: 0, tokens: [NonTerminal.Int] },
         { id: 1, tokens: [NonTerminal.OptInt] },
         { id: 2, tokens: [NonTerminal.LiteralInt] },
-        { id: 3, tokens: [NonTerminal.LiteralOptInt] },
-        { id: 4, tokens: [NonTerminal.Bool] },
-        { id: 5, tokens: [NonTerminal.OptBool] },
-        { id: 6, tokens: [NonTerminal.LiteralBool] },
-        { id: 7, tokens: [NonTerminal.LiteralOptBool] },
-        { id: 8, tokens: [NonTerminal.Cell] },
-        { id: 9, tokens: [NonTerminal.OptCell] },
-        { id: 10, tokens: [NonTerminal.LiteralCell] },
-        { id: 11, tokens: [NonTerminal.LiteralOptCell] },
-        { id: 12, tokens: [NonTerminal.Slice] },
-        { id: 13, tokens: [NonTerminal.OptSlice] },
-        { id: 14, tokens: [NonTerminal.LiteralSlice] },
-        { id: 15, tokens: [NonTerminal.LiteralOptSlice] },
-        { id: 16, tokens: [NonTerminal.Address] },
-        { id: 17, tokens: [NonTerminal.OptAddress] },
-        { id: 18, tokens: [NonTerminal.LiteralAddress] },
-        { id: 19, tokens: [NonTerminal.LiteralOptAddress] },
-        { id: 20, tokens: [NonTerminal.String] },
-        { id: 21, tokens: [NonTerminal.LiteralString] },
-        { id: 22, tokens: [NonTerminal.OptString] },
-        { id: 23, tokens: [NonTerminal.LiteralOptString] },
+        // { id: 3, tokens: [NonTerminal.LiteralOptInt] },
+        { id: 3, tokens: [NonTerminal.Bool] },
+        { id: 4, tokens: [NonTerminal.OptBool] },
+        { id: 5, tokens: [NonTerminal.LiteralBool] },
+        // { id: 7, tokens: [NonTerminal.LiteralOptBool] },
+        { id: 6, tokens: [NonTerminal.Cell] },
+        { id: 7, tokens: [NonTerminal.OptCell] },
+        { id: 8, tokens: [NonTerminal.LiteralCell] },
+        // { id: 11, tokens: [NonTerminal.LiteralOptCell] },
+        { id: 9, tokens: [NonTerminal.Slice] },
+        { id: 10, tokens: [NonTerminal.OptSlice] },
+        { id: 11, tokens: [NonTerminal.LiteralSlice] },
+        // { id: 15, tokens: [NonTerminal.LiteralOptSlice] },
+        { id: 12, tokens: [NonTerminal.Address] },
+        { id: 13, tokens: [NonTerminal.OptAddress] },
+        { id: 14, tokens: [NonTerminal.LiteralAddress] },
+        // { id: 19, tokens: [NonTerminal.LiteralOptAddress] },
+        { id: 15, tokens: [NonTerminal.String] },
+        { id: 16, tokens: [NonTerminal.LiteralString] },
+        { id: 17, tokens: [NonTerminal.OptString] },
+        // { id: 23, tokens: [NonTerminal.LiteralOptString] },
     ],
     [
         // Productions for Int
@@ -206,9 +206,9 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for OptInt
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Int] },
+        // { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Int] },
         {
-            id: 1,
+            id: 0,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -216,18 +216,18 @@ const allProductions: ExprProduction[][] = [
                 NonTerminal.OptInt,
             ],
         },
-        { id: 2, tokens: [Terminal.id_opt_int] },
-        { id: 3, tokens: [NonTerminal.LiteralOptInt] },
+        { id: 1, tokens: [Terminal.id_opt_int] },
+        // { id: 2, tokens: [NonTerminal.LiteralOptInt] },
     ],
     [
         // Productions for LiteralInt
         { id: 0, tokens: [Terminal.integer] },
     ],
-    [
-        // Productions for LiteralOptInt
-        // { id: 0, tokens: [Terminal.null] },
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralInt] },
-    ],
+    // [
+    //     // Productions for LiteralOptInt
+    //     // { id: 0, tokens: [Terminal.null] },
+    //     // { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralInt] },
+    // ],
     [
         // Productions for Bool
         { id: 0, tokens: [Terminal.eq, NonTerminal.Int, NonTerminal.Int] },
@@ -357,9 +357,9 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for OptBool
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Bool] },
+        // { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Bool] },
         {
-            id: 1,
+            id: 0,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -367,18 +367,18 @@ const allProductions: ExprProduction[][] = [
                 NonTerminal.OptBool,
             ],
         },
-        { id: 2, tokens: [Terminal.id_opt_bool] },
-        { id: 3, tokens: [NonTerminal.LiteralOptBool] },
+        { id: 1, tokens: [Terminal.id_opt_bool] },
+        // { id: 3, tokens: [NonTerminal.LiteralOptBool] },
     ],
     [
         // Productions for LiteralBool
         { id: 0, tokens: [Terminal.bool] },
     ],
-    [
-        // Productions for LiteralOptBool
-        // { id: 0, tokens: [Terminal.null] },
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralBool] },
-    ],
+    // [
+    //     // Productions for LiteralOptBool
+    //     // { id: 0, tokens: [Terminal.null] },
+    //     // { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralBool] },
+    // ],
     [
         // Productions for Cell
         { id: 0, tokens: [Terminal.code_of] },
@@ -398,9 +398,9 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for OptCell
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Cell] },
+        // { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Cell] },
         {
-            id: 1,
+            id: 0,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -408,18 +408,18 @@ const allProductions: ExprProduction[][] = [
                 NonTerminal.OptCell,
             ],
         },
-        { id: 2, tokens: [Terminal.id_opt_cell] },
-        { id: 3, tokens: [NonTerminal.LiteralOptCell] },
+        { id: 1, tokens: [Terminal.id_opt_cell] },
+        // { id: 2, tokens: [NonTerminal.LiteralOptCell] },
     ],
     [
         // Productions for LiteralCell
         { id: 0, tokens: [Terminal.cell] },
     ],
-    [
-        // Productions for LiteralOptCell
-        // { id: 0, tokens: [Terminal.null] },
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralCell] },
-    ],
+    // [
+    //     // Productions for LiteralOptCell
+    //     // { id: 0, tokens: [Terminal.null] },
+    //     // { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralCell] },
+    // ],
     [
         // Productions for Slice
         { id: 0, tokens: [Terminal.non_null_assert, NonTerminal.OptSlice] },
@@ -437,9 +437,9 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for OptSlice
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Slice] },
+        // { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Slice] },
         {
-            id: 1,
+            id: 0,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -447,18 +447,18 @@ const allProductions: ExprProduction[][] = [
                 NonTerminal.OptSlice,
             ],
         },
-        { id: 2, tokens: [Terminal.id_opt_slice] },
-        { id: 3, tokens: [NonTerminal.LiteralOptSlice] },
+        { id: 1, tokens: [Terminal.id_opt_slice] },
+        // { id: 2, tokens: [NonTerminal.LiteralOptSlice] },
     ],
     [
         // Productions for LiteralSlice
         { id: 0, tokens: [Terminal.slice] },
     ],
-    [
-        // Productions for LiteralOptSlice
-        // { id: 0, tokens: [Terminal.null] },
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralSlice] },
-    ],
+    // [
+    //     // Productions for LiteralOptSlice
+    //     // { id: 0, tokens: [Terminal.null] },
+    //     // { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralSlice] },
+    // ],
     [
         // Productions for Address
         {
@@ -479,9 +479,9 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for OptAddress
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Address] },
+        // { id: 0, tokens: [Terminal.opt_inj, NonTerminal.Address] },
         {
-            id: 1,
+            id: 0,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -489,18 +489,18 @@ const allProductions: ExprProduction[][] = [
                 NonTerminal.OptAddress,
             ],
         },
-        { id: 2, tokens: [Terminal.id_opt_address] },
-        { id: 3, tokens: [NonTerminal.LiteralOptAddress] },
+        { id: 1, tokens: [Terminal.id_opt_address] },
+        // { id: 3, tokens: [NonTerminal.LiteralOptAddress] },
     ],
     [
         // Productions for LiteralAddress
         { id: 0, tokens: [Terminal.address] },
     ],
-    [
-        // Productions for LiteralOptAddress
-        // { id: 0, tokens: [Terminal.null] },
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralAddress] },
-    ],
+    // [
+    //     // Productions for LiteralOptAddress
+    //     // { id: 0, tokens: [Terminal.null] },
+    //     // { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralAddress] },
+    // ],
     [
         // Productions for String
         { id: 0, tokens: [Terminal.non_null_assert, NonTerminal.OptString] },
@@ -518,9 +518,9 @@ const allProductions: ExprProduction[][] = [
     ],
     [
         // Productions for OptString
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.String] },
+        // { id: 0, tokens: [Terminal.opt_inj, NonTerminal.String] },
         {
-            id: 1,
+            id: 0,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -528,18 +528,18 @@ const allProductions: ExprProduction[][] = [
                 NonTerminal.OptString,
             ],
         },
-        { id: 2, tokens: [Terminal.id_opt_string] },
-        { id: 3, tokens: [NonTerminal.LiteralOptString] },
+        { id: 1, tokens: [Terminal.id_opt_string] },
+        // { id: 2, tokens: [NonTerminal.LiteralOptString] },
     ],
     [
         // Productions for LiteralString
         { id: 0, tokens: [Terminal.string] },
     ],
-    [
-        // Productions for LiteralOptString
-        // { id: 0, tokens: [Terminal.null] },
-        { id: 0, tokens: [Terminal.opt_inj, NonTerminal.LiteralString] },
-    ],
+    // [
+    //     // Productions for LiteralOptString
+    //     // { id: 0, tokens: [Terminal.null] },
+    //     // { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralString] },
+    // ],
 ];
 
 function sum(counts: number[]): number {
@@ -1454,14 +1454,14 @@ function makeExpression(
             case Terminal.string.id: {
                 return fc.string().map((s) => makeF.makeDummyString(s));
             }
-            case Terminal.opt_inj.id: {
-                const currSize = size - 1;
-                const operandNonTerminal = getNonTerminalAt(rest, 0);
-                return genFromNonTerminal(operandNonTerminal.id, currSize);
-            }
-            case Terminal.null.id: {
-                return fc.constant(makeF.makeDummyNull());
-            }
+            // case Terminal.opt_inj.id: {
+            //     const currSize = size - 1;
+            //     const operandNonTerminal = getNonTerminalAt(rest, 0);
+            //     return genFromNonTerminal(operandNonTerminal.id, currSize);
+            // }
+            // case Terminal.null.id: {
+            //     return fc.constant(makeF.makeDummyNull());
+            // }
             case Terminal.non_null_assert.id: {
                 return makeUnaryOperatorTree("!!", rest, size);
             }
@@ -1552,7 +1552,6 @@ function makeExpression(
 export function initializeGenerator(
     minSize: number,
     maxSize: number,
-    astF: FactoryAst,
     ctx: GenContext,
     astF: FactoryAst,
 ): (type: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {

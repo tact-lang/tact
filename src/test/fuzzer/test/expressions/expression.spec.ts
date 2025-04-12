@@ -123,8 +123,8 @@ describe("evaluation properties", () => {
             const generator = initializeGenerator(
                 1,
                 10,
-                expressionTestingEnvironment.astF,
                 expressionGenerationCtx,
+                expressionTestingEnvironment.astF,
             );
 
             const property = fc.asyncProperty(
