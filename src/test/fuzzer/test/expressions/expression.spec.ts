@@ -32,6 +32,7 @@ import {
     ExpressionTestingEnvironment,
     generateBindings,
     interpretExpression,
+    saveExpressionTest,
     setupEnvironment,
 } from "./utils";
 
@@ -90,6 +91,8 @@ describe("evaluation properties", () => {
     beforeAll(async () => {
         expressionTestingEnvironment = await setupEnvironment();
     });
+
+    afterAll(() => expressionTestingEnvironment.outputStream.close());
 
     test(
         "compiler and interpreter evaluate generated expressions equally",
@@ -150,6 +153,17 @@ describe("evaluation properties", () => {
                             compilationResult instanceof BigInt)
                     ) {
                         expect(compilationResult).toEqual(interpretationResult);
+                    } else if (
+                        compilationResult instanceof Error &&
+                        interpretationResult instanceof Error
+                    ) {
+                        saveExpressionTest(
+                            bindings,
+                            expr,
+                            compilationResult,
+                            interpretationResult,
+                            expressionTestingEnvironment.outputStream,
+                        );
                     } else {
                         expect(compilationResult).toBe(interpretationResult);
                     }

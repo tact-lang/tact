@@ -19,6 +19,7 @@ import {
 import { Blockchain } from "@ton/sandbox";
 import { Sender, toNano } from "@ton/core";
 import fc from "fast-check";
+import * as fs from "node:fs";
 
 export function bindingsAndExpressionPrtinter([bindings, expr]: [
     Ast.StatementLet[],
@@ -94,6 +95,7 @@ export type ExpressionTestingEnvironment = {
     astUtil: AstUtil;
     sender: Sender;
     contractNameToCompile: string;
+    outputStream: fs.WriteStream;
 };
 
 export async function setupEnvironment(): Promise<ExpressionTestingEnvironment> {
@@ -150,6 +152,9 @@ export async function setupEnvironment(): Promise<ExpressionTestingEnvironment> 
         sender,
         emptyCompilerContext: new CompilerContext(),
         contractNameToCompile: "ExpressionContract",
+        outputStream: fs.createWriteStream("interesting-failing-tests.txt", {
+            flags: "a",
+        }),
     };
 }
 
@@ -245,5 +250,18 @@ export function generateBindings(
                           ),
                 ),
             ),
+    );
+}
+
+export function saveExpressionTest(
+    bindings: Ast.StatementLet[],
+    expr: Ast.Expression,
+    compilationResult: Error,
+    interpretationResult: Error,
+    outputStream: fs.WriteStream,
+): void {
+    outputStream.write(
+        bindingsAndExpressionPrtinter([bindings, expr]) +
+            `\nCompilation error: ${compilationResult}\nInterpretation error: ${interpretationResult}\n`,
     );
 }
