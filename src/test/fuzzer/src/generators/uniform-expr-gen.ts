@@ -958,9 +958,6 @@ function computeCountTables(
     // into non-negative integers (because they may be currently encoded
     // in a different way. For example, when using logarithms to represent
     // counts, the numbers have fractional part, and may also include -Inf).
-    // Also, once they are normalized into non-negative integers,
-    // we need to compute their partial sums, in preparation for the generation
-    // process.
     normalizeCounts();
 
     return {
