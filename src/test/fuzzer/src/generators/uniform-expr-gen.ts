@@ -558,13 +558,12 @@ function sum(counts: number[]): number {
     // For the general case, we reduce the array thanks to the following formula:
     // log(x + y) = log x + log(1 + 2^(log y - log x))
     // which tells us how we should add counts when they are represented as logarithms
-    const bla = filteredCounts
+    return filteredCounts
         .slice(1)
         .reduce(
             (prev, curr) => prev + Math.log2(1 + 2 ** (curr - prev)),
             first,
         );
-    return bla;
 }
 
 function normalizeArray(counts: number[]): number[] {
@@ -572,7 +571,7 @@ function normalizeArray(counts: number[]): number[] {
     // So, it is enough to transform -Inf back to 0.
     // Any 0 represents a count of 1. Since such index has a non-zero probability to be selected,
     // we change the 0s to 1s. The rest of numbers we take their ceil to transform them into integers.
-    const bla = counts.map((n) => {
+    return counts.map((n) => {
         if (n === Number.NEGATIVE_INFINITY) {
             return 0;
         }
@@ -581,7 +580,6 @@ function normalizeArray(counts: number[]): number[] {
         }
         return Math.ceil(n);
     });
-    return bla;
 }
 
 function multiply(first: number, second: number): number {
@@ -881,17 +879,6 @@ function computeCountTables(
         }
     }
 
-    function computePartialSums(counts: number[]): number[] {
-        if (counts.length === 0) {
-            return counts;
-        }
-        const result: number[] = [counts[0]!];
-        for (let i = 1; i < counts.length; i++) {
-            result[i] = counts[i]! + result[i - 1]!;
-        }
-        return result;
-    }
-
     function normalizeCounts() {
         // The total counts
         for (const nonTerminal of Object.values(NonTerminal)) {
@@ -899,7 +886,7 @@ function computeCountTables(
             if (typeof counts === "undefined") {
                 throw new Error(`Index ${nonTerminal.id} out of bounds`);
             }
-            const newCounts = computePartialSums(normalizeArray(counts));
+            const newCounts = normalizeArray(counts);
             totalCounts[nonTerminal.id] = newCounts;
         }
 
@@ -911,7 +898,7 @@ function computeCountTables(
                     nonTerminal.id,
                     size,
                 );
-                const newCounts = computePartialSums(normalizeArray(counts));
+                const newCounts = normalizeArray(counts);
                 updateNonTerminalCounts(nonTerminal.id, size, newCounts);
             }
         }
@@ -936,9 +923,7 @@ function computeCountTables(
                             tokenIndx,
                             size,
                         );
-                        const newCounts = computePartialSums(
-                            normalizeArray(counts),
-                        );
+                        const newCounts = normalizeArray(counts);
                         updateSizeSplitCounts(
                             nonTerminal.id,
                             prod.id,
