@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the description of the Tact-reserved exit code 129 and expanded descriptions of functions that can throw it, such as `Message.fromCell()` and `Message.fromSlice()`: PR [#2604](https://github.com/tact-lang/tact/pull/2604)
 - Added "Learn Tact in Y minutes" page to the Book: PR [#2375](https://github.com/tact-lang/tact/pull/2375)
 - Ensured that variables are always shown declared with immediate initialization, and made it clear in the descriptions of the `let` statement: PR [#2742](https://github.com/tact-lang/tact/pull/2742)
+- Fixed the description of the Unicode escape upper bound (U+10FFFF): PR [#2752](https://github.com/tact-lang/tact/pull/2752)
 
 ### Release contributors
 
