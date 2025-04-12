@@ -7,9 +7,9 @@ message MessageAndForward {
     init: StateInit?;
 }
 
-message Reserving { 
+message Reserving {
     reserve: Int;
-    reserveMode: Int; 
+    reserveMode: Int;
     to: Address;
     body: Cell?;
     bounce: Bool;
@@ -30,7 +30,6 @@ message Forward {
     init: StateInit?;
 }
 
-
 message Notify {
     body: Cell?;
 }
@@ -42,7 +41,7 @@ message Reply {
 trait TestBaseTrait with BaseTrait {
     receive(msg: DoubleForward) {
         self.forward(msg.to, msg.body, msg.bounce, msg.init);
-        
+
         self.forward(msg.to, msg.body, msg.bounce, msg.init);
     }
 
@@ -51,37 +50,20 @@ trait TestBaseTrait with BaseTrait {
         self.forward(msg.to, msg.body, msg.bounce, msg.init);
     }
 
-    receive(msg: MessageAndForward){
-        message(MessageParameters{
+    receive(msg: MessageAndForward) {
+        message(MessageParameters {
             mode: msg.mode,
             to: msg.to,
             body: msg.body,
-            value: msg.value
+            value: msg.value,
         });
-        
+
         self.forward(msg.to, msg.body, msg.bounce, msg.init);
     }
-
 
     receive(msg: Forward) { self.forward(msg.to, msg.body, msg.bounce, msg.init) }
 
     receive(msg: Notify) { self.notify(msg.body) }
 
     receive(msg: Reply) { self.reply(msg.body) }
-}
-
-trait OverrideBaseTraitConstant with BaseTrait {
-    override const storageReserve: Int = ton("0.1");
-
-    get fun constant(): Int {
-        return self.storageReserve;
-    }
-}
-
-contract TraitsConstantContract with OverrideBaseTraitConstant, TestBaseTrait {
-    receive() {}
-}
-
-contract TraitsConstantContractZeroReserve with TestBaseTrait {
-    receive() {}
 }
