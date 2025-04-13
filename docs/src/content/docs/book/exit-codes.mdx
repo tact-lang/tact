@@ -378,9 +378,9 @@ Described in the [TVM][tvm] docs as "Unknown error, may be thrown by user progra
 
 ```tact
 try {
-    // Unlike nativeSendMessage which uses SENDRAWMSG, this one uses SENDMSG,
+    // Unlike sendRawMessage which uses SENDRAWMSG, this one uses SENDMSG,
     // and therefore fails in Compute phase when the message is ill-formed
-    nativeSendMessageReturnForwardFee(emptyCell(), 0);
+    sendRawMessageReturnForwardFee(emptyCell(), 0);
 } catch (exitCode) {
     // exitCode is 11
 }
@@ -448,7 +448,7 @@ There are only four supported actions at the moment: changing the contract code,
 
 ```tact
 // For example, let's try to send an ill-formed message:
-nativeSendMessage(emptyCell(), 0); // won't fail in the compute phase,
+sendRawMessage(emptyCell(), 0); // won't fail in the compute phase,
                                    // but will result in exit code 34 in the Action phase
 ```
 
