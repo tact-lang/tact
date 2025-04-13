@@ -16,6 +16,7 @@ moduleItem
     / StructDecl
     / MessageDecl
     / UnionDecl
+    / AliasDecl
     / Contract
     / Trait;
 
@@ -129,6 +130,13 @@ Case =
     "}";
 
 structFields = @inter<FieldDecl, ";">? ";"?;
+
+AliasDecl =
+    "type"
+    name:TypeId
+    "="
+    type:type
+    ";";
 
 FieldDecl =
     name:Id
