@@ -251,3 +251,17 @@ export const Source = (file: string | undefined, contents: string, root: $.Modul
     contents,
     root
 });
+export type UnionCase = $.UnionCase;
+export const UnionCase = (name: $c.TypeId, fields: readonly $.FieldDecl[]): $.UnionCase => Object.freeze({
+    name,
+    fields
+});
+export type UnionDecl = $.UnionDecl;
+export const UnionDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], cases: readonly $.UnionCase[], loc: $c.Range): $.UnionDecl => Object.freeze({
+    kind: "union_decl",
+    name,
+    typeParams,
+    cases,
+    loc
+});
+export const isUnionDecl = ($value: UnionDecl) => $value.kind === "union_decl";

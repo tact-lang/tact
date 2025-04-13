@@ -15,6 +15,7 @@ moduleItem
     / Constant
     / StructDecl
     / MessageDecl
+    / UnionDecl
     / Contract
     / Trait;
 
@@ -113,6 +114,20 @@ MessageDecl =
     fields:structFields
     "}";
 
+UnionDecl =
+    "union"
+    name:TypeId
+    typeParams:typeParams?
+    "{"
+    cases:Case*
+    "}";
+
+Case =
+    name:TypeId
+    "{"
+    fields:structFields
+    "}";
+
 structFields = @inter<FieldDecl, ";">? ";"?;
 
 FieldDecl =
@@ -181,8 +196,16 @@ TypeAs = type:TypeOptional as:(keyword<"as"> @#storage)*;
 TypeOptional = type:typePrimary optionals:Optional*;
 Optional = "?";
 
-typePrimary = TypeGeneric / TypeRegular / TypeTuple / TypeTensor / TypeUnit / typeParens;
+typePrimary
+    = TypeGeneric
+    / TypeRegular
+    / TypeStorage
+    / TypeTuple
+    / TypeTensor
+    / TypeUnit
+    / typeParens;
 TypeRegular = child:TypeId;
+TypeStorage = child:storage;
 TypeGeneric = name:(MapKeyword / Bounced / TypeId) args:typeArgs;
 TypeTuple = "[" types:commaList<type>? "]";
 TypeTensor = "(" head:type tail:("," @type)+ ","? ")";
@@ -336,7 +359,7 @@ underscored<T> = $(T ("_"? T)*);
 digit "digit" = [0-9];
 
 idPart "identifier character" = [a-zA-Z0-9_];
-Id "identifier" = name:#$(!reservedWord [a-zA-Z_] idPart*);
+Id "identifier" = name:#$(!reservedWord ([a-zA-Z_] idPart* / "$"));
 
 // FunC identifiers, where `FuncId` stands for FunC function identifier
 // A plain identifier cannot be a number, a single underscore, an operator, a keyword or a compiler directive
