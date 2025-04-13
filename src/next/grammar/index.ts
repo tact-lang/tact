@@ -887,6 +887,85 @@ const parseTypeId =
         return Ast.TypeId(name, toRange(loc));
     };
 
+const parseTypeStorage = ({ child: storage, loc }: $ast.TypeStorage): Handler<Ast.Type> => ctx => {
+    const range = toRange(loc);
+    const fallback = Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+    if (storage.$ === "CoinsStorage") {
+        return Ast.TypeInt(
+            Ast.IFVarInt("unsigned", "16", toRange(storage.loc)),
+            range,
+        );
+    } else if (storage.$ === "IntStorage") {
+        const width = parseInt(storage.width, 10);
+        if (storage.isVar) {
+            if (width === 16) {
+                return Ast.TypeInt(
+                    Ast.IFVarInt(
+                        typeof storage.isUnsigned === "undefined"
+                            ? "signed"
+                            : "unsigned",
+                        "16",
+                        toRange(storage.loc),
+                    ),
+                    range,
+                );
+            } else if (width === 32) {
+                return Ast.TypeInt(
+                    Ast.IFVarInt(
+                        typeof storage.isUnsigned === "undefined"
+                            ? "signed"
+                            : "unsigned",
+                        "32",
+                        toRange(storage.loc),
+                    ),
+                    range,
+                );
+            } else {
+                ctx.err.wrongVarIntSize()(range);
+                return fallback;
+            }
+        } else if (storage.isUnsigned) {
+            if (1 <= width && width <= 256) {
+                return Ast.TypeInt(
+                    Ast.IFInt("unsigned", width, range),
+                    range,
+                );
+            } else {
+                ctx.err.wrongUIntSize()(range);
+                return fallback;
+            }
+        } else {
+            if (1 <= width && width <= 257) {
+                return Ast.TypeInt(
+                    Ast.IFInt("signed", width, range),
+                    range,
+                );
+            } else {
+                ctx.err.wrongIntSize()(range);
+                return fallback;
+            }
+        }
+    } else if (storage.$ === "RemainingStorage") {
+        ctx.err.rawRemaining()(range);
+        return Ast.TypeSlice(Ast.SFRemaining(range), range);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    } else if (storage.$ === "BytesStorage") {
+        const width = parseInt(storage.width, 10);
+        if (width === 32 || width === 64) {
+            return Ast.TypeSlice(
+                Ast.SFBits(width * 8, range),
+                range,
+            );
+        } else {
+            ctx.err.wrongSliceSize()(range);
+            return fallback;
+        }
+    } else {
+        ctx.err.wrongFormat("No type")(range);
+        return fallback;
+    }
+};
+
 const applyFormat =
     (type: Ast.Type, storage: $ast.storage, asLoc: Range): Handler<Ast.Type> =>
     (ctx) => {
@@ -1094,7 +1173,8 @@ type RawType =
     | $ast.TypeOptional
     | $ast.TypeTensor
     | $ast.TypeUnit
-    | $ast.TypeTuple;
+    | $ast.TypeTuple
+    | $ast.TypeStorage;
 
 const parseType: (node: RawType) => Handler<Ast.Type> = makeVisitor<RawType>()({
     TypeAs: parseTypeAs,
@@ -1104,6 +1184,7 @@ const parseType: (node: RawType) => Handler<Ast.Type> = makeVisitor<RawType>()({
     TypeTensor: parseTypeTensor,
     TypeTuple: parseTypeTuple,
     TypeUnit: parseTypeUnit,
+    TypeStorage: parseTypeStorage,
 });
 
 const parseFieldDecl =
@@ -1469,6 +1550,22 @@ const parseNativeFunctionDecl =
         );
     };
 
+const parseUnion = ({ name, typeParams, cases, loc }: $ast.UnionDecl): Handler<Ast.UnionDecl> => ctx => {
+    return Ast.UnionDecl(
+        parseTypeId(name)(ctx),
+        map(parseList(typeParams), parseTypeId)(ctx),
+        map(cases, parseUnionCase)(ctx),
+        toRange(loc),
+    )
+};
+
+const parseUnionCase = ({ name, fields }: $ast.Case): Handler<Ast.UnionCase> => ctx => {
+    return Ast.UnionCase(
+        parseTypeId(name)(ctx),
+        map(parseList(fields), parseFieldDecl)(ctx),
+    );
+};
+
 const parseStructDecl =
     ({ name, typeParams, fields, loc }: $ast.StructDecl): Handler<Ast.StructDecl> =>
     (ctx) => {
@@ -1539,6 +1636,7 @@ const parseModuleItemAux: (input: ModuleItemAux) => Handler<Ast.ModuleItem> =
         MessageDecl: parseMessageDecl,
         Contract: parseContract,
         Trait: parseTrait,
+        UnionDecl: parseUnion,
     });
 
 const parseModuleItem =

@@ -19,18 +19,3 @@ union Messages {
         bar: uint8;
     }
 }
-
-
-UnionDecl =
-    "union"
-    name:TypeId
-    typeParams:typeParams?
-    "{"
-    cases:Case*
-    "}";
-
-Case =
-    name:TypeId
-    "{"
-    fields:structFields
-    "}"

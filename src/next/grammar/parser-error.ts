@@ -217,6 +217,11 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
             .at(loc)
             .error(l.text`Slice byte format must either be 32 or 64`);
     },
+    rawRemaining: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(l.text`Remaining can only be used as storage type on Slice, cell, or Builder`);
+    },
     cannotHaveFormat: () => (loc: Range) => {
         return l.at(loc).error(l.text`This type cannot have format definition`);
     },

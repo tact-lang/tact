@@ -49,6 +49,7 @@ export type ModuleItem =
     | ConstantDef
     | StructDecl
     | MessageDecl
+    | UnionDecl
     | Contract
     | Trait;
 
@@ -171,6 +172,19 @@ export type MessageDecl = {
     readonly fields: readonly FieldDecl[];
     readonly loc: Range;
 };
+
+export type UnionDecl = {
+    readonly kind: "union_decl";
+    readonly name: TypeId;
+    readonly typeParams: readonly TypeId[];
+    readonly cases: readonly UnionCase[];
+    readonly loc: Range;
+}
+
+export type UnionCase = {
+    readonly name: TypeId;
+    readonly fields: readonly FieldDecl[];
+}
 
 export type FieldDecl = {
     readonly kind: "field_decl";
