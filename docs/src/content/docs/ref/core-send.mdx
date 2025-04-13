@@ -232,7 +232,7 @@ Use [`sendRawMessageReturnForwardFee(){:tact}`](#sendrawmessagereturnforwardfee)
 fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int;
 ```
 
-Similar to [`sendRawMessage(){:tact}`](#sendrawmessage), but also calculates and returns the [forward fee][fwdfee] in [nanoToncoin][nanotoncoin].
+Similar to [`sendRawMessage(){:tact}`](#sendrawmessage), but also calculates and returns the [forward fee][fwdfee] in [nanoToncoin][nano].
 
 Attempts to queue more than $255$ messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
 
@@ -245,7 +245,7 @@ Attempts to queue more than $255$ messages throw an exception with [exit code 33
 fun sendRawMessageReturnForwardFee(msg: Cell, mode: Int): Int;
 ```
 
-Similar to [`sendRawMessage(){:tact}`](#sendrawmessage), but also calculates and returns the [forward fee][fwdfee] in [nanoToncoin][nanotoncoin].
+Similar to [`sendRawMessage(){:tact}`](#sendrawmessage), but also calculates and returns the [forward fee][fwdfee] in [nanoToncoin][nano].
 
 The `sendRawMessageReturnForwardFee(){:tact}` function may throw the following exit codes:
 
@@ -272,5 +272,5 @@ The `sendRawMessageReturnForwardFee(){:tact}` function may throw the following e
 
 [Integer out of expected range]: /book/exit-codes#5
 [Type check error]: /book/exit-codes#7
-[“Unknown” error]: /book/exit-codes#11
+["Unknown" error]: /book/exit-codes#11
 [Action list is too long]: /book/exit-codes#33

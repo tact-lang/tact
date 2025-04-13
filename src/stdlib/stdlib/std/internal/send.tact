@@ -523,7 +523,7 @@ asm fun sendRawMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 /// * 5: [Integer out of expected range] - Thrown if the message mode is invalid.
 /// * 7: [Type check error] - Thrown if any of the blockchain config, contract balance or incoming message value are invalid.
 /// * 9: [Cell underflow] - Thrown if the blockchain config is invalid.
-/// * 11: [“Unknown” error] - Thrown if the message cell is ill-formed or the blockchain config is invalid.
+/// * 11: ["Unknown" error] - Thrown if the message cell is ill-formed or the blockchain config is invalid.
 /// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
@@ -533,7 +533,7 @@ asm fun sendRawMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 /// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 /// [Type check error]: https://docs.tact-lang.org/book/exit-codes#7
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
-/// [“Unknown” error]: https://docs.tact-lang.org/book/exit-codes#11
+/// ["Unknown" error]: https://docs.tact-lang.org/book/exit-codes#11
 /// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
@@ -546,7 +546,7 @@ asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 ///
 /// * 5: [Integer out of expected range] - Thrown if the message mode is invalid.
 /// * 7: [Type check error] - Thrown if any of the blockchain config, contract balance or incoming message value are invalid.
-/// * 11: [“Unknown” error] - Thrown if the message cell is ill-formed or the TVM config is invalid.
+/// * 11: ["Unknown" error] - Thrown if the message cell is ill-formed or the TVM config is invalid.
 /// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
@@ -555,7 +555,7 @@ asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 ///
 /// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 /// [Type check error]: https://docs.tact-lang.org/book/exit-codes#7
-/// [“Unknown” error]: https://docs.tact-lang.org/book/exit-codes#11
+/// ["Unknown" error]: https://docs.tact-lang.org/book/exit-codes#11
 /// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun sendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
