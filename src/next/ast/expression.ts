@@ -1,4 +1,5 @@
 import type { Id, Range, TypeId } from "@/next/ast/common";
+import type { Type } from "@/next/ast/type";
 
 export type Expression =
     | OpBinary
@@ -14,7 +15,10 @@ export type Expression =
     | Boolean
     | Null
     | String
-    | Var;
+    | Var
+    | Unit
+    | Tuple
+    | Tensor;
 
 export type Var = {
     readonly kind: "var";
@@ -100,6 +104,7 @@ export type MethodCall = {
     readonly kind: "method_call";
     readonly self: Expression; // anything with a method
     readonly method: Id;
+    readonly typeArgs: readonly Type[];
     readonly args: readonly Expression[];
     readonly loc: Range;
 };
@@ -108,6 +113,7 @@ export type MethodCall = {
 export type StaticCall = {
     readonly kind: "static_call";
     readonly function: Id;
+    readonly typeArgs: readonly Type[];
     readonly args: readonly Expression[];
     readonly loc: Range;
 };
@@ -115,6 +121,7 @@ export type StaticCall = {
 export type StructInstance = {
     readonly kind: "struct_instance";
     readonly type: TypeId;
+    readonly typeArgs: readonly Type[];
     readonly args: readonly StructFieldInitializer[];
     readonly loc: Range;
 };
@@ -146,3 +153,20 @@ export type Conditional = {
     readonly elseBranch: Expression;
     readonly loc: Range;
 };
+
+export type Unit = {
+    readonly kind: "unit";
+    readonly loc: Range;
+}
+
+export type Tuple = {
+    readonly kind: "tuple";
+    readonly children: readonly Expression[];
+    readonly loc: Range;
+}
+
+export type Tensor = {
+    readonly kind: "tensor";
+    readonly children: readonly Expression[];
+    readonly loc: Range;
+}

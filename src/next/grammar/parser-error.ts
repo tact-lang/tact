@@ -223,6 +223,9 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     deprecatedPrimitiveDecl: () => (loc: Range) => {
         l.at(loc).warn(l.text`"primitive" type declaration are deprecated`);
     },
+    constDeclNoType: () => (loc: Range) => {
+        return l.at(loc).error(l.text`Constant declaration must have a type`);
+    },
 });
 
 export type SyntaxErrors<M, R> = ReturnType<typeof SyntaxErrors<M, R>>;

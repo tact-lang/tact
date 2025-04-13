@@ -79,6 +79,7 @@ export type FunctionDef = {
     readonly kind: "function_def";
     readonly attributes: readonly FunctionAttribute[];
     readonly name: Id;
+    readonly typeParams: readonly TypeId[];
     readonly return: Type | undefined;
     readonly params: readonly TypedParameter[];
     readonly statements: readonly Statement[];
@@ -104,6 +105,7 @@ export type AsmFunctionDef = {
     readonly shuffle: AsmShuffle;
     readonly attributes: readonly FunctionAttribute[];
     readonly name: Id;
+    readonly typeParams: readonly TypeId[];
     readonly return: Type | undefined;
     readonly params: readonly TypedParameter[];
     readonly instructions: readonly AsmInstruction[];
@@ -120,6 +122,7 @@ export type FunctionDecl = {
     readonly kind: "function_decl";
     readonly attributes: readonly FunctionAttribute[];
     readonly name: Id;
+    readonly typeParams: readonly TypeId[];
     readonly return: Type | undefined;
     readonly params: readonly TypedParameter[];
     readonly loc: Range;
@@ -129,6 +132,7 @@ export type NativeFunctionDecl = {
     readonly kind: "native_function_decl";
     readonly attributes: readonly FunctionAttribute[];
     readonly name: Id;
+    readonly typeParams: readonly TypeId[];
     readonly nativeName: FuncId;
     readonly params: readonly TypedParameter[];
     readonly return: Type | undefined;
@@ -139,7 +143,7 @@ export type ConstantDef = {
     readonly kind: "constant_def";
     readonly attributes: readonly ConstantAttribute[];
     readonly name: Id;
-    readonly type: Type;
+    readonly type: Type | undefined;
     readonly initializer: Expression;
     readonly loc: Range;
 };
@@ -155,6 +159,7 @@ export type ConstantDecl = {
 export type StructDecl = {
     readonly kind: "struct_decl";
     readonly name: TypeId;
+    readonly typeParams: readonly TypeId[];
     readonly fields: readonly FieldDecl[];
     readonly loc: Range;
 };

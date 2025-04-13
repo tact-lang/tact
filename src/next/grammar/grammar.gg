@@ -42,6 +42,7 @@ Function =
     attributes:FunctionAttribute*
     keyword<"fun">
     name:Id
+    typeParams:typeParams?
     parameters:parameterList<Parameter>
     returnType:ascription?
     body:(FunctionDefinition / FunctionDeclaration);
@@ -56,6 +57,7 @@ AsmFunction =
     attributes:FunctionAttribute*
     keyword<"fun">
     name:Id
+    typeParams:typeParams?
     parameters:parameterList<Parameter>
     returnType:ascription?
     "{"
@@ -71,6 +73,7 @@ NativeFunctionDecl =
     attributes:FunctionAttribute*
     keyword<"native">
     name:Id
+    typeParams:typeParams?
     parameters:parameterList<Parameter>
     returnType:ascription?
     ";";
@@ -79,7 +82,7 @@ Constant =
     attributes:ConstantAttribute*
     keyword<"const">
     name:Id
-    type:ascription
+    type:ascription?
     body:(ConstantDefinition / ConstantDeclaration);
 
 ConstantAttribute = name:(
@@ -97,6 +100,7 @@ storageVar = @FieldDecl semicolon;
 StructDecl =
     "struct"
     name:TypeId
+    typeParams:typeParams?
     "{"
     fields:structFields
     "}";
@@ -179,7 +183,7 @@ Optional = "?";
 
 typePrimary = TypeGeneric / TypeRegular / TypeTuple / TypeTensor / TypeUnit / typeParens;
 TypeRegular = child:TypeId;
-TypeGeneric = name:(MapKeyword / Bounced / TypeId) "<" args:commaList<type> ">";
+TypeGeneric = name:(MapKeyword / Bounced / TypeId) args:typeArgs;
 TypeTuple = "[" types:commaList<type>? "]";
 TypeTensor = "(" head:type tail:("," @type)+ ","? ")";
 TypeUnit = "(" ")";
@@ -202,6 +206,10 @@ RemainingStorage = "remaining";
 BytesStorage = "bytes" width:$(digit+);
 
 TypeId "capitalized identifier" = name:#$([A-Z] [a-zA-Z0-9_]*);
+
+typeParams = generic<TypeId>;
+typeArgs = generic<type>;
+generic<T> = "<" @commaList<T>? ">";
 
 statement
     = StatementLet
@@ -271,12 +279,17 @@ suffix
     / SuffixFieldAccess;
 
 SuffixUnboxNotNull = "!!";
-SuffixCall = params:parameterList<expression>;
+SuffixCall =
+    typeArgs:typeArgs?
+    params:parameterList<expression>;
 SuffixFieldAccess = "." name:Id;
 
 // Order is important
 primary
-    = Parens
+    = Unit
+    / Tensor
+    / Tuple
+    / Parens
     / StructInstance
     / IntegerLiteral
     / BoolLiteral
@@ -291,11 +304,20 @@ Null = keyword<"null">;
 parens = "(" @expression ")";
 Parens = child:parens;
 
-StructInstance = type:TypeId "{" fields:commaList<StructFieldInitializer>? "}";
+Unit = "(" ")";
+Tensor = "(" head:expression tail:("," @expression)+ ","? ")";
+Tuple = "[" types:commaList<expression>? "]";
+
+StructInstance =
+    type:TypeId
+    typeArgs:typeArgs?
+    "{"
+    fields:commaList<StructFieldInitializer>?
+    "}";
+StructFieldInitializer = name:Id init:(":" @expression)?;
+
 InitOf = keyword<"initOf"> name:TypeId params:parameterList<expression>;
 CodeOf = "codeOf" name:TypeId;
-
-StructFieldInitializer = name:Id init:(":" @expression)?;
 
 ParameterList<T> = "(" values:commaList<T>? ")";
 parameterList<T> = "(" @commaList<T>? ")";
