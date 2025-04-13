@@ -95,8 +95,8 @@ Lagus
 Laika
 langle
 langtools
-letrec
 learnXinYminutes
+letrec
 Liskov
 logomark
 lparen
@@ -162,6 +162,7 @@ seti
 shardchains
 shiki
 Shvetc
+Signedness
 skywardboundd
 Stateinit
 statinit
