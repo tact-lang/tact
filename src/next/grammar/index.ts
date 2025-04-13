@@ -1550,6 +1550,13 @@ const parseNativeFunctionDecl =
         );
     };
 
+const parseAlias = ({ name, type }: $ast.AliasDecl): Handler<Ast.AliasDecl> => ctx => {
+    return Ast.AliasDecl(
+        parseTypeId(name)(ctx),
+        parseType(type)(ctx),
+    );
+};
+
 const parseUnion = ({ name, typeParams, cases, loc }: $ast.UnionDecl): Handler<Ast.UnionDecl> => ctx => {
     return Ast.UnionDecl(
         parseTypeId(name)(ctx),
@@ -1637,6 +1644,7 @@ const parseModuleItemAux: (input: ModuleItemAux) => Handler<Ast.ModuleItem> =
         Contract: parseContract,
         Trait: parseTrait,
         UnionDecl: parseUnion,
+        AliasDecl: parseAlias,
     });
 
 const parseModuleItem =

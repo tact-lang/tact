@@ -50,6 +50,7 @@ export type ModuleItem =
     | StructDecl
     | MessageDecl
     | UnionDecl
+    | AliasDecl
     | Contract
     | Trait;
 
@@ -179,6 +180,12 @@ export type UnionDecl = {
     readonly typeParams: readonly TypeId[];
     readonly cases: readonly UnionCase[];
     readonly loc: Range;
+}
+
+export type AliasDecl = {
+    readonly kind: "alias_decl";
+    readonly name: TypeId;
+    readonly type: Type;
 }
 
 export type UnionCase = {

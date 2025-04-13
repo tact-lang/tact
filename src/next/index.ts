@@ -7,7 +7,8 @@ import { inspect } from 'util';
 
 // const target = "wallet-v4.tact";
 // const target = "generic.tact";
-const target = "union.tact";
+// const target = "union.tact";
+const target = "alias.tact";
 
 // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 const dump = (obj: unknown) => console.log(inspect(obj, { colors: true, depth: Infinity }));
