@@ -69,10 +69,10 @@ contract WalletV4(
 
         throwUnless(LowBalance, myBalance() - context().value >= msg.amount);
 
-        // NOTE: Here and later we use RawMsg with nativeSendMessage because
+        // NOTE: Here and later we use RawMsg with sendRawMessage because
         // in v4 wallet implementation message bodies are stored as slices in the same cell
         // instead of separate cell with ref. Our send built-ins (message, send) doesn't support such serialization
-        nativeSendMessage(
+        sendRawMessage(
             RawMsg {
                 queryId: msg.queryId,
                 op: PluginTakeFunds,
@@ -94,7 +94,7 @@ contract WalletV4(
         let _ = self.state.extensions.del(addr);
 
         if (context().bounceable) {
-            nativeSendMessage(
+            sendRawMessage(
                 RawMsg {
                     queryId: msg.queryId,
                     op: PluginRemove,
@@ -125,12 +125,12 @@ contract WalletV4(
             /*
             foreach (ref in payload.refs) {
                 let mode = payload.loadUint(8);
-                nativeSendMessage(ref, mode);
+                sendRawMessage(ref, mode);
             }
             */
             while (payload.refs() != 0) {
                 let mode = payload.loadUint(8);
-                nativeSendMessage(payload.loadRef(), mode);
+                sendRawMessage(payload.loadRef(), mode);
             }
             return;
         }
@@ -145,7 +145,7 @@ contract WalletV4(
 
             let addr = newAddress(wc, stateInit.hash());
             // cant use deploy here because of only basechain support
-            nativeSendMessage(
+            sendRawMessage(
                 RawMsgWithDeploy {
                     stateInit,
                     body,
@@ -169,7 +169,7 @@ contract WalletV4(
 
             self.state.extensions.set(addr, true);
 
-            nativeSendMessage(
+            sendRawMessage(
                 RawMsg {
                     queryId,
                     op: AddPluginAction,
@@ -192,7 +192,7 @@ contract WalletV4(
 
             throwUnless(PluginWasNotDeleted, self.state.extensions.del(addr));
 
-            nativeSendMessage(
+            sendRawMessage(
                 RawMsg {
                     queryId,
                     op: RemovePluginAction,
