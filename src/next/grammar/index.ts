@@ -327,10 +327,11 @@ const parseStructFieldInitializer =
     };
 
 const parseStructInstance =
-    ({ type, fields, loc }: $ast.StructInstance): Handler<Ast.StructInstance> =>
+    ({ type, typeArgs, fields, loc }: $ast.StructInstance): Handler<Ast.StructInstance> =>
     (ctx) => {
         return Ast.StructInstance(
             parseTypeId(type)(ctx),
+            map(parseList(typeArgs), parseType)(ctx),
             map(parseList(fields), parseStructFieldInitializer)(ctx),
             toRange(loc),
         );
@@ -423,21 +424,33 @@ const parseSuffixUnboxNotNull =
     };
 
 const parseSuffixCall =
-    ({ params }: $ast.SuffixCall): SuffixHandler =>
+    ({ params, typeArgs }: $ast.SuffixCall): SuffixHandler =>
     (ctx) =>
     (child, loc) => {
         const paramsAst = map(parseList(params), parseExpression)(ctx);
         if (child.kind === "var") {
             return Ast.StaticCall(
                 Ast.Id(child.name, child.loc),
+                map(parseList(typeArgs), parseType)(ctx),
                 paramsAst,
                 loc,
             );
         } else if (child.kind === "field_access") {
-            return Ast.MethodCall(child.aggregate, child.field, paramsAst, loc);
+            return Ast.MethodCall(
+                child.aggregate,
+                child.field,
+                map(parseList(typeArgs), parseType)(ctx),
+                paramsAst,
+                loc,
+            );
         } else {
             ctx.err.notCallable()(loc);
-            return Ast.StaticCall(Ast.Id("__invalid__", loc), paramsAst, loc);
+            return Ast.StaticCall(
+                Ast.Id("__invalid__", loc),
+                map(parseList(typeArgs), parseType)(ctx),
+                paramsAst,
+                loc,
+            );
         }
     };
 
@@ -473,6 +486,18 @@ const parseSuffix =
         ).child;
     };
 
+const parseUnit = ({ loc }: $ast.Unit): Handler<Ast.Unit> => _ctx => {
+    return Ast.Unit(toRange(loc));
+};
+
+const parseTensor = ({ head, tail, loc }: $ast.Tensor): Handler<Ast.Tensor> => ctx => {
+    return Ast.Tensor(map([head, ...tail], parseExpression)(ctx), toRange(loc));
+};
+
+const parseTuple = ({ types, loc }: $ast.Tuple): Handler<Ast.Tuple> => ctx => {
+    return Ast.Tuple(map(parseList(types), parseExpression)(ctx), toRange(loc));
+};
+
 const parseParens = ({ child }: $ast.Parens): Handler<Ast.Expression> => {
     return parseExpression(child);
 };
@@ -494,7 +519,10 @@ type Expression =
     | $ast.CodeOf
     | $ast.Null
     | $ast.StringLiteral
-    | $ast.Id;
+    | $ast.Id
+    | $ast.Unit
+    | $ast.Tensor
+    | $ast.Tuple;
 
 const parseExpression: (input: Expression) => Handler<Ast.Expression> =
     makeVisitor<Expression>()({
@@ -511,6 +539,9 @@ const parseExpression: (input: Expression) => Handler<Ast.Expression> =
         Null: parseNull,
         StringLiteral: parseStringLiteral,
         Id: parseVar,
+        Unit: parseUnit,
+        Tensor: parseTensor,
+        Tuple: parseTuple,
     });
 
 const parseStatementLet =
@@ -1217,6 +1248,7 @@ const parseAsmFunction =
             parseAsmShuffle(node.shuffle)(ctx),
             parseFunctionAttributes(node.attributes, false, node.loc)(ctx),
             parseId(node.name)(ctx),
+            map(parseList(node.typeParams), parseTypeId)(ctx),
             node.returnType ? parseType(node.returnType)(ctx) : undefined,
             map(parseList(node.parameters), parseParameter)(ctx),
             [node.instructions.trim()],
@@ -1267,7 +1299,7 @@ const parseConstant =
     ): Handler<Ast.ConstantDecl | Ast.ConstantDef> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
-        const type = parseType(node.type)(ctx);
+        const type = node.type ? parseType(node.type)(ctx) : undefined;
 
         if (node.body.$ === "ConstantDeclaration") {
             const attributes = parseConstantAttributes(
@@ -1276,7 +1308,17 @@ const parseConstant =
                 node.loc,
                 noAttributes,
             )(ctx);
-            return Ast.ConstantDecl(attributes, name, type, toRange(node.loc));
+            const range = toRange(node.loc);
+            if (!type) {
+                ctx.err.constDeclNoType()(range);
+                return Ast.ConstantDecl(
+                    attributes,
+                    name,
+                    Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+                    range,
+                );
+            }
+            return Ast.ConstantDecl(attributes, name, type, range);
         } else {
             const attributes = parseConstantAttributes(
                 node.attributes,
@@ -1353,6 +1395,7 @@ const parseFunction =
         const returnType = node.returnType
             ? parseType(node.returnType)(ctx)
             : undefined;
+        const typeParams = map(parseList(node.typeParams), parseTypeId)(ctx);
         const parameters = map(parseList(node.parameters), parseParameter)(ctx);
 
         if (node.body.$ === "FunctionDeclaration") {
@@ -1364,6 +1407,7 @@ const parseFunction =
             return Ast.FunctionDecl(
                 attributes,
                 name,
+                typeParams,
                 returnType,
                 parameters,
                 toRange(node.loc),
@@ -1378,6 +1422,7 @@ const parseFunction =
             return Ast.FunctionDef(
                 attributes,
                 name,
+                typeParams,
                 returnType,
                 parameters,
                 statements,
@@ -1406,6 +1451,7 @@ const parseNativeFunctionDecl =
     ({
         name,
         attributes,
+        typeParams,
         nativeName,
         parameters,
         returnType,
@@ -1415,6 +1461,7 @@ const parseNativeFunctionDecl =
         return Ast.NativeFunctionDecl(
             map(attributes, parseFunctionAttribute)(ctx),
             parseId(name)(ctx),
+            map(parseList(typeParams), parseTypeId)(ctx),
             parseFuncId(nativeName)(ctx),
             map(parseList(parameters), parseParameter)(ctx),
             returnType ? parseType(returnType)(ctx) : undefined,
@@ -1423,10 +1470,11 @@ const parseNativeFunctionDecl =
     };
 
 const parseStructDecl =
-    ({ name, fields, loc }: $ast.StructDecl): Handler<Ast.StructDecl> =>
+    ({ name, typeParams, fields, loc }: $ast.StructDecl): Handler<Ast.StructDecl> =>
     (ctx) => {
         return Ast.StructDecl(
             parseTypeId(name)(ctx),
+            map(parseList(typeParams), parseTypeId)(ctx),
             map(parseList(fields), parseFieldDecl)(ctx),
             toRange(loc),
         );
