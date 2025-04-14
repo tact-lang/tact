@@ -263,7 +263,7 @@ contract Sample {
         }.toSlice(), msg.signature, self.publicKey), "Invalid signature");
         acceptMessage();
         self.seqno += 1;
-        nativeSendMessage(msg.newMessage, 0);
+        sendRawMessage(msg.newMessage, 0);
     }
 }
 ```
@@ -288,7 +288,7 @@ contract Sample {
     external(msg: Msg) {
         require(checkDataSignature(msg.toSlice(), msg.signature, self.publicKey), "Invalid signature");
         acceptMessage();
-        nativeSendMessage(msg.newMessage, 0);
+        sendRawMessage(msg.newMessage, 0);
     }
 }
 ```
