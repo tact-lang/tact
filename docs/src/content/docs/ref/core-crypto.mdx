@@ -186,13 +186,11 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 fun normalizeECDSARecoveryId(v: Int): Int;
 ```
 
-Normalizes the 8-bit unsigned integer `v` to be correct for ECDSA recovery for Bitcoin and Ethereum.
+Normalizes the recovery ID `v` to be compatible with TVM `ecrecover`, which expects `v` to be `0` or `1`. In Ethereum and Bitcoin, the recovery ID is often stored with a prefix: `v = 27` or `28` → recovery ID = `v - 27`. For Bitcoin compact signatures: `v >= 31`, where the recovery ID is stored in the lowest 2 bits. Throws if `v` is not in a recognized format.
 
 :::note
 
-  In TVM, `v` can be only `0` or `1`, but in ETH / BTC, a prefix is used.
-
-  See [RFC6979](https://tools.ietf.org/html/rfc6979) and [Bitcoin Stack Exchange](https://bitcoin.stackexchange.com/questions/38351/ecdsa-v-r-s-what-is-v).
+  This function extracts the correct recovery ID (`0` or `1`) from such variants. Throws if `v` is not in a recognized format.
 
 :::
 
@@ -216,7 +214,7 @@ struct EcrecoverKey {
 }
 ```
 
-A [struct][struct] that contains the 8-bit unsigned integer `h`, and the 256-bit unsigned integers `x1` and `x2`.
+Represents the public key returned by `ecrecover()` on success. The format mimics a decompressed ECDSA public key, consisting of: `h`: 8-bit prefix (usually `0x04` for uncompressed keys), `x1`, `x2`: 256-bit coordinates of the point on the elliptic curve.
 
 ## ecrecover
 
@@ -224,18 +222,11 @@ A [struct][struct] that contains the 8-bit unsigned integer `h`, and the 256-bit
 fun ecrecover(hash: Int, v: Int, r: Int, s: Int): EcrecoverKey?;
 ```
 
-Recovers a public key from the signature as done in Bitcoin or Ethereum.
-
-Takes the 256-bit unsigned integer `hash` and the 65-byte signature consisting of:
-
-* 8-bit unsigned integer `v`
-* 256-bit unsigned integers `r` and `s`
-
-Returns `null` on failure or an `EcrecoverKey` structure on success.
+Recovers a public key from a given ECDSA signature as done in Ethereum or Bitcoin. `hash`: 256-bit message hash, `v`: recovery ID (must be `0` or `1`, use [`normalizeECDSARecoveryId()`](#normalizeecdsarecoveryid) to convert from `27`/`28`), `r`, `s`: 256-bit signature values. Returns `null` on failure or an `EcrecoverKey` structure on success. Note: This function uses the TVM `ECRECOVER` instruction and therefore requires `v` to be already normalized.
 
 :::note
 
-  In TVM, `v` can be only `0` or `1`. To normalize it for BTC / ETH, use [`normalizeECDSARecoveryId()`](#normalizeecdsarecoveryid) first.
+  Note: This function uses the TVM `ECRECOVER` instruction and therefore requires `v` to be already normalized with [`normalizeECDSARecoveryId()`](#normalizeecdsarecoveryid).
 
 :::
 

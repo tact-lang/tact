@@ -236,57 +236,78 @@ inline extends fun verifySignature(self: SignedBundle, publicKey: Int): Bool {
     return checkSignature(self.signedData.hash(), self.signature, publicKey);
 }
 
-/// Normalizes the 8-bit unsigned integer `v` to be correct for ECDSA recovery for Bitcoin and Ethereum.
+/// Normalizes the recovery ID `v` to be compatible with TVM `ecrecover`, which expects `v` to be `0` or `1`.
 ///
-/// Note: in TVM, `v` can be only `0` or `1`, but in ETH / BTC, a prefix is used.
+/// In Ethereum and Bitcoin, the recovery ID is often stored with a prefix:
+/// * Ethereum / Bitcoin: `v = 27` or `28` → recovery ID = `v - 27`
+/// * Bitcoin compact signatures: `v >= 31`, where:
+///   - bit 0: recovery ID (0 or 1)
+///   - bit 1: not used (or recovery ID bit 2 for multi-key support)
+///   - bit 2: public key compression flag (ignored by `ecrecover`)
+///
+/// This function extracts the correct recovery ID (`0` or `1`) from such variants.
 ///
 /// ```tact
 /// fun example() {
-///     let v: Int = 28; // Bitcoin adds 27 to the recovery ID
+///     let v: Int = 31; // Bitcoin compact format: 0x1F = recoveryId=0, compressed=true
 ///     let normalized: Int = normalizeECDSARecoveryId(v);
 ///     ecrecover(..., normalized, ...);
 /// }
 /// ```
 ///
+/// Throws if `v` is not in a recognized format.
+///
+/// #### Exit codes
+///
+/// * 129: [Invalid argument] — Thrown when `v` is not in a recognized format.
+///
 /// See:
-/// * [RFC6979](https://tools.ietf.org/html/rfc6979)
-/// * [Bitcoin Stack Exchange](https://bitcoin.stackexchange.com/questions/38351/ecdsa-v-r-s-what-is-v)
+/// * [Bitcoin SE – What is V](https://bitcoin.stackexchange.com/questions/38351/ecdsa-v-r-s-what-is-v)
+/// * [Ethereum Yellow Paper, Appendix F](https://ethereum.github.io/yellowpaper/paper.pdf)
 inline fun normalizeECDSARecoveryId(v: Int): Int {
-    if (v >= 31) {
-        return v - 31;
+    if (v == 0 || v == 1) {
+        return v;
     }
-    if (v >= 27) {
+    if (v == 27 || v == 28) {
         return v - 27;
     }
-    return v;
+    if (v >= 31) {
+        // Bitcoin compact signature format: recovery ID is stored in the lowest 2 bits
+        return v & 1;
+    }
+
+    throw(TactExitCodeInvalidArgument);
 }
 
-/// The 65-byte public key returned by `ecrecover()` in case of success, which
-/// consists of the 8-bit unsigned integer `h` and 256-bit unsigned integers `x1` and `x2`.
+/// Represents the public key returned by `ecrecover()` on success.
+///
+/// The format mimics a decompressed ECDSA public key, consisting of:
+/// * `h`: 8-bit prefix (usually `0x04` for uncompressed keys)
+/// * `x1`, `x2`: 256-bit coordinates of the point on the elliptic curve
 struct EcrecoverKey {
     h: Int as uint8;
     x1: Int as uint256;
     x2: Int as uint256;
 }
 
-/// Recovers a public key from the signature as done in Bitcoin or Ethereum.
+/// Recovers a public key from a given ECDSA signature as done in Ethereum or Bitcoin.
 ///
-/// Takes the 256-bit unsigned integer `hash` and the 65-byte signature consisting of:
-/// * 8-bit unsigned integer `v`
-/// * 256-bit unsigned integers `r` and `s`
+/// * `hash`: 256-bit message hash
+/// * `v`: recovery ID (must be `0` or `1`, use `normalizeECDSARecoveryId()` to convert from `27`/`28`)
+/// * `r`, `s`: 256-bit signature values
 ///
 /// Returns `null` on failure or an `EcrecoverKey` structure on success.
 ///
-/// Note: in TVM, `v` can be only `0` or `1`. To normalize it for BTC / ETH,
-/// use `normalizeECDSARecoveryId()` first.
+/// Note: This function uses the TVM `ECRECOVER` instruction and therefore requires `v` to
+/// be already normalized with [`normalizeECDSARecoveryId()`](#normalizeecdsarecoveryid).
 asm fun ecrecover(hash: Int, v: Int, r: Int, s: Int): EcrecoverKey? {
     ECRECOVER
     NOT
     <{
-      PUSHNULL
+        PUSHNULL
     }> PUSHCONT
     <{
-      3 TUPLE
+        3 TUPLE
     }> PUSHCONT
     IFELSE
 }
