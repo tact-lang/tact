@@ -1277,7 +1277,7 @@ describe("should format", () => {
             );
 
             it(
-                "nexted conditional with parens 2",
+                "nested conditional with parens 2",
                 intact(`
                 fun foo() {
                     let x = a > 10
@@ -1288,7 +1288,7 @@ describe("should format", () => {
             );
 
             it(
-                "nexted conditional with parens 2",
+                "nested conditional with parens 3",
                 intact(`
                 fun foo() {
                     let x = a > 10
@@ -1471,7 +1471,7 @@ describe("should format", () => {
             );
 
             it(
-                "field chain with comment 2",
+                "field chain with comment 3",
                 test(
                     `
                 fun foo() {
@@ -1674,7 +1674,7 @@ describe("should format", () => {
             );
 
             it(
-                "conditional with comment",
+                "conditional with comment and paren",
                 intact(`
                 fun foo() {
                     10 ? 2 : (1 + 2) /* comment */;
@@ -2446,7 +2446,7 @@ describe("should format", () => {
         );
 
         it(
-            "struct with fields 2",
+            "struct with fields 4",
             intact(`
             struct Foo {
                 // top comment
