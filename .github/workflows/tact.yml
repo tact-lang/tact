@@ -97,6 +97,15 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
+      - name: Generate Allure report
+        run: |
+          # Generate Allure report
+          allure generate allure-results -o allure-report --clean
+      - name: Upload Allure report
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
 
   test-windows:
     strategy:
@@ -121,6 +130,15 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
+      - name: Generate Allure report
+        run: |
+          # Generate Allure report
+          allure generate allure-results -o allure-report --clean
+      - name: Upload Allure report
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
 
   test-blueprint:
     strategy:

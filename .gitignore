@@ -9,3 +9,4 @@ output/
 src/func/funcfiftlib.wasm.js
 src/test/e2e-slow/map-property-tests/build
 **/.testing/
+allure-results
