@@ -1,3 +1,4 @@
+import "@ton/test-utils";
 import type { JettonUpdateContent } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 import { JettonMinter } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 import { JettonWallet } from "@/benchmarks/contracts/output/jetton-wallet_JettonWallet";
