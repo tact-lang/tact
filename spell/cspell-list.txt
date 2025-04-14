@@ -129,6 +129,7 @@ noexcept
 nonterminal
 Nonterminal
 notcoin
+normalizeecdsarecoveryid
 Novus
 Nowarp
 Offchain

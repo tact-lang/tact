@@ -241,8 +241,7 @@ inline extends fun verifySignature(self: SignedBundle, publicKey: Int): Bool {
 /// In Ethereum and Bitcoin, the recovery ID is often stored with a prefix:
 /// * Ethereum / Bitcoin: `v = 27` or `28` → recovery ID = `v - 27`
 /// * Bitcoin compact signatures: `v >= 31`, where:
-///   - bit 0: recovery ID (0 or 1)
-///   - bit 1: not used (or recovery ID bit 2 for multi-key support)
+///   - bits 0-1: recovery ID (0 to 3)
 ///   - bit 2: public key compression flag (ignored by `ecrecover`)
 ///
 /// This function extracts the correct recovery ID (`0` or `1`) from such variants.
@@ -259,7 +258,7 @@ inline extends fun verifySignature(self: SignedBundle, publicKey: Int): Bool {
 ///
 /// #### Exit codes
 ///
-/// * 129: [Invalid argument] — Thrown when `v` is not in a recognized format.
+/// * 134: [Invalid argument] — Thrown when `v` is not in a recognized format.
 ///
 /// See:
 /// * [Bitcoin SE – What is V](https://bitcoin.stackexchange.com/questions/38351/ecdsa-v-r-s-what-is-v)
@@ -273,7 +272,11 @@ inline fun normalizeECDSARecoveryId(v: Int): Int {
     }
     if (v >= 31) {
         // Bitcoin compact signature format: recovery ID is stored in the lowest 2 bits
-        return v & 1;
+        let recoveryId: Int = v & 3;
+        if (recoveryId > 1) {
+            throw(TactExitCodeInvalidArgument);
+        }
+        return recoveryId;
     }
 
     throw(TactExitCodeInvalidArgument);
