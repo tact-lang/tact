@@ -604,6 +604,24 @@ exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-d
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-abstract-method 1`] = `
+"<unknown>:13:10: Both "TraitB" and "TraitA" define method "f"
+  12 | 
+> 13 | contract TestContract with TraitA, TraitB {
+                ^~~~~~~~~~~~
+  14 |     fun f(): Int {}
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-virtual-method 1`] = `
+"<unknown>:15:10: Both "TraitB" and "TraitA" define method "f"
+  14 | 
+> 15 | contract TestContract with TraitA, TraitB {
+                ^~~~~~~~~~~~
+  16 |     fun f(): Int {}
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-complex-hierarchy 1`] = `
 "<unknown>:24:5: Function "f" is already defined in trait "TraitA"
   23 | contract TestContract with TraitC {
@@ -637,6 +655,15 @@ exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-d
 > 23 | contract TestContract with TraitA, TraitB, TraitC {}
                 ^~~~~~~~~~~~
   24 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-virtual-and-virtual-method 1`] = `
+"<unknown>:17:10: Both "TraitB" and "TraitA" define method "f"
+  16 | 
+> 17 | contract TestContract with TraitA, TraitB {
+                ^~~~~~~~~~~~
+  18 |     override fun f(): Int {}
 "
 `;
 
