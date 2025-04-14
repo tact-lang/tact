@@ -174,6 +174,42 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 
 :::
 
+## keccak256
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun keccak256(data: Slice): Int;
+```
+
+Computes and returns the Ethereum-compatible [Keccak-256](https://en.wikipedia.org/wiki/SHA-3) hash as a 256-bit unsigned [`Int{:tact}`][int] from the passed [`Slice{:tact}`][slice] `data`.
+
+The `data` slice should have a number of bits divisible by 8 and no more than a single reference per cell, because only the first reference of each nested cell will be taken into account.
+
+Attempts to specify a [`Slice{:tact}`][slice] with a number of bits **not** divisible by 8 throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage examples:
+
+```tact
+contract Examples() {
+    receive(rawMsg: Slice) {
+        // Hash incoming message body Slice
+        let hash: Int = keccak256(rawMsg);
+
+        // Process data that spans multiple cells
+        let b: Builder = beginCell()
+            .storeUint(123456789, 32)
+            .storeRef(beginCell().storeString("Extra data in a ref").endCell());
+        let largeDataHash: Int = keccak256(b.asSlice());
+
+        // Match Ethereum's hash format
+        let ethAddress: String = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045";
+        let ethAddressHash: Int = keccak256(ethAddress.asSlice());
+    }
+}
+```
+
 :::note
 
   Crypto extension functions for [`Cell{:tact}`][cell], [`Builder{:tact}`][builder], and [`Slice{:tact}`][slice] types are listed on their reference page: [Cells, Builders and Slices](/ref/core-cells).
