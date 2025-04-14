@@ -108,6 +108,24 @@ msg.forwardAmount > 0 ? 2 : 1;
 1 + sign(msg.forwardAmount);
 ```
 
+### Prefer specialized math functions to general ones
+
+Specialized math functions are cheaper than general ones as they require fewer stack manipulations and often use more efficient [TVM instructions][tvm-instruction].
+
+If you only need to obtain logarithms to the base $2$, use the [`log2(){:tact}`](/ref/core-math#log2) function over the general [`log(){:tact}`](/ref/core-math#log) function.
+
+If you only need to obtain powers of $2$, use the [`pow2(){:tact}`](/ref/core-math#pow2) function over the general [`pow(){:tact}`](/ref/core-math#pow) function.
+
+```tact
+let num = 42;
+
+// Use this instead of log(num, 2)
+log2(num);
+
+// Use this instead of pow(num, 2)
+pow2(num);
+```
+
 ### Asm functions
 
 Many commonly used [TVM instructions][tvm-instruction] expect the same values but in a different order on the stack. Often, the code you write will result in instructions defined by your logic intermittent with stack-manipulation instructions, such as `SWAP` or [`ROT`](https://docs.ton.org/v3/documentation/tvm/instructions#58), which would've been unnecessary if the positioning of values on the stack was better planned before.
@@ -267,6 +285,7 @@ See those examples with recommendations applied:
 - [Jetton Minter contract](https://github.com/tact-lang/jetton/blob/9db75a5a828e9093be5c425605c5f5c9903f505d/src/contracts/jetton-minter.tact)
 - [Escrow contract](https://github.com/tact-lang/tact/blob/73fb52b2c8b4e8b2309e0aae4dcc0f8cb35117ea/src/benchmarks/contracts/escrow.tact)
 
+[int]: /book/integers
 [slice]: /book/cells#slices
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
