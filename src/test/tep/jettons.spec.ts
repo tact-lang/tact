@@ -68,7 +68,7 @@ describe("tep-74 tests", () => {
         await blockchain.loadFrom(snapshot);
     });
 
-    it("Should correctly handle response destination as addr_none", async () => {
+    it("should allow response destination as addr_none and don't send excesses", async () => {
         const mintMsg: Mint = {
             $$type: "Mint",
             queryId: 0n,
