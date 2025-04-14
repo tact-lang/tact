@@ -1,4 +1,4 @@
-import { toNano } from "@ton/core";
+import { beginCell, toNano } from "@ton/core";
 import { Blockchain } from "@ton/sandbox";
 import { Tester } from "./output/crypto_Tester";
 import "@ton/test-utils";
@@ -30,18 +30,36 @@ const setup = async () => {
     };
 };
 
-describe("keccak256() function", () => {
+describe("crypto.tact: keccak256() function", () => {
     const state = cached(setup);
 
-    it("should hash values correctly in a receiver", async () => {
+    it("should hash values correctly", async () => {
         const { contract, treasury } = await state.get();
-        const _ = await contract.send(
+        const result = await contract.send(
             treasury.getSender(),
             { value: toNano("10") },
             "keccak256",
         );
+        expect(result.transactions).toHaveTransaction({
+            from: treasury.address,
+            to: contract.address,
+            success: true,
+        });
 
-        // TODO: tests in progress!
-        // expect(result.transactions[1]?.debugLogs).toMatchSnapshot();
+        // Hashes of short slices should match
+        const s1 = beginCell().storeStringTail("hello world").asSlice();
+        let hash1 = await contract.getKeccak256(s1);
+        let hash2 = await contract.getKeccak256IgnoreRefs(s1);
+        expect(hash1.toString()).toEqual(hash2.toString());
+
+        // Hashes of long slices should NOT match
+        const s2 = beginCell()
+            .storeStringTail(
+                "------------------------------------------------------------------------------------------------------------------------------129",
+            )
+            .asSlice();
+        hash1 = await contract.getKeccak256(s2);
+        hash2 = await contract.getKeccak256IgnoreRefs(s2);
+        expect(hash1.toString()).not.toEqual(hash2.toString());
     });
 });
