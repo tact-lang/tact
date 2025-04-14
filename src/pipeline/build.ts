@@ -15,7 +15,7 @@ import { doPackaging } from "@/pipeline/packaging";
 import { doBindings } from "@/pipeline/bindings";
 import { doReports } from "@/pipeline/reports";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
-import files from "@/stdlib/stdlib";
+import * as Stdlib from "@/stdlib/stdlib";
 
 export type BuildContext = {
     readonly project: VirtualFileSystem;
@@ -76,7 +76,7 @@ export async function build(args: {
 
     const stdlib =
         typeof args.stdlib === "string"
-            ? createVirtualFileSystem(args.stdlib, files)
+            ? createVirtualFileSystem(args.stdlib, Stdlib.files)
             : args.stdlib;
 
     // Configure context
