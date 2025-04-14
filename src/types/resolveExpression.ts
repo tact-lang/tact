@@ -648,7 +648,7 @@ function resolveCall(
 
             if (src.optional && !selfIsOptional) {
                 throwCompilationError(
-                    `Cannot call method ${idTextErr(exp.method)} on expression with type "${src.name}?" without unwrapping, add "!!" to unwrap optional`,
+                    `Cannot call method ${idTextErr(exp.method)} on an expression of type "${src.name}?" (optional ${src.name}) without unwrapping it first. Add "!!" before the method call to unwrap an optional value`,
                     exp.loc,
                 );
             }

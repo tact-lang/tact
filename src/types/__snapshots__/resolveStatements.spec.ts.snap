@@ -82,7 +82,7 @@ exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`
 `;
 
 exports[`resolveStatements should fail statements for call-non-optional-method-on-optional 1`] = `
-"<unknown>:10:13: Cannot call method "isNotNone" on expression with type "Address?" without unwrapping, add "!!" to unwrap optional
+"<unknown>:10:13: Cannot call method "isNotNone" on an expression of type "Address?" (optional Address) without unwrapping it first. Add "!!" before the method call to unwrap an optional value
    9 |     receive() {
 > 10 |         if (self.addr.isNotNone()) {
                    ^~~~~~~~~~~~~~~~~~~~~
