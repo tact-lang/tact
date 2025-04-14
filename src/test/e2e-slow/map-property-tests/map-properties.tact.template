@@ -108,7 +108,7 @@ fun size(m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER>): Int {
 
 asm fun castToMap(c: Cell): map<Int as uint8, Bool> {}
 
-asm extends fun asMap(self: Cell): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> {}
+asm extends fun asMap(self: Cell?): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> {}
 
 contract MapPropertiesTester {
     const ExitCodeEqualKeys: Int = 1024;
@@ -377,7 +377,7 @@ contract MapPropertiesTester {
                      .endCell());
         return
             m1 != m2 &&
-            m1.deepEquals(m2); 
+            m1.deepEquals(m2);
     }
 
     // Property: (m1 == m2) => m1.asCell() == m2.asCell()
