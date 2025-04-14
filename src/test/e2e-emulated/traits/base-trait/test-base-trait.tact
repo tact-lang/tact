@@ -38,7 +38,7 @@ message Reply {
     body: Cell?;
 }
 
-trait TestBaseTrait {
+trait TestBaseTrait with BaseTrait{
     receive(msg: DoubleForward) {
         self.forward(msg.to, msg.body, msg.bounce, msg.init);
 
