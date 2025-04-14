@@ -180,6 +180,65 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 
 :::
 
+## normalizeECDSARecoveryId
+
+```tact
+fun normalizeECDSARecoveryId(v: Int): Int;
+```
+
+Normalizes the 8-bit unsigned integer `v` to be correct for ECDSA recovery for Bitcoin and Ethereum.
+
+:::note
+
+  In TVM, `v` can be only `0` or `1`, but in ETH / BTC, a prefix is used.
+
+:::
+
+See [RFC6979](https://tools.ietf.org/html/rfc6979) and [Bitcoin Stack Exchange](https://bitcoin.stackexchange.com/questions/38351/ecdsa-v-r-s-what-is-v).
+
+Usage example:
+
+```tact
+fun example() {
+    let v: Int = 28; // Bitcoin adds 27 to the recovery ID
+    let normalized: Int = normalizeECDSARecoveryId(v);
+    ecrecover(..., normalized, ...);
+}
+```
+
+## EcrecoverKey
+
+```tact
+struct EcrecoverKey {
+    h: Int as uint8;
+    x1: Int as uint256;
+    x2: Int as uint256;
+}
+```
+
+A [struct][struct] that contains the 8-bit unsigned integer `h`, and the 256-bit unsigned integers `x1` and `x2`.
+
+## ecrecover
+
+```tact
+fun ecrecover(hash: Int, v: Int, r: Int, s: Int): EcrecoverKey?;
+```
+
+Recovers a public key from the signature as done in Bitcoin or Ethereum.
+
+Takes the 256-bit unsigned integer `hash` and the 65-byte signature consisting of:
+
+* 8-bit unsigned integer `v`
+* 256-bit unsigned integers `r` and `s`
+
+Returns `null` on failure or an `EcrecoverKey` structure on success.
+
+:::note
+
+  In TVM, `v` can be only `0` or `1`. To normalize it for BTC / ETH, use [`normalizeECDSARecoveryId()`](#normalizeecdsarecoveryid) first.
+
+:::
+
 [p]: /book/types#primitive-types
 [int]: /book/integers
 [cell]: /book/cells#cells

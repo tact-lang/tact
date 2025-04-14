@@ -235,3 +235,58 @@ struct SignedBundle {
 inline extends fun verifySignature(self: SignedBundle, publicKey: Int): Bool {
     return checkSignature(self.signedData.hash(), self.signature, publicKey);
 }
+
+/// Normalizes the 8-bit unsigned integer `v` to be correct for ECDSA recovery for Bitcoin and Ethereum.
+///
+/// Note: in TVM, `v` can be only `0` or `1`, but in ETH / BTC, a prefix is used.
+///
+/// ```tact
+/// fun example() {
+///     let v: Int = 28; // Bitcoin adds 27 to the recovery ID
+///     let normalized: Int = normalizeECDSARecoveryId(v);
+///     ecrecover(..., normalized, ...);
+/// }
+/// ```
+///
+/// See:
+/// * [RFC6979](https://tools.ietf.org/html/rfc6979)
+/// * [Bitcoin Stack Exchange](https://bitcoin.stackexchange.com/questions/38351/ecdsa-v-r-s-what-is-v)
+inline fun normalizeECDSARecoveryId(v: Int): Int {
+    if (v >= 31) {
+        return v - 31;
+    }
+    if (v >= 27) {
+        return v - 27;
+    }
+    return v;
+}
+
+/// The 65-byte public key returned by `ecrecover()` in case of success, which
+/// consists of the 8-bit unsigned integer `h` and 256-bit unsigned integers `x1` and `x2`.
+struct EcrecoverKey {
+    h: Int as uint8;
+    x1: Int as uint256;
+    x2: Int as uint256;
+}
+
+/// Recovers a public key from the signature as done in Bitcoin or Ethereum.
+///
+/// Takes the 256-bit unsigned integer `hash` and the 65-byte signature consisting of:
+/// * 8-bit unsigned integer `v`
+/// * 256-bit unsigned integers `r` and `s`
+///
+/// Returns `null` on failure or an `EcrecoverKey` structure on success.
+///
+/// Note: in TVM, `v` can be only `0` or `1`. To normalize it for BTC / ETH,
+/// use `normalizeECDSARecoveryId()` first.
+asm fun ecrecover(hash: Int, v: Int, r: Int, s: Int): EcrecoverKey? {
+    ECRECOVER
+    NOT
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      3 TUPLE
+    }> PUSHCONT
+    IFELSE
+}
