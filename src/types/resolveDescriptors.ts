@@ -1785,6 +1785,32 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
         }
 
+        const seenMethods: Map<string, [FunctionDescription, TypeDescription]> =
+            new Map();
+        for (const inheritedTrait of contractOrTrait.traits) {
+            for (const traitFunction of inheritedTrait.functions.values()) {
+                const previousInfo = seenMethods.get(traitFunction.name);
+                if (typeof previousInfo !== "undefined") {
+                    const [method, owner] = previousInfo;
+                    if (
+                        owner !== inheritedTrait &&
+                        !traitFunction.isOverride &&
+                        !method.isOverride
+                    ) {
+                        throwCompilationError(
+                            `Both "${inheritedTrait.name}" and "${owner.name}" define method "${traitFunction.name}"`,
+                            contractOrTrait.ast.name.loc,
+                        );
+                    }
+                }
+
+                seenMethods.set(traitFunction.name, [
+                    traitFunction,
+                    inheritedTrait,
+                ]);
+            }
+        }
+
         for (const inheritedTrait of contractOrTrait.traits) {
             // Copy functions
             for (const traitFunction of inheritedTrait.functions.values()) {
