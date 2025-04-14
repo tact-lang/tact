@@ -12,9 +12,9 @@ import type {
     DoubleForward,
     MessageAndForward,
     StateInit,
-} from "./output/emptychange_EmptyChange";
+} from "./output/empty-change_EmptyChange";
 
-import { EmptyChange } from "./output/emptychange_EmptyChange";
+import { EmptyChange } from "./output/empty-change_EmptyChange";
 
 import "@ton/test-utils";
 
