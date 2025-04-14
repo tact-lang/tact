@@ -6,7 +6,7 @@ import {
     skip,
     space,
 } from "@/fmt/cst/cst-parser";
-import { processDocComments } from "@/fmt/cst/process-comments";
+import { getProcessDocComments } from "@/fmt/cst/process-comments";
 import { simplifyCst } from "@/fmt/cst/simplify-cst";
 
 export function parseCode(code: string): undefined | Cst {
@@ -22,6 +22,8 @@ export function parseCode(code: string): undefined | Cst {
     if (recreatedCode !== code) {
         return undefined;
     }
+
+    const processDocComments = getProcessDocComments();
     return processDocComments(simplifyCst(root));
 }
 
@@ -201,13 +203,13 @@ export function isInlineComment(node: Cst): boolean {
     );
 }
 
-export function filterComments(nodes: Cst[]): CstNode[] {
+export function filterComments(nodes: readonly Cst[]): CstNode[] {
     return nodes
         .filter((it) => it.$ === "node")
         .filter((it) => it.type === "Comment");
 }
 
-export function containsComments(nodes: Cst[]): boolean {
+export function containsComments(nodes: readonly Cst[]): boolean {
     return nodes.some((it) => isComment(it));
 }
 

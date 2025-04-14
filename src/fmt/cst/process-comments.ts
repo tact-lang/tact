@@ -1,4 +1,4 @@
-import type { Cst, CstNode } from "@/fmt/cst/cst-parser";
+import type { Cst, CstLeaf, CstNode } from "@/fmt/cst/cst-parser";
 import {
     childByField,
     childByType,
@@ -6,18 +6,38 @@ import {
     childIdxByType,
     childLeafIdxWithText,
     containsComments,
-    filterComments,
     isComment,
 } from "@/fmt/cst/cst-helpers";
-
-let pendingComments: Cst[] = [];
+import { mapMaybe } from "@/utils/tricks";
 
 interface CommentsExtraction {
-    comments: Cst[];
-    inlineComments: Cst[];
+    comments: MutableCst[];
+    inlineComments: MutableCst[];
     startIndex: number;
-    floatingComments: Cst[]; // not attached to any
+    floatingComments: MutableCst[]; // not attached to any
 }
+
+type MutableCst = CstLeaf | MutableCstNode;
+
+type MutableCstNode = {
+    readonly $: "node";
+    readonly id: number;
+    readonly type: string;
+    readonly group: string;
+    readonly field: string;
+    children: MutableCst[];
+};
+
+const createMutableCst = (cst: Cst): MutableCst => {
+    return structuredClone(cst) as MutableCst;
+};
+
+const createMutableCstNode = (cst: CstNode): MutableCstNode => {
+    return structuredClone(cst) as MutableCstNode;
+};
+
+const filterComments = (nodes: MutableCst[]): MutableCstNode[] =>
+    nodes.filter((it) => it.$ === "node").filter((it) => it.type === "Comment");
 
 // $Function
 //   "fun"
@@ -42,7 +62,7 @@ interface CommentsExtraction {
 //       ^^^^^^^^^^ this
 //
 // Comments here can be both inline (attached to node) and plain one (actually attached to the next declaration)
-function extractComments([commentPoint, anchor]: [CstNode, Anchor]):
+function extractComments([commentPoint, anchor]: [MutableCstNode, Anchor]):
     | CommentsExtraction
     | undefined {
     const anchorIndex =
@@ -186,7 +206,14 @@ const findNodeWithComments = (node: CstNode): undefined | [CstNode, string] => {
     return [lastChildren, "}"];
 };
 
-export const processDocComments = (node: Cst): Cst => {
+export const getProcessDocComments = (): ((n: Cst) => Cst) => {
+    const pendingComments: MutableCst[] = [];
+    return (n) => processDocComments(n, pendingComments);
+};
+
+const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
+    const node: MutableCst = createMutableCst(n);
+
     if (node.$ === "leaf") {
         return node;
     }
@@ -219,7 +246,9 @@ export const processDocComments = (node: Cst): Cst => {
             // no need to do anything
             return {
                 ...node,
-                children: node.children.map((it) => processDocComments(it)),
+                children: node.children.map((it) =>
+                    processDocComments(it, pendingComments),
+                ),
             };
         }
 
@@ -227,7 +256,9 @@ export const processDocComments = (node: Cst): Cst => {
             // no nodes before Module, skip
             return {
                 ...node,
-                children: node.children.map((it) => processDocComments(it)),
+                children: node.children.map((it) =>
+                    processDocComments(it, pendingComments),
+                ),
             };
         }
 
@@ -236,7 +267,9 @@ export const processDocComments = (node: Cst): Cst => {
             // no comments, no need to do anything
             return {
                 ...node,
-                children: node.children.map((it) => processDocComments(it)),
+                children: node.children.map((it) =>
+                    processDocComments(it, pendingComments),
+                ),
             };
         }
 
@@ -251,7 +284,9 @@ export const processDocComments = (node: Cst): Cst => {
             // if comments are not attached, then we don't need to do anything
             return {
                 ...node,
-                children: node.children.map((it) => processDocComments(it)),
+                children: node.children.map((it) =>
+                    processDocComments(it, pendingComments),
+                ),
             };
         }
 
@@ -277,7 +312,9 @@ export const processDocComments = (node: Cst): Cst => {
         ];
         return {
             ...node,
-            children: newChildren.map((it) => processDocComments(it)),
+            children: newChildren.map((it) =>
+                processDocComments(it, pendingComments),
+            ),
         };
     }
 
@@ -311,7 +348,7 @@ export const processDocComments = (node: Cst): Cst => {
         const childrenAfter = node.children.slice(closeBraceIndex);
 
         // collect all nodes until some declaration
-        const comments: Cst[] = [];
+        const comments: MutableCst[] = [];
         for (const element of childrenToProcess) {
             if (element.$ === "node" && element.type !== "Comment") {
                 // found declaration
@@ -324,7 +361,9 @@ export const processDocComments = (node: Cst): Cst => {
             // no comments, no need to do anything
             return {
                 ...node,
-                children: node.children.map((it) => processDocComments(it)),
+                children: node.children.map((it) =>
+                    processDocComments(it, pendingComments),
+                ),
             };
         }
 
@@ -348,7 +387,9 @@ export const processDocComments = (node: Cst): Cst => {
         ];
         return {
             ...node,
-            children: newChildren.flatMap((it) => processDocComments(it)),
+            children: newChildren.flatMap((it) =>
+                processDocComments(it, pendingComments),
+            ),
         };
     }
 
@@ -449,7 +490,7 @@ export const processDocComments = (node: Cst): Cst => {
 
         let prevFieldsIndex = 0;
         for (let i = 0; i < items.length; i++) {
-            const item = items.at(i);
+            const item = mapMaybe(items.at(i), createMutableCst);
 
             if (item?.$ !== "node") continue;
 
@@ -507,21 +548,22 @@ export const processDocComments = (node: Cst): Cst => {
 
             prevFieldsIndex = i;
 
-            const found = findNodeWithComments(item);
-            if (!found) {
+            const commentOwner = findNodeWithComments(item);
+            if (!commentOwner) {
                 continue;
             }
 
-            const commentOwner = found;
-
-            const res = extractComments(commentOwner);
+            const res = extractComments([
+                createMutableCstNode(commentOwner[0]),
+                commentOwner[1],
+            ]);
             if (!res) {
                 continue;
             }
 
             const { comments, startIndex, floatingComments } = res;
 
-            const owner = commentOwner[0];
+            const owner = createMutableCstNode(commentOwner[0]);
             owner.children = owner.children.slice(0, startIndex);
 
             if (floatingComments.length > 0) {
@@ -549,7 +591,7 @@ export const processDocComments = (node: Cst): Cst => {
             (it) => it.$ === "leaf" && it.text === "}",
         );
 
-        let pendingComments: Cst[] = [];
+        let pendingComments: MutableCst[] = [];
 
         for (let i = 0; i < endIndex; i++) {
             const statement = node.children.at(i);
@@ -570,7 +612,8 @@ export const processDocComments = (node: Cst): Cst => {
                     continue;
                 }
 
-                const [owner, anchors] = found;
+                const owner = createMutableCstNode(found[0]);
+                const anchors = found[1];
 
                 for (const anchor of anchors) {
                     const res = extractComments([owner, anchor]);
@@ -626,7 +669,9 @@ export const processDocComments = (node: Cst): Cst => {
             // nothing to do
             return {
                 ...node,
-                children: node.children.flatMap((it) => processDocComments(it)),
+                children: node.children.flatMap((it) =>
+                    processDocComments(it, pendingComments),
+                ),
             };
         }
 
@@ -640,11 +685,13 @@ export const processDocComments = (node: Cst): Cst => {
             // nothing to do, no leading comments
             return {
                 ...node,
-                children: node.children.flatMap((it) => processDocComments(it)),
+                children: node.children.flatMap((it) =>
+                    processDocComments(it, pendingComments),
+                ),
             };
         }
 
-        pendingComments = leadingComments;
+        pendingComments = leadingComments.map((it) => createMutableCstNode(it));
         const processedChildren = node.children.filter((_, index) => {
             if (index >= startIndex && index < fieldsIndex) {
                 // remove all nodes that we take
@@ -656,7 +703,9 @@ export const processDocComments = (node: Cst): Cst => {
 
         return {
             ...node,
-            children: processedChildren.flatMap((it) => processDocComments(it)),
+            children: processedChildren.flatMap((it) =>
+                processDocComments(it, pendingComments),
+            ),
         };
     }
 
@@ -716,7 +765,8 @@ export const processDocComments = (node: Cst): Cst => {
                     continue;
                 }
 
-                const [owner, anchors] = found;
+                const owner = createMutableCstNode(found[0]);
+                const anchors = found[1];
 
                 for (const anchor of anchors) {
                     const res = extractComments([owner, anchor]);
@@ -752,7 +802,9 @@ export const processDocComments = (node: Cst): Cst => {
 
     return {
         ...node,
-        children: node.children.flatMap((it) => processDocComments(it)),
+        children: node.children.flatMap((it) =>
+            processDocComments(it, pendingComments),
+        ),
     };
 };
 
