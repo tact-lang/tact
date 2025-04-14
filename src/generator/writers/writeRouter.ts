@@ -1,10 +1,9 @@
 import { beginCell } from "@ton/core";
 import { getType } from "@/types/resolveDescriptors";
-import {
-    showValue,
-    type FallbackReceiverSelector,
-    type ReceiverDescription,
-    type TypeDescription,
+import type {
+    FallbackReceiverSelector,
+    ReceiverDescription,
+    TypeDescription,
 } from "@/types/types";
 import type { WriterContext } from "@/generator/Writer";
 import { funcIdOf } from "@/generator/writers/id";
@@ -26,6 +25,7 @@ import { enabledAlwaysSaveContractData } from "@/config/features";
 import { getAstFactory, idText } from "@/ast/ast-helpers";
 import { evalConstantExpression } from "@/optimizer/constEval";
 import { getAstUtil } from "@/ast/util";
+import { prettyPrint } from "@/ast/ast-printer";
 
 type ContractReceivers = {
     readonly internal: Receivers;
@@ -423,7 +423,7 @@ function fallbackReceiverKind(
                 );
                 if (constEvalResult.kind !== "number") {
                     throwInternalCompilerError(
-                        `"throw" can only have a number as an argument, but it has throws ${showValue(constEvalResult)}`,
+                        `"throw" can only have a number as an argument, but it has throws ${prettyPrint(constEvalResult)}`,
                         throwArg.loc,
                     );
                 }

@@ -195,7 +195,7 @@ export const ppAstOptionalId = (node: Ast.OptionalId) =>
 export const ppAstNull = (_expr: Ast.Null) => "null";
 export const ppAstString = ({ value }: Ast.String) => JSON.stringify(value);
 export const ppAstAddress = ({ value }: Ast.Address) =>
-    `addr("${value.toRawString()}")`;
+    `address("${value.toRawString()}")`;
 export const ppAstCell = ({ value }: Ast.Cell) => `cell("${value.toString()}")`;
 export const ppAstSlice = ({ value }: Ast.Slice) =>
     `slice("${value.toString()}")`;
