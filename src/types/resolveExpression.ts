@@ -643,6 +643,18 @@ function resolveCall(
                 checkParameterType(exp.args[i]!, a, ctx);
             }
 
+            if (f.self) {
+                const selfIsOptional =
+                    f.self.kind === "ref" ? f.self.optional : false;
+
+                if (src.optional && !selfIsOptional) {
+                    throwCompilationError(
+                        `Cannot call method ${idTextErr(exp.method)} on an expression of type "${src.name}?" (optional ${src.name}) without unwrapping it with "!!" first`,
+                        exp.loc,
+                    );
+                }
+            }
+
             return registerExpType(ctx, exp, f.returns);
         }
 
