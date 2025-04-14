@@ -377,7 +377,7 @@ contract MapPropertiesTester {
                      .endCell());
         return
             m1 != m2 &&
-            m1.deepEquals(m2); 
+            m1.deepEquals(m2);
     }
 
     // Property: (m1 == m2) => m1.asCell() == m2.asCell()
@@ -397,14 +397,14 @@ contract MapPropertiesTester {
         let m3 = doubletonMap(key, val);
 
         return
-            m0.asCell().asMap() == m0 &&
-            m0.asCell().asMap().deepEquals(m0) &&
-            m1.asCell().asMap() == m1 &&
-            m1.asCell().asMap().deepEquals(m1) &&
-            m2.asCell().asMap() == m2 &&
-            m2.asCell().asMap().deepEquals(m2) &&
-            m3.asCell().asMap() == m3 &&
-            m3.asCell().asMap().deepEquals(m3);
+            m0.asCell()!!.asMap() == m0 &&
+            m0.asCell()!!.asMap().deepEquals(m0) &&
+            m1.asCell()!!.asMap() == m1 &&
+            m1.asCell()!!.asMap().deepEquals(m1) &&
+            m2.asCell()!!.asMap() == m2 &&
+            m2.asCell()!!.asMap().deepEquals(m2) &&
+            m3.asCell()!!.asMap() == m3 &&
+            m3.asCell()!!.asMap().deepEquals(m3);
     }
 
     // Property: emptyMap().replace(k, v) == emptyMap()
