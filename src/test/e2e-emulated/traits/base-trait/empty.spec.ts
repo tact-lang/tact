@@ -1,9 +1,5 @@
 import { beginCell, toNano, type Cell } from "@ton/core";
-import type {
-    BlockchainTransaction,
-    SandboxContract,
-    TreasuryContract,
-} from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import type {
     Reply,
@@ -18,14 +14,7 @@ import { Empty } from "./output/empty_Empty";
 
 import "@ton/test-utils";
 
-describe("baseTrait without changing storageReserve", () => {
-    let blockchain: Blockchain;
-
-    let balanceBefore: bigint;
-
-    let treasure: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<Empty>;
-
+const setup = async () => {
     const deployValue = toNano("0.05");
     const lowSendValue = toNano("0.5");
 
@@ -53,77 +42,109 @@ describe("baseTrait without changing storageReserve", () => {
         body: defaultBody,
     };
 
-    let forwardMessage: Forward;
-    let doubleForwardMessage: DoubleForward;
-    let messageAndForwardMessage: MessageAndForward;
+    const blockchain: Blockchain = await Blockchain.create();
+    const treasury: SandboxContract<TreasuryContract> =
+        await blockchain.treasury("treasury");
 
-    beforeEach(async () => {
-        blockchain = await Blockchain.create();
-        treasure = await blockchain.treasury("treasure");
+    const contract: SandboxContract<Empty> = blockchain.openContract(
+        await Empty.fromInit(),
+    );
 
-        contract = blockchain.openContract(await Empty.fromInit());
+    const deployResult = await contract.send(
+        treasury.getSender(),
+        { value: deployValue },
+        null,
+    );
 
-        const deployResult = await contract.send(
-            treasure.getSender(),
-            { value: deployValue },
-            null,
-        );
-
-        expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: true,
-            deploy: true,
-        });
-
-        balanceBefore = (await blockchain.getContract(contract.address))
-            .balance;
-
-        forwardMessage = {
-            $$type: "Forward",
-            to: treasure.address,
-            body: defaultBody,
-            bounce: false,
-            init: null,
-        };
-
-        doubleForwardMessage = {
-            $$type: "DoubleForward",
-            to: treasure.address,
-            body: defaultBody,
-            bounce: false,
-            init: null,
-        };
-
-        messageAndForwardMessage = {
-            $$type: "MessageAndForward",
-            to: treasure.address,
-            body: defaultBody,
-            bounce: false,
-            init: null,
-            mode: SendPayFwdFeesSeparately,
-            value: 1n,
-        };
+    expect(deployResult.transactions).toHaveTransaction({
+        from: treasury.address,
+        to: contract.address,
+        success: true,
+        deploy: true,
     });
 
+    const balanceBefore = (await blockchain.getContract(contract.address))
+        .balance;
+
+    const forwardMessage: Forward = {
+        $$type: "Forward",
+        to: treasury.address,
+        body: defaultBody,
+        bounce: false,
+        init: null,
+    };
+
+    const doubleForwardMessage: DoubleForward = {
+        $$type: "DoubleForward",
+        to: treasury.address,
+        body: defaultBody,
+        bounce: false,
+        init: null,
+    };
+
+    const messageAndForwardMessage: MessageAndForward = {
+        $$type: "MessageAndForward",
+        to: treasury.address,
+        body: defaultBody,
+        bounce: false,
+        init: null,
+        mode: SendPayFwdFeesSeparately,
+        value: 1n,
+    };
+
+    return {
+        deployValue,
+        lowSendValue,
+        SendPayFwdFeesSeparately,
+        SendRemainingValue,
+        initCode,
+        initData,
+        init,
+        defaultBody,
+        replyMessage,
+        notifyMessage,
+        forwardMessage,
+        doubleForwardMessage,
+        messageAndForwardMessage,
+        blockchain,
+        treasury,
+        contract,
+        balanceBefore,
+    };
+};
+
+describe("baseTrait without changing storageReserve", () => {
+    beforeEach(async () => {});
+
     it("should send Reply message with argument of reply", async () => {
+        const { contract, replyMessage, lowSendValue, defaultBody, treasury } =
+            await setup();
+
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             replyMessage,
         );
 
         expect(result.transactions).toHaveTransaction({
             from: contract.address,
-            to: treasure.address,
+            to: treasury.address,
             inMessageBounceable: true,
             body: defaultBody,
         });
     });
 
     it("should not increase contract balance after Reply message", async () => {
+        const {
+            contract,
+            treasury,
+            lowSendValue,
+            replyMessage,
+            blockchain,
+            balanceBefore,
+        } = await setup();
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             replyMessage,
         );
@@ -134,23 +155,33 @@ describe("baseTrait without changing storageReserve", () => {
     });
 
     it("should send Notify message with argument of notify", async () => {
+        const { contract, treasury, lowSendValue, notifyMessage, defaultBody } =
+            await setup();
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             notifyMessage,
         );
 
         expect(result.transactions).toHaveTransaction({
             from: contract.address,
-            to: treasure.address,
+            to: treasury.address,
             inMessageBounceable: false,
             body: defaultBody,
         });
     });
 
     it("should not increase contract balance after Notify message", async () => {
+        const {
+            contract,
+            treasury,
+            lowSendValue,
+            notifyMessage,
+            blockchain,
+            balanceBefore,
+        } = await setup();
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             notifyMessage,
         );
@@ -161,46 +192,34 @@ describe("baseTrait without changing storageReserve", () => {
         expect(balance).toEqual(balanceBefore);
     });
 
-    const checkForwardMessage = (
-        forwardMessage: Forward | DoubleForward | MessageAndForward,
-        transactions: BlockchainTransaction[],
-    ) => {
-        let body = beginCell().endCell();
-        let initData = undefined;
-        let initCode = undefined;
-
-        if (forwardMessage.init) {
-            initData = forwardMessage.init.data;
-            initCode = forwardMessage.init.code;
-        }
-
-        if (forwardMessage.body) {
-            body = forwardMessage.body;
-        }
-
-        expect(transactions).toHaveTransaction({
-            from: contract.address,
-            to: treasure.address,
-            inMessageBounceable: forwardMessage.bounce,
-            body: body,
-            initCode: initData,
-            initData: initCode,
-        });
-    };
-
     it("should send Forward message with forward arguments", async () => {
+        const { contract, treasury, lowSendValue, forwardMessage } =
+            await setup();
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             forwardMessage,
         );
 
-        checkForwardMessage(forwardMessage, result.transactions);
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasury.address,
+            inMessageBounceable: forwardMessage.bounce,
+            body: forwardMessage.body!,
+        });
     });
 
     it("should not increase contract balance after Forward message", async () => {
+        const {
+            contract,
+            treasury,
+            lowSendValue,
+            forwardMessage,
+            blockchain,
+            balanceBefore,
+        } = await setup();
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             forwardMessage,
         );
@@ -212,22 +231,36 @@ describe("baseTrait without changing storageReserve", () => {
     });
 
     it("should send Forward message with forward arguments without body", async () => {
+        const { contract, treasury, lowSendValue, forwardMessage } =
+            await setup();
         forwardMessage.body = null;
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             forwardMessage,
         );
 
-        checkForwardMessage(forwardMessage, result.transactions);
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasury.address,
+            inMessageBounceable: forwardMessage.bounce,
+        });
     });
 
     it("should not increase contract balance after Forward message without body", async () => {
+        const {
+            contract,
+            treasury,
+            lowSendValue,
+            forwardMessage,
+            blockchain,
+            balanceBefore,
+        } = await setup();
         forwardMessage.body = null;
 
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             forwardMessage,
         );
@@ -239,22 +272,40 @@ describe("baseTrait without changing storageReserve", () => {
     });
 
     it("should send init with Forward message", async () => {
+        const { contract, treasury, lowSendValue, forwardMessage, init } =
+            await setup();
         forwardMessage.init = init;
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             forwardMessage,
         );
 
-        checkForwardMessage(forwardMessage, result.transactions);
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasury.address,
+            inMessageBounceable: forwardMessage.bounce,
+            body: forwardMessage.body!,
+            initCode: init.code,
+            initData: init.data,
+        });
     });
 
     it("should not increase contract balance after Forward message with init", async () => {
+        const {
+            contract,
+            treasury,
+            lowSendValue,
+            forwardMessage,
+            init,
+            blockchain,
+            balanceBefore,
+        } = await setup();
         forwardMessage.init = init;
 
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             forwardMessage,
         );
@@ -266,24 +317,41 @@ describe("baseTrait without changing storageReserve", () => {
     });
 
     it("should send Forward message with forward arguments without body and with init", async () => {
+        const { contract, treasury, lowSendValue, forwardMessage, init } =
+            await setup();
         forwardMessage.body = null;
         forwardMessage.init = init;
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             forwardMessage,
         );
 
-        checkForwardMessage(forwardMessage, result.transactions);
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasury.address,
+            inMessageBounceable: forwardMessage.bounce,
+            initCode: init.code,
+            initData: init.data,
+        });
     });
 
     it("should not increase contract balance after Forward message without body and with init", async () => {
+        const {
+            contract,
+            treasury,
+            lowSendValue,
+            forwardMessage,
+            init,
+            blockchain,
+            balanceBefore,
+        } = await setup();
         forwardMessage.body = null;
         forwardMessage.init = init;
 
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             forwardMessage,
         );
@@ -294,23 +362,38 @@ describe("baseTrait without changing storageReserve", () => {
         expect(balance).toEqual(balanceBefore);
     });
 
-    it("Should send only one message, even if Forward is called twice", async () => {
+    it("should send only one message, even if Forward is called twice", async () => {
+        const { contract, treasury, lowSendValue, doubleForwardMessage } =
+            await setup();
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             doubleForwardMessage,
         );
 
-        checkForwardMessage(doubleForwardMessage, result.transactions);
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasury.address,
+            inMessageBounceable: doubleForwardMessage.bounce,
+            body: doubleForwardMessage.body!,
+        });
 
-        // treasure -> contract
-        // contract -> treasure
+        // treasury -> contract
+        // contract -> treasury
         expect(result.events.length).toEqual(2);
     });
 
-    it("Should not increase balance when Forward is called twice", async () => {
+    it("should not increase balance when Forward is called twice", async () => {
+        const {
+            contract,
+            treasury,
+            lowSendValue,
+            doubleForwardMessage,
+            blockchain,
+            balanceBefore,
+        } = await setup();
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             doubleForwardMessage,
         );
@@ -321,24 +404,39 @@ describe("baseTrait without changing storageReserve", () => {
         expect(balance).toEqual(balanceBefore);
     });
 
-    it("Should send 2 messages: first with mode SendPayFwdFeesSeparately, second is forward", async () => {
+    it("should send 2 messages: first with mode SendPayFwdFeesSeparately, second is forward", async () => {
+        const { contract, treasury, lowSendValue, messageAndForwardMessage } =
+            await setup();
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             messageAndForwardMessage,
         );
 
-        checkForwardMessage(messageAndForwardMessage, result.transactions);
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasury.address,
+            inMessageBounceable: messageAndForwardMessage.bounce,
+            body: messageAndForwardMessage.body!,
+        });
 
-        // treasure -> zeroContract
-        // zeroContract -> treasure SendPayFwdFeesSeparately mode
-        // zeroContract -> treasure  SendRemainingValue mode
+        // treasury -> contract
+        // contract -> treasury SendPayFwdFeesSeparately mode
+        // contract -> treasury  SendRemainingValue mode
         expect(result.events.length).toEqual(3);
     });
 
-    it("Should decrease the balance when two messages are sent: the first with SendPayFwdFeesSeparately mode, and the second is a forward message.", async () => {
+    it("should decrease the balance when two messages are sent: the first with SendPayFwdFeesSeparately mode, and the second is a forward message.", async () => {
+        const {
+            contract,
+            treasury,
+            lowSendValue,
+            messageAndForwardMessage,
+            blockchain,
+            balanceBefore,
+        } = await setup();
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             messageAndForwardMessage,
         );
@@ -350,23 +448,30 @@ describe("baseTrait without changing storageReserve", () => {
         expect(balance).toBeLessThan(balanceBefore);
     });
 
-    it("Should send only one message and not fail during the action phase", async () => {
+    it("should send only one message and not fail during the action phase", async () => {
+        const {
+            contract,
+            treasury,
+            lowSendValue,
+            messageAndForwardMessage,
+            SendRemainingValue,
+        } = await setup();
         messageAndForwardMessage.mode = SendRemainingValue;
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: lowSendValue },
             messageAndForwardMessage,
         );
 
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });
 
-        // treasure -> zeroContract
-        // zeroContract -> treasure  SendRemainingValue mode
+        // treasury -> contract
+        // contract -> treasury  SendRemainingValue mode
         expect(result.events.length).toEqual(2);
     });
 });
