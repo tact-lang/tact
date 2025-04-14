@@ -1,24 +1,32 @@
-import {intact} from "@/fmt/test/helpers"
+import { intact } from "@/fmt/test/helpers";
 
 describe("top level declarations comments formatting", () => {
-    it("comments in imports", intact(`
+    it(
+        "comments in imports",
+        intact(`
         // before imports
         import "stdlib"; // inline import comment
         // between imports
         import "custom"; /* block import comment */
 
         fun foo() {}
-    `));
+    `),
+    );
 
-    it("comments in primitive type declarations", intact(`
+    it(
+        "comments in primitive type declarations",
+        intact(`
         // before primitive
         primitive Int; // inline primitive comment
 
         /* block primitive comment */
         primitive String;
-    `));
+    `),
+    );
 
-    it("comments in function declarations", intact(`
+    it(
+        "comments in function declarations",
+        intact(`
         // before function
         fun foo() {} // inline function comment
 
@@ -26,9 +34,12 @@ describe("top level declarations comments formatting", () => {
         fun bar() {} // after function
 
         fun baz() {}
-    `));
+    `),
+    );
 
-    it("comments in asm function declarations", intact(`
+    it(
+        "comments in asm function declarations",
+        intact(`
         // before asm function
         asm fun foo() { ONE } // inline asm comment
 
@@ -36,9 +47,12 @@ describe("top level declarations comments formatting", () => {
         asm fun bar() { TWO } // after asm function
 
         asm fun baz() { THREE }
-    `));
+    `),
+    );
 
-    it("comments in native function declarations", intact(`
+    it(
+        "comments in native function declarations",
+        intact(`
         // before native function
         @name("native")
         native foo(); // inline native comment
@@ -49,9 +63,12 @@ describe("top level declarations comments formatting", () => {
 
         @name("native")
         native bax();
-    `));
+    `),
+    );
 
-    it("comments in constant declarations", intact(`
+    it(
+        "comments in constant declarations",
+        intact(`
         // before constant
         const FOO: Int = 100; // inline constant comment
 
@@ -59,9 +76,12 @@ describe("top level declarations comments formatting", () => {
         const BAR: Int = 200; // after constant
 
         const A: Int = 100;
-    `));
+    `),
+    );
 
-    it("comments in struct declarations", intact(`
+    it(
+        "comments in struct declarations",
+        intact(`
         // before struct
         struct Foo {
             // struct field comment
@@ -76,9 +96,12 @@ describe("top level declarations comments formatting", () => {
         } // after struct
 
         struct Bar {}
-    `));
+    `),
+    );
 
-    it("comments in message declarations", intact(`
+    it(
+        "comments in message declarations",
+        intact(`
         // before message
         message(0x123) Foo {
             // message field comment
@@ -93,9 +116,12 @@ describe("top level declarations comments formatting", () => {
         } // after message
 
         message Bax {}
-    `));
+    `),
+    );
 
-    it("comments in contract declarations", intact(`
+    it(
+        "comments in contract declarations",
+        intact(`
         // before contract
         contract Foo(param: Int) {
             // contract field comment
@@ -111,9 +137,12 @@ describe("top level declarations comments formatting", () => {
         } // after contract
 
         contract Bax {}
-    `));
+    `),
+    );
 
-    it("comments in trait declarations", intact(`
+    it(
+        "comments in trait declarations",
+        intact(`
         // before trait
         trait Foo {
             // trait field comment
@@ -129,9 +158,12 @@ describe("top level declarations comments formatting", () => {
         } // after trait
 
         trait Bax {}
-    `));
+    `),
+    );
 
-    it("comments in contract with inheritance", intact(`
+    it(
+        "comments in contract with inheritance",
+        intact(`
         // before contract with inheritance
         contract Foo(param: Int) with Bar, Baz {
             // contract content
@@ -142,9 +174,12 @@ describe("top level declarations comments formatting", () => {
         contract Bar with Foo {
             value: Int;
         }
-    `));
+    `),
+    );
 
-    it("comments in contract with interface", intact(`
+    it(
+        "comments in contract with interface",
+        intact(`
         // before contract with interface
         @interface("api")
         contract Foo {
@@ -157,9 +192,12 @@ describe("top level declarations comments formatting", () => {
         contract Bar {
             value: Int;
         }
-    `));
+    `),
+    );
 
-    it("comments in contract with init", intact(`
+    it(
+        "comments in contract with init",
+        intact(`
         // before contract with init
         contract Foo {
             // init comment
@@ -175,9 +213,12 @@ describe("top level declarations comments formatting", () => {
                 field = value;
             }
         }
-    `));
+    `),
+    );
 
-    it("comments in contract with receive", intact(`
+    it(
+        "comments in contract with receive",
+        intact(`
         // before contract with receive
         contract Foo {
             // receive comment
@@ -193,9 +234,12 @@ describe("top level declarations comments formatting", () => {
                 handle(msg);
             }
         }
-    `));
+    `),
+    );
 
-    it("comments in contract with external", intact(`
+    it(
+        "comments in contract with external",
+        intact(`
         // before contract with external
         contract Foo {
             // external comment
@@ -211,9 +255,12 @@ describe("top level declarations comments formatting", () => {
                 handle(msg);
             }
         }
-    `));
+    `),
+    );
 
-    it("comments in contract with bounced", intact(`
+    it(
+        "comments in contract with bounced",
+        intact(`
         // before contract with bounced
         contract Foo {
             // bounced comment
@@ -229,9 +276,12 @@ describe("top level declarations comments formatting", () => {
                 handle(msg);
             }
         }
-    `));
+    `),
+    );
 
-    it("comments in contract with get function", intact(`
+    it(
+        "comments in contract with get function",
+        intact(`
         // before contract with get
         contract Foo {
             // get function comment
@@ -247,9 +297,12 @@ describe("top level declarations comments formatting", () => {
                 return field;
             }
         }
-    `));
+    `),
+    );
 
-    it("comments in contract with multiple items", intact(`
+    it(
+        "comments in contract with multiple items",
+        intact(`
         // before contract with multiple items
         contract Foo {
             // field comment
@@ -287,5 +340,6 @@ describe("top level declarations comments formatting", () => {
                 return field;
             }
         }
-    `));
+    `),
+    );
 });

@@ -1,161 +1,168 @@
-import type {Cst, CstNode} from "@/fmt/cst/cst-parser"
-import {CodeBuilder} from "@/fmt/formatter/code-builder"
+import type { Cst, CstNode } from "@/fmt/cst/cst-parser";
+import { CodeBuilder } from "@/fmt/formatter/code-builder";
 import {
     formatFunction,
     formatNativeFunction,
     formatAsmFunction,
     formatPrimitiveType,
     formatConstant,
-} from "@/fmt/formatter/format-declarations"
-import {formatStatement} from "@/fmt/formatter/format-statements"
-import {formatExpression} from "@/fmt/formatter/format-expressions"
-import {visit, childByField, trailingNewlines} from "@/fmt/cst/cst-helpers"
-import {formatContract, formatTrait} from "@/fmt/formatter/format-contracts"
-import {formatMessage, formatStruct} from "@/fmt/formatter/format-structs"
-import {hasIgnoreDirective, containsSeveralNewlines} from "@/fmt/formatter/helpers"
-import {formatComment} from "@/fmt/formatter/format-comments"
-import {formatImports} from "@/fmt/formatter/format-imports"
+} from "@/fmt/formatter/format-declarations";
+import { formatStatement } from "@/fmt/formatter/format-statements";
+import { formatExpression } from "@/fmt/formatter/format-expressions";
+import { visit, childByField, trailingNewlines } from "@/fmt/cst/cst-helpers";
+import { formatContract, formatTrait } from "@/fmt/formatter/format-contracts";
+import { formatMessage, formatStruct } from "@/fmt/formatter/format-structs";
+import {
+    hasIgnoreDirective,
+    containsSeveralNewlines,
+} from "@/fmt/formatter/helpers";
+import { formatComment } from "@/fmt/formatter/format-comments";
+import { formatImports } from "@/fmt/formatter/format-imports";
 
-export type FormatRule = (code: CodeBuilder, node: CstNode) => void
-export type FormatStatementRule = (code: CodeBuilder, node: CstNode, needSemicolon: boolean) => void
+export type FormatRule = (code: CodeBuilder, node: CstNode) => void;
+export type FormatStatementRule = (
+    code: CodeBuilder,
+    node: CstNode,
+    needSemicolon: boolean,
+) => void;
 
 export const format = (node: Cst): string => {
-    const code = new CodeBuilder()
-    formatNode(code, node)
-    return code.toString()
-}
+    const code = new CodeBuilder();
+    formatNode(code, node);
+    return code.toString();
+};
 
 const formatNode = (code: CodeBuilder, node: Cst): void => {
     if (node.$ === "leaf") {
-        code.add(node.text)
-        return
+        code.add(node.text);
+        return;
     }
 
     switch (node.type) {
         case "Root": {
             if (node.children.length === 0) {
-                return
+                return;
             }
 
-            let needNewLine = false
+            let needNewLine = false;
             node.children.forEach((child, index) => {
                 if (child.$ === "leaf") {
                     // don't add extra leading lines
                     if (index !== 0 && containsSeveralNewlines(child.text)) {
-                        needNewLine = true
+                        needNewLine = true;
                     }
-                    return
+                    return;
                 }
 
                 if (needNewLine) {
-                    code.newLine()
+                    code.newLine();
                 }
 
                 if (child.type === "Comment") {
-                    formatComment(code, child)
-                    code.newLine()
-                    return
+                    formatComment(code, child);
+                    code.newLine();
+                    return;
                 }
 
-                formatNode(code, child)
+                formatNode(code, child);
                 if (index < node.children.length - 2) {
-                    code.newLine()
+                    code.newLine();
                 }
-            })
-            code.trimNewlines().newLine()
-            break
+            });
+            code.trimNewlines().newLine();
+            break;
         }
         case "Module": {
-            const imports = childByField(node, "imports")
+            const imports = childByField(node, "imports");
             if (imports) {
-                formatImports(code, imports)
+                formatImports(code, imports);
             }
 
-            const itemsNode = childByField(node, "items")
+            const itemsNode = childByField(node, "items");
             if (!itemsNode) {
-                break
+                break;
             }
 
-            let needNewLine = false
+            let needNewLine = false;
 
-            const items = itemsNode.children
+            const items = itemsNode.children;
             items.forEach((item, index) => {
                 if (item.$ === "leaf") {
                     if (containsSeveralNewlines(item.text)) {
-                        needNewLine = true
+                        needNewLine = true;
                     }
-                    return
+                    return;
                 }
 
                 if (item.type === "Comment") {
                     // floating comment
-                    code.add(visit(item))
-                    code.newLine()
-                    return
+                    code.add(visit(item));
+                    code.newLine();
+                    return;
                 }
 
                 if (needNewLine) {
-                    code.newLine()
-                    needNewLine = false
+                    code.newLine();
+                    needNewLine = false;
                 }
 
                 if (hasIgnoreDirective(item)) {
-                    code.add(visit(item).trim())
+                    code.add(visit(item).trim());
                 } else {
-                    formatNode(code, item)
+                    formatNode(code, item);
                 }
 
                 if (index < items.length - 1) {
-                    code.newLine()
+                    code.newLine();
                 }
 
-                const newlines = trailingNewlines(item)
+                const newlines = trailingNewlines(item);
                 if (newlines > 1) {
-                    code.newLine()
+                    code.newLine();
                 }
-            })
-            break
+            });
+            break;
         }
 
         case "PrimitiveTypeDecl": {
-            formatPrimitiveType(code, node)
-            break
+            formatPrimitiveType(code, node);
+            break;
         }
         case "$Function": {
-            formatFunction(code, node)
-            break
+            formatFunction(code, node);
+            break;
         }
         case "NativeFunctionDecl": {
-            formatNativeFunction(code, node)
-            break
+            formatNativeFunction(code, node);
+            break;
         }
         case "AsmFunction": {
-            formatAsmFunction(code, node)
-            break
+            formatAsmFunction(code, node);
+            break;
         }
         case "Contract": {
-            formatContract(code, node)
-            break
+            formatContract(code, node);
+            break;
         }
         case "Trait": {
-            formatTrait(code, node)
-            break
+            formatTrait(code, node);
+            break;
         }
         case "StructDecl": {
-            formatStruct(code, node)
-            break
+            formatStruct(code, node);
+            break;
         }
         case "MessageDecl": {
-            formatMessage(code, node)
-            break
+            formatMessage(code, node);
+            break;
         }
         case "Constant": {
-            formatConstant(code, node)
-            break
+            formatConstant(code, node);
+            break;
         }
         case "Comment": {
-            formatComment(code, node)
-            break
+            formatComment(code, node);
+            break;
         }
         case "StatementDestruct":
         case "StatementRepeat":
@@ -169,15 +176,15 @@ const formatNode = (code: CodeBuilder, node: Cst): void => {
         case "StatementCondition":
         case "StatementWhile":
         case "StatementBlock": {
-            formatStatement(code, node, true)
-            break
+            formatStatement(code, node, true);
+            break;
         }
         default: {
             if (node.group === "expression") {
-                formatExpression(code, node)
+                formatExpression(code, node);
             } else {
-                code.add(visit(node).trim())
+                code.add(visit(node).trim());
             }
         }
     }
-}
+};

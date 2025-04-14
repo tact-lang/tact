@@ -1220,7 +1220,10 @@ const parseFunction =
         const returnType = node.returnType
             ? parseType(node.returnType)(ctx)
             : undefined;
-        const parameters = map(parseList(node.parameters.values), parseParameter)(ctx);
+        const parameters = map(
+            parseList(node.parameters.values),
+            parseParameter,
+        )(ctx);
 
         if (node.body.$ === "FunctionDeclaration") {
             const attributes = parseFunctionAttributes(

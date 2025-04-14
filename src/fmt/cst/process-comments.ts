@@ -1,4 +1,4 @@
-import type {Cst, CstNode} from "@/fmt/cst/cst-parser"
+import type { Cst, CstNode } from "@/fmt/cst/cst-parser";
 import {
     childByField,
     childByType,
@@ -8,15 +8,15 @@ import {
     containsComments,
     filterComments,
     isComment,
-} from "@/fmt/cst/cst-helpers"
+} from "@/fmt/cst/cst-helpers";
 
-let pendingComments: Cst[] = []
+let pendingComments: Cst[] = [];
 
 interface CommentsExtraction {
-    comments: Cst[]
-    inlineComments: Cst[]
-    startIndex: number
-    floatingComments: Cst[] // not attached to any
+    comments: Cst[];
+    inlineComments: Cst[];
+    startIndex: number;
+    floatingComments: Cst[]; // not attached to any
 }
 
 // $Function
@@ -48,48 +48,59 @@ function extractComments([commentPoint, anchor]: [CstNode, Anchor]):
     const anchorIndex =
         typeof anchor === "string"
             ? childLeafIdxWithText(commentPoint, anchor)
-            : anchor(commentPoint)
+            : anchor(commentPoint);
     if (anchorIndex === -1) {
         // No anchor, bug?
-        return undefined
+        return undefined;
     }
 
-    const actualAnchorIndex = anchorIndex + 1
-    const followingLeafs = commentPoint.children.slice(actualAnchorIndex)
+    const actualAnchorIndex = anchorIndex + 1;
+    const followingLeafs = commentPoint.children.slice(actualAnchorIndex);
     if (!containsComments(followingLeafs)) {
         // no comments, no need to do anything
-        return undefined
+        return undefined;
     }
 
     // find index where we break on the next line
     let inlineCommentsIndex =
         actualAnchorIndex +
-        followingLeafs.findIndex(it => it.$ === "leaf" && it.text.includes("\n"))
+        followingLeafs.findIndex(
+            (it) => it.$ === "leaf" && it.text.includes("\n"),
+        );
 
     // all before, inline comments that we don't touch
-    const inlineLeafs = followingLeafs.slice(0, inlineCommentsIndex - actualAnchorIndex)
-    const inlineComments = filterComments(inlineLeafs)
+    const inlineLeafs = followingLeafs.slice(
+        0,
+        inlineCommentsIndex - actualAnchorIndex,
+    );
+    const inlineComments = filterComments(inlineLeafs);
 
-    const inlineCommentFirstChildren = commentPoint.children.at(inlineCommentsIndex)
-    if (inlineCommentFirstChildren?.$ === "leaf" && inlineCommentFirstChildren.text.includes("\n")) {
+    const inlineCommentFirstChildren =
+        commentPoint.children.at(inlineCommentsIndex);
+    if (
+        inlineCommentFirstChildren?.$ === "leaf" &&
+        inlineCommentFirstChildren.text.includes("\n")
+    ) {
         // skip leading new lines
-        inlineCommentsIndex++
+        inlineCommentsIndex++;
     }
     // all after newline (inclusive)
-    const remainingLeafs = commentPoint.children.slice(inlineCommentsIndex)
+    const remainingLeafs = commentPoint.children.slice(inlineCommentsIndex);
     if (remainingLeafs.length === 0) {
         return {
             comments: [],
             inlineComments: inlineComments,
             startIndex: inlineCommentsIndex,
             floatingComments: [],
-        }
+        };
     }
 
-    const lastLeaf = remainingLeafs.at(-1)
+    const lastLeaf = remainingLeafs.at(-1);
     // Comment is attached to declaration only when the last whitespace is not several line breaks
     const isAttachedTo =
-        lastLeaf && lastLeaf.$ === "leaf" && !containsSeveralNewlines(lastLeaf.text)
+        lastLeaf &&
+        lastLeaf.$ === "leaf" &&
+        !containsSeveralNewlines(lastLeaf.text);
     if (!isAttachedTo) {
         // comments are not attached, need to add a separate statement? TODO
         return {
@@ -97,21 +108,21 @@ function extractComments([commentPoint, anchor]: [CstNode, Anchor]):
             inlineComments: [],
             startIndex: inlineCommentsIndex,
             floatingComments: remainingLeafs,
-        }
+        };
     }
 
     const reverseDoubleNewlineIndex = [...remainingLeafs]
         .reverse()
-        .findIndex(it => it.$ === "leaf" && containsSeveralNewlines(it.text))
+        .findIndex((it) => it.$ === "leaf" && containsSeveralNewlines(it.text));
 
     if (reverseDoubleNewlineIndex !== -1) {
-        const index = remainingLeafs.length - reverseDoubleNewlineIndex
+        const index = remainingLeafs.length - reverseDoubleNewlineIndex;
         return {
             comments: remainingLeafs.slice(index),
             inlineComments: inlineComments,
             startIndex: inlineCommentsIndex,
             floatingComments: remainingLeafs.slice(0, index),
-        }
+        };
     }
 
     return {
@@ -119,65 +130,65 @@ function extractComments([commentPoint, anchor]: [CstNode, Anchor]):
         inlineComments: inlineComments,
         startIndex: inlineCommentsIndex,
         floatingComments: [],
-    }
+    };
 }
 
 function containsSeveralNewlines(text: string): boolean {
-    const index = text.indexOf("\n")
+    const index = text.indexOf("\n");
     if (index === -1) {
-        return false
+        return false;
     }
-    return text.slice(index + 1).includes("\n")
+    return text.slice(index + 1).includes("\n");
 }
 
 const findNodeWithComments = (node: CstNode): undefined | [CstNode, string] => {
     if (node.type === "Import") {
-        return [node, ";"]
+        return [node, ";"];
     }
     if (node.type === "Contract") {
-        return [node, "}"]
+        return [node, "}"];
     }
     if (node.type === "PrimitiveTypeDecl") {
-        return [node, ";"]
+        return [node, ";"];
     }
     if (node.type === "NativeFunctionDecl") {
-        return [node, ";"]
+        return [node, ";"];
     }
     if (node.type === "AsmFunction") {
-        return [node, "}"]
+        return [node, "}"];
     }
     if (node.type === "Trait") {
-        return [node, "}"]
+        return [node, "}"];
     }
     if (node.type === "StructDecl" || node.type === "MessageDecl") {
-        return [node, "}"]
+        return [node, "}"];
     }
     if (node.type === "$Function") {
-        const body = childByField(node, "body")
+        const body = childByField(node, "body");
         if (body) {
-            const innerBody = childByField(body, "body")
+            const innerBody = childByField(body, "body");
             if (!innerBody) {
-                return [body, ";"]
+                return [body, ";"];
             }
-            return [innerBody, "}"]
+            return [innerBody, "}"];
         }
-        return [node, ";"]
+        return [node, ";"];
     }
     if (node.type === "Constant") {
-        const body = childByField(node, "body")
+        const body = childByField(node, "body");
         if (body) {
-            return [body, ";"]
+            return [body, ";"];
         }
     }
 
-    const lastChildren = node.children.at(-1)
-    if (!lastChildren || lastChildren.$ !== "node") return undefined
-    return [lastChildren, "}"]
-}
+    const lastChildren = node.children.at(-1);
+    if (!lastChildren || lastChildren.$ !== "node") return undefined;
+    return [lastChildren, "}"];
+};
 
 export const processDocComments = (node: Cst): Cst => {
     if (node.$ === "leaf") {
-        return node
+        return node;
     }
 
     // // comment
@@ -202,68 +213,72 @@ export const processDocComments = (node: Cst): Cst => {
     // And we need to extract top-level comment and attach it to next declaration
     if (node.type === "Root") {
         // Step 1: collect all nodes to Module
-        const moduleIndex = childIdxByType(node, "Module")
+        const moduleIndex = childIdxByType(node, "Module");
         if (moduleIndex === -1) {
             // no Module?
             // no need to do anything
             return {
                 ...node,
-                children: node.children.map(it => processDocComments(it)),
-            }
+                children: node.children.map((it) => processDocComments(it)),
+            };
         }
 
         if (moduleIndex === 0) {
             // no nodes before Module, skip
             return {
                 ...node,
-                children: node.children.map(it => processDocComments(it)),
-            }
+                children: node.children.map((it) => processDocComments(it)),
+            };
         }
 
-        const initialLeafs = node.children.slice(0, moduleIndex)
+        const initialLeafs = node.children.slice(0, moduleIndex);
         if (!containsComments(initialLeafs)) {
             // no comments, no need to do anything
             return {
                 ...node,
-                children: node.children.map(it => processDocComments(it)),
-            }
+                children: node.children.map((it) => processDocComments(it)),
+            };
         }
 
-        const lastLeaf = initialLeafs.at(-1)
+        const lastLeaf = initialLeafs.at(-1);
 
         // Comment is attached to declaration only when the last whitespace is not several line breaks
         const isAttachedTo =
-            lastLeaf && lastLeaf.$ === "leaf" && !containsSeveralNewlines(lastLeaf.text)
+            lastLeaf &&
+            lastLeaf.$ === "leaf" &&
+            !containsSeveralNewlines(lastLeaf.text);
         if (!isAttachedTo) {
             // if comments are not attached, then we don't need to do anything
             return {
                 ...node,
-                children: node.children.map(it => processDocComments(it)),
-            }
+                children: node.children.map((it) => processDocComments(it)),
+            };
         }
 
         // skip top level whitespaces before comment
-        let firstCommentIndex = initialLeafs.findIndex(it => isComment(it))
+        let firstCommentIndex = initialLeafs.findIndex((it) => isComment(it));
 
         const reverseDoubleNewlineIndex = [...initialLeafs]
             .reverse()
-            .findIndex(it => it.$ === "leaf" && containsSeveralNewlines(it.text))
+            .findIndex(
+                (it) => it.$ === "leaf" && containsSeveralNewlines(it.text),
+            );
 
         if (reverseDoubleNewlineIndex !== -1) {
-            firstCommentIndex = initialLeafs.length - reverseDoubleNewlineIndex
+            firstCommentIndex = initialLeafs.length - reverseDoubleNewlineIndex;
         }
 
-        pendingComments = initialLeafs.slice(firstCommentIndex)
+        pendingComments = initialLeafs.slice(firstCommentIndex);
 
         // remove all extracted comments from Root
         const newChildren = [
             ...node.children.slice(0, firstCommentIndex),
             ...node.children.slice(moduleIndex),
-        ]
+        ];
         return {
             ...node,
-            children: newChildren.map(it => processDocComments(it)),
-        }
+            children: newChildren.map((it) => processDocComments(it)),
+        };
     }
 
     // items: Contract
@@ -283,51 +298,58 @@ export const processDocComments = (node: Cst): Cst => {
     //   "\n\n"
     if (node.type === "Contract" || node.type === "Trait") {
         // starting point to find any first comments
-        const openBraceIndex = childLeafIdxWithText(node, "{")
-        const closeBraceIndex = childLeafIdxWithText(node, "}")
+        const openBraceIndex = childLeafIdxWithText(node, "{");
+        const closeBraceIndex = childLeafIdxWithText(node, "}");
 
-        const childrenToProcess = node.children.slice(openBraceIndex + 1, closeBraceIndex)
+        const childrenToProcess = node.children.slice(
+            openBraceIndex + 1,
+            closeBraceIndex,
+        );
 
         // all children before open brace
-        const childrenBefore = node.children.slice(0, openBraceIndex + 1)
-        const childrenAfter = node.children.slice(closeBraceIndex)
+        const childrenBefore = node.children.slice(0, openBraceIndex + 1);
+        const childrenAfter = node.children.slice(closeBraceIndex);
 
         // collect all nodes until some declaration
-        const comments: Cst[] = []
+        const comments: Cst[] = [];
         for (const element of childrenToProcess) {
             if (element.$ === "node" && element.type !== "Comment") {
                 // found declaration
-                break
+                break;
             }
-            comments.push(element)
+            comments.push(element);
         }
 
         if (!containsComments(comments)) {
             // no comments, no need to do anything
             return {
                 ...node,
-                children: node.children.map(it => processDocComments(it)),
-            }
+                children: node.children.map((it) => processDocComments(it)),
+            };
         }
 
         // remove all collected comments and whitespaces
         for (const _ of comments) {
-            childrenToProcess.shift()
+            childrenToProcess.shift();
         }
 
-        pendingComments = comments
+        pendingComments = comments;
 
         if (childrenToProcess.length === 0) {
             // empty contract with just comment
-            childrenToProcess.push(...comments)
-            pendingComments = []
+            childrenToProcess.push(...comments);
+            pendingComments = [];
         }
 
-        const newChildren = [...childrenBefore, ...childrenToProcess, ...childrenAfter]
+        const newChildren = [
+            ...childrenBefore,
+            ...childrenToProcess,
+            ...childrenAfter,
+        ];
         return {
             ...node,
-            children: newChildren.flatMap(it => processDocComments(it)),
-        }
+            children: newChildren.flatMap((it) => processDocComments(it)),
+        };
     }
 
     if (node.group === "contractItemDecl") {
@@ -339,8 +361,8 @@ export const processDocComments = (node: Cst): Cst => {
                 field: "doc",
                 group: "",
                 id: 0,
-            })
-            pendingComments = []
+            });
+            pendingComments = [];
         }
     }
 
@@ -413,19 +435,23 @@ export const processDocComments = (node: Cst): Cst => {
                 field: "doc",
                 group: "",
                 id: 0,
-            })
-            pendingComments = []
+            });
+            pendingComments = [];
         }
     }
 
-    if (node.type === "items" || node.type === "declarations" || node.type === "imports") {
-        const items = node.children
+    if (
+        node.type === "items" ||
+        node.type === "declarations" ||
+        node.type === "imports"
+    ) {
+        const items = node.children;
 
-        let prevFieldsIndex = 0
+        let prevFieldsIndex = 0;
         for (let i = 0; i < items.length; i++) {
-            const item = items.at(i)
+            const item = items.at(i);
 
-            if (item?.$ !== "node") continue
+            if (item?.$ !== "node") continue;
 
             // If there are some pending comments, we insert it as a new children
             if (pendingComments.length > 0 && item.type !== "Comment") {
@@ -436,191 +462,212 @@ export const processDocComments = (node: Cst): Cst => {
                     field: "doc",
                     group: "",
                     id: 0,
-                })
-                pendingComments = []
+                });
+                pendingComments = [];
             }
 
             if (item.type === "Comment") {
                 // this comment may be inline comment
-                const children = items.slice(prevFieldsIndex, i)
+                const children = items.slice(prevFieldsIndex, i);
                 const inlineComment = !children.some(
-                    it => it.$ === "leaf" && it.text.includes("\n"),
-                )
+                    (it) => it.$ === "leaf" && it.text.includes("\n"),
+                );
                 if (inlineComment) {
-                    const prevItem = items.at(prevFieldsIndex)
+                    const prevItem = items.at(prevFieldsIndex);
                     if (prevItem?.$ === "node") {
                         // append inline comment to previous item
-                        prevItem.children.push(item)
+                        prevItem.children.push(item);
                         // remove comment and go back to not increment too much
-                        items.splice(i, 1)
-                        i--
-                        continue
+                        items.splice(i, 1);
+                        i--;
+                        continue;
                     }
                 }
 
-                const nextItem = items.at(i + 1)
-                if (nextItem && nextItem.$ === "leaf" && containsSeveralNewlines(nextItem.text)) {
+                const nextItem = items.at(i + 1);
+                if (
+                    nextItem &&
+                    nextItem.$ === "leaf" &&
+                    containsSeveralNewlines(nextItem.text)
+                ) {
                     // not attached to anything
-                    items.splice(i - 1, 0, ...pendingComments)
-                    i += pendingComments.length
-                    pendingComments = []
-                    continue
+                    items.splice(i - 1, 0, ...pendingComments);
+                    i += pendingComments.length;
+                    pendingComments = [];
+                    continue;
                 }
 
-                pendingComments.push(item)
+                pendingComments.push(item);
 
                 // remove comment and go back to not increment too much
-                items.splice(i, 1)
-                i--
-                continue
+                items.splice(i, 1);
+                i--;
+                continue;
             }
 
-            prevFieldsIndex = i
+            prevFieldsIndex = i;
 
-            const found = findNodeWithComments(item)
+            const found = findNodeWithComments(item);
             if (!found) {
-                continue
+                continue;
             }
 
-            const commentOwner = found
+            const commentOwner = found;
 
-            const res = extractComments(commentOwner)
+            const res = extractComments(commentOwner);
             if (!res) {
-                continue
+                continue;
             }
 
-            const {comments, startIndex, floatingComments} = res
+            const { comments, startIndex, floatingComments } = res;
 
-            const owner = commentOwner[0]
-            owner.children = owner.children.slice(0, startIndex)
+            const owner = commentOwner[0];
+            owner.children = owner.children.slice(0, startIndex);
 
             if (floatingComments.length > 0) {
-                items.splice(i + 1, 0, ...floatingComments)
-                i += floatingComments.length - 1
+                items.splice(i + 1, 0, ...floatingComments);
+                i += floatingComments.length - 1;
             }
 
-            pendingComments.push(...comments)
+            pendingComments.push(...comments);
         }
 
         if (node.type === "imports") {
-            return node
+            return node;
         }
 
         // comments aren't attached to anything
         if (pendingComments.length > 0) {
-            node.children.push(...pendingComments)
-            pendingComments = []
+            node.children.push(...pendingComments);
+            pendingComments = [];
         }
     }
 
     if (node.type === "body" || node.type === "trueBranch") {
-        const statements = node.children
-        let endIndex = statements.findIndex(it => it.$ === "leaf" && it.text === "}")
+        const statements = node.children;
+        let endIndex = statements.findIndex(
+            (it) => it.$ === "leaf" && it.text === "}",
+        );
 
-        let pendingComments: Cst[] = []
+        let pendingComments: Cst[] = [];
 
         for (let i = 0; i < endIndex; i++) {
-            const statement = node.children.at(i)
+            const statement = node.children.at(i);
             if (statement?.$ === "leaf") {
-                continue
+                continue;
             }
 
             if (pendingComments.length > 0) {
-                node.children.splice(i, 0, ...pendingComments)
-                endIndex += pendingComments.length
-                pendingComments = []
-                continue
+                node.children.splice(i, 0, ...pendingComments);
+                endIndex += pendingComments.length;
+                pendingComments = [];
+                continue;
             }
 
             if (statement?.group === "statement") {
-                const found = findStatementNodeWithComments(statement)
+                const found = findStatementNodeWithComments(statement);
                 if (!found) {
-                    continue
+                    continue;
                 }
 
-                const [owner, anchors] = found
+                const [owner, anchors] = found;
 
                 for (const anchor of anchors) {
-                    const res = extractComments([owner, anchor])
+                    const res = extractComments([owner, anchor]);
                     if (res) {
-                        if (res.inlineComments.length > 0 && owner !== statement) {
-                            statement.children.push(...res.inlineComments)
+                        if (
+                            res.inlineComments.length > 0 &&
+                            owner !== statement
+                        ) {
+                            statement.children.push(...res.inlineComments);
                         }
 
-                        pendingComments = res.comments
-                        owner.children = owner.children.slice(0, res.startIndex)
-                        if (res.inlineComments.length > 0 && owner !== statement) {
+                        pendingComments = res.comments;
+                        owner.children = owner.children.slice(
+                            0,
+                            res.startIndex,
+                        );
+                        if (
+                            res.inlineComments.length > 0 &&
+                            owner !== statement
+                        ) {
                             owner.children = owner.children.slice(
                                 0,
-                                owner.children.length - 1 - res.inlineComments.length,
-                            )
+                                owner.children.length -
+                                    1 -
+                                    res.inlineComments.length,
+                            );
                         }
 
                         if (res.floatingComments.length > 0) {
-                            statements.splice(i + 1, 0, ...res.floatingComments)
-                            i += res.floatingComments.length - 1
-                            endIndex += res.floatingComments.length
+                            statements.splice(
+                                i + 1,
+                                0,
+                                ...res.floatingComments,
+                            );
+                            i += res.floatingComments.length - 1;
+                            endIndex += res.floatingComments.length;
                         }
 
-                        break
+                        break;
                     }
                 }
             }
         }
 
         if (pendingComments.length > 0) {
-            node.children.splice(endIndex, 0, ...pendingComments)
+            node.children.splice(endIndex, 0, ...pendingComments);
         }
     }
 
     if (node.type === "StructDecl" || node.type === "MessageDecl") {
-        const fields = childByField(node, "fields")
+        const fields = childByField(node, "fields");
         if (!fields || fields.children.length === 0) {
             // nothing to do
             return {
                 ...node,
-                children: node.children.flatMap(it => processDocComments(it)),
-            }
+                children: node.children.flatMap((it) => processDocComments(it)),
+            };
         }
 
-        const startIndex = childLeafIdxWithText(node, "{") + 1
-        const fieldsIndex = childIdxByField(node, "fields")
+        const startIndex = childLeafIdxWithText(node, "{") + 1;
+        const fieldsIndex = childIdxByField(node, "fields");
 
-        const leadingLeafs = node.children.slice(startIndex, fieldsIndex)
-        const leadingComments = filterComments(leadingLeafs)
+        const leadingLeafs = node.children.slice(startIndex, fieldsIndex);
+        const leadingComments = filterComments(leadingLeafs);
 
         if (leadingComments.length === 0) {
             // nothing to do, no leading comments
             return {
                 ...node,
-                children: node.children.flatMap(it => processDocComments(it)),
-            }
+                children: node.children.flatMap((it) => processDocComments(it)),
+            };
         }
 
-        pendingComments = leadingComments
+        pendingComments = leadingComments;
         const processedChildren = node.children.filter((_, index) => {
             if (index >= startIndex && index < fieldsIndex) {
                 // remove all nodes that we take
-                return false
+                return false;
             }
             // and keep other nodes
-            return true
-        })
+            return true;
+        });
 
         return {
             ...node,
-            children: processedChildren.flatMap(it => processDocComments(it)),
-        }
+            children: processedChildren.flatMap((it) => processDocComments(it)),
+        };
     }
 
     if (node.type === "fields") {
-        const items = node.children
+        const items = node.children;
 
-        let prevFieldsIndex = 0
+        let prevFieldsIndex = 0;
         for (let i = 0; i < items.length; i++) {
-            const item = items.at(i)
+            const item = items.at(i);
 
-            if (item?.$ !== "node") continue
+            if (item?.$ !== "node") continue;
 
             // If there are some pending comments, we insert it as a new children
             if (pendingComments.length > 0 && item.type !== "Comment") {
@@ -631,155 +678,164 @@ export const processDocComments = (node: Cst): Cst => {
                     field: "doc",
                     group: "",
                     id: 0,
-                })
-                pendingComments = []
+                });
+                pendingComments = [];
             }
 
             if (item.type === "Comment") {
                 // this comment may be inline comment
-                const children = items.slice(prevFieldsIndex, i)
+                const children = items.slice(prevFieldsIndex, i);
                 const inlineComment = !children.some(
-                    it => it.$ === "leaf" && it.text.includes("\n"),
-                )
+                    (it) => it.$ === "leaf" && it.text.includes("\n"),
+                );
                 if (inlineComment) {
-                    const prevItem = items.at(prevFieldsIndex)
+                    const prevItem = items.at(prevFieldsIndex);
                     if (prevItem?.$ === "node") {
                         // append inline comment to previous item
-                        prevItem.children.push(item)
+                        prevItem.children.push(item);
                         // remove comment and go back to not increment too much
-                        items.splice(i, 1)
-                        i--
-                        continue
+                        items.splice(i, 1);
+                        i--;
+                        continue;
                     }
                 }
 
-                pendingComments.push(item)
+                pendingComments.push(item);
 
                 // remove comment and go back to not increment too much
-                items.splice(i, 1)
-                i--
-                continue
+                items.splice(i, 1);
+                i--;
+                continue;
             }
 
-            prevFieldsIndex = i
+            prevFieldsIndex = i;
 
             if (item.type === "StructFieldInitializer") {
-                const found = findStatementNodeWithComments(item)
+                const found = findStatementNodeWithComments(item);
                 if (!found) {
-                    continue
+                    continue;
                 }
 
-                const [owner, anchors] = found
+                const [owner, anchors] = found;
 
                 for (const anchor of anchors) {
-                    const res = extractComments([owner, anchor])
+                    const res = extractComments([owner, anchor]);
                     if (res) {
                         if (res.inlineComments.length > 0 && owner !== item) {
-                            item.children.push(...res.inlineComments)
+                            item.children.push(...res.inlineComments);
                         }
 
-                        pendingComments = res.comments
-                        owner.children = owner.children.slice(0, res.startIndex)
+                        pendingComments = res.comments;
+                        owner.children = owner.children.slice(
+                            0,
+                            res.startIndex,
+                        );
                         if (res.inlineComments.length > 0 && owner !== item) {
                             owner.children = owner.children.slice(
                                 0,
-                                owner.children.length - 1 - res.inlineComments.length,
-                            )
+                                owner.children.length -
+                                    1 -
+                                    res.inlineComments.length,
+                            );
                         }
-                        break
+                        break;
                     }
                 }
             }
         }
 
         if (pendingComments.length > 0) {
-            node.children.push(...pendingComments)
-            pendingComments = []
+            node.children.push(...pendingComments);
+            pendingComments = [];
         }
     }
 
     return {
         ...node,
-        children: node.children.flatMap(it => processDocComments(it)),
-    }
-}
+        children: node.children.flatMap((it) => processDocComments(it)),
+    };
+};
 
-export type Anchor = string | ((n: CstNode) => number)
+export type Anchor = string | ((n: CstNode) => number);
 
-const findStatementNodeWithComments = (node: CstNode): undefined | [CstNode, Anchor[]] => {
+const findStatementNodeWithComments = (
+    node: CstNode,
+): undefined | [CstNode, Anchor[]] => {
     if (
         node.type === "StatementWhile" ||
         node.type === "StatementForEach" ||
         node.type === "StatementRepeat"
     ) {
-        const body = childByField(node, "body")
+        const body = childByField(node, "body");
         if (body) {
-            return [body, ["}"]]
+            return [body, ["}"]];
         }
     }
 
     if (node.type === "StatementBlock") {
-        return [node, ["}"]]
+        return [node, ["}"]];
     }
 
     if (node.type === "StatementTry") {
-        const body = childByField(node, "body")
-        const handler = childByField(node, "handler")
+        const body = childByField(node, "body");
+        const handler = childByField(node, "handler");
         if (!handler) {
-            if (!body) return undefined
-            return [body, ["}"]]
+            if (!body) return undefined;
+            return [body, ["}"]];
         }
-        const handlerBody = childByField(handler, "body")
+        const handlerBody = childByField(handler, "body");
         if (handlerBody) {
-            return [handlerBody, ["}"]]
+            return [handlerBody, ["}"]];
         }
     }
 
     if (node.type === "StatementCondition") {
-        const trueBranch = childByField(node, "trueBranch")
-        if (!trueBranch) return undefined
-        const falseBranch = childByField(node, "falseBranch")
+        const trueBranch = childByField(node, "trueBranch");
+        if (!trueBranch) return undefined;
+        const falseBranch = childByField(node, "falseBranch");
         if (!falseBranch) {
-            return [trueBranch, ["}"]]
+            return [trueBranch, ["}"]];
         }
-        const falseBranch2 = childByType(falseBranch, "FalseBranch")
+        const falseBranch2 = childByType(falseBranch, "FalseBranch");
         if (falseBranch2) {
-            const body = childByField(falseBranch2, "body")
+            const body = childByField(falseBranch2, "body");
             if (body) {
-                return [body, ["}"]]
+                return [body, ["}"]];
             }
         }
 
-        const falseBranchIf = childByType(falseBranch, "StatementCondition")
+        const falseBranchIf = childByType(falseBranch, "StatementCondition");
         if (!falseBranchIf) {
-            return undefined
+            return undefined;
         }
-        return findStatementNodeWithComments(falseBranchIf)
+        return findStatementNodeWithComments(falseBranchIf);
     }
 
     if (node.children.length > 0) {
-        const child = node.children.at(-1)
+        const child = node.children.at(-1);
         if (child && child.$ === "node") {
-            return findStatementNodeWithComments(child)
+            return findStatementNodeWithComments(child);
         }
 
         return [
             node,
             [
-                n => {
+                (n) => {
                     const index = [...n.children]
                         .reverse()
-                        .findIndex(it => it.$ === "node" && it.type !== "Comment")
+                        .findIndex(
+                            (it) => it.$ === "node" && it.type !== "Comment",
+                        );
                     if (index === -1) {
-                        return childLeafIdxWithText(n, ")")
+                        return childLeafIdxWithText(n, ")");
                     }
-                    return n.children.length - 1 - index
+                    return n.children.length - 1 - index;
                 },
                 ";",
                 "}",
             ],
-        ]
+        ];
     }
 
-    return [node, [";"]]
-}
+    return [node, [";"]];
+};

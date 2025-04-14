@@ -1,50 +1,85 @@
-import {test, intact} from "@/fmt/test/helpers"
+import { test, intact } from "@/fmt/test/helpers";
 
-describe('should format', () => {
-    it('function declaration formatting', test(
-        `fun    foo(param:    Int)   ;`,
-        `fun foo(param: Int);`
-    ));
+describe("should format", () => {
+    it(
+        "function declaration formatting",
+        test(`fun    foo(param:    Int)   ;`, `fun foo(param: Int);`),
+    );
 
-    it('function with comments after name', intact(`fun foo /*comment*/(param: Int);`));
-    it('function with leading comment', intact(`fun foo(/* leading comment */ param: Int);`));
-    it('function with multiple leading comments', intact(`fun foo(/* leading comment */ /* second */ param: Int);`));
-    it('function with trailing comment', intact(`fun foo(param: Int /* trailing comment */);`));
-    it('function with leading and trailing comments', intact(`fun foo(/* leading comment */ param: Int /* trailing comment */);`));
+    it(
+        "function with comments after name",
+        intact(`fun foo /*comment*/(param: Int);`),
+    );
+    it(
+        "function with leading comment",
+        intact(`fun foo(/* leading comment */ param: Int);`),
+    );
+    it(
+        "function with multiple leading comments",
+        intact(`fun foo(/* leading comment */ /* second */ param: Int);`),
+    );
+    it(
+        "function with trailing comment",
+        intact(`fun foo(param: Int /* trailing comment */);`),
+    );
+    it(
+        "function with leading and trailing comments",
+        intact(
+            `fun foo(/* leading comment */ param: Int /* trailing comment */);`,
+        ),
+    );
 
-    it('function with multiline parameters', intact(`
+    it(
+        "function with multiline parameters",
+        intact(`
         fun foo(
             param: Int,
         );
-    `));
+    `),
+    );
 
-    it('function with multiline parameters no trailing comma', test(`
+    it(
+        "function with multiline parameters no trailing comma",
+        test(
+            `
         fun foo(
             param: Int
-        );`, `
+        );`,
+            `
         fun foo(
             param: Int,
         );
-    `));
+    `,
+        ),
+    );
 
-    it('function with complex parameters', test(`
+    it(
+        "function with complex parameters",
+        test(
+            `
         fun some(// top comment
         /* oopsy */param:Int/* hello there *//* wtf bro */,// comment here
         // bottom comment
         /* oh no */loh: Bool);
-    `, `
+    `,
+            `
         fun some( // top comment
             /* oopsy */param: Int /* hello there *//* wtf bro */, // comment here
             // bottom comment
             /* oh no */ loh: Bool,
         );
-    `));
+    `,
+        ),
+    );
 
-    it('struct instance inline', intact(`
+    it(
+        "struct instance inline",
+        intact(`
         fun foo() {
             Foo { name: "" };
         }
-    `));
+    `),
+    );
 
     // TODO:
     // it('struct instance with trailing comment', intact(`
@@ -53,95 +88,141 @@ describe('should format', () => {
     //     }
     // `));
 
-    it('struct instance with leading comment', intact(`
+    it(
+        "struct instance with leading comment",
+        intact(`
         fun foo() {
             Foo { /* leading comment */ name: "" };
         }
-    `));
+    `),
+    );
 
-    it('struct instance with multiple fields', intact(`
+    it(
+        "struct instance with multiple fields",
+        intact(`
         fun foo() {
             Foo { name: "", other: 100 };
         }
-    `));
+    `),
+    );
 
-    it('struct instance newline before closing brace', test(`
+    it(
+        "struct instance newline before closing brace",
+        test(
+            `
         fun foo() {
             Foo { name: ""
             };
-        }`, `
+        }`,
+            `
         fun foo() {
             Foo { name: "" };
         }
-    `));
+    `,
+        ),
+    );
 
-    it('struct instance newline after colon', test(`
+    it(
+        "struct instance newline after colon",
+        test(
+            `
         fun foo() {
             Foo { name:
             "" };
-        }`, `
+        }`,
+            `
         fun foo() {
             Foo { name: "" };
         }
-    `));
+    `,
+        ),
+    );
 
-    it('struct instance multiline field name', test(`
+    it(
+        "struct instance multiline field name",
+        test(
+            `
         fun foo() {
             Foo {
             name
             :
             "" };
-        }`, `
+        }`,
+            `
         fun foo() {
             Foo {
                 name: "",
             };
         }
-    `));
+    `,
+        ),
+    );
 
-    it('struct instance indentation', test(`
+    it(
+        "struct instance indentation",
+        test(
+            `
         fun foo() {
             Foo {
             name: ""  };
-        }`, `
+        }`,
+            `
         fun foo() {
             Foo {
                 name: "",
             };
         }
-    `));
+    `,
+        ),
+    );
 
-    it('variable declaration with comment before type', intact(`
+    it(
+        "variable declaration with comment before type",
+        intact(`
         fun foo() {
             let foo /*: Foo*/ = 1;
         }
-    `));
+    `),
+    );
 
-    it('variable declaration with comment after type', intact(`
+    it(
+        "variable declaration with comment after type",
+        intact(`
         fun foo() {
             let foo: Foo /*: Foo*/ = 1;
         }
-    `));
+    `),
+    );
 
-    it('variable declaration with comment between name and type', intact(`
+    it(
+        "variable declaration with comment between name and type",
+        intact(`
         fun foo() {
             let foo /*: Foo*/: Foo = 1;
         }
-    `));
+    `),
+    );
 
-    it('variable declaration with comment before value', intact(`
+    it(
+        "variable declaration with comment before value",
+        intact(`
         fun foo() {
             let foo: Foo = /*: Foo*/ 1;
         }
-    `));
+    `),
+    );
 
-    it('variable declaration with multiline comment before value', test(`
+    it(
+        "variable declaration with multiline comment before value",
+        test(
+            `
         fun foo() {
             let foo: Foo = /* first line
             second line
             */1;
         }
-    `, `
+    `,
+            `
         fun foo() {
             let foo: Foo =
                 /* first line
@@ -149,23 +230,33 @@ describe('should format', () => {
             */
                 1;
         }
-    `));
+    `,
+        ),
+    );
 
-    it('variable declaration with comment before value on next line', test(`
+    it(
+        "variable declaration with comment before value on next line",
+        test(
+            `
         fun foo() {
             let foo: Foo =
                 // comment
                 1;
         }
-    `, `
+    `,
+            `
         fun foo() {
             let foo: Foo =
                 // comment
                 1;
         }
-    `));
+    `,
+        ),
+    );
 
-    it('variable declaration with comment before value on next line, complex', intact(`
+    it(
+        "variable declaration with comment before value on next line, complex",
+        intact(`
         fun foo() {
             let result =
                 // self.uB is correctly initialized
@@ -213,53 +304,77 @@ describe('should format', () => {
                 self.mA.get(3)!!.a2.b2.c1 == 150 &&
                 self.mA.get(3)!!.a2.b3 == 0;
         }
-    `));
+    `),
+    );
 
-    it('variable declaration with comment after value', intact(`
+    it(
+        "variable declaration with comment after value",
+        intact(`
         fun foo() {
             let foo: Foo = 1/*: Foo*/;
         }
-    `));
+    `),
+    );
 
-    it('assign statement with augmented operator with space', test(`
+    it(
+        "assign statement with augmented operator with space",
+        test(
+            `
         fun foo() {
             a << = 100;
         }
-    `, `
+    `,
+            `
         fun foo() {
             a <<= 100;
         }
-    `));
+    `,
+        ),
+    );
 
-    it('assign statement with comment before value on next line', test(`
+    it(
+        "assign statement with comment before value on next line",
+        test(
+            `
         fun foo() {
             foo =
                 // comment
                 1;
         }
-    `, `
+    `,
+            `
         fun foo() {
             foo =
                 // comment
                 1;
         }
-    `));
+    `,
+        ),
+    );
 
-    it('return statement with comment before value on next line', test(`
+    it(
+        "return statement with comment before value on next line",
+        test(
+            `
         fun foo() {
             return
                 // comment
                 1;
         }
-    `, `
+    `,
+            `
         fun foo() {
             return
                 // comment
                 1;
         }
-    `));
+    `,
+        ),
+    );
 
-    it('if else statement', intact(`
+    it(
+        "if else statement",
+        intact(`
         fun some() {
             if (a > 10) {
                 return 1;
@@ -269,24 +384,33 @@ describe('should format', () => {
                 return 3;
             }
         }
-    `));
+    `),
+    );
 
-    it('if statement with comment before condition', intact(`
+    it(
+        "if statement with comment before condition",
+        intact(`
         fun some() {
             if /* comment */(a > 10) {
                 return 1;
             }
         }
-    `));
+    `),
+    );
 
-    it('if statement with inline body', intact(`
+    it(
+        "if statement with inline body",
+        intact(`
         fun some() {
             if (true) { return }
             else { return 2 }
         }
-    `));
+    `),
+    );
 
-    it('if else statement with comment before else', intact(`
+    it(
+        "if else statement with comment before else",
+        intact(`
         fun some() {
             if (a > 10) {
                 return 1;
@@ -296,17 +420,23 @@ describe('should format', () => {
                 return 3;
             }
         }
-    `));
+    `),
+    );
 
-    it('if statement with comments', intact(`
+    it(
+        "if statement with comments",
+        intact(`
         fun some() {
             if (a > 10) {
                 return 1;
             } // comment
         }
-    `));
+    `),
+    );
 
-    it('if else statement with comment before else 2', intact(`
+    it(
+        "if else statement with comment before else 2",
+        intact(`
         fun some() {
             if (a > 10) {
                 return 1;
@@ -315,9 +445,12 @@ describe('should format', () => {
                 return 3;
             }
         }
-    `));
+    `),
+    );
 
-    it('if else statement with comment before else 3', intact(`
+    it(
+        "if else statement with comment before else 3",
+        intact(`
         fun some() {
             if (a > 10) {
                 return 1;
@@ -326,9 +459,12 @@ describe('should format', () => {
                 return 3;
             }
         }
-    `));
+    `),
+    );
 
-    it('if else-if statement with comment before else', intact(`
+    it(
+        "if else-if statement with comment before else",
+        intact(`
         fun some() {
             if (a > 10) {
                 return 1;
@@ -338,21 +474,25 @@ describe('should format', () => {
                 return 3;
             }
         }
-    `));
+    `),
+    );
 
-//     it('5', intact(`fun some() {
-//     if (a > 10)/* comment */ {
-//         return 1;
-//     }
-// }`));
+    //     it('5', intact(`fun some() {
+    //     if (a > 10)/* comment */ {
+    //         return 1;
+    //     }
+    // }`));
 
-    it('contract with inheritance and parameters', test(`
+    it(
+        "contract with inheritance and parameters",
+        test(
+            `
         contract Foo(
         param: Int,
         some: Cell) with Bar,
         Foo {}
         `,
-                `
+            `
         contract Foo(
             param: Int,
             some: Cell,
@@ -360,9 +500,13 @@ describe('should format', () => {
             Bar,
             Foo,
         {}
-    `));
+    `,
+        ),
+    );
 
-    it('contract with interface and members', intact(`
+    it(
+        "contract with interface and members",
+        intact(`
         @interface("some.api.interface")
         contract Foo(param: Int) with Bar, Foo {
             field: Int = 100;
@@ -377,21 +521,30 @@ describe('should format', () => {
 
             get fun foo(p: String) {}
         }
-    `));
+    `),
+    );
 
-    it('contract with several attributes', intact(`
+    it(
+        "contract with several attributes",
+        intact(`
         @interface("some.api.interface")
         @interface("some.api.interface.v2")
         contract Foo(param: Int) with Bar, Foo {}
-    `));
+    `),
+    );
 
-    it('contract with get method with explicit id', intact(`
+    it(
+        "contract with get method with explicit id",
+        intact(`
         contract Foo {
             get(0x100) fun foo(p: String) {}
         }
-    `));
+    `),
+    );
 
-    it('trait with inheritance and members', intact(`
+    it(
+        "trait with inheritance and members",
+        intact(`
         trait Foo with Bar, Foo {
             field: Int = 100;
 
@@ -403,83 +556,123 @@ describe('should format', () => {
 
             get fun foo(p: String) {}
         }
-    `));
+    `),
+    );
 
-    describe('structs and messages', () => {
-        it('empty struct', intact(`
+    describe("structs and messages", () => {
+        it(
+            "empty struct",
+            intact(`
             struct Foo {}
-        `));
+        `),
+        );
 
-        it('empty struct with trailing comment', intact(`
+        it(
+            "empty struct with trailing comment",
+            intact(`
             struct Foo {} // comment
             struct Bar {}
-        `));
+        `),
+        );
 
-        it('simple struct', intact(`
+        it(
+            "simple struct",
+            intact(`
             struct Foo {
                 name: String;
             }
-        `));
+        `),
+        );
 
-        it('struct with single field without ;', test(`
+        it(
+            "struct with single field without ;",
+            test(
+                `
             struct Foo {
                 name: String
             }
-        `, `
+        `,
+                `
             struct Foo { name: String }
-        `));
+        `,
+            ),
+        );
 
-        it('struct with multiple fields', intact(`
+        it(
+            "struct with multiple fields",
+            intact(`
             struct Foo {
                 name: String;
                 age: Int;
                 isActive: Bool;
             }
-        `));
+        `),
+        );
 
-        it('struct with field initialization', intact(`
+        it(
+            "struct with field initialization",
+            intact(`
             struct Foo {
                 name: String = "default";
                 count: Int = 0;
             }
-        `));
+        `),
+        );
 
-        it('format struct with extra spaces', test(`
+        it(
+            "format struct with extra spaces",
+            test(
+                `
             struct    Foo    {
                 name:    String    ;
                 age:    Int    ;
-            }`, `
+            }`,
+                `
             struct Foo {
                 name: String;
                 age: Int;
             }
-        `));
+        `,
+            ),
+        );
 
-        it('format struct with newlines', intact(`
+        it(
+            "format struct with newlines",
+            intact(`
             struct Foo {
                 name: String;
 
                 age: Int;
             }
-        `));
+        `),
+        );
 
-        it('struct without fields', intact(`
+        it(
+            "struct without fields",
+            intact(`
             struct Foo {}
-        `));
+        `),
+        );
 
-        it('struct without fields but with comment', intact(`
+        it(
+            "struct without fields but with comment",
+            intact(`
             struct Foo {
                 // empty on purpose
             }
-        `));
+        `),
+        );
 
-        it('struct without fields but with comments', intact(`
+        it(
+            "struct without fields but with comments",
+            intact(`
             struct Foo {
                 // empty on purpose
                 // don't remove
                 // this comment
             }
-        `));
+        `),
+        );
 
         // TODO
         // it('struct with trailing comment', intact(`
@@ -496,256 +689,387 @@ describe('should format', () => {
         //     }
         // `));
 
-        it('struct with inline comment for field', intact(`
+        it(
+            "struct with inline comment for field",
+            intact(`
             struct Foo {
                 foo: Int; // comment
             }
-        `));
+        `),
+        );
 
-        it('struct with inline comment for field and field after', intact(`
+        it(
+            "struct with inline comment for field and field after",
+            intact(`
             struct Foo {
                 foo: Int; // comment
                 field: String;
             }
-        `));
+        `),
+        );
 
-        it('struct with inline comment for field and field after with comment', intact(`
+        it(
+            "struct with inline comment for field and field after with comment",
+            intact(`
             struct Foo {
                 foo: Int; // comment
                 // comment here
                 field: String;
             }
-        `));
+        `),
+        );
 
-        it('empty message', intact(`
+        it(
+            "empty message",
+            intact(`
             message Foo {}
-        `));
+        `),
+        );
 
-        it('empty message with trailing comment', intact(`
+        it(
+            "empty message with trailing comment",
+            intact(`
             message Foo {} // comment
             message Bar {}
-        `));
+        `),
+        );
 
-        it('simple message', intact(`
+        it(
+            "simple message",
+            intact(`
             message Foo {
                 name: String;
             }
-        `));
+        `),
+        );
 
-        it('message with opcode', intact(`
+        it(
+            "message with opcode",
+            intact(`
             message(0x123) Foo {
                 name: String;
             }
-        `));
+        `),
+        );
 
-        it('message with complex opcode', intact(`
+        it(
+            "message with complex opcode",
+            intact(`
             message(1 + 2) Foo {
                 name: String;
             }
-        `));
+        `),
+        );
 
-        it('message with multiple fields', intact(`
+        it(
+            "message with multiple fields",
+            intact(`
             message Foo {
                 name: String;
                 age: Int;
                 isActive: Bool;
             }
-        `));
+        `),
+        );
 
-        it('message with field initialization', intact(`
+        it(
+            "message with field initialization",
+            intact(`
             message Foo {
                 name: String = "default";
                 count: Int = 0;
             }
-        `));
+        `),
+        );
 
-        it('format message with extra spaces', test(`
+        it(
+            "format message with extra spaces",
+            test(
+                `
             message    Foo    {
                 name:    String     ;
                 age:    Int    ;
             }
-        `, `
+        `,
+                `
             message Foo {
                 name: String;
                 age: Int;
             }
-        `));
+        `,
+            ),
+        );
 
-        it('format message with newlines', intact(`
+        it(
+            "format message with newlines",
+            intact(`
             message Foo {
                 name: String;
 
                 age: Int;
             }
-        `));
+        `),
+        );
     });
 
-    describe('types', () => {
-        it('simple type', intact(`
+    describe("types", () => {
+        it(
+            "simple type",
+            intact(`
             fun foo(param: String) {}
-        `));
+        `),
+        );
 
-        it('generic type', intact(`
+        it(
+            "generic type",
+            intact(`
             fun foo(param: map<Int, String>) {}
-        `));
+        `),
+        );
 
-        it('optional type', intact(`
+        it(
+            "optional type",
+            intact(`
             fun foo(param: String?) {}
-        `));
+        `),
+        );
 
-        it('type with as', intact(`
+        it(
+            "type with as",
+            intact(`
             fun foo(param: Int as int64) {}
-        `));
+        `),
+        );
 
-        it('complex type', intact(`
+        it(
+            "complex type",
+            intact(`
             fun foo(param: map<Int as int64, String>) {}
-        `));
+        `),
+        );
 
-        it('format type with extra spaces', test(`
+        it(
+            "format type with extra spaces",
+            test(
+                `
             fun foo(param:    String    ) {}
-        `, `
+        `,
+                `
             fun foo(param: String) {}
-        `));
+        `,
+            ),
+        );
 
-        it('format generic type with extra spaces', test(`
+        it(
+            "format generic type with extra spaces",
+            test(
+                `
             fun foo(param:    map    <    Int    ,    String    >    ) {}
-        `, `
+        `,
+                `
             fun foo(param: map<Int, String>) {}
-        `));
+        `,
+            ),
+        );
 
-        it('format optional type with extra spaces', test(`
+        it(
+            "format optional type with extra spaces",
+            test(
+                `
             fun foo(param:    String    ?    ) {}
-        `, `
+        `,
+                `
             fun foo(param: String?) {}
-        `));
+        `,
+            ),
+        );
 
-        it('format type with as and extra spaces', test(`
+        it(
+            "format type with as and extra spaces",
+            test(
+                `
             fun foo(param:    String    as    Int    ) {}
-        `, `
+        `,
+                `
             fun foo(param: String as Int) {}
-        `));
+        `,
+            ),
+        );
 
-        it('bounced type', intact(`
+        it(
+            "bounced type",
+            intact(`
             fun foo(f: bounced<Foo>) {}
-        `));
+        `),
+        );
     });
 
-    describe('destruct statement', () => {
-        it('simple destruct', intact(`
+    describe("destruct statement", () => {
+        it(
+            "simple destruct",
+            intact(`
             fun foo() {
                 let Foo { name } = value;
             }
-        `));
+        `),
+        );
 
-        it('destruct with field mapping', intact(`
+        it(
+            "destruct with field mapping",
+            intact(`
             fun foo() {
                 let Foo { name: myName } = value;
             }
-        `));
+        `),
+        );
 
-        it('destruct with multiple fields', intact(`
+        it(
+            "destruct with multiple fields",
+            intact(`
             fun foo() {
                 let Foo { name, age: myAge } = value;
             }
-        `));
+        `),
+        );
 
-        it('destruct with rest argument', intact(`
+        it(
+            "destruct with rest argument",
+            intact(`
             fun foo() {
                 let Foo { name, .. } = value;
             }
-        `));
+        `),
+        );
 
-        it('destruct with rest argument and fields', intact(`
+        it(
+            "destruct with rest argument and fields",
+            intact(`
             fun foo() {
                 let Foo { name, age, .. } = value;
             }
-        `));
+        `),
+        );
 
-        it('format destruct with extra spaces', test(`
+        it(
+            "format destruct with extra spaces",
+            test(
+                `
             fun foo() {
                 let    Foo    {    name    ,    age    }    =    value;
             }
-        `, `
+        `,
+                `
             fun foo() {
                 let Foo { name, age } = value;
             }
-        `));
+        `,
+            ),
+        );
     });
 
-    describe('repeat statement', () => {
-        it('simple repeat', intact(`
+    describe("repeat statement", () => {
+        it(
+            "simple repeat",
+            intact(`
             fun foo() {
                 repeat (condition) {
                     body;
                 }
             }
-        `));
+        `),
+        );
 
-        it('repeat with complex condition', intact(`
+        it(
+            "repeat with complex condition",
+            intact(`
             fun foo() {
                 repeat (a > 10 && b < 20) {
                     body;
                 }
             }
-        `));
+        `),
+        );
 
-        it('format repeat with extra spaces', test(`
+        it(
+            "format repeat with extra spaces",
+            test(
+                `
             fun foo() {
                 repeat    (    condition    )    {
                     body;
                 }
             }
-        `, `
+        `,
+                `
             fun foo() {
                 repeat (condition) {
                     body;
                 }
             }
-        `));
+        `,
+            ),
+        );
     });
 
-    describe('until statement', () => {
-        it('simple until', intact(`
+    describe("until statement", () => {
+        it(
+            "simple until",
+            intact(`
             fun foo() {
                 do {
                     body;
                 } until (condition);
             }
-        `));
+        `),
+        );
 
-        it('until with complex condition', intact(`
+        it(
+            "until with complex condition",
+            intact(`
             fun foo() {
                 do {
                     body;
                 } until (a);
             }
-        `));
+        `),
+        );
 
-        it('format until with extra spaces', test(`
+        it(
+            "format until with extra spaces",
+            test(
+                `
             fun foo() {
                 do    {
                     body;
                 }    until    (    true    )    ;
             }
-        `, `
+        `,
+                `
             fun foo() {
                 do {
                     body;
                 } until (true);
             }
-        `));
+        `,
+            ),
+        );
     });
 
-    describe('try statement', () => {
-        it('simple try', intact(`
+    describe("try statement", () => {
+        it(
+            "simple try",
+            intact(`
             fun foo() {
                 try {
                     body;
                 }
             }
-        `));
+        `),
+        );
 
-        it('try with catch', intact(`
+        it(
+            "try with catch",
+            intact(`
             fun foo() {
                 try {
                     body;
@@ -753,9 +1077,13 @@ describe('should format', () => {
                     handle;
                 }
             }
-        `));
+        `),
+        );
 
-        it('format try with extra spaces', test(`
+        it(
+            "format try with extra spaces",
+            test(
+                `
             fun foo() {
                 try    {
                     body;
@@ -763,7 +1091,8 @@ describe('should format', () => {
                     handle;
                 }
             }
-        `, `
+        `,
+                `
             fun foo() {
                 try {
                     body;
@@ -771,223 +1100,321 @@ describe('should format', () => {
                     handle;
                 }
             }
-        `));
+        `,
+            ),
+        );
     });
 
-    describe('forEach statement', () => {
-        it('simple forEach', intact(`
+    describe("forEach statement", () => {
+        it(
+            "simple forEach",
+            intact(`
             fun foo() {
                 foreach (key, value in items) {
                     body;
                 }
             }
-        `));
+        `),
+        );
 
-        it('format forEach with extra spaces', test(`
+        it(
+            "format forEach with extra spaces",
+            test(
+                `
             fun foo() {
                 foreach    (    key    ,    value    in    items    )    {
                     body;
                 }
             }
-        `, `
+        `,
+                `
             fun foo() {
                 foreach (key, value in items) {
                     body;
                 }
             }
-        `));
+        `,
+            ),
+        );
     });
 
-    describe('expressions', () => {
-        describe('literals', () => {
-            it('string literal', intact(`
+    describe("expressions", () => {
+        describe("literals", () => {
+            it(
+                "string literal",
+                intact(`
                 fun foo() {
                     let x = "hello";
                 }
-            `));
+            `),
+            );
 
-            it('integer literal', intact(`
+            it(
+                "integer literal",
+                intact(`
                 fun foo() {
                     let x = 123;
                 }
-            `));
+            `),
+            );
 
-            it('boolean literal', intact(`
+            it(
+                "boolean literal",
+                intact(`
                 fun foo() {
                     let x = true;
                 }
-            `));
+            `),
+            );
 
-            it('null literal', intact(`
+            it(
+                "null literal",
+                intact(`
                 fun foo() {
                     let x = null;
                 }
-            `));
+            `),
+            );
         });
 
-        describe('binary operations', () => {
-            it('arithmetic operations', intact(`
+        describe("binary operations", () => {
+            it(
+                "arithmetic operations",
+                intact(`
                 fun foo() {
                     let x = a + b * c / d % e;
                 }
-            `));
+            `),
+            );
 
-            it('comparison operations', intact(`
+            it(
+                "comparison operations",
+                intact(`
                 fun foo() {
                     let x = a < b <= c > d >= e;
                 }
-            `));
+            `),
+            );
 
-            it('equality operations', intact(`
+            it(
+                "equality operations",
+                intact(`
                 fun foo() {
                     let x = a == b != c;
                 }
-            `));
+            `),
+            );
 
-            it('bitwise operations', intact(`
+            it(
+                "bitwise operations",
+                intact(`
                 fun foo() {
                     let x = a & b ^ c | d << e >> f;
                 }
-            `));
+            `),
+            );
 
-            it('logical operations', intact(`
+            it(
+                "logical operations",
+                intact(`
                 fun foo() {
                     let x = a && b || c;
                 }
-            `));
+            `),
+            );
         });
 
-        describe('unary operations', () => {
-            it('simple unary', intact(`
+        describe("unary operations", () => {
+            it(
+                "simple unary",
+                intact(`
                 fun foo() {
                     let x = -a;
                 }
-            `));
+            `),
+            );
 
-            it('multiple unary', intact(`
+            it(
+                "multiple unary",
+                intact(`
                 fun foo() {
                     let x = !~-a;
                 }
-            `));
+            `),
+            );
         });
 
-        describe('conditional expressions', () => {
-            it('simple conditional', intact(`
+        describe("conditional expressions", () => {
+            it(
+                "simple conditional",
+                intact(`
                 fun foo() {
                     let x = a ? b : c;
                 }
-            `));
+            `),
+            );
 
-            it('nested conditional', intact(`
+            it(
+                "nested conditional",
+                intact(`
                 fun foo() {
                     let x = a
                         ? b
                         : c ? d : e;
                 }
-            `));
+            `),
+            );
 
-            it('nested conditional with parens', intact(`
+            it(
+                "nested conditional with parens",
+                intact(`
                 fun foo() {
                     let x = a
                         ? b
                         : (c ? d : e);
                 }
-            `));
+            `),
+            );
 
-            it('nexted conditional with parens 2', intact(`
+            it(
+                "nexted conditional with parens 2",
+                intact(`
                 fun foo() {
                     let x = a > 10
                         ? (b ? c : d)
                         : d;
                 }
-            `));
+            `),
+            );
 
-            it('nexted conditional with parens 2', intact(`
+            it(
+                "nexted conditional with parens 2",
+                intact(`
                 fun foo() {
                     let x = a > 10
                         ? ((((((b ? c : d))))))
                         : d;
                 }
-            `));
+            `),
+            );
 
-            it('complex conditional', intact(`
+            it(
+                "complex conditional",
+                intact(`
                 fun foo() {
                     let x = a > 10 ? b + c : d;
                 }
-            `));
+            `),
+            );
 
-            it('long conditional', intact(`
+            it(
+                "long conditional",
+                intact(`
                 fun foo() {
                     let targetJettonWallet: BasechainAddress = (ownerWorkchain == Workchain)
                         ? contractBasechainAddress(initOf JettonWallet(0, msg.ownerAddress, myAddress()))
                         : emptyBasechainAddress();
                 }
-            `));
+            `),
+            );
         });
 
-        describe('suffix operations', () => {
-            it('field access', intact(`
+        describe("suffix operations", () => {
+            it(
+                "field access",
+                intact(`
                 fun foo() {
                     let x = obj.field;
                 }
-            `));
+            `),
+            );
 
-            it('method call', intact(`
+            it(
+                "method call",
+                intact(`
                 fun foo() {
                     let x = obj.method();
                 }
-            `));
+            `),
+            );
 
-            it('chained operations', intact(`
+            it(
+                "chained operations",
+                intact(`
                 fun foo() {
                     let x = obj.method().field.anotherMethod();
                 }
-            `));
+            `),
+            );
 
-            it('unbox not null', intact(`
+            it(
+                "unbox not null",
+                intact(`
                 fun foo() {
                     let x = obj!!;
                 }
-            `));
+            `),
+            );
 
-            it('simple call chain', intact(`
+            it(
+                "simple call chain",
+                intact(`
                 fun foo() {
                     a();
                 }
-            `));
+            `),
+            );
 
-            it('simple method call chain', intact(`
+            it(
+                "simple method call chain",
+                intact(`
                 fun foo() {
                     f.a();
                 }
-            `));
+            `),
+            );
 
-            it('method call chain with field', intact(`
+            it(
+                "method call chain with field",
+                intact(`
                 fun foo() {
                     f.foo.a();
                 }
-            `));
+            `),
+            );
 
-             it('method call chain with calls', intact(`
+            it(
+                "method call chain with calls",
+                intact(`
                 fun foo() {
                     sender().asSlice();
                 }
-            `));
+            `),
+            );
 
-            it('method call chain with field and newline', test(`
+            it(
+                "method call chain with field and newline",
+                test(
+                    `
                 fun foo() {
                     f.foo
                     .a();
                 }
-            `, `
+            `,
+                    `
                 fun foo() {
                     f
                         .foo
                         .a();
                 }
-            `));
+            `,
+                ),
+            );
 
-            it('nested chain with field and newline', test(`
+            it(
+                "nested chain with field and newline",
+                test(
+                    `
                 fun foo() {
                     foo.bar;
                     foo().bar.baz(foo
@@ -995,7 +1422,8 @@ describe('should format', () => {
                     1, 2, 3))
                     .boo.beee.aaaa;
                 }
-            `, `
+            `,
+                    `
                 fun foo() {
                     foo.bar;
                     foo()
@@ -1009,61 +1437,87 @@ describe('should format', () => {
                         .beee
                         .aaaa;
                 }
-            `));
+            `,
+                ),
+            );
 
-            it('method chain with comment', intact(`
+            it(
+                "method chain with comment",
+                intact(`
                 fun foo() {
                     a
                         .bar() // comment 1
                         .foo(); /*comment*/
                 }
-            `));
+            `),
+            );
 
-            it('field chain with comment', intact(`
+            it(
+                "field chain with comment",
+                intact(`
                 fun foo() {
                     a.foo /*comment*/;
                 }
-            `));
+            `),
+            );
 
-            it('field chain with comment 2', intact(`
+            it(
+                "field chain with comment 2",
+                intact(`
                 fun foo() {
                     a.foo /*comment*/.bar /*comment 2*/;
                 }
-            `));
+            `),
+            );
 
-            it('field chain with comment 2', test(`
+            it(
+                "field chain with comment 2",
+                test(
+                    `
                 fun foo() {
                     a.foo // comment
                     .bar // comment 2
                     ;
                 }
-            `, `
+            `,
+                    `
                 fun foo() {
                     a
                         .foo // comment
                         .bar // comment 2;
                 }
-            `));
+            `,
+                ),
+            );
 
-            it('field chain in struct instance', test(`
+            it(
+                "field chain in struct instance",
+                test(
+                    `
                 fun foo() {
                     return Foo {
                         foo: bar.baz
                     }
                 }
-            `, `
+            `,
+                    `
                 fun foo() {
                     return Foo {
                         foo: bar.baz,
                     };
                 }
-            `));
+            `,
+                ),
+            );
 
-            it('chain with !!', intact(`
+            it(
+                "chain with !!",
+                intact(`
                 fun foo() {
                     a!!.foo;
                 }
-            `));
+            `),
+            );
 
             // TODO:
             // it('chain with !! with comment', intact(`
@@ -1074,54 +1528,80 @@ describe('should format', () => {
             // `));
         });
 
-        describe('special expressions', () => {
-            it('initOf', intact(`
+        describe("special expressions", () => {
+            it(
+                "initOf",
+                intact(`
                 fun foo() {
                     let x = initOf Foo(a, b);
                 }
-            `));
+            `),
+            );
 
-            it('codeOf', intact(`
+            it(
+                "codeOf",
+                intact(`
                 fun foo() {
                     let x = codeOf Foo;
                 }
-            `));
+            `),
+            );
 
-            it('struct instance', intact(`
+            it(
+                "struct instance",
+                intact(`
                 fun foo() {
                     let x = Foo { name: "test", value: 123 };
                 }
-            `));
+            `),
+            );
 
-            it('empty struct instance', intact(`
+            it(
+                "empty struct instance",
+                intact(`
                 fun foo() {
                     Foo {};
                 }
-            `));
+            `),
+            );
         });
 
-        describe('format expressions with extra spaces', () => {
-            it('binary operation', test(`
+        describe("format expressions with extra spaces", () => {
+            it(
+                "binary operation",
+                test(
+                    `
                 fun foo() {
                     let x =    a    +    b    ;
                 }
-            `, `
+            `,
+                    `
                 fun foo() {
                     let x = a + b;
                 }
-            `));
+            `,
+                ),
+            );
 
-            it('conditional', test(`
+            it(
+                "conditional",
+                test(
+                    `
                 fun foo() {
                     let x =    a    ?    b    :    c    ;
                 }
-            `, `
+            `,
+                    `
                 fun foo() {
                     let x = a ? b : c;
                 }
-            `));
+            `,
+                ),
+            );
 
-            it('nested conditional', intact(`
+            it(
+                "nested conditional",
+                intact(`
                 fun foo() {
                     return (a == 1)
                         ? 42
@@ -1129,117 +1609,171 @@ describe('should format', () => {
                             ? 43
                             : (a == 3) ? 44 : 45;
                 }
-            `));
+            `),
+            );
 
-            it('method call', test(`
+            it(
+                "method call",
+                test(
+                    `
                 fun foo() {
                     let x =    obj    .    method    (    )    ;
                 }
-            `, `
+            `,
+                    `
                 fun foo() {
                     let x = obj.method();
                 }
-            `));
+            `,
+                ),
+            );
 
-            it('!! with comment', intact(`
+            it(
+                "!! with comment",
+                intact(`
                 fun foo() {
                     a!! /* comment */;
                 }
-            `));
+            `),
+            );
 
-            it('struct instance with comment', intact(`
+            it(
+                "struct instance with comment",
+                intact(`
                 fun foo() {
                     Foo {} /* comment */;
                 }
-            `));
+            `),
+            );
 
-            it('codeOf with comment', intact(`
+            it(
+                "codeOf with comment",
+                intact(`
                 fun foo() {
                     codeOf Foo /* comment */;
                 }
-            `));
+            `),
+            );
 
-            it('initOf with comment', intact(`
+            it(
+                "initOf with comment",
+                intact(`
                 fun foo() {
                     initOf Foo() /* comment */;
                 }
-            `));
+            `),
+            );
 
-            it('conditional with comment', intact(`
+            it(
+                "conditional with comment",
+                intact(`
                 fun foo() {
                     10 ? 2 : 1 /* comment */;
                 }
-            `));
+            `),
+            );
 
-            it('conditional with comment', intact(`
+            it(
+                "conditional with comment",
+                intact(`
                 fun foo() {
                     10 ? 2 : (1 + 2) /* comment */;
                 }
-            `));
+            `),
+            );
 
-            it('literal with comment', intact(`
+            it(
+                "literal with comment",
+                intact(`
                 fun foo() {
                     10 /* comment */;
                 }
-            `));
+            `),
+            );
         });
     });
 
-    describe('imports', () => {
-        it('simple import', intact(`
+    describe("imports", () => {
+        it(
+            "simple import",
+            intact(`
             import "stdlib";
 
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('import with extra spaces', test(`
+        it(
+            "import with extra spaces",
+            test(
+                `
             import    "stdlib"    ;
             fun foo() {}
-        `, `
+        `,
+                `
             import "stdlib";
 
             fun foo() {}
-        `));
+        `,
+            ),
+        );
 
-        it('multiple imports', intact(`
-            import "stdlib";
-            import "stdlib2";
-
-            fun foo() {}
-        `));
-
-        it('multiple imports 2', test(`
-            import "stdlib";
-            import "stdlib2";
-
-
-
-            fun foo() {}
-        `, `
+        it(
+            "multiple imports",
+            intact(`
             import "stdlib";
             import "stdlib2";
 
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('multiple imports with empty line', intact(`
+        it(
+            "multiple imports 2",
+            test(
+                `
+            import "stdlib";
+            import "stdlib2";
+
+
+
+            fun foo() {}
+        `,
+                `
+            import "stdlib";
+            import "stdlib2";
+
+            fun foo() {}
+        `,
+            ),
+        );
+
+        it(
+            "multiple imports with empty line",
+            intact(`
             import "stdlib";
 
             import "stdlib2";
 
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('multiple imports with empty line 2', intact(`
+        it(
+            "multiple imports with empty line 2",
+            intact(`
             import "stdlib";
 
             import "stdlib2";
             import "stdlib3";
 
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('multiple imports with empty line 4', intact(`
+        it(
+            "multiple imports with empty line 4",
+            intact(`
             import "stdlib";
 
             import "stdlib2";
@@ -1247,9 +1781,12 @@ describe('should format', () => {
             import "stdlib3";
 
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('multiple imports with empty line 5', intact(`
+        it(
+            "multiple imports with empty line 5",
+            intact(`
             import "stdlib";
             import "stdlib2";
 
@@ -1260,185 +1797,269 @@ describe('should format', () => {
             import "stdlib6";
 
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('imports with complex paths', intact(`
+        it(
+            "imports with complex paths",
+            intact(`
             import "stdlib/contracts";
             import "custom/path/to/module";
 
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('imports with newlines', test(`
+        it(
+            "imports with newlines",
+            test(
+                `
             import
             "stdlib"
             ; fun foo() {}
-        `, `
+        `,
+                `
             import "stdlib";
 
             fun foo() {}
-        `));
+        `,
+            ),
+        );
 
-        it('single import with function with comment', intact(`
+        it(
+            "single import with function with comment",
+            intact(`
             import "";
 
             // comment here
             fun foo() {}
-        `));
+        `),
+        );
     });
 
-    describe('statement comments', () => {
-        it('inline comment after let statement', intact(`
+    describe("statement comments", () => {
+        it(
+            "inline comment after let statement",
+            intact(`
             fun foo() {
                 let a = 10; // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after destruct statement', intact(`
+        it(
+            "inline comment after destruct statement",
+            intact(`
             fun foo() {
                 let Foo { a } = 10; // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after a block statement', intact(`
+        it(
+            "inline comment after a block statement",
+            intact(`
             fun foo() {
                 {
                     10;
                 } // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after a block statement 2', intact(`
+        it(
+            "inline comment after a block statement 2",
+            intact(`
             fun foo() {
                 {
                     10;
                 }
                 // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after return statement', intact(`
+        it(
+            "inline comment after return statement",
+            intact(`
             fun foo() {
                 return 10; // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after return statement 2', intact(`
+        it(
+            "inline comment after return statement 2",
+            intact(`
             fun foo() {
                 return; // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after if statement', intact(`
+        it(
+            "inline comment after if statement",
+            intact(`
             fun foo() {
                 if (true) {} // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after if statement with else', intact(`
+        it(
+            "inline comment after if statement with else",
+            intact(`
             fun foo() {
                 if (true) {} else {} // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after if statement with else if', intact(`
+        it(
+            "inline comment after if statement with else if",
+            intact(`
             fun foo() {
                 if (true) {} else if (false) {} // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after if statement with else if and else', intact(`
+        it(
+            "inline comment after if statement with else if and else",
+            intact(`
             fun foo() {
                 if (true) {} else if (false) {} else {} // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after while statement', intact(`
+        it(
+            "inline comment after while statement",
+            intact(`
             fun foo() {
                 while (true) {} // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after repeat statement', intact(`
+        it(
+            "inline comment after repeat statement",
+            intact(`
             fun foo() {
                 repeat (10) {} // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after until statement', intact(`
+        it(
+            "inline comment after until statement",
+            intact(`
             fun foo() {
                 do {} until (true); // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after try statement', intact(`
+        it(
+            "inline comment after try statement",
+            intact(`
             fun foo() {
                 try {} // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after try statement with catch', intact(`
+        it(
+            "inline comment after try statement with catch",
+            intact(`
             fun foo() {
                 try {} catch (e) {} // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after foreach statement', intact(`
+        it(
+            "inline comment after foreach statement",
+            intact(`
             fun foo() {
                 foreach (a, b in foo) {} // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after expression statement', intact(`
+        it(
+            "inline comment after expression statement",
+            intact(`
             fun foo() {
                 10; // comment
             }
-        `));
+        `),
+        );
 
-        it('inline comment after assign statement', intact(`
+        it(
+            "inline comment after assign statement",
+            intact(`
             fun foo() {
                 a = 10; // comment
             }
-        `));
+        `),
+        );
 
-        it('top comment for first statement', intact(`
+        it(
+            "top comment for first statement",
+            intact(`
             fun foo() {
                 // top comment
                 let a = 10;
             }
-        `));
+        `),
+        );
 
-        it('top comment for second statement', intact(`
+        it(
+            "top comment for second statement",
+            intact(`
             fun foo() {
                 let a = 10;
                 // top comment
                 a = 200;
             }
-        `));
+        `),
+        );
 
-        it('top comment for second statement with newline between', intact(`
+        it(
+            "top comment for second statement with newline between",
+            intact(`
             fun foo() {
                 let a = 10;
 
                 // top comment
                 a = 200;
             }
-        `));
+        `),
+        );
 
-        it('block with single comment', intact(`
+        it(
+            "block with single comment",
+            intact(`
             fun foo() {
                 // top comment
             }
-        `));
+        `),
+        );
 
-        it('block with trailing comment', intact(`
+        it(
+            "block with trailing comment",
+            intact(`
             fun foo() {
                 let a = 100;
                 // top comment
             }
-        `));
+        `),
+        );
 
-        it('block with comments everywhere', intact(`
+        it(
+            "block with comments everywhere",
+            intact(`
             fun foo() {
                 // top comment
                 let a = 100; /* inline comment */// wtf bro
@@ -1458,9 +2079,12 @@ describe('should format', () => {
                 }
                 // trailing comment
             }
-        `));
+        `),
+        );
 
-        it('block with comments, statements and newlines', intact(`
+        it(
+            "block with comments, statements and newlines",
+            intact(`
             fun foo() {
                 // top comment
                 let a = 100;
@@ -1476,9 +2100,12 @@ describe('should format', () => {
                     b = 4000;
                 }
             }
-        `));
+        `),
+        );
 
-        it('block with different statements with top and inline comments', intact(`
+        it(
+            "block with different statements with top and inline comments",
+            intact(`
             fun foo() {
                 do {} until (true); // comment 1
 
@@ -1501,7 +2128,8 @@ describe('should format', () => {
                 // comment1
                 let Foo { a } = value(); // comment
             }
-        `));
+        `),
+        );
 
         // TODO
         // it('block with different statements with top and inline comments', intact(`
@@ -1513,33 +2141,47 @@ describe('should format', () => {
         //     }
         // `));
 
-        it('block with leading newlines', test(`
+        it(
+            "block with leading newlines",
+            test(
+                `
             fun foo() {
 
                 let a = 100;
                 a = 20;
             }
-        `, `
+        `,
+                `
             fun foo() {
                 let a = 100;
                 a = 20;
             }
-        `));
+        `,
+            ),
+        );
 
-        it('block with trailing newlines', test(`
+        it(
+            "block with trailing newlines",
+            test(
+                `
             fun foo() {
                 let a = 100;
                 a = 20;
 
             }
-        `, `
+        `,
+                `
             fun foo() {
                 let a = 100;
                 a = 20;
             }
-        `));
+        `,
+            ),
+        );
 
-        it('preserve newlines after if', intact(`
+        it(
+            "preserve newlines after if",
+            intact(`
             fun foo() {
                 if (true) {
                     return 200;
@@ -1547,9 +2189,12 @@ describe('should format', () => {
 
                 return 100;
             }
-        `));
+        `),
+        );
 
-        it('preserve newlines after if-else', intact(`
+        it(
+            "preserve newlines after if-else",
+            intact(`
             fun foo() {
                 if (true) {
                     return 200;
@@ -1559,9 +2204,12 @@ describe('should format', () => {
 
                 return 100;
             }
-        `));
+        `),
+        );
 
-        it('preserve newlines after if-else-if', intact(`
+        it(
+            "preserve newlines after if-else-if",
+            intact(`
             fun foo() {
                 if (true) {
                     return 200;
@@ -1571,9 +2219,12 @@ describe('should format', () => {
 
                 return 100;
             }
-        `));
+        `),
+        );
 
-        it('preserve newlines after if-else-if-else', intact(`
+        it(
+            "preserve newlines after if-else-if-else",
+            intact(`
             fun foo() {
                 if (true) {
                     return 200;
@@ -1585,42 +2236,60 @@ describe('should format', () => {
 
                 return 100;
             }
-        `));
+        `),
+        );
 
-        it('preserve newlines after while', intact(`
+        it(
+            "preserve newlines after while",
+            intact(`
             fun foo() {
                 while (true) {}
 
                 return 100;
             }
-        `));
+        `),
+        );
     });
 
-    describe('top level comments', () => {
-        it('comment for import', intact(`
+    describe("top level comments", () => {
+        it(
+            "comment for import",
+            intact(`
             // top comment
             import "";
-        `));
+        `),
+        );
 
-        it('inline comment for import', intact(`
+        it(
+            "inline comment for import",
+            intact(`
             import ""; // inline comment
             import "";
-        `));
+        `),
+        );
 
-        it('comments for import', intact(`
+        it(
+            "comments for import",
+            intact(`
             // top comment
             // top comment line 2
             import "";
-        `));
+        `),
+        );
 
-        it('comments for several imports', intact(`
+        it(
+            "comments for several imports",
+            intact(`
             // top comment
             import "";
             // top comment
             import "";
-        `));
+        `),
+        );
 
-        it('comments for several imports and declaration after', intact(`
+        it(
+            "comments for several imports and declaration after",
+            intact(`
             // top comment
             import "";
             // top comment
@@ -1628,9 +2297,12 @@ describe('should format', () => {
 
             // comment here
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('comments for several imports and declaration after 2', intact(`
+        it(
+            "comments for several imports and declaration after 2",
+            intact(`
             // top comment
             import "";
             // top comment
@@ -1638,27 +2310,39 @@ describe('should format', () => {
 
             // comment here
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('top level comment for function', intact(`
+        it(
+            "top level comment for function",
+            intact(`
             // top comment
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('top level comment for constant', intact(`
+        it(
+            "top level comment for constant",
+            intact(`
             // top comment
             const FOO: Int = 100;
-        `));
+        `),
+        );
 
-        it('top level comment for functions', intact(`
+        it(
+            "top level comment for functions",
+            intact(`
             // top comment
             fun foo() {}
 
             // other top comment
             fun bar() {}
-        `));
+        `),
+        );
 
-        it('top and inline level comment for functions', intact(`
+        it(
+            "top and inline level comment for functions",
+            intact(`
             // top comment
             fun foo() {} // inline comment
 
@@ -1666,74 +2350,104 @@ describe('should format', () => {
             fun bar() {} // inline comment 2
 
             fun baz() {}
-        `));
+        `),
+        );
 
-        it('floating comments between declarations', intact(`
+        it(
+            "floating comments between declarations",
+            intact(`
             fun foo() {}
 
             // floating comment
 
             fun bar() {}
-        `));
+        `),
+        );
 
-        it('top level comment for function with empty line between comments', intact(`
+        it(
+            "top level comment for function with empty line between comments",
+            intact(`
             // comment here
 
             // top comment
             fun foo() {}
-        `));
+        `),
+        );
     });
 
-    describe('top level declarations', () => {
-        it('empty struct', intact(`
+    describe("top level declarations", () => {
+        it(
+            "empty struct",
+            intact(`
             struct Foo {}
-        `));
+        `),
+        );
 
-        it('struct with field', intact(`
+        it(
+            "struct with field",
+            intact(`
             struct Foo {
                 value: Int;
             }
-        `));
+        `),
+        );
 
-        it('struct with field and inline comment', intact(`
+        it(
+            "struct with field and inline comment",
+            intact(`
             struct Foo {
                 value: Int; // inline comment
             }
-        `));
+        `),
+        );
 
-        it('struct with field, top and inline comment', intact(`
+        it(
+            "struct with field, top and inline comment",
+            intact(`
             struct Foo {
                 // top comment
                 value: Int; // inline comment
             }
-        `));
+        `),
+        );
 
-        it('struct with fields', intact(`
+        it(
+            "struct with fields",
+            intact(`
             struct Foo {
                 // top comment
                 value: Int; // inline comment
                 some: Int;
             }
-        `));
+        `),
+        );
 
-        it('struct with fields 2', intact(`
+        it(
+            "struct with fields 2",
+            intact(`
             struct Foo {
                 // top comment
                 value: Int; // inline comment
                 // top comment 2
                 some: Int;
             }
-        `));
+        `),
+        );
 
-        it('struct with fields 3', intact(`
+        it(
+            "struct with fields 3",
+            intact(`
             struct Foo {
                 // top comment
                 value: Int;
                 some: Int;
             }
-        `));
+        `),
+        );
 
-        it('struct with fields 2', intact(`
+        it(
+            "struct with fields 2",
+            intact(`
             struct Foo {
                 // top comment
                 value: Int; // inline comment
@@ -1741,121 +2455,170 @@ describe('should format', () => {
                 // top comment 2
                 some: Int;
             }
-        `));
+        `),
+        );
 
-
-
-        it('empty contract', intact(`
+        it(
+            "empty contract",
+            intact(`
             contract Foo {}
-        `));
+        `),
+        );
 
-        it('empty contract with trailing comment', intact(`
+        it(
+            "empty contract with trailing comment",
+            intact(`
             contract Foo {} // comment
             contract Bar {}
-        `));
+        `),
+        );
 
-        it('empty contract with comment', intact(`
+        it(
+            "empty contract with comment",
+            intact(`
             contract Foo {
                 // empty contract
             }
-        `));
+        `),
+        );
 
-        it('contract with parameters', intact(`
+        it(
+            "contract with parameters",
+            intact(`
             contract Foo(value: Int) {}
-        `));
+        `),
+        );
 
-        it('contract with parameters on new lines', intact(`
+        it(
+            "contract with parameters on new lines",
+            intact(`
             contract Foo(
                 value: Int,
             ) {}
-        `));
+        `),
+        );
 
-        it('contract with single field', intact(`
+        it(
+            "contract with single field",
+            intact(`
             contract Foo {
                 foo: Int;
             }
-        `));
+        `),
+        );
 
-        it('contract with single field and trailing newlines', test(`
+        it(
+            "contract with single field and trailing newlines",
+            test(
+                `
             contract Foo {
                 foo: Int;
 
 
             }
-        `, `
+        `,
+                `
             contract Foo {
                 foo: Int;
             }
-        `));
+        `,
+            ),
+        );
 
-        it('contract with two fields', intact(`
+        it(
+            "contract with two fields",
+            intact(`
             contract Foo {
                 foo: Int;
                 bar: Int;
             }
-        `));
+        `),
+        );
 
-        it('contract with two fields and newline between', intact(`
-            contract Foo {
-                foo: Int;
-
-                bar: Int;
-            }
-        `));
-
-        it('contract with two fields and several newlines between', test(`
-            contract Foo {
-                foo: Int;
-
-
-
-                bar: Int;
-            }
-        `, `
-            contract Foo {
-                foo: Int;
-
-                bar: Int;
-            }
-        `));
-
-        it('contract with two fields, several newlines between and trailing newline', test(`
-            contract Foo {
-                foo: Int;
-
-
-
-                bar: Int;
-
-
-            }
-        `, `
+        it(
+            "contract with two fields and newline between",
+            intact(`
             contract Foo {
                 foo: Int;
 
                 bar: Int;
             }
-        `));
+        `),
+        );
 
-        it('contract with two fields and constant', intact(`
+        it(
+            "contract with two fields and several newlines between",
+            test(
+                `
+            contract Foo {
+                foo: Int;
+
+
+
+                bar: Int;
+            }
+        `,
+                `
+            contract Foo {
+                foo: Int;
+
+                bar: Int;
+            }
+        `,
+            ),
+        );
+
+        it(
+            "contract with two fields, several newlines between and trailing newline",
+            test(
+                `
+            contract Foo {
+                foo: Int;
+
+
+
+                bar: Int;
+
+
+            }
+        `,
+                `
+            contract Foo {
+                foo: Int;
+
+                bar: Int;
+            }
+        `,
+            ),
+        );
+
+        it(
+            "contract with two fields and constant",
+            intact(`
             contract Foo {
                 foo: Int;
                 bar: Int;
 
                 const Foo: Int = 0;
             }
-        `));
+        `),
+        );
 
-        it('contract with two fields and function', intact(`
+        it(
+            "contract with two fields and function",
+            intact(`
             contract Foo {
                 foo: Int;
                 bar: Int;
 
                 fun foo() {}
             }
-        `));
+        `),
+        );
 
-        it('contract with receive with empty line after', intact(`
+        it(
+            "contract with receive with empty line after",
+            intact(`
             contract Test {
                 init() {}
 
@@ -1863,9 +2626,12 @@ describe('should format', () => {
 
                 bounced(src: Int) {}
             }
-        `));
+        `),
+        );
 
-        it('contract with fun with empty line after', intact(`
+        it(
+            "contract with fun with empty line after",
+            intact(`
             contract Test {
                 init() {}
 
@@ -1873,33 +2639,45 @@ describe('should format', () => {
 
                 bounced(src: Int) {}
             }
-        `));
+        `),
+        );
 
-        it('contract with init with empty line after', intact(`
+        it(
+            "contract with init with empty line after",
+            intact(`
             contract Test {
                 init() {}
 
                 bounced(src: Int) {}
             }
-        `));
+        `),
+        );
 
-        it('contract with const with empty line after', intact(`
+        it(
+            "contract with const with empty line after",
+            intact(`
             contract Test {
                 const FOO: Int = 100;
 
                 bounced(src: Int) {}
             }
-        `));
+        `),
+        );
 
-        it('contract with field with empty line after', intact(`
+        it(
+            "contract with field with empty line after",
+            intact(`
             contract Test {
                 foo: Int;
 
                 bounced(src: Int) {}
             }
-        `));
+        `),
+        );
 
-        it('contract with various comments', intact(`
+        it(
+            "contract with various comments",
+            intact(`
             contract Foo {
                 init() {} // inline comment
 
@@ -1912,18 +2690,24 @@ describe('should format', () => {
 
                 // trailing comment
             }
-        `));
+        `),
+        );
 
-        it('contract with abstract and virtual functions', intact(`
+        it(
+            "contract with abstract and virtual functions",
+            intact(`
             contract Foo {
                 abstract fun foo();
 
                 // comment
                 virtual inline fun bar() {}
             }
-        `));
+        `),
+        );
 
-        it('contract with subsequent fields', intact(`
+        it(
+            "contract with subsequent fields",
+            intact(`
             contract Foo {
                 a: Int;
                 a: Int;
@@ -1931,9 +2715,12 @@ describe('should format', () => {
                 a: Int;
                 a: Int;
             }
-        `));
+        `),
+        );
 
-        it('contract with subsequent constants', intact(`
+        it(
+            "contract with subsequent constants",
+            intact(`
             contract Foo {
                 const FOO: Int = 100;
                 const FOO: Int = 100;
@@ -1942,16 +2729,21 @@ describe('should format', () => {
                 const FOO: Int = 100;
                 const FOO: Int = 100;
             }
-        `));
+        `),
+        );
 
-        it('contract with subsequent fields and constants', test(`
+        it(
+            "contract with subsequent fields and constants",
+            test(
+                `
             contract Foo {
                 a: Int;
                 a: Int;
                 const FOO: Int = 100;
                 const FOO: Int = 100;
             }
-        `, `
+        `,
+                `
             contract Foo {
                 a: Int;
                 a: Int;
@@ -1959,15 +2751,21 @@ describe('should format', () => {
                 const FOO: Int = 100;
                 const FOO: Int = 100;
             }
-        `));
+        `,
+            ),
+        );
 
-        it('contract with subsequent functions', test(`
+        it(
+            "contract with subsequent functions",
+            test(
+                `
             contract Foo {
                 fun foo() {}
                 fun foo() {}
                 fun foo() {}
             }
-        `, `
+        `,
+                `
             contract Foo {
                 fun foo() {}
 
@@ -1975,15 +2773,21 @@ describe('should format', () => {
 
                 fun foo() {}
             }
-        `));
+        `,
+            ),
+        );
 
-        it('contract with subsequent receivers', test(`
+        it(
+            "contract with subsequent receivers",
+            test(
+                `
             contract Foo {
                 receive() {}
                 receive() {}
                 receive() {}
             }
-        `, `
+        `,
+                `
             contract Foo {
                 receive() {}
 
@@ -1991,88 +2795,137 @@ describe('should format', () => {
 
                 receive() {}
             }
-        `));
+        `,
+            ),
+        );
 
-        it('contract with string receiver', intact(`
+        it(
+            "contract with string receiver",
+            intact(`
             contract Foo {
                 receive("hello") {}
             }
-        `));
+        `),
+        );
 
-        it('trait with abstract constant', intact(`
+        it(
+            "trait with abstract constant",
+            intact(`
             trait T {
                 abstract const Foo: Int;
             }
-        `));
+        `),
+        );
 
-        it('preserve newlines for constants', intact(`
+        it(
+            "preserve newlines for constants",
+            intact(`
             const FOO: Int = 100;
             const BAR: Int = 100;
             const BAZ: Int = 100;
-        `));
+        `),
+        );
 
-        it('one line function', intact(`
+        it(
+            "one line function",
+            intact(`
             fun foo() { return 10 }
-        `));
+        `),
+        );
 
-        it('one line function with if', test(`
+        it(
+            "one line function with if",
+            test(
+                `
             fun foo() { if (true) {
                 return 10;
             } }
-        `, `
+        `,
+                `
             fun foo() {
                 if (true) {
                     return 10;
                 }
             }
-        `));
+        `,
+            ),
+        );
 
-        it('function with oneline body', intact(`
+        it(
+            "function with oneline body",
+            intact(`
             fun foo() {
                 if (true) { return }
             }
-        `));
+        `),
+        );
 
-        it('native function', intact(`
+        it(
+            "native function",
+            intact(`
             @name("some")
             native foo();
-        `));
+        `),
+        );
 
-        it('inline native function', intact(`
+        it(
+            "inline native function",
+            intact(`
             @name("some")
             inline native foo();
-        `));
+        `),
+        );
 
-        it('native function with return type', intact(`
+        it(
+            "native function with return type",
+            intact(`
             @name("some")
             native foo(): Int;
-        `));
+        `),
+        );
 
-        it('native function with trailing comment', intact(`
+        it(
+            "native function with trailing comment",
+            intact(`
             @name("some")
             native foo(); // trailing comment
 
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('native function with comment after attribute', intact(`
+        it(
+            "native function with comment after attribute",
+            intact(`
             @name("some") // func func
             native foo();
-        `));
+        `),
+        );
 
-        it('native function with block comment after attribute', test(`
+        it(
+            "native function with block comment after attribute",
+            test(
+                `
             @name("some") /* func func */ native foo();
-        `, `
+        `,
+                `
             @name("some") /* func func */
             native foo();
-        `));
+        `,
+            ),
+        );
 
-        it('asm function with trailing comment', intact(`
+        it(
+            "asm function with trailing comment",
+            intact(`
             asm fun foo() { ONE } // comment
             fun foo() {}
-        `));
+        `),
+        );
 
-        it('multiline asm function', intact(`
+        it(
+            "multiline asm function",
+            intact(`
             asm fun send(params: SendParameters) {
                 // Instructions are grouped, and the stack states they produce as a group are shown right after.
                 // In the end, our message Cell should have the following TL-B structure:
@@ -2166,58 +3019,92 @@ describe('should format', () => {
                 SWAP
                 SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
             }
-        `));
+        `),
+        );
 
-        it('inline asm function', intact(`
+        it(
+            "inline asm function",
+            intact(`
             asm inline fun foo() { ONE }
-        `));
+        `),
+        );
 
-        it('asm function with return type', intact(`
+        it(
+            "asm function with return type",
+            intact(`
             asm inline fun foo(): Int { ONE }
-        `));
+        `),
+        );
 
-        it('asm function with shuffle', intact(`
+        it(
+            "asm function with shuffle",
+            intact(`
             asm(a b) fun foo() { ONE }
-        `));
+        `),
+        );
 
-        it('asm function with shuffle 2', intact(`
+        it(
+            "asm function with shuffle 2",
+            intact(`
             asm(a b -> 1 0) fun foo() { ONE }
-        `));
+        `),
+        );
 
-        it('asm function with shuffle 3', intact(`
+        it(
+            "asm function with shuffle 3",
+            intact(`
             asm(-> 1 0) fun foo() { ONE }
-        `));
+        `),
+        );
 
-        it('function declaration with trailing comment', intact(`
+        it(
+            "function declaration with trailing comment",
+            intact(`
             fun foo(); // comment
             fun bar();
-        `));
+        `),
+        );
 
-        it('constant with trailing comments', intact(`
+        it(
+            "constant with trailing comments",
+            intact(`
             const FOO: Int = 100; // comment 1
             const BAR: Int = 100;
-        `));
+        `),
+        );
 
-        it('constant with comments before `;` and with trailing comments', intact(`
+        it(
+            "constant with comments before `;` and with trailing comments",
+            intact(`
             const FOO: Int = 100 /*comment 2*/; // comment 1
             const BAR: Int = 100;
-        `));
+        `),
+        );
 
-        it('constant without value with trailing comments', intact(`
+        it(
+            "constant without value with trailing comments",
+            intact(`
             const FOO: Int; // comment 1
             const BAR: Int = 100;
-        `));
+        `),
+        );
 
-        it('constant with value with trailing comments inside trait', intact(`
+        it(
+            "constant with value with trailing comments inside trait",
+            intact(`
             trait Foo {
                 const FOO: Int = 100; // comment 1
             }
-        `));
+        `),
+        );
 
-        it('constant without value with trailing comments inside trait', intact(`
+        it(
+            "constant without value with trailing comments inside trait",
+            intact(`
             trait Foo {
                 abstract const FOO: Int; // comment 1
             }
-        `));
-    })
+        `),
+        );
+    });
 });
