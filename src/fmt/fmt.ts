@@ -21,10 +21,10 @@ export function formatCode(code: string): FormattedCode | FormatCodeError {
         };
     }
     const formatted = format(root);
-    return checkFormating(root, code, formatted);
+    return checkFormatting(root, code, formatted);
 }
 
-function checkFormating(
+function checkFormatting(
     root: Cst,
     before: string,
     after: string,

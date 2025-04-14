@@ -132,22 +132,18 @@ export const textOfId = (node: Cst): string => {
     return "";
 };
 
-export const isLowerCase = (str: string): boolean => {
-    return str === str.toLowerCase() && str !== str.toUpperCase();
-};
-
 export const visualizeCST = (
     node: Cst,
     field: undefined | string,
     indent: string = "",
 ): string => {
-    const fieldRepr = field ? `${field}: ` : "";
+    const fieldRepresentation = field ? `${field}: ` : "";
     if (node.$ === "leaf") {
         const text = node.text.replace(/\n/g, String.raw`\n`).slice(0, 30);
-        return `${indent}${fieldRepr}"${text}${node.text.length > 30 ? "..." : ""}"`;
+        return `${indent}${fieldRepresentation}"${text}${node.text.length > 30 ? "..." : ""}"`;
     }
 
-    let result = `${indent}${fieldRepr}${node.type}`;
+    let result = `${indent}${fieldRepresentation}${node.type}`;
 
     if (node.children.length === 0) {
         return `${result} (empty)`;

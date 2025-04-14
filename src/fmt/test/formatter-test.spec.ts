@@ -58,13 +58,13 @@ describe("should format", () => {
         test(
             `
         fun some(// top comment
-        /* oopsy */param:Int/* hello there *//* wtf bro */,// comment here
+        /* oops */param:Int/* hello there *//* wtf bro */,// comment here
         // bottom comment
         /* oh no */loh: Bool);
     `,
             `
         fun some( // top comment
-            /* oopsy */param: Int /* hello there *//* wtf bro */, // comment here
+            /* oops */param: Int /* hello there *//* wtf bro */, // comment here
             // bottom comment
             /* oh no */ loh: Bool,
         );
@@ -1420,7 +1420,7 @@ describe("should format", () => {
                     foo().bar.baz(foo
                     .bar(
                     1, 2, 3))
-                    .boo.beee.aaaa;
+                    .boo.baz.bar;
                 }
             `,
                     `
@@ -1434,8 +1434,8 @@ describe("should format", () => {
                             3,
                         ))
                         .boo
-                        .beee
-                        .aaaa;
+                        .baz
+                        .bar;
                 }
             `,
                 ),
@@ -2852,7 +2852,7 @@ describe("should format", () => {
         );
 
         it(
-            "function with oneline body",
+            "function with single line body",
             intact(`
             fun foo() {
                 if (true) { return }
