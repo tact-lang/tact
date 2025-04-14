@@ -31,7 +31,7 @@ export const simplifyCst = (node: Cst): Cst => {
 
     const firstChild = node.children.at(0);
 
-    if (node.type === "IntegerLiteral" && typeof firstChild !== "undefined") {
+    if (node.type === "IntegerLiteral" && node.children.length === 1 && typeof firstChild !== "undefined") {
         const child = simplifyCst(firstChild)
         if (child.$ !== "node") return child
         const value = child.children.at(0)
@@ -52,7 +52,7 @@ export const simplifyCst = (node: Cst): Cst => {
             node.type === "Unary" ||
             node.type === "Suffix" ||
             node.type === "Conditional") &&
-        typeof firstChild !== "undefined"
+        node.children.length === 1 && firstChild
     ) {
         const result = simplifyCst(firstChild)
         if (result.$ === "leaf") return result
