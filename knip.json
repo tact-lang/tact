@@ -23,7 +23,8 @@
     "src/test/utils/with-log.ts",
     "src/utils/array.ts",
     ".github/workflows/tact*.yml",
-    ".github/actions/**/*.yml"
+    ".github/actions/**/*.yml",
+    "src/fmt/cst/cst-parser.ts"
   ],
   "ignoreDependencies": ["@tact-lang/ton-abi", "husky", "tsconfig-paths"]
 }
