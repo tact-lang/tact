@@ -203,9 +203,9 @@ contract ComputePhaseErrorsTester {
 
     /// Exit code 11
     receive("11") {
-        // Unlike nativeSendMessage which uses SENDRAWMSG, this one uses SENDMSG,
+        // Unlike sendRawMessage which uses SENDRAWMSG, this one uses SENDMSG,
         // and therefore fails in Compute phase when the message is ill-formed
-        nativeSendMessageReturnForwardFee(emptyCell(), 0);
+        let _ = sendMessageReturnForwardFee(emptyCell(), 0);
     }
 
     /// Exit code 13 (-14, to be precise)

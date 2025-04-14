@@ -119,22 +119,42 @@ contract Example {
 fun ascii(str: String): Int;
 ```
 
-A compile-time function that concatenates the hexadecimal values of the characters in `str` into one value and embeds the resulting [`Int{:tact}`][int] into the contract. This function works only for strings occupying up to $32$ bytes, allowing the representation of up to $32$ [ASCII codes](https://en.wikipedia.org/wiki/ASCII#Control_code_chart) or up to $8$ [Unicode code points](https://en.wikipedia.org/wiki/List_of_Unicode_characters) of $4$ bytes each.
+A compile-time function that concatenates the numerical values of the characters in the non-empty string `str` into one value of the [`Int{:tact}`][int] type. This function works only for strings occupying up to 32 bytes, allowing the representation of up to 32 [ASCII codes](https://en.wikipedia.org/wiki/ASCII#Control_code_chart) or up to 8 [Unicode code points](https://en.wikipedia.org/wiki/List_of_Unicode_characters) of 4 bytes each, so the resulting non-negative integer fits into 256 bits.
+
+To understand how the `ascii` function works, consider the following pseudo-Tact example involving hexadecimal escape sequences:
+
+```tact
+ascii("NstK") == ascii("\x4e\x73\x74\x4b") == 0x4e73744b == 1316189259
+```
+
+Each ASCII character in the string `"NstK"` is represented by its hexadecimal escape sequence, which is then converted to the corresponding integer value by concatenating all the bytes.
+
+The `ascii` builtin assumes the string is encoded in UTF-8. For example, the `⚡` character's UTF-8 encoding is `0xE2 0x9A 0xA1`, so `0xE2` will be the most significant byte.
+
+The builtin can be used to create human-readable encodings for some actions or operations.
 
 Usage example:
 
 ```tact
+message(42) Action {
+  action: Int as uint256;
+}
+
 contract Example {
-    // Persistent state variables
-    a: Int = ascii("a");            // 97 or 0x61, one byte in total
-    zap: Int = ascii("⚡");          // 14850721 or 0xE29AA1, 3 bytes in total
-    doubleZap: Int = ascii("⚡⚡");   // 249153768823457 or 0xE29AA1E29AA1, 6 bytes in total
+    receive(msg: Action) {
+        if (msg.action == ascii("start")) {
+            // Do something
+        } else if (msg.action == ascii("stop")) {
+            // Do something else
+        }
+    }
 }
 ```
 
 :::note
 
-  The `ascii("...String contents..."){:tact}` in Tact is equivalent to `"...String contents..."u{:func}` in FunC.
+  The `ascii("...String contents..."){:tact}` in Tact is almost equivalent to `"...String contents..."u{:func}` in FunC.
+  But FunC does not support Unicode code point escapes or hexadecimal escape sequences.
 
 :::
 

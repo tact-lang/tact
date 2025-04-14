@@ -3,7 +3,7 @@ import { makeCodegen, runCommand } from "@/cli/test-util.build";
 import { join, normalize, dirname } from "path";
 
 // disable tests on windows
-const testWin =
+const testExceptWindows =
     process.platform === "win32" && process.env.CI ? test.skip : test;
 
 const tact = (args: string) => {
@@ -17,13 +17,13 @@ const tact = (args: string) => {
 const codegen = makeCodegen(join(__dirname, "output"));
 
 describe("tact --version", () => {
-    testWin("Exits with correct code", async () => {
+    testExceptWindows("Exits with correct code", async () => {
         const result = await tact("--version");
 
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
 
-    testWin("Returns correct stdout", async () => {
+    testExceptWindows("Returns correct stdout", async () => {
         const result = await tact("--version");
 
         expect(result).toHaveProperty(
@@ -55,7 +55,7 @@ const badContracts = [
 ] as const;
 
 describe("tact foo.tact", () => {
-    testWin.each(badContracts)(
+    testExceptWindows.each(badContracts)(
         "Compilation of broken contract doesn't contain stacktrace (%s)",
         async (name, code) => {
             const result = await tact(
@@ -94,14 +94,17 @@ contract Test {
 `;
 
 describe("tact foo.tact --...", () => {
-    testWin("Check single-contract compilation without flags", async () => {
-        const path = await codegen.contract(`single`, goodContract);
-        const result = await tact(path);
+    testExceptWindows(
+        "Check single-contract compilation without flags",
+        async () => {
+            const path = await codegen.contract(`single`, goodContract);
+            const result = await tact(path);
 
-        expect(result).toMatchObject({ kind: "exited", code: 0 });
-    });
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+        },
+    );
 
-    testWin(
+    testExceptWindows(
         "Check single-contract compilation with custom output directory",
         async () => {
             const path = await codegen.contract(`single-output`, goodContract);
@@ -115,21 +118,27 @@ describe("tact foo.tact --...", () => {
         },
     );
 
-    testWin("Check single-contract compilation with --check", async () => {
-        const path = await codegen.contract(`single-check`, goodContract);
-        const result = await tact(`--check ${path}`);
+    testExceptWindows(
+        "Check single-contract compilation with --check",
+        async () => {
+            const path = await codegen.contract(`single-check`, goodContract);
+            const result = await tact(`--check ${path}`);
 
-        expect(result).toMatchObject({ kind: "exited", code: 0 });
-    });
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+        },
+    );
 
-    testWin("Check single-contract compilation with --func", async () => {
-        const path = await codegen.contract(`single-func`, goodContract);
-        const result = await tact(`--func ${path}`);
+    testExceptWindows(
+        "Check single-contract compilation with --func",
+        async () => {
+            const path = await codegen.contract(`single-func`, goodContract);
+            const result = await tact(`--func ${path}`);
 
-        expect(result).toMatchObject({ kind: "exited", code: 0 });
-    });
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+        },
+    );
 
-    testWin(
+    testExceptWindows(
         "Check single-contract compilation with --with-decompilation",
         async () => {
             const path = await codegen.contract(
@@ -144,7 +153,7 @@ describe("tact foo.tact --...", () => {
 });
 
 describe("tact --config config.json", () => {
-    testWin("Complete results", async () => {
+    testExceptWindows("Complete results", async () => {
         const r = await codegen.config("complete", goodContract, {
             options: { external: true },
             mode: "full",
@@ -157,7 +166,7 @@ describe("tact --config config.json", () => {
         await expect(statPromise).resolves.not.toThrow();
     });
 
-    testWin("With decompiled binary", async () => {
+    testExceptWindows("With decompiled binary", async () => {
         const r = await codegen.config("decompile", goodContract, {
             options: { external: true },
             mode: "fullWithDecompilation",
@@ -170,7 +179,7 @@ describe("tact --config config.json", () => {
         await expect(statPromise).resolves.toMatchObject({});
     });
 
-    testWin("Mode passed as parameter takes priority", async () => {
+    testExceptWindows("Mode passed as parameter takes priority", async () => {
         const r = await codegen.config("priority", goodContract, {
             options: { external: true },
             mode: "full",
@@ -185,7 +194,7 @@ describe("tact --config config.json", () => {
 });
 
 describe("tact -q foo.tact", () => {
-    testWin("-q shows errors ", async () => {
+    testExceptWindows("-q shows errors ", async () => {
         const path = await codegen.contract(
             `quiet`,
             `contract Test { x: Int = A }`,
@@ -201,28 +210,37 @@ describe("tact -q foo.tact", () => {
 });
 
 describe("Wrong flags", () => {
-    testWin("--func --check are mutually exclusive ", async () => {
+    testExceptWindows("--func --check are mutually exclusive ", async () => {
         const path = await codegen.contract(`func-check`, goodContract);
         const result = await tact(`${path} --func --check`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
-    testWin("--with-decompilation --check are mutually exclusive", async () => {
-        const path = await codegen.contract(`decompile-check`, goodContract);
-        const result = await tact(`${path} --with-decompilation --check`);
+    testExceptWindows(
+        "--with-decompilation --check are mutually exclusive",
+        async () => {
+            const path = await codegen.contract(
+                `decompile-check`,
+                goodContract,
+            );
+            const result = await tact(`${path} --with-decompilation --check`);
 
-        expect(result).toMatchObject({ kind: "exited", code: 30 });
-    });
+            expect(result).toMatchObject({ kind: "exited", code: 30 });
+        },
+    );
 
-    testWin("--func --with-decompilation are mutually exclusive", async () => {
-        const path = await codegen.contract(`func-decompile`, goodContract);
-        const result = await tact(`${path} --func --with-decompilation`);
+    testExceptWindows(
+        "--func --with-decompilation are mutually exclusive",
+        async () => {
+            const path = await codegen.contract(`func-decompile`, goodContract);
+            const result = await tact(`${path} --func --with-decompilation`);
 
-        expect(result).toMatchObject({ kind: "exited", code: 30 });
-    });
+            expect(result).toMatchObject({ kind: "exited", code: 30 });
+        },
+    );
 
-    testWin("Unknown flag throws error", async () => {
+    testExceptWindows("Unknown flag throws error", async () => {
         const path = await codegen.contract(`func-decompile`, goodContract);
         const result = await tact(`${path} --unknownOption`);
 
@@ -231,7 +249,7 @@ describe("Wrong flags", () => {
 });
 
 describe("Compilation failures", () => {
-    testWin("Exits with failure on wrong contracts", async () => {
+    testExceptWindows("Exits with failure on wrong contracts", async () => {
         const badContract = `
         message(1) Msg1 {}
         message(1) Msg2 {}
@@ -251,11 +269,59 @@ describe("Compilation failures", () => {
 });
 
 describe("tact --eval", () => {
-    testWin("Evaluate expressions", async () => {
+    testExceptWindows("Evaluate expression", async () => {
         const result = await tact(
             '-e "(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2"',
         );
 
         expect(result).toHaveProperty("stdout", expect.stringMatching("42\n"));
     });
+
+    testExceptWindows(
+        "Numerical literals get printed in decimal format: hex",
+        async () => {
+            const result = await tact('-e "0x2A"');
+
+            expect(result).toHaveProperty(
+                "stdout",
+                expect.stringMatching("42\n"),
+            );
+        },
+    );
+
+    testExceptWindows(
+        "Numerical literals get printed in decimal format: dec",
+        async () => {
+            const result = await tact('-e "42"');
+
+            expect(result).toHaveProperty(
+                "stdout",
+                expect.stringMatching("42\n"),
+            );
+        },
+    );
+
+    testExceptWindows(
+        "Numerical literals get printed in decimal format: oct",
+        async () => {
+            const result = await tact('-e "0o52"');
+
+            expect(result).toHaveProperty(
+                "stdout",
+                expect.stringMatching("42\n"),
+            );
+        },
+    );
+
+    testExceptWindows(
+        "Numerical literals get printed in decimal format: bin",
+        async () => {
+            const result = await tact('-e "0b101010"');
+
+            expect(result).toHaveProperty(
+                "stdout",
+                expect.stringMatching("42\n"),
+            );
+        },
+    );
 });

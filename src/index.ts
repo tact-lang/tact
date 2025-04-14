@@ -32,7 +32,7 @@ export * from "@/pipeline/precompile";
 export * from "@/types/resolveDescriptors";
 export * from "@/types/types";
 
-export { default as stdLibFiles } from "@/stdlib/stdlib";
+export { files as stdLibFiles } from "@/stdlib/stdlib";
 export * from "@/ast/ast-helpers";
 export * from "@/ast/util";
 export * from "@/imports/source";

@@ -8,7 +8,7 @@ message(0x706c7567) PluginRequestFunds {
     extra: Cell?;
 }
 
-message ExternalRequest {
+struct ExtRequest {
     bundle: SignedBundle;
     walletId: Int as int32;
     validUntil: Int as uint32;
@@ -43,6 +43,20 @@ struct ContractState {
     extensions: map<Address, Bool>;
 }
 
+// Exit codes
+const LowBalance: Int = 80;
+const Expired: Int = 36;
+const SeqnoMismatch: Int = 33;
+const WalletIdMismatch: Int = 34;
+const SignatureMismatch: Int = 35;
+const PluginWasNotDeleted: Int = 39;
+
+// Op
+const PluginTakeFunds: Int = 0x706c7567 | 0x80000000;
+const PluginRemove: Int = 0x64737472 | 0x80000000;
+const AddPluginAction: Int = 0x6e6f7465;
+const RemovePluginAction: Int = 0x64737472;
+
 contract WalletV4(
     state: ContractState,
 ) {
@@ -53,15 +67,15 @@ contract WalletV4(
             return;
         }
 
-        throwUnless(80, myBalance() - context().value >= msg.amount);
+        throwUnless(LowBalance, myBalance() - context().value >= msg.amount);
 
-        // NOTE: Here and later we use RawMsg with nativeSendMessage because
+        // NOTE: Here and later we use RawMsg with sendRawMessage because
         // in v4 wallet implementation message bodies are stored as slices in the same cell
         // instead of separate cell with ref. Our send built-ins (message, send) doesn't support such serialization
-        nativeSendMessage(
+        sendRawMessage(
             RawMsg {
                 queryId: msg.queryId,
-                op: 0x706c7567 | 0x80000000,
+                op: PluginTakeFunds,
                 extra: msg.extra,
                 amount: msg.amount,
                 receiver: addr,
@@ -77,13 +91,13 @@ contract WalletV4(
             return;
         }
 
-        self.state.extensions.del(addr);
+        let _ = self.state.extensions.del(addr);
 
         if (context().bounceable) {
-            nativeSendMessage(
+            sendRawMessage(
                 RawMsg {
                     queryId: msg.queryId,
-                    op: 0x64737472 | 0x80000000,
+                    op: PluginRemove,
                     extra: null,
                     amount: 0,
                     receiver: addr,
@@ -93,11 +107,12 @@ contract WalletV4(
         }
     }
 
-    external(msg: ExternalRequest) {
-        throwIf(36, msg.validUntil < now());
-        throwUnless(33, msg.seqno == self.state.seqno);
-        throwUnless(34, msg.walletId == self.state.walletId);
-        throwUnless(35, msg.bundle.verifySignature(self.state.publicKey));
+    external(msgSlice: Slice) {
+        let msg = ExtRequest.fromSlice(msgSlice);
+        throwIf(Expired, msg.validUntil < now());
+        throwUnless(SeqnoMismatch, msg.seqno == self.state.seqno);
+        throwUnless(WalletIdMismatch, msg.walletId == self.state.walletId);
+        throwUnless(SignatureMismatch, msg.bundle.verifySignature(self.state.publicKey));
 
         acceptMessage();
         self.state.seqno += 1;
@@ -110,12 +125,12 @@ contract WalletV4(
             /*
             foreach (ref in payload.refs) {
                 let mode = payload.loadUint(8);
-                nativeSendMessage(ref, mode);
+                sendRawMessage(ref, mode);
             }
             */
             while (payload.refs() != 0) {
                 let mode = payload.loadUint(8);
-                nativeSendMessage(payload.loadRef(), mode);
+                sendRawMessage(payload.loadRef(), mode);
             }
             return;
         }
@@ -130,7 +145,7 @@ contract WalletV4(
 
             let addr = newAddress(wc, stateInit.hash());
             // cant use deploy here because of only basechain support
-            nativeSendMessage(
+            sendRawMessage(
                 RawMsgWithDeploy {
                     stateInit,
                     body,
@@ -144,16 +159,20 @@ contract WalletV4(
         } else if (msg.op == 2) {
             // add plugin
             let payload = msg.payload;
-            let addr = payload.loadAddress();
+
+            let wc = payload.loadUint(8);
+            let addrHash = payload.loadUint(256);
+            let addr = newAddress(wc, addrHash);
+
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
 
             self.state.extensions.set(addr, true);
 
-            nativeSendMessage(
+            sendRawMessage(
                 RawMsg {
                     queryId,
-                    op: 0x6e6f7465,
+                    op: AddPluginAction,
                     extra: null,
                     amount,
                     receiver: addr,
@@ -163,16 +182,20 @@ contract WalletV4(
         } else if (msg.op == 3) {
             // remove plugin
             let payload = msg.payload;
-            let addr = payload.loadAddress();
+
+            let wc = payload.loadUint(8);
+            let addrHash = payload.loadUint(256);
+            let addr = newAddress(wc, addrHash);
+
             let amount = payload.loadCoins();
             let queryId = payload.loadUint(64);
 
-            throwUnless(39, self.state.extensions.del(addr));
+            throwUnless(PluginWasNotDeleted, self.state.extensions.del(addr));
 
-            nativeSendMessage(
+            sendRawMessage(
                 RawMsg {
                     queryId,
-                    op: 0x64737472,
+                    op: RemovePluginAction,
                     extra: null,
                     amount: amount,
                     receiver: addr,
@@ -203,6 +226,7 @@ contract WalletV4(
     }
 
     // this is different from FunC version, awaiting unbounded tuple impl in Tact
+    // also we need to return it as map of <wc, hash> instead of Address (skip first 4 bytes)
     get fun get_plugin_list(): map<Address, Bool> {
         return self.state.extensions;
     }

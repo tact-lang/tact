@@ -128,6 +128,17 @@ We use [Jest](https://jestjs.io) as our testing framework. Jest supports a combi
 
 Some tests are put in the same folder as the implementation and can be located in the `*.spec.ts` files; other tests are grouped into categories in the [src/test](../src/test) folder. The [project map section](#project-map) has more information on tests relevant to each compiler component.
 
+To rebuild the compiler and run end-to-end tests, the usual workflow is as follows:
+
+```shell
+# build the compiler, but skip typechecking of the test files
+yarn build:fast
+# build the test contracts and benchmarks
+yarn gen:contracts:fast
+# run all tests except the slow property-based map tests
+yarn test:fast
+```
+
 ### How to update test snapshots
 
 Updating all the test snapshots:

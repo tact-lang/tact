@@ -1,4 +1,4 @@
-message EchoMessage {}
+message(0x7ba20dc1) EchoMessage {}
 
 contract Echo {
     receive(msg: EchoMessage) {

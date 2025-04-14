@@ -40,12 +40,6 @@ runs:
       run: |
         yarn coverage
 
-    - name: Show an example .pkg file on Windows
-      shell: pwsh
-      if: runner.os == 'Windows'
-      run: |
-        type examples\output\echo_Echo.pkg
-
     - name: Link Tact yarn package
       shell: bash
       run: |
