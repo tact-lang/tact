@@ -11,14 +11,14 @@ import type {
     Forward,
     DoubleForward,
     MessageAndForward,
-    // Reserving,
     StateInit,
 } from "./output/empty_Empty";
 
 import { Empty } from "./output/empty_Empty";
 
 import "@ton/test-utils";
-describe("suit case", () => {
+
+describe("baseTrait without changing self.reservedAmount", () => {
     let blockchain: Blockchain;
 
     let balanceBefore: bigint;
@@ -30,9 +30,6 @@ describe("suit case", () => {
     const lowSendValue = toNano("0.5");
 
     const SendPayFwdFeesSeparately = 1n;
-
-    // const ReserveExact = 0n;
-    // const ReserveAddOriginalBalance = 4n;
 
     const initCode: Cell = beginCell().endCell();
     const initData: Cell = beginCell().endCell();
@@ -67,7 +64,7 @@ describe("suit case", () => {
 
         const deployResult = await contract.send(
             treasure.getSender(),
-            { value: deployValue },
+            {value: deployValue},
             null,
         );
 
@@ -111,7 +108,7 @@ describe("suit case", () => {
     it("should send Reply message with argument of reply", async () => {
         const result = await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             replyMessage,
         );
 
@@ -126,7 +123,7 @@ describe("suit case", () => {
     it("should not increase contract balance after Reply message", async () => {
         await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             replyMessage,
         );
         const balance: bigint = (await blockchain.getContract(contract.address))
@@ -138,7 +135,7 @@ describe("suit case", () => {
     it("should send Notify message with argument of notify", async () => {
         const result = await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             notifyMessage,
         );
 
@@ -153,7 +150,7 @@ describe("suit case", () => {
     it("should not increase contract balance after Notify message", async () => {
         await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             notifyMessage,
         );
 
@@ -193,7 +190,7 @@ describe("suit case", () => {
     it("should send Forward message with forward arguments", async () => {
         const result = await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             forwardMessage,
         );
 
@@ -203,7 +200,7 @@ describe("suit case", () => {
     it("should not increase contract balance after Forward message", async () => {
         await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             forwardMessage,
         );
 
@@ -218,7 +215,7 @@ describe("suit case", () => {
 
         const result = await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             forwardMessage,
         );
 
@@ -230,7 +227,7 @@ describe("suit case", () => {
 
         await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             forwardMessage,
         );
 
@@ -245,7 +242,7 @@ describe("suit case", () => {
 
         const result = await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             forwardMessage,
         );
 
@@ -257,7 +254,7 @@ describe("suit case", () => {
 
         await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             forwardMessage,
         );
 
@@ -273,7 +270,7 @@ describe("suit case", () => {
 
         const result = await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             forwardMessage,
         );
 
@@ -286,7 +283,7 @@ describe("suit case", () => {
 
         await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             forwardMessage,
         );
 
@@ -299,7 +296,7 @@ describe("suit case", () => {
     it("Should send only one message, even if Forward is called twice", async () => {
         const result = await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             doubleForwardMessage,
         );
 
@@ -313,7 +310,7 @@ describe("suit case", () => {
     it("Should not increase balance when Forward is called twice", async () => {
         await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             doubleForwardMessage,
         );
 
@@ -326,17 +323,11 @@ describe("suit case", () => {
     it("Should send 2 messages: first with mode SendPayFwdFeesSeparately, second is forward", async () => {
         const result = await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
+            {value: lowSendValue},
             messageAndForwardMessage,
         );
 
         checkForwardMessage(messageAndForwardMessage, result.transactions);
-
-        const balance: bigint = (await blockchain.getContract(contract.address))
-            .balance;
-
-        //  SendRemainingValue mode only calculate gas correct when it only 1 message
-        expect(balance).toBeLessThan(balanceBefore);
 
         // treasure -> zeroContract
         // zeroContract -> treasure SendPayFwdFeesSeparately mode
@@ -344,127 +335,17 @@ describe("suit case", () => {
         expect(result.events.length).toEqual(3);
     });
 
-    // it("MessageAndForward/ contract / test message sending with forward", async () => {
-    //     const messageAndForwardMessage: MessageAndForward = {
-    //         $$type: "MessageAndForward",
-    //         to: treasure.address,
-    //         body: defaultBody,
-    //         bounce: false,
-    //         init: null,
-    //         mode: SendPayFwdFeesSeparately,
-    //         value: 1n,
-    //     };
-    //
-    //     // Send a MessageAndForward message to the contract
-    //     // and verify that balance equals reservedAmount amount
-    //     const result = await contract.send(
-    //         treasure.getSender(),
-    //         { value: highSendValue },
-    //         messageAndForwardMessage,
-    //     );
-    //
-    //     expect(result.transactions).toHaveTransaction({
-    //         from: contract.address,
-    //         to: treasure.address,
-    //         inMessageBounceable: false,
-    //     });
-    //
-    //     const balance: bigint = (await blockchain.getContract(contract.address))
-    //         .balance;
-    //
-    //     expect(balance).toEqual(reservedAmount);
-    //
-    //     // treasure -> contract
-    //     // contract -> treasure SendPayFwdFeesSeparately mode
-    //     // contract -> treasure   SendRemainingBalance mode with reserve
-    //     expect(result.events.length).toEqual(3);
-    // });
+    it("Should decrease the balance when two messages are sent: the first with SendPayFwdFeesSeparately mode, and the second is a forward message.", async () => {
+        await contract.send(
+            treasure.getSender(),
+            {value: lowSendValue},
+            messageAndForwardMessage,
+        );
 
-    // it("MessageAndForward/ contract / with mode SendRemainingValue", async () => {
-    //     const messageAndForwardMessage: MessageAndForward = {
-    //         $$type: "MessageAndForward",
-    //         to: treasure.address,
-    //         body: defaultBody,
-    //         bounce: false,
-    //         init: null,
-    //         mode: SendRemainingValue,
-    //         value: 0n,
-    //     };
-    //
-    //     // Send a MessageAndForward message with mode SendRemainingValue
-    //     // and verify that an error occurs due to insufficient funds
-    //     const result = await contract.send(
-    //         treasure.getSender(),
-    //         { value: highSendValue },
-    //         messageAndForwardMessage,
-    //     );
-    //
-    //     expect(result.transactions).toHaveTransaction({
-    //         from: treasure.address,
-    //         to: contract.address,
-    //         actionResultCode: NotEnoughToncoin,
-    //     });
-    // });
-    //
-    // it("Reserving/ zeroContract test", async () => {
-    //     const reservedMessage: Reserving = {
-    //         $$type: "Reserving",
-    //         reserve: lowSendValue,
-    //         reserveMode: ReserveExact,
-    //         to: treasure.address,
-    //         body: null,
-    //         bounce: false,
-    //         init: null,
-    //     };
-    //
-    //     // Send a Reserving message to the contract with zero reserve
-    //     // and verify that rawReserve(X, 0) and  SendRemainingValue mode will calculate incorrectly
-    //     const result = await zeroContract.send(
-    //         treasure.getSender(),
-    //         { value: highSendValue },
-    //         reservedMessage,
-    //     );
-    //
-    //     expect(result.transactions).toHaveTransaction({
-    //         from: treasure.address,
-    //         to: zeroContract.address,
-    //         success: true,
-    //     });
-    //
-    //     const balance: bigint = (
-    //         await blockchain.getContract(zeroContract.address)
-    //     ).balance;
-    //
-    //     expect(balance).toBeGreaterThan(lowSendValue);
-    // });
-    // it("Reserving/ contract test", async () => {
-    //     const reservedMessage: Reserving = {
-    //         $$type: "Reserving",
-    //         reserve: ReserveExact,
-    //         reserveMode: ReserveAddOriginalBalance,
-    //         to: treasure.address,
-    //         body: null,
-    //         bounce: false,
-    //         init: null,
-    //     };
-    //
-    //     // Send a Reserving message to the main contract
-    //     // and verify that the balance increased ( it calculate gas incorrectly )
-    //     const result = await contract.send(
-    //         treasure.getSender(),
-    //         { value: highSendValue },
-    //         reservedMessage,
-    //     );
-    //
-    //     expect(result.transactions).toHaveTransaction({
-    //         from: treasure.address,
-    //         to: contract.address,
-    //         success: true,
-    //     });
-    //
-    //     const balance: bigint = (await blockchain.getContract(contract.address))
-    //         .balance;
-    //
-    //     expect(balance).toBeGreaterThan(balanceBeforeContractZero);
-    // });
+        const balance: bigint = (await blockchain.getContract(contract.address))
+            .balance;
+
+        //  SendRemainingValue mode only calculate gas correct when it only 1 message
+        expect(balance).toBeLessThan(balanceBefore);
+    });
 });
