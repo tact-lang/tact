@@ -1,3 +1,5 @@
+/* Generated. Do not edit. */
+// @ts-nocheck
 let nextId = 0;
 
 export const createContext = (s: string, space: Rule) => ({
