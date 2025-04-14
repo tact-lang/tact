@@ -2864,9 +2864,9 @@ external-editor@^3.0.3:
     tmp "^0.0.33"
 
 fast-check@^4.0.0:
-  version "4.0.0"
-  resolved "https://npm.dev-internal.org/fast-check/-/fast-check-4.0.0.tgz#a5aff60fb20728458c91d1ff98ca1b65d991abc5"
-  integrity sha512-aXLyLemZ7qhLNn2oq+YpjT2Xed21+i29WGAYuyrGbU4r8oinB3i4XR4e62O3NY6qmm5qHEDoc/7d+gMsri3AfA==
+  version "4.1.1"
+  resolved "https://npm.dev-internal.org/fast-check/-/fast-check-4.1.1.tgz#bc5ae58550439b7099e841b80d832d51e50b7600"
+  integrity sha512-8+yQYeNYqBfWem0Nmm7BUnh27wm+qwGvI0xln60c8RPM5rVekxZf/Ildng2GNBfjaG6utIebFmVBPlNtZlBLxg==
   dependencies:
     pure-rand "^7.0.0"
 
