@@ -59,7 +59,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/2735",
       "gas": {
         "transfer": "15791",
-        "burn": "12360",
+        "burn": "12336",
         "discovery": "5870"
       }
     }
