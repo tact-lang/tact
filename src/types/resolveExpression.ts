@@ -643,14 +643,16 @@ function resolveCall(
                 checkParameterType(exp.args[i]!, a, ctx);
             }
 
-            const selfIsOptional =
-                f.self?.kind === "ref" ? f.self.optional : false;
+            if (f.self) {
+                const selfIsOptional =
+                    f.self.kind === "ref" ? f.self.optional : false;
 
-            if (src.optional && !selfIsOptional) {
-                throwCompilationError(
-                    `Cannot call method ${idTextErr(exp.method)} on an expression of type "${src.name}?" (optional ${src.name}) without unwrapping it first. Add "!!" before the method call to unwrap an optional value`,
-                    exp.loc,
-                );
+                if (src.optional && !selfIsOptional) {
+                    throwCompilationError(
+                        `Cannot call method ${idTextErr(exp.method)} on an expression of type "${src.name}?" (optional ${src.name}) without unwrapping it first. Add "!!" before the method call to unwrap an optional value`,
+                        exp.loc,
+                    );
+                }
             }
 
             return registerExpType(ctx, exp, f.returns);
