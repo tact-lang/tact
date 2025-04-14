@@ -14,7 +14,7 @@ module.exports = {
             issue: {
                 nameTemplate: "Issue #%s",
                 urlTemplate: "https://github.com/tact-lang/tact/issues/%s",
-            }
+            },
         },
         environmentInfo: {
             os_platform: os.platform(),

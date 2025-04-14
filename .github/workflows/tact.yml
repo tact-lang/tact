@@ -97,10 +97,15 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
+            - name: Allure Report action from marketplace
+      - uses: simple-elf/allure-report-action@master
       - name: Generate Allure report
-        run: |
-          # Generate Allure report
-          allure generate allure-results -o allure-report --clean
+        if: always()
+        #id: allure-report
+        with:
+          allure_results: allure-results
+          allure_history: allure-history
+          keep_reports: 20
       - name: Upload Allure report
         uses: actions/upload-artifact@v4
         with:
@@ -130,10 +135,14 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
+      - uses: simple-elf/allure-report-action@master
       - name: Generate Allure report
-        run: |
-          # Generate Allure report
-          allure generate allure-results -o allure-report --clean
+        if: always()
+        #id: allure-report
+        with:
+          allure_results: allure-results
+          allure_history: allure-history
+          keep_reports: 20
       - name: Upload Allure report
         uses: actions/upload-artifact@v4
         with:
