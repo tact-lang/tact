@@ -12,19 +12,20 @@ import type {
     DoubleForward,
     MessageAndForward,
     StateInit,
-} from "./output/empty_Empty";
+} from "./output/negative_Negative";
 
-import { Empty } from "./output/empty_Empty";
+import { Negative } from "./output/negative_Negative";
 
 import "@ton/test-utils";
 
-describe("baseTrait without changing storageReserve", () => {
+describe("baseTrait with changing storageReserve to -1 (negative case)", () => {
+    // The same logic as in the empty case
     let blockchain: Blockchain;
 
     let balanceBefore: bigint;
 
     let treasure: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<Empty>;
+    let contract: SandboxContract<Negative>;
 
     const deployValue = toNano("0.05");
     const lowSendValue = toNano("0.5");
@@ -61,7 +62,7 @@ describe("baseTrait without changing storageReserve", () => {
         blockchain = await Blockchain.create();
         treasure = await blockchain.treasury("treasure");
 
-        contract = blockchain.openContract(await Empty.fromInit());
+        contract = blockchain.openContract(await Negative.fromInit());
 
         const deployResult = await contract.send(
             treasure.getSender(),

@@ -12,19 +12,20 @@ import type {
     DoubleForward,
     MessageAndForward,
     StateInit,
-} from "./output/empty_Empty";
+} from "./output/emptychange_EmptyChange";
 
-import { Empty } from "./output/empty_Empty";
+import { EmptyChange } from "./output/emptychange_EmptyChange";
 
 import "@ton/test-utils";
 
-describe("baseTrait without changing storageReserve", () => {
+describe("baseTrait with change storageReserve to 0", () => {
+    // The same logic as in the empty case
     let blockchain: Blockchain;
 
     let balanceBefore: bigint;
 
     let treasure: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<Empty>;
+    let contract: SandboxContract<EmptyChange>;
 
     const deployValue = toNano("0.05");
     const lowSendValue = toNano("0.5");
@@ -61,7 +62,7 @@ describe("baseTrait without changing storageReserve", () => {
         blockchain = await Blockchain.create();
         treasure = await blockchain.treasury("treasure");
 
-        contract = blockchain.openContract(await Empty.fromInit());
+        contract = blockchain.openContract(await EmptyChange.fromInit());
 
         const deployResult = await contract.send(
             treasure.getSender(),

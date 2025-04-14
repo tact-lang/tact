@@ -12,25 +12,24 @@ import type {
     DoubleForward,
     MessageAndForward,
     StateInit,
-} from "./output/empty_Empty";
+} from "./output/reserved_Reserved";
 
-import { Empty } from "./output/empty_Empty";
+import { Reserved } from "./output/reserved_Reserved";
 
 import "@ton/test-utils";
 
-describe("baseTrait without changing storageReserve", () => {
+describe("baseTrait with changing self.storageReserve to 0.1 ton", () => {
     let blockchain: Blockchain;
 
-    let balanceBefore: bigint;
+    const reservedAmount = Reserved.storageReserve;
 
     let treasure: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<Empty>;
+    let contract: SandboxContract<Reserved>;
 
     const deployValue = toNano("0.05");
     const lowSendValue = toNano("0.5");
 
     const SendPayFwdFeesSeparately = 1n;
-    const SendRemainingValue = 64n;
 
     const initCode: Cell = beginCell().endCell();
     const initData: Cell = beginCell().endCell();
@@ -61,7 +60,7 @@ describe("baseTrait without changing storageReserve", () => {
         blockchain = await Blockchain.create();
         treasure = await blockchain.treasury("treasure");
 
-        contract = blockchain.openContract(await Empty.fromInit());
+        contract = blockchain.openContract(await Reserved.fromInit());
 
         const deployResult = await contract.send(
             treasure.getSender(),
@@ -75,9 +74,6 @@ describe("baseTrait without changing storageReserve", () => {
             success: true,
             deploy: true,
         });
-
-        balanceBefore = (await blockchain.getContract(contract.address))
-            .balance;
 
         forwardMessage = {
             $$type: "Forward",
@@ -121,7 +117,7 @@ describe("baseTrait without changing storageReserve", () => {
         });
     });
 
-    it("should not increase contract balance after Reply message", async () => {
+    it("should reserve contract balance after Reply message", async () => {
         await contract.send(
             treasure.getSender(),
             { value: lowSendValue },
@@ -130,7 +126,7 @@ describe("baseTrait without changing storageReserve", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(balanceBefore);
+        expect(balance).toEqual(reservedAmount);
     });
 
     it("should send Notify message with argument of notify", async () => {
@@ -148,7 +144,7 @@ describe("baseTrait without changing storageReserve", () => {
         });
     });
 
-    it("should not increase contract balance after Notify message", async () => {
+    it("should reserve contract balance after Notify message", async () => {
         await contract.send(
             treasure.getSender(),
             { value: lowSendValue },
@@ -158,7 +154,7 @@ describe("baseTrait without changing storageReserve", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(balanceBefore);
+        expect(balance).toEqual(reservedAmount);
     });
 
     const checkForwardMessage = (
@@ -198,7 +194,7 @@ describe("baseTrait without changing storageReserve", () => {
         checkForwardMessage(forwardMessage, result.transactions);
     });
 
-    it("should not increase contract balance after Forward message", async () => {
+    it("should reserve contract balance after Forward message", async () => {
         await contract.send(
             treasure.getSender(),
             { value: lowSendValue },
@@ -208,7 +204,7 @@ describe("baseTrait without changing storageReserve", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(balanceBefore);
+        expect(balance).toEqual(reservedAmount);
     });
 
     it("should send Forward message with forward arguments without body", async () => {
@@ -223,7 +219,7 @@ describe("baseTrait without changing storageReserve", () => {
         checkForwardMessage(forwardMessage, result.transactions);
     });
 
-    it("should not increase contract balance after Forward message without body", async () => {
+    it("should reserve contract balance after Forward message without body", async () => {
         forwardMessage.body = null;
 
         await contract.send(
@@ -235,7 +231,7 @@ describe("baseTrait without changing storageReserve", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(balanceBefore);
+        expect(balance).toEqual(reservedAmount);
     });
 
     it("should send init with Forward message", async () => {
@@ -250,7 +246,7 @@ describe("baseTrait without changing storageReserve", () => {
         checkForwardMessage(forwardMessage, result.transactions);
     });
 
-    it("should not increase contract balance after Forward message with init", async () => {
+    it("should reserve contract balance after Forward message with init", async () => {
         forwardMessage.init = init;
 
         await contract.send(
@@ -262,7 +258,7 @@ describe("baseTrait without changing storageReserve", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(balanceBefore);
+        expect(balance).toEqual(reservedAmount);
     });
 
     it("should send Forward message with forward arguments without body and with init", async () => {
@@ -278,7 +274,7 @@ describe("baseTrait without changing storageReserve", () => {
         checkForwardMessage(forwardMessage, result.transactions);
     });
 
-    it("should not increase contract balance after Forward message without body and with init", async () => {
+    it("should reserve contract balance after Forward message without body and with init", async () => {
         forwardMessage.body = null;
         forwardMessage.init = init;
 
@@ -291,34 +287,21 @@ describe("baseTrait without changing storageReserve", () => {
         const balance: bigint = (await blockchain.getContract(contract.address))
             .balance;
 
-        expect(balance).toEqual(balanceBefore);
+        expect(balance).toEqual(reservedAmount);
     });
 
-    it("Should send only one message, even if Forward is called twice", async () => {
+    it("Should send any message when Forward is called twice", async () => {
         const result = await contract.send(
             treasure.getSender(),
             { value: lowSendValue },
             doubleForwardMessage,
         );
 
-        checkForwardMessage(doubleForwardMessage, result.transactions);
-
-        // treasure -> contract
-        // contract -> treasure
-        expect(result.events.length).toEqual(2);
-    });
-
-    it("Should not increase balance when Forward is called twice", async () => {
-        await contract.send(
-            treasure.getSender(),
-            { value: lowSendValue },
-            doubleForwardMessage,
-        );
-
-        const balance: bigint = (await blockchain.getContract(contract.address))
-            .balance;
-
-        expect(balance).toEqual(balanceBefore);
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: false,
+        });
     });
 
     it("Should send 2 messages: first with mode SendPayFwdFeesSeparately, second is forward", async () => {
@@ -336,7 +319,7 @@ describe("baseTrait without changing storageReserve", () => {
         expect(result.events.length).toEqual(3);
     });
 
-    it("Should decrease the balance when two messages are sent: the first with SendPayFwdFeesSeparately mode, and the second is a forward message.", async () => {
+    it("Should reserve even if 2 messages are sent.", async () => {
         await contract.send(
             treasure.getSender(),
             { value: lowSendValue },
@@ -347,26 +330,23 @@ describe("baseTrait without changing storageReserve", () => {
             .balance;
 
         //  SendRemainingValue mode only calculate gas correct when it only 1 message
-        expect(balance).toBeLessThan(balanceBefore);
+        expect(balance).toEqual(reservedAmount);
     });
 
-    it("Should send only one message and not fail during the action phase", async () => {
-        messageAndForwardMessage.mode = SendRemainingValue;
-
-        const result = await contract.send(
+    it("Should not reserve if the balance before our message was greater than storageReserve", async () => {
+        await contract.send(
             treasure.getSender(),
-            { value: lowSendValue },
-            messageAndForwardMessage,
+            { value: reservedAmount },
+            null,
         );
 
-        expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: true,
-        });
+        await contract.send(
+            treasure.getSender(),
+            { value: lowSendValue },
+            forwardMessage,
+        );
 
-        // treasure -> zeroContract
-        // zeroContract -> treasure  SendRemainingValue mode
-        expect(result.events.length).toEqual(2);
+        const balance = await blockchain.getContract(contract.address);
+        expect(balance).not.toEqual(reservedAmount);
     });
 });
