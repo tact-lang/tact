@@ -75,10 +75,7 @@ export function funcCompileNative(args: {
     sources: { path: string; content: string }[];
     logger: ILogger;
 }): FuncCompilationResult {
-    const TACT_PATH = process.env.TACT_PATH;
-    if (typeof TACT_PATH === "undefined") {
-        throw new Error("TACT_PATH is not set");
-    }
+    const TACT_PATH = process.env.TACT_PATH ?? `${__dirname}/../../`;
     const FIFT_LIBS_PATH = process.env.FIFT_LIBS_PATH;
     if (typeof FIFT_LIBS_PATH === "undefined") {
         throw new Error("FIFT_LIBS_PATH is not set");
