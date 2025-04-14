@@ -1,5 +1,8 @@
 import "@ton/test-utils";
-import type { JettonUpdateContent } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
+import type {
+    JettonUpdateContent,
+    Mint,
+} from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 import { JettonMinter } from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
 import { JettonWallet } from "@/benchmarks/contracts/output/jetton-wallet_JettonWallet";
 import type { Address } from "@ton/core";
@@ -66,6 +69,36 @@ describe("tep-74 tests", () => {
     });
 
     it("Should correctly handle response destination as addr_none", async () => {
+        const mintMsg: Mint = {
+            $$type: "Mint",
+            queryId: 0n,
+            receiver: deployer.address,
+            tonAmount: 0n,
+            mintMessage: {
+                $$type: "JettonTransferInternal",
+                queryId: 0n,
+                amount: toNano(1),
+                sender: deployer.address,
+                forwardTonAmount: 0n,
+                responseDestination: deployer.address,
+                forwardPayload: beginCell().storeMaybeRef(null).asSlice(),
+            },
+        };
+
+        const mintResult = await jettonMinter.send(
+            deployer.getSender(),
+            { value: toNano("0.1") },
+            mintMsg,
+        );
+        expect(mintResult.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: jettonMinter.address,
+            success: true,
+            endStatus: "active",
+            outMessagesCount: 1, // mint message
+            op: JettonMinter.opcodes.Mint,
+        });
+
         const deployerJettonWallet = await userWallet(deployer.address);
 
         const burnResult = await deployerJettonWallet.send(

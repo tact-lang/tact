@@ -27,10 +27,10 @@ contract JettonMinter(
 
         self.totalSupply -= msg.amount;
 
-        if (msg.responseDestination.isNotNone()) {
+        if (msg.responseDestination != null) {
             message(MessageParameters {
                 to: msg.responseDestination!!,
-                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                body: JettonExcesses { queryId: msg.queryId }.toCell(),
                 value: 0,
                 bounce: false,
                 mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
@@ -46,9 +46,8 @@ contract JettonMinter(
 
         let ownerWorkchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
 
-        let targetJettonWallet: BasechainAddress =
-            (ownerWorkchain == Workchain) ?
-            contractBasechainAddress(initOf JettonWallet(msg.ownerAddress, myAddress(), 0))
+        let targetJettonWallet: BasechainAddress = (ownerWorkchain == Workchain)
+            ? contractBasechainAddress(initOf JettonWallet(msg.ownerAddress, myAddress(), 0))
             : emptyBasechainAddress();
 
         message(MessageParameters {
@@ -68,12 +67,12 @@ contract JettonMinter(
         throwUnless(73, sender() == self.owner);
         self.totalSupply += msg.mintMessage.amount;
 
-        deploy(DeployParameters{
+        deploy(DeployParameters {
             value: 0,
             bounce: true,
             mode: SendRemainingValue,
             body: msg.mintMessage.toCell(),
-            init: getJettonWalletInit(msg.receiver)
+            init: getJettonWalletInit(msg.receiver),
         });
     }
 
@@ -91,7 +90,7 @@ contract JettonMinter(
             adminAddress: self.owner,
             jettonContent: self.jettonContent,
             jettonWalletCode: codeOf JettonWallet,
-        }
+        };
     }
 
     get fun get_wallet_address(ownerAddress: Address): Address {
@@ -102,8 +101,7 @@ contract JettonMinter(
 asm fun emptyAddress(): Address { b{00} PUSHSLICE }
 
 inline fun makeTakeWalletAddressMsg(targetJettonWallet: BasechainAddress, msg: ProvideWalletAddress): Cell {
-    return
-        beginCell()
+    return beginCell()
         .storeUint(TakeWalletAddressOpcode, 32)
         .storeUint(msg.queryId, 64)
         .storeBasechainAddress(targetJettonWallet)
@@ -122,5 +120,3 @@ inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
 inline fun getJettonBasechainWalletByOwner(jettonWalletOwner: Address): BasechainAddress {
     return contractBasechainAddress(getJettonWalletInit(jettonWalletOwner));
 }
-
-inline extends fun isNotNone(self: Address): Bool { return self.asSlice().preloadUint(2) != 0 }
