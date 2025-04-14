@@ -63,8 +63,8 @@ export async function funcCompile(args: {
     sources: { path: string; content: string }[];
     logger: ILogger;
 }): Promise<FuncCompilationResult> {
-    const USE_NATIVE = process.env.USE_NATIVE === "true";
-    if (USE_NATIVE) {
+    const USE_NATIVE_FUNC = process.env.USE_NATIVE_FUNC === "true";
+    if (USE_NATIVE_FUNC) {
         return funcCompileNative(args);
     }
     return funcCompileWasm(args);
