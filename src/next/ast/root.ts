@@ -4,12 +4,12 @@ import type {
     Range,
     OptionalId,
     TypeId,
-    RelativePath,
     Language,
 } from "@/next/ast/common";
 import type { Expression, Number, String } from "@/next/ast/expression";
 import type { Statement } from "@/next/ast/statement";
 import type { Type } from "@/next/ast/type";
+import type { RelativePath } from "@/next/fs";
 
 export type Source = {
     readonly file: string | undefined;

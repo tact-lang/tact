@@ -1,5 +1,5 @@
 import { throwInternalCompilerError } from "@/error/errors";
-import { RelativePath } from "@/next/ast/common";
+import { RelativePath } from "@/next/fs/path";
 import { repeat } from "@/utils/array";
 
 /**
@@ -41,7 +41,7 @@ export const emptyPath = RelativePath(0, []);
 /**
  * Combine two relative paths
  */
-const appendPath = (left: RelativePath, right: RelativePath): RelativePath => {
+export const appendPath = (left: RelativePath, right: RelativePath): RelativePath => {
     const delta = right.stepsUp - left.segments.length;
     return RelativePath(left.stepsUp + Math.max(0, delta), [
         ...left.segments.slice(0, Math.max(0, -delta)),
