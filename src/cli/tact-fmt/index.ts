@@ -92,7 +92,10 @@ function formatFile(
 
     const [res, time] = measureTime(() => formatCode(filepath, content));
     if (res.$ === "FormatCodeError") {
-        console.error(`Cannot format file ${filepath}:`, res.message);
+        console.error(
+            `Cannot format file ${path.relative(cwd(), filepath)}:`,
+            res.message,
+        );
         return undefined;
     }
 
