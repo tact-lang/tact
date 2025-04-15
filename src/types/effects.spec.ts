@@ -11,11 +11,16 @@ import type { Source } from "@/imports/source";
 import * as allure from "allure-js-commons";
 
 describe("effects", () => {
+    allure.tags("Effects");
     for (const testContract of loadCases(__dirname + "/effects/")) {
         it(`should correctly compute effects: ${testContract.name}`, () => {
             const Ast = getAstFactory();
             const sources: Source[] = [
-                { code: testContract.code, path: "<unknown>", origin: "user" },
+                {
+                    code: testContract.code,
+                    path: "<unknown>",
+                    origin: "user",
+                },
             ];
             let ctx = openContext(
                 new CompilerContext(),
@@ -23,20 +28,10 @@ describe("effects", () => {
                 [],
                 parseModules(sources, getParser(Ast)),
             );
-
-            allure.step("Enable external feature", async () => {
-                ctx = featureEnable(ctx, "external");
-            });
-            allure.step("Resolving descriptors", async () => {
-                ctx = resolveDescriptors(ctx, Ast);
-            });
-            allure.step("Resolving statements", async () => {
-                ctx = resolveStatements(ctx);
-            });
-            allure.step("Compute receivers effects", async () => {
-                computeReceiversEffects(ctx);
-            });
-
+            ctx = featureEnable(ctx, "external");
+            ctx = resolveDescriptors(ctx, Ast);
+            ctx = resolveStatements(ctx);
+            computeReceiversEffects(ctx);
             const receiverEffects = getAllTypes(ctx)
                 .filter((type) => type.kind === "contract")
                 .map((contract) => {
