@@ -121,8 +121,9 @@ function makeAsyncParams<T>(
             if (out.failed) {
                 let errorSuffix = "";
                 if (out.counterexample !== null) {
-                    errorSuffix = counterexamplePrinter(out.counterexample);
-                    out.error;
+                    errorSuffix =
+                        counterexamplePrinter(out.counterexample) +
+                        (out.errorInstance as Error).message;
                 }
                 throw new Error(
                     (await fc.asyncDefaultReportMessage(out)) + errorSuffix,
