@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from "fs";
 import { mkdir } from "fs/promises";
 
 // disable tests on windows
-const testWin =
+const testExceptWindows =
     process.platform === "win32" && process.env.CI ? test.skip : test;
 
 const tactFmt = (...args: string[]) => {
@@ -26,7 +26,7 @@ contract Test {
 `;
 
 describe("tact-fmt foo.tact", () => {
-    testWin("Exits with correct code", async () => {
+    testExceptWindows("Exits with correct code", async () => {
         await mkdir(outputDir, { recursive: true });
         const file = join(outputDir, "contact.tact");
         writeFileSync(file, goodContract);
@@ -34,7 +34,7 @@ describe("tact-fmt foo.tact", () => {
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
 
-    testWin("Default run", async () => {
+    testExceptWindows("Default run", async () => {
         await mkdir(outputDir, { recursive: true });
         const file = join(outputDir, "contact.tact");
         writeFileSync(file, goodContract);
@@ -42,7 +42,7 @@ describe("tact-fmt foo.tact", () => {
         expect(result).toMatchSnapshot();
     });
 
-    testWin("Default run with write to file", async () => {
+    testExceptWindows("Default run with write to file", async () => {
         await mkdir(outputDir, { recursive: true });
         const file = join(outputDir, "contact.tact");
         writeFileSync(file, goodContract);
