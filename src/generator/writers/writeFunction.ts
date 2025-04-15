@@ -11,6 +11,7 @@ import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack
 import { funcIdOf } from "@/generator/writers/id";
 import {
     writeExpression,
+    writeExpressionInCondition,
     writePathExpression,
 } from "@/generator/writers/writeExpression";
 import { cast } from "@/generator/writers/cast";
@@ -20,6 +21,7 @@ import { freshIdentifier } from "@/generator/writers/freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "@/error/errors";
 import { ppAsmShuffle } from "@/ast/ast-printer";
 import { zip } from "@/utils/array";
+import { binaryOperationFromAugmentedAssignOperation } from "@/ast/util";
 
 export function writeCastedExpression(
     expression: Ast.Expression,
@@ -192,8 +194,9 @@ export function writeStatement(
                 return;
             }
 
+            const op = binaryOperationFromAugmentedAssignOperation(f.op);
             ctx.append(
-                `${path} = ${cast(t, t, `${path} ${f.op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
+                `${path} = ${cast(t, t, `${path} ${op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
             );
             return;
         }
@@ -207,7 +210,9 @@ export function writeStatement(
             return;
         }
         case "statement_while": {
-            ctx.append(`while (${writeExpression(f.condition, ctx)}) {`);
+            ctx.append(
+                `while (${writeExpressionInCondition(f.condition, ctx)}) {`,
+            );
             ctx.inIndent(() => {
                 for (const s of f.statements) {
                     writeStatement(s, self, returns, ctx);
@@ -223,7 +228,9 @@ export function writeStatement(
                     writeStatement(s, self, returns, ctx);
                 }
             });
-            ctx.append(`} until (${writeExpression(f.condition, ctx)});`);
+            ctx.append(
+                `} until (${writeExpressionInCondition(f.condition, ctx)});`,
+            );
             return;
         }
         case "statement_repeat": {
@@ -560,7 +567,7 @@ function writeCondition(
     ctx: WriterContext,
 ) {
     ctx.append(
-        `${elseif ? "} else" : ""}if (${writeExpression(f.condition, ctx)}) {`,
+        `${elseif ? "} else" : ""}if (${writeExpressionInCondition(f.condition, ctx)}) {`,
     );
     ctx.inIndent(() => {
         for (const s of f.trueStatements) {
@@ -612,9 +619,12 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             resolveFuncType(self, ctx, isSelfOpt) + " " + funcIdOf("self"),
         );
     }
-    for (const a of f.params) {
-        params.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
-    }
+
+    f.params.forEach((a, index) => {
+        const name =
+            a.name.kind === "wildcard" ? `_${index}` : funcIdOf(a.name);
+        params.push(resolveFuncType(a.type, ctx) + " " + name);
+    });
 
     const fAst = f.ast;
     switch (fAst.kind) {
@@ -701,7 +711,8 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                             !resolveFuncPrimitive(
                                 resolveTypeRef(ctx.ctx, a.type),
                                 ctx,
-                            )
+                            ) &&
+                            a.name.kind !== "wildcard"
                         ) {
                             ctx.append(
                                 `var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), funcIdOf(a.name), ctx)}) = ${funcIdOf(a.name)};`,

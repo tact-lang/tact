@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dump should dump values correctly in a receiver 1`] = `
+"#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:2:5:
+#DEBUG#: dumpStack()
+#DEBUG#: stack(1 values) : 10999604800 
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:3:5:
+#DEBUG#: dump("Hello world!")
+#DEBUG#: Hello world!
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:4:5:
+#DEBUG#: dump(123)
+#DEBUG#: 123
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:5:5:
+#DEBUG#: dump(true)
+#DEBUG#: true
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:6:5:
+#DEBUG#: dump(false)
+#DEBUG#: false
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:7:5:
+#DEBUG#: dump(null)
+#DEBUG#: null
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:8:5:
+#DEBUG#: dump(myAddress())
+#DEBUG#: EQAcCS-ngmU7wMB2uV14a0UKrOcBAZqyl_ldo_hYb-3GLYcy
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:10:5:
+#DEBUG#: dump(address)
+#DEBUG#: EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:11:5:
+#DEBUG#: dump(myBalance())
+#DEBUG#: 10999604800
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:15:5:
+#DEBUG#: dump(maybeBool1)
+#DEBUG#: null
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:16:5:
+#DEBUG#: dump(maybeBool2)
+#DEBUG#: true
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:17:5:
+#DEBUG#: dump(maybeBool3)
+#DEBUG#: false
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:19:5:
+#DEBUG#: dump(emptyIntIntMap)
+#DEBUG#: s0 = ()
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:22:5:
+#DEBUG#: dump(maybeAddress1)
+#DEBUG#: null
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:23:5:
+#DEBUG#: dump(maybeAddress2)
+#DEBUG#: EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:26:5:
+#DEBUG#: dump(maybeString1)
+#DEBUG#: null
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:27:5:
+#DEBUG#: dump(maybeString2)
+#DEBUG#: Hello world!
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:30:5:
+#DEBUG#: dump(maybeInt1)
+#DEBUG#: null
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:31:5:
+#DEBUG#: dump(maybeInt2)
+#DEBUG#: 42
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:34:5:
+#DEBUG#: dump(maybeBuilder1)
+#DEBUG#: s0 = ()
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:35:5:
+#DEBUG#: dump(maybeBuilder2)
+#DEBUG#: s0 = BC{0001c0}
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:38:5:
+#DEBUG#: dump(maybeCell1)
+#DEBUG#: s0 = ()
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:39:5:
+#DEBUG#: dump(maybeCell2)
+#DEBUG#: s0 = C{7C6C1A965FD501D2938C2C0E06626BDAA3531357016E169070C9EF79C4C46BC0}
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:42:5:
+#DEBUG#: dump(maybeSlice1)
+#DEBUG#: s0 = ()
+#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:43:5:
+#DEBUG#: dump(maybeSlice2)
+#DEBUG#: s0 = CS{Cell{0001c0} bits: 0..1; refs: 0..0}"
+`;

@@ -135,7 +135,7 @@ export function writeInit(
     t: TypeDescription,
     init: InitDescription,
     ctx: WriterContext,
-    codes: ContractsCodes,
+    codes: Readonly<ContractsCodes>,
 ) {
     ctx.fun(ops.contractInit(t.name, ctx), () => {
         const args = init.params.map(
@@ -160,7 +160,13 @@ export function writeInit(
             t.fields.forEach((tField) => {
                 let init = "null()";
                 if (tField.default !== undefined) {
-                    init = writeValue(tField.default!, ctx);
+                    init = writeValue(
+                        tField.default!,
+                        tField.type.kind === "ref"
+                            ? tField.type.optional
+                            : false,
+                        ctx,
+                    );
                 }
                 initValues.push(init);
             });
@@ -459,9 +465,9 @@ export function writeMainContract(
             // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
             // We want to extract recv_internal/recv_external from the dict and select needed function
             // not by jumping to the needed function by it's index, but by using usual IF statements.
-            
+
             }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
-            
+
             <{ // Start of the new code builder
                 SETCP0
                 // Swap the new code builder with the previous code, now we have previous code on top of the stack
@@ -471,36 +477,36 @@ export function writeMainContract(
             if (hasExternal) {
                 wCtx.append(`
                 // Extract the recv_external from the dict
-                dup -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot 
+                dup -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
                 swap`);
             }
 
             wCtx.append(`
                 // Extract the recv_internal from the dict
-                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot 
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
                 swap
-                
+
                 // Delete the recv_internal from the dict
-                0 swap @procdictkeylen idict- drop 
+                0 swap @procdictkeylen idict- drop
                 // Delete the recv_external from the dict (it's okay if it's not there)
-                -1 swap @procdictkeylen idict- drop 
+                -1 swap @procdictkeylen idict- drop
                 // Delete the __tact_selector_hack from the dict
-                65535 swap @procdictkeylen idict- drop 
+                65535 swap @procdictkeylen idict- drop
 
                 // Bring the code builder from the bottom of the stack
                 // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
                 depth 1- roll
                 // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
                 swap
-                
+
                 // Check if the dict is empty
                 dup null?
                 // Store a copy of this flag in the bottom of the stack
-                dup depth 1- -roll 
+                dup depth 1- -roll
                 {
                     // If the dict is empty, just drop it (it will be null if it's empty)
-                    drop 
-                } 
+                    drop
+                }
                 {
                     // If the dict is not empty, prepare continuation to be stored in c3
                     <{
@@ -514,7 +520,7 @@ export function writeMainContract(
                     // Store the continuation in c3
                     c3 POP
                 } cond
-                
+
                 // Function id is on top of the (runtime) stack
                 DUP IFNOTJMP:<{
                     // place recv_internal here
@@ -531,15 +537,15 @@ export function writeMainContract(
 
             wCtx.append(`
                 // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
-                depth 1- roll 
-                { 
+                depth 1- roll
+                {
                     // If the dict is empty, throw 11
-                    11 THROWARG 
-                } 
-                { 
+                    11 THROWARG
+                }
+                {
                     // If the dict is not empty, jump to continuation from c3
-                    c3 PUSH JMPX 
-                } cond 
+                    c3 PUSH JMPX
+                } cond
             }> b>
         } : }END>c
         current@ context! current!

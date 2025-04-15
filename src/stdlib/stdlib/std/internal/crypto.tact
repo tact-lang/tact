@@ -166,3 +166,72 @@ asm fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool { CHKS
 /// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 ///
 asm fun checkDataSignature(data: Slice, signature: Slice, publicKey: Int): Bool { CHKSIGNS }
+
+/// A struct that contains a 512-bit [Ed25519] signature and the data it signs.
+///
+/// ```tact
+/// message MessageWithSignedData {
+///     // The `bundle.signature` contains the 512-bit Ed25519 signature
+///     // of the remaining data fields of this message struct,
+///     // while `bundle.signedData` references those data fields.
+///     // In this case, the fields are `walletId` and `seqno`.
+///     bundle: SignedBundle;
+///
+///     // These fields are common to external messages to user wallets.
+///     walletId: Int as int32;
+///     seqno: Int as uint32;
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-crypto#signedbundle
+/// * https://docs.tact-lang.org/ref/core-crypto#signedbundleverifysignature
+///
+/// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+///
+struct SignedBundle {
+    /// A 512-bit Ed25519 signature of the `signedData`.
+    signature: Slice as bytes64;
+
+    /// The remaining non-serialized data of the enclosing struct or message struct,
+    /// which was used to obtain the 512-bit Ed25519 `signature`.
+    signedData: Slice as remaining;
+}
+
+/// Extension function for the `SignedBundle` struct. Available since Tact 1.6.6.
+///
+/// Checks whether `self.signedData` was signed by the 512-bit [Ed25519] signature `self.signature`,
+/// using the given `publicKey`. Returns `true` if the signature is valid, `false` otherwise.
+///
+/// ```tact
+/// contract Example(publicKey: Int as uint256) {
+///     external(msg: MessageWithSignedData) {
+///         // Checks that the signature of the SignedBundle from the incoming external
+///         // message wasn't forged and made by the owner of this self.publicKey with
+///         // its respective private key managed elsewhere.
+///         throwUnless(35, msg.bundle.verifySignature(self.publicKey));
+///
+///         // ...rest of the checks and code...
+///     }
+/// }
+///
+/// message MessageWithSignedData {
+///     // The `bundle.signature` contains the 512-bit Ed25519 signature
+///     // of the remaining data fields of this message struct,
+///     // while `bundle.signedData` references those data fields.
+///     // In this case, the fields are `walletId` and `seqno`.
+///     bundle: SignedBundle;
+///
+///     // These fields are common to external messages to user wallets.
+///     walletId: Int as int32;
+///     seqno: Int as uint32;
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-crypto#signedbundleverifysignature
+///
+/// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+///
+inline extends fun verifySignature(self: SignedBundle, publicKey: Int): Bool {
+    return checkSignature(self.signedData.hash(), self.signature, publicKey);
+}
