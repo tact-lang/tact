@@ -1,4 +1,5 @@
-import type { Address, Cell } from "@ton/core";
+import type { Address } from "@ton/core";
+import { Cell, contractAddress } from "@ton/core";
 import { beginCell, Builder, SendMode, toNano } from "@ton/core";
 import type {
     Blockchain,
@@ -17,6 +18,58 @@ import {
     storeMint,
     storeProvideWalletAddress,
 } from "@/benchmarks/contracts/output/escrow_Escrow";
+import { readFileSync } from "fs";
+import { posixNormalize } from "@/utils/filePath";
+import { resolve } from "path";
+
+const loadFunCJettonsBoc = () => {
+    const bocMinter = readFileSync(
+        posixNormalize(
+            resolve(
+                __dirname,
+                "../contracts/func/output/jetton-minter-discoverable.boc",
+            ),
+        ),
+    );
+
+    const bocWallet = readFileSync(
+        posixNormalize(
+            resolve(__dirname, "../contracts/func/output/jetton-wallet.boc"),
+        ),
+    );
+
+    return { bocMinter, bocWallet };
+};
+
+export const deployFuncJettonMinter = async (
+    via: SandboxContract<TreasuryContract>,
+) => {
+    const jettonData = loadFunCJettonsBoc();
+    const minterCell = Cell.fromBoc(jettonData.bocMinter)[0]!;
+    const walletCell = Cell.fromBoc(jettonData.bocWallet)[0]!;
+
+    const stateInitMinter = beginCell()
+        .storeCoins(0)
+        .storeAddress(via.address)
+        .storeRef(beginCell().storeUint(1, 1).endCell()) // as salt
+        .storeRef(walletCell)
+        .endCell();
+
+    const init = { code: minterCell, data: stateInitMinter };
+
+    const minterAddress = contractAddress(0, init);
+
+    return {
+        minterAddress,
+        result: await via.send({
+            to: minterAddress,
+            value: toNano("0.1"),
+            init,
+            body: beginCell().endCell(),
+            sendMode: SendMode.PAY_GAS_SEPARATELY,
+        }),
+    };
+};
 
 export const sendDiscoveryRaw = async (
     minterAddress: Address,

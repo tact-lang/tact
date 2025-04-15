@@ -80,7 +80,7 @@ The guides below use the [Jetton vault](https://docs.dedust.io/docs/concepts#vau
 /// https://docs.dedust.io/reference/tlb-schemes#message-swap
 message(0xea06185d) NativeSwap {
     // Unique identifier used to trace transactions across multiple contracts
-    // Defaults to 0, which means we don't mark messages to trace their chains
+    // Defaults to 0, which means we don't mark messages to trace requests
     queryId: Int as uint64 = 0;
 
     // Toncoin amount for the swap
@@ -156,7 +156,7 @@ fun swapJetton(targetJettonWalletAddress: Address) {
         value: ton("0.3"),
         body: JettonTransfer{
             // Unique identifier used to trace transactions across multiple contracts.
-            // Set to 0, which means we don't mark messages to trace their chains.
+            // Set to 0, which means we don't mark messages to trace requests.
             queryId: 0,
             // Jetton amount for the swap.
             amount: 10, // NOTE: change to your amount
@@ -260,7 +260,7 @@ message(0x40e108d6) JettonDepositLiquidity {
 /// https://docs.dedust.io/reference/tlb-schemes#message-deposit_liquidity
 message(0xd55e4686) NativeDepositLiquidity {
     // Unique identifier used to trace transactions across multiple contracts
-    // Defaults to 0, which means messages are not marked to trace their chains
+    // Defaults to 0, which means messages are not marked to trace requests
     queryId: Int as uint64 = 0;
 
     // Toncoin amount for the deposit

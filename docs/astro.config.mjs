@@ -304,6 +304,10 @@ export default defineConfig({
 						{ slug: 'ref/stdlib-content' },
 						{ slug: 'ref/stdlib-deploy' },
 						{ slug: 'ref/stdlib-dns' },
+						{
+							slug: 'ref/stdlib-jetton-interface',
+							badge: { variant: 'tip', text: 'new' },
+						},
 						{ slug: 'ref/stdlib-ownable' },
 						{ slug: 'ref/stdlib-stoppable' },
 					],

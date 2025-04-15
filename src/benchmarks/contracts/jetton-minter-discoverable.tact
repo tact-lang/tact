@@ -1,18 +1,11 @@
 // https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
 
+import "@stdlib/jetton-interface";
 import "./jetton-wallet";
 import "./messages";
 
 const ProvideAddressGasConsumption: Int = ton("0.01");
 const Workchain: Int = 0;
-
-struct JettonMasterState {
-    totalSupply: Int as coins;
-    mintable: Bool;
-    adminAddress: Address;
-    jettonContent: Cell;
-    jettonWalletCode: Cell;
-}
 
 contract JettonMinter(
     totalSupply: Int as coins,
@@ -29,8 +22,8 @@ contract JettonMinter(
 
         if (msg.responseDestination.isNotNone()) {
             message(MessageParameters {
-                to: msg.responseDestination,
-                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                to: msg.responseDestination!!,
+                body: JettonExcesses { queryId: msg.queryId }.toCell(),
                 value: 0,
                 bounce: false,
                 mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
@@ -61,19 +54,19 @@ contract JettonMinter(
 
     receive(msg: JettonUpdateContent) {
         throwUnless(73, sender() == self.owner);
-        self.jettonContent = msg.content;
+        self.jettonContent = msg.newContent;
     }
 
     receive(msg: Mint) {
         throwUnless(73, sender() == self.owner);
         self.totalSupply += msg.mintMessage.amount;
 
-        deploy(DeployParameters{
+        deploy(DeployParameters {
             value: 0,
             bounce: true,
             mode: SendRemainingValue,
             body: msg.mintMessage.toCell(),
-            init: getJettonWalletInit(msg.receiver)
+            init: getJettonWalletInit(msg.receiver),
         });
     }
 
@@ -84,14 +77,14 @@ contract JettonMinter(
 
     receive(_: Slice) { throw(0xffff) }
 
-    get fun get_jetton_data(): JettonMasterState {
-        return JettonMasterState {
+    get fun get_jetton_data(): JettonMinterData {
+        return JettonMinterData {
             totalSupply: self.totalSupply,
             mintable: true,
-            adminAddress: self.owner,
-            jettonContent: self.jettonContent,
+            owner: self.owner,
+            content: self.jettonContent,
             jettonWalletCode: codeOf JettonWallet,
-        }
+        };
     }
 
     get fun get_wallet_address(ownerAddress: Address): Address {
@@ -102,8 +95,7 @@ contract JettonMinter(
 asm fun emptyAddress(): Address { b{00} PUSHSLICE }
 
 inline fun makeTakeWalletAddressMsg(targetJettonWallet: BasechainAddress, msg: ProvideWalletAddress): Cell {
-    return
-        beginCell()
+    return beginCell()
         .storeUint(TakeWalletAddressOpcode, 32)
         .storeUint(msg.queryId, 64)
         .storeBasechainAddress(targetJettonWallet)
