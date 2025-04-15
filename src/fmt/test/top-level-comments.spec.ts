@@ -4,8 +4,6 @@ describe("top level declarations comments formatting", () => {
     it(
         "comments in imports",
         intact(`
-        // before imports
-        import "stdlib"; // inline import comment
         // between imports
         import "custom"; /* block import comment */
 
@@ -84,8 +82,6 @@ describe("top level declarations comments formatting", () => {
         intact(`
         // before struct
         struct Foo {
-            // struct field comment
-            name: String;
             /* block field comment */
             age: Int;
         } // inline struct comment

@@ -8,7 +8,6 @@ import {
     containsComments,
     isComment,
 } from "@/fmt/cst/cst-helpers";
-import { mapMaybe } from "@/utils/tricks";
 
 interface CommentsExtraction {
     comments: MutableCst[];
@@ -206,6 +205,11 @@ const findNodeWithComments = (node: CstNode): undefined | [CstNode, string] => {
     return [lastChildren, "}"];
 };
 
+const assignArray = (arr: MutableCst[], newArray: MutableCst[]) => {
+    while (arr.length > 0) arr.shift();
+    arr.push(...newArray);
+};
+
 export const getProcessDocComments = (): ((n: Cst) => Cst) => {
     const pendingComments: MutableCst[] = [];
     return (n) => processDocComments(n, pendingComments);
@@ -303,7 +307,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
             firstCommentIndex = initialLeafs.length - reverseDoubleNewlineIndex;
         }
 
-        pendingComments = initialLeafs.slice(firstCommentIndex);
+        assignArray(pendingComments, initialLeafs.slice(firstCommentIndex));
 
         // remove all extracted comments from Root
         const newChildren = [
@@ -372,7 +376,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
             childrenToProcess.shift();
         }
 
-        pendingComments = comments;
+        assignArray(pendingComments, comments);
 
         if (childrenToProcess.length === 0) {
             // empty contract with just comment
@@ -398,7 +402,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
             node.children.splice(0, 0, {
                 $: "node",
                 type: "DocComments",
-                children: pendingComments,
+                children: [...pendingComments],
                 field: "doc",
                 group: "",
                 id: 0,
@@ -472,12 +476,12 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
             node.children.splice(0, 0, {
                 $: "node",
                 type: "DocComments",
-                children: pendingComments,
+                children: [...pendingComments],
                 field: "doc",
                 group: "",
                 id: 0,
             });
-            pendingComments = [];
+            assignArray(pendingComments, []);
         }
     }
 
@@ -490,7 +494,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
 
         let prevFieldsIndex = 0;
         for (let i = 0; i < items.length; i++) {
-            const item = mapMaybe(items.at(i), createMutableCst);
+            const item = items.at(i);
 
             if (item?.$ !== "node") continue;
 
@@ -499,12 +503,12 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                 item.children.splice(0, 0, {
                     $: "node",
                     type: "DocComments",
-                    children: pendingComments,
+                    children: [...pendingComments],
                     field: "doc",
                     group: "",
                     id: 0,
                 });
-                pendingComments = [];
+                assignArray(pendingComments, []);
             }
 
             if (item.type === "Comment") {
@@ -534,7 +538,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                     // not attached to anything
                     items.splice(i - 1, 0, ...pendingComments);
                     i += pendingComments.length;
-                    pendingComments = [];
+                    assignArray(pendingComments, []);
                     continue;
                 }
 
@@ -565,6 +569,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
 
             const owner = createMutableCstNode(commentOwner[0]);
             owner.children = owner.children.slice(0, startIndex);
+            Object.assign(commentOwner[0], owner);
 
             if (floatingComments.length > 0) {
                 items.splice(i + 1, 0, ...floatingComments);
@@ -581,7 +586,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
         // comments aren't attached to anything
         if (pendingComments.length > 0) {
             node.children.push(...pendingComments);
-            pendingComments = [];
+            assignArray(pendingComments, []);
         }
     }
 
@@ -591,7 +596,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
             (it) => it.$ === "leaf" && it.text === "}",
         );
 
-        let pendingComments: MutableCst[] = [];
+        let localPendingComments: MutableCst[] = [];
 
         for (let i = 0; i < endIndex; i++) {
             const statement = node.children.at(i);
@@ -599,10 +604,10 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                 continue;
             }
 
-            if (pendingComments.length > 0) {
-                node.children.splice(i, 0, ...pendingComments);
-                endIndex += pendingComments.length;
-                pendingComments = [];
+            if (localPendingComments.length > 0) {
+                node.children.splice(i, 0, ...localPendingComments);
+                endIndex += localPendingComments.length;
+                localPendingComments = [];
                 continue;
             }
 
@@ -620,19 +625,19 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                     if (res) {
                         if (
                             res.inlineComments.length > 0 &&
-                            owner !== statement
+                            owner.id !== statement.id
                         ) {
                             statement.children.push(...res.inlineComments);
                         }
 
-                        pendingComments = res.comments;
+                        localPendingComments = res.comments;
                         owner.children = owner.children.slice(
                             0,
                             res.startIndex,
                         );
                         if (
                             res.inlineComments.length > 0 &&
-                            owner !== statement
+                            owner.id !== statement.id
                         ) {
                             owner.children = owner.children.slice(
                                 0,
@@ -652,14 +657,15 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                             endIndex += res.floatingComments.length;
                         }
 
+                        Object.assign(found[0], owner);
                         break;
                     }
                 }
             }
         }
 
-        if (pendingComments.length > 0) {
-            node.children.splice(endIndex, 0, ...pendingComments);
+        if (localPendingComments.length > 0) {
+            node.children.splice(endIndex, 0, ...localPendingComments);
         }
     }
 
@@ -691,7 +697,10 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
             };
         }
 
-        pendingComments = leadingComments.map((it) => createMutableCstNode(it));
+        assignArray(
+            pendingComments,
+            leadingComments.map((it) => createMutableCstNode(it)),
+        );
         const processedChildren = node.children.filter((_, index) => {
             if (index >= startIndex && index < fieldsIndex) {
                 // remove all nodes that we take
@@ -723,12 +732,12 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                 item.children.splice(0, 0, {
                     $: "node",
                     type: "DocComments",
-                    children: pendingComments,
+                    children: [...pendingComments],
                     field: "doc",
                     group: "",
                     id: 0,
                 });
-                pendingComments = [];
+                assignArray(pendingComments, []);
             }
 
             if (item.type === "Comment") {
@@ -775,7 +784,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                             item.children.push(...res.inlineComments);
                         }
 
-                        pendingComments = res.comments;
+                        assignArray(pendingComments, res.comments);
                         owner.children = owner.children.slice(
                             0,
                             res.startIndex,
@@ -788,6 +797,8 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                                     res.inlineComments.length,
                             );
                         }
+
+                        Object.assign(found[0], owner);
                         break;
                     }
                 }

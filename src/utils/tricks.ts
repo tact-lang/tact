@@ -148,12 +148,3 @@ export const entries = Object.entries as <O>(
 ) => { [K in keyof O]: [K, O[K]] }[keyof O][];
 
 export const keys = Object.keys as <O>(o: O) => (keyof O)[];
-
-// do not pass T and U explicitly: mapMaybe<number | undefined>
-export const mapMaybe = <T, U>(
-    x: undefined | T,
-    callback: (t: T) => U,
-): undefined | U => {
-    if (typeof x === "undefined") return undefined;
-    return callback(x);
-};

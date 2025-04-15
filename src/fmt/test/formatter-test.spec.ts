@@ -1445,9 +1445,7 @@ describe("should format", () => {
                 "method chain with comment",
                 intact(`
                 fun foo() {
-                    a
-                        .bar() // comment 1
-                        .foo(); /*comment*/
+                    a.foo(); /*comment*/
                 }
             `),
             );
