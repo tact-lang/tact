@@ -101,7 +101,7 @@ jobs:
         if: always()
         run: |
           yarn global add allure-commandline
-          allure generate allure-results -o allure-report --clean
+          allure generate allure-results -o allure-report --clean --single-file
       - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
@@ -136,7 +136,7 @@ jobs:
         if: always()
         run: |
           yarn global add allure-commandline
-          allure generate allure-results -o allure-report --clean
+          allure generate allure-results -o allure-report --clean --single-file
       - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
