@@ -76,13 +76,13 @@ contract Scrooge {
 }
 ```
 
-### Use `BasechainAddress` struct and related functions for runtime manipulations on addresses in the basechain
+### Use `BasechainAddress` struct and related functions for runtime manipulations on addresses in the base workchain
 
 <Badge text="Available since Tact 1.6.3" variant="tip" size="medium"/><p/>
 
 Almost all contracts on TON are deployed on the basechain — a [workchain with ID 0][workchain-id]. The [`BasechainAddress{:tact}`](/ref/core-addresses#basechainaddress) [struct][struct] and related functions were introduced to allow optimal handling of basechain addresses at runtime.
 
-A frequent use-case for basechain addresses is checking message sender addresses for validity, i.e., if a contract needs to make sure the incoming message comes from a specific contract deployed in the basechain, it can use the [StateInit.hasSameBasechainAddress(){:tact}](/ref/core-addresses#stateinithassamebasechainaddress) extension function.
+A frequent use-case for basechain addresses is checking message sender addresses for validity, i.e., if a contract needs to make sure the incoming message comes from a specific contract deployed in the basechain, it can use the [`StateInit.hasSameBasechainAddress(){:tact}`](/ref/core-addresses#stateinithassamebasechainaddress) extension function.
 
 ```tact
 let init = initOf SomeContract();
