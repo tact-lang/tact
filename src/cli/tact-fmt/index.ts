@@ -85,7 +85,7 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
     const filePath = Args.single("immediate");
     if (filePath) {
         const fileContent = fs.readFileSync(filePath, "utf8");
-        const res = formatCode(fileContent);
+        const res = formatCode(filePath, fileContent);
         if (res.$ === "FormatCodeError") {
             console.error(res.message);
             process.exit(1);
