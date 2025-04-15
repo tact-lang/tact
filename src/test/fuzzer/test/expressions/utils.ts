@@ -1,7 +1,10 @@
 import * as Ast from "@/ast/ast";
 import { getMakeAst, MakeAstFactory } from "@/ast/generated/make-factory";
 import {
+    AllowedType,
     AllowedTypeEnum,
+    GenContext,
+    initializeGenerator,
     NonTerminal,
     NonTerminalEnum,
 } from "../../src/generators/uniform-expr-gen";
@@ -98,7 +101,9 @@ export type ExpressionTestingEnvironment = {
     outputStream: fs.WriteStream;
 };
 
-export async function setupEnvironment(): Promise<ExpressionTestingEnvironment> {
+export async function setupEnvironment(
+    interestingTestFilename: string,
+): Promise<ExpressionTestingEnvironment> {
     const astF = getAstFactory();
     const makeF = getMakeAst(astF);
     const customStdlib = filterStdlib(
@@ -152,7 +157,7 @@ export async function setupEnvironment(): Promise<ExpressionTestingEnvironment> 
         sender,
         emptyCompilerContext: new CompilerContext(),
         contractNameToCompile: "ExpressionContract",
-        outputStream: fs.createWriteStream("interesting-failing-tests.txt", {
+        outputStream: fs.createWriteStream(interestingTestFilename, {
             flags: "a",
         }),
     };
@@ -263,5 +268,78 @@ export function saveExpressionTest(
     outputStream.write(
         bindingsAndExpressionPrtinter([bindings, expr]) +
             `\nCompilation error: ${compilationResult}\nInterpretation error: ${interpretationResult}\n`,
+    );
+}
+
+const defaultGenerationIds: Map<AllowedTypeEnum, string[]> = new Map([
+    [AllowedType.Int, ["int1"]],
+    [AllowedType.OptInt, ["int_null"]],
+    [AllowedType.Bool, ["bool1"]],
+    [AllowedType.OptBool, ["bool_null"]],
+    [AllowedType.Cell, ["cell1"]],
+    [AllowedType.OptCell, ["opt_cell"]],
+    [AllowedType.Slice, ["slice1"]],
+    [AllowedType.OptSlice, ["slice_null"]],
+    [AllowedType.Address, ["address1"]],
+    [AllowedType.OptAddress, ["address_null"]],
+    [AllowedType.String, ["string1"]],
+    [AllowedType.OptString, ["string_null"]],
+]);
+
+export function createExpressionComputationEqualityProperty(
+    expressionTestingEnvironment: ExpressionTestingEnvironment,
+    minSize: number,
+    maxSize: number,
+    expressionGenerationIds: Map<
+        AllowedTypeEnum,
+        string[]
+    > = defaultGenerationIds,
+) {
+    const expressionGenerationCtx: GenContext = {
+        identifiers: expressionGenerationIds,
+        contractNames: [expressionTestingEnvironment.contractNameToCompile],
+    };
+
+    const generator = initializeGenerator(
+        minSize,
+        maxSize,
+        expressionGenerationCtx,
+        expressionTestingEnvironment.astF,
+    );
+
+    return fc.asyncProperty(
+        generateBindings(
+            expressionTestingEnvironment,
+            expressionGenerationIds,
+            generator,
+        ),
+        generator(NonTerminal.Int),
+        async (bindings, expr) => {
+            const compilationResult = await compileExpression(
+                expressionTestingEnvironment,
+                bindings,
+                expr,
+            );
+
+            const interpretationResult = interpretExpression(
+                expressionTestingEnvironment,
+                bindings,
+                expr,
+            );
+            if (
+                compilationResult instanceof Error &&
+                interpretationResult instanceof Error
+            ) {
+                saveExpressionTest(
+                    bindings,
+                    expr,
+                    compilationResult,
+                    interpretationResult,
+                    expressionTestingEnvironment.outputStream,
+                );
+            } else {
+                expect(compilationResult).toBe(interpretationResult);
+            }
+        },
     );
 }
