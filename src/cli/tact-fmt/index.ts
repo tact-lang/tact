@@ -53,7 +53,7 @@ const ArgSchema = (Parser: ArgParser) => {
 const showHelp = () => {
     console.log(`
     Usage
-      $ tact-fmt [...flags] TACT-FILE
+      $ tact-fmt [...flags] <file> or <directory>
 
     Flags
       -w, --write                 Write result to same file
@@ -62,7 +62,16 @@ const showHelp = () => {
 
     Examples
       $ tact-fmt --version
-      ${fmtVersion}`);
+      ${fmtVersion}
+
+      $ tact-fmt file.tact
+      Format and output the result to stdout
+
+      $ tact-fmt -w file.tact
+      Format and rewrite file.tact
+
+      $ tact-fmt -w ./sources
+      Format and rewrite all Tact files in ./sources`);
 };
 
 type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
