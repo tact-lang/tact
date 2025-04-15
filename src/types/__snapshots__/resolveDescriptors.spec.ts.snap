@@ -586,6 +586,87 @@ exports[`resolveDescriptors should fail descriptors for method-first-param-not-s
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-abstract-methods 1`] = `
+"<unknown>:15:10: Both "TraitB" and "TraitA" define method "f"
+  14 | 
+> 15 | contract TestContract with TraitA, TraitB {}
+                ^~~~~~~~~~~~
+  16 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods 1`] = `
+"<unknown>:17:10: Both "TraitB" and "TraitA" define method "f"
+  16 | 
+> 17 | contract TestContract with TraitA, TraitB {}
+                ^~~~~~~~~~~~
+  18 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-abstract-method 1`] = `
+"<unknown>:13:10: Both "TraitB" and "TraitA" define method "f"
+  12 | 
+> 13 | contract TestContract with TraitA, TraitB {
+                ^~~~~~~~~~~~
+  14 |     fun f(): Int {}
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-virtual-method 1`] = `
+"<unknown>:15:10: Both "TraitB" and "TraitA" define method "f"
+  14 | 
+> 15 | contract TestContract with TraitA, TraitB {
+                ^~~~~~~~~~~~
+  16 |     fun f(): Int {}
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-complex-hierarchy 1`] = `
+"<unknown>:24:5: Function "f" is already defined in trait "TraitA"
+  23 | contract TestContract with TraitC {
+> 24 |     fun f(): Int {
+           ^~~~~~~~~~~~~~
+  25 |         return 4;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-deep 1`] = `
+"<unknown>:19:10: Both "TraitB" and "TraitA" define method "f"
+  18 | 
+> 19 | contract TestContract with TraitA, TraitC {}
+                ^~~~~~~~~~~~
+  20 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-for-trait 1`] = `
+"<unknown>:17:7: Both "TraitB" and "TraitA" define method "f"
+  16 | 
+> 17 | trait Test with TraitA, TraitB {}
+             ^~~~
+  18 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-three-traits 1`] = `
+"<unknown>:23:10: Both "TraitB" and "TraitA" define method "f"
+  22 | 
+> 23 | contract TestContract with TraitA, TraitB, TraitC {}
+                ^~~~~~~~~~~~
+  24 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-virtual-and-virtual-method 1`] = `
+"<unknown>:17:10: Both "TraitB" and "TraitA" define method "f"
+  16 | 
+> 17 | contract TestContract with TraitA, TraitB {
+                ^~~~~~~~~~~~
+  18 |     override fun f(): Int {}
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for native-fun-getter 1`] = `
 "<unknown>:9:1: Native functions cannot be getters
   8 | @name(hello_world)
@@ -15375,6 +15456,1393 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
 `;
 
 exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for multi-inheritance-with-duplicate-methods-via-diamond 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [],
+          "id": 10,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 8,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 9,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+      ],
+      "id": 11,
+      "kind": "trait",
+      "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": TraitA,
+        "text": "TraitA",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "f" => {
+        "ast": {
+          "attributes": [],
+          "id": 10,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 8,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 9,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "f",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "TraitA",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "TraitA",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 39380,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 14,
+      "kind": "trait",
+      "loc": trait TraitB with TraitA {},
+      "name": {
+        "id": 12,
+        "kind": "id",
+        "loc": TraitB,
+        "text": "TraitB",
+      },
+      "traits": [
+        {
+          "id": 13,
+          "kind": "id",
+          "loc": TraitA,
+          "text": "TraitA",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "f" => {
+        "ast": {
+          "attributes": [],
+          "id": 31,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 28,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 29,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 30,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "f",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "TraitB",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "TraitB",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+          ],
+          "id": 11,
+          "kind": "trait",
+          "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": TraitA,
+            "text": "TraitA",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitA",
+              "optional": false,
+            },
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitA",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 39380,
+      },
+    ],
+    "uid": 43447,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 17,
+      "kind": "trait",
+      "loc": trait TraitC with TraitA {},
+      "name": {
+        "id": 15,
+        "kind": "id",
+        "loc": TraitC,
+        "text": "TraitC",
+      },
+      "traits": [
+        {
+          "id": 16,
+          "kind": "id",
+          "loc": TraitA,
+          "text": "TraitA",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "f" => {
+        "ast": {
+          "attributes": [],
+          "id": 35,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 32,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 33,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 34,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "f",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "TraitC",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "TraitC",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+          ],
+          "id": 11,
+          "kind": "trait",
+          "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": TraitA,
+            "text": "TraitA",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitA",
+              "optional": false,
+            },
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitA",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 39380,
+      },
+    ],
+    "uid": 47510,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 21,
+      "kind": "contract",
+      "loc": contract TestContract with TraitB, TraitC {},
+      "name": {
+        "id": 18,
+        "kind": "id",
+        "loc": TestContract,
+        "text": "TestContract",
+      },
+      "params": undefined,
+      "traits": [
+        {
+          "id": 19,
+          "kind": "id",
+          "loc": TraitB,
+          "text": "TraitB",
+        },
+        {
+          "id": 20,
+          "kind": "id",
+          "loc": TraitC,
+          "text": "TraitC",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "f" => {
+        "ast": {
+          "attributes": [],
+          "id": 27,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 24,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 25,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 26,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "f",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "TestContract",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 23,
+        "kind": "contract_init",
+        "loc": contract TestContract with TraitB, TraitC {},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "TestContract",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 14,
+          "kind": "trait",
+          "loc": trait TraitB with TraitA {},
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": TraitB,
+            "text": "TraitB",
+          },
+          "traits": [
+            {
+              "id": 13,
+              "kind": "id",
+              "loc": TraitA,
+              "text": "TraitA",
+            },
+          ],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 31,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 28,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 29,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 30,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitB",
+              "optional": false,
+            },
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitB",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [
+                {
+                  "attributes": [],
+                  "id": 10,
+                  "kind": "function_def",
+                  "loc": fun f(): Int {
+        return 1;
+    },
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f,
+                    "text": "f",
+                  },
+                  "params": [],
+                  "return": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                  "statements": [
+                    {
+                      "expression": {
+                        "base": 10,
+                        "id": 8,
+                        "kind": "number",
+                        "loc": 1,
+                        "value": 1n,
+                      },
+                      "id": 9,
+                      "kind": "statement_return",
+                      "loc": return 1;,
+                    },
+                  ],
+                },
+              ],
+              "id": 11,
+              "kind": "trait",
+              "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+              "name": {
+                "id": 5,
+                "kind": "id",
+                "loc": TraitA,
+                "text": "TraitA",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {
+              "f" => {
+                "ast": {
+                  "attributes": [],
+                  "id": 10,
+                  "kind": "function_def",
+                  "loc": fun f(): Int {
+        return 1;
+    },
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f,
+                    "text": "f",
+                  },
+                  "params": [],
+                  "return": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                  "statements": [
+                    {
+                      "expression": {
+                        "base": 10,
+                        "id": 8,
+                        "kind": "number",
+                        "loc": 1,
+                        "value": 1n,
+                      },
+                      "id": 9,
+                      "kind": "statement_return",
+                      "loc": return 1;,
+                    },
+                  ],
+                },
+                "isAbstract": false,
+                "isGetter": false,
+                "isInline": false,
+                "isMutating": true,
+                "isOverride": false,
+                "isVirtual": false,
+                "methodId": null,
+                "name": "f",
+                "origin": "user",
+                "params": [],
+                "returns": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+                "self": {
+                  "kind": "ref",
+                  "name": "TraitA",
+                  "optional": false,
+                },
+              },
+            },
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "TraitA",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 39380,
+          },
+        ],
+        "uid": 43447,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+          ],
+          "id": 11,
+          "kind": "trait",
+          "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": TraitA,
+            "text": "TraitA",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitA",
+              "optional": false,
+            },
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitA",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 39380,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 17,
+          "kind": "trait",
+          "loc": trait TraitC with TraitA {},
+          "name": {
+            "id": 15,
+            "kind": "id",
+            "loc": TraitC,
+            "text": "TraitC",
+          },
+          "traits": [
+            {
+              "id": 16,
+              "kind": "id",
+              "loc": TraitA,
+              "text": "TraitA",
+            },
+          ],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 35,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 32,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 33,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 34,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitC",
+              "optional": false,
+            },
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitC",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [
+                {
+                  "attributes": [],
+                  "id": 10,
+                  "kind": "function_def",
+                  "loc": fun f(): Int {
+        return 1;
+    },
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f,
+                    "text": "f",
+                  },
+                  "params": [],
+                  "return": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                  "statements": [
+                    {
+                      "expression": {
+                        "base": 10,
+                        "id": 8,
+                        "kind": "number",
+                        "loc": 1,
+                        "value": 1n,
+                      },
+                      "id": 9,
+                      "kind": "statement_return",
+                      "loc": return 1;,
+                    },
+                  ],
+                },
+              ],
+              "id": 11,
+              "kind": "trait",
+              "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+              "name": {
+                "id": 5,
+                "kind": "id",
+                "loc": TraitA,
+                "text": "TraitA",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {
+              "f" => {
+                "ast": {
+                  "attributes": [],
+                  "id": 10,
+                  "kind": "function_def",
+                  "loc": fun f(): Int {
+        return 1;
+    },
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f,
+                    "text": "f",
+                  },
+                  "params": [],
+                  "return": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                  "statements": [
+                    {
+                      "expression": {
+                        "base": 10,
+                        "id": 8,
+                        "kind": "number",
+                        "loc": 1,
+                        "value": 1n,
+                      },
+                      "id": 9,
+                      "kind": "statement_return",
+                      "loc": return 1;,
+                    },
+                  ],
+                },
+                "isAbstract": false,
+                "isGetter": false,
+                "isInline": false,
+                "isMutating": true,
+                "isOverride": false,
+                "isVirtual": false,
+                "methodId": null,
+                "name": "f",
+                "origin": "user",
+                "params": [],
+                "returns": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+                "self": {
+                  "kind": "ref",
+                  "name": "TraitA",
+                  "optional": false,
+                },
+              },
+            },
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "TraitA",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 39380,
+          },
+        ],
+        "uid": 47510,
+      },
+    ],
+    "uid": 63070,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for multi-inheritance-with-duplicate-methods-via-diamond 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for override-for-abstract-constant 1`] = `
 [
