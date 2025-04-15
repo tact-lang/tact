@@ -3,6 +3,16 @@ import { Blockchain } from "@ton/sandbox";
 import { Tester } from "./output/crypto_Tester";
 import "@ton/test-utils";
 import { cached } from "@/test/utils/cache-state";
+import { keccak_256 as keccak256 } from "@noble/hashes/sha3";
+
+function bigIntOfHash(hash: Uint8Array) {
+    return BigInt(
+        "0x" +
+            Array.from(hash)
+                .map((b) => b.toString(16).padStart(2, "0"))
+                .join(""),
+    );
+}
 
 const setup = async () => {
     const blockchain = await Blockchain.create();
@@ -47,19 +57,28 @@ describe("crypto.tact: keccak256() function", () => {
         });
 
         // Hashes of short slices should match
-        const s1 = beginCell().storeStringTail("hello world").asSlice();
-        let hash1 = await contract.getKeccak256(s1);
-        let hash2 = await contract.getKeccak256IgnoreRefs(s1);
-        expect(hash1.toString()).toEqual(hash2.toString());
+        const str1 = "hello world";
+        const s1 = beginCell().storeStringTail(str1).asSlice();
+        let hashWithRefs = await contract.getKeccak256(s1);
+        let hashIgnoringRefs = await contract.getKeccak256IgnoreRefs(s1);
+        expect(hashWithRefs.toString()).toEqual(hashIgnoringRefs.toString());
+
+        // On-chain implementation should correspond to the off-chain one
+        const keccak1 = bigIntOfHash(keccak256(str1));
+        expect(hashWithRefs.toString()).toEqual(keccak1.toString());
 
         // Hashes of long slices should NOT match
-        const s2 = beginCell()
-            .storeStringTail(
-                "------------------------------------------------------------------------------------------------------------------------------129",
-            )
-            .asSlice();
-        hash1 = await contract.getKeccak256(s2);
-        hash2 = await contract.getKeccak256IgnoreRefs(s2);
-        expect(hash1.toString()).not.toEqual(hash2.toString());
+        const str2 =
+            "------------------------------------------------------------------------------------------------------------------------------129";
+        const s2 = beginCell().storeStringTail(str2).asSlice();
+        hashWithRefs = await contract.getKeccak256(s2);
+        hashIgnoringRefs = await contract.getKeccak256IgnoreRefs(s2);
+        expect(hashWithRefs.toString()).not.toEqual(
+            hashIgnoringRefs.toString(),
+        );
+
+        // On-chain implementation should correspond to the off-chain one
+        const keccak2 = bigIntOfHash(keccak256(str2));
+        expect(hashWithRefs.toString()).toEqual(keccak2.toString());
     });
 });
