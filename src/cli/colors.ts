@@ -2,7 +2,7 @@ import { release } from "os";
 
 export const isColorSupported = () => {
     if (process.env.CI) {
-        return true;
+        return process.stdout.isTTY && process.env.TERM !== "dumb";
     }
     if (process.platform === "win32") {
         const [major, _, build] = release().split(".").map(Number);
