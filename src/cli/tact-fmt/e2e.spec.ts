@@ -25,6 +25,14 @@ contract Test {
 }
 `;
 
+const contractWithSyntaxError = `
+contract Test {
+    get fun greeting(): String {
+        return foo("hello world";
+    }
+}
+`;
+
 describe("tact-fmt foo.tact", () => {
     testExceptWindows("Exits with correct code", async () => {
         await mkdir(outputDir, { recursive: true });
@@ -51,5 +59,13 @@ describe("tact-fmt foo.tact", () => {
 
         const newContent = readFileSync(file, "utf8");
         expect(newContent).toMatchSnapshot();
+    });
+
+    testExceptWindows("With syntax error", async () => {
+        await mkdir(outputDir, { recursive: true });
+        const file = join(outputDir, "contact.tact");
+        writeFileSync(file, contractWithSyntaxError);
+        const result = await tactFmt(file, "-w");
+        expect(result).toMatchSnapshot();
     });
 });
