@@ -11,12 +11,6 @@ exports[`tact-fmt foo.tact Default run 1`] = `
     }
 }
 
-contract Test {
-    get fun greeting(): String {
-        return "hello world";
-    }
-}
-
 ",
 }
 `;
