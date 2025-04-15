@@ -181,7 +181,6 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
 
             if (onlyCheck) {
                 if (!allFormatted) {
-                    // found not formatted file
                     console.log(
                         "Code style issues found in the above file. Run tact-fmt with --write to fix.",
                     );
