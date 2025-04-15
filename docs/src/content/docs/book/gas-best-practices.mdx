@@ -85,20 +85,38 @@ Almost all contracts on TON are deployed on the basechain — a [workchain with 
 A frequent use-case for basechain addresses is checking message sender addresses for validity, i.e., if a contract needs to make sure the incoming message comes from a specific contract deployed in the basechain, it can use the [`StateInit.hasSameBasechainAddress(){:tact}`](/ref/core-addresses#stateinithassamebasechainaddress) extension function.
 
 ```tact
-let init = initOf SomeContract();
-require(init.hasSameBasechainAddress(sender()), "Message must come from SomeContract");
+contract Child(parentAddr: Address) {
+    receive() {
+        // Forward surplus to the parent address
+        message(MessageParameters{
+            to: self.parentAddr,
+            value: 0,
+            mode: SendRemainingValue,
+        });
+    }
+}
 
-// Deriving the BasechainAddress from the StateInit for further use
-let addr: BasechainAddress = contractBasechainAddress(init);
+contract Parent() {
+    receive() {
+        // Ensure that the message came from the child contract
+        let childContract = initOf Child(myAddress());
+        require(
+            childContract.hasSameBasechainAddress(sender()),
+            "Message must come from the Child contract",
+        );
 
-// Converting existing Address into the BasechainAddress
-let stdAddr: StdAddress = parseStdAddress(
-    address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N").asSlice()
-);
-let basechainAddr: BasechainAddress = newBasechainAddress(stdAddr.address);
+        // ...subsequent logic...
+    }
+}
 ```
 
 To ensure that a certain [`Address{:tact}`][p] is in the basechain and can be represented by the `BasechainAddress{:tact}`, you can use the [`forceBasechain(){:tact}`](/ref/core-addresses#forcebasechain) function first.
+
+See other functions related to the `BasechainAddress{:tact}` struct:
+
+* [`emptyBasechainAddress{:tact}`](/ref/core-addresses#emptybasechainaddress)
+* [`newBasechainAddress{:tact}`](/ref/core-addresses#newbasechainaddress)
+* [`contractBasechainAddress{:tact}`](/ref/core-addresses#contractbasechainaddress)
 
 ### Pay attention to "Gas-expensive" badge
 
