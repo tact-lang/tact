@@ -297,30 +297,27 @@ describe("benchmarks", () => {
         expect(gasUsedRaw).toMatchSnapshot("gas used raw deploy");
     });
 
-    it("benchmark sqrt", async () => {
-        const variants = [
-            { name: "sqrt via geom mean", contractClass: GeomMean },
-            { name: "sqrt", contractClass: Sqrt },
-        ];
+    const variants: [string, typeof GeomMean | typeof Sqrt][] = [
+        ["sqrt via geom mean", GeomMean],
+        ["sqrt", Sqrt],
+    ];
 
-        for (const { name, contractClass } of variants) {
-            const instance = blockchain.openContract(
-                await contractClass.fromInit(),
-            );
+    it.each(variants)("benchmark %s", async (name, ContractClass) => {
+        const instance = blockchain.openContract(
+            await ContractClass.fromInit(),
+        );
 
-            const sendResult = await step(name, () =>
-                instance.send(
-                    treasure.getSender(),
-                    { value: toNano(1) },
-                    { $$type: "GetSqrt", value: 100n },
-                ),
-            );
+        const sendResult = await step(name, () =>
+            instance.send(
+                treasure.getSender(),
+                { value: toNano(1) },
+                { $$type: "GetSqrt", value: 100n },
+            ),
+        );
+        const gasUsed = measureGas(sendResult.transactions);
+        expect(gasUsed).toMatchSnapshot(`gas used`);
 
-            const gasUsed = measureGas(sendResult.transactions);
-            expect(gasUsed).toMatchSnapshot(`${name} - gas used`);
-
-            const codeSize = instance.init!.code.toBoc().length;
-            expect(codeSize).toMatchSnapshot(`${name} - code size`);
-        }
+        const codeSize = instance.init!.code.toBoc().length;
+        expect(codeSize).toMatchSnapshot(`code size`);
     });
 });
