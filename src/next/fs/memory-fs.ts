@@ -6,9 +6,9 @@ import type { Cursor } from "@/next/fs/cursor";
 import type { Logger } from "@/error/logger-util";
 
 export function createMemoryFs(
+    log: Logger<string, void>,
     fs: Map<string, Blob>,
     root: RelativePath,
-    log: Logger<string, void>,
     isReadonly: boolean,
 ): Cursor {
     const errors = FsErrors(log);

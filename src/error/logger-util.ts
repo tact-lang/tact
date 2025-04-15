@@ -93,9 +93,14 @@ const mapBaseLogger = <M1, M2, R>(
 });
 
 /**
+ * `SourceLogger` or top-level `Logger`
+ */
+export interface AnyLogger<M, R> extends Formatter<M>, BaseLogger<M, R> {}
+
+/**
  * Logger that knows about currently compiled file
  */
-export interface SourceLogger<M, R> extends Formatter<M>, BaseLogger<M, R> {
+export interface SourceLogger<M, R> extends AnyLogger<M, R> {
     /**
      * Choose range where an error will be shown
      */
@@ -110,7 +115,7 @@ export interface SourceLogger<M, R> extends Formatter<M>, BaseLogger<M, R> {
 /**
  * Top-level logger
  */
-export interface Logger<M, R> extends Formatter<M>, BaseLogger<M, R> {
+export interface Logger<M, R> extends AnyLogger<M, R> {
     /**
      * Set currently compiled source in logging context
      */

@@ -39,6 +39,11 @@ export const asString = ({ stepsUp, segments }: RelativePath): string => {
 export const emptyPath = RelativePath(0, []);
 
 /**
+ * Parent path, equivalent to ".."
+ */
+export const parentPath = RelativePath(1, []);
+
+/**
  * Combine two relative paths
  */
 export const appendPath = (
