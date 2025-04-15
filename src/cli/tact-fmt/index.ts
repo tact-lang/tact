@@ -9,6 +9,7 @@ import { formatCode } from "@/fmt/fmt";
 import path, { join } from "path";
 import { getAnsiMarkup, isColorSupported } from "@/cli/colors";
 import { glob } from "glob";
+import { cwd } from "process";
 
 const fmtVersion = "0.0.1";
 
