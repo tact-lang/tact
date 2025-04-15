@@ -6,7 +6,10 @@ import { showCommit } from "@/cli/version";
 import { FormatterErrors } from "@/cli/tact-fmt/error-schema";
 import * as fs from "fs";
 import { formatCode } from "@/fmt/fmt";
-import { writeFileSync } from "fs";
+import path, { join } from "path";
+import { getAnsiMarkup, isColorSupported } from "@/cli/colors";
+import { glob } from "glob";
+import { cwd } from "process";
 
 const fmtVersion = "0.0.1";
 
@@ -52,7 +55,7 @@ const ArgSchema = (Parser: ArgParser) => {
 const showHelp = () => {
     console.log(`
     Usage
-      $ tact-fmt [...flags] TACT-FILE
+      $ tact-fmt [...flags] <file> or <directory>
 
     Flags
       -w, --write                 Write result to same file
@@ -61,10 +64,66 @@ const showHelp = () => {
 
     Examples
       $ tact-fmt --version
-      ${fmtVersion}`);
+      ${fmtVersion}
+
+      $ tact-fmt file.tact
+      Format and output the result to stdout
+
+      $ tact-fmt -w file.tact
+      Format and rewrite file.tact
+
+      $ tact-fmt -w ./sources
+      Format and rewrite all Tact files in ./sources`);
 };
 
 type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
+
+const markup = getAnsiMarkup(Boolean(isColorSupported()));
+
+function formatFile(filepath: string, write: boolean): boolean | undefined {
+    const content = readFileOrFail(filepath);
+    if (typeof content === "undefined") return undefined;
+
+    const [res, time] = measureTime(() => formatCode(filepath, content));
+    if (res.$ === "FormatCodeError") {
+        console.error(
+            `Cannot format file ${path.relative(cwd(), filepath)}:`,
+            res.message,
+        );
+        return undefined;
+    }
+
+    const alreadyFormatted = content === res.code;
+
+    if (write) {
+        console.log(
+            markup.gray(path.basename(filepath)),
+            `${time.toFixed(0)}ms`,
+            status(content, res.code),
+        );
+        fs.writeFileSync(filepath, res.code);
+
+        return alreadyFormatted;
+    } else {
+        console.log(res.code);
+    }
+    return alreadyFormatted;
+}
+
+function status(before: string, after: string) {
+    if (before !== after) {
+        return "(reformatted)";
+    }
+    return "(unchanged)";
+}
+
+function measureTime<T>(fn: () => T): [T, number] {
+    const startTime = performance.now();
+    const result = fn();
+    const endTime = performance.now();
+    const time = endTime - startTime;
+    return [result, time];
+}
 
 const parseArgs = (Errors: FormatterErrors, Args: Args) => {
     if (Args.single("help")) {
@@ -84,17 +143,29 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
 
     const filePath = Args.single("immediate");
     if (filePath) {
-        const fileContent = fs.readFileSync(filePath, "utf8");
-        const res = formatCode(filePath, fileContent);
-        if (res.$ === "FormatCodeError") {
-            console.error(res.message);
-            process.exit(1);
+        const write = Args.single("write") ?? false;
+
+        if (!fs.statSync(filePath).isFile()) {
+            const files = globSync(["**/*.tact"], {
+                cwd: filePath,
+            });
+
+            let someFileCannotBeFormatted = false;
+            for (const file of files) {
+                const res = formatFile(join(filePath, file), write);
+                if (typeof res === "undefined") {
+                    someFileCannotBeFormatted = true;
+                }
+            }
+            if (someFileCannotBeFormatted) {
+                process.exit(1);
+            }
+            return;
         }
 
-        if (Args.single("write")) {
-            writeFileSync(filePath, res.code);
-        } else {
-            console.log(res.code);
+        const res = formatFile(filePath, write);
+        if (typeof res === "undefined") {
+            process.exit(1);
         }
         return;
     }
@@ -116,4 +187,18 @@ const noUnknownParams = (Errors: FormatterErrors, Args: Args): boolean => {
     }
     showHelp();
     return false;
+};
+
+function readFileOrFail(filePath: string): string | undefined {
+    try {
+        return fs.readFileSync(filePath, "utf8");
+    } catch (e) {
+        const error = e as Error;
+        console.error(`Cannot read file: ${error.message}`);
+        return undefined;
+    }
+}
+
+const globSync = (globs: string[], options: { cwd: string }) => {
+    return globs.flatMap((g) => glob.sync(g, options));
 };
