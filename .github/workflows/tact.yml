@@ -74,7 +74,6 @@ jobs:
           yarn gen:func-js
           # Clean-up
           yarn cleanall
-
   test:
     strategy:
       fail-fast: false
@@ -83,26 +82,23 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - if: ${{ matrix.os == 'windows-latest'}}
-        name: Prepare Windows environment
-        run: |
-          $ErrorActionPreference = 'Stop'
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test
       - name: Test compatibility with tact-template
         run: |
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
-          # Hijack the dependency on Tact to avoid redundant npm downloads
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: |  
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
-          mv temp.json package.json
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
-          Move-Item temp.json package.json -Force
-        run: |
+          # Modify package.json to hijack the dependency on Tact
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            $ErrorActionPreference = 'Stop'
+            jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
+            Move-Item temp.json package.json -Force
+          else
+            jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
+            mv temp.json package.json
+          fi
+
+          # Install dependencies and run tests
           yarn install
           yarn link @tact-lang/compiler
           yarn build
@@ -111,46 +107,9 @@ jobs:
         if: always()
         run: |
           yarn global add allure-commandline
-        if: ${{ matrix.os == 'windows-latest' }}
-          echo "$(yarn global bin)" >> $env:GITHUB_PATH
-      - name: Generate Allure report
-        if: always()    
-        run: |  
-          allure generate allure-results -o allure-${{ matrix.os }}-report --clean --single-file
-      - name: Upload Allure report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-${{ matrix.os }}-report
-          path: allure-${{ matrix.os }}-report
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [22]
-        os: [windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/test
-      - name: Test compatibility with tact-template
-        run: |
-          $ErrorActionPreference = 'Stop'
-          git clone https://github.com/tact-lang/tact-template.git
-          cd tact-template
-          # Hijack the dependency on Tact to avoid redundant npm downloads
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
-          Move-Item temp.json package.json -Force
-          yarn install
-          yarn link @tact-lang/compiler
-          yarn build
-          yarn test
-      - name: Generate Allure report
-        if: always()
-        run: |
-          yarn global add allure-commandline
-      - name: Add Allure to PATH
-        run: |
-          echo "$(yarn global bin)" >> $env:GITHUB_PATH
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            echo "$(yarn global bin)" >> $env:GITHUB_PATH
+          fi
       - name: Generate Allure report
         if: always()
         run: |
@@ -161,7 +120,6 @@ jobs:
         with:
           name: allure-${{ matrix.os }}-report
           path: allure-${{ matrix.os }}-report
-
   test-blueprint:
     strategy:
       fail-fast: false
