@@ -99,9 +99,12 @@ jobs:
           yarn test
       - name: Install Allure
         if: always()
+        shell: bash
         run: |
           yarn global add allure-commandline
-          echo "$(yarn global bin)" >> $GITHUB_PATH
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            echo "$(yarn global bin)" >> $env:GITHUB_PATH
+          fi
       - name: Generate Allure report
         if: always()
         run: |
