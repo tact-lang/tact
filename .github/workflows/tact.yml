@@ -101,6 +101,7 @@ jobs:
         if: always()
         run: |
           yarn global add allure-commandline
+          echo "$(yarn global bin)" >> $GITHUB_PATH
       - name: Generate Allure report
         if: always()
         run: |
