@@ -84,20 +84,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test
-      - name: Test compatibility with tact-template
+      - name: Clone repository
         run: |
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
-          # Modify package.json to hijack the dependency on Tact
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            $ErrorActionPreference = 'Stop'
-            jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
-            Move-Item temp.json package.json -Force
-          else
-            jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
-            mv temp.json package.json
-          fi
-
+      - name: Patch tact-template dependency (for Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
+          Move-Item temp.json package.json -Force
+      - name: Patch tact-template dependency
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: |
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
+          mv temp.json package.json
+      - name: Test compatibility with tact-template
+        run: |
           # Install dependencies and run tests
           yarn install
           yarn link @tact-lang/compiler
