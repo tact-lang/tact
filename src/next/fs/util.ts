@@ -41,7 +41,10 @@ export const emptyPath = RelativePath(0, []);
 /**
  * Combine two relative paths
  */
-export const appendPath = (left: RelativePath, right: RelativePath): RelativePath => {
+export const appendPath = (
+    left: RelativePath,
+    right: RelativePath,
+): RelativePath => {
     const delta = right.stepsUp - left.segments.length;
     return RelativePath(left.stepsUp + Math.max(0, delta), [
         ...left.segments.slice(0, Math.max(0, -delta)),

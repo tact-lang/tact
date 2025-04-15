@@ -26,11 +26,11 @@ export function createProxyFs(
             try {
                 return await cb();
             } catch (error) {
-                if (!(error instanceof Error) || !('code' in error)) {
+                if (!(error instanceof Error) || !("code" in error)) {
                     return errors.unexpected(error);
                 }
                 const code = error.code;
-                if (typeof code !== 'string') {
+                if (typeof code !== "string") {
                     return errors.unexpected(error);
                 }
                 const handlers = asRecord(errors.regular);
@@ -66,9 +66,10 @@ export function createProxyFs(
                 await catchCommonFsErrors(async () => {
                     const fullPath = join(root, asString(currPath));
                     await mkdir(dirname(fullPath), { recursive: true });
-                    const encodedContent = typeof content === 'string'
-                        ? content
-                        : Buffer.from(await content.arrayBuffer());
+                    const encodedContent =
+                        typeof content === "string"
+                            ? content
+                            : Buffer.from(await content.arrayBuffer());
                     await writeFile(fullPath, encodedContent);
                 });
             },

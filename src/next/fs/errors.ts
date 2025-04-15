@@ -2,22 +2,22 @@ import type { Logger } from "@/error/logger-util";
 
 export const FsErrors = <M, R>(l: Logger<M, R>) => {
     const regular = {
-        'ENOENT': (absPath: string) => {
+        ENOENT: (absPath: string) => {
             return l.error(l.text`File not found: ${l.path(absPath)}`);
         },
-        'EACCES': (absPath: string) => {
+        EACCES: (absPath: string) => {
             return l.error(l.text`Permission denied: ${l.path(absPath)}`);
         },
-        'EISDIR': (absPath: string) => {
+        EISDIR: (absPath: string) => {
             return l.error(l.text`Directory is not a file: ${l.path(absPath)}`);
         },
-        'EMFILE': (absPath: string) => {
+        EMFILE: (absPath: string) => {
             return l.error(l.text`Too many open files: ${l.path(absPath)}`);
         },
-        'ENAMETOOLONG': (absPath: string) => {
+        ENAMETOOLONG: (absPath: string) => {
             return l.error(l.text`Filename too long: ${l.path(absPath)}`);
         },
-        'ENOSPC': (absPath: string) => {
+        ENOSPC: (absPath: string) => {
             return l.error(l.text`No space left on device: ${l.path(absPath)}`);
         },
     } as const;
@@ -27,7 +27,9 @@ export const FsErrors = <M, R>(l: Logger<M, R>) => {
             throw error;
         },
         outOfRoot: (absPath: string) => {
-            return l.error(l.text`Outside of the root directory: ${l.path(absPath)}`);
+            return l.error(
+                l.text`Outside of the root directory: ${l.path(absPath)}`,
+            );
         },
         readonly: (absPath: string) => {
             return l.error(l.text`Filesystem is readonly: ${l.path(absPath)}`);

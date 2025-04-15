@@ -33,7 +33,9 @@ export function createMemoryFs(
                     errors.regular.ENOENT(getAbsolutePathForLog());
                     return;
                 }
-                return new TextDecoder("utf-8").decode(await blob.arrayBuffer());
+                return new TextDecoder("utf-8").decode(
+                    await blob.arrayBuffer(),
+                );
             },
             // eslint-disable-next-line @typescript-eslint/require-await
             write: async (content) => {
@@ -41,9 +43,12 @@ export function createMemoryFs(
                     errors.readonly(getAbsolutePathForLog());
                 }
                 const fullPath = asString(appendPath(root, currPath));
-                const blob = typeof content === 'string'
-                    ? new Blob([content], { type: "text/plain;charset=utf-8" })
-                    : content;
+                const blob =
+                    typeof content === "string"
+                        ? new Blob([content], {
+                              type: "text/plain;charset=utf-8",
+                          })
+                        : content;
                 fs.set(fullPath, blob);
             },
         };

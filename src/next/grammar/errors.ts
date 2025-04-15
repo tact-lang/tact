@@ -204,7 +204,9 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     rawRemaining: () => (loc: Range) => {
         return l
             .at(loc)
-            .error(l.text`Remaining can only be used as storage type on Slice, cell, or Builder`);
+            .error(
+                l.text`Remaining can only be used as storage type on Slice, cell, or Builder`,
+            );
     },
     cannotHaveFormat: () => (loc: Range) => {
         return l.at(loc).error(l.text`This type cannot have format definition`);
