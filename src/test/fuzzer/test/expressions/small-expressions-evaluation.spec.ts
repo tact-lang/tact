@@ -24,7 +24,7 @@ describe("evaluation properties", () => {
                 createExpressionComputationEqualityProperty(
                     expressionTestingEnvironment,
                     1,
-                    5,
+                    15,
                 ),
                 bindingsAndExpressionPrtinter,
             );
