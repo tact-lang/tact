@@ -11,6 +11,8 @@ import {
     generateCodeSizeResults,
     getUsedGas,
     printBenchmarkTable,
+    type BenchmarkResult,
+    type CodeSizeResult,
 } from "@/benchmarks/utils/gas";
 import { join, resolve } from "path";
 import { readFileSync } from "fs";
@@ -22,7 +24,6 @@ import type {
     Funding,
     Approve,
     Cancel,
-    ProvideEscrowData,
 } from "@/benchmarks/contracts/output/escrow_Escrow";
 
 import benchmarkResults from "@/benchmarks/escrow/results_gas.json";
@@ -38,6 +39,8 @@ const loadFunCEscrowBoc = () => {
     return { bocEscrow };
 };
 
+type Implementation = "func" | "tact";
+
 describe("Escrow Gas Tests", () => {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
@@ -45,9 +48,6 @@ describe("Escrow Gas Tests", () => {
     let buyer: SandboxContract<TreasuryContract>;
     let guarantor: SandboxContract<TreasuryContract>;
     let lastCtxId = 1n;
-
-    let escrowContractFunC: SandboxContract<Escrow>;
-    let escrowContractTact: SandboxContract<Escrow>;
 
     const jettonWalletCode = beginCell().storeUint(0, 1).endCell();
 
@@ -62,90 +62,87 @@ describe("Escrow Gas Tests", () => {
 
     const dealAmount = toNano(1);
 
-    async function deployFuncContract(
+    async function deployContract(
+        implementation: Implementation,
         assetAddress: Address | null,
         dealAmount: bigint,
         royalty: bigint,
     ): Promise<SandboxContract<Escrow>> {
-        const escrowData = loadFunCEscrowBoc();
-        const escrowCell = Cell.fromBoc(escrowData.bocEscrow)[0]!;
+        if (implementation === "func") {
+            const escrowData = loadFunCEscrowBoc();
+            const escrowCell = Cell.fromBoc(escrowData.bocEscrow)[0]!;
 
-        const stateInitEscrowBuilder = beginCell()
-            .storeUint(lastCtxId++, 32)
-            .storeAddress(seller.address)
-            .storeAddress(guarantor.address)
-            .storeUint(dealAmount, 64)
-            .storeAddress(assetAddress);
+            const stateInitEscrowBuilder = beginCell()
+                .storeUint(lastCtxId++, 32)
+                .storeAddress(seller.address)
+                .storeAddress(guarantor.address)
+                .storeUint(dealAmount, 64)
+                .storeAddress(assetAddress);
 
-        const cell2 = beginCell()
-            .storeUint(royalty, 32)
-            .storeAddress(null)
-            .storeUint(0, 2)
-            .storeMaybeRef(assetAddress ? jettonWalletCode : null)
-            .endCell();
+            const cell2 = beginCell()
+                .storeUint(royalty, 32)
+                .storeAddress(null)
+                .storeUint(0, 2)
+                .storeMaybeRef(assetAddress ? jettonWalletCode : null)
+                .endCell();
 
-        const stateInit = stateInitEscrowBuilder.storeRef(cell2).endCell();
+            const stateInit = stateInitEscrowBuilder.storeRef(cell2).endCell();
 
-        const init = { code: escrowCell, data: stateInit };
-        const escrowAddress = contractAddress(0, init);
+            const init = { code: escrowCell, data: stateInit };
+            const escrowAddress = contractAddress(0, init);
 
-        const escrowContract = blockchain.openContract(
-            await Escrow.fromAddress(escrowAddress),
-        );
+            const escrowContract = blockchain.openContract(
+                await Escrow.fromAddress(escrowAddress),
+            );
 
-        const deployResult = await deployer.send({
-            to: escrowAddress,
-            value: toNano("0.1"),
-            init,
-            body: beginCell().endCell(),
-            sendMode: SendMode.PAY_GAS_SEPARATELY,
-        });
+            const deployResult = await deployer.send({
+                to: escrowAddress,
+                value: toNano("0.1"),
+                init,
+                body: beginCell().endCell(),
+                sendMode: SendMode.PAY_GAS_SEPARATELY,
+            });
 
-        expect(deployResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: escrowAddress,
-            success: true,
-            deploy: true,
-        });
+            expect(deployResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: escrowAddress,
+                success: true,
+                deploy: true,
+            });
 
-        return escrowContract;
-    }
+            return escrowContract;
+        } else {
+            const contractInit = await Escrow.fromInit(
+                lastCtxId++,
+                seller.address,
+                guarantor.address,
+                null,
+                dealAmount,
+                royalty,
+                false,
+                assetAddress,
+                assetAddress ? jettonWalletCode : null,
+            );
 
-    async function deployTactContract(
-        assetAddress: Address | null,
-        dealAmount: bigint,
-        royalty: bigint,
-    ): Promise<SandboxContract<Escrow>> {
-        const contractInit = await Escrow.fromInit(
-            lastCtxId++,
-            seller.address,
-            guarantor.address,
-            null,
-            dealAmount,
-            royalty,
-            false,
-            assetAddress,
-            assetAddress ? jettonWalletCode : null,
-        );
+            const contract = blockchain.openContract(contractInit);
 
-        const contract = blockchain.openContract(contractInit);
+            const deployResult = await contract.send(
+                deployer.getSender(),
+                { value: toNano("0.1") },
+                {
+                    $$type: "ProvideEscrowData",
+                },
+            );
 
-        const deployResult = await contract.send(
-            deployer.getSender(),
-            { value: toNano("0.1") },
-            {
-                $$type: "ProvideEscrowData",
-            } as ProvideEscrowData,
-        );
+            expect(deployResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: contract.address,
+                success: true,
+                deploy: true,
+            });
 
-        expect(deployResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: contract.address,
-            success: true,
-            deploy: true,
-        });
-
-        return contract;
+            return contract;
+        }
     }
 
     beforeAll(async () => {
@@ -168,11 +165,6 @@ describe("Escrow Gas Tests", () => {
         });
     });
 
-    beforeEach(async () => {
-        escrowContractFunC = await deployFuncContract(null, dealAmount, 1n);
-        escrowContractTact = await deployTactContract(null, dealAmount, 1n);
-    });
-
     const sendFunding = async (
         escrowContract: SandboxContract<Escrow>,
         from: Sender,
@@ -185,198 +177,158 @@ describe("Escrow Gas Tests", () => {
         return await escrowContract.send(from, { value }, msg);
     };
 
-    it("fundingTon", async () => {
-        const runFundingTest = async (
-            escrowContract: SandboxContract<Escrow>,
-        ) => {
-            const sendResult = await step("fundingTon", async () =>
-                sendFunding(escrowContract, buyer.getSender(), toNano(1)),
-            );
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
-            return getUsedGas(sendResult, "internal");
+    const sendChangeCode = async (
+        escrowContract: SandboxContract<Escrow>,
+        from: Sender,
+        value: bigint,
+        newCode: Cell,
+    ) => {
+        const msg: UpdateJettonWalletCode = {
+            $$type: "UpdateJettonWalletCode",
+            newJettonWalletCode: newCode,
         };
 
-        const fundingGasUsedFunC = await runFundingTest(escrowContractFunC);
-        const fundingGasUsedTact = await runFundingTest(escrowContractTact);
+        return await escrowContract.send(from, { value }, msg);
+    };
 
-        expect(fundingGasUsedFunC).toEqual(funcResult.gas["fundingTon"]);
-        expect(fundingGasUsedTact).toEqual(expectedResult.gas["fundingTon"]);
+    const sendApprove = async (
+        escrowContract: SandboxContract<Escrow>,
+        from: Sender,
+        value: bigint,
+    ) => {
+        const msg: Approve = {
+            $$type: "Approve",
+        };
+
+        return await escrowContract.send(from, { value }, msg);
+    };
+
+    const sendCancel = async (
+        escrowContract: SandboxContract<Escrow>,
+        from: Sender,
+        value: bigint,
+    ) => {
+        const msg: Cancel = {
+            $$type: "Cancel",
+        };
+
+        return await escrowContract.send(from, { value }, msg);
+    };
+
+    const implementationsGas: [Implementation, BenchmarkResult][] = [
+        ["func", funcResult],
+        ["tact", expectedResult],
+    ];
+
+    const implementationsCodeSize: [Implementation, CodeSizeResult][] = [
+        ["func", funcCodeSize],
+        ["tact", expectedCodeSize],
+    ];
+
+    it.each(implementationsGas)("fundingTon - %s", async (name, result) => {
+        const contract = await deployContract(name, null, dealAmount, 1n);
+
+        const sendResult = await step("fundingTon", async () =>
+            sendFunding(contract, buyer.getSender(), toNano(1)),
+        );
+
+        expect(sendResult.transactions).not.toHaveTransaction({
+            success: false,
+        });
+
+        const gasUsed = getUsedGas(sendResult, "internal");
+        expect(gasUsed).toEqual(result.gas["fundingTon"]);
     });
 
-    it("changeCode", async () => {
-        const sendChangeCode = async (
-            escrowContract: SandboxContract<Escrow>,
-            from: Sender,
-            value: bigint,
-            newCode: Cell,
-        ) => {
-            const msg: UpdateJettonWalletCode = {
-                $$type: "UpdateJettonWalletCode",
-                newJettonWalletCode: newCode,
-            };
-
-            return await escrowContract.send(from, { value }, msg);
-        };
-
-        const runChangeCodeTest = async (
-            escrowContract: SandboxContract<Escrow>,
-        ) => {
-            const newCode = beginCell().endCell();
-
-            const sendResult = await step("changeCode", async () =>
-                sendChangeCode(
-                    escrowContract,
-                    seller.getSender(),
-                    toNano("0.05"),
-                    newCode,
-                ),
-            );
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
-            return getUsedGas(sendResult, "internal");
-        };
-
-        escrowContractFunC = await deployFuncContract(
+    it.each(implementationsGas)("changeCode - %s", async (name, result) => {
+        const contract = await deployContract(
+            name,
             guarantor.address,
             dealAmount,
             1n,
         );
+        const newCode = beginCell().endCell();
 
-        escrowContractTact = await deployTactContract(
-            guarantor.address,
-            dealAmount,
-            1n,
+        const sendResult = await step("changeCode", async () =>
+            sendChangeCode(
+                contract,
+                seller.getSender(),
+                toNano("0.05"),
+                newCode,
+            ),
         );
 
-        const changeCodeGasUsedFunC =
-            await runChangeCodeTest(escrowContractFunC);
-        const changeCodeGasUsedTact =
-            await runChangeCodeTest(escrowContractTact);
+        expect(sendResult.transactions).not.toHaveTransaction({
+            success: false,
+        });
 
-        expect(changeCodeGasUsedFunC).toEqual(funcResult.gas["changeCode"]);
-        expect(changeCodeGasUsedTact).toEqual(expectedResult.gas["changeCode"]);
+        const gasUsed = getUsedGas(sendResult, "internal");
+        expect(gasUsed).toEqual(result.gas["changeCode"]);
     });
 
-    it("approveTon", async () => {
-        const sendApprove = async (
-            escrowContract: SandboxContract<Escrow>,
-            from: Sender,
-            value: bigint,
-        ) => {
-            const msg: Approve = {
-                $$type: "Approve",
-            };
+    it.each(implementationsGas)("approveTon - %s", async (name, result) => {
+        const contract = await deployContract(name, null, dealAmount, 1n);
 
-            return await escrowContract.send(from, { value }, msg);
-        };
-
-        const runApproveTest = async (
-            escrowContract: SandboxContract<Escrow>,
-        ) => {
-            await escrowContract.send(buyer.getSender(), { value: toNano(1) }, {
+        await contract.send(
+            buyer.getSender(),
+            { value: toNano(1) },
+            {
                 $$type: "Funding",
-            } as Funding);
+            },
+        );
 
-            const sendResult = await step("approveTon", async () =>
-                sendApprove(
-                    escrowContract,
-                    guarantor.getSender(),
-                    toNano("0.05"),
-                ),
-            );
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
-            return getUsedGas(sendResult, "internal");
-        };
+        const sendResult = await step("approveTon", async () =>
+            sendApprove(contract, guarantor.getSender(), toNano("0.05")),
+        );
 
-        const approveGasUsedFunC = await runApproveTest(escrowContractFunC);
-        const approveGasUsedTact = await runApproveTest(escrowContractTact);
+        expect(sendResult.transactions).not.toHaveTransaction({
+            success: false,
+        });
 
-        expect(approveGasUsedFunC).toEqual(funcResult.gas["approveTon"]);
-        expect(approveGasUsedTact).toEqual(expectedResult.gas["approveTon"]);
+        const gasUsed = getUsedGas(sendResult, "internal");
+        expect(gasUsed).toEqual(result.gas["approveTon"]);
     });
 
-    it("cancelTon", async () => {
-        const sendCancel = async (
-            escrowContract: SandboxContract<Escrow>,
-            from: Sender,
-            value: bigint,
-        ) => {
-            const msg: Cancel = {
-                $$type: "Cancel",
-            };
+    it.each(implementationsGas)("cancelTon - %s", async (name, result) => {
+        const contract = await deployContract(name, null, dealAmount, 1n);
 
-            return await escrowContract.send(from, { value }, msg);
-        };
-
-        const runCancelTest = async (
-            escrowContract: SandboxContract<Escrow>,
-        ) => {
-            await escrowContract.send(buyer.getSender(), { value: toNano(1) }, {
+        await contract.send(
+            buyer.getSender(),
+            { value: toNano(1) },
+            {
                 $$type: "Funding",
-            } as Funding);
+            },
+        );
 
-            const sendResult = await step("cancelTon", async () =>
-                sendCancel(
-                    escrowContract,
-                    guarantor.getSender(),
-                    toNano("0.05"),
-                ),
-            );
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
-            return getUsedGas(sendResult, "internal");
-        };
+        const sendResult = await step("cancelTon", async () =>
+            sendCancel(contract, guarantor.getSender(), toNano("0.05")),
+        );
 
-        const cancelGasUsedFunC = await runCancelTest(escrowContractFunC);
-        const cancelGasUsedTact = await runCancelTest(escrowContractTact);
+        expect(sendResult.transactions).not.toHaveTransaction({
+            success: false,
+        });
 
-        expect(cancelGasUsedFunC).toEqual(funcResult.gas["cancelTon"]);
-        expect(cancelGasUsedTact).toEqual(expectedResult.gas["cancelTon"]);
+        const gasUsed = getUsedGas(sendResult, "internal");
+        expect(gasUsed).toEqual(result.gas["cancelTon"]);
     });
 
-    it("cells", async () => {
-        expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    escrowContractFunC.address,
-                )
-            ).cells,
-        ).toEqual(funcCodeSize.size["cells"]);
+    it.each(implementationsCodeSize)(
+        "cells - %s",
+        async (name, sizeResults) => {
+            const contract = await deployContract(name, null, dealAmount, 1n);
+
+            expect(
+                (await getStateSizeForAccount(blockchain, contract.address))
+                    .cells,
+            ).toEqual(sizeResults.size["cells"]);
+        },
+    );
+
+    it.each(implementationsCodeSize)("bits - %s", async (name, sizeResults) => {
+        const contract = await deployContract(name, null, dealAmount, 1n);
 
         expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    escrowContractTact.address,
-                )
-            ).cells,
-        ).toEqual(expectedCodeSize.size["cells"]);
-    });
-
-    it("bits", async () => {
-        expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    escrowContractFunC.address,
-                )
-            ).bits,
-        ).toEqual(funcCodeSize.size["bits"]);
-
-        expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    escrowContractTact.address,
-                )
-            ).bits,
-        ).toEqual(expectedCodeSize.size["bits"]);
+            (await getStateSizeForAccount(blockchain, contract.address)).bits,
+        ).toEqual(sizeResults.size["bits"]);
     });
 });
