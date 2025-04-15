@@ -100,7 +100,7 @@ jobs:
       - name: Generate Allure report
         if: always()
         run: |
-          yarn add -g allure-commandline
+          yarn global add allure-commandline
           allure generate allure-results -o allure-report --clean
       - name: Upload Allure report
         if: always()
@@ -135,7 +135,7 @@ jobs:
       - name: Generate Allure report
         if: always()
         run: |
-          yarn add -g allure-commandline
+          yarn global add allure-commandline
           allure generate allure-results -o allure-report --clean
       - name: Upload Allure report
         if: always()
