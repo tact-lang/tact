@@ -10,6 +10,7 @@ import type { Logger } from "@/error/logger-util";
 
 const asRecord = <T>(t: Record<string, T>) => t;
 
+// FIXME: object
 export function createProxyFs(
     log: Logger<string, void>,
     root: string,
