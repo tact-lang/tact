@@ -25,6 +25,7 @@ import {
     GenContext,
     initializeGenerator,
     NonTerminal,
+    Terminal
 } from "../../src/generators/uniform-expr-gen";
 import {
     bindingsAndExpressionPrtinter,
@@ -119,6 +120,8 @@ describe("evaluation properties", () => {
                 contractNames: [
                     expressionTestingEnvironment.contractNameToCompile,
                 ],
+                allowedNonTerminals: Object.values(NonTerminal),
+                allowedTerminals: Object.values(Terminal),
             };
             const generator = initializeGenerator(
                 1,
@@ -133,7 +136,7 @@ describe("evaluation properties", () => {
                     expressionGenerationIds,
                     generator,
                 ),
-                generator(NonTerminal.Int),
+                generator(NonTerminal.Int.id),
                 async (bindings, expr) => {
                     const compilationResult = await compileExpression(
                         expressionTestingEnvironment,

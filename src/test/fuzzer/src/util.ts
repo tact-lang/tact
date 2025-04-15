@@ -122,7 +122,6 @@ function makeAsyncParams<T>(
                 let errorSuffix = "";
                 if (out.counterexample !== null) {
                     errorSuffix = counterexamplePrinter(out.counterexample);
-                    out.error;
                 }
                 throw new Error(
                     (await fc.asyncDefaultReportMessage(out)) + errorSuffix,
@@ -372,13 +371,13 @@ export function filterStdlib(
     }
 
     const customTactStdlib = mF.makeModule([], result);
-    const stdlib_fc = fs
-        .readFileSync(path.join(__dirname, "minimal-fc-stdlib", "stdlib.fc"))
-        .toString("base64");
+    //const stdlib_fc = fs
+    //    .readFileSync(path.join(__dirname, "minimal-fc-stdlib", "stdlib.fc"))
+    //    .toString("base64");
 
     return {
         modules: [customTactStdlib],
-        stdlib_fc: stdlib_fc,
+        stdlib_fc: "",
         stdlib_ex_fc: "",
     };
 }
@@ -410,8 +409,8 @@ export async function buildModule(
         // Needed by precompile, but we set its contents to be empty
         ["std/stdlib.tact"]: "",
         // These two func files are needed during tvm compilation
-        ["std/stdlib_ex.fc"]: customStdlib.stdlib_ex_fc,
-        ["std/stdlib.fc"]: customStdlib.stdlib_fc,
+        ["stdlib_ex.fc"]: customStdlib.stdlib_ex_fc,
+        ["stdlib.fc"]: customStdlib.stdlib_fc,
     };
 
     const project = createVirtualFileSystem("/", fileSystem, false);
@@ -467,28 +466,30 @@ export async function buildModule(
         const codeEntrypoint = res.output.entrypoint;
 
         // Compiling contract to TVM
-        const stdlibPath = stdlib.resolve("std/stdlib.fc");
-        const stdlibCode = stdlib.readFile(stdlibPath).toString();
-        const stdlibExPath = stdlib.resolve("std/stdlib_ex.fc");
-        const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
+        const stdlibPath = stdlib.resolve("stdlib.fc");
+        //const stdlibCode = stdlib.readFile(stdlibPath).toString();
+        const stdlibExPath = stdlib.resolve("stdlib_ex.fc");
+        //const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
+
+        process.env.USE_NATIVE = "true";
+        process.env.FC_STDLIB_PATH = path.join(__dirname, "/minimal-fc-stdlib/");
+        process.env.FUNC_FIFT_COMPILER_PATH = path.join(__dirname, "/minimal-fc-stdlib/funcplusfift");
+        process.env.FIFT_LIBS_PATH = "";
+
+        const contractFilePath = path.join(__dirname, "/minimal-fc-stdlib/", codeEntrypoint);
+
+        fs.writeFileSync(
+                        contractFilePath,
+                        codeFc[0]!.content,
+                    );
 
         const c = await funcCompile({
             entries: [
                 stdlibPath,
                 stdlibExPath,
-                posixNormalize(project.resolve(config.output, codeEntrypoint)),
+                contractFilePath,
             ],
-            sources: [
-                {
-                    path: stdlibPath,
-                    content: stdlibCode,
-                },
-                {
-                    path: stdlibExPath,
-                    content: stdlibExCode,
-                },
-                ...codeFc,
-            ],
+            sources: [],
             logger: new Logger(),
         });
 

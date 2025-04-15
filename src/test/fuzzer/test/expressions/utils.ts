@@ -216,7 +216,7 @@ export async function compileExpression(
 export function generateBindings(
     expressionTestingEnvironment: ExpressionTestingEnvironment,
     expressionGenerationIds: Map<AllowedTypeEnum, string[]>,
-    generator: (type: NonTerminalEnum) => fc.Arbitrary<Ast.Expression>,
+    generator: (nonTerminalId: number) => fc.Arbitrary<Ast.Expression>,
 ): fc.Arbitrary<Ast.StatementLet[]> {
     return fc.tuple(
         ...expressionGenerationIds
@@ -237,7 +237,7 @@ export function generateBindings(
                                   expressionTestingEnvironment.makeF.makeDummyNull(),
                               ),
                           )
-                        : generator(initializersMapping[type]).map((expr) =>
+                        : generator(initializersMapping[type].id).map((expr) =>
                               expressionTestingEnvironment.makeF.makeDummyStatementLet(
                                   expressionTestingEnvironment.makeF.makeDummyId(
                                       name,
