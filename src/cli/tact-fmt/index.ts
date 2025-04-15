@@ -82,7 +82,7 @@ function formatFile(filepath: string, write: boolean): boolean | undefined {
     const content = readFileOrFail(filepath);
     if (typeof content === "undefined") return undefined;
 
-    const [res, time] = measureTime(() => formatCode(content));
+    const [res, time] = measureTime(() => formatCode(filepath, content));
     if (res.$ === "FormatCodeError") {
         console.error(`Cannot format file ${filepath}:`, res.message);
         return undefined;

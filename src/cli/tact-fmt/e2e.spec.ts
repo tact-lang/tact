@@ -70,6 +70,37 @@ describe("tact-fmt foo.tact", () => {
         rmSync(file);
     });
 
+    testExceptWindows("Run on directory", async () => {
+        const dir = outputDir;
+        const innerDir = join(dir, "inner");
+        const innerInnerDir = join(innerDir, "inner-2");
+
+        await mkdir(dir, { recursive: true });
+        await mkdir(innerDir, { recursive: true });
+        await mkdir(innerInnerDir, { recursive: true });
+
+        // inner
+        //   file1.tact
+        //   inner-2
+        //      file2.tact
+        //      file3.tact
+        const file1 = join(innerDir, "file1.tact");
+        const file2 = join(innerInnerDir, "file2.tact");
+        const file3 = join(innerInnerDir, "file3.tact");
+
+        writeFileSync(file1, "fun foo1() {   }");
+        writeFileSync(file2, "fun foo2() {  }");
+        writeFileSync(file3, "fun foo3() {     }");
+
+        await tactFmt(innerDir, "-w");
+
+        expect(readFileSync(file1, "utf8")).toMatchSnapshot();
+        expect(readFileSync(file2, "utf8")).toMatchSnapshot();
+        expect(readFileSync(file3, "utf8")).toMatchSnapshot();
+
+        rmSync(innerDir, { recursive: true });
+    });
+
     testExceptWindows("With error", async () => {
         await mkdir(outputDir, { recursive: true });
         const file = join(outputDir, "contract.tact");

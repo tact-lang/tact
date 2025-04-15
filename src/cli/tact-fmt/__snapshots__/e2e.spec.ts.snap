@@ -24,11 +24,26 @@ exports[`tact-fmt foo.tact Default run with write to file 1`] = `
 "
 `;
 
+exports[`tact-fmt foo.tact Run on directory 1`] = `
+"fun foo1() {}
+"
+`;
+
+exports[`tact-fmt foo.tact Run on directory 2`] = `
+"fun foo2() {}
+"
+`;
+
+exports[`tact-fmt foo.tact Run on directory 3`] = `
+"fun foo3() {}
+"
+`;
+
 exports[`tact-fmt foo.tact With syntax error 1`] = `
 {
   "code": 1,
   "kind": "exited",
-  "stderr": "src/cli/tact-fmt/output/contact.tact:4:33: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
+  "stderr": "Cannot format file /Users/petrmakhnev/tact/src/cli/tact-fmt/output/contact.tact: src/cli/tact-fmt/output/contact.tact:4:33: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
   3 |     get fun greeting(): String {
 > 4 |         return foo("hello world";
                                       ^
