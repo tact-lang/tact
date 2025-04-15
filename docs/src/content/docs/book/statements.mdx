@@ -56,23 +56,50 @@ fun getTimeFromNow(offset: Int): Int {
 If the function does not have an explicit return type, it has an implicit return type of `void`. As such, the `return{:tact}` statement must be empty.
 
 ```tact
-extends mutates fun correct(self: Int) {
-    if (self == 42) {
+extends mutates fun equalize(self: Int, num: Int) {
+    if (self == num) {
+        return;
+    } else {
+        self = num;
         return;
     }
-
-    self = 42;
 }
 ```
 
 All statements after the `return{:tact}` statement are unreachable and will not be executed. Such statements are detected by the Tact compiler, producing an "Unreachable code" error.
 
-This is done to help avoid potential logical errors in the code.
+This is done to help avoid potential logical errors in the code, although `return{:tact}`-reachability analysis is not almighty and might reject valid examples.
 
 ```tact
-fun doubleTrouble(): Int {
-    return 10;
-    return 20; // COMPILATION ERROR! Unreachable statement
+extends mutates fun equalize(self: Int, num: Int) {
+    if (self == num) {
+        return;
+    } else {
+        self = num;
+        return;
+    }
+
+    throw(42); // COMPILATION ERROR! Unreachable statement
+//  ~~~~~~~~~
+}
+
+// COMPILATION ERROR! Function does not always return a result.
+fun checkTimeWith(offset: Int): Int {
+//  ~~~~~~~~~~~~~
+    let t = now();
+    if (t < 1000) {
+        if (offset < 1000) {
+            return 998;
+        } else {
+            return 999;
+        }
+    } else if (t == 1000) {
+        return 1000;
+    }
+
+    if (offset < 1000) {
+        return 42;
+    }
 }
 ```
 

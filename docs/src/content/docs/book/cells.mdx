@@ -236,24 +236,11 @@ Also, note that specifying `remaining{:tact}` for a `Cell{:tact}` type used as a
 
 The `as bytes32{:tact}` serialization annotation can only be applied to slices and is used to read 32 bytes (256 bits) of data from a cell. The `as uint256{:tact}` annotation achieves a similar result, but it can only be applied to integers.
 
-```tact
-struct Example {
-    b32: Slice as bytes32; // 256 bits with arbitrary contents
-    u256: Int as uint256;  // also 256 bits, but viewed as a single integer
-}
-```
-
 ### `bytes64` {#serialization-bytes64}
 
 The `as bytes64{:tact}` serialization annotation can only be applied to slices and is used to read 64 bytes (512 bits) of data from a cell. It can be useful for serializing and deserializing cryptographic signatures.
 
-```tact
-struct Example {
-    b64: Slice as bytes64; // 512 bits with arbitrary contents
-}
-```
-
-For an advanced usage example, see the [`SignedBundle`](/ref/core-crypto#signedbundle) [struct][struct].
+For a usage example, see the [`SignedBundle`](/ref/core-crypto#signedbundle) [struct][struct].
 
 ## Operations
 
