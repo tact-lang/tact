@@ -11,8 +11,8 @@ import { fromString } from "@/imports/path";
 // const target = "union.tact";
 const target = "alias.tact";
 
-// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 const dump = (obj: unknown) =>
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
     console.log(inspect(obj, { colors: true, depth: Infinity }));
 
 const main = async () => {
