@@ -1,6 +1,6 @@
 import { join, normalize } from "path";
 import { runCommand } from "@/cli/test-util.build";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, rmSync, writeFileSync } from "fs";
 import { mkdir } from "fs/promises";
 
 // disable tests on windows
@@ -25,10 +25,18 @@ contract Test {
 }
 `;
 
+const badContract = `
+contract /*comment*/ Test {
+    get fun greeting(): String {
+        return "hello world";
+    }
+}
+`;
+
 describe("tact-fmt foo.tact", () => {
     testExceptWindows("Exits with correct code", async () => {
         await mkdir(outputDir, { recursive: true });
-        const file = join(outputDir, "contact.tact");
+        const file = join(outputDir, "contract.tact");
         writeFileSync(file, goodContract);
         const result = await tactFmt(file);
         expect(result).toMatchObject({ kind: "exited", code: 0 });
@@ -36,7 +44,7 @@ describe("tact-fmt foo.tact", () => {
 
     testExceptWindows("Default run", async () => {
         await mkdir(outputDir, { recursive: true });
-        const file = join(outputDir, "contact.tact");
+        const file = join(outputDir, "contract.tact");
         writeFileSync(file, goodContract);
         const result = await tactFmt(file);
         expect(result).toMatchSnapshot();
@@ -44,12 +52,21 @@ describe("tact-fmt foo.tact", () => {
 
     testExceptWindows("Default run with write to file", async () => {
         await mkdir(outputDir, { recursive: true });
-        const file = join(outputDir, "contact.tact");
+        const file = join(outputDir, "contract.tact");
         writeFileSync(file, goodContract);
-        const result = await tactFmt(file, "-w");
-        expect(result).toMatchSnapshot();
+        await tactFmt(file, "-w");
 
         const newContent = readFileSync(file, "utf8");
         expect(newContent).toMatchSnapshot();
+
+        rmSync(file);
+    });
+
+    testExceptWindows("With error", async () => {
+        await mkdir(outputDir, { recursive: true });
+        const file = join(outputDir, "contract.tact");
+        writeFileSync(file, badContract);
+        const result = await tactFmt(file);
+        expect(result).toMatchObject({ kind: "exited", code: 1 });
     });
 });
