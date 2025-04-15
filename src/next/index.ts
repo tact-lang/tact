@@ -16,7 +16,7 @@ const dump = (obj: unknown) => console.log(inspect(obj, { colors: true, depth: I
 const main = async () => {
     const ansi = getAnsiMarkup(isColorSupported());
     await TerminalLogger(path, "info", ansi, async (log) => {
-        const sourcePath = path.join(__dirname, target);
+        const sourcePath = path.join(__dirname, 'example', target);
         const code = await fs.readFile(sourcePath, "utf8");
         log.source(sourcePath, code, (log) => {
             log.recover((log) => {

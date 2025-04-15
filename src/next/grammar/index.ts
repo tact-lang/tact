@@ -1550,9 +1550,10 @@ const parseNativeFunctionDecl =
         );
     };
 
-const parseAlias = ({ name, type }: $ast.AliasDecl): Handler<Ast.AliasDecl> => ctx => {
+const parseAlias = ({ name, typeParams, type }: $ast.AliasDecl): Handler<Ast.AliasDecl> => ctx => {
     return Ast.AliasDecl(
         parseTypeId(name)(ctx),
+        map(parseList(typeParams), parseTypeId)(ctx),
         parseType(type)(ctx),
     );
 };
