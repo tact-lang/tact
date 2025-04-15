@@ -102,11 +102,6 @@ jobs:
         shell: bash
         run: |
           npm i -g allure-commandline
-          echo "$(npm bin -g)" >> $GITHUB_PATH
-          echo "Current PATH:"
-          echo "$PATH"
-          echo "Allure binary path:"
-          npm bin -g
       - name: Generate Allure report
         if: always()
         shell: bash
