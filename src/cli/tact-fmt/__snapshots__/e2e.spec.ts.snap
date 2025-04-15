@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tact-fmt foo.tact Default run 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "contract Test {
+    get fun greeting(): String {
+        return "hello world";
+    }
+}
+
+",
+}
+`;
+
+exports[`tact-fmt foo.tact Default run with write to file 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "",
+}
+`;
+
+exports[`tact-fmt foo.tact Default run with write to file 2`] = `
+"contract Test {
+    get fun greeting(): String {
+        return "hello world";
+    }
+}
+"
+`;
