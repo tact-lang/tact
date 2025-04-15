@@ -21,6 +21,7 @@ const dump = (obj: unknown) =>
 
 export type TactSource = {
     readonly code: string;
+    // FIXME: should we REALLY resolve imports here?
     readonly imports: readonly Import[];
     readonly items: readonly ModuleItem[];
 };
