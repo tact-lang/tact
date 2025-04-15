@@ -13,3 +13,4 @@ jest.teardown.js
 version.build.ts
 bin/*
 **/.testing/
+src/fmt/cst/cst-parser.ts
