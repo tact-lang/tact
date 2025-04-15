@@ -72,6 +72,7 @@ Hoppity
 idict
 Ikko
 Ilya
+implicits
 infixl
 infixr
 initof

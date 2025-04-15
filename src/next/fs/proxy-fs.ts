@@ -11,8 +11,8 @@ import type { Logger } from "@/error/logger-util";
 const asRecord = <T>(t: Record<string, T>) => t;
 
 export function createProxyFs(
-    root: string,
     log: Logger<string, void>,
+    root: string,
     isReadonly: boolean,
 ): Cursor {
     const errors = FsErrors(log);

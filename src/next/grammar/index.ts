@@ -1787,27 +1787,25 @@ const parseModule =
 //         return map(imports, parseImport)(ctx);
 //     };
 
-export const getParser = (logRaw: SourceLogger<string, void>) => {
-    const err = SyntaxErrors(logRaw);
+export const parse = (log: SourceLogger<string, void>, text: string): Ast.Module => {
+    const err = SyntaxErrors(log);
 
-    return (text: string): Ast.Module => {
-        const result = $.parse({
-            grammar: G.Module,
-            space: G.space,
-            text,
+    const result = $.parse({
+        grammar: G.Module,
+        space: G.space,
+        text,
+    });
+
+    if (result.$ === "error") {
+        const { expected, position } = result.error;
+        err.expected(expected)({
+            start: position,
+            end: position,
         });
+        return Ast.Module([], []);
+    }
 
-        if (result.$ === "error") {
-            const { expected, position } = result.error;
-            err.expected(expected)({
-                start: position,
-                end: position,
-            });
-            return Ast.Module([], []);
-        }
-
-        return parseModule(result.value)({
-            err,
-        });
-    };
+    return parseModule(result.value)({
+        err,
+    });
 };
