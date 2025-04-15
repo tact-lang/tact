@@ -168,12 +168,12 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
                 cwd: filePath,
             });
 
-            let wasError = false;
+            let someFileCannotBeFormatted = false;
             let allFormatted = true;
             for (const file of files) {
                 const res = formatFile(join(filePath, file), write, onlyCheck);
                 if (typeof res === "undefined") {
-                    wasError = true;
+                    someFileCannotBeFormatted = true;
                 } else {
                     allFormatted &&= res;
                 }
@@ -191,7 +191,7 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
                 }
             }
 
-            if (wasError) {
+            if (someFileCannotBeFormatted) {
                 process.exit(1);
             }
             return;
