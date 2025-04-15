@@ -24,7 +24,6 @@ import { Addresses } from "@/test/gas-consumption/contracts/output/address_Addre
 import { CodeOfVsInitOf } from "@/test/gas-consumption/contracts/output/codeOf_CodeOfVsInitOf";
 import { WithDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithDeploy";
 import { WithoutDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithoutDeploy";
-import { GeomMean } from "@/test/gas-consumption/contracts/output/geom-mean_GeomMean";
 import { Sqrt } from "@/test/gas-consumption/contracts/output/sqrt_Sqrt";
 
 function measureGas(txs: BlockchainTransaction[]): number {
@@ -297,21 +296,19 @@ describe("benchmarks", () => {
         expect(gasUsedRaw).toMatchSnapshot("gas used raw deploy");
     });
 
-    const variants: [string, typeof GeomMean | typeof Sqrt][] = [
-        ["sqrt via geom mean", GeomMean],
-        ["sqrt", Sqrt],
+    const variants: [string, "GetSqrt" | "GetSqrtViaGeomMean"][] = [
+        ["sqrt via geom mean", "GetSqrtViaGeomMean"],
+        ["sqrt", "GetSqrt"],
     ];
 
-    it.each(variants)("benchmark %s", async (name, ContractClass) => {
-        const instance = blockchain.openContract(
-            await ContractClass.fromInit(),
-        );
+    it.each(variants)("benchmark %s", async (name, message) => {
+        const instance = blockchain.openContract(await Sqrt.fromInit());
 
         const sendResult = await step(name, () =>
             instance.send(
                 treasure.getSender(),
                 { value: toNano(1) },
-                { $$type: "GetSqrt", value: 100n },
+                { $$type: message, value: 100n },
             ),
         );
         const gasUsed = measureGas(sendResult.transactions);
