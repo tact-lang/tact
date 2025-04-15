@@ -101,13 +101,13 @@ jobs:
         if: always()
         run: |
           yarn global add allure-commandline
-          allure generate allure-results -o allure-report --clean --single-file
+          allure generate allure-results -o allure-${{ matrix.os }}-report --clean --single-file
       - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
-          path: allure-report
+          name: allure-${{ matrix.os }}-report
+          path: allure-${{ matrix.os }}-report
 
   test-windows:
     strategy:
@@ -136,13 +136,19 @@ jobs:
         if: always()
         run: |
           yarn global add allure-commandline
-          allure generate allure-results -o allure-report --clean --single-file
+      - name: Add Allure to PATH
+        run: |
+          echo "$(yarn global bin)" >> $env:GITHUB_PATH
+      - name: Generate Allure report
+        if: always()
+        run: |
+          allure generate allure-results -o allure-${{ matrix.os }}-report --clean --single-file
       - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
-          path: allure-report
+          name: allure-${{ matrix.os }}-report
+          path: allure-${{ matrix.os }}-report
 
   test-blueprint:
     strategy:
