@@ -1,6 +1,11 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["src/index.ts", "src/cli/tact/index.ts", "src/cli/unboc/index.ts"],
+  "entry": [
+    "src/index.ts",
+    "src/cli/tact/index.ts",
+    "src/cli/unboc/index.ts",
+    "src/cli/tact-fmt/index.ts"
+  ],
   "project": ["src/**/*.ts"],
   "ignore": [
     "**/.testing/",
@@ -23,7 +28,8 @@
     "src/test/utils/with-log.ts",
     "src/utils/array.ts",
     ".github/workflows/tact*.yml",
-    ".github/actions/**/*.yml"
+    ".github/actions/**/*.yml",
+    "src/fmt/cst/cst-parser.ts"
   ],
   "ignoreDependencies": ["@tact-lang/ton-abi", "husky", "tsconfig-paths"]
 }
