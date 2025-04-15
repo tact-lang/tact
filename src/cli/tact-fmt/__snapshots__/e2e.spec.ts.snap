@@ -23,3 +23,18 @@ exports[`tact-fmt foo.tact Default run with write to file 1`] = `
 }
 "
 `;
+
+exports[`tact-fmt foo.tact With syntax error 1`] = `
+{
+  "code": 1,
+  "kind": "exited",
+  "stderr": "src/cli/tact-fmt/output/contact.tact:4:33: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
+  3 |     get fun greeting(): String {
+> 4 |         return foo("hello world";
+                                      ^
+  5 |     }
+
+",
+  "stdout": "",
+}
+`;

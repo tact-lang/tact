@@ -33,6 +33,14 @@ contract /*comment*/ Test {
 }
 `;
 
+const contractWithSyntaxError = `
+contract Test {
+    get fun greeting(): String {
+        return foo("hello world";
+    }
+}
+`;
+
 describe("tact-fmt foo.tact", () => {
     testExceptWindows("Exits with correct code", async () => {
         await mkdir(outputDir, { recursive: true });
@@ -68,5 +76,13 @@ describe("tact-fmt foo.tact", () => {
         writeFileSync(file, badContract);
         const result = await tactFmt(file);
         expect(result).toMatchObject({ kind: "exited", code: 1 });
+    });
+
+    testExceptWindows("With syntax error", async () => {
+        await mkdir(outputDir, { recursive: true });
+        const file = join(outputDir, "contact.tact");
+        writeFileSync(file, contractWithSyntaxError);
+        const result = await tactFmt(file, "-w");
+        expect(result).toMatchSnapshot();
     });
 });
