@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`tact-fmt foo.tact Check on directory with formatted files 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Checking formatting...
+All Tact files use Tact code style!
+",
+}
+`;
+
 exports[`tact-fmt foo.tact Default run 1`] = `
 {
   "code": 0,

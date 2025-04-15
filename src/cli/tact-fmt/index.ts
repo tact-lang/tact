@@ -8,6 +8,7 @@ import * as fs from "fs";
 import { formatCode } from "@/fmt/fmt";
 import path, { join } from "path";
 import { getAnsiMarkup, isColorSupported } from "@/cli/colors";
+import { glob } from "glob";
 
 const fmtVersion = "0.0.1";
 
@@ -45,6 +46,7 @@ const processArgs = (Errors: FormatterErrors, argv: string[]) => {
 const ArgSchema = (Parser: ArgParser) => {
     return Parser.tokenizer
         .add(Parser.boolean("write", "w"))
+        .add(Parser.boolean("check", "c"))
         .add(Parser.boolean("version", "v"))
         .add(Parser.boolean("help", "h"))
         .add(Parser.immediate).end;
@@ -57,6 +59,7 @@ const showHelp = () => {
 
     Flags
       -w, --write                 Write result to same file
+      -c, --check                 Check if the given files are formatted
       -v, --version               Print tact-fmt version and exit
       -h, --help                  Display this text and exit
 
@@ -78,7 +81,11 @@ type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
 const markup = getAnsiMarkup(Boolean(isColorSupported()));
 
-function formatFile(filepath: string, write: boolean): boolean | undefined {
+function formatFile(
+    filepath: string,
+    write: boolean,
+    onlyCheck: boolean,
+): boolean | undefined {
     const content = readFileOrFail(filepath);
     if (typeof content === "undefined") return undefined;
 
@@ -89,6 +96,13 @@ function formatFile(filepath: string, write: boolean): boolean | undefined {
     }
 
     const alreadyFormatted = content === res.code;
+    if (onlyCheck) {
+        if (alreadyFormatted) {
+            return true;
+        }
+        console.log(`[${markup.yellow("warn")}]`, path.basename(filepath));
+        return false;
+    }
 
     if (write) {
         console.log(
@@ -139,27 +153,47 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
     const filePath = Args.single("immediate");
     if (filePath) {
         const write = Args.single("write") ?? false;
+        const onlyCheck = Args.single("check") ?? false;
+
+        if (onlyCheck) {
+            console.log("Checking formatting...");
+        }
 
         if (!fs.statSync(filePath).isFile()) {
-            const files = fs.globSync("**/*.tact", {
+            const files = globSync(["**/*.tact"], {
                 cwd: filePath,
-                withFileTypes: false,
             });
 
             let wasError = false;
+            let allFormatted = true;
             for (const file of files) {
-                const res = formatFile(join(filePath, file), write);
+                const res = formatFile(join(filePath, file), write, onlyCheck);
                 if (typeof res === "undefined") {
                     wasError = true;
+                } else {
+                    allFormatted &&= res;
                 }
             }
+
+            if (onlyCheck) {
+                if (!allFormatted) {
+                    // found not formatted file
+                    console.log(
+                        "Code style issues found in the above file. Run tact-fmt with --write to fix.",
+                    );
+                    process.exit(1);
+                } else {
+                    console.log("All Tact files use Tact code style!");
+                }
+            }
+
             if (wasError) {
                 process.exit(1);
             }
             return;
         }
 
-        const res = formatFile(filePath, write);
+        const res = formatFile(filePath, write, onlyCheck);
         if (typeof res === "undefined") {
             process.exit(1);
         }
@@ -194,3 +228,7 @@ function readFileOrFail(filePath: string): string | undefined {
         return undefined;
     }
 }
+
+const globSync = (globs: string[], options: { cwd: string }) => {
+    return globs.flatMap((g) => glob.sync(g, options));
+};
