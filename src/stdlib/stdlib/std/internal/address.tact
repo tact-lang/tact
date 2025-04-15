@@ -20,7 +20,7 @@
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
 /// * https://docs.tact-lang.org/ref/core-addresses#addressasslice
-/// 
+///
 /// [Invalid standard address]: https://docs.tact-lang.org/book/exit-codes#136
 ///
 extends fun asAddress(self: Slice, chain: Int): Address {
@@ -207,7 +207,7 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
 ///
-asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
+asm(-> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
 ///
@@ -280,7 +280,7 @@ struct BasechainAddress {
 /// ```
 ///
 inline fun emptyBasechainAddress(): BasechainAddress {
-    return BasechainAddress { hash: null }
+    return BasechainAddress { hash: null };
 }
 
 /// Global function. Available since Tact 1.6.0.
@@ -294,7 +294,7 @@ inline fun emptyBasechainAddress(): BasechainAddress {
 /// ```
 ///
 inline fun newBasechainAddress(hash: Int): BasechainAddress {
-    return BasechainAddress { hash }
+    return BasechainAddress { hash };
 }
 
 /// Global function. Available since Tact 1.6.0.
@@ -369,7 +369,7 @@ extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Bui
 /// * 138: [Not a basechain address] — Thrown when the given `address` is not in the basechain (chain ID is not 0).
 ///
 /// See: https://docs.tact-lang.org/ref/core-addresses#forcebasechain
-/// 
+///
 /// [Not a basechain address]: https://docs.tact-lang.org/book/exit-codes#138
 ///
 asm fun forceBasechain(address: Address) { REWRITESTDADDR DROP 138 THROWIF }
