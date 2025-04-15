@@ -75,6 +75,7 @@ export namespace $ast {
   export type AliasDecl = $.Located<{
     readonly $: "AliasDecl";
     readonly name: TypeId;
+    readonly typeParams: typeParams | undefined;
     readonly type: $type;
   }>;
   export type Contract = $.Located<{
@@ -498,7 +499,7 @@ export const Constant: $.Parser<$ast.Constant> = $.loc($.field($.pure("Constant"
 export const StructDecl: $.Parser<$ast.StructDecl> = $.loc($.field($.pure("StructDecl"), "$", $.right($.str("struct"), $.field($.lazy(() => TypeId), "name", $.field($.opt($.lazy(() => typeParams)), "typeParams", $.right($.str("{"), $.field($.lazy(() => structFields), "fields", $.right($.str("}"), $.eps))))))));
 export const MessageDecl: $.Parser<$ast.MessageDecl> = $.loc($.field($.pure("MessageDecl"), "$", $.right($.str("message"), $.field($.opt($.right($.str("("), $.left($.lazy(() => expression), $.str(")")))), "opcode", $.field($.lazy(() => TypeId), "name", $.right($.str("{"), $.field($.lazy(() => structFields), "fields", $.right($.str("}"), $.eps))))))));
 export const UnionDecl: $.Parser<$ast.UnionDecl> = $.loc($.field($.pure("UnionDecl"), "$", $.right($.str("union"), $.field($.lazy(() => TypeId), "name", $.field($.opt($.lazy(() => typeParams)), "typeParams", $.right($.str("{"), $.field($.star($.lazy(() => Case)), "cases", $.right($.str("}"), $.eps))))))));
-export const AliasDecl: $.Parser<$ast.AliasDecl> = $.loc($.field($.pure("AliasDecl"), "$", $.right($.str("type"), $.field($.lazy(() => TypeId), "name", $.right($.str("="), $.field($.lazy(() => $type), "type", $.right($.str(";"), $.eps)))))));
+export const AliasDecl: $.Parser<$ast.AliasDecl> = $.loc($.field($.pure("AliasDecl"), "$", $.right($.str("type"), $.field($.lazy(() => TypeId), "name", $.field($.opt($.lazy(() => typeParams)), "typeParams", $.right($.str("="), $.field($.lazy(() => $type), "type", $.right($.str(";"), $.eps))))))));
 export const Contract: $.Parser<$ast.Contract> = $.loc($.field($.pure("Contract"), "$", $.field($.star($.lazy(() => ContractAttribute)), "attributes", $.right($.lazy(() => keyword($.str("contract"))), $.field($.lazy(() => TypeId), "name", $.field($.opt($.lazy(() => ParameterList($.lazy(() => Parameter)))), "parameters", $.field($.opt($.lazy(() => inheritedTraits)), "traits", $.right($.str("{"), $.field($.star($.lazy(() => contractItemDecl)), "declarations", $.right($.str("}"), $.eps))))))))));
 export const Trait: $.Parser<$ast.Trait> = $.loc($.field($.pure("Trait"), "$", $.field($.star($.lazy(() => ContractAttribute)), "attributes", $.right($.lazy(() => keyword($.str("trait"))), $.field($.lazy(() => TypeId), "name", $.field($.opt($.lazy(() => inheritedTraits)), "traits", $.right($.str("{"), $.field($.star($.lazy(() => traitItemDecl)), "declarations", $.right($.str("}"), $.eps)))))))));
 export const moduleItem: $.Parser<$ast.moduleItem> = $.alt(PrimitiveTypeDecl, $.alt($Function, $.alt(AsmFunction, $.alt(NativeFunctionDecl, $.alt(Constant, $.alt(StructDecl, $.alt(MessageDecl, $.alt(UnionDecl, $.alt(AliasDecl, $.alt(Contract, Trait))))))))));

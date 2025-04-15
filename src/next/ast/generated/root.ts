@@ -266,9 +266,10 @@ export const UnionDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], cas
 });
 export const isUnionDecl = ($value: UnionDecl) => $value.kind === "union_decl";
 export type AliasDecl = $.AliasDecl;
-export const AliasDecl = (name: $c.TypeId, type_: $t.Type): $.AliasDecl => Object.freeze({
-  kind: "alias_decl",
-  name,
-  type: type_
+export const AliasDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], type_: $t.Type): $.AliasDecl => Object.freeze({
+    kind: "alias_decl",
+    name,
+    typeParams,
+    type: type_
 });
 export const isAliasDecl = ($value: AliasDecl) => $value.kind === "alias_decl";

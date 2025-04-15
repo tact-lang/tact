@@ -134,6 +134,7 @@ structFields = @inter<FieldDecl, ";">? ";"?;
 AliasDecl =
     "type"
     name:TypeId
+    typeParams:typeParams?
     "="
     type:type
     ";";

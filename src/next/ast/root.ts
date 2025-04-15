@@ -185,6 +185,7 @@ export type UnionDecl = {
 export type AliasDecl = {
     readonly kind: "alias_decl";
     readonly name: TypeId;
+    readonly typeParams: readonly TypeId[];
     readonly type: Type;
 }
 
@@ -198,7 +199,6 @@ export type FieldDecl = {
     readonly name: Id;
     readonly type: Type;
     readonly initializer: Expression | undefined;
-    // readonly as: Id | undefined;
     readonly loc: Range;
 };
 
