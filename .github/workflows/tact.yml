@@ -80,27 +80,42 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [22]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - if: ${{ matrix.os == 'windows-latest'}}
+        name: Prepare Windows environment
+        run: |
+          $ErrorActionPreference = 'Stop'
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test
       - name: Test compatibility with tact-template
         run: |
-          # !!!!!!! Don't forget to update test-windows below !!!!!!!
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
           # Hijack the dependency on Tact to avoid redundant npm downloads
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: |  
           jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
           mv temp.json package.json
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
+          Move-Item temp.json package.json -Force
+        run: |
           yarn install
           yarn link @tact-lang/compiler
           yarn build
           yarn test
-      - name: Generate Allure report
+      - name: Install Allure
         if: always()
         run: |
           yarn global add allure-commandline
+        if: ${{ matrix.os == 'windows-latest' }}
+          echo "$(yarn global bin)" >> $env:GITHUB_PATH
+      - name: Generate Allure report
+        if: always()    
+        run: |  
           allure generate allure-results -o allure-${{ matrix.os }}-report --clean --single-file
       - name: Upload Allure report
         if: always()
@@ -108,8 +123,6 @@ jobs:
         with:
           name: allure-${{ matrix.os }}-report
           path: allure-${{ matrix.os }}-report
-
-  test-windows:
     strategy:
       fail-fast: false
       matrix:
@@ -121,7 +134,6 @@ jobs:
       - uses: ./.github/actions/test
       - name: Test compatibility with tact-template
         run: |
-          # !!!!!!! Don't forget to update test above !!!!!!!
           $ErrorActionPreference = 'Stop'
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
