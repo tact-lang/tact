@@ -21,9 +21,8 @@ export interface Cursor {
 
     /**
      * Get full absolute path to a file or directory
-     * 
+     *
      * NB! Only to be used with `log.source()`
      */
     readonly getAbsolutePathForLog: () => string;
 }
-

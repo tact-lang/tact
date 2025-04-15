@@ -157,16 +157,16 @@ export type Conditional = {
 export type Unit = {
     readonly kind: "unit";
     readonly loc: Range;
-}
+};
 
 export type Tuple = {
     readonly kind: "tuple";
     readonly children: readonly Expression[];
     readonly loc: Range;
-}
+};
 
 export type Tensor = {
     readonly kind: "tensor";
     readonly children: readonly Expression[];
     readonly loc: Range;
-}
+};

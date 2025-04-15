@@ -2,7 +2,7 @@ import path from "path";
 import { getParser } from "@/next/grammar";
 import { TerminalLogger } from "@/cli/logger";
 import { getAnsiMarkup, isColorSupported } from "@/cli/colors";
-import { inspect } from 'util';
+import { inspect } from "util";
 import { createProxyFs } from "@/next/fs/proxy-fs";
 import { fromString } from "@/imports/path";
 
@@ -12,13 +12,14 @@ import { fromString } from "@/imports/path";
 const target = "alias.tact";
 
 // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-const dump = (obj: unknown) => console.log(inspect(obj, { colors: true, depth: Infinity }));
+const dump = (obj: unknown) =>
+    console.log(inspect(obj, { colors: true, depth: Infinity }));
 
 const main = async () => {
     const ansi = getAnsiMarkup(isColorSupported());
     await TerminalLogger(path, "info", ansi, async (log) => {
         const project = createProxyFs(
-            path.join(__dirname, 'example'),
+            path.join(__dirname, "example"),
             log,
             false,
         );
