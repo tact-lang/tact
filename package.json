@@ -79,7 +79,8 @@
   "main": "./dist/index.js",
   "bin": {
     "tact": "bin/tact.js",
-    "unboc": "bin/unboc.js"
+    "unboc": "bin/unboc.js",
+    "tact-fmt": "bin/tact-fmt.js"
   },
   "dependencies": {
     "@tact-lang/opcode": "^0.3.0",
