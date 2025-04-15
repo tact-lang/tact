@@ -38,13 +38,16 @@ export type FuncImport = {
 
 const fakeSource: TactSource = { code: '', imports: [], items: [] };
 
+// FIXME: object
 const readSource = async (
     log: Logger<string, void>,
     project: Cursor,
     stdlib: Cursor,
+    // FIXME: are FuncImport implicit imports valid?
     implicits: readonly Import[],
     rootModule: string,
 ): Promise<TactSource> => {
+    // FIXME: should we use a proper ADT for values?
     const status: Map<string, 'pending' | TactSource> = new Map();
 
     const resolveImports = async (
@@ -71,6 +74,7 @@ const readSource = async (
 
     const resolveSource = async (
         file: Cursor,
+        // FIXME: there can't be circular imports at top level
         parentLog: AnyLogger<string, void>,
     ): Promise<TactSource> => {
         const path = file.getAbsolutePathForLog();
@@ -80,6 +84,7 @@ const readSource = async (
         }
         if (res === 'pending') {
             parentLog.error(parentLog.text`Cyclic import: ${parentLog.path(path)}`);
+            // FIXME: return undefined instead, then don't do `import.push`?
             return fakeSource;
         }
         status.set(path, 'pending');
@@ -100,6 +105,9 @@ const readSource = async (
     );
 };
 
+/**
+ * Read standard library and prepare for reading projects
+ */
 export const ProjectReader = async (log: Logger<string, void>) => {
     const stdRoot = createMemoryFs(
         log,
@@ -116,6 +124,9 @@ export const ProjectReader = async (log: Logger<string, void>) => {
         'std/stdlib.tact',
     );
 
+    /**
+     * Read project
+     */
     const read = async (
         fsRootPath: string,
         tactRoot: string,
@@ -145,6 +156,7 @@ const main = async () => {
     const ansi = getAnsiMarkup(isColorSupported());
     await TerminalLogger(path, "info", ansi, async (log) => {
         await log.recover(async (log) => {
+            // TODO: new CLI based (see typegen)
             const reader = await ProjectReader(log);
             const root = await reader.read(
                 path.join(__dirname, "example"),

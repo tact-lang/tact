@@ -5,7 +5,9 @@ import type { RelativePath } from "@/next/fs/path";
 import type { Cursor } from "@/next/fs/cursor";
 import type { Logger } from "@/error/logger-util";
 
+// FIXME: object
 export function createMemoryFs(
+    // FIXME: should we pass log here, or into functions?
     log: Logger<string, void>,
     fs: Map<string, Blob>,
     root: RelativePath,
