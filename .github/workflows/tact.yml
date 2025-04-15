@@ -102,11 +102,14 @@ jobs:
         shell: bash
         run: |
           yarn global add allure-commandline
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            echo "$(yarn global bin)" >> $env:GITHUB_PATH
-          fi
+          echo "$(yarn global bin)" >> $GITHUB_PATH
+          echo "Current PATH:"
+          echo "$PATH"
+          echo "Allure binary path:"
+          yarn global bin
       - name: Generate Allure report
         if: always()
+        shell: bash
         run: |
           allure generate allure-results -o allure-${{ matrix.os }}-report --clean --single-file
       - name: Upload Allure report
