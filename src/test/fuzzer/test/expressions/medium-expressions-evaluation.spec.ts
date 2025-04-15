@@ -20,7 +20,6 @@ describe("evaluation properties", () => {
     test(
         "compiler and interpreter evaluate small generated expressions equally",
         async () => {
-            console.log('a');
             await checkAsyncProperty(
                 createExpressionComputationEqualityProperty(
                     expressionTestingEnvironment,
