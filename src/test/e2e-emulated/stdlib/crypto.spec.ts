@@ -64,8 +64,8 @@ describe("crypto.tact: keccak256() function", () => {
         expect(hashWithRefs.toString()).toEqual(hashIgnoringRefs.toString());
 
         // On-chain implementation should correspond to the off-chain one
-        const keccak1 = bigIntOfHash(keccak256(str1));
-        expect(hashWithRefs.toString()).toEqual(keccak1.toString());
+        const actualHash1 = bigIntOfHash(keccak256(str1));
+        expect(hashWithRefs.toString()).toEqual(actualHash1.toString());
 
         // Hashes of long slices should NOT match
         const str2 =
@@ -78,7 +78,7 @@ describe("crypto.tact: keccak256() function", () => {
         );
 
         // On-chain implementation should correspond to the off-chain one
-        const keccak2 = bigIntOfHash(keccak256(str2));
-        expect(hashWithRefs.toString()).toEqual(keccak2.toString());
+        const actualHash2 = bigIntOfHash(keccak256(str2));
+        expect(hashWithRefs.toString()).toEqual(actualHash2.toString());
     });
 });
