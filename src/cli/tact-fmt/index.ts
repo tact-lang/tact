@@ -8,6 +8,8 @@ import * as fs from "fs";
 import { formatCode } from "@/fmt/fmt";
 import path, { join } from "path";
 import { getAnsiMarkup, isColorSupported } from "@/cli/colors";
+import { glob } from "glob";
+import { cwd } from "process";
 
 const fmtVersion = "0.0.1";
 
@@ -84,7 +86,10 @@ function formatFile(filepath: string, write: boolean): boolean | undefined {
 
     const [res, time] = measureTime(() => formatCode(filepath, content));
     if (res.$ === "FormatCodeError") {
-        console.error(`Cannot format file ${filepath}:`, res.message);
+        console.error(
+            `Cannot format file ${path.relative(cwd(), filepath)}:`,
+            res.message,
+        );
         return undefined;
     }
 
@@ -141,9 +146,8 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
         const write = Args.single("write") ?? false;
 
         if (!fs.statSync(filePath).isFile()) {
-            const files = fs.globSync("**/*.tact", {
+            const files = globSync(["**/*.tact"], {
                 cwd: filePath,
-                withFileTypes: false,
             });
 
             let wasError = false;
@@ -194,3 +198,7 @@ function readFileOrFail(filePath: string): string | undefined {
         return undefined;
     }
 }
+
+const globSync = (globs: string[], options: { cwd: string }) => {
+    return globs.flatMap((g) => glob.sync(g, options));
+};
