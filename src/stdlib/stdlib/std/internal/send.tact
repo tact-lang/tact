@@ -515,7 +515,7 @@ asm fun sendRawMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 /// Global function. **Deprecated** since Tact 1.6.6.
 ///
 /// Use `sendRawMessageReturnForwardFee()` instead.
-/// 
+///
 /// Similar to `sendRawMessage()`, but also calculates and returns the forward fee in nanoToncoin.
 ///
 /// #### Exit codes
