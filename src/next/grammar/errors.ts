@@ -19,22 +19,6 @@ const attributeSchema = <M, R>(name: string, l: SourceLogger<M, R>) => ({
     },
 });
 
-const getExpectedText = (expected: ReadonlySet<string>) => {
-    const result: string[] = [];
-    const failures = [...expected].sort();
-    for (const [idx, failure] of failures.entries()) {
-        if (idx > 0) {
-            if (idx === failures.length - 1) {
-                result.push(failures.length > 2 ? ", or " : " or ");
-            } else {
-                result.push(", ");
-            }
-        }
-        result.push(failure);
-    }
-    return result.join("");
-};
-
 export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     constant: attributeSchema("constant", l),
     function: attributeSchema("function", l),
@@ -98,7 +82,7 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
             .error(l.text`Only full function definitions are allowed here`);
     },
     expected: (expects: ReadonlySet<string>) => (loc: Range) => {
-        return l.at(loc).error(l.text`Expected ${getExpectedText(expects)}`);
+        return l.at(loc).error(l.expected(expects));
     },
     invalidFuncId: () => (loc: Range) => {
         return l.at(loc).error(l.text`Invalid FunC identifier`);

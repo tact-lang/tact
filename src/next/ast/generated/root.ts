@@ -3,11 +3,12 @@ import type * as $c from "@/next/ast/common";
 import type * as $e from "@/next/ast/expression";
 import type * as $s from "@/next/ast/statement";
 import type * as $t from "@/next/ast/type";
+import type * as $f from "@/next/fs";
 import type * as $ from "@/next/ast/root";
 export type ImportType = $.ImportType;
 export const allImportType: readonly $.ImportType[] = ["stdlib", "relative"];
 export type ImportPath = $.ImportPath;
-export const ImportPath = (path: $c.RelativePath, type_: $.ImportType, language: $c.Language): $.ImportPath => Object.freeze({
+export const ImportPath = (path: $f.RelativePath, type_: $.ImportType, language: $c.Language): $.ImportPath => Object.freeze({
     path,
     type: type_,
     language
