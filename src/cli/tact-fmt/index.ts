@@ -150,14 +150,14 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
                 cwd: filePath,
             });
 
-            let wasError = false;
+            let someFileCannotBeFormatted = false;
             for (const file of files) {
                 const res = formatFile(join(filePath, file), write);
                 if (typeof res === "undefined") {
-                    wasError = true;
+                    someFileCannotBeFormatted = true;
                 }
             }
-            if (wasError) {
+            if (someFileCannotBeFormatted) {
                 process.exit(1);
             }
             return;
