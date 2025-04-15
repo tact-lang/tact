@@ -1,7 +1,7 @@
 import { parseCode } from "@/fmt/cst/cst-helpers";
 import { format } from "@/fmt/formatter/formatter";
 
-export function normalizeIndentation(input: string): string {
+function normalizeIndentation(input: string): string {
     const lines = input.split("\n");
     if (lines.length <= 1) return input;
 

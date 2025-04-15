@@ -62,14 +62,6 @@ export const childrenByType = (node: Cst, type: string): CstNode[] => {
         .filter((c) => c.$ === "node");
 };
 
-export const childrenByGroup = (node: Cst, group: string): Cst[] => {
-    if (node.$ === "leaf") {
-        return [];
-    }
-
-    return node.children.filter((c) => c.$ === "node" && c.group === group);
-};
-
 export const nonLeafChild = (node: undefined | Cst): undefined | CstNode => {
     if (!node || node.$ === "leaf") {
         return undefined;
@@ -132,38 +124,6 @@ export const textOfId = (node: Cst): string => {
         return first && first.$ === "leaf" ? first.text : "";
     }
     return "";
-};
-
-export const visualizeCST = (
-    node: Cst,
-    field: undefined | string,
-    indent: string = "",
-): string => {
-    const fieldRepresentation = field ? `${field}: ` : "";
-    if (node.$ === "leaf") {
-        const text = node.text.replace(/\n/g, String.raw`\n`).slice(0, 30);
-        return `${indent}${fieldRepresentation}"${text}${node.text.length > 30 ? "..." : ""}"`;
-    }
-
-    let result = `${indent}${fieldRepresentation}${node.type}`;
-
-    if (node.children.length === 0) {
-        return `${result} (empty)`;
-    }
-
-    result += "\n";
-
-    const childrenOutput = node.children
-        .map((child) =>
-            visualizeCST(
-                child,
-                child.$ === "node" ? child.field : undefined,
-                indent + "  ",
-            ),
-        )
-        .join("\n");
-
-    return result + childrenOutput;
 };
 
 export function countNewlines(leaf: undefined | Cst): number {

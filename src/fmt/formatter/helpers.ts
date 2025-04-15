@@ -32,7 +32,7 @@ interface ListItemInfo {
     hasTrailingNewline: boolean;
 }
 
-export function collectListInfo(
+function collectListInfo(
     node: CstNode,
     startIndex: number,
     endIndex: number,

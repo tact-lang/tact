@@ -2,12 +2,12 @@ import type { Cst } from "@/fmt/cst/cst-parser";
 import { format } from "@/fmt/formatter/formatter";
 import { parseCode, visit } from "@/fmt/cst/cst-helpers";
 
-export interface FormatCodeError {
+interface FormatCodeError {
     $: "FormatCodeError";
     message: string;
 }
 
-export interface FormattedCode {
+interface FormattedCode {
     $: "FormattedCode";
     code: string;
 }
@@ -63,7 +63,7 @@ function checkFormatting(
     };
 }
 
-export const collectComments = (node: Cst): string[] => {
+const collectComments = (node: Cst): string[] => {
     if (node.$ === "leaf") return [];
     if (node.type === "Comment") return [visit(node).trim()];
     return node.children.flatMap((it) => collectComments(it));

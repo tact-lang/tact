@@ -235,11 +235,7 @@ function formatCommentsBetweenAssignAndValue(
     return false;
 }
 
-export const formatLetStatement: FormatStatementRule = (
-    code,
-    node,
-    needSemicolon,
-) => {
+const formatLetStatement: FormatStatementRule = (code, node, needSemicolon) => {
     // let name : Int = 100;
     //     ^^^^ ^^^^^ ^ ^^^
     //     |    |     | |
@@ -323,7 +319,7 @@ const multilineExpression = (expr: CstNode): boolean => {
     return visit(expr).includes("\n");
 };
 
-export const formatReturnStatement: FormatStatementRule = (
+const formatReturnStatement: FormatStatementRule = (
     code,
     node,
     needSemicolon,
@@ -372,7 +368,7 @@ export const formatReturnStatement: FormatStatementRule = (
     formatTrailingComments(code, node, endIndex, true);
 };
 
-export const formatExpressionStatement: FormatStatementRule = (
+const formatExpressionStatement: FormatStatementRule = (
     code,
     node,
     needSemicolon,
@@ -391,7 +387,7 @@ export const formatExpressionStatement: FormatStatementRule = (
     formatTrailingComments(code, node, endIndex, true);
 };
 
-export const formatAssignStatement: FormatStatementRule = (
+const formatAssignStatement: FormatStatementRule = (
     code,
     node,
     needSemicolon,
@@ -448,7 +444,7 @@ export const formatAssignStatement: FormatStatementRule = (
     formatTrailingComments(code, node, endIndex, true);
 };
 
-export const formatConditionStatement: FormatRule = (code, node) => {
+const formatConditionStatement: FormatRule = (code, node) => {
     // if (true) {} else {}
     // ^^ ^^^^^^ ^^ ^^^^^^^
     // |  |      |  |
@@ -517,11 +513,11 @@ export const formatConditionStatement: FormatRule = (code, node) => {
     formatTrailingComments(code, node, endIndex, true);
 };
 
-export const formatWhileStatement: FormatRule = (code, node) => {
+const formatWhileStatement: FormatRule = (code, node) => {
     formatLoopStatement(code, node, "while");
 };
 
-export const formatRepeatStatement: FormatRule = (code, node) => {
+const formatRepeatStatement: FormatRule = (code, node) => {
     formatLoopStatement(code, node, "repeat");
 };
 
@@ -558,7 +554,7 @@ const formatLoopStatement = (
     formatTrailingComments(code, node, endIndex, true);
 };
 
-export const formatDestructField: FormatRule = (code, field) => {
+const formatDestructField: FormatRule = (code, field) => {
     if (field.type === "RegularField") {
         // foo: bar
         // ^^^  ^^^
@@ -586,7 +582,7 @@ export const formatDestructField: FormatRule = (code, field) => {
     }
 };
 
-export const formatDestructStatement: FormatStatementRule = (
+const formatDestructStatement: FormatStatementRule = (
     code,
     node,
     needSemicolon,
@@ -634,7 +630,7 @@ export const formatDestructStatement: FormatStatementRule = (
     formatTrailingComments(code, node, endIndex, true);
 };
 
-export const formatUntilStatement: FormatStatementRule = (
+const formatUntilStatement: FormatStatementRule = (
     code,
     node,
     needSemicolon,
@@ -662,7 +658,7 @@ export const formatUntilStatement: FormatStatementRule = (
     formatTrailingComments(code, node, endIndex, true);
 };
 
-export const formatTryStatement: FormatRule = (code, node) => {
+const formatTryStatement: FormatRule = (code, node) => {
     // try {} catch (e) {}
     //     ^^ ^^^^^^^^^^^^
     //     |  |
@@ -705,7 +701,7 @@ export const formatTryStatement: FormatRule = (code, node) => {
     formatTrailingComments(code, node, endIndex, true);
 };
 
-export const formatForEachStatement: FormatRule = (code, node) => {
+const formatForEachStatement: FormatRule = (code, node) => {
     // foreach (key, value in foo()) {}
     //          ^^^  ^^^^^    ^^^^^  ^^
     //          |    |        |      |

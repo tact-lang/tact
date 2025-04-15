@@ -819,7 +819,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
     };
 };
 
-export type Anchor = string | ((n: CstNode) => number);
+type Anchor = string | ((n: CstNode) => number);
 
 const findStatementNodeWithComments = (
     node: CstNode,

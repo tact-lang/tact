@@ -37,7 +37,7 @@ export const formatImports: FormatRule = (code, importsNode) => {
     code.newLine();
 };
 
-export const formatImport: FormatRule = (code, node) => {
+const formatImport: FormatRule = (code, node) => {
     formatDocComments(code, node);
 
     const path = childByField(node, "path");
