@@ -677,6 +677,15 @@ exports[`should fail literal-underscore-after-leading-zero.fail 1`] = `
 "
 `;
 
+exports[`should fail optional-map-value.fail 1`] = `
+"<unknown>:2:8: value cannot be optional
+  1 | contract TestContract {
+> 2 |     m: map<Int, Int?>; // Int? is invalid for values
+             ^~~~~~~~~~~~~~
+  3 | 
+"
+`;
+
 exports[`should fail stmt-destructuring-fields-non-existing-underscore.fail 1`] = `
 "<unknown>:15:12: Wildcard not allowed here
   14 |     let s = S{ a: 1, b: 2, c: 3 };
