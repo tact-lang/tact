@@ -130,7 +130,9 @@ Alternatively, you can install it globally as such:
 npm i -g @tact-lang/compiler
 ```
 
-It will make the `tact` compiler available on your PATH, as well as a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
+It will make the `tact` compiler available on your PATH, as well as:
+* a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
+* a formatter `tact-fmt`, which can format or check individual Tact files and directories.
 
 ### Tooling
 
@@ -153,7 +155,7 @@ It will make the `tact` compiler available on your PATH, as well as a convenient
 ###### Utility
 
 - Formatter (`tact-fmt`) — Idiomatic and official formatter. It ships with the Tact Language Server, VS Code extension, and as a standalone binary with the compiler. You can invoke it by running `npx tact-fmt` in your Tact projects.
-- BoC Disassembly (`unboc`) — Disassembly of `.boc` files from the [@tact-lang/opcode](https://npmjs.com/package/@tact-lang/opcode) package, which ships as a standalone binary with the compiler. You can invoke it by running `npx unboc` in your Tact projects.
+- BoC Disassembler (`unboc`) — Disassembler of `.boc` files from the [@tact-lang/opcode](https://npmjs.com/package/@tact-lang/opcode) package, which ships as a standalone binary with the compiler. You can invoke it by running `npx unboc` in your Tact projects.
 
 ### Getting started
 
