@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`tact-fmt foo.tact Check and write flags simultaneously 1`] = `
+{
+  "code": 1,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Cannot use '--check' and '--write' simultaneously
+",
+}
+`;
+
 exports[`tact-fmt foo.tact Check on directory with formatted files 1`] = `
 {
   "code": 0,

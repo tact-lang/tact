@@ -156,6 +156,12 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
     if (filePath) {
         const write = Args.single("write") ?? false;
         const onlyCheck = Args.single("check") ?? false;
+
+        if (write && onlyCheck) {
+            Errors.checkAndWrite();
+            process.exit(1);
+        }
+
         const mode = onlyCheck
             ? "check"
             : write

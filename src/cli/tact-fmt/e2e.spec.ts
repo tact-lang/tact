@@ -183,4 +183,14 @@ describe("tact-fmt foo.tact", () => {
 
         rmSync(file);
     });
+
+    testExceptWindows("Check and write flags simultaneously", async () => {
+        await mkdir(outputDir, { recursive: true });
+        const file = join(outputDir, "contact.tact");
+        writeFileSync(file, contractWithSyntaxError);
+        const result = await tactFmt(file, "-w", "--check");
+        expect(result).toMatchSnapshot();
+
+        rmSync(file);
+    });
 });
