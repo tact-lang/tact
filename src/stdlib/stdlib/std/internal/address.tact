@@ -323,8 +323,9 @@ inline fun contractBasechainAddress(s: StateInit): BasechainAddress {
 ///
 /// Stores the basechain address in the copy of the Builder and returns that copy.
 ///
-/// If the address has a `null` hash, stores 0b00 (`addr_none`). Otherwise, stores the full address
-/// with prefix 0b100 followed by workchain 0 and the 256-bit hash.
+/// If the address has a `null` hash, stores two zero bits `0b00` (`addr_none`). Otherwise,
+/// stores the full address with the three-bit prefix `0b100`,
+/// followed by the 8-bit workchain ID set to 0 and the 256-bit hash.
 ///
 /// ```tact
 /// fun example() {

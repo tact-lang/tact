@@ -507,8 +507,7 @@ Extension function for the [`Builder{:tact}`][builder] type.
 
 Stores the basechain `address` in the copy of the [`Builder{:tact}`][builder] and returns that copy.
 
-If the address has a `null{:tact}` hash, stores $0b00$ (`addr_none`).
-Otherwise, store the full address with prefix $0b100$ followed by workchain 0 and the 256-bit hash.
+If the address has a `null{:tact}` hash, stores two zero bits `0b00` (`addr_none`). Otherwise, stores the full address with the three-bit prefix `0b100`, followed by the 8-bit workchain ID set to 0 and the 256-bit hash.
 
 Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
