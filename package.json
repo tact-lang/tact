@@ -55,6 +55,7 @@
     "spell": "yarn cspell --no-progress \"**\"",
     "knip": "knip",
     "lint:all": "yarn to-absolute && yarn gen:stdlib && yarn lint && yarn fmt:check && yarn spell && yarn knip",
+    "all:fast": "yarn build:fast && yarn gen:contracts:fast && yarn test:fast && yarn lint:all",
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "next-version": "ts-node version.build.ts",
     "random-ast": "ts-node ./src/ast/random-ast.ts",
