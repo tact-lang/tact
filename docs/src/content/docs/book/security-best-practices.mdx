@@ -259,35 +259,21 @@ To differentiate messages, always include and validate a unique identifier, such
 Alternatively, you can implement replay protection similar to the one in the [highload v3 wallet](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/main/contracts/highload-wallet-v3.func#L60), which is not based on `seqno`.
 
 ```tact
-message Msg {
-    newMessage: Cell;
-    signature: Slice;
-}
-
-struct DataToVerify {
+message MsgWithSignedData {
+    bundle: SignedBundle;
     seqno: Int as uint64;
-    message: Cell;
+    rawMsg: Cell;
 }
 
 contract Sample(
     publicKey: Int as uint256,
     seqno: Int as uint64,
 ) {
-    external(msg: Msg) {
-        require(
-            checkDataSignature(
-                DataToVerify {
-                    seqno: self.seqno,
-                    message: msg.newMessage,
-                }.toSlice(),
-                msg.signature,
-                self.publicKey,
-            ),
-            "Invalid signature",
-        );
+    external(msg: MsgWithSignedData) {
+        require(msg.bundle.verifySignature(self.publicKey), "Invalid signature");
         acceptMessage();
         self.seqno += 1;
-        sendRawMessage(msg.newMessage, 0);
+        sendRawMessage(msg.rawMsg, 0);
     }
 
     // Empty receiver for the deployment,
