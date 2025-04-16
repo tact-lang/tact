@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now shows a full error message for maps with optional value: PR [#2810](https://github.com/tact-lang/tact/pull/2810)
 - [fix] Generated TypeScript wrappers now export all functions for serialization/deserialization: PR [#2706](https://github.com/tact-lang/tact/pull/2706)
 - [fix] Processing of `null` values of optional types in the `dump` builtin: PR [#2730](https://github.com/tact-lang/tact/pull/2730)
+- [fix] Support constants as second parameter of `require()` function: PR [#2808](https://github.com/tact-lang/tact/pull/2808)
 
 ### Standard Library
 
