@@ -51,10 +51,10 @@ const setup = async () => {
     blockchain.setConfig(
         setStoragePrices(config, {
             unix_time_since: 0,
-            bit_price_ps: 1n,
-            cell_price_ps: 1n,
-            mc_bit_price_ps: 1n,
-            mc_cell_price_ps: 1n,
+            bit_price_ps: 0n,
+            cell_price_ps: 0n,
+            mc_bit_price_ps: 0n,
+            mc_cell_price_ps: 0n,
         }),
     );
 
