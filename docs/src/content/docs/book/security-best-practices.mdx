@@ -404,7 +404,7 @@ message(0xd53276db) Excesses {}
 message Vote { votes: Int as int32 }
 
 contract Sample(
-    votes: Int as uint32 = 0,
+    votes: Int as uint32,
 ) {
     receive(msg: Vote) {
         self.votes += msg.votes;
