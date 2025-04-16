@@ -130,7 +130,7 @@ For example, let's profile the Tact compiler on compiling a certain contract fro
 
 ```shell
 # Requires Tact compiler to be built beforehand
-npx 0x ./bin/tact.js  ./src/benchmarks/contracts/jetton-minter-discoverable.tact
+npx 0x ./bin/tact.js ./src/benchmarks/contracts/jetton-minter-discoverable.tact
 ```
 
 After the compilation, a folder containing the profiling results will be created. It will include the self-contained interactive `.html` page with flamegraph visualization — open it in your browser of choice to see and filter the results.
