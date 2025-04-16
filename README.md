@@ -134,6 +134,8 @@ It will make the `tact` compiler available on your PATH, as well as a convenient
 
 ### Tooling
 
+🎨 **Formatter (tact-fmt)** — Keep your Tact code clean and consistent with the official formatter. Ships with the compiler and helps maintain a unified code style across your projects.
+
 ###### Extensions and plugins
 
 - [VS Code extension](https://marketplace.visualstudio.com/items?itemName=tonstudio.vscode-tact) - Powerful and feature-rich extension for Visual Studio Code (VSCode) and VSCode-based editors like VSCodium, Cursor, Windsurf, and others.
