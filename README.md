@@ -155,8 +155,8 @@ It will make the `tact` compiler available on your PATH, as well as:
 
 ###### Utility
 
-- Formatter (`tact-fmt`) — Idiomatic and official formatter. It ships with the Tact Language Server, VS Code extension, and as a standalone binary with the compiler. You can invoke it by running `npx tact-fmt` in your Tact projects.
-- BoC Disassembler (`unboc`) — Disassembler of `.boc` files from the [@tact-lang/opcode](https://npmjs.com/package/@tact-lang/opcode) package, which ships as a standalone binary with the compiler. You can invoke it by running `npx unboc` in your Tact projects.
+- Formatter (`tact-fmt`) — The official formatter. It ships with the Tact Language Server, VS Code extension, and as a standalone binary with the compiler. You can invoke it by running `npx tact-fmt` in your Tact projects.
+- BoC Disassembler (`unboc`) — Disassembler for [`.boc`](https://docs.tact-lang.org/book/cells/#cells-boc) files. Ships as a standalone binary with the compiler. You can invoke it by running `npx unboc` in your Tact projects.
 
 ### Getting started
 
