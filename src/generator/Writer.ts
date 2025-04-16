@@ -110,11 +110,11 @@ export class WriterContext {
         }
 
         // Sort functions
-        const sorted = topologicalSort(all, (f) =>
-            Array.from(f.depends).map((v) => this.#functions.get(v)!),
+        return topologicalSort(
+            all,
+            (f) => Array.from(f.depends).map((v) => this.#functions.get(v)!),
+            () => undefined,
         );
-
-        return sorted;
     }
 
     //

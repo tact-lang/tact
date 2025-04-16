@@ -181,6 +181,10 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
         if (signatures.has(name)) {
             return signatures.get(name)!;
         }
+
+        // prevent endless recursion
+        signatures.set(name, { signature: name, id: null, tlb: "" });
+
         const t = getType(ctx, name);
         if (t.kind !== "struct" && t.kind !== "contract") {
             throwInternalCompilerError(`Unsupported type: ${name}`);

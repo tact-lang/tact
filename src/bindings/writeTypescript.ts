@@ -126,7 +126,7 @@ export function writeTypescript(
             }
             return res;
         };
-        const sortedTypes = topologicalSort(abi.types, refs);
+        const sortedTypes = topologicalSort(abi.types, refs, () => undefined);
         for (const f of sortedTypes) {
             const ops = f.fields.map((v) => ({
                 name: v.name,

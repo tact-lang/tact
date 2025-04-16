@@ -58,7 +58,7 @@ export function getSortedTypes(ctx: CompilerContext): TypeDescription[] {
         }
         return res;
     };
-    structs = topologicalSort(structs, refs);
+    structs = topologicalSort(structs, refs, (s) => [s.name, s.ast.name.loc]);
     structs = [...structs, ...types.filter((v) => v.kind === "contract")];
     return structs;
 }

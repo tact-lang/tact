@@ -19,7 +19,7 @@ const stdlib = fs.readFileSync(primitivesPath, "utf-8");
 const src = `
 
 trait BaseTrait {
-    
+
 }
 
 struct Point3 {
@@ -84,5 +84,59 @@ describe("resolveAllocation", () => {
         ctx = resolveStatements(ctx);
         ctx = resolveAllocations(ctx);
         expect(getAllocations(ctx)).toMatchSnapshot();
+    });
+
+    it("should throw error about cyclic dependencies", () => {
+        const code = `
+trait BaseTrait {}
+
+struct DeeplyNested {
+    inner: InnerStruct;
+}
+
+struct InnerStruct {
+    val: Int;
+    next: DeeperStruct;
+}
+
+struct DeeperStruct {
+    flag: Bool;
+    optionalInner: InnerStruct?;
+}
+
+contract NestedStorage {
+    data: DeeplyNested;
+
+    init() {
+        self.data = DeeplyNested{
+            inner: InnerStruct{
+                val: 1,
+                next: DeeperStruct{
+                    flag: true,
+                    optionalInner: null,
+                },
+            },
+        };
+    }
+}
+`;
+        const expectedError = `<unknown>:8:8: Cycle detected: InnerStruct -> DeeperStruct -> InnerStruct\n  7 | \n> 8 | struct InnerStruct {\n             ^~~~~~~~~~~\n  9 |     val: Int;\n`;
+
+        const ast = getAstFactory();
+        const sources: Source[] = [
+            { code: stdlib, path: primitivesPath, origin: "stdlib" },
+            { code: code, path: "<unknown>", origin: "user" },
+        ];
+        let ctx = openContext(
+            new CompilerContext(),
+            sources,
+            [],
+            parseModules(sources, getParser(ast)),
+        );
+        ctx = resolveDescriptors(ctx, ast);
+        ctx = resolveSignatures(ctx, ast);
+        ctx = resolveStatements(ctx);
+
+        expect(() => resolveAllocations(ctx)).toThrow(expectedError);
     });
 });
