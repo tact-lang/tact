@@ -7,31 +7,35 @@ import {
 } from "@ton/core";
 import type { BlockchainConfig } from "@ton/sandbox";
 
+// https://github.com/ton-blockchain/ton/blob/ed4682066978f69ffa38dd98912ca77d4f660f66/crypto/block/block.tlb#L705
+const ConfigStoragePriceIndex = 18;
+const ConfigKeyLength = 32;
+
 type StorageValue = {
-    unix_time_since: number;
-    bit_price_ps: bigint;
-    cell_price_ps: bigint;
-    mc_bit_price_ps: bigint;
-    mc_cell_price_ps: bigint;
+    unixTimeSince: number;
+    bitPricePerSecond: bigint;
+    cellPricePerSecond: bigint;
+    masterChainBitPricePerSecond: bigint;
+    masterChainCellPricePerSecond: bigint;
 };
 
 const storageValue: DictionaryValue<StorageValue> = {
     serialize: (src, builder) => {
         builder
             .storeUint(0xcc, 8)
-            .storeUint(src.unix_time_since, 32)
-            .storeUint(src.bit_price_ps, 64)
-            .storeUint(src.cell_price_ps, 64)
-            .storeUint(src.mc_bit_price_ps, 64)
-            .storeUint(src.mc_cell_price_ps, 64);
+            .storeUint(src.unixTimeSince, 32)
+            .storeUint(src.bitPricePerSecond, 64)
+            .storeUint(src.cellPricePerSecond, 64)
+            .storeUint(src.masterChainBitPricePerSecond, 64)
+            .storeUint(src.masterChainCellPricePerSecond, 64);
     },
     parse: (src) => {
         return {
-            unix_time_since: src.skip(8).loadUint(32),
-            bit_price_ps: src.loadUintBig(64),
-            cell_price_ps: src.loadUintBig(64),
-            mc_bit_price_ps: src.loadUintBig(64),
-            mc_cell_price_ps: src.loadUintBig(64),
+            unixTimeSince: src.skip(8).loadUint(32),
+            bitPricePerSecond: src.loadUintBig(64),
+            cellPricePerSecond: src.loadUintBig(64),
+            masterChainBitPricePerSecond: src.loadUintBig(64),
+            masterChainCellPricePerSecond: src.loadUintBig(64),
         };
     },
 };
@@ -42,13 +46,19 @@ export function setStoragePrices(
 ): BlockchainConfig {
     const config = configRaw
         .beginParse()
-        .loadDictDirect(Dictionary.Keys.Int(32), Dictionary.Values.Cell());
+        .loadDictDirect(
+            Dictionary.Keys.Int(ConfigKeyLength),
+            Dictionary.Values.Cell(),
+        );
     const storageData = Dictionary.loadDirect(
-        Dictionary.Keys.Uint(32),
+        Dictionary.Keys.Uint(ConfigKeyLength),
         storageValue,
-        config.get(18)!,
+        config.get(ConfigStoragePriceIndex)!,
     );
     storageData.set(storageData.values().length - 1, prices);
-    config.set(18, beginCell().storeDictDirect(storageData).endCell());
+    config.set(
+        ConfigStoragePriceIndex,
+        beginCell().storeDictDirect(storageData).endCell(),
+    );
     return beginCell().storeDictDirect(config).endCell();
 }
