@@ -39,6 +39,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the `sendRawMessage` and `sendRawMessageReturnForwardFee` functions instead of the deprecated `nativeSendMessage` and `nativeSendMessageReturnForwardFee` functions correspondingly: PR [#2755](https://github.com/tact-lang/tact/pull/2755)
 - Optimized the `sha256()` function to about ~270 less gas used per call, and added the `keccak256()` function: PR [#2775](https://github.com/tact-lang/tact/pull/2775)
 
+### Tooling
+
+- Added source code formatter: PR [#2768](https://github.com/tact-lang/tact/pull/2768)
+  - Show a better error if a file cannot be parsed by the formatter: PR [#2796](https://github.com/tact-lang/tact/pull/2796)
+  - Added `--check` flag to formatter: PR [#2788](https://github.com/tact-lang/tact/pull/2788)
+  - Support directory formatting: PR [#2787](https://github.com/tact-lang/tact/pull/2787)
+
 ### TypeScript third-party API
 
 - Support contract parameters in the AST printer: PR [#2658](https://github.com/tact-lang/tact/pull/2658)
