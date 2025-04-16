@@ -97,8 +97,8 @@ Lagus
 Laika
 langle
 langtools
-letrec
 learnXinYminutes
+letrec
 Liskov
 llm
 llms
@@ -116,6 +116,7 @@ memecoin
 Merkle
 minmax
 mintable
+miscompilation
 misparse
 misparsed
 mktemp
