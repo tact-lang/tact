@@ -240,8 +240,8 @@ asm extends fun toString(self: Int): String {
 ///
 /// [fixed-point representation]: https://en.wikipedia.org/wiki/Fixed-point_arithmetic
 /// [Invalid argument]: https://docs.tact-lang.org/book/exit-codes#134
-/// 
-asm extends fun toFloatString(self: Int, digits: Int): String  {
+///
+asm extends fun toFloatString(self: Int, digits: Int): String {
     // x digits
 
     DUP // x digits digits

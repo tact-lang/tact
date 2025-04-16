@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now shows a more informative error message for fields with unsupported trait types: PR [#2695](https://github.com/tact-lang/tact/pull/2695)
 - [fix] Compiler now correctly generates code for functions with several wildcard parameters: PR [#2703](https://github.com/tact-lang/tact/pull/2703)
 - [fix] Compiler now checks that "override" functions and constants have a virtual or abstract modifier in the parent trait: PR [#2700](https://github.com/tact-lang/tact/pull/2700)
+- [fix] Compiler now throws an error if a non-optional method is called on an optional type: PR [#2770](https://github.com/tact-lang/tact/pull/2770)
+- [fix] Compiler now throws an error when inheriting from two traits that have methods with the same name: PR [#2773](https://github.com/tact-lang/tact/pull/2773)
 - [fix] Generated TypeScript wrappers now export all functions for serialization/deserialization: PR [#2706](https://github.com/tact-lang/tact/pull/2706)
 - [fix] Processing of `null` values of optional types in the `dump` builtin: PR [#2730](https://github.com/tact-lang/tact/pull/2730)
 
@@ -30,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added compute phase exit code constants reserved by the Tact compiler: `TactExitCodeNullReferenceException`, `TactExitCodeInvalidSerializationPrefix`, `TactExitCodeInvalidIncomingMessage`, `TactExitCodeConstraintsError`, `TactExitCodeAccessDenied`, `TactExitCodeContractStopped`, `TactExitCodeInvalidArgument`, `TactExitCodeContractCodeNotFound`, `TactExitCodeInvalidStandardAddress`, `TactExitCodeNotBasechainAddress`: PR [#2527](https://github.com/tact-lang/tact/pull/2527)
 - Added the `SignedBundle` struct and the corresponding `verifySignature` method: PR [#2627](https://github.com/tact-lang/tact/pull/2627)
+- Added the `sendRawMessage` and `sendRawMessageReturnForwardFee` functions instead of the deprecated `nativeSendMessage` and `nativeSendMessageReturnForwardFee` functions correspondingly: PR [#2755](https://github.com/tact-lang/tact/pull/2755)
+- Optimized the `sha256()` function to about ~270 less gas used per call, and added the `keccak256()` function: PR [#2775](https://github.com/tact-lang/tact/pull/2775)
 
 ### TypeScript third-party API
 
@@ -41,6 +45,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the description of the Tact-reserved exit code 129 and expanded descriptions of functions that can throw it, such as `Message.fromCell()` and `Message.fromSlice()`: PR [#2604](https://github.com/tact-lang/tact/pull/2604)
 - Added "Learn Tact in Y minutes" page to the Book: PR [#2375](https://github.com/tact-lang/tact/pull/2375)
 - Ensured that variables are always shown declared with immediate initialization, and made it clear in the descriptions of the `let` statement: PR [#2742](https://github.com/tact-lang/tact/pull/2742)
+- Fixed the description of the Unicode escape upper bound (U+10FFFF): PR [#2752](https://github.com/tact-lang/tact/pull/2752)
+- Added generation of `llms.txt`, `llms-full.txt` (full version), and `llms-small.txt` (compact version, with non-essential content removed): PR [#2763](https://github.com/tact-lang/tact/pull/2763)
+- Added description of the specialized math functions, such as `pow2()` and `log2()`, to the gas best practices page: PR [#2771](https://github.com/tact-lang/tact/pull/2771)
+- Added `BasechainAddress` to the gas best practices page: PR [#2802](https://github.com/tact-lang/tact/pull/2802)
 
 ### Release contributors
 

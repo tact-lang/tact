@@ -29,8 +29,8 @@ Contributing is not just encouraged, it's easy!
 
 If you've solved a challenging problem or found a better way to explain a complex topic, share it:
 
-— Got an idea? [Open an issue](https://github.com/tact-lang/tact/issues/new).
-— Ready to contribute? [Setup the dev environment](#setup-your-development-environment).
+- Got an idea? [Open an issue](https://github.com/tact-lang/tact/issues/new).
+- Ready to contribute? [Setup the dev environment](#%EF%B8%8F-setup-your-development-environment).
 
 ### ⚙️ Setup your development environment
 
@@ -40,7 +40,7 @@ Before you submit your amazing contributions, ensure they work seamlessly.
 
 Use Gitpod for a hassle-free cloud-based IDE experience:
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/tact-lang/tact-docs)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/tact-lang/tact/blob/main/docs)
 
 #### 🏠 Local setup
 
@@ -97,7 +97,7 @@ All commands are run from the root of the project, from a terminal:
 | `yarn deps`               | Installs dependencies.
 | `yarn dev`                | Starts local dev server at `localhost:4321`.
 | `yarn build`              | Build your production site to `./dist/`. Runs CSpell and also validates all the internal links.
-| `yarn preview`            | Preview your build locally, before deploying.
+| `yarn preview`            | Preview your build locally, before deploying. Enables local usage of the site search.
 | `yarn astro ...`          | Run CLI commands like `astro add`, `astro check`, etc.
 | `yarn astro -- --help`    | Get help using the Astro CLI.
 

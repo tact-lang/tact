@@ -52,6 +52,8 @@ Epva
 errno
 Esorat
 extracurrency
+flamegraph
+flamegraphs
 forall
 formedness
 frontmatter
@@ -98,6 +100,8 @@ langtools
 letrec
 learnXinYminutes
 Liskov
+llm
+llms
 logomark
 lparen
 lvalue
