@@ -14,6 +14,8 @@ import { Empty } from "./output/empty_Empty";
 
 import "@ton/test-utils";
 
+import { setStoragePrices } from "@/test/e2e-emulated/traits/base-trait/gasUtils";
+
 const setup = async () => {
     const deployValue = toNano("0.05");
     const lowSendValue = toNano("0.5");
@@ -43,6 +45,19 @@ const setup = async () => {
     };
 
     const blockchain: Blockchain = await Blockchain.create();
+
+    const config = blockchain.config;
+
+    blockchain.setConfig(
+        setStoragePrices(config, {
+            unix_time_since: 0,
+            bit_price_ps: 1n,
+            cell_price_ps: 1n,
+            mc_bit_price_ps: 1n,
+            mc_cell_price_ps: 1n,
+        }),
+    );
+
     const treasury: SandboxContract<TreasuryContract> =
         await blockchain.treasury("treasury");
 
