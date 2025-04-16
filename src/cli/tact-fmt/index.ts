@@ -82,10 +82,12 @@ type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
 const markup = getAnsiMarkup(Boolean(isColorSupported()));
 
+type FormatMode = "format" | "check";
+
 function formatFile(
     filepath: string,
     write: boolean,
-    onlyCheck: boolean,
+    mode: FormatMode,
 ): boolean | undefined {
     const content = readFileOrFail(filepath);
     if (typeof content === "undefined") return undefined;
@@ -100,7 +102,7 @@ function formatFile(
     }
 
     const alreadyFormatted = content === res.code;
-    if (onlyCheck) {
+    if (mode === "check") {
         if (alreadyFormatted) {
             return true;
         }
@@ -158,8 +160,9 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
     if (filePath) {
         const write = Args.single("write") ?? false;
         const onlyCheck = Args.single("check") ?? false;
+        const mode = onlyCheck ? "check" : "format";
 
-        if (onlyCheck) {
+        if (mode === "check") {
             console.log("Checking formatting...");
         }
 
@@ -171,7 +174,7 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
             let someFileCannotBeFormatted = false;
             let allFormatted = true;
             for (const file of files) {
-                const res = formatFile(join(filePath, file), write, onlyCheck);
+                const res = formatFile(join(filePath, file), write, mode);
                 if (typeof res === "undefined") {
                     someFileCannotBeFormatted = true;
                 } else {
@@ -196,7 +199,7 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
             return;
         }
 
-        const res = formatFile(filePath, write, onlyCheck);
+        const res = formatFile(filePath, write, mode);
         if (typeof res === "undefined") {
             process.exit(1);
         }
