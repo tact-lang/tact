@@ -134,8 +134,6 @@ It will make the `tact` compiler available on your PATH, as well as a convenient
 
 ### Tooling
 
-🎨 **Formatter (tact-fmt)** — Keep your Tact code clean and consistent with the official formatter. Ships with the compiler and helps maintain a unified code style across your projects.
-
 ###### Extensions and plugins
 
 - [VS Code extension](https://marketplace.visualstudio.com/items?itemName=tonstudio.vscode-tact) - Powerful and feature-rich extension for Visual Studio Code (VSCode) and VSCode-based editors like VSCodium, Cursor, Windsurf, and others.
@@ -151,6 +149,10 @@ It will make the `tact` compiler available on your PATH, as well as a convenient
 
 - [Misti](https://github.com/nowarp/misti) - Static smart contract analyzer.
 - [TON Symbolic Analyzer (TSA)](https://github.com/espritoxyz/tsa) - Static smart contract analysis tool based on symbolic execution.
+
+###### Utility
+
+- [Formatter (tact-fmt)] — Idiomatic and official formatter. It ships with the Tact Language Server, VS Code extension, and as a standalone binary with the compiler. You can invoke it by running `npx tact-fmt` in your Tact projects.
 
 ### Getting started
 
