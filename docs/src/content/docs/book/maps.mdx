@@ -122,7 +122,7 @@ Note that [persistent state variables](/book/contracts#variables) of type `map<K
 
 ```tact
 // K and V correspond to the key and value types of the given map
-extends mutates fun set(self: map<K, V>, key: K, val: V);
+extends mutates fun set(self: map<K, V>, key: K, val: V?);
 ```
 
 To set or replace the value under a key, call the `.set(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps.

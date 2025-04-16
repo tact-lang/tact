@@ -1357,6 +1357,15 @@ describe("should format", () => {
             );
 
             it(
+                "unbox not null 2",
+                intact(`
+                fun foo() {
+                    let cell: Cell = getConfigParam(0)!!;
+                }
+            `),
+            );
+
+            it(
                 "simple call chain",
                 intact(`
                 fun foo() {
@@ -2495,6 +2504,16 @@ describe("should format", () => {
             ) {}
         `),
         );
+
+        // TODO:
+        // it(
+        //     "contract with comments between parameters and body",
+        //     intact(`
+        //     contract Foo(
+        //         value: Int,
+        //     ) /*comment*/ {}
+        // `),
+        // );
 
         it(
             "contract with single field",

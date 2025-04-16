@@ -26,17 +26,17 @@ exports[`benchmarks benchmark readFwdFee: code size 1`] = `116`;
 
 exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1968`;
 
-exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2440`;
+exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2172`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2441`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2173`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2443`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2175`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2440`;
+exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2172`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2441`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2173`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2443`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2175`;
 
 exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1993`;
 
