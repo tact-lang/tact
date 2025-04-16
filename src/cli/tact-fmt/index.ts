@@ -47,6 +47,7 @@ const processArgs = (Errors: FormatterErrors, argv: string[]) => {
 const ArgSchema = (Parser: ArgParser) => {
     return Parser.tokenizer
         .add(Parser.boolean("write", "w"))
+        .add(Parser.boolean("check", "c"))
         .add(Parser.boolean("version", "v"))
         .add(Parser.boolean("help", "h"))
         .add(Parser.immediate).end;
@@ -59,6 +60,7 @@ const showHelp = () => {
 
     Flags
       -w, --write                 Write result to same file
+      -c, --check                 Check if the given files are formatted
       -v, --version               Print tact-fmt version and exit
       -h, --help                  Display this text and exit
 
@@ -80,7 +82,9 @@ type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
 const markup = getAnsiMarkup(Boolean(isColorSupported()));
 
-function formatFile(filepath: string, write: boolean): boolean | undefined {
+type FormatMode = "format" | "format-and-write" | "check";
+
+function formatFile(filepath: string, mode: FormatMode): boolean | undefined {
     const content = readFileOrFail(filepath);
     if (typeof content === "undefined") return undefined;
 
@@ -94,8 +98,15 @@ function formatFile(filepath: string, write: boolean): boolean | undefined {
     }
 
     const alreadyFormatted = content === res.code;
+    if (mode === "check") {
+        if (alreadyFormatted) {
+            return true;
+        }
+        console.log(`[${markup.yellow("warn")}]`, path.basename(filepath));
+        return false;
+    }
 
-    if (write) {
+    if (mode === "format-and-write") {
         console.log(
             markup.gray(path.basename(filepath)),
             `${time.toFixed(0)}ms`,
@@ -144,6 +155,22 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
     const filePath = Args.single("immediate");
     if (filePath) {
         const write = Args.single("write") ?? false;
+        const onlyCheck = Args.single("check") ?? false;
+
+        if (write && onlyCheck) {
+            Errors.checkAndWrite();
+            process.exit(1);
+        }
+
+        const mode = onlyCheck
+            ? "check"
+            : write
+              ? "format-and-write"
+              : "format";
+
+        if (mode === "check") {
+            console.log("Checking formatting...");
+        }
 
         if (!fs.statSync(filePath).isFile()) {
             const files = globSync(["**/*.tact"], {
@@ -151,19 +178,34 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
             });
 
             let someFileCannotBeFormatted = false;
+            let allFormatted = true;
             for (const file of files) {
-                const res = formatFile(join(filePath, file), write);
+                const res = formatFile(join(filePath, file), mode);
                 if (typeof res === "undefined") {
                     someFileCannotBeFormatted = true;
+                } else {
+                    allFormatted &&= res;
                 }
             }
+
+            if (onlyCheck) {
+                if (!allFormatted) {
+                    console.log(
+                        "Code style issues found in the above file. Run tact-fmt with --write to fix.",
+                    );
+                    process.exit(1);
+                } else {
+                    console.log("All Tact files use Tact code style!");
+                }
+            }
+
             if (someFileCannotBeFormatted) {
                 process.exit(1);
             }
             return;
         }
 
-        const res = formatFile(filePath, write);
+        const res = formatFile(filePath, mode);
         if (typeof res === "undefined") {
             process.exit(1);
         }
