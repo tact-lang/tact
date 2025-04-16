@@ -4,9 +4,9 @@
       "label": "FunC",
       "size": {
         "collection cells": "36",
-        "collection bits": "7640",
+        "collection bits": "7635",
         "item cells": "16",
-        "item bits": "4044"
+        "item bits": "4039"
       },
       "pr": "https://github.com/ton-blockchain/token-contract/tree/main/nft"
     },
