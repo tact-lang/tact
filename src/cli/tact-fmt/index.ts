@@ -82,13 +82,9 @@ type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
 const markup = getAnsiMarkup(Boolean(isColorSupported()));
 
-type FormatMode = "format" | "check";
+type FormatMode = "format" | "format-and-write" | "check";
 
-function formatFile(
-    filepath: string,
-    write: boolean,
-    mode: FormatMode,
-): boolean | undefined {
+function formatFile(filepath: string, mode: FormatMode): boolean | undefined {
     const content = readFileOrFail(filepath);
     if (typeof content === "undefined") return undefined;
 
@@ -110,7 +106,7 @@ function formatFile(
         return false;
     }
 
-    if (write) {
+    if (mode === "format-and-write") {
         console.log(
             markup.gray(path.basename(filepath)),
             `${time.toFixed(0)}ms`,
@@ -160,7 +156,11 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
     if (filePath) {
         const write = Args.single("write") ?? false;
         const onlyCheck = Args.single("check") ?? false;
-        const mode = onlyCheck ? "check" : "format";
+        const mode = onlyCheck
+            ? "check"
+            : write
+              ? "format-and-write"
+              : "format";
 
         if (mode === "check") {
             console.log("Checking formatting...");
@@ -174,7 +174,7 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
             let someFileCannotBeFormatted = false;
             let allFormatted = true;
             for (const file of files) {
-                const res = formatFile(join(filePath, file), write, mode);
+                const res = formatFile(join(filePath, file), mode);
                 if (typeof res === "undefined") {
                     someFileCannotBeFormatted = true;
                 } else {
@@ -199,7 +199,7 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
             return;
         }
 
-        const res = formatFile(filePath, write, mode);
+        const res = formatFile(filePath, mode);
         if (typeof res === "undefined") {
             process.exit(1);
         }
