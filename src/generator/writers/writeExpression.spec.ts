@@ -63,7 +63,7 @@ const golden: string[] = [
     `$j'a`,
     "$A$_get_b($A$_constructor_a_b(1, $b))",
     `((- $j'b) + $a)`,
-    `(((- $j'b) + $a) + (+ $b))`,
+    `(((- $j'b) + $a) + $b)`,
     "null()",
     "($o + 1)",
     `$A$_store_cell(($j'a, $j'b))`,
