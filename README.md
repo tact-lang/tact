@@ -131,8 +131,9 @@ npm i -g @tact-lang/compiler
 ```
 
 It will make the `tact` compiler available on your PATH, as well as:
-* a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
-* a formatter `tact-fmt`, which can format or check individual Tact files and directories.
+
+- a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
+- a formatter `tact-fmt`, which can format or check the formatting of individual Tact files and directories.
 
 ### Tooling
 
