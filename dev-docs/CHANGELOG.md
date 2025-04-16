@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now throws an error if a non-optional method is called on an optional type: PR [#2770](https://github.com/tact-lang/tact/pull/2770)
 - [fix] Compiler now throws an error when inheriting from two traits that have methods with the same name: PR [#2773](https://github.com/tact-lang/tact/pull/2773)
 - [fix] Compiler now correctly generates code for unary plus operator: PR [#2807](https://github.com/tact-lang/tact/pull/2807)
+- [fix] Compiler now shows a full error message for maps with optional value: PR [#2810](https://github.com/tact-lang/tact/pull/2810)
 - [fix] Compiler now shows a better error message if there is a cycle in structures: PR [#2809](https://github.com/tact-lang/tact/pull/2809)
 - [fix] Generated TypeScript wrappers now export all functions for serialization/deserialization: PR [#2706](https://github.com/tact-lang/tact/pull/2706)
 - [fix] Processing of `null` values of optional types in the `dump` builtin: PR [#2730](https://github.com/tact-lang/tact/pull/2730)

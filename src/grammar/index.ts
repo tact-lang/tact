@@ -871,7 +871,7 @@ const parseTypeOptional =
                 ctx.err.mapOnlyOneAs("key")(genericLoc);
             }
             if (key.type.optionals.length > 0) {
-                ctx.err.cannotBeOptional("key")(genericLoc);
+                ctx.err.cannotBeOptional("map key types")(key.loc);
             }
             if (key.type.type.$ !== "TypeRegular") {
                 ctx.err.onlyTypeId("key")(genericLoc);
@@ -882,7 +882,7 @@ const parseTypeOptional =
                 ctx.err.mapOnlyOneAs("value")(genericLoc);
             }
             if (value.type.optionals.length > 0) {
-                ctx.err.cannotBeOptional("value")(genericLoc);
+                ctx.err.cannotBeOptional("map value types")(value.loc);
             }
             if (value.type.type.$ !== "TypeRegular") {
                 ctx.err.onlyTypeId("value")(genericLoc);
