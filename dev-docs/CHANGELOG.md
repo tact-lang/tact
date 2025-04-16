@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now checks that "override" functions and constants have a virtual or abstract modifier in the parent trait: PR [#2700](https://github.com/tact-lang/tact/pull/2700)
 - [fix] Compiler now throws an error if a non-optional method is called on an optional type: PR [#2770](https://github.com/tact-lang/tact/pull/2770)
 - [fix] Compiler now throws an error when inheriting from two traits that have methods with the same name: PR [#2773](https://github.com/tact-lang/tact/pull/2773)
+- [fix] Compiler now correctly generates code for unary plus operator: PR [#2807](https://github.com/tact-lang/tact/pull/2807)
 - [fix] Generated TypeScript wrappers now export all functions for serialization/deserialization: PR [#2706](https://github.com/tact-lang/tact/pull/2706)
 - [fix] Processing of `null` values of optional types in the `dump` builtin: PR [#2730](https://github.com/tact-lang/tact/pull/2730)
 - [fix] Support constants as second parameter of `require()` function: PR [#2808](https://github.com/tact-lang/tact/pull/2808)
