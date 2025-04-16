@@ -76,6 +76,48 @@ contract Scrooge {
 }
 ```
 
+### Use `BasechainAddress` struct and related functions for runtime manipulations on addresses in the base workchain
+
+<Badge text="Available since Tact 1.6.3" variant="tip" size="medium"/><p/>
+
+Almost all contracts on TON are deployed on the basechain — a [workchain with ID 0][workchain-id]. The [`BasechainAddress{:tact}`](/ref/core-addresses#basechainaddress) [struct][struct] and related functions were introduced to allow optimal handling of basechain addresses at runtime.
+
+A frequent use-case for basechain addresses is checking message sender addresses for validity, i.e., if a contract needs to make sure the incoming message comes from a specific contract deployed in the basechain, it can use the [`StateInit.hasSameBasechainAddress(){:tact}`](/ref/core-addresses#stateinithassamebasechainaddress) extension function.
+
+```tact
+contract Child(parentAddr: Address) {
+    receive() {
+        // Forward surplus to the parent address
+        message(MessageParameters{
+            to: self.parentAddr,
+            value: 0,
+            mode: SendRemainingValue,
+        });
+    }
+}
+
+contract Parent() {
+    receive() {
+        // Ensure that the message came from the child contract
+        let childContract = initOf Child(myAddress());
+        require(
+            childContract.hasSameBasechainAddress(sender()),
+            "Message must come from the Child contract",
+        );
+
+        // ...subsequent logic...
+    }
+}
+```
+
+To ensure that a certain [`Address{:tact}`][p] is in the basechain and can be represented by the `BasechainAddress{:tact}`, you can use the [`forceBasechain(){:tact}`](/ref/core-addresses#forcebasechain) function first.
+
+See other functions related to the `BasechainAddress{:tact}` struct:
+
+* [`emptyBasechainAddress{:tact}`](/ref/core-addresses#emptybasechainaddress)
+* [`newBasechainAddress{:tact}`](/ref/core-addresses#newbasechainaddress)
+* [`contractBasechainAddress{:tact}`](/ref/core-addresses#contractbasechainaddress)
+
 ### Pay attention to "Gas-expensive" badge
 
 Some functions in the Tact documentation are annotated with a special badge, "Gas-expensive", which marks the functions that use 500 gas units or more. It is placed right under the function name heading and looks like this: <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
@@ -285,9 +327,12 @@ See those examples with recommendations applied:
 - [Jetton Minter contract](https://github.com/tact-lang/jetton/blob/9db75a5a828e9093be5c425605c5f5c9903f505d/src/contracts/jetton-minter.tact)
 - [Escrow contract](https://github.com/tact-lang/tact/blob/73fb52b2c8b4e8b2309e0aae4dcc0f8cb35117ea/src/benchmarks/contracts/escrow.tact)
 
+[p]: /book/types#primitive-types
 [slice]: /book/cells#slices
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [tvm-instruction]: https://docs.ton.org/v3/documentation/tvm/instructions
+[workchain-id]: https://docs.ton.org/learn/overviews/addresses#workchain-id
+[account-id]: https://docs.ton.org/learn/overviews/addresses#account-id
