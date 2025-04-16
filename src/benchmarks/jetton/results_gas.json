@@ -3,8 +3,8 @@
     {
       "label": "FunC",
       "gas": {
-        "transfer": "16864",
-        "burn": "12414",
+        "transfer": "16964",
+        "burn": "12514",
         "discovery": "6554"
       },
       "pr": "https://github.com/ton-blockchain/token-contract"

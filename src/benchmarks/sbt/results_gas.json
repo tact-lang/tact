@@ -5,12 +5,12 @@
       "pr": "https://github.com/getgems-io/nft-contracts/blob/24ae5e9c7a6c78b592c01be32fee2edb12424be8/packages/contracts/sources/sbt-item.fc",
       "gas": {
         "deploy": "3204",
-        "request owner": "5548",
-        "prove ownership": "5667",
-        "get static data": "5291",
+        "request owner": "5523",
+        "prove ownership": "5642",
+        "get static data": "5266",
         "destroy": "6685",
         "revoke": "4203",
-        "take excess": "6211"
+        "take excess": "6186"
       }
     },
     {
