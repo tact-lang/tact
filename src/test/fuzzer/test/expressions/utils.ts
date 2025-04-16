@@ -1,23 +1,24 @@
-import * as Ast from "@/ast/ast";
-import { getMakeAst, MakeAstFactory } from "@/ast/generated/make-factory";
-import {
-    AllowedTypeEnum,
-    NonTerminal,
-    NonTerminalEnum,
-} from "../../src/generators/uniform-expr-gen";
+import type * as Ast from "@/ast/ast";
+import type { MakeAstFactory } from "@/ast/generated/make-factory";
+import { getMakeAst } from "@/ast/generated/make-factory";
+import type { AllowedTypeEnum } from "../../src/generators/uniform-expr-gen";
+import { NonTerminal } from "../../src/generators/uniform-expr-gen";
 import { GlobalContext } from "../../src/context";
 import { Interpreter } from "@/optimizer/interpreter";
 import { CompilerContext } from "@/context/context";
-import { AstUtil, getAstUtil } from "@/ast/util";
-import { FactoryAst, getAstFactory } from "@/ast/ast-helpers";
+import type { AstUtil } from "@/ast/util";
+import { getAstUtil } from "@/ast/util";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { getAstFactory } from "@/ast/ast-helpers";
+import type { CustomStdlib } from "../../src/util";
 import {
     buildModule,
-    CustomStdlib,
     filterStdlib,
     parseStandardLibrary,
 } from "../../src/util";
 import { Blockchain } from "@ton/sandbox";
-import { Sender, toNano } from "@ton/core";
+import type { Sender } from "@ton/core";
+import { toNano } from "@ton/core";
 import fc from "fast-check";
 import * as fs from "node:fs";
 
@@ -126,6 +127,8 @@ export async function setupEnvironment(): Promise<ExpressionTestingEnvironment> 
             "context",
             "myBalance",
             "nativeReserve",
+            "toString",
+            "StringBuilder",
             //"contractAddress",
             //"contractAddressExt",
             //"storeUint",
@@ -197,7 +200,7 @@ export async function compileExpression(
     );
 
     try {
-        let contractMapPromise = buildModule(
+        const contractMapPromise = buildModule(
             astF,
             contractModule,
             customStdlib,

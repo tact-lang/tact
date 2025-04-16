@@ -1,6 +1,5 @@
 import type { ILogger } from "@/context/logger";
 import { execSync } from "child_process";
-import path from "path";
 
 // Wasm Imports
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -58,8 +57,6 @@ type CompileResult =
           warnings: string;
       };
 
-
-
 export async function funcCompile(args: {
     entries: string[];
     sources: { path: string; content: string }[];
@@ -92,9 +89,7 @@ export function funcCompileNative(args: {
 
     const files: string[] = args.entries;
     const configStr = JSON.stringify({
-        sources: files.map((f) =>
-            f.replace("@stdlib/", FC_STDLIB_PATH),
-        ),
+        sources: files.map((f) => f.replace("@stdlib/", FC_STDLIB_PATH)),
         optLevel: 2,
         fiftPath: FIFT_LIBS_PATH,
     });

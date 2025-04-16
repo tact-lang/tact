@@ -2,7 +2,7 @@ import type * as Ast from "@/ast/ast";
 import { nextId } from "@/test/fuzzer/src/id";
 
 import * as path from "path";
-import files from "@/stdlib/stdlib";
+import { files } from "@/stdlib/stdlib";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import {
     dummySrcInfoPrintable,

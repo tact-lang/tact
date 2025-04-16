@@ -25,7 +25,7 @@ import {
     GenContext,
     initializeGenerator,
     NonTerminal,
-    Terminal
+    Terminal,
 } from "../../src/generators/uniform-expr-gen";
 import {
     bindingsAndExpressionPrtinter,

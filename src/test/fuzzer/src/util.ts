@@ -17,7 +17,7 @@ import { idText } from "@/ast/ast-helpers";
 import { CompilerContext } from "@/context/context";
 import { getParser } from "@/grammar";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
-import files from "@/stdlib/stdlib";
+import { files } from "@/stdlib/stdlib";
 import { resolveImports } from "@/imports/resolveImports";
 import { getRawAST, openContext, parseModules } from "@/context/store";
 import type { MakeAstFactory } from "@/ast/generated/make-factory";
@@ -26,7 +26,6 @@ import { getAllTypes } from "@/types/resolveDescriptors";
 import { topSortContracts } from "@/pipeline/utils";
 import { featureEnable } from "@/config/features";
 import { posixNormalize } from "@/utils/filePath";
-import { compile } from "@/pipeline/compile";
 import { funcCompile } from "@/func/funcCompile";
 import { Logger } from "@/context/logger";
 import { beginCell, Cell, contractAddress, TupleBuilder } from "@ton/core";
@@ -39,6 +38,8 @@ import type {
     TupleItem,
 } from "@ton/core";
 import type { Blockchain, SandboxContract } from "@ton/sandbox";
+import { compileTact } from "@/pipeline/compile";
+import type { BuildContext } from "@/pipeline/build";
 
 export const VALID_ID = /^[a-zA-Z_]+[a-zA-Z_0-9]$/;
 export const VALID_TYPE_ID = /^[A-Z]+[a-zA-Z_0-9]$/;
@@ -400,7 +401,6 @@ export async function buildModule(
     blockchain: Blockchain,
 ): Promise<Map<string, SandboxContract<ProxyContract>>> {
     let ctx = new CompilerContext();
-    const parser = getParser(astF);
     // We need an entrypoint for precompile, even if it is empty
     const fileSystem = {
         [`contracts/empty.tact`]: "",
@@ -427,7 +427,7 @@ export async function buildModule(
         SandboxContract<ProxyContract>
     > = new Map();
 
-    ctx = precompile(ctx, project, stdlib, config.path, parser, astF, [
+    ctx = precompile(ctx, project, stdlib, config.path, [
         module,
         ...customStdlib.modules,
     ]);
@@ -441,6 +441,24 @@ export async function buildModule(
         | undefined
     > = {};
 
+    const logger = new Logger();
+
+    const compilerInfo: string = JSON.stringify({
+        entrypoint: posixNormalize(config.path),
+        options: {},
+    });
+
+    const bCtx: BuildContext = {
+        config,
+        logger,
+        project,
+        stdlib,
+        compilerInfo,
+        ctx,
+        built: {},
+        errorMessages: [],
+    };
+
     const allContracts = getAllTypes(ctx).filter((v) => v.kind === "contract");
 
     // Sort contracts in topological order
@@ -453,17 +471,14 @@ export async function buildModule(
         const contractName = contract.name;
 
         // Compiling contract to func
-        const res = await compile(
-            ctx,
-            contractName,
-            `${config.name}_${contractName}`,
-            built,
-        );
-        const codeFc = res.output.files.map((v) => ({
-            path: posixNormalize(project.resolve(config.output, v.name)),
-            content: v.code,
-        }));
-        const codeEntrypoint = res.output.entrypoint;
+        const res = await compileTact(bCtx, contractName);
+        if (!res) {
+            throw new Error(
+                "Tact compilation failed. " +
+                    bCtx.errorMessages.map((error) => error.message).join("\n"),
+            );
+        }
+        const codeEntrypoint = res.entrypointPath;
 
         // Compiling contract to TVM
         const stdlibPath = stdlib.resolve("stdlib.fc");
@@ -472,25 +487,31 @@ export async function buildModule(
         //const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
 
         process.env.USE_NATIVE = "true";
-        process.env.FC_STDLIB_PATH = path.join(__dirname, "/minimal-fc-stdlib/");
-        process.env.FUNC_FIFT_COMPILER_PATH = path.join(__dirname, "/minimal-fc-stdlib/funcplusfift");
-        process.env.FIFT_LIBS_PATH = "";
+        process.env.FC_STDLIB_PATH = path.join(
+            __dirname,
+            "/minimal-fc-stdlib/",
+        );
+        process.env.FUNC_FIFT_COMPILER_PATH = path.join(
+            __dirname,
+            "/minimal-fc-stdlib/funcplusfift",
+        );
+        process.env.FIFT_LIBS_PATH = path.join(
+            __dirname,
+            "/minimal-fc-stdlib/fift-lib/",
+        );
 
-        const contractFilePath = path.join(__dirname, "/minimal-fc-stdlib/", codeEntrypoint);
+        const contractFilePath = path.join(
+            __dirname,
+            "/minimal-fc-stdlib/",
+            codeEntrypoint,
+        );
 
-        fs.writeFileSync(
-                        contractFilePath,
-                        codeFc[0]!.content,
-                    );
+        fs.writeFileSync(contractFilePath, res.funcSource.content);
 
         const c = await funcCompile({
-            entries: [
-                stdlibPath,
-                stdlibExPath,
-                contractFilePath,
-            ],
+            entries: [stdlibPath, stdlibExPath, contractFilePath],
             sources: [],
-            logger: new Logger(),
+            logger,
         });
 
         if (!c.ok) {
