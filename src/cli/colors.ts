@@ -1,9 +1,6 @@
 import { release } from "os";
 
 export const isColorSupported = () => {
-    if (process.env.CI) {
-        return true;
-    }
     if (process.platform === "win32") {
         const [major, _, build] = release().split(".").map(Number);
         // Windows 10, Build 10586+

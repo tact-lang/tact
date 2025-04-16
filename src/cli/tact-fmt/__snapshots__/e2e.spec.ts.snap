@@ -1,5 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`tact-fmt foo.tact Check and write flags simultaneously 1`] = `
+{
+  "code": 1,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Cannot use '--check' and '--write' simultaneously
+",
+}
+`;
+
+exports[`tact-fmt foo.tact Check on directory with formatted files 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Checking formatting...
+All Tact files use Tact code style!
+",
+}
+`;
+
+exports[`tact-fmt foo.tact Check on directory with not formatted files 1`] = `
+{
+  "code": 1,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Checking formatting...
+[warn] file1.tact
+[warn] file2.tact
+[warn] file3.tact
+Code style issues found in the above file. Run tact-fmt with --write to fix.
+",
+}
+`;
+
 exports[`tact-fmt foo.tact Default run 1`] = `
 {
   "code": 0,
