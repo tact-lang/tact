@@ -12,5 +12,5 @@ module.exports = {
         "/src/cli/e2e.spec.ts",
         "/src/ast/fuzz.spec.ts",
     ],
-    maxWorkers: "1",
+    maxWorkers: "8",
 };

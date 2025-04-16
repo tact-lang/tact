@@ -12,6 +12,6 @@ module.exports = {
     setupFiles: ["./jest.setup.js"],
     globalTeardown: "./jest.teardown.js",
     snapshotSerializers: ["@tact-lang/ton-jest/serializers"],
-    maxWorkers: "1",
+    maxWorkers: "4",
     testTimeout: 10000,
 };
