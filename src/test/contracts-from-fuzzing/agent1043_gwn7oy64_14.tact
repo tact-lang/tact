@@ -1,0 +1,16 @@
+contract LargeContract(
+  f1: Int,
+  f2: String,
+  f3: Bool,
+  f4: Cell,
+  f5: Address,
+  f6: Slice,
+  f7: Builder,
+  f8: Int,
+  f9: String,
+  f10: Bool,
+  f11: Cell,
+  f12: Address,
+  f13: Slice,
+  f14: Builder
+) {}

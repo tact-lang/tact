@@ -1,0 +1,1 @@
+@name(get_data) native foo(); contract X { receive() {} }

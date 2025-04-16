@@ -1,0 +1,1 @@
+contract Test { fun foo() { while (true) { let a = 5 } } }

@@ -1,0 +1,1 @@
+primitive Foo; primitive Bar; contract C {}

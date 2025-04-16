@@ -1,0 +1,1 @@
+contract X { const A: Int = 1; fun f(): Int { return 1 } }

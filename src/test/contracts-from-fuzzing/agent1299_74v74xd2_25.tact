@@ -1,0 +1,10 @@
+contract MixedParams(
+    a: Int,
+    b: Int?,
+    c: Bool,
+    d: Bool?,
+    e: Address,
+    f: Address?,
+    g: String,
+    h: String?
+) {}

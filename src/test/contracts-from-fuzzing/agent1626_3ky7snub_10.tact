@@ -1,0 +1,3 @@
+contract TestCellNull {
+    c: Cell?;
+}

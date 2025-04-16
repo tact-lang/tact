@@ -1,0 +1,1 @@
+contract Test { fun myFunc(x: Int,) {} }

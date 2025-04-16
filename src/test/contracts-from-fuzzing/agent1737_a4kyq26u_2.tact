@@ -1,0 +1,3 @@
+contract TestOptionalInt {
+    value: Int?;
+}

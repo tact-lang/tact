@@ -1,0 +1,1 @@
+contract TestString { receive() { let example: String = "Hello, World!"; } }

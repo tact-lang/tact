@@ -1,0 +1,1 @@
+contract Test { receive() { if true { let a = 1; } } }

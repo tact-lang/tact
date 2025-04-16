@@ -1,0 +1,3 @@
+contract OptFieldNoDefaultNoInit {
+    x: Int?;
+}

@@ -1,0 +1,1 @@
+contract B { fun foo() { let x: Int? = null; dump(x!!); } }

@@ -1,0 +1,1 @@
+contract C(someField: Int, ) {}

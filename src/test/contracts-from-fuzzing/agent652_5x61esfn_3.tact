@@ -1,0 +1,3 @@
+contract OptionalBoolField {
+    flag: Bool?;
+}

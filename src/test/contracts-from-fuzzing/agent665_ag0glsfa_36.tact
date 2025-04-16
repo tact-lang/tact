@@ -1,0 +1,30 @@
+contract LargeOptionalInts {
+    a: Int? = 1;
+    b: Int? = 2;
+    c: Int? = 3;
+    d: Int? = 4;
+    e: Int? = 5;
+    f: Int? = 6;
+    g: Int? = 7;
+    h: Int? = 8;
+    i: Int? = 9;
+    j: Int? = 10;
+
+    init() {
+        self.a = null;
+        self.b = null;
+        self.c = null;
+        self.d = null;
+        self.e = null;
+        self.f = null;
+        self.g = null;
+        self.h = null;
+        self.i = null;
+        self.j = null;
+    }
+
+    receive() {
+        let _ = self.a;
+        let _ = self.j;
+    }
+}

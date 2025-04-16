@@ -1,0 +1,1 @@
+asm fun quotesBad(): Cell { "MYCODE" }

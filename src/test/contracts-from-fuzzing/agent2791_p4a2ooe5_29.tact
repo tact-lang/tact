@@ -1,0 +1,12 @@
+contract LongList(
+    p1: Int,
+    p2: Int?,
+    p3: Bool,
+    p4: Bool?,
+    p5: String,
+    p6: Int,
+    p7: String,
+    p8: Bool,
+    p9: Int?,
+    p10: String,
+) {}

@@ -1,0 +1,5 @@
+contract ReceiverReturn {
+    receive() {
+         return;
+    }
+}

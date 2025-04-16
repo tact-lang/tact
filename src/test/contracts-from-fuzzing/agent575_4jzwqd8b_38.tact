@@ -1,0 +1,3 @@
+contract ReqParam(
+    req: Int,
+) {}

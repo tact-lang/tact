@@ -1,0 +1,1 @@
+contract Y { fun f(a: map<Int, Int,>) { return; } }

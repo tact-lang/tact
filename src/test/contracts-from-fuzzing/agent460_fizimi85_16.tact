@@ -1,0 +1,4 @@
+contract NoParamsExplicitInit {
+    init() {
+    }
+}
