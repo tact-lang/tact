@@ -87,6 +87,10 @@ export function isRequire(ident: Ast.Id): boolean {
     return ident.text === "require";
 }
 
+export function isRaise(ident: Ast.Id): boolean {
+    return ident.text === "raise";
+}
+
 export function eqNames(
     left: Ast.Id | Ast.TypeId | string,
     right: Ast.Id | Ast.TypeId | string,
