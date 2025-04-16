@@ -2532,6 +2532,11 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
                 );
             }
         }
+
+        indices.clear();
+        lowLinks.clear();
+        onStack.clear();
+        selfReferencingVertices.clear();
     }
 
     function strongConnect(struct: TypeDescription) {

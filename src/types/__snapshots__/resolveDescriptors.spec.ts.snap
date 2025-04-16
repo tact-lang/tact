@@ -1041,6 +1041,15 @@ exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-rec
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-recursive-2 1`] = `
+"<unknown>:8:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
+  7 | 
+> 8 | struct A1 {
+             ^~
+  9 |   a: Int;
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for struct-decl-remainder-in-the-middle 1`] = `
 "<unknown>:8:5: The "as remaining" field can only be the last field of the struct
   7 |     a: Int;
