@@ -10,12 +10,16 @@ import type { Logger } from "@/error/logger-util";
 
 const asRecord = <T>(t: Record<string, T>) => t;
 
-// FIXME: object
-export function createProxyFs(
-    log: Logger<string, void>,
-    root: string,
-    isReadonly: boolean,
-): Cursor {
+type Options = {
+    readonly log: Logger<string, void>,
+    readonly root: string,
+    readonly isReadonly: boolean,
+};
+
+/**
+ * Create file system that proxies requests to real file system
+ */
+export function createProxyFs({ log, root, isReadonly }: Options): Cursor {
     const errors = FsErrors(log);
 
     function builder(currPath: RelativePath): Cursor {

@@ -5,13 +5,36 @@ import type { RelativePath } from "@/next/fs/path";
 import type { Cursor } from "@/next/fs/cursor";
 import type { Logger } from "@/error/logger-util";
 
-// FIXME: object
-export function createMemoryFs(
+type Options = {
     // FIXME: should we pass log here, or into functions?
-    log: Logger<string, void>,
-    fs: Map<string, Blob>,
-    root: RelativePath,
-    isReadonly: boolean,
+    readonly log: Logger<string, void>,
+
+    /**
+     * Files present in memory file system at creation time
+     */
+    readonly files: Map<string, Blob>,
+
+    /**
+     * Path to the root, used only for logging
+     * 
+     * Absolute paths do not make sense in memory FS, as
+     * it doesn't have the actual root
+     */
+    readonly root: RelativePath,
+
+    /**
+     * Whether it's possible to `write` into
+     */
+    readonly isReadonly: boolean,
+}
+
+export const emptyFiles: Map<string, Blob> = new Map();
+
+/**
+ * Create in-memory file system
+ */
+export function createMemoryFs(
+    { log, files, root, isReadonly }: Options
 ): Cursor {
     const errors = FsErrors(log);
 
@@ -30,7 +53,7 @@ export function createMemoryFs(
             },
             read: async () => {
                 const fullPath = asString(appendPath(root, currPath));
-                const blob = fs.get(fullPath);
+                const blob = files.get(fullPath);
                 if (typeof blob === "undefined") {
                     errors.regular.ENOENT(getAbsolutePathForLog());
                     return;
@@ -51,7 +74,7 @@ export function createMemoryFs(
                               type: "text/plain;charset=utf-8",
                           })
                         : content;
-                fs.set(fullPath, blob);
+                files.set(fullPath, blob);
             },
         };
     }

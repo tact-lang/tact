@@ -211,8 +211,9 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     cannotHaveFormat: () => (loc: Range) => {
         return l.at(loc).error(l.text`This type cannot have format definition`);
     },
-    deprecatedPrimitiveDecl: () => (loc: Range) => {
-        l.at(loc).warn(l.text`"primitive" type declaration are deprecated`);
+    deprecatedPrimitiveDecl: () => (_loc: Range) => {
+        // FIXME: enable after src2 replaces src
+        // l.at(loc).warn(l.text`"primitive" type declaration are deprecated`);
     },
     constDeclNoType: () => (loc: Range) => {
         return l.at(loc).error(l.text`Constant declaration must have a type`);
