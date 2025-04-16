@@ -4,7 +4,7 @@
       "label": "FunC",
       "size": {
         "item cells": "21",
-        "item bits": "7055"
+        "item bits": "7050"
       },
       "pr": "https://github.com/getgems-io/nft-contracts/blob/24ae5e9c7a6c78b592c01be32fee2edb12424be8/packages/contracts/sources/sbt-item.fc"
     },
