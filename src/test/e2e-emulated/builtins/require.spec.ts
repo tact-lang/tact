@@ -1,41 +1,47 @@
 import { toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import {
     Test,
     GLOBAL_ERROR_VOTING_ENDED,
     Test_errors_backward,
 } from "./output/require_Test";
+import { cached } from "@/test/utils/cache-state";
 import "@ton/test-utils";
 
-describe("require", () => {
-    let blockchain: Blockchain;
-    let treasury: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<Test>;
+const deployValue = toNano("1");
 
-    beforeEach(async () => {
-        blockchain = await Blockchain.create();
-        blockchain.verbosity.print = false;
-        treasury = await blockchain.treasury("treasury");
-        contract = blockchain.openContract(await Test.fromInit());
+const setup = async () => {
+    const blockchain = await Blockchain.create();
+    blockchain.verbosity.print = false;
+    const treasury = await blockchain.treasury("treasury");
 
-        const result = await contract.send(
-            treasury.getSender(),
-            {
-                value: toNano("10"),
-            },
-            null, // No specific message, sending a basic transfer
-        );
+    const contract = blockchain.openContract(await Test.fromInit());
 
-        expect(result.transactions).toHaveTransaction({
-            from: treasury.address,
-            to: contract.address,
-            success: true,
-            deploy: true,
-        });
+    const deployResult = await contract.send(
+        treasury.getSender(),
+        { value: deployValue },
+        null,
+    );
+    expect(deployResult.transactions).toHaveTransaction({
+        from: treasury.address,
+        to: contract.address,
+        success: true,
+        deploy: true,
     });
 
+    return {
+        blockchain,
+        treasury,
+        contract,
+    };
+};
+
+describe("require", () => {
+    const state = cached(setup);
+
     it("should throw correct error", async () => {
+        const { contract, treasury } = await state.get();
+
         const result = await contract.send(
             treasury.getSender(),
             {
