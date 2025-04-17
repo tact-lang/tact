@@ -23,6 +23,7 @@ import { Blockchain } from "@ton/sandbox";
 import { Sender, toNano } from "@ton/core";
 import fc from "fast-check";
 import * as fs from "node:fs";
+import assert from "node:assert";
 
 export function bindingsAndExpressionPrtinter([bindings, expr]: [
     Ast.StatementLet[],
@@ -338,7 +339,11 @@ export function createExpressionComputationEqualityProperty(
                     expressionTestingEnvironment.outputStream,
                 );
             } else {
-                expect(compilationResult).toBe(interpretationResult);
+                assert.strictEqual(
+                    compilationResult,
+                    interpretationResult,
+                    `Compilation result: \n${compilationResult}\nhas to be the same as interpretation result: \n${interpretationResult}`,
+                );
             }
         },
     );
