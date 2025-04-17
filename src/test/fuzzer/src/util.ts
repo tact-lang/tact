@@ -39,7 +39,7 @@ import type {
 } from "@ton/core";
 import type { Blockchain, SandboxContract } from "@ton/sandbox";
 import { compileTact } from "@/pipeline/compile";
-import type { BuildContext } from "@/pipeline/build";
+import { enableFeatures, type BuildContext } from "@/pipeline/build";
 
 export const VALID_ID = /^[a-zA-Z_]+[a-zA-Z_0-9]$/;
 export const VALID_TYPE_ID = /^[A-Z]+[a-zA-Z_0-9]$/;
@@ -400,7 +400,6 @@ export async function buildModule(
     customStdlib: CustomStdlib,
     blockchain: Blockchain,
 ): Promise<Map<string, SandboxContract<ProxyContract>>> {
-    let ctx = new CompilerContext();
     // We need an entrypoint for precompile, even if it is empty
     const fileSystem = {
         [`contracts/empty.tact`]: "",
@@ -420,12 +419,26 @@ export async function buildModule(
         name: "test",
         path: "contracts/empty.tact",
         output: ".",
+        options: {
+            debug: true,
+            external: true,
+            ipfsAbiGetter: false,
+            interfacesGetter: false,
+            safety: {
+                nullChecks: true,
+            },
+        },
     };
 
     const contractsToTest: Map<
         string,
         SandboxContract<ProxyContract>
     > = new Map();
+
+    const logger = new Logger();
+
+    let ctx = new CompilerContext();
+    ctx = enableFeatures(ctx, logger, config);
 
     ctx = precompile(ctx, project, stdlib, config.path, [
         module,
@@ -441,11 +454,9 @@ export async function buildModule(
         | undefined
     > = {};
 
-    const logger = new Logger();
-
     const compilerInfo: string = JSON.stringify({
         entrypoint: posixNormalize(config.path),
-        options: {},
+        options: config.options,
     });
 
     const bCtx: BuildContext = {

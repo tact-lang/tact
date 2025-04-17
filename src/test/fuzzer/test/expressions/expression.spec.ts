@@ -136,7 +136,7 @@ describe("evaluation properties", () => {
                     expressionGenerationIds,
                     generator,
                 ),
-                generator(NonTerminal.Int.id),
+                generator(NonTerminal.Int),
                 async (bindings, expr) => {
                     const compilationResult = await compileExpression(
                         expressionTestingEnvironment,

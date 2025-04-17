@@ -1,7 +1,10 @@
 import type * as Ast from "@/ast/ast";
 import type { MakeAstFactory } from "@/ast/generated/make-factory";
 import { getMakeAst } from "@/ast/generated/make-factory";
-import type { AllowedTypeEnum } from "../../src/generators/uniform-expr-gen";
+import type {
+    AllowedTypeEnum,
+    NonTerminalEnum,
+} from "../../src/generators/uniform-expr-gen";
 import { NonTerminal } from "../../src/generators/uniform-expr-gen";
 import { GlobalContext } from "../../src/context";
 import { Interpreter } from "@/optimizer/interpreter";
@@ -219,7 +222,7 @@ export async function compileExpression(
 export function generateBindings(
     expressionTestingEnvironment: ExpressionTestingEnvironment,
     expressionGenerationIds: Map<AllowedTypeEnum, string[]>,
-    generator: (nonTerminalId: number) => fc.Arbitrary<Ast.Expression>,
+    generator: (nonTerminalId: NonTerminalEnum) => fc.Arbitrary<Ast.Expression>,
 ): fc.Arbitrary<Ast.StatementLet[]> {
     return fc.tuple(
         ...expressionGenerationIds
@@ -240,7 +243,7 @@ export function generateBindings(
                                   expressionTestingEnvironment.makeF.makeDummyNull(),
                               ),
                           )
-                        : generator(initializersMapping[type].id).map((expr) =>
+                        : generator(initializersMapping[type]).map((expr) =>
                               expressionTestingEnvironment.makeF.makeDummyStatementLet(
                                   expressionTestingEnvironment.makeF.makeDummyId(
                                       name,

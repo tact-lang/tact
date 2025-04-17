@@ -629,6 +629,7 @@ function filterProductions(
 ): {
     productions: ExprProduction[][];
     nonTerminals: GenericNonTerminal[];
+    reindexMap: Map<number, number>;
 } {
     const nonTerminalIdsToInclude: Set<number> = new Set(
         nonTerminalsToInclude.map((e) => e.id),
@@ -715,6 +716,7 @@ function filterProductions(
     return {
         productions,
         nonTerminals,
+        reindexMap,
     };
 }
 
@@ -1661,8 +1663,8 @@ export function initializeGenerator(
     maxSize: number,
     ctx: GenContext,
     astF: FactoryAst,
-): (nonTerminalId: number) => fc.Arbitrary<Ast.Expression> {
-    const { productions, nonTerminals } = filterProductions(
+): (nonTerminal: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
+    const { productions, nonTerminals, reindexMap } = filterProductions(
         ctx.allowedNonTerminals,
         ctx.allowedTerminals,
     );
@@ -1670,7 +1672,14 @@ export function initializeGenerator(
     const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
         computeCountTables(minSize, maxSize, productions, nonTerminals);
 
-    return (nonTerminalId: number) => {
+    return (nonTerminal: NonTerminalEnum) => {
+        const nonTerminalId = reindexMap.get(nonTerminal.id);
+        if (typeof nonTerminalId === "undefined") {
+            throw new Error(
+                `Non-terminal ${nonTerminal.id} does not have a re-indexing`,
+            );
+        }
+
         if (nonTerminals.every((n) => n.id !== nonTerminalId)) {
             throw new Error(
                 `Non-terminal ${nonTerminalId} is not among the allowed non-terminals`,
