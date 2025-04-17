@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Language features
+
+- Compiler now generates more efficient code for `Address?` fields deserialization: PR [#2834](https://github.com/tact-lang/tact/pull/2834)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+
 ## [1.6.6] - 2025-04-16
 
 ### Language features
