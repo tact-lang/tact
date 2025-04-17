@@ -14,4 +14,9 @@ module.exports = {
     snapshotSerializers: ["@tact-lang/ton-jest/serializers"],
     maxWorkers: "4",
     testTimeout: 10000,
+
+    collectCoverage: true,
+    coverageDirectory: 'coverage',
+    coverageReporters: ['text', 'lcov', 'html'],
+    coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '/output/', '/func/'],
 };
