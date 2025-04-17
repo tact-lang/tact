@@ -70,11 +70,11 @@ export default function remarkLinksToWebIDE() {
         ].join('\n');
       }
 
-      // Encode to URL-friendly Base64
-      const encoded = Buffer.from(src).toString('base64url');
+      // Obtain a URI-encoded Base64 string from the source code
+      const encoded = encodeURIComponent(Buffer.from(src).toString('base64'));
 
       // Double-check the number of characters in the link
-      const link = `https://ide.ton.org?lang=tact&code=${encoded}`;
+      const link = `https://ide.ton.org/#lang=tact&code=${encoded}`;
       if (link.length > maxAllowedCharacters) { return undefined; }
 
       /** @type import('mdast').Html */
