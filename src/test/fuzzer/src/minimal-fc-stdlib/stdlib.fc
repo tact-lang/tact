@@ -65,3 +65,5 @@ int cell_hash(cell c) asm "HASHCU";
 int slice_hash(slice s) asm "HASHSU";
 
 int string_hash(slice s) asm "SHA256U";
+
+int equal_slices_bits(slice a, slice b) asm "SDEQ";
