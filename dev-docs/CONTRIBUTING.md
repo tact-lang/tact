@@ -177,6 +177,21 @@ yarn test -u spec-name-pattern1 spec-name-pattern2
 
 Beware that updating snapshots from Javascript Debug Terminal in VSCode might lead to unexpected results. E2E CLI tests check `stderr` of child `tact` processes, but JS Debug Terminal adds "Debugger attached" messages into it.
 
+## Coverage
+
+To compute coverage, run
+
+```shell
+yarn istanbul
+```
+
+The log will be generated into `/coverage` folder. For better UX, serve its contents locally with
+
+```shell
+cd coverage
+npx http-server . -p 3000
+```
+
 ## Benchmarks
 
 The benchmark system tracks gas consumption changes after making changes to the compiler.
