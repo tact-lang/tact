@@ -16,7 +16,12 @@ module.exports = {
     testTimeout: 10000,
 
     collectCoverage: true,
-    coverageDirectory: 'coverage',
-    coverageReporters: ['text', 'lcov', 'html'],
-    coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '/output/', '/func/'],
+    coverageDirectory: "coverage",
+    coverageReporters: ["text", "lcov", "html"],
+    coveragePathIgnorePatterns: [
+        "/node_modules/",
+        "/dist/",
+        "/output/",
+        "/func/",
+    ],
 };
