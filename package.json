@@ -48,6 +48,7 @@
     "bench:update": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ts-node src/benchmarks/update.build.ts",
     "bench:add": "ts-node src/benchmarks/prompt.build.ts && yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ADD=true ts-node src/benchmarks/update.build.ts",
     "coverage": "cross-env COVERAGE=true NODE_OPTIONS=--max_old_space_size=4096 jest --config=./jest-ci.config.js",
+    "istanbul": "jest --coverage",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
     "fmt": "ts-node format.build.ts",
