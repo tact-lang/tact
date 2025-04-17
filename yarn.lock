@@ -1031,6 +1031,11 @@
     multiformats "^9.5.4"
     murmurhash3js-revisited "^3.0.0"
 
+"@noble/hashes@^1.7.2":
+  version "1.7.2"
+  resolved "https://npm.dev-internal.org/@noble/hashes/-/hashes-1.7.2.tgz#d53c65a21658fb02f3303e7ee3ba89d6754c64b4"
+  integrity sha512-biZ0NUSxyjLLqo6KxEJ1b+C2NAx0wtDoFvCaXHGgUkeHzf3Xc1xKumFKREuT7f7DARNZ/slvYUwFG6B0f2b6hQ==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://npm.dev-internal.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"

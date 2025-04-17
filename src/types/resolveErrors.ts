@@ -5,7 +5,11 @@ import type { FactoryAst } from "@/ast/ast-helpers";
 import { isRequire } from "@/ast/ast-helpers";
 import { traverse } from "@/ast/iterators";
 import { evalConstantExpression } from "@/optimizer/constEval";
-import { throwInternalCompilerError } from "@/error/errors";
+import {
+    TactConstEvalError,
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "@/error/errors";
 import {
     getAllStaticFunctions,
     getAllTypes,
@@ -15,6 +19,7 @@ import type { AstUtil } from "@/ast/util";
 import { getAstUtil } from "@/ast/util";
 import { sha256, highest32ofSha256 } from "@/utils/sha256";
 import { ensureString } from "@/optimizer/interpreter";
+import type * as Ast from "@/ast/ast";
 
 type Exception = { value: string; id: number };
 
@@ -39,7 +44,7 @@ function resolveStringsInAST(
                 return;
             }
             const resolved = ensureString(
-                evalConstantExpression(node.args[1]!, ctx, util),
+                evaluateRequireErrorString(node.args[1]!, ctx, util),
             ).value;
             if (!exceptions.get(ctx, resolved)) {
                 const id = exceptionId(resolved);
@@ -57,6 +62,24 @@ function resolveStringsInAST(
         }
     });
     return ctx;
+}
+
+export function evaluateRequireErrorString(
+    expr: Ast.Expression,
+    ctx: CompilerContext,
+    util: AstUtil,
+) {
+    try {
+        return evalConstantExpression(expr, ctx, util);
+    } catch (e) {
+        if (e instanceof TactConstEvalError) {
+            throwCompilationError(
+                `The second parameter of "require()" must be evaluated at compile time`,
+                expr.loc,
+            );
+        }
+        throw e;
+    }
 }
 
 export function resolveErrors(ctx: CompilerContext, Ast: FactoryAst) {

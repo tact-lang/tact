@@ -442,6 +442,7 @@ const formatSuffix: FormatRule = (code, node) => {
     // foo.bar()
     //        ^^
     const firstSuffix = suffixesList.at(0);
+    const secondSuffix = suffixesList.at(1);
 
     // first call suffix attached to first expression
     const firstSuffixIsCallOrNotNull =
@@ -501,6 +502,14 @@ const formatSuffix: FormatRule = (code, node) => {
 
     if (firstSuffixIsCallOrNotNull) {
         formatExpression(code, firstSuffix);
+
+        if (
+            secondSuffix &&
+            secondSuffix.$ === "node" &&
+            secondSuffix.type === "SuffixUnboxNotNull"
+        ) {
+            formatExpression(code, secondSuffix);
+        }
     }
 
     const shouldBeMultiline =

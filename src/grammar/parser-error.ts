@@ -146,7 +146,7 @@ export const syntaxErrorSchema = <T, U>(
                 sub`Cannot use several "as" on ${text(name)} of a map`,
             );
         },
-        cannotBeOptional: (name: "key" | "value") => {
+        cannotBeOptional: (name: "map value types" | "map key types") => {
             return handle(sub`${text(name)} cannot be optional`);
         },
         onlyTypeId: (name: "key" | "value") => {

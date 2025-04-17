@@ -122,6 +122,28 @@ npx ts-node src/cli/unboc/index.ts
 node bin/unboc.js
 ```
 
+## Profiling CLIs
+
+Use the [`0x`](https://npmjs.com/package/0x) tool to profile and visualize stack traces of the Tact compiler or [other CLIs](#running-clis). `0x` generates interactive flamegraphs to help identify performance bottlenecks in the code.
+
+For example, let's profile the Tact compiler on compiling a certain contract from our [benchmarks suite](#benchmarks):
+
+```shell
+# Requires Tact compiler to be built beforehand
+npx 0x ./bin/tact.js ./src/benchmarks/contracts/jetton-minter-discoverable.tact
+```
+
+After the compilation, a folder containing the profiling results will be created. It will include the self-contained interactive `.html` page with flamegraph visualization — open it in your browser of choice to see and filter the results.
+
+The X-axis represents the profile population (not time), and the Y-axis represents the stack depth. Colors can help differentiate between functions, and the width of each block corresponds to the CPU time it took: the wider the block, the longer it took to compute that function call.
+
+Using the search input on the top right, you can highlight certain functions on the flamegraph.
+
+See `npx 0x --help` for more options, including:
+
+- `-D/--output-dir`, which is used to specify the artifact output directory.
+- `-o/--open`, which automatically opens the flamegraph after finishing the run.
+
 ## Testing Tact implementation
 
 We use [Jest](https://jestjs.io) as our testing framework. Jest supports a combination of snapshot and expectation tests.
@@ -155,6 +177,21 @@ yarn test -u spec-name-pattern1 spec-name-pattern2
 
 Beware that updating snapshots from Javascript Debug Terminal in VSCode might lead to unexpected results. E2E CLI tests check `stderr` of child `tact` processes, but JS Debug Terminal adds "Debugger attached" messages into it.
 
+## Coverage
+
+To compute coverage, run
+
+```shell
+yarn istanbul
+```
+
+The log will be generated into `/coverage` folder. For better UX, serve its contents locally with
+
+```shell
+cd coverage
+npx http-server . -p 3000
+```
+
 ## Benchmarks
 
 The benchmark system tracks gas consumption changes after making changes to the compiler.
@@ -185,7 +222,7 @@ Print modes:
 
 Default print mode is `full`.
 
-## Updating benchmarks
+### Updating benchmarks
 
 To update historical benchmarks with `results.json`:
 

@@ -16,6 +16,9 @@ export const FormatterErrors = (log: (error: string) => void) => {
                 `Unexpected error: ${error instanceof Error ? error.toString() : String(error)}`,
             );
         },
+        checkAndWrite: () => {
+            log(`Cannot use '--check' and '--write' simultaneously`);
+        },
     };
 };
 

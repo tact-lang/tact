@@ -447,7 +447,8 @@ export function writeExpression(
             }
 
             case "+": {
-                return "(+ " + writeExpression(f.operand, wCtx) + ")";
+                // FunC doesn't support unary plus so we just skip it
+                return writeExpression(f.operand, wCtx);
             }
 
             // NOTE: Assert function that ensures that the value is not null
