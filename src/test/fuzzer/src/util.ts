@@ -39,6 +39,7 @@ import type {
     TupleItem,
 } from "@ton/core";
 import type { Blockchain, SandboxContract } from "@ton/sandbox";
+import { enableFeatures } from "@/pipeline/build";
 
 export const VALID_ID = /^[a-zA-Z_]+[a-zA-Z_0-9]$/;
 export const VALID_TYPE_ID = /^[A-Z]+[a-zA-Z_0-9]$/;
@@ -400,7 +401,6 @@ export async function buildModule(
     customStdlib: CustomStdlib,
     blockchain: Blockchain,
 ): Promise<Map<string, SandboxContract<ProxyContract>>> {
-    let ctx = new CompilerContext();
     const parser = getParser(astF);
     // We need an entrypoint for precompile, even if it is empty
     const fileSystem = {
@@ -421,12 +421,26 @@ export async function buildModule(
         name: "test",
         path: "contracts/empty.tact",
         output: ".",
+        options: {
+            debug: true,
+            external: true,
+            ipfsAbiGetter: false,
+            interfacesGetter: false,
+            safety: {
+                nullChecks: true,
+            },
+        },
     };
 
     const contractsToTest: Map<
         string,
         SandboxContract<ProxyContract>
     > = new Map();
+
+    let ctx = new CompilerContext();
+    const logger = new Logger();
+
+    ctx = enableFeatures(ctx, logger, config);
 
     ctx = precompile(ctx, project, stdlib, config.path, parser, astF, [
         module,
@@ -489,7 +503,7 @@ export async function buildModule(
                 },
                 ...codeFc,
             ],
-            logger: new Logger(),
+            logger,
         });
 
         if (!c.ok) {
