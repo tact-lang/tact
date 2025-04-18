@@ -49,7 +49,7 @@ trait BaseTrait {
                     to: sender(),
                     value: 0,
                     mode: SendRemainingBalance | SendIgnoreErrors,
-                    body: body,
+                    body,
                 });
                 return;
             }
@@ -61,7 +61,7 @@ trait BaseTrait {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: body,
+            body,
         });
     }
 
@@ -104,7 +104,7 @@ trait BaseTrait {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: body,
+            body,
         });
     }
 
@@ -133,11 +133,11 @@ trait BaseTrait {
                 if (balanceBeforeMessage < self.storageReserve) {
                     nativeReserve(self.storageReserve, ReserveExact);
                     message(MessageParameters {
-                        bounce: bounce,
-                        to: to,
+                        bounce,
+                        to,
                         value: 0,
                         mode: SendRemainingBalance | SendIgnoreErrors,
-                        body: body,
+                        body,
                     });
                     return;
                 }
@@ -145,11 +145,11 @@ trait BaseTrait {
 
             // Just send with remaining balance
             message(MessageParameters {
-                bounce: bounce,
-                to: to,
+                bounce,
+                to,
                 value: 0,
                 mode: SendRemainingValue | SendIgnoreErrors,
-                body: body,
+                body,
             });
             return;
         }
@@ -162,13 +162,13 @@ trait BaseTrait {
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
                 send(SendParameters{
-                    to: to,
+                    to,
                     mode: SendRemainingBalance | SendIgnoreErrors,
-                    body: body,
+                    body,
                     value: 0,
-                    bounce: bounce,
-                    code: init!!.code,
-                    data: init!!.data,
+                    bounce,
+                    init!!.code,
+                    init!!.data,
                 });
                 return;
             }
@@ -176,13 +176,13 @@ trait BaseTrait {
 
         // Just send with remaining balance
         send(SendParameters{
-            bounce: bounce,
-            to: to,
+            bounce,
+            to,
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: body,
-            code: init!!.code,
-            data: init!!.data,
+            body,
+            init!!.code,
+            init!!.data,
         });
     }
 }
