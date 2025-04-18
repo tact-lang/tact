@@ -161,24 +161,28 @@ trait BaseTrait {
             let balanceBeforeMessage: Int = balance - ctx.value;
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
-                deploy(DeployParameters {
+                send(SendParameters{
+                    to: to,
                     mode: SendRemainingBalance | SendIgnoreErrors,
                     body: body,
                     value: 0,
                     bounce: bounce,
-                    init: init!!,
+                    code: init!!.code,
+                    data: init!!.data,
                 });
                 return;
             }
         }
 
         // Just send with remaining balance
-        deploy(DeployParameters {
+        send(SendParameters{
+            bounce: bounce,
+            to: to,
+            value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body: body,
-            value: 0,
-            bounce: bounce,
-            init: init!!,
+            code: init!!.code,
+            data: init!!.data,
         });
     }
 }
