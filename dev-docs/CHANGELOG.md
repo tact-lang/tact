@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Docs
 
 - Added `inMsg()` function to the gas best practices page: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
+- Fixed the description of `StateInit.hasSameBasechainAddress()` function: PR [#2848](https://github.com/tact-lang/tact/pull/2848)
 
 ### Release contributors
 
