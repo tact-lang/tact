@@ -224,8 +224,8 @@
       "label": "1.6.6 with optimized __tact_store_address_opt",
       "pr": "https://github.com/tact-lang/tact/pull/2834",
       "gas": {
-        "fundingTon": "4361",
-        "changeCode": "4452",
+        "fundingTon": "4325",
+        "changeCode": "4416",
         "approveTon": "6738",
         "cancelTon": "4639"
       }
