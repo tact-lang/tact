@@ -6,13 +6,13 @@ import "@ton/test-utils";
 
 describe("text-message-receivers", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<TextMessageReceivers>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(
             await TextMessageReceivers.fromInit(),
@@ -22,13 +22,13 @@ describe("text-message-receivers", () => {
     it("should deploy", async () => {
         // Deploy the contract
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("1") },
             { $$type: "Deploy", queryId: 0n },
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -41,12 +41,12 @@ describe("text-message-receivers", () => {
     it("should increment counter with different text messages", async () => {
         // Deploy the contract
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("1") },
             { $$type: "Deploy", queryId: 0n },
         );
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -59,12 +59,12 @@ describe("text-message-receivers", () => {
             message: Parameters<typeof contract.send>[2],
         ) => {
             const incrementResult1 = await contract.send(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano("1") },
                 message,
             );
             expect(incrementResult1.transactions).toHaveTransaction({
-                from: treasure.address,
+                from: treasury.address,
                 to: contract.address,
                 success: true,
             });
