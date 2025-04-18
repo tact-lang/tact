@@ -110,9 +110,9 @@ Returns the [`Slice{:tact}`][slice] with the original, raw body of the [received
 That `Slice{:tact}` can:
 
 * be empty, which means the contract has received an empty message body that is handled in the empty receiver `receive(){:tact}` or the catch-all slice receiver `receive(msg: Slice){:tact}`;
-* start with 4 zero bytes, which means the contract has received a text message that is handled in the relevant text receivers:
-  * `receive("message"){:tact}`,
-  * `receive(msg: String){:tact}`,
+* start with 4 zero bytes, which means the contract has received a text message that is handled in the relevant receiver:
+  * the exact text receiver `receive("message"){:tact}`,
+  * the catch-all string receiver `receive(msg: String){:tact}`,
   * or the catch-all slice receiver `receive(msg: Slice){:tact}`;
 * start with 4 bytes of a non-zero message opcode that the corresponding binary receiver `receive(msg: MessageStruct){:tact}` or the catch-all slice receiver `receive(msg: Slice){:tact}` would handle.
 
@@ -120,7 +120,7 @@ Usage examples:
 
 ```tact
 // This contract defines various kinds of receivers in their
-// order of handling the corresponding incoming messages
+// order of handling the corresponding incoming messages.
 contract OrderOfReceivers() {
     receive() {
         let body = inMsg();
@@ -136,7 +136,7 @@ contract OrderOfReceivers() {
     receive(str: String) {
         let body = inMsg();
         body.loadUint(32); // 0
-        body == str; // true
+        body == str.asSlice(); // true
     }
 
     receive(msg: Emergency) {
