@@ -211,11 +211,11 @@ contract Example() {
 }
 ```
 
-### Prefer `inMsg()` to `msg.toSlice()`
+### Prefer `inMsg()` to `Message.toSlice()`
 
 <Badge text="Available since Tact 1.7" variant="tip" size="medium"/><p/>
 
-When working with an incoming message, prefer using the [`inMsg(){:tact}`](/ref/core-context#inmsg) function over the [`msg.toSlice(){:tact}`](/ref/core-context#msgslice) extension function, because the `inMsg(){:tact}` function provides direct access to the incoming message body [`Slice{:tact}`][p], while `msg.toSlice(){:tact}` performs redundant operations to recreate that `Slice{:tact}`.
+When working with an incoming message, prefer using the [`inMsg(){:tact}`](/ref/core-contextstate#inmsg) function over the [`Message.toSlice(){:tact}`](/ref/core-cells#messagetoslice) extension function, because the `inMsg(){:tact}` function provides direct access to the incoming message body [`Slice{:tact}`][p], while `msg.toSlice(){:tact}` performs redundant operations to recreate that `Slice{:tact}`.
 
 ```tact
 contract Example() {
