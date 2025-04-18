@@ -1,27 +1,27 @@
-import {enabledInline} from "@/config/features";
+import { enabledInline } from "@/config/features";
 import type * as Ast from "@/ast/ast";
-import {idOfText, idText, tryExtractPath} from "@/ast/ast-helpers";
-import {getType, resolveTypeRef} from "@/types/resolveDescriptors";
-import {getExpType} from "@/types/resolveExpression";
-import type {FunctionDescription, TypeRef} from "@/types/types";
-import type {WriterContext} from "@/generator/Writer";
-import {resolveFuncPrimitive} from "@/generator/writers/resolveFuncPrimitive";
-import {resolveFuncType} from "@/generator/writers/resolveFuncType";
-import {resolveFuncTypeUnpack} from "@/generator/writers/resolveFuncTypeUnpack";
-import {funcIdOf} from "@/generator/writers/id";
+import { idOfText, idText, tryExtractPath } from "@/ast/ast-helpers";
+import { getType, resolveTypeRef } from "@/types/resolveDescriptors";
+import { getExpType } from "@/types/resolveExpression";
+import type { FunctionDescription, TypeRef } from "@/types/types";
+import type { WriterContext } from "@/generator/Writer";
+import { resolveFuncPrimitive } from "@/generator/writers/resolveFuncPrimitive";
+import { resolveFuncType } from "@/generator/writers/resolveFuncType";
+import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
+import { funcIdOf } from "@/generator/writers/id";
 import {
     writeExpression,
     writeExpressionInCondition,
     writePathExpression,
 } from "@/generator/writers/writeExpression";
-import {cast} from "@/generator/writers/cast";
-import {resolveFuncTupleType} from "@/generator/writers/resolveFuncTupleType";
-import {ops} from "@/generator/writers/ops";
-import {freshIdentifier} from "@/generator/writers/freshIdentifier";
-import {idTextErr, throwInternalCompilerError} from "@/error/errors";
-import {ppAsmShuffle} from "@/ast/ast-printer";
-import {zip} from "@/utils/array";
-import {binaryOperationFromAugmentedAssignOperation} from "@/ast/util";
+import { cast } from "@/generator/writers/cast";
+import { resolveFuncTupleType } from "@/generator/writers/resolveFuncTupleType";
+import { ops } from "@/generator/writers/ops";
+import { freshIdentifier } from "@/generator/writers/freshIdentifier";
+import { idTextErr, throwInternalCompilerError } from "@/error/errors";
+import { ppAsmShuffle } from "@/ast/ast-printer";
+import { zip } from "@/utils/array";
+import { binaryOperationFromAugmentedAssignOperation } from "@/ast/util";
 
 export function writeCastedExpression(
     expression: Ast.Expression,
@@ -560,19 +560,29 @@ export function writeStatement(
 const rewriteWithIfNot = (expr: Ast.Expression): [Ast.Expression, string] => {
     if (expr.kind === "op_unary" && expr.op === "!") {
         // `if (~ cond)` => `ifnot (cond)`
-        return [expr.operand, "ifnot"]
+        return [expr.operand, "ifnot"];
     }
-    if (expr.kind === "op_binary" && expr.op === "==" && expr.right.kind === "number" && expr.right.value === 0n) {
+    if (
+        expr.kind === "op_binary" &&
+        expr.op === "==" &&
+        expr.right.kind === "number" &&
+        expr.right.value === 0n
+    ) {
         // if (a == 0) => ifnot (a)
-        return [expr.left, "ifnot"]
+        return [expr.left, "ifnot"];
     }
-    if (expr.kind === "op_binary" && expr.op === "!=" && expr.right.kind === "number" && expr.right.value === 0n) {
+    if (
+        expr.kind === "op_binary" &&
+        expr.op === "!=" &&
+        expr.right.kind === "number" &&
+        expr.right.value === 0n
+    ) {
         // if (a != 0) => if (a)
-        return [expr.left, "if"]
+        return [expr.left, "if"];
     }
 
-    return [expr, "if"]
-}
+    return [expr, "if"];
+};
 
 // HACK ALERT: if `returns` is a string, it contains the code to invoke before returning from a receiver
 // this is used to save the contract state before returning
@@ -583,9 +593,11 @@ function writeCondition(
     returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
-    const [condition, ifKind] = rewriteWithIfNot(f.condition)
+    const [condition, ifKind] = rewriteWithIfNot(f.condition);
 
-    ctx.append(`${elseif ? "} else" : ""}${ifKind} (${writeExpressionInCondition(condition, ctx)}) {`);
+    ctx.append(
+        `${elseif ? "} else" : ""}${ifKind} (${writeExpressionInCondition(condition, ctx)}) {`,
+    );
     ctx.inIndent(() => {
         for (const s of f.trueStatements) {
             writeStatement(s, self, returns, ctx);
@@ -666,7 +678,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 ? ops.extension(self.name, f.name)
                 : ops.global(f.name);
             ctx.fun(name, () => {
-                const {functionParams, shuffle} = getAsmFunctionSignature(
+                const { functionParams, shuffle } = getAsmFunctionSignature(
                     f,
                     fAst,
                     params,
