@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
   "name": "@tact-lang/compiler",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"
@@ -48,13 +48,15 @@
     "bench:update": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ts-node src/benchmarks/update.build.ts",
     "bench:add": "ts-node src/benchmarks/prompt.build.ts && yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ADD=true ts-node src/benchmarks/update.build.ts",
     "coverage": "cross-env COVERAGE=true NODE_OPTIONS=--max_old_space_size=4096 jest --config=./jest-ci.config.js",
+    "istanbul": "jest --coverage",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
-    "fmt": "yarn prettier -l -w .",
+    "fmt": "ts-node format.build.ts",
     "fmt:check": "yarn prettier --check .",
+    "fmt:check:fast": "ts-node format.build.ts",
     "spell": "yarn cspell --no-progress \"**\"",
     "knip": "knip",
-    "lint:all": "yarn to-absolute && yarn gen:stdlib && yarn lint && yarn fmt:check && yarn spell && yarn knip",
+    "lint:all": "yarn to-absolute && yarn gen:stdlib && yarn lint && yarn fmt:check:fast && yarn spell && yarn knip",
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "next-version": "ts-node version.build.ts",
     "random-ast": "ts-node ./src/ast/random-ast.ts",
