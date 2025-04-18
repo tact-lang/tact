@@ -24,7 +24,6 @@ message(0x7369676E) ExternalSignedRequest {
 }
 
 // leave as example for discussion
-
 // message(0x73696e74) InternalSignedRequest {
 //     data: Slice as remaining;
 // }
@@ -64,7 +63,7 @@ contract WalletV5(
     seqno: Int as uint32,
     walletId: Int as int32,
     publicKey: Int as uint256,
-    extensions: map<Int as uint256, Bool>
+    extensions: map<Int as uint256, Bool>,
 ) {
     inline fun processSignedRequestExternal(msg: ExternalSignedRequest, isExternal: Bool) {
         let msgSlice = msg.toSlice();
@@ -150,7 +149,7 @@ contract WalletV5(
         while (true) {
             // check tag, process action, try to load next ref while we can
             let isAddExt = actions.checkAndRemoveAddExtensionPrefix();
-            let isDeleteExt = isAddExt ? false :  actions.checkAndRemoveDeleteExtensionPrefix();
+            let isDeleteExt = isAddExt ? false : actions.checkAndRemoveDeleteExtensionPrefix();
 
             if (isAddExt || isDeleteExt) {
                 let addr = parseStdAddress(actions.loadAddress().asSlice());
@@ -159,6 +158,8 @@ contract WalletV5(
                 throwUnless(145, addr.workchain == myAddr.workchain); // force_workchain optimization
 
                 if (isAddExt) {
+                    // blocked by https://github.com/tact-lang/tact/issues/2842
+                    // throwUnless(139, self.extensions.set(addr.address, true));
                     self.extensions.set(addr.address, true);
                 } else if (isDeleteExt) {
                     throwUnless(140, self.extensions.del(addr.address));
@@ -189,8 +190,13 @@ contract WalletV5(
         let myAddr = parseStdAddress(myAddress().asSlice());
         let addr = parseStdAddress(sender().asSlice());
 
-        throwUnless(145, addr.workchain == myAddr.workchain); // force_workchain optimization
-        throwUnless(148, self.extensions.exists(addr.address));
+        // Before signature checking we handle errors silently (return), after signature checking we throw exceptions.
+        if (addr.workchain != myAddr.workchain) {
+            return;
+        }
+        if (!self.extensions.exists(addr.address)) {
+            return;
+        }
 
         self.processActions(msg.actions, false, true);
     }
