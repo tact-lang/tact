@@ -37,7 +37,6 @@ export function writeStdlib(ctx: WriterContext): void {
 
     ctx.fun("__tact_store_addr_none", () => {
         ctx.signature(`builder __tact_store_addr_none(builder b)`);
-        ctx.flag("inline");
         ctx.context("stdlib");
         ctx.asm("", "b{00} STSLICECONST", true);
     });
