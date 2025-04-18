@@ -1,4 +1,5 @@
 fun dumpTest() {
+    dumpStack();
     dump("Hello world!");
     dump(123); // this comment is not included in the output
     dump(true); /* this comment is not included in the output */
