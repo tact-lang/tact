@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tact-fmt foo.tact Check and write flags simultaneously 1`] = `
+{
+  "code": 1,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Cannot use '--check' and '--write' simultaneously
+",
+}
+`;
+
+exports[`tact-fmt foo.tact Check on directory with formatted files 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Checking formatting...
+All Tact files use Tact code style!
+",
+}
+`;
+
+exports[`tact-fmt foo.tact Check on directory with not formatted files 1`] = `
+{
+  "code": 1,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Checking formatting...
+[warn] file1.tact
+[warn] file2.tact
+[warn] file3.tact
+Code style issues found in the above file. Run tact-fmt with --write to fix.
+",
+}
+`;
+
+exports[`tact-fmt foo.tact Default run 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "contract Test {
+    get fun greeting(): String {
+        return "hello world";
+    }
+}
+
+",
+}
+`;
+
+exports[`tact-fmt foo.tact Default run with write to file 1`] = `
+"contract Test {
+    get fun greeting(): String {
+        return "hello world";
+    }
+}
+"
+`;
+
+exports[`tact-fmt foo.tact Run on directory 1`] = `
+"fun foo1() {}
+"
+`;
+
+exports[`tact-fmt foo.tact Run on directory 2`] = `
+"fun foo2() {}
+"
+`;
+
+exports[`tact-fmt foo.tact Run on directory 3`] = `
+"fun foo3() {}
+"
+`;
+
+exports[`tact-fmt foo.tact With syntax error 1`] = `
+{
+  "code": 1,
+  "kind": "exited",
+  "stderr": "Cannot format file src/cli/tact-fmt/output/contact.tact: src/cli/tact-fmt/output/contact.tact:4:33: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
+  3 |     get fun greeting(): String {
+> 4 |         return foo("hello world";
+                                      ^
+  5 |     }
+
+",
+  "stdout": "",
+}
+`;

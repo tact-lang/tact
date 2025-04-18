@@ -76,6 +76,48 @@ contract Scrooge {
 }
 ```
 
+### Use `BasechainAddress` struct and related functions for runtime manipulations on addresses in the base workchain
+
+<Badge text="Available since Tact 1.6.3" variant="tip" size="medium"/><p/>
+
+Almost all contracts on TON are deployed on the basechain — a [workchain with ID 0][workchain-id]. The [`BasechainAddress{:tact}`](/ref/core-addresses#basechainaddress) [struct][struct] and related functions were introduced to allow optimal handling of basechain addresses at runtime.
+
+A frequent use-case for basechain addresses is checking message sender addresses for validity, i.e., if a contract needs to make sure the incoming message comes from a specific contract deployed in the basechain, it can use the [`StateInit.hasSameBasechainAddress(){:tact}`](/ref/core-addresses#stateinithassamebasechainaddress) extension function.
+
+```tact
+contract Child(parentAddr: Address) {
+    receive() {
+        // Forward surplus to the parent address
+        message(MessageParameters{
+            to: self.parentAddr,
+            value: 0,
+            mode: SendRemainingValue,
+        });
+    }
+}
+
+contract Parent() {
+    receive() {
+        // Ensure that the message came from the child contract
+        let childContract = initOf Child(myAddress());
+        require(
+            childContract.hasSameBasechainAddress(sender()),
+            "Message must come from the Child contract",
+        );
+
+        // ...subsequent logic...
+    }
+}
+```
+
+To ensure that a certain [`Address{:tact}`][p] is in the basechain and can be represented by the `BasechainAddress{:tact}`, you can use the [`forceBasechain(){:tact}`](/ref/core-addresses#forcebasechain) function first.
+
+See other functions related to the `BasechainAddress{:tact}` struct:
+
+* [`emptyBasechainAddress(){:tact}`](/ref/core-addresses#emptybasechainaddress)
+* [`newBasechainAddress(){:tact}`](/ref/core-addresses#newbasechainaddress)
+* [`contractBasechainAddress(){:tact}`](/ref/core-addresses#contractbasechainaddress)
+
 ### Pay attention to "Gas-expensive" badge
 
 Some functions in the Tact documentation are annotated with a special badge, "Gas-expensive", which marks the functions that use 500 gas units or more. It is placed right under the function name heading and looks like this: <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
@@ -106,6 +148,24 @@ msg.forwardAmount > 0 ? 2 : 1;
 
 // is more expensive than doing this
 1 + sign(msg.forwardAmount);
+```
+
+### Prefer specialized math functions to general ones
+
+Specialized math functions are cheaper than general ones as they require fewer stack manipulations and often use more efficient [TVM instructions][tvm-instruction].
+
+If you only need to obtain logarithms to the base 2, use the [`log2(){:tact}`](/ref/core-math#log2) function over the general [`log(){:tact}`](/ref/core-math#log) function.
+
+If you only need to obtain powers of 2, use the [`pow2(){:tact}`](/ref/core-math#pow2) function over the general [`pow(){:tact}`](/ref/core-math#pow) function.
+
+```tact
+let num = 42;
+
+// Use this instead of log(num, 2)
+log2(num);
+
+// Use this instead of pow(num, 2)
+pow2(num);
 ```
 
 ### Asm functions
@@ -188,9 +248,38 @@ fun example() {
 }
 ```
 
+### Use `SignedBundle` to verify signatures in external message receivers
+
+When handling [external messages](/book/external), the [`SignedBundle{:tact}`](/ref/core-crypto#signedbundle) [struct][struct] provides a gas-efficient way to verify message signatures. This approach is particularly useful for wallet contracts and other contracts that need secure user authorization.
+
+The `SignedBundle{:tact}` contains both the signature and the non-serialized data of the enclosing struct or message struct that is being signed, allowing for convenient verification with the [`SignedBundle.verifySignature(){:tact}`](/ref/core-crypto#signedbundleverifysignature) extension function.
+
+```tact
+contract Wallet(publicKey: Int as uint256) {
+    external(msg: SomeWalletOperation) {
+        // Verifying the signature before accepting the message
+        require(msg.bundle.verifySignature(self.publicKey), "Invalid signature");
+
+        // Now it's safe to accept it
+        acceptMessage();
+
+        // ...and proceed further...
+    }
+}
+
+message SomeWalletOperation {
+    // You must set the SignedBundle as the first field
+    bundle: SignedBundle;
+
+    // Some data to be signed
+    walletId: Int as int32;
+    seqno: Int as uint32;
+}
+```
+
 ## Sending messages
 
-### Prefer `message` and `cashback` to `self.forward`, `self.reply`, and `self.notify`
+### Prefer `message()` and `cashback()` to `self.forward()`, `self.reply()`, and `self.notify()`
 
 Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of [internal functions](/book/contracts#internal-functions) for any contract. Those internal functions are gas-expensive for the same reasons as stated earlier.
 
@@ -267,9 +356,12 @@ See those examples with recommendations applied:
 - [Jetton Minter contract](https://github.com/tact-lang/jetton/blob/9db75a5a828e9093be5c425605c5f5c9903f505d/src/contracts/jetton-minter.tact)
 - [Escrow contract](https://github.com/tact-lang/tact/blob/73fb52b2c8b4e8b2309e0aae4dcc0f8cb35117ea/src/benchmarks/contracts/escrow.tact)
 
+[p]: /book/types#primitive-types
 [slice]: /book/cells#slices
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [tvm-instruction]: https://docs.ton.org/v3/documentation/tvm/instructions
+[workchain-id]: https://docs.ton.org/learn/overviews/addresses#workchain-id
+[account-id]: https://docs.ton.org/learn/overviews/addresses#account-id

@@ -26,20 +26,48 @@ exports[`benchmarks benchmark readFwdFee: code size 1`] = `116`;
 
 exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1968`;
 
-exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2440`;
+exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2172`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2441`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2173`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2443`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2175`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2440`;
+exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2172`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2441`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2173`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2443`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2175`;
 
 exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1993`;
 
 exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `1993`;
 
 exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `1993`;
+
+exports[`benchmarks benchmark sqrt via geom mean: code size 1`] = `272`;
+
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 0 1`] = `2130`;
+
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 100 1`] = `3022`;
+
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 1000000000 1`] = `3022`;
+
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 10000000000 1`] = `3229`;
+
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 57896044618658097711785492504343953926634992332820282019728792003956564819968 1`] = `3850`;
+
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 115792089237316195423570985008687907853269984665640564039457584007913129639935 1`] = `2608`;
+
+exports[`benchmarks benchmark sqrt: code size 1`] = `272`;
+
+exports[`benchmarks benchmark sqrt: gas used for value 0 1`] = `1960`;
+
+exports[`benchmarks benchmark sqrt: gas used for value 100 1`] = `3349`;
+
+exports[`benchmarks benchmark sqrt: gas used for value 1000000000 1`] = `3442`;
+
+exports[`benchmarks benchmark sqrt: gas used for value 10000000000 1`] = `3442`;
+
+exports[`benchmarks benchmark sqrt: gas used for value 57896044618658097711785492504343953926634992332820282019728792003956564819968 1`] = `3755`;
+
+exports[`benchmarks benchmark sqrt: gas used for value 115792089237316195423570985008687907853269984665640564039457584007913129639935 1`] = `3755`;

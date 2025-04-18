@@ -43,6 +43,13 @@ The most prominent and distinctive features of Tact are:
 - No boilerplate functions for [sending messages] and deploying child contracts.
 - Reusable behaviors through [traits].
 - Support for low-level programming with [`asm` functions][asmfun].
+- Generation of [single-file TypeScript wrappers] for convenient interactions with compiled contracts, which include:
+  - Type definitions for [Structs] and [Messages] observable in the [compilation report].
+  - Corresponding `storeStructureName()` and `loadStructureName()` functions for (de)serialization.
+  - All global and contract-level constants.
+  - Bi-directional records of exit codes: from their names to numbers and vice versa.
+  - Opcodes of all [Messages].
+  - A contract wrapper class with various helper functions for initialization, deployment, and message exchange.
 - Rich [standard library][stdlib].
 - Extensive [documentation].
 - Robust [tooling](#tooling).
@@ -57,6 +64,8 @@ The most prominent and distinctive features of Tact are:
 [sending messages]: https://docs.tact-lang.org/book/send/#message-sending-functions
 [traits]: https://docs.tact-lang.org/book/types/#traits
 [asmfun]: https://docs.tact-lang.org/book/assembly-functions/
+[single-file TypeScript wrappers]: https://docs.tact-lang.org/book/compile/#wrap
+[compilation report]: https://docs.tact-lang.org/book/compile/#report
 [stdlib]: https://docs.tact-lang.org/ref/
 [documentation]: https://docs.tact-lang.org/
 
@@ -121,7 +130,10 @@ Alternatively, you can install it globally as such:
 npm i -g @tact-lang/compiler
 ```
 
-It will make the `tact` compiler available on your PATH, as well as a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
+It will make the `tact` compiler available on your PATH, as well as:
+
+- a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
+- a formatter `tact-fmt`, which can format or check the formatting of individual Tact files and directories.
 
 ### Tooling
 
@@ -140,6 +152,11 @@ It will make the `tact` compiler available on your PATH, as well as a convenient
 
 - [Misti](https://github.com/nowarp/misti) - Static smart contract analyzer.
 - [TON Symbolic Analyzer (TSA)](https://github.com/espritoxyz/tsa) - Static smart contract analysis tool based on symbolic execution.
+
+###### Utility
+
+- Formatter (`tact-fmt`) — The official formatter. It ships with the Tact Language Server, VS Code extension, and as a standalone binary with the compiler. You can invoke it by running `npx tact-fmt` in your Tact projects.
+- BoC Disassembler (`unboc`) — Disassembler for [`.boc`](https://docs.tact-lang.org/book/cells/#cells-boc) files. Ships as a standalone binary with the compiler. You can invoke it by running `npx unboc` in your Tact projects.
 
 ### Getting started
 

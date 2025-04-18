@@ -56,6 +56,8 @@
     "/docs",
     "src/benchmarks/contracts/func/notcoin/stdlib-custom.fc",
     "src/benchmarks/contracts/func/notcoin/gas.fc",
-    "src/utils/change-case/*"
+    "src/utils/change-case/*",
+    "src/fmt/cst/cst-parser.ts",
+    "coverage"
   ]
 }

@@ -135,7 +135,7 @@ export function writeInit(
     t: TypeDescription,
     init: InitDescription,
     ctx: WriterContext,
-    codes: ContractsCodes,
+    codes: Readonly<ContractsCodes>,
 ) {
     ctx.fun(ops.contractInit(t.name, ctx), () => {
         const args = init.params.map(
@@ -296,7 +296,7 @@ export function writeInit(
                     t.dependsOn.length > 0
                 ) {
                     ctx.append(
-                        `b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`,
+                        `b = b.store_builder_ref(begin_cell().store_dict(contracts));`,
                     );
                 }
             }

@@ -42,7 +42,7 @@ Function =
     attributes:FunctionAttribute*
     keyword<"fun">
     name:Id
-    parameters:parameterList<Parameter>
+    parameters:ParameterList<Parameter>
     returnType:ascription?
     body:(FunctionDefinition / FunctionDeclaration);
 
@@ -56,7 +56,7 @@ AsmFunction =
     attributes:FunctionAttribute*
     keyword<"fun">
     name:Id
-    parameters:parameterList<Parameter>
+    parameters:ParameterList<Parameter>
     returnType:ascription?
     "{"
     instructions:assembly
@@ -71,7 +71,7 @@ NativeFunctionDecl =
     attributes:FunctionAttribute*
     keyword<"native">
     name:Id
-    parameters:parameterList<Parameter>
+    parameters:ParameterList<Parameter>
     returnType:ascription?
     ";";
 
@@ -139,7 +139,7 @@ inheritedTraits = keyword<"with"> @commaList<Id>;
 
 ContractInit =
     "init"
-    parameters:parameterList<Parameter>
+    parameters:ParameterList<Parameter>
     body:statements;
 
 ContractAttribute = "@interface" "(" name:StringLiteral ")";
@@ -166,7 +166,7 @@ assembly = #$assemblySequence;
 assemblySequence = assemblyItem*;
 assemblyItem
     = "{" assemblySequence "}"
-    / comment
+    / Comment
     / "\"" [^"]* "\""
     / (!(["{}] / "//" / "/*") .)+;
 
@@ -252,7 +252,7 @@ suffix
     / SuffixFieldAccess;
 
 SuffixUnboxNotNull = "!!";
-SuffixCall = params:parameterList<expression>;
+SuffixCall = params:ParameterList<expression>;
 SuffixFieldAccess = "." name:Id;
 
 // Order is important
@@ -272,14 +272,14 @@ Null = keyword<"null">;
 parens = "(" @expression ")";
 Parens = child:parens;
 
-StructInstance = type:TypeId "{" fields:commaList<StructFieldInitializer>? "}";
-InitOf = keyword<"initOf"> name:Id params:parameterList<expression>;
+StructInstance = type:TypeId body:StructInstanceFields;
+StructInstanceFields = "{" fields:commaList<StructFieldInitializer>? "}";
+InitOf = keyword<"initOf"> name:Id params:ParameterList<expression>;
 CodeOf = "codeOf" name:Id;
 
 StructFieldInitializer = name:Id init:(":" @expression)?;
 
 ParameterList<T> = "(" values:commaList<T>? ")";
-parameterList<T> = "(" @commaList<T>? ")";
 Parameter = name:Id type:ascription;
 
 commaList<T> = @inter<T, ","> ","?;
@@ -331,8 +331,8 @@ reservedWord "reserved word" = keyword<(
     "inline" / "const"
 )>;
 
-space "space" = [ \t\r\n] / comment;
-comment = multiLineComment / singleLineComment;
+space "space" = (#$([ \t\r\n]+) / Comment)+;
+Comment = multiLineComment / singleLineComment;
 multiLineComment = "/*" @$(!"*/" .)* "*/";
 singleLineComment = "//" @$[^\r\n]*;
 
