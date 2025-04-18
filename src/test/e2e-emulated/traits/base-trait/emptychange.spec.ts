@@ -14,7 +14,7 @@ import { EmptyChange } from "./output/empty-change_EmptyChange";
 
 import "@ton/test-utils";
 
-import { setStoragePrices } from "@/test/e2e-emulated/traits/base-trait/gasUtils";
+import { setStoragePrices } from "@/test/utils/gasUtils";
 
 const setup = async () => {
     const deployValue = toNano("0.05");
