@@ -24,6 +24,7 @@ import { Addresses } from "@/test/gas-consumption/contracts/output/address_Addre
 import { CodeOfVsInitOf } from "@/test/gas-consumption/contracts/output/codeOf_CodeOfVsInitOf";
 import { WithDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithDeploy";
 import { WithoutDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithoutDeploy";
+import { Sqrt } from "@/test/gas-consumption/contracts/output/sqrt_Sqrt";
 
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
@@ -293,5 +294,45 @@ describe("benchmarks", () => {
 
         const gasUsedRaw = measureGas(deployRawResult.transactions);
         expect(gasUsedRaw).toMatchSnapshot("gas used raw deploy");
+    });
+
+    const variants: [string, "GetSqrt" | "GetSqrtViaGeomMean"][] = [
+        ["sqrt via geom mean", "GetSqrtViaGeomMean"],
+        ["sqrt", "GetSqrt"],
+    ];
+
+    it.each(variants)("benchmark %s", async (name, message) => {
+        const instance = blockchain.openContract(await Sqrt.fromInit());
+
+        const testValues = [
+            0n,
+            100n,
+            toNano("1"),
+            toNano("10"),
+            2n ** 255n,
+            2n ** 256n - 1n,
+        ];
+
+        for (const value of testValues) {
+            const sendResult = await step(`${name} with value ${value}`, () =>
+                instance.send(
+                    treasure.getSender(),
+                    { value: toNano(1) },
+                    { $$type: message, value },
+                ),
+            );
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: treasure.address,
+                to: instance.address,
+                success: true,
+            });
+
+            const gasUsed = measureGas(sendResult.transactions);
+            expect(gasUsed).toMatchSnapshot(`gas used for value ${value}`);
+        }
+
+        const codeSize = instance.init!.code.toBoc().length;
+        expect(codeSize).toMatchSnapshot(`code size`);
     });
 });
