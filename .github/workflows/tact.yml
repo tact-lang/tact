@@ -74,54 +74,45 @@ jobs:
           yarn gen:func-js
           # Clean-up
           yarn cleanall
-
   test:
     strategy:
       fail-fast: false
       matrix:
         node-version: [22]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test
       - name: Test compatibility with tact-template
+        shell: bash
         run: |
-          # !!!!!!! Don't forget to update test-windows below !!!!!!!
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
-          # Hijack the dependency on Tact to avoid redundant npm downloads
+
           jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
           mv temp.json package.json
+
           yarn install
           yarn link @tact-lang/compiler
           yarn build
           yarn test
-
-  test-windows:
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [22]
-        os: [windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/test
-      - name: Test compatibility with tact-template
+      - name: Install Allure
+        if: always()
+        shell: bash
         run: |
-          # !!!!!!! Don't forget to update test above !!!!!!!
-          $ErrorActionPreference = 'Stop'
-          git clone https://github.com/tact-lang/tact-template.git
-          cd tact-template
-          # Hijack the dependency on Tact to avoid redundant npm downloads
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
-          Move-Item temp.json package.json -Force
-          yarn install
-          yarn link @tact-lang/compiler
-          yarn build
-          yarn test
-
+          npm i -g allure-commandline
+      - name: Generate Allure report
+        if: always()
+        shell: bash
+        run: |
+          allure generate allure-results -o allure-${{ matrix.os }}-report --clean --single-file
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-${{ matrix.os }}-report
+          path: allure-${{ matrix.os }}-report
   test-blueprint:
     strategy:
       fail-fast: false
