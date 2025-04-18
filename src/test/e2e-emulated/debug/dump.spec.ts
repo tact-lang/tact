@@ -3,7 +3,7 @@ import { Blockchain } from "@ton/sandbox";
 import { Tester } from "./output/dump_Tester";
 import "@ton/test-utils";
 import { cached } from "@/test/utils/cache-state";
-import { setStoragePrices } from "@/test/e2e-emulated/traits/base-trait/gasUtils";
+import { setStoragePrices } from "@/test/utils/gasUtils";
 
 const deployValue = toNano("1"); // `dump` is expensive
 
