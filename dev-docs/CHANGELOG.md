@@ -12,9 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compiler now generates more efficient code for structure fields serialization: PR [#2836](https://github.com/tact-lang/tact/pull/2836)
 - Compiler now generates more efficient code for `Address?` fields deserialization: PR [#2834](https://github.com/tact-lang/tact/pull/2834)
 
+### Docs
+
+- Fixed the description of `StateInit.hasSameBasechainAddress()` function: PR [#2846](https://github.com/tact-lang/tact/pull/2846)
+
 ### Release contributors
 
 - [Petr Makhnev](https://github.com/i582)
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.6.6] - 2025-04-16
 

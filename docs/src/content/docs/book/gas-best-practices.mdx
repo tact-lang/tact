@@ -88,11 +88,7 @@ A frequent use-case for basechain addresses is checking message sender addresses
 contract Child(parentAddr: Address) {
     receive() {
         // Forward surplus to the parent address
-        message(MessageParameters{
-            to: self.parentAddr,
-            value: 0,
-            mode: SendRemainingValue,
-        });
+        cashback(self.parentAddr);
     }
 }
 
