@@ -50,7 +50,7 @@ import type { SendCellToAddress } from "./output/receiver-precedence_EmptyBounce
 
 describe("receivers-precedence", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<ReceiverTester>;
     let calculator: SandboxContract<Calculator>;
 
@@ -91,7 +91,7 @@ describe("receivers-precedence", () => {
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await ReceiverTester.fromInit());
         calculator = blockchain.openContract(await Calculator.fromInit());
@@ -195,24 +195,24 @@ describe("receivers-precedence", () => {
         );
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
         });
 
         const calcDeploy = await calculator.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "deploy",
         );
         expect(calcDeploy.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: calculator.address,
             success: true,
             deploy: true,
@@ -335,7 +335,7 @@ describe("receivers-precedence", () => {
         const deployable = await blockchain.getContract(addr);
         const trans = await deployable.receiveMessage(
             internal({
-                from: treasure.address,
+                from: treasury.address,
                 to: deployable.address,
                 value: toNano("10"),
                 stateInit: init,
@@ -353,7 +353,7 @@ describe("receivers-precedence", () => {
 
         // Send now a "message"
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "message",
         );
@@ -363,7 +363,7 @@ describe("receivers-precedence", () => {
 
         // Send now an arbitrary string different from "message"
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "msg",
         );
@@ -374,7 +374,7 @@ describe("receivers-precedence", () => {
 
         // Send now a Message (note the capital letter in Message)
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             { $$type: "Message", msg: "message" },
         );
@@ -386,7 +386,7 @@ describe("receivers-precedence", () => {
 
         // First, an empty message, which can be simulated with an empty slice
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             new Cell().asSlice(),
         );
@@ -396,7 +396,7 @@ describe("receivers-precedence", () => {
 
         // Send now a "message" simulated as slice
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             // String receivers are triggered by passing an operation code 0 at the start of the slice
             beginCell()
@@ -411,7 +411,7 @@ describe("receivers-precedence", () => {
 
         // Send now an arbitrary string different from "message"
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             // String receivers are triggered by passing an operation code 0 at the start of the slice
             beginCell()
@@ -427,7 +427,7 @@ describe("receivers-precedence", () => {
 
         // Note that it is possible to trigger the "message_slice" receiver by passing an operation code different from 0, for example 10.
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             beginCell()
                 .storeUint(10, 32)
@@ -441,7 +441,7 @@ describe("receivers-precedence", () => {
 
         // Send now an arbitrary slice
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             beginCell().storeUint(10, 32).endCell().asSlice(),
         );
@@ -456,7 +456,7 @@ describe("receivers-precedence", () => {
         // Tell the contract to send a request to the calculator with an unsupported arithmetical operation.
         // The contract will send the request: 1 + 1
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "do_unsupported_op",
         );
@@ -468,7 +468,7 @@ describe("receivers-precedence", () => {
         // Tell the contract to send a request to the calculator with a division by zero.
         // The contract will send the request: 10/0
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "do_div_by_zero",
         );
@@ -480,7 +480,7 @@ describe("receivers-precedence", () => {
         // Tell the contract to send a request to the calculator with a successful division.
         // The contract will send the request: 10/2
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "do_success_div",
         );
@@ -491,7 +491,7 @@ describe("receivers-precedence", () => {
 
         // Tell the contract to send an unknown non-arithmetical request to the calculator.
         const { transactions } = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "do_unknown_request",
         );
@@ -740,7 +740,7 @@ describe("receivers-precedence", () => {
             body: Cell,
         ) {
             const { transactions } = await contract.send(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano("10") },
                 {
                     $$type: "SendCellToAddress",
@@ -763,7 +763,7 @@ describe("receivers-precedence", () => {
             body: Cell,
         ) {
             const { transactions } = await contract.send(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano("10") },
                 {
                     $$type: "SendCellToAddress",
@@ -2204,7 +2204,7 @@ describe("receivers-precedence", () => {
             // Such contract will reject all messages and bounce them back into the
             // testedContract
             const { transactions } = await testedContractSend(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano("10") },
                 {
                     $$type: "SendCellToAddress",
@@ -2221,13 +2221,13 @@ describe("receivers-precedence", () => {
             expect(await receiverGetter()).toBe(expectedReceiver);
 
             const resetResult = await testedContractSend(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano("10") },
                 "reset",
             );
 
             expect(resetResult.transactions).toHaveTransaction({
-                from: treasure.address,
+                from: treasury.address,
                 to: testedContract,
                 success: true,
             });

@@ -6,19 +6,19 @@ import "@ton/test-utils";
 
 describe("contract optional state", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<Test>;
     let contract2: SandboxContract<Test>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
         contract = blockchain.openContract(await Test.fromInit(0n));
         contract2 = blockchain.openContract(await Test.fromInit(10n));
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -26,14 +26,14 @@ describe("contract optional state", () => {
         );
 
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
         });
 
         const result2 = await contract2.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -41,7 +41,7 @@ describe("contract optional state", () => {
         );
 
         expect(result2.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract2.address,
             success: true,
             deploy: true,

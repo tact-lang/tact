@@ -6,17 +6,17 @@ import "@ton/test-utils";
 
 describe("contract empty state", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<Test>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
         contract = blockchain.openContract(await Test.fromInit());
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -24,7 +24,7 @@ describe("contract empty state", () => {
         );
 
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,

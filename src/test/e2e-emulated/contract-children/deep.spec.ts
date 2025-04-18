@@ -8,7 +8,7 @@ import "@ton/test-utils";
 
 describe("random", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contractA: SandboxContract<A>;
     let contractB: SandboxContract<B>;
     let contractC: SandboxContract<C>;
@@ -16,7 +16,7 @@ describe("random", () => {
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contractA = blockchain.openContract(await A.fromInit());
         contractB = blockchain.openContract(
@@ -30,14 +30,14 @@ describe("random", () => {
     it("should chain deep sequences correctly", async () => {
         // Send a message to contract A
         const result = await contractA.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "Message",
         );
 
         // Verify the transaction for contract A
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contractA.address,
             success: true,
             // Add any other specific transaction properties you want to check here
@@ -53,7 +53,7 @@ describe("random", () => {
         expect(nextB.data.equals(contractC.init!.data!)).toBe(true);
 
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contractA.address,
             success: true,
             body: beginCell()

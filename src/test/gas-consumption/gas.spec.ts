@@ -37,7 +37,7 @@ function measureGas(txs: BlockchainTransaction[]): number {
 
 describe("benchmarks", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
 
     let step: Step;
 
@@ -51,7 +51,7 @@ describe("benchmarks", () => {
     });
 
     beforeEach(async () => {
-        treasure = await blockchain.treasury("benchmarks");
+        treasury = await blockchain.treasury("benchmarks");
     });
 
     it("benchmark functions", async () => {
@@ -59,7 +59,7 @@ describe("benchmarks", () => {
 
         const sendResult = await step("benchmark functions", () =>
             functions.send(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano(1) },
                 { $$type: "Add", value: 10n },
             ),
@@ -76,7 +76,7 @@ describe("benchmarks", () => {
     it("benchmark readFwdFee", async () => {
         const testContract = blockchain.openContract(await Forward.fromInit());
         const sendResult = await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             {
                 $$type: "TestGetFwdFee",
@@ -97,7 +97,7 @@ describe("benchmarks", () => {
         s: string,
     ): Promise<number> {
         const result = await sha256.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             { $$type: "HashData", value: s },
         );
@@ -110,7 +110,7 @@ describe("benchmarks", () => {
         s: string,
     ): Promise<number> {
         const result = await sha256.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             { $$type: "HashData", value: s },
         );
@@ -123,7 +123,7 @@ describe("benchmarks", () => {
         s: string,
     ): Promise<number> {
         const result = await sha256.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             { $$type: "HashData", value: s },
         );
@@ -141,13 +141,13 @@ describe("benchmarks", () => {
         );
 
         await sha256Small.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
-        await sha256Big.send(treasure.getSender(), { value: toNano(1) }, null);
+        await sha256Big.send(treasury.getSender(), { value: toNano(1) }, null);
         await sha256AsSlice.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -192,7 +192,7 @@ describe("benchmarks", () => {
             await CellsCreation.fromInit(),
         );
         await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -213,7 +213,7 @@ describe("benchmarks", () => {
             await Addresses.fromInit(),
         );
         await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -231,7 +231,7 @@ describe("benchmarks", () => {
             await CodeOfVsInitOf.fromInit(),
         );
         await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -251,7 +251,7 @@ describe("benchmarks", () => {
             await CodeOfVsInitOf.fromInit(),
         );
         await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -275,7 +275,7 @@ describe("benchmarks", () => {
         );
 
         const deployResultTrait = await withDeployTrait.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             {
                 $$type: "Deploy",
@@ -284,7 +284,7 @@ describe("benchmarks", () => {
         );
 
         const deployRawResult = await withoutDeploy.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             beginCell().endCell().beginParse(),
         );
@@ -316,14 +316,14 @@ describe("benchmarks", () => {
         for (const value of testValues) {
             const sendResult = await step(`${name} with value ${value}`, () =>
                 instance.send(
-                    treasure.getSender(),
+                    treasury.getSender(),
                     { value: toNano(1) },
                     { $$type: message, value },
                 ),
             );
 
             expect(sendResult.transactions).toHaveTransaction({
-                from: treasure.address,
+                from: treasury.address,
                 to: instance.address,
                 success: true,
             });

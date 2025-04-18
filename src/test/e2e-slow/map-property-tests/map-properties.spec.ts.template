@@ -27,11 +27,11 @@ let contract: SandboxContract<MapPropertiesTester>;
 beforeAll(async () => {
     const blockchain = await Blockchain.create();
     blockchain.verbosity.print = false;
-    const treasure = await blockchain.treasury("treasure");
+    const treasury = await blockchain.treasury("treasury");
     contract = blockchain.openContract(await MapPropertiesTester.fromInit());
 
     const result = await contract.send(
-        treasure.getSender(),
+        treasury.getSender(),
         {
             value: toNano("10"),
         },
@@ -39,7 +39,7 @@ beforeAll(async () => {
     );
 
     expect(result.transactions).toHaveTransaction({
-        from: treasure.address,
+        from: treasury.address,
         to: contract.address,
         success: true,
         deploy: true,
