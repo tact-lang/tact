@@ -182,7 +182,7 @@ Read more about them on their dedicated page: [Assembly functions](/book/assembl
 
 ### Prefer binary receivers to text receivers
 
-Tact automatically handles various message body types, including binary and string (text) ones. Both message bodies start with a 32-bit integer header (or tag) called an opcode, which helps distinguish their following contents.
+Tact automatically handles various message body types, including binary and string (text) ones. Both message bodies start with a 32-bit integer header (or tag) called an [opcode](/book/structs-and-messages#message-opcodes), which helps distinguish their following contents.
 
 To prevent conflicts with binary message bodies which are usually sent on the blockchain, the string (text) receivers skip the opcode and instead route based on the hash of the message body contents — an expensive operation that requires more than 500 units of gas.
 
@@ -192,7 +192,7 @@ While text receivers are convenient during development in testing, when preparin
 message(1) One {}
 message(2) Two {}
 
-contract Example {
+contract Example() {
     // Prefer this
     receive(_: One) {
         // ...
@@ -207,6 +207,24 @@ contract Example {
     }
     receive("two") {
         // ...
+    }
+}
+```
+
+### Prefer `inMsg()` to `Message.toSlice()`
+
+<Badge text="Available since Tact 1.7" variant="tip" size="medium"/><p/>
+
+When working with an incoming message, prefer using the [`inMsg(){:tact}`](/ref/core-contextstate#inmsg) function over the [`Message.toSlice(){:tact}`](/ref/core-cells#messagetoslice) extension function, because the `inMsg(){:tact}` function provides direct access to the incoming message body [`Slice{:tact}`][p], while `msg.toSlice(){:tact}` performs redundant operations to recreate that `Slice{:tact}`.
+
+```tact
+contract Example() {
+    receive(msg: SomeMessage) {
+        // Prefer this
+        let body = inMsg();
+
+        // over this
+        let sameBody = msg.toSlice();
     }
 }
 ```
