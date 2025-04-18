@@ -45,6 +45,9 @@ struct Context {
 @name(__tact_context_get)
 native context(): Context;
 
+@name(__tact_in_msg_get)
+native inMsg(): Slice;
+
 /// Returns the `Address` of the sender of the current message.
 ///
 /// ```tact

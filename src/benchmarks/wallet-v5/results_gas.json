@@ -99,6 +99,16 @@
         "internalTransfer": "7340",
         "extensionTransfer": "4648"
       }
+    },
+    {
+      "label": "1.6.6 with inMsg()",
+      "pr": null,
+      "gas": {
+        "externalTransfer": "5135",
+        "addExtension": "5614",
+        "internalTransfer": "5911",
+        "extensionTransfer": "4701"
+      }
     }
   ]
 }
