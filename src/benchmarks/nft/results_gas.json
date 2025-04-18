@@ -96,8 +96,8 @@
       "gas": {
         "transfer": "7634",
         "get static data": "5763",
-        "deploy nft": "10823",
-        "batch deploy nft": "703881"
+        "deploy nft": "10651",
+        "batch deploy nft": "660506"
       }
     }
   ]
