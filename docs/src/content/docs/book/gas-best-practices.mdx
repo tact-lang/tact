@@ -114,9 +114,9 @@ To ensure that a certain [`Address{:tact}`][p] is in the basechain and can be re
 
 See other functions related to the `BasechainAddress{:tact}` struct:
 
-* [`emptyBasechainAddress{:tact}`](/ref/core-addresses#emptybasechainaddress)
-* [`newBasechainAddress{:tact}`](/ref/core-addresses#newbasechainaddress)
-* [`contractBasechainAddress{:tact}`](/ref/core-addresses#contractbasechainaddress)
+* [`emptyBasechainAddress(){:tact}`](/ref/core-addresses#emptybasechainaddress)
+* [`newBasechainAddress(){:tact}`](/ref/core-addresses#newbasechainaddress)
+* [`contractBasechainAddress(){:tact}`](/ref/core-addresses#contractbasechainaddress)
 
 ### Pay attention to "Gas-expensive" badge
 
@@ -248,9 +248,38 @@ fun example() {
 }
 ```
 
+### Use `SignedBundle` to verify signatures in external message receivers
+
+When handling [external messages](/book/external), the [`SignedBundle{:tact}`](/ref/core-crypto#signedbundle) [struct][struct] provides a gas-efficient way to verify message signatures. This approach is particularly useful for wallet contracts and other contracts that need secure user authorization.
+
+The `SignedBundle{:tact}` contains both the signature and the non-serialized data of the enclosing struct or message struct that is being signed, allowing for convenient verification with the [`SignedBundle.verifySignature(){:tact}`](/ref/core-crypto#signedbundleverifysignature) extension function.
+
+```tact
+contract Wallet(publicKey: Int as uint256) {
+    external(msg: SomeWalletOperation) {
+        // Verifying the signature before accepting the message
+        require(msg.bundle.verifySignature(self.publicKey), "Invalid signature");
+
+        // Now it's safe to accept it
+        acceptMessage();
+
+        // ...and proceed further...
+    }
+}
+
+message SomeWalletOperation {
+    // You must set the SignedBundle as the first field
+    bundle: SignedBundle;
+
+    // Some data to be signed
+    walletId: Int as int32;
+    seqno: Int as uint32;
+}
+```
+
 ## Sending messages
 
-### Prefer `message` and `cashback` to `self.forward`, `self.reply`, and `self.notify`
+### Prefer `message()` and `cashback()` to `self.forward()`, `self.reply()`, and `self.notify()`
 
 Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of [internal functions](/book/contracts#internal-functions) for any contract. Those internal functions are gas-expensive for the same reasons as stated earlier.
 
