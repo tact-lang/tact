@@ -557,6 +557,33 @@ export function writeStatement(
     throw Error("Unknown statement kind");
 }
 
+const rewriteWithIfNot = (expr: Ast.Expression): [Ast.Expression, string] => {
+    if (expr.kind === "op_unary" && expr.op === "!") {
+        // `if (~ cond)` => `ifnot (cond)`
+        return [expr.operand, "ifnot"];
+    }
+    if (
+        expr.kind === "op_binary" &&
+        expr.op === "==" &&
+        expr.right.kind === "number" &&
+        expr.right.value === 0n
+    ) {
+        // if (a == 0) => ifnot (a)
+        return [expr.left, "ifnot"];
+    }
+    if (
+        expr.kind === "op_binary" &&
+        expr.op === "!=" &&
+        expr.right.kind === "number" &&
+        expr.right.value === 0n
+    ) {
+        // if (a != 0) => if (a)
+        return [expr.left, "if"];
+    }
+
+    return [expr, "if"];
+};
+
 // HACK ALERT: if `returns` is a string, it contains the code to invoke before returning from a receiver
 // this is used to save the contract state before returning
 function writeCondition(
@@ -566,8 +593,10 @@ function writeCondition(
     returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
+    const [condition, ifKind] = rewriteWithIfNot(f.condition);
+
     ctx.append(
-        `${elseif ? "} else" : ""}if (${writeExpressionInCondition(f.condition, ctx)}) {`,
+        `${elseif ? "} else" : ""}${ifKind} (${writeExpressionInCondition(condition, ctx)}) {`,
     );
     ctx.inIndent(() => {
         for (const s of f.trueStatements) {
