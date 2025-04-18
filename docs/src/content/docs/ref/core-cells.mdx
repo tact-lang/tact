@@ -216,6 +216,8 @@ Stores an unsigned `bits`-bit `value` into the copy of the [`Builder{:tact}`][bu
 
 Attempts to store a negative `value` or provide an insufficient or out-of-bounds `bits` number throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
 Usage example:
 
 ```tact
@@ -235,6 +237,8 @@ Stores a signed `bits`-bit `value` into the copy of the [`Builder{:tact}`][build
 
 Attempts to provide an insufficient or out-of-bounds `bits` number throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
 Usage example:
 
 ```tact
@@ -250,7 +254,9 @@ extends fun storeBool(self: Builder, value: Bool): Builder;
 
 Extension function for the [`Builder{:tact}`][builder] type.
 
-Stores a [`Bool{:tact}`][bool] `value` into the copy of the [`Builder{:tact}`][builder]. Writes $1$ as a single bit if `value` is `true{:tact}`, and writes $0$ otherwise. Returns that copy of the [`Builder{:tact}`][builder].
+Stores a [`Bool{:tact}`][bool] `value` into the copy of the [`Builder{:tact}`][builder]. Writes 1 as a single bit if `value` is `true{:tact}`, and writes 0 otherwise. Returns that copy of the [`Builder{:tact}`][builder].
+
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Usage example:
 
@@ -272,6 +278,8 @@ Extension function for the [`Builder{:tact}`][builder] type.
 
 An alias to [`Builder.storeBool(){:tact}`](#builderstorebool).
 
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
 Usage example:
 
 ```tact
@@ -289,6 +297,8 @@ extends fun storeBuilder(self: Builder, other: Builder): Builder;
 Extension function for the [`Builder{:tact}`][builder] type.
 
 Appends all data from the `other` builder to the copy of the `self` builder. Returns that copy.
+
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Usage example:
 
@@ -311,6 +321,8 @@ Extension function for the [`Builder{:tact}`][builder] type.
 
 Stores a `slice` into a copy of the [`Builder{:tact}`][builder]. Returns that copy.
 
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
 Usage example:
 
 ```tact
@@ -330,6 +342,8 @@ Extension function for the [`Builder{:tact}`][builder] type.
 Stores (serializes) an unsigned [`Int{:tact}`][int] `value` in the range from $0$ to $2^{120}-1$ inclusive into a copy of the [`Builder{:tact}`][builder]. The serialization of `value` consists of a $4$-bit unsigned big-endian integer $l$, which is the smallest integer $l ≥ 0$ such that `value` $< 2^{8 * l}$, followed by an $8 * l$-bit unsigned big-endian representation of `value`. Returns that copy of the [`Builder{:tact}`][builder].
 
 Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 This is the most common way of storing [nanoToncoins](/book/integers#nanotoncoin).
 
@@ -358,6 +372,8 @@ Extension function for the [`Builder{:tact}`][builder] type.
 
 An alias to [`Builder.storeCoins(){:tact}`](#builderstorecoins).
 
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
 Usage example:
 
 ```tact
@@ -384,6 +400,8 @@ Extension function for the [`Builder{:tact}`][builder] type.
 Similar to [`Builder.storeCoins(){:tact}`](#builderstorecoins), but with a different `value` range: from $-2^{119}$ to $2^{119}-1$ inclusive.
 
 Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Usage example:
 
@@ -412,6 +430,8 @@ Stores (serializes) an unsigned [`Int{:tact}`][int] `value` in the range from $0
 
 Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
 Usage example:
 
 ```tact
@@ -439,6 +459,8 @@ Similar to [`Builder.storeVarUint32(){:tact}`](#builderstorevaruint32), but with
 
 Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
 Usage example:
 
 ```tact
@@ -464,6 +486,8 @@ Stores the `address` in a copy of the [`Builder{:tact}`][builder]. Returns that 
 
 Attempts to store an `address` into the [`Builder{:tact}`][builder] `self{:tact}`, if `self{:tact}` cannot fit it, throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
 Usage example:
 
 ```tact
@@ -483,8 +507,9 @@ Extension function for the [`Builder{:tact}`][builder] type.
 
 Stores the basechain `address` in the copy of the [`Builder{:tact}`][builder] and returns that copy.
 
-If the address has a `null` hash, stores $0b00$ (`addr_none`).
-Otherwise, store the full address with prefix $0b100$ followed by workchain ($0$) and the 256-bit hash.
+If the address has a `null{:tact}` hash, stores two zero bits `0b00` (`addr_none`). Otherwise, stores the full address with the three-bit prefix `0b100`, followed by the 8-bit workchain ID set to 0 and the 256-bit hash.
+
+Attempts to store more data than the [`Builder{:tact}`][builder] `self{:tact}` can fit throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Usage example:
 
@@ -819,8 +844,6 @@ Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Loads a single bit and returns a [`Bool{:tact}`][bool] value from the [`Slice{:tact}`][slice]. Reads `true{:tact}` if the loaded bit is equal to $1$, and reads `false{:tact}` otherwise.
 
-Attempts to load such [`Bool{:tact}`][bool] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
-
 Attempts to load more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
@@ -841,8 +864,6 @@ extends mutates fun skipBool(self: Slice);
 Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Skips a single bit from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadBool()`.
-
-Attempts to skip such [`Bool{:tact}`][bool] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -887,8 +908,6 @@ Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Loads and returns a [serialized](#builderstorecoins) unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{120} - 1$ inclusive from the [`Slice{:tact}`][slice]. This value usually represents the amount in [nanoToncoins](/book/integers#nanotoncoin).
 
-Attempts to load such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
-
 Attempts to load more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
@@ -915,8 +934,6 @@ extends mutates fun skipCoins(self: Slice);
 Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Skips a serialized unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{120} - 1$ inclusive from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadCoins()`.
-
-Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -993,8 +1010,6 @@ Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Similar to [`Slice.loadCoins(){:tact}`](#sliceloadcoins), but with a different `value` range: from $-2^{119}$ to $2^{119} - 1$ inclusive.
 
-Attempts to load such [`Int{:tact}`][int] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
-
 Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
@@ -1022,8 +1037,6 @@ Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Similar to `Slice.skipCoins()`, but with a different `value` range: from $-2^{119}$ to $2^{119} - 1$ inclusive.
 
-Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
-
 Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
@@ -1047,8 +1060,6 @@ extends mutates fun loadVarUint32(self: Slice): Int;
 ```
 
 Loads and returns a [serialized](#builderstorevaruint32) unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{248} - 1$ inclusive from the [`Slice{:tact}`][slice].
-
-Attempts to load such [`Int{:tact}`][int] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -1077,8 +1088,6 @@ Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Skips a serialized unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{248} - 1$ inclusive from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadVarUint32()`.
 
-Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
-
 Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
@@ -1102,8 +1111,6 @@ extends mutates fun loadVarInt32(self: Slice): Int;
 ```
 
 Similar to [`Slice.loadVarUint32(){:tact}`](#sliceloadvaruint32), but with a different `value` range: from $-2^{247}$ to $2^{247} - 1$ inclusive.
-
-Attempts to load such [`Int{:tact}`][int] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -1132,8 +1139,6 @@ Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Similar to `Slice.skipVarUint32()`, but with a different `value` range: from $-2^{247}$ to $2^{247} - 1$ inclusive.
 
-Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
-
 Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
@@ -1158,8 +1163,6 @@ Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Loads and returns an [`Address{:tact}`][p] from the [`Slice{:tact}`][slice].
 
-Attempts to load such [`Address{:tact}`][p] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
-
 Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
@@ -1180,8 +1183,6 @@ extends mutates fun skipAddress(self: Slice);
 Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Skips an [`Address{:tact}`][p] from the [`Slice{:tact}`][slice].
-
-Attempts to skip such [`Address{:tact}`][p] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Attempts to skip more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -1206,8 +1207,6 @@ extends mutates fun loadRef(self: Slice): Cell;
 Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Loads the next reference from the [`Slice{:tact}`][slice] as a [`Cell{:tact}`][cell].
-
-Attempts to load such reference [`Cell{:tact}`][cell] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -1235,8 +1234,6 @@ extends fun preloadRef(self: Slice): Cell;
 Extension function for the [`Slice{:tact}`][slice] type.
 
 Preloads the next reference from the [`Slice{:tact}`][slice] as a [`Cell{:tact}`][cell]. Doesn't modify the original [`Slice{:tact}`][slice].
-
-Attempts to preload such a reference [`Cell{:tact}`][cell] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Attempts to preload more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -1268,8 +1265,6 @@ Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Skips the next reference from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadRef()`.
 
-Attempts to skip such reference [`Cell{:tact}`][cell] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
-
 Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
@@ -1297,8 +1292,6 @@ Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Loads a single bit from the [`Slice{:tact}`][slice]: if it's $1$, the referenced [`Cell{:tact}`][cell] is loaded and returned. If the loaded bit is $0$, nothing else is loaded and `null{:tact}` is returned.
 
-Attempts to load such a reference [`Cell{:tact}`][cell] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
-
 Attempts to load more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
@@ -1324,8 +1317,6 @@ extends fun preloadMaybeRef(self: Slice): Cell?;
 Extension function for the [`Slice{:tact}`][slice] type.
 
 Preloads a single bit from the [`Slice{:tact}`][slice]: if it's $1$, the referenced [`Cell{:tact}`][cell] is preloaded and returned. If the preloaded bit is $0$, `null{:tact}` is returned. Doesn't modify the original [`Slice{:tact}`][slice].
-
-Attempts to preload such a reference [`Cell{:tact}`][cell] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Attempts to preload more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -1357,8 +1348,6 @@ extends mutates fun skipMaybeRef(self: Slice);
 Extension mutation function for the [`Slice{:tact}`][slice] type.
 
 Skips `Cell?` from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadMaybeRef()`.
-
-Attempts to skip such reference [`Cell{:tact}`][cell] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
 Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 

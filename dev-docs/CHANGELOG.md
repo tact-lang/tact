@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Language features
 
+- Compiler now generates more efficient code for structure fields serialization: PR [#2836](https://github.com/tact-lang/tact/pull/2836)
 - Compiler now generates more efficient code for `Address?` fields deserialization: PR [#2834](https://github.com/tact-lang/tact/pull/2834)
 
 ### Release contributors
@@ -70,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added generation of `llms.txt`, `llms-full.txt` (full version), and `llms-small.txt` (compact version, with non-essential content removed): PR [#2763](https://github.com/tact-lang/tact/pull/2763)
 - Added description of the specialized math functions, such as `pow2()` and `log2()`, to the gas best practices page: PR [#2771](https://github.com/tact-lang/tact/pull/2771)
 - Added `BasechainAddress` to the gas best practices page: PR [#2802](https://github.com/tact-lang/tact/pull/2802)
+- Applied suggestions from the gas best practices page to the security best practices page: PR [#2811](https://github.com/tact-lang/tact/pull/2811)
 
 ### Release contributors
 
