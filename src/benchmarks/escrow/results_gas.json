@@ -209,6 +209,16 @@
         "approveTon": "6738",
         "cancelTon": "4639"
       }
+    },
+    {
+      "label": "1.6.5 with exactly same data",
+      "pr": "https://github.com/tact-lang/tact/pull/2799",
+      "gas": {
+        "fundingTon": "4467",
+        "changeCode": "4611",
+        "approveTon": "6760",
+        "cancelTon": "4711"
+      }
     }
   ]
 }
