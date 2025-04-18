@@ -1,5 +1,8 @@
 import type { CompilerContext } from "@/context/context";
-import { resolveDescriptors } from "@/types/resolveDescriptors";
+import {
+    computeGlobalVariablesUsages,
+    resolveDescriptors,
+} from "@/types/resolveDescriptors";
 import { resolveAllocations } from "@/storage/resolveAllocation";
 import { openContext, parseModules } from "@/context/store";
 import { resolveStatements } from "@/types/resolveStatements";
@@ -60,6 +63,8 @@ export function precompile(
        it is hard to extract the call to evalConstantExpression in resolveSignatures.
     */
     evalComptimeExpressions(ctx, ast);
+
+    ctx = computeGlobalVariablesUsages(ctx);
 
     // This creates TLB-style type definitions
     ctx = resolveSignatures(ctx, ast);
