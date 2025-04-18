@@ -132,7 +132,7 @@ contract JettonWalletNotcoin(
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
-                responseDestination: msg.responseDestination,
+                responseDestination: msg.responseDestination!!,
             }.toCell(),
         });
     }

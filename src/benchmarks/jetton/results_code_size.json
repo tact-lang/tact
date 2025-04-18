@@ -119,6 +119,16 @@
         "wallet cells": "16",
         "wallet bits": "8211"
       }
+    },
+    {
+      "label": "1.6.5 with fixed TLB types",
+      "pr": "https://github.com/tact-lang/tact/pull/2735",
+      "size": {
+        "minter cells": "30",
+        "minter bits": "14984",
+        "wallet cells": "16",
+        "wallet bits": "8411"
+      }
     }
   ]
 }
