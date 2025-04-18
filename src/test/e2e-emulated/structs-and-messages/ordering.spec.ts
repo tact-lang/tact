@@ -7,27 +7,27 @@ import "@ton/test-utils";
 
 describe("ordering", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
     });
 
     it("should implement constructor ordering correctly in contract A", async () => {
         const contract = blockchain.openContract(
-            await A.fromInit(treasure.address),
+            await A.fromInit(treasury.address),
         );
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             { $$type: "Deploy", queryId: 0n },
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -44,13 +44,13 @@ describe("ordering", () => {
         const contract = blockchain.openContract(await B.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             { $$type: "Deploy", queryId: 0n },
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
