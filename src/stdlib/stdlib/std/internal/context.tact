@@ -52,15 +52,15 @@ native context(): Context;
 /// That `Slice` can:
 ///
 /// * be empty, which means the contract has received an empty message body that is handled in the empty receiver `receive()` or the catch-all slice receiver `receive(msg: Slice)`;
-/// * start with 4 zero bytes, which means the contract has received a text message that is handled in the relevant text receivers:
-///   * `receive("message")`,
-///   * `receive(msg: String)`,
+/// * start with 4 zero bytes, which means the contract has received a text message that is handled in the relevant receiver:
+///   * the exact text receiver `receive("message")`,
+///   * the catch-all string receiver `receive(msg: String)`,
 ///   * or the catch-all slice receiver `receive(msg: Slice)`;
 /// * start with 4 bytes of a non-zero message opcode that the corresponding binary receiver `receive(msg: MessageStruct)` or the catch-all slice receiver `receive(msg: Slice)` would handle.
 ///
 /// ```tact
 /// // This contract defines various kinds of receivers in their
-/// // order of handling the corresponding incoming messages
+/// // order of handling the corresponding incoming messages.
 /// contract OrderOfReceivers() {
 ///     receive() {
 ///         let body = inMsg();
@@ -76,7 +76,7 @@ native context(): Context;
 ///     receive(str: String) {
 ///         let body = inMsg();
 ///         body.loadUint(32); // 0
-///         body == str; // true
+///         body == str.asSlice(); // true
 ///     }
 ///
 ///     receive(msg: Emergency) {
