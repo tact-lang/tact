@@ -26,6 +26,9 @@ import { WithDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithD
 import { WithoutDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithoutDeploy";
 import { Sqrt } from "@/test/gas-consumption/contracts/output/sqrt_Sqrt";
 
+import type { ForwardMsg, NotifyMsg, ReplyMsg } from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitInline";
+import { BaseTraitInline } from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitInline";
+import { BaseTraitTrait } from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTrait";
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
         (
@@ -334,5 +337,64 @@ describe("benchmarks", () => {
 
         const codeSize = instance.init!.code.toBoc().length;
         expect(codeSize).toMatchSnapshot(`code size`);
+    });
+
+    it("benchmark BaseTrait", async () => {
+        const instanceInline = blockchain.openContract(
+            await BaseTraitInline.fromInit(),
+        );
+
+        const instanceTrait = blockchain.openContract(
+            await BaseTraitTrait.fromInit(),
+        );
+        
+        const ForwardMessage: ForwardMsg = {
+            $$type: "ForwardMsg",
+            to: instanceInline.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+        };
+        const NotifyMessage: NotifyMsg = {
+            $$type: "NotifyMsg",
+            body: beginCell().endCell(),
+        };
+        const ReplyMessage: ReplyMsg = {
+            $$type: "ReplyMsg",
+            body: beginCell().endCell(),
+        };
+
+        const messages = {
+            ForwardMessage,
+            NotifyMessage,
+            ReplyMessage,
+        };
+
+        for (const [messageName, message] of Object.entries(messages)) {
+            for (const [name, instance] of Object.entries({ instanceInline, instanceTrait })) {
+                const sendResult = await step(`${name} with ${messageName}`, () =>
+                    instance.send(
+                        treasury.getSender(),
+                        { value: toNano(1) },
+                        message,
+                    ),
+                );
+
+                expect(sendResult.transactions).toHaveTransaction({
+                    from: treasury.address,
+                    to: instance.address,
+                    success: true,
+                });
+
+                const gasUsed = measureGas(sendResult.transactions);
+                expect(gasUsed).toMatchSnapshot(`gas used for ${messageName} in contract ${name}`);
+            }
+        }
+
+        let codeSize = instanceInline.init!.code.toBoc().length;
+        expect(codeSize).toMatchSnapshot(`code size inline`);
+
+        codeSize = instanceTrait.init!.code.toBoc().length;
+        expect(codeSize).toMatchSnapshot(`code size trait`);
     });
 });

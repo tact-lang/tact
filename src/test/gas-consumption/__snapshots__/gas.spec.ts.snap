@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`benchmarks benchmark BaseTrait: code size inline 1`] = `410`;
+
+exports[`benchmarks benchmark BaseTrait: code size trait 1`] = `437`;
+
+exports[`benchmarks benchmark BaseTrait: gas used for ForwardMessage in contract instanceInline 1`] = `3917`;
+
+exports[`benchmarks benchmark BaseTrait: gas used for ForwardMessage in contract instanceTrait 1`] = `4076`;
+
+exports[`benchmarks benchmark BaseTrait: gas used for NotifyMessage in contract instanceInline 1`] = `3875`;
+
+exports[`benchmarks benchmark BaseTrait: gas used for NotifyMessage in contract instanceTrait 1`] = `4034`;
+
+exports[`benchmarks benchmark BaseTrait: gas used for ReplyMessage in contract instanceInline 1`] = `3942`;
+
+exports[`benchmarks benchmark BaseTrait: gas used for ReplyMessage in contract instanceTrait 1`] = `4119`;
+
 exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `750n`;
 
 exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `754n`;
