@@ -14,7 +14,7 @@ exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `858n`;
 
 exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2516n`;
 
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `4419`;
+exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `3975`;
 
 exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1505`;
 
