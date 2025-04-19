@@ -1,21 +1,14 @@
 import "./constants";
 import "./messages-sbt";
 
-contract SBTItem {
-    itemIndex: Int as uint64;
-    collectionAddress: Address;
-
-    // state init data don't have this parameters
-    owner: Address? = null;
-    content: Cell? = null;
-    authorityAddress: Address? = null;
-    revokedAt: Int = 0;
-
-    init(initNFTData: InitNFTData) {
-        self.itemIndex = initNFTData.itemIndex;
-        self.collectionAddress = initNFTData.collectionAddress;
-    }
-
+contract SBTItem(
+    itemIndex: Int as uint64,
+    collectionAddress: Address,
+    owner: Address?,
+    content: Cell?,
+    authorityAddress: Address?,
+    revokedAt: Int,
+) {
     receive() {} //to ignore empty messages 
 
     receive(msg: Slice) {
