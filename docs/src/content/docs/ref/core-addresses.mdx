@@ -201,7 +201,7 @@ Field       | Type                           | Description
 `workchain` | [`Int as int8{:tact}`][int]    | Workchain ID of the address, usually $0$ (basechain) or $-1$ (masterchain)
 `address`   | [`Int as uint256{:tact}`][int] | Address in the specified `workchain`
 
-Attempts to pass a [`Slice{:tact}`][slice] with a layout different from the `StdAddress{:tact}` or to load more data than the given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+Attempts to pass a [`Slice{:tact}`][slice] that cannot be parsed as a `StdAddress{:tact}` or to load more data than the given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
 
@@ -240,7 +240,7 @@ Field       | Type                         | Description
 `workchain` | [`Int as int32{:tact}`][int] | Workchain ID of the variable-length address
 `address`   | [`Slice{:tact}`][slice]      | Address in the specified `workchain`
 
-Attempts to pass a [`Slice{:tact}`][slice] with a layout different from the `VarAddress{:tact}` or to load more data than the given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+Attempts to pass a [`Slice{:tact}`][slice] that cannot be parsed as a `VarAddress{:tact}` or to load more data than the given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
 
@@ -269,32 +269,41 @@ parsedVarAddr.address.loadUint(123); // 345
 <Badge text="Available since Tact 1.6.1" variant="tip" size="medium"/><p/>
 
 ```tact
-extends fun hasSameBasechainAddress(self: StateInit, sender: Address): Bool;
+extends fun hasSameBasechainAddress(self: StateInit, address: Address): Bool;
 ```
 
 Extension function for the [`StateInit{:tact}`][initpkg] [struct][struct].
 
-Efficiently compares whether the given address matches the basechain address of the contract. Returns true if the addresses are the same; false otherwise.
+Checks if the given `address` corresponds to the contract address in the [workchain ID][workchain-id] 0 (basechain) derived from the [`StateInit{:tact}`](/book/expressions#initof) `self{:tact}`. Returns `true{:tact}` if the addresses match and `false{:tact}` otherwise.
+
+This function works correctly only for basechain addresses. It may produce false positives or negatives if the specified `address` or the address derived from the `StateInit{:tact}` `self{:tact}` has a non-zero workchain ID.
+
+Attempts to pass an [`Address{:tact}`][p] that cannot be parsed as a [`StdAddress{:tact}`](#parsestdaddress) throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 ```tact
-fun example() {
-    let init = initOf SomeContract();
-    init.hasSameBasechainAddress(sender()); // returns true if sender matches contract's basechain address
+contract Parent() {
+    receive() {
+        let childContract = initOf Child(myAddress());
+
+        // If you are working with contracts on the basechain, this
+        let expensiveCheck = contractAddress(childContract) == sender();
+
+        // is more expensive than doing this
+        let cheaperCheck = childContract.hasSameBasechainAddress(sender());
+
+        // while the results are the same
+        expensiveCheck == cheaperCheck; // true
+    }
+}
+
+contract Child(parentAddr: Address) {
+    receive() {
+        // Forwards surplus to the parent address by sending a message
+        // with an empty body and all remaining funds from the received message
+        cashback(self.parentAddr);
+    }
 }
 ```
-
-This function provides a gas-optimized implementation compared to direct address comparison:
-
-```tact
-fun example() {
-    let init = initOf SomeContract();
-    sender() == contractAddress(sender()); // less efficient approach
-}
-```
-
-:::note
-  This function works only for basechain addresses!
-:::
 
 ## Address.asSlice
 

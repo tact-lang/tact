@@ -13,9 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compiler now generates more efficient code for `Address?` fields deserialization: PR [#2834](https://github.com/tact-lang/tact/pull/2834)
 - Optimized `self.notify`, `self.reply`, and `self.forward` in `BaseTrait` by using message directly where possible and avoiding unnecessary use of alias: PR [#2515](https://github.com/tact-lang/tact/pull/2515)
 
+### Standard Library
+
+- Added `inMsg()` function as an optimized version of `msg.toSlice()`: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
+
+### Docs
+
+- Added `inMsg()` function to the gas best practices page: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
+- Fixed the description of `StateInit.hasSameBasechainAddress()` function: PR [#2848](https://github.com/tact-lang/tact/pull/2848)
+
 ### Release contributors
 
 - [Petr Makhnev](https://github.com/i582)
+- [Novus Nota](https://github.com/novusnota)
 - [skywardboundd](https://github.com/skywardboundd)
 
 ## [1.6.6] - 2025-04-16
@@ -147,10 +157,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Compilation report
 
 - [fix] TL-B for `Address?` is not `Maybe Address`, but plain `Address`: PR [#2386](https://github.com/tact-lang/tact/pull/2386)
-
-### Internal infrastructure
-
-- Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
 
 ### Internal infrastructure
 
