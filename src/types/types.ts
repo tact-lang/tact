@@ -20,6 +20,7 @@ export type TypeDescription = {
     init: InitDescription | null;
     ast: Ast.TypeDecl;
     dependsOn: TypeDescription[];
+    globalVariables: Set<string>;
     interfaces: string[];
     constants: ConstantDescription[];
 };

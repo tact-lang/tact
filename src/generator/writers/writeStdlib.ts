@@ -415,6 +415,15 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
+    ctx.fun("__tact_in_msg_get", () => {
+        ctx.signature(`slice __tact_in_msg_get()`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`return __tact_in_msg;`);
+        });
+    });
+
     ctx.fun("__tact_context_get_sender", () => {
         ctx.signature(`slice __tact_context_get_sender()`);
         ctx.flag("inline");

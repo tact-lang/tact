@@ -85,7 +85,7 @@ async function compileContract(
 
     logger.info(`   > ${contractName}: tact compiler`);
 
-    const compileRes = await compileTact(bCtx, contractName);
+    const compileRes = await compileTact(bCtx, contract);
     if (!compileRes) {
         return CompilationFailed;
     }
@@ -232,16 +232,17 @@ export async function compileFunc(
 
 export async function compileTact(
     bCtx: BuildContext,
-    contract: string,
+    contract: TypeDescription,
 ): Promise<CompileTactRes | undefined> {
     const { project, config } = bCtx;
 
     try {
-        const contractAbi = createABI(bCtx.ctx, contract);
+        const contractAbi = createABI(bCtx.ctx, contract.name);
         const res = await writeProgram(
             bCtx.ctx,
+            contract,
             contractAbi,
-            `${config.name}_${contract}`,
+            `${config.name}_${contract.name}`,
             bCtx.built,
             false,
         );
@@ -253,7 +254,7 @@ export async function compileTact(
 
         const pathAbi = project.resolve(
             config.output,
-            `${config.name}_${contract}.abi`,
+            `${config.name}_${contract.name}.abi`,
         );
         project.writeFile(pathAbi, abi);
 
