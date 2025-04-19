@@ -261,11 +261,11 @@ primitive AnyMessage;
 ///     probably: Int as coins;
 ///     nothing: Int as coins;
 /// }
-/// 
+///
 /// fun directParse(payload: Cell): GuessCoin {
 ///     return GuessCoin.fromCell(payload);
 /// }
-/// 
+///
 /// fun cautiousParse(payload: Cell): GuessCoin? {
 ///     let coin: GuessCoin? = null;
 ///     try {
@@ -285,7 +285,7 @@ primitive AnyMessage;
 /// See: https://docs.tact-lang.org/ref/core-cells/#structfromcell
 ///
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
-/// 
+///
 fun AnyStruct_fromCell(cell: Cell): S;
 
 /// Extension function for any Struct type.
@@ -297,11 +297,11 @@ fun AnyStruct_fromCell(cell: Cell): S;
 ///     probably: Int as coins;
 ///     nothing: Int as coins;
 /// }
-/// 
+///
 /// fun directParse(payload: Slice): GuessCoin {
 ///     return GuessCoin.fromSlice(payload);
 /// }
-/// 
+///
 /// fun cautiousParse(payload: Slice): GuessCoin? {
 ///     let coin: GuessCoin? = null;
 ///     try {
@@ -312,16 +312,16 @@ fun AnyStruct_fromCell(cell: Cell): S;
 ///     return coin;
 /// }
 /// ```
-/// 
+///
 /// #### Exit codes
 ///
 /// * 9: [Cell underflow] — Thrown when attempting to pass a `Slice` with a layout different
 ///   from the specified `Struct` or to load more data than `Slice` contains.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells/#structfromslice
-/// 
+///
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
-/// 
+///
 fun AnyStruct_fromSlice(slice: Slice): S;
 
 /// Extension function for any Message type.
@@ -332,11 +332,11 @@ fun AnyStruct_fromSlice(slice: Slice): S;
 /// message(0x777) TripleAxe {
 ///     prize: Int as uint32;
 /// }
-/// 
+///
 /// fun directParse(payload: Cell): TripleAxe {
 ///     return TripleAxe.fromCell(payload);
 /// }
-/// 
+///
 /// fun cautiousParse(payload: Cell): TripleAxe? {
 ///     let coin: TripleAxe? = null;
 ///     try {
@@ -356,7 +356,7 @@ fun AnyStruct_fromSlice(slice: Slice): S;
 /// See: https://docs.tact-lang.org/ref/core-cells/#messagefromcell
 ///
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
-/// 
+///
 fun AnyMessage_fromCell(cell: Cell): M;
 
 /// Extension function for any Message type.
@@ -367,11 +367,11 @@ fun AnyMessage_fromCell(cell: Cell): M;
 /// message(0x777) TripleAxe {
 ///     prize: Int as uint32;
 /// }
-/// 
+///
 /// fun directParse(payload: Slice): TripleAxe {
 ///     return TripleAxe.fromSlice(payload);
 /// }
-/// 
+///
 /// fun cautiousParse(payload: Slice): TripleAxe? {
 ///     let coin: TripleAxe? = null;
 ///     try {
@@ -382,16 +382,16 @@ fun AnyMessage_fromCell(cell: Cell): M;
 ///     return coin;
 /// }
 /// ```
-/// 
+///
 /// #### Exit codes
 ///
 /// * 9: [Cell underflow] — Thrown when attempting to pass a `Slice` with a layout different
 /// from the specified `Message` or to load more data than `Slice` contains.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells/#messagefromslice
-/// 
+///
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
-/// 
+///
 fun AnyMessage_fromSlice(slice: Slice): M;
 
 /// Extension function for any Struct.
@@ -503,7 +503,7 @@ fun emptyMap(): map<K, V>;
 ///
 /// See: https://docs.tact-lang.org/book/maps/#set
 ///
-extends mutates fun set(self: map<K, V>, key: K, val: V);
+extends mutates fun set(self: map<K, V>, key: K, val: V?);
 
 /// Gets a value by its `key` from the map. Returns `null` if the `key` is missing,
 /// or the value if the `key` is found.
