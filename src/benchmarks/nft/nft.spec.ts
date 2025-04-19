@@ -35,7 +35,6 @@ import type {
     BatchDeploy,
     RoyaltyParams,
     InitNFTBody,
-    InitNFTData,
 } from "@/benchmarks/contracts/output/nft-collection_NFTCollection";
 import {
     NFTItem,
@@ -188,6 +187,8 @@ describe("itemNFT", () => {
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
+        // blockchain.verbosity.vmLogs = "vm_logs"
+        // blockchain.verbosity.print = true
         owner = await blockchain.treasury("owner");
         notOwner = await blockchain.treasury("notOwner");
 
@@ -200,14 +201,8 @@ describe("itemNFT", () => {
 
         // ITEM
         {
-            const initNFTData: InitNFTData = {
-                $$type: "InitNFTData",
-                itemIndex: 0n,
-                collectionAddress: owner.address,
-            };
-
             itemNFT = blockchain.openContract(
-                await NFTItem.fromInit(initNFTData),
+                await NFTItem.fromInit(null, null, owner.address, 0n),
             );
 
             const deployItemMsg: InitNFTBody = {

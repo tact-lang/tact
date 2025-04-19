@@ -99,6 +99,16 @@
         "deploy nft": "10651",
         "batch deploy nft": "660506"
       }
+    },
+    {
+      "label": "1.6.6 with contract parameters",
+      "pr": null,
+      "gas": {
+        "transfer": "7305",
+        "get static data": "4697",
+        "deploy nft": "10719",
+        "batch deploy nft": "658396"
+      }
     }
   ]
 }
