@@ -7,7 +7,7 @@ contract SBTItem(
     owner: Address?,
     content: Cell?,
     authorityAddress: Address?,
-    revokedAt: Int,
+    revokedAt: Int as uint64,
 ) {
     receive() {} //to ignore empty messages 
 

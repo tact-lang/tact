@@ -39,6 +39,14 @@
         "item cells": "19",
         "item bits": "10522"
       }
+    },
+    {
+      "label": "1.6.6 with revokedAt with uint64 type",
+      "pr": "https://github.com/tact-lang/tact/pull/2863",
+      "size": {
+        "item cells": "17",
+        "item bits": "9865"
+      }
     }
   ]
 }
