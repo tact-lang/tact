@@ -37,7 +37,7 @@ export async function writeProgram(
     ctx: CompilerContext,
     abiSrc: ContractABI,
     basename: string,
-    contractCodes: ContractsCodes,
+    contractCodes: Readonly<ContractsCodes>,
     debug: boolean,
 ) {
     //
@@ -262,7 +262,7 @@ export async function writeProgram(
 
     return {
         entrypoint: `${basename}.fc`,
-        files: [{ name: `${basename}.fc`, code }],
+        funcFile: { name: `${basename}.fc`, code },
         constants,
         abi,
     };
@@ -318,7 +318,7 @@ function writeAll(
     wCtx: WriterContext,
     name: string,
     abiLink: string,
-    contractCodes: ContractsCodes,
+    contractCodes: Readonly<ContractsCodes>,
 ) {
     // Load all types
     const allTypes = getAllTypes(ctx);

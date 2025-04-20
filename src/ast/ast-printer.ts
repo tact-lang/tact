@@ -195,7 +195,7 @@ export const ppAstOptionalId = (node: Ast.OptionalId) =>
 export const ppAstNull = (_expr: Ast.Null) => "null";
 export const ppAstString = ({ value }: Ast.String) => JSON.stringify(value);
 export const ppAstAddress = ({ value }: Ast.Address) =>
-    `addr("${value.toRawString()}")`;
+    `address("${value.toRawString()}")`;
 export const ppAstCell = ({ value }: Ast.Cell) => `cell("${value.toString()}")`;
 export const ppAstSlice = ({ value }: Ast.Slice) =>
     `slice("${value.toString()}")`;
@@ -449,16 +449,47 @@ export const ppAstStruct: Printer<Ast.StructDecl> =
             c.braced(c.list(fields, ppAstFieldDecl)),
         ]);
 
+// Format contract parameters based on number of parameters
+const formatContractParams = (
+    params: readonly Ast.FieldDecl[] | undefined,
+): string => {
+    if (!params) {
+        return "";
+    }
+
+    if (params.length <= 1) {
+        // Single parameter or empty params stays on the same line
+        return `(${params
+            .map((param) => {
+                const asAlias = param.as ? ` as ${ppAstId(param.as)}` : "";
+                return `${ppAstOptionalId(param.name)}: ${ppAstType(param.type)}${asAlias}`;
+            })
+            .join(", ")})`;
+    }
+
+    // Multiple parameters - each on its own line
+    const paramLines = params
+        .map((param) => {
+            const asAlias = param.as ? ` as ${ppAstId(param.as)}` : "";
+            return `    ${ppAstOptionalId(param.name)}: ${ppAstType(param.type)}${asAlias}`;
+        })
+        .join(",\n");
+
+    return `(\n${paramLines}\n)`;
+};
+
 export const ppAstContract: Printer<Ast.Contract> =
-    ({ name, traits, declarations, attributes }) =>
+    ({ name, traits, declarations, attributes, params }) =>
     (c) => {
         const attrsCode = attributes
             .map(({ name: { value } }) => `@interface("${value}") `)
             .join("");
         const traitsCode = traits.map((trait) => trait.text).join(", ");
+        const paramsCode = formatContractParams(params);
+
         const header = traitsCode
-            ? `contract ${ppAstId(name)} with ${traitsCode}`
-            : `contract ${ppAstId(name)}`;
+            ? `contract ${ppAstId(name)}${paramsCode} with ${traitsCode}`
+            : `contract ${ppAstId(name)}${paramsCode}`;
         return c.concat([
             c.row(`${attrsCode}${header} `),
             c.braced(

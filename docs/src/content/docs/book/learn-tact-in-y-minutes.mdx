@@ -26,37 +26,44 @@ You can try Tact without installing anything locally using the [Web IDE](https:/
 ```tact
 // Defining a contract
 contract HelloWorld {
-    // Listens to incoming "ping" messages
-    receive("ping") {
-        // Sends a reply: "pong"
-        reply("pong");
+    // Listens to incoming Ping messages
+    receive(_: Ping) {
+        // Sends a Pong reply message
+        reply(Pong {}.toCell());
     }
 
-    // Listens to incoming "hello" messages
-    receive("hello") {
-        // Sends a reply: "Hello, World!"
-        reply("Hello, World!");
+    // Listens to incoming Hello messages
+    receive(_: Hello) {
+        // Sends a Pong reply message
+        reply(Hello {}.toCell());
+    }
+
+    // Listens to incoming empty messages,
+    // which are very handy and cheap for the deployments.
+    receive() {
+        // Forward the remaining value in the
+        // incoming message back to the sender.
+        cashback(sender());
     }
 }
 
-// A helper inlined function to send text messages
-inline fun reply(str: String) {
-    message(MessageParameters{
+// A helper inlined function to send binary messages.
+// See the "Primitive types" section below for more info about cells.
+inline fun reply(msgBody: Cell) {
+    message(MessageParameters {
         to: sender(),
         value: 0,
         mode: SendRemainingValue | SendIgnoreErrors,
-        body: str.asComment(),
+        body: msgBody,
     });
 }
+
+// Empty message structs with specified 32-bit integer prefix.
+// See the "Structs and message structs" section below for more info.
+message(1) Ping {}
+message(2) Pong {}
+message(3) Hello {}
 ```
-
-:::note
-
-  The text receivers shown above are expensive because they need to hash their contents to differentiate message bodies, and that is a costly operation.
-
-  Later, see examples of cheaper and more controlled binary receivers that expect message structs: [Functions](#functions).
-
-:::
 
 ## Primitive types
 
@@ -121,7 +128,7 @@ fun showcase() {
 
     // Cells are a fundamental primitive and data structure on TON Blockchain:
     // contracts communicate and interact by sending and receiving cells while
-    // their code and data are themselves stored as cells on the blockchain 
+    // their code and data are themselves stored as cells on the blockchain
     // the code and the data of each contract are cells and contracts
     // communicate and interact by sending and receiving cells.
     //
@@ -250,16 +257,16 @@ fun showcase() {
     let myMap: map<Int, Int> = emptyMap();
 
     // Maps have a number of built-in methods.
-    myMap.set(0, 10);        // key 0 now points to value 10
-    myMap.set(0, 42);        // overriding the value under key 0 with 42
-    myMap.get(0)!!;          // 42, because get can return null if the key doesn't exist
-    myMap.replace(1, 55);    // false, because there was no key 1 and map didn't change
-    myMap.replaceGet(0, 10); // 42, because the key 0 exists and the old value there was 42
-    myMap.get(0)!!;          // 10, since we've just replaced the value with .replaceGet
-    myMap.del(0);            // true, because the map contained an entry under key 0
-    myMap.del(0);            // false and not an error, because deletion is idempotent
-    myMap.exists(0);         // false, there is no entry under key 0
-    myMap.isEmpty();         // true, there is no other entries
+    myMap.set(0, 10);          // key 0 now points to value 10
+    myMap.set(0, 42);          // overriding the value under key 0 with 42
+    myMap.get(0)!!;            // 42, because get can return null if the key doesn't exist
+    myMap.replace(1, 55);      // false, because there was no key 1 and map didn't change
+    myMap.replaceGet(0, 10)!!; // 42, because the key 0 exists and the old value there was 42
+    myMap.get(0)!!;            // 10, since we've just replaced the value with .replaceGet
+    myMap.del(0);              // true, because the map contained an entry under key 0
+    myMap.del(0);              // false and not an error, because deletion is idempotent
+    myMap.exists(0);           // false, there is no entry under key 0
+    myMap.isEmpty();           // true, there is no other entries
 
     // In most cases, to compare two maps it's sufficient to use the shallow
     // comparison via the equality == and inequality != operators.
@@ -576,9 +583,12 @@ Read more: [Expressions](/book/expressions).
 
 ```tact
 fun showcase() {
-    // let statement to define new variables, as we've seen above.
-    let theAnswer = 42;                // type ascription is optional for everything,
-    let m: map<Int, Int> = emptyMap(); // except for optionals and maps
+    // As we've seen above, the let statement defines new variables.
+    // You must always provide an initial value, but type ascriptions
+    // aren't mandatory except for maps and null values.
+    let theAnswer = 42;                // type ascription is not required here,
+    let m: map<Int, Int> = emptyMap(); // but we must specify it for maps
+    let opt: Int? = null;              // and when assigning a null value.
 
     // Block statement creates an enclosed scope.
     {
@@ -687,15 +697,15 @@ const MY_CONSTANT: Int =
 
 // Trait-level constants.
 trait MyTrait {
-    const iAmOnTheTraitLevel: Int = 420;
+    const I_AM_ON_THE_TRAIT_LEVEL: Int = 420;
 
     // On the trait-level, you can make constants abstract,
     // which requires the contracts that inherit this trait
     // to override those constants with some values.
-    abstract const overrideMe: Int;
+    abstract const OVERRIDE_ME: Int;
 
     // Virtual constants allow overrides, but do not require them.
-    virtual const youCanOverrideMe: Int = crc32("babecafe");
+    virtual const YOU_CAN_OVERRIDE_ME: Int = crc32("babecafe");
 }
 
 // Contract-level constants.
@@ -703,14 +713,14 @@ contract MyContract() with MyTrait {
     const iAmOnTheContractLevel: Int = 4200;
 
     // Because this contract inherits from MyTrait,
-    // the iAmOnTheTraitLevel constant is also in scope of this contract,
+    // the I_AM_ON_THE_TRAIT_LEVEL constant is also in scope of this contract,
     // but we cannot override it.
 
     // However, we can override the virtual constant.
-    override const youCanOverrideMe: Int = crc32("deadbeef");
+    override const YOU_CAN_OVERRIDE_ME: Int = crc32("deadbeef");
 
     // And we MUST override and define the value of the abstract constant.
-    override const overrideMe: Int = ton("0.5");
+    override const OVERRIDE_ME: Int = ton("0.5");
 }
 
 // All constants are inlined, i.e., their values are embedded in the resulting
@@ -1258,7 +1268,7 @@ contract JettonWallet(
         require(
             ctx.value >
             msg.forwardTonAmount + fwdCount * ctx.readForwardFee() +
-            (2 * getComputeFee(gasForTransfer, false) + minTonsForStorage),
+            (2 * getComputeFee(GAS_FOR_TRANSFER, false) + MIN_TONCOIN_FOR_STORAGE),
             "Insufficient amount of TON attached",
         );
 
@@ -1320,7 +1330,7 @@ contract JettonWallet(
 
         // In general, let's try to reserve minimal amount of Toncoin
         // to keep this contract running and paying storage fees.
-        nativeReserve(max(tonBalanceBeforeMsg, minTonsForStorage), ReserveAtMost);
+        nativeReserve(max(tonBalanceBeforeMsg, MIN_TONCOIN_FOR_STORAGE), ReserveAtMost);
 
         // And forward excesses (cashback) to the original sender.
         if (msg.responseDestination != null && msgValue > 0) {
@@ -1348,7 +1358,7 @@ contract JettonWallet(
         let fwdFee: Int = ctx.readForwardFee();
         require(
             ctx.value >
-            (fwdFee + 2 * getComputeFee(gasForBurn, false)),
+            (fwdFee + 2 * getComputeFee(GAS_FOR_BURN, false)),
             "Insufficient amount of TON attached",
         );
 
@@ -1445,13 +1455,13 @@ message(0xd53276db) JettonExcesses {
     queryId: Int as uint64;
 }
 
-const gasForBurn: Int = 6000;
-const gasForTransfer: Int = 8000;
-const minTonsForStorage: Int = ton("0.01");
+const GAS_FOR_BURN: Int = 6000;
+const GAS_FOR_TRANSFER: Int = 8000;
+const MIN_TONCOIN_FOR_STORAGE: Int = ton("0.01");
 ```
 
 #### JettonMinter
 
 It is a parent contract that deploys individual [Jetton wallets](#jettonwallet) per each holder.
 
-See: [`JettonMinter` in tact-lang/jetton repository](https://github.com/tact-lang/jetton/blob/main/sources/jetton_minter_discoverable.tact).
+See: [`JettonMinter` in tact-lang/jetton repository](https://github.com/tact-lang/jetton/blob/9db75a5a828e9093be5c425605c5f5c9903f505d/src/contracts/jetton-minter.tact).

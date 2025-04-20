@@ -48,7 +48,7 @@ describe("fail-const-eval", () => {
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-ton1",
-        errorMessage: `Cannot evaluate expression to a constant: invalid "ton" argument`,
+        errorMessage: `ton() function requires a valid number with no more than 10 digits after the decimal point`,
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-ton2",
@@ -105,7 +105,7 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-invalid-address",
         errorMessage:
-            "Cannot evaluate expression to a constant: invalid address encoding: FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N",
+            'Cannot evaluate expression to a constant: invalid address encoding: "FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"',
     });
 
     itShouldNotCompile({
@@ -171,7 +171,7 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-rawslice-not-hex",
         errorMessage:
-            "Cannot evaluate expression to a constant: invalid hex string: hello world",
+            'Cannot evaluate expression to a constant: invalid hex string: "hello world"',
     });
     itShouldNotCompile({
         testName: "const-eval-rawslice-overflow",
@@ -186,7 +186,7 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-rawslice-invalid",
         errorMessage:
-            "Cannot evaluate expression to a constant: invalid hex string: 4a__",
+            'Cannot evaluate expression to a constant: invalid hex string: "4a__"',
     });
     itShouldNotCompile({
         testName: "const-eval-ascii-empty",

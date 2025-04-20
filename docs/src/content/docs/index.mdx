@@ -1,9 +1,9 @@
 ---
 title: Learn all about programming in ⚡ Tact
-description: Tact is a new programming language for TON Blockchain focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts.
+description: Tact is a powerful programming language for TON Blockchain focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts.
 template: splash
 hero:
-  tagline: Tact is a new programming language for TON Blockchain focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts. Tact is a statically typed language with a simple syntax and a powerful type system.
+  tagline: Tact is a powerful programming language for TON Blockchain focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts. Tact is a statically typed language with a simple syntax and a powerful type system.
   image:
     dark: /public/logomark-dark.svg
     light: /public/logomark-light.svg
@@ -40,7 +40,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
 1. #### Ensure that the supported version of Node.js is installed and available {#start-1}
 
-	 To check it, run `node --version{:shell}` — it should show you the version 22.0.0 or later.
+   To check it, run `node --version{:shell}` — it should show you the version 22.0.0 or later.
 
 2. #### Run the following command {#start-2}
 
@@ -76,7 +76,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
    Check it out by moving into the relevant directory — `cd simple-counter/contracts{:shell}`. Here's what it would look like:
 
-	 ```tact
+   ```tact
    message Add {
        queryId: Int as uint64;
        amount: Int as uint32;
@@ -109,7 +109,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
            return self.id;
        }
    }
-	 ```
+   ```
 
    To re-compile or deploy, refer to the commands in the scripts section of `package.json` in the root of this newly created project and to the documentation of [Blueprint](https://github.com/ton-org/blueprint) — this is the tool we've used to create and compile your first simple counter contract in Tact. Blueprint can do much more than that: including tests, customizations, and more.
 

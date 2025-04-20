@@ -1,26 +1,33 @@
-import * as Ast from "@/ast/ast";
-import { getMakeAst, MakeAstFactory } from "@/ast/generated/make-factory";
-import {
-    AllowedType,
+import type * as Ast from "@/ast/ast";
+import type { MakeAstFactory } from "@/ast/generated/make-factory";
+import { getMakeAst } from "@/ast/generated/make-factory";
+import type {
     AllowedTypeEnum,
     GenContext,
+    NonTerminalEnum,
+} from "../../src/generators/uniform-expr-gen";
+import {
+    AllowedType,
     initializeGenerator,
     NonTerminal,
-    NonTerminalEnum,
+    Terminal,
 } from "../../src/generators/uniform-expr-gen";
 import { GlobalContext } from "../../src/context";
 import { Interpreter } from "@/optimizer/interpreter";
 import { CompilerContext } from "@/context/context";
-import { AstUtil, getAstUtil } from "@/ast/util";
-import { FactoryAst, getAstFactory } from "@/ast/ast-helpers";
+import type { AstUtil } from "@/ast/util";
+import { getAstUtil } from "@/ast/util";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { getAstFactory } from "@/ast/ast-helpers";
+import type { CustomStdlib } from "../../src/util";
 import {
     buildModule,
-    CustomStdlib,
     filterStdlib,
     parseStandardLibrary,
 } from "../../src/util";
 import { Blockchain } from "@ton/sandbox";
-import { Sender, toNano } from "@ton/core";
+import type { Sender } from "@ton/core";
+import { toNano } from "@ton/core";
 import fc from "fast-check";
 import * as fs from "node:fs";
 import assert from "node:assert";
@@ -132,6 +139,8 @@ export async function setupEnvironment(
             "context",
             "myBalance",
             "nativeReserve",
+            "toString",
+            "StringBuilder",
             //"contractAddress",
             //"contractAddressExt",
             //"storeUint",
@@ -203,7 +212,7 @@ export async function compileExpression(
     );
 
     try {
-        let contractMapPromise = buildModule(
+        const contractMapPromise = buildModule(
             astF,
             contractModule,
             customStdlib,
@@ -222,7 +231,7 @@ export async function compileExpression(
 export function generateBindings(
     expressionTestingEnvironment: ExpressionTestingEnvironment,
     expressionGenerationIds: Map<AllowedTypeEnum, string[]>,
-    generator: (type: NonTerminalEnum) => fc.Arbitrary<Ast.Expression>,
+    generator: (nonTerminalId: NonTerminalEnum) => fc.Arbitrary<Ast.Expression>,
 ): fc.Arbitrary<Ast.StatementLet[]> {
     return fc.tuple(
         ...expressionGenerationIds
@@ -299,6 +308,8 @@ export function createExpressionComputationEqualityProperty(
     const expressionGenerationCtx: GenContext = {
         identifiers: expressionGenerationIds,
         contractNames: [expressionTestingEnvironment.contractNameToCompile],
+        allowedNonTerminals: Object.values(NonTerminal),
+        allowedTerminals: Object.values(Terminal),
     };
 
     const generator = initializeGenerator(

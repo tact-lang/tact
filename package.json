@@ -22,17 +22,18 @@
   "scripts": {
     "compare": "ts-node src/test/utils/compare-logs.ts",
     "build:fast": "yarn clean && yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && tsc --project tsconfig.fast.json && yarn copy:stdlib && yarn copy:func && yarn to-relative",
+    "build": "cross-env NODE_OPTIONS=--max_old_space_size=4096 tsc && yarn copy:stdlib && yarn copy:func && yarn to-relative",
     "gen:config": "ts-to-zod -k --skipValidation src/config/config.ts src/config/config.zod.ts",
     "gen:grammar": "pgen src/grammar/grammar.gg -o src/grammar/grammar.ts",
     "gen:stdlib": "ts-node src/stdlib/stdlib.build.ts",
     "gen:func-js": "ts-node src/func/func.build.ts",
-    "gen:contracts:examples": "ts-node examples/contracts.build.ts",
     "gen:contracts:test": "ts-node src/test/contracts.build.ts",
     "gen:contracts:benchmarks:tact": "ts-node src/benchmarks/bench.build.ts",
     "gen:contracts:benchmarks:func": "ts-node src/benchmarks/func.build.ts",
     "gen:contracts:benchmarks": "yarn gen:contracts:benchmarks:tact && yarn gen:contracts:benchmarks:func",
-    "gen:contracts:test:map": "ts-node ./src/test/e2e-emulated/map-property-tests/generate.ts",
-    "gen:contracts:all": "yarn gen:contracts:examples && yarn gen:contracts:test && yarn gen:contracts:benchmarks && yarn gen:contracts:test:map",
+    "gen:contracts:fast": "yarn gen:contracts:test && yarn gen:contracts:benchmarks",
+    "gen:contracts:test:map": "ts-node ./src/test/e2e-slow/map-property-tests/generate.ts",
+    "gen:contracts:all": "yarn gen:contracts:fast && yarn gen:contracts:test:map",
     "gen": "yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && yarn gen:contracts:all",
     "fuzz:expressions:stats": "ts-node src/test/fuzzer/test/expression-stats.ts",
     "clean": "rm -fr dist",
@@ -41,7 +42,6 @@
     "copy:func": "ts-node src/func/copy.build.ts",
     "to-absolute": "ts-node src/to-absolute.build.ts",
     "to-relative": "ts-node src/to-relative.build.ts",
-    "build": "cross-env NODE_OPTIONS=--max_old_space_size=4096 tsc && yarn copy:stdlib && yarn copy:func && yarn to-relative",
     "test": "jest",
     "test:fast": "jest --config=./jest-fast.config.js",
     "bench": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true jest ./src/benchmarks",
@@ -80,7 +80,8 @@
   "main": "./dist/index.js",
   "bin": {
     "tact": "bin/tact.js",
-    "unboc": "bin/unboc.js"
+    "unboc": "bin/unboc.js",
+    "tact-fmt": "bin/tact-fmt.js"
   },
   "dependencies": {
     "@tact-lang/opcode": "^0.3.0",
@@ -98,7 +99,7 @@
     "@tact-lang/coverage": "^0.0.8",
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
-    "@ton/sandbox": "^0.27.0",
+    "@ton/sandbox": "^0.28.0",
     "@ton/test-utils": "^0.5.0",
     "@tonstudio/pgen": "^0.0.1",
     "@types/diff": "^7.0.0",

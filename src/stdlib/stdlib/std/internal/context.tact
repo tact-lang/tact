@@ -115,7 +115,7 @@ asm extends fun readForwardFee(self: Context): Int {
     ZERO              // not masterchain
     GETORIGINALFWDFEE // floor(fwd_fee * 2^16 / (2^16 - first_frac)), where
                       // first_frac is a value listed in config param 25
-                      // of the blockchain: https://tonviewer.org/config#25
+                      // of the blockchain: https://tonviewer.com/config#25
                       // this instruction effectively multiplies the fwd_fee by 1.5,
                       // at least for the current value of first_frac, which is 21845
 }

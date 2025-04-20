@@ -1,0 +1,308 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`codegen should correctly generate FunC code 1`] = `
+"#pragma version =0.4.6;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; main_MainContract.headers.fc
+;;
+;; Header files for MainContract
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; $A$_to_external
+(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v) inline;
+
+;; $B$_to_external
+(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v) inline;
+
+;; $C$_to_external
+(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v) inline;
+
+;; $MainContract$_contract_init
+tuple $MainContract$_contract_init() impure inline;
+
+;; $MainContract$_contract_load
+tuple $MainContract$_contract_load() impure inline;
+
+;; $MainContract$_fun_testAugmentedAssignOperators
+(tuple, int) $MainContract$_fun_testAugmentedAssignOperators(tuple $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref;
+
+;; $A$_constructor_a_b_c_d_e_f_g
+((int, int, int, int, int, int, int)) $A$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline;
+
+;; $MainContract$_fun_writeSerializationForA
+(tuple, (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForA(tuple $self) impure inline_ref;
+
+;; $B$_constructor_a_b_c_d_e_f_g
+((int, int, int, int, int, int, int)) $B$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline;
+
+;; $MainContract$_fun_writeSerializationForB
+(tuple, (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForB(tuple $self) impure inline_ref;
+
+;; $C$_constructor_a_b_c_d_e_f_g_h
+((cell, cell, slice, slice, int, int, int, slice)) $C$_constructor_a_b_c_d_e_f_g_h(cell $a, cell $b, slice $c, slice $d, int $e, int $f, int $g, slice $h) inline;
+
+;; $MainContract$_fun_writeSerializationForC
+(tuple, (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC(tuple $self) impure inline_ref;
+
+
+;; main_MainContract.stdlib.fc
+global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
+global cell __tact_child_contract_codes;
+global int __tact_randomized;
+
+builder $global_beginCell() impure asm """
+    NEWC
+""";
+
+slice $global_myAddress() impure asm """
+    MYADDR
+""";
+
+cell $Builder$_fun_endCell(builder $self) impure asm """
+    ENDC
+""";
+
+;; main_MainContract.storage.fc
+;;
+;; Type: A
+;; TLB: _ a:int257 b:int257 c:Maybe int257 d:bool e:Maybe bool f:int257 g:int257 = A
+;;
+
+(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
+    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
+}
+
+((int, int, int, int, int, int, int)) $A$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline {
+    return ($a, $b, $c, $d, $e, $f, $g);
+}
+
+;;
+;; Type: B
+;; TLB: _ a:int257 b:int257 c:Maybe int257 d:bool e:Maybe bool f:int257 g:int257 = B
+;;
+
+(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
+    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
+}
+
+((int, int, int, int, int, int, int)) $B$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline {
+    return ($a, $b, $c, $d, $e, $f, $g);
+}
+
+;;
+;; Type: C
+;; TLB: _ a:^cell b:Maybe ^cell c:Maybe ^slice d:Maybe ^slice e:bool f:int257 g:int257 h:address = C
+;;
+
+(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v; 
+    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
+}
+
+((cell, cell, slice, slice, int, int, int, slice)) $C$_constructor_a_b_c_d_e_f_g_h(cell $a, cell $b, slice $c, slice $d, int $e, int $f, int $g, slice $h) inline {
+    return ($a, $b, $c, $d, $e, $f, $g, $h);
+}
+
+;;
+;; Type: MainContract
+;; TLB: _  = MainContract
+;;
+
+tuple $MainContract$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return null();
+    }
+    else {
+        return $MainContract$_contract_init();
+    }
+}
+
+;;
+;; Contract MainContract functions
+;;
+
+tuple $MainContract$_contract_init() impure inline {
+    tuple $self = null();
+    return $self;
+}
+
+(tuple, int) $MainContract$_fun_testAugmentedAssignOperators(tuple $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref {
+    var ($self) = $self;
+    int $a = $intVal;
+    $a = $a + $intVal2;
+    $a = $a - $intVal2;
+    int $b = $boolVal;
+    $b = ($b ? $boolVal2 : (false));
+    $b = ($b ? (true) : $boolVal2);
+    var $fresh$ret_0 = ($a + ($b ? 10 : 20));
+    return ($self, $fresh$ret_0);
+}
+
+(tuple, (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForA(tuple $self) impure inline_ref {
+    var ($self) = $self;
+    var $fresh$ret_1 = $A$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, true, 3, 4);
+    return ($self, $fresh$ret_1);
+}
+
+(tuple, (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForB(tuple $self) impure inline_ref {
+    var ($self) = $self;
+    var $fresh$ret_2 = $B$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, null(), 3, 4);
+    return ($self, $fresh$ret_2);
+}
+
+(tuple, (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC(tuple $self) impure inline_ref {
+    var ($self) = $self;
+    var $fresh$ret_3 = $C$_constructor_a_b_c_d_e_f_g_h($Builder$_fun_endCell(store_int($global_beginCell(), 0, 32)), null(), null(), null(), true, 1, 2, $global_myAddress());
+    return ($self, $fresh$ret_3);
+}
+
+;;
+;; Get methods of a Contract MainContract
+;;
+
+_ %testAugmentedAssignOperators(int $intVal, int $intVal2, int $boolVal, int $boolVal2) method_id(87226) {
+    int $intVal = $intVal;
+    int $intVal2 = $intVal2;
+    int $boolVal = $boolVal;
+    int $boolVal2 = $boolVal2;
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testAugmentedAssignOperators($intVal, $intVal2, $boolVal, $boolVal2);
+    return res;
+}
+
+_ %writeSerializationForA() method_id(121635) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_writeSerializationForA();
+    return $A$_to_external(res);
+}
+
+_ %writeSerializationForB() method_id(125760) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_writeSerializationForB();
+    return $B$_to_external(res);
+}
+
+_ %writeSerializationForC() method_id(129889) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_writeSerializationForC();
+    return $C$_to_external(res);
+}
+
+;;
+;; Routing of a Contract MainContract
+;;
+
+;; message opcode reader utility: only binary receivers
+;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
+(slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    cs~skip_bits(2);
+    var msg_bounceable = cs~load_int(1);
+    var msg_bounced = cs~load_int(1);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var $self = $MainContract$_contract_load();
+    
+    ;; Handle bounced messages
+    if (msg_bounced) { return (); }
+    throw(130);
+}
+
+
+() __tact_selector_hack_asm() impure asm """
+@atend @ 1 {
+        execute current@ context@ current!
+        {
+            // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
+            // We want to extract recv_internal/recv_external from the dict and select needed function
+            // not by jumping to the needed function by it's index, but by using usual IF statements.
+
+            }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
+
+            <{ // Start of the new code builder
+                SETCP0
+                // Swap the new code builder with the previous code, now we have previous code on top of the stack
+                swap
+                // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
+                <s ref@
+
+                // Extract the recv_internal from the dict
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
+                swap
+
+                // Delete the recv_internal from the dict
+                0 swap @procdictkeylen idict- drop
+                // Delete the recv_external from the dict (it's okay if it's not there)
+                -1 swap @procdictkeylen idict- drop
+                // Delete the __tact_selector_hack from the dict
+                65535 swap @procdictkeylen idict- drop
+
+                // Bring the code builder from the bottom of the stack
+                // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
+                depth 1- roll
+                // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
+                swap
+
+                // Check if the dict is empty
+                dup null?
+                // Store a copy of this flag in the bottom of the stack
+                dup depth 1- -roll
+                {
+                    // If the dict is empty, just drop it (it will be null if it's empty)
+                    drop
+                }
+                {
+                    // If the dict is not empty, prepare continuation to be stored in c3
+                    <{
+                        // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
+                        swap @procdictkeylen DICTPUSHCONST
+                        // Jump to the needed function by it's index
+                        DICTIGETJMPZ
+                        // If such key is not found, throw 11 along with the key as an argument
+                        11 THROWARG
+                    }> PUSHCONT
+                    // Store the continuation in c3
+                    c3 POP
+                } cond
+
+                // Function id is on top of the (runtime) stack
+                DUP IFNOTJMP:<{
+                    // place recv_internal here
+                    DROP swap @addop
+                }>
+
+                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
+                depth 1- roll
+                {
+                    // If the dict is empty, throw 11
+                    11 THROWARG
+                }
+                {
+                    // If the dict is not empty, jump to continuation from c3
+                    c3 PUSH JMPX
+                } cond
+            }> b>
+        } : }END>c
+        current@ context! current!
+    } does @atend !
+""";
+
+() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}"
+`;

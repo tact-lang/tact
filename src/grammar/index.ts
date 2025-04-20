@@ -302,11 +302,11 @@ const parseStructFieldInitializer =
     };
 
 const parseStructInstance =
-    ({ type, fields, loc }: $ast.StructInstance): Handler<Ast.StructInstance> =>
+    ({ type, body, loc }: $ast.StructInstance): Handler<Ast.StructInstance> =>
     (ctx) => {
         return ctx.ast.StructInstance(
             parseId(type)(ctx),
-            map(parseList(fields), parseStructFieldInitializer)(ctx),
+            map(parseList(body.fields), parseStructFieldInitializer)(ctx),
             loc,
         );
     };
@@ -316,7 +316,7 @@ const parseInitOf =
     (ctx) => {
         return ctx.ast.InitOf(
             parseId(name)(ctx),
-            map(parseList(params), parseExpression)(ctx),
+            map(parseList(params.values), parseExpression)(ctx),
             loc,
         );
     };
@@ -395,7 +395,7 @@ const parseSuffixCall =
     ({ params }: $ast.SuffixCall): SuffixHandler =>
     (ctx) =>
     (child, loc) => {
-        const paramsAst = map(parseList(params), parseExpression)(ctx);
+        const paramsAst = map(parseList(params.values), parseExpression)(ctx);
         if (child.kind === "id") {
             return ctx.ast.StaticCall(child, paramsAst, loc);
         } else if (child.kind === "field_access") {
@@ -1070,6 +1070,13 @@ const parseAsmShuffle =
         };
     };
 
+const parseUnsupportedAsmFunction =
+    (node: $ast.AsmFunction): Handler<Ast.AsmFunctionDef> =>
+    (ctx) => {
+        ctx.err.unsupportedAsmFunctionInContracts()(node.loc);
+        return parseAsmFunction(node)(ctx);
+    };
+
 const parseAsmFunction =
     (node: $ast.AsmFunction): Handler<Ast.AsmFunctionDef> =>
     (ctx) => {
@@ -1078,7 +1085,7 @@ const parseAsmFunction =
             parseFunctionAttributes(node.attributes, false, node.loc)(ctx),
             parseId(node.name)(ctx),
             node.returnType ? parseType(node.returnType)(ctx) : undefined,
-            map(parseList(node.parameters), parseParameter)(ctx),
+            map(parseList(node.parameters.values), parseParameter)(ctx),
             [node.instructions.trim()],
             node.loc,
         );
@@ -1088,7 +1095,7 @@ const parseContractInit =
     ({ parameters, body, loc }: $ast.ContractInit): Handler<Ast.ContractInit> =>
     (ctx) => {
         return ctx.ast.ContractInit(
-            map(parseList(parameters), parseParameter)(ctx),
+            map(parseList(parameters.values), parseParameter)(ctx),
             map(body, parseStatement)(ctx),
             loc,
         );
@@ -1213,7 +1220,10 @@ const parseFunction =
         const returnType = node.returnType
             ? parseType(node.returnType)(ctx)
             : undefined;
-        const parameters = map(parseList(node.parameters), parseParameter)(ctx);
+        const parameters = map(
+            parseList(node.parameters.values),
+            parseParameter,
+        )(ctx);
 
         if (node.body.$ === "FunctionDeclaration") {
             const attributes = parseFunctionAttributes(
@@ -1276,7 +1286,7 @@ const parseNativeFunctionDecl =
             map(attributes, parseFunctionAttribute)(ctx),
             parseId(name)(ctx),
             parseFuncId(nativeName)(ctx),
-            map(parseList(parameters), parseParameter)(ctx),
+            map(parseList(parameters.values), parseParameter)(ctx),
             returnType ? parseType(returnType)(ctx) : undefined,
             loc,
         );
@@ -1329,6 +1339,7 @@ const parseContractItem: (
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseFunctionDef,
+    AsmFunction: parseUnsupportedAsmFunction,
     Constant: parseConstantDefLocal,
 });
 
@@ -1338,6 +1349,7 @@ const parseTraitItem: (
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseFunction,
+    AsmFunction: parseUnsupportedAsmFunction,
     Constant: parseConstantLocal,
 });
 

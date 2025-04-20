@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`compilation of ASTs should compile AST to BoC 1`] = `"b5ee9c72010102010045000114ff00f4a413f4bcf2c80b01006cd330d072d721d200d200fa4021103450556f04f86101f862ed44d0d2000195d4d4596c129b30f82ac87001ca006d30c9e25bdcf2c082"`;
+
+exports[`compilation of ASTs should compile AST to BoC 2`] = `
+""Asm.fif" include
+PROGRAM{
+  DECLPROC recv_internal
+  recv_internal PROC:<{
+    DROP
+    CTOS
+    TWO
+    SDSKIPFIRST
+    1 LDI
+    1 LDI
+    LDMSGADDR
+    OVER
+    s3 s4 XCHG
+    s5 s5 XCHG2
+    4 TUPLE
+    1 SETGLOB
+    SWAP
+    2 SETGLOB
+    PUSHROOT
+    CTOS
+    1 LDI
+    SWAP
+    <{
+      LDREF
+      LDREF
+      ROTREV
+      1 2 BLKDROP2
+    }> PUSHCONT
+    <{
+      DROP
+      MYCODE
+      NEWC
+      ZERO
+      SWAP
+      1 STI
+      NULL
+      DROP
+      ENDC
+    }> PUSHCONT
+    IFELSE
+    DROP2
+    IFRET
+    130 THROW
+  }>
+}END>c"
+`;

@@ -1,8 +1,6 @@
 import type { ABIField } from "@ton/core";
-import { throwInternalCompilerError } from "@/error/errors";
 import type * as Ast from "@/ast/ast";
 import type { SrcInfo } from "@/grammar";
-import { idText } from "@/ast/ast-helpers";
 import type { ItemOrigin } from "@/imports/source";
 import type { Effect } from "@/types/effects";
 
@@ -49,37 +47,6 @@ export type TypeRef =
     | {
           kind: "null";
       };
-
-// https://github.com/microsoft/TypeScript/issues/35164 and
-// https://github.com/microsoft/TypeScript/pull/57293
-// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-
-export function showValue(val: Ast.Literal): string {
-    switch (val.kind) {
-        case "number":
-            return val.value.toString(val.base);
-        case "string":
-            return val.value;
-        case "boolean":
-            return val.value ? "true" : "false";
-        case "address":
-            return val.value.toRawString();
-        case "cell":
-        case "slice":
-            return val.value.toString();
-        case "null":
-            return "null";
-        case "struct_value": {
-            const assocList = val.args.map(
-                (field) =>
-                    `${idText(field.field)}: ${showValue(field.initializer)}`,
-            );
-            return `{${assocList.join(",")}}`;
-        }
-        default:
-            throwInternalCompilerError("Invalid value");
-    }
-}
 
 export type FieldDescription = {
     name: string;

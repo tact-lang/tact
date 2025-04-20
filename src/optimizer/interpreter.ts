@@ -8,6 +8,7 @@ import {
     idTextErr,
     TactCompilationError,
     TactConstEvalError,
+    throwCompilationError,
     throwConstEvalError,
     throwInternalCompilerError,
 } from "@/error/errors";
@@ -23,7 +24,6 @@ import {
 } from "@/types/resolveDescriptors";
 import { getExpType } from "@/types/resolveExpression";
 import type { TypeRef } from "@/types/types";
-import { showValue } from "@/types/types";
 import { getParser, type Parser, type SrcInfo } from "@/grammar";
 import { dummySrcInfo } from "@/grammar";
 import type { FactoryAst } from "@/ast/ast-helpers";
@@ -36,6 +36,7 @@ import {
 } from "@/ast/ast-helpers";
 import { divFloor, modFloor } from "@/optimizer/util";
 import { sha256 } from "@/utils/sha256";
+import { prettyPrint } from "@/ast/ast-printer";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -88,7 +89,7 @@ export function ensureInt(val: Ast.Expression): Ast.Number {
         return val;
     } else {
         throwErrorConstEval(
-            `integer '${showValue(val)}' does not fit into TVM Int type`,
+            `integer '${prettyPrint(val)}' does not fit into TVM Int type`,
             val.loc,
         );
     }
@@ -106,7 +107,7 @@ function ensureArgumentForEquality(val: Ast.Literal): Ast.Literal {
             return val;
         case "struct_value":
             throwErrorConstEval(
-                `struct ${showValue(val)} cannot be an argument to == operator`,
+                `struct ${prettyPrint(val)} cannot be an argument to == operator`,
                 val.loc,
             );
             break;
@@ -126,7 +127,7 @@ function ensureRepeatInt(val: Ast.Expression): Ast.Number {
         return val;
     } else {
         throwErrorConstEval(
-            `repeat argument '${showValue(val)}' must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)`,
+            `repeat argument '${prettyPrint(val)}' must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)`,
             val.loc,
         );
     }
@@ -464,17 +465,17 @@ class EnvironmentStack {
 
     /*
     Sets a binding for "name" in the **current** environment of the stack.
-    If a binding for "name" already exists in the current environment, it 
+    If a binding for "name" already exists in the current environment, it
     overwrites the binding with the provided value.
     As a special case, name "_" is ignored.
 
-    Note that this method does not check if binding "name" already exists in 
+    Note that this method does not check if binding "name" already exists in
     a parent environment.
-    This means that if binding "name" already exists in a parent environment, 
+    This means that if binding "name" already exists in a parent environment,
     it will be shadowed by the provided value in the current environment.
     This shadowing behavior is useful for modelling recursive function calls.
-    For example, consider the recursive implementation of factorial 
-    (for simplification purposes, it returns 1 for the factorial of 
+    For example, consider the recursive implementation of factorial
+    (for simplification purposes, it returns 1 for the factorial of
     negative numbers):
 
     1  fun factorial(a: Int): Int {
@@ -495,7 +496,7 @@ class EnvironmentStack {
 
     When factorial(1) = 1 finishes execution, the environment at the top
     of the stack is popped:
-    
+
     a = 4 <------- a = 3 <-------- a = 2
 
     and execution resumes at line 5 in the environment where a = 2,
@@ -505,7 +506,7 @@ class EnvironmentStack {
 
     a = 4 <------- a = 3
 
-    so that the return at line 5 (now in the environment a = 3) will 
+    so that the return at line 5 (now in the environment a = 3) will
     produce 3 * 2 = 6, and so on.
     */
     public setNewBinding(name: string, val: Ast.Literal) {
@@ -516,7 +517,7 @@ class EnvironmentStack {
 
     /*
     Searches the binding "name" in the stack, starting at the current
-    environment and moving towards the parent environments. 
+    environment and moving towards the parent environments.
     If it finds the binding, it updates its value
     to "val". If it does not find "name", the stack is unchanged.
     As a special case, name "_" is always ignored.
@@ -532,7 +533,7 @@ class EnvironmentStack {
 
     /*
     Searches the binding "name" in the stack, starting at the current
-    environment and moving towards the parent environments. 
+    environment and moving towards the parent environments.
     If it finds "name", it returns its value.
     If it does not find "name", it returns undefined.
     As a special case, name "_" always returns undefined.
@@ -625,19 +626,19 @@ const defaultInterpreterConfig: InterpreterConfig = {
 };
 
 /*
-Interprets Tact AST trees. 
-The constructor receives an optional CompilerContext which includes 
+Interprets Tact AST trees.
+The constructor receives an optional CompilerContext which includes
 all external declarations that the interpreter will use during interpretation.
-If no CompilerContext is provided, the interpreter will use an empty 
+If no CompilerContext is provided, the interpreter will use an empty
 CompilerContext.
 
-**IMPORTANT**: if a custom CompilerContext is provided, it should be the 
-CompilerContext provided by the typechecker. 
+**IMPORTANT**: if a custom CompilerContext is provided, it should be the
+CompilerContext provided by the typechecker.
 
-The reason for requiring a CompilerContext is that the interpreter should work 
+The reason for requiring a CompilerContext is that the interpreter should work
 in the use case where the interpreter only knows part of the code.
-For example, consider the following code (I marked with brackets [ ] the places 
-where the interpreter gets called during expression simplification in the 
+For example, consider the following code (I marked with brackets [ ] the places
+where the interpreter gets called during expression simplification in the
 compilation phase):
 
 const C: Int = [1];
@@ -649,10 +650,10 @@ contract TestContract {
    }
 }
 
-When the interpreter gets called inside the brackets, it does not know what 
-other code is surrounding those brackets, because the interpreter did not execute the 
-code outside the brackets. Hence, it relies on the typechecker to receive the 
-CompilerContext that includes the declarations in the code 
+When the interpreter gets called inside the brackets, it does not know what
+other code is surrounding those brackets, because the interpreter did not execute the
+code outside the brackets. Hence, it relies on the typechecker to receive the
+CompilerContext that includes the declarations in the code
 (the constant C for example).
 
 Since the interpreter relies on the typechecker, it assumes that the given AST tree
@@ -1014,8 +1015,15 @@ export class Interpreter {
         const resultMap: Map<string, Ast.Literal> = new Map();
 
         for (const field of structTy.fields) {
-            if (typeof field.default !== "undefined") {
-                resultMap.set(field.name, field.default);
+            const fieldInit = field.ast.initializer;
+            if (fieldInit) {
+                const defaultValue =
+                    field.default ??
+                    evalConstantExpression(fieldInit, this.context, this.util);
+
+                if (typeof defaultValue !== "undefined") {
+                    resultMap.set(field.name, defaultValue);
+                }
             } else {
                 if (field.type.kind === "ref" && field.type.optional) {
                     resultMap.set(
@@ -1132,7 +1140,7 @@ export class Interpreter {
         const valStruct = this.interpretExpressionInternal(ast.aggregate);
         if (valStruct.kind !== "struct_value") {
             throwErrorConstEval(
-                `constant struct expected, but got ${showValue(valStruct)}`,
+                `constant struct expected, but got ${prettyPrint(valStruct)}`,
                 ast.aggregate.loc,
             );
         }
@@ -1157,12 +1165,30 @@ export class Interpreter {
                 const tons = ensureString(
                     this.interpretExpressionInternal(ast.args[0]!),
                 );
+                if (tons.value.trim().length === 0) {
+                    throwCompilationError(
+                        "ton() function requires a non-empty value",
+                        tons.loc,
+                    );
+                }
+
+                const value = this.parseTonBuiltinValue(tons);
+                if (typeof value === "undefined") {
+                    throwCompilationError(
+                        "ton() function requires a valid number with no more than 10 digits after the decimal point",
+                        tons.loc,
+                    );
+                }
+                if (value < 0) {
+                    throwCompilationError(
+                        "ton() function requires a non-negative number",
+                        tons.loc,
+                    );
+                }
+
                 try {
                     return ensureInt(
-                        this.util.makeNumberLiteral(
-                            BigInt(toNano(tons.value).toString(10)),
-                            ast.loc,
-                        ),
+                        this.util.makeNumberLiteral(value, ast.loc),
                     );
                 } catch (e) {
                     if (e instanceof Error && e.message === "Invalid number") {
@@ -1184,7 +1210,7 @@ export class Interpreter {
                 );
                 if (valExp.value < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(ast.function)} builtin called with negative exponent ${showValue(valExp)}`,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${prettyPrint(valExp)}`,
                         ast.loc,
                     );
                 }
@@ -1211,7 +1237,7 @@ export class Interpreter {
                 );
                 if (valExponent.value < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(ast.function)} builtin called with negative exponent ${showValue(valExponent)}`,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${prettyPrint(valExponent)}`,
                         ast.loc,
                     );
                 }
@@ -1263,7 +1289,7 @@ export class Interpreter {
                         );
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid base64 encoding for a cell: ${showValue(str)}`,
+                            `invalid base64 encoding for a cell: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1282,7 +1308,7 @@ export class Interpreter {
                         );
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid base64 encoding for a cell: ${showValue(str)}`,
+                            `invalid base64 encoding for a cell: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1297,7 +1323,7 @@ export class Interpreter {
 
                     if (!/^[0-9a-fA-F]*_?$/.test(str.value)) {
                         throwErrorConstEval(
-                            `invalid hex string: ${showValue(str)}`,
+                            `invalid hex string: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1395,14 +1421,14 @@ export class Interpreter {
                             address.workChain !== -1
                         ) {
                             throwErrorConstEval(
-                                `${showValue(str)} is invalid address`,
+                                `${prettyPrint(str)} is invalid address`,
                                 ast.loc,
                             );
                         }
                         return this.util.makeAddressLiteral(address, ast.loc);
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid address encoding: ${showValue(str)}`,
+                            `invalid address encoding: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1481,6 +1507,15 @@ export class Interpreter {
                         ast.loc,
                     );
                 }
+        }
+    }
+
+    private parseTonBuiltinValue(tons: Ast.String): bigint | undefined {
+        try {
+            const value = toNano(tons.value);
+            return BigInt(value.toString(10));
+        } catch {
+            return undefined;
         }
     }
 
@@ -1627,7 +1662,7 @@ export class Interpreter {
         const val = this.interpretExpressionInternal(ast.expression);
         if (val.kind !== "struct_value") {
             throwErrorConstEval(
-                `destructuring assignment expected a struct, but got ${showValue(
+                `destructuring assignment expected a struct, but got ${prettyPrint(
                     val,
                 )}`,
                 ast.expression.loc,

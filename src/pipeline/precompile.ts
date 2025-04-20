@@ -8,8 +8,8 @@ import { resolveSignatures } from "@/types/resolveSignatures";
 import { resolveImports } from "@/imports/resolveImports";
 import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
 import type * as Ast from "@/ast/ast";
-import type { FactoryAst } from "@/ast/ast-helpers";
-import type { Parser } from "@/grammar";
+import { getAstFactory } from "@/ast/ast-helpers";
+import { getParser } from "@/grammar";
 import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
 import { computeReceiversEffects } from "@/types/effects";
 
@@ -18,21 +18,22 @@ export function precompile(
     project: VirtualFileSystem,
     stdlib: VirtualFileSystem,
     entrypoint: string,
-    parser: Parser,
-    ast: FactoryAst,
     parsedModules?: Ast.Module[],
 ) {
+    const ast = getAstFactory();
+    const parser = getParser(ast);
+
     // Load all sources
     const imported = resolveImports({ entrypoint, project, stdlib, parser });
 
     // Parse the sources and attach the given parsed modules
-    const finalModules = [
+    const modules = [
         ...parseModules(imported.tact, parser),
         ...(parsedModules ?? []),
     ];
 
     // Add information about all the source code entries to the context
-    ctx = openContext(ctx, imported.tact, imported.func, finalModules);
+    ctx = openContext(ctx, imported.tact, imported.func, modules);
 
     // First load type descriptors and check that
     //       they all have valid signatures
@@ -45,8 +46,8 @@ export function precompile(
 
     /* Evaluate all comp-time expressions:
        constants, default contract fields, default struct fields, method Ids
-       
-       The original code inside constant, field and method id initialization actually mutated the CompilerContext object, 
+
+       The original code inside constant, field and method id initialization actually mutated the CompilerContext object,
        while the rest of the typechecker's code built a new CompilerContext every time it changed something.
        Hence the reason of why this line is not written as:
 
@@ -54,7 +55,7 @@ export function precompile(
 
        The code mutates fields in ConstantDescription, FieldDescription and FunctionDescription.
 
-       Evaluation of Message op-codes is done later in resolveSignatures. It was left there because 
+       Evaluation of Message op-codes is done later in resolveSignatures. It was left there because
        the computation of those op-codes is more involved than the computation of method ids, and so
        it is hard to extract the call to evalConstantExpression in resolveSignatures.
     */

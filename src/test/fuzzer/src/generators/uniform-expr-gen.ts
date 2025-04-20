@@ -32,6 +32,14 @@ export type GenContext = {
 
     // Contract names to choose from
     contractNames: string[];
+
+    // The non-terminals to choose from. Non-terminals not listed here will
+    // be disallowed during generation
+    allowedNonTerminals: NonTerminalEnum[];
+
+    // The terminals to choose from. Terminals not listed here will
+    // be disallowed during generation
+    allowedTerminals: TerminalEnum[];
 };
 
 export const NonTerminal = {
@@ -64,7 +72,13 @@ export const NonTerminal = {
 
 export type NonTerminalEnum = (typeof NonTerminal)[keyof typeof NonTerminal];
 
-const Terminal = {
+type GenericNonTerminal = {
+    id: number;
+    literal: boolean;
+    terminal: false;
+};
+
+export const Terminal = {
     integer: { terminal: true, id: 1 },
     add: { terminal: true, id: 2 },
     minus: { terminal: true, id: 3 },
@@ -122,7 +136,7 @@ const Terminal = {
 
 type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];
 
-type Token = TerminalEnum | NonTerminalEnum;
+type Token = TerminalEnum | GenericNonTerminal;
 
 type ExprProduction = {
     tokens: Token[];
@@ -570,13 +584,19 @@ function normalizeArray(counts: number[]): number[] {
     // Any -Inf represents a count of 0, which means that such index should never get selected.
     // So, it is enough to transform -Inf back to 0.
     // Any 0 represents a count of 1. Since such index has a non-zero probability to be selected,
-    // we change the 0s to 1s. The rest of numbers we take their ceil to transform them into integers.
+    // we change the 0s to 1s.
+    // Also, 1 represents a count of 2. So, we transform 1s to 2s, to avoid
+    // squashing counts 1s and 2s together.
+    // The rest of numbers we take their ceil to transform them into integers.
     return counts.map((n) => {
         if (n === Number.NEGATIVE_INFINITY) {
             return 0;
         }
         if (n === 0) {
             return 1;
+        }
+        if (n === 1) {
+            return 2;
         }
         return Math.ceil(n);
     });
@@ -603,9 +623,108 @@ function transform(n: number): number {
     return Math.log2(n);
 }
 
+function filterProductions(
+    nonTerminalsToInclude: NonTerminalEnum[],
+    terminalsToInclude: TerminalEnum[],
+): {
+    productions: ExprProduction[][];
+    nonTerminals: GenericNonTerminal[];
+    reindexMap: Map<number, number>;
+} {
+    const nonTerminalIdsToInclude: Set<number> = new Set(
+        nonTerminalsToInclude.map((e) => e.id),
+    );
+    const terminalIdsToInclude: Set<number> = new Set(
+        terminalsToInclude.map((e) => e.id),
+    );
+
+    // Make a copy of all the productions
+    let productions: ExprProduction[][] = [];
+    for (let i = 0; i < allProductions.length; i++) {
+        productions[i] = allProductions[i]!.map((prod) => {
+            return { id: prod.id, tokens: prod.tokens };
+        });
+    }
+
+    // Remove productions that use terminals and non-terminals not listed in the provided argument lists.
+    let initialNonTerminalsCount;
+    do {
+        initialNonTerminalsCount = nonTerminalIdsToInclude.size;
+
+        for (let i = 0; i < productions.length; i++) {
+            productions[i] = productions[i]!.filter((prod) =>
+                prod.tokens.every((t) => {
+                    if (t.terminal) {
+                        return terminalIdsToInclude.has(t.id);
+                    } else {
+                        return nonTerminalIdsToInclude.has(t.id);
+                    }
+                }),
+            );
+            // If non-terminal i has no productions at the end, we need
+            // to remove i from the final non-terminals
+            // and go again through the process of removing productions
+            if (productions[i]!.length === 0) {
+                nonTerminalIdsToInclude.delete(i);
+            }
+        }
+    } while (initialNonTerminalsCount !== nonTerminalIdsToInclude.size);
+
+    // Remove unused non-terminals, and reindex them
+    const reindexMap: Map<number, number> = new Map();
+    const nonTerminalsFiltered = Object.values(NonTerminal).filter((n) =>
+        nonTerminalIdsToInclude.has(n.id),
+    );
+    nonTerminalsFiltered.forEach((n, newIndex) => {
+        reindexMap.set(n.id, newIndex);
+    });
+    const nonTerminals = nonTerminalsFiltered.map((n, newIndex) => {
+        return { id: newIndex, literal: n.literal, terminal: n.terminal };
+    });
+
+    // Remove productions belonging to removed non-terminals.
+    productions = productions.filter((_, index) =>
+        nonTerminalIdsToInclude.has(index),
+    );
+
+    // Reindex all the productions, including non-terminal tokens occurring inside the production
+    for (let i = 0; i < productions.length; i++) {
+        productions[i] = productions[i]!.map((prod, newIndex) => {
+            return {
+                id: newIndex,
+                tokens: prod.tokens.map((t) => {
+                    if (t.terminal) {
+                        return t;
+                    } else {
+                        const newIndex = reindexMap.get(t.id);
+                        if (typeof newIndex === "undefined") {
+                            throw new Error(
+                                `Invalid old index ${t.id}: it does not have a re-indexing`,
+                            );
+                        }
+                        return {
+                            id: newIndex,
+                            literal: t.literal,
+                            terminal: t.terminal,
+                        };
+                    }
+                }),
+            };
+        });
+    }
+
+    return {
+        productions,
+        nonTerminals,
+        reindexMap,
+    };
+}
+
 function computeCountTables(
     minSize: number,
     maxSize: number,
+    finalProductions: ExprProduction[][],
+    nonTerminals: GenericNonTerminal[],
 ): {
     nonTerminalCounts: number[][][];
     sizeSplitCounts: number[][][][][];
@@ -655,7 +774,7 @@ function computeCountTables(
         size: number,
         counts: number[],
     ) {
-        const prods = getProductions(nonTerminalIndex);
+        const prods = getProductions(finalProductions, nonTerminalIndex);
         const prod = getProductionAt(prods, prodIndex);
 
         if (typeof sizeSplitCounts[nonTerminalIndex] === "undefined") {
@@ -715,7 +834,7 @@ function computeCountTables(
         if (typeof peekedCounts !== "undefined") {
             return peekedCounts;
         }
-        const prods = getProductions(id);
+        const prods = getProductions(finalProductions, id);
         return prods.map((prod) => sum(countFromProduction(id, prod, 0, size)));
     }
 
@@ -783,14 +902,17 @@ function computeCountTables(
         }
     }
 
-    function doCountsForNonTerminals(nonTerminals: NonTerminalEnum[]) {
+    function doCountsForNonTerminals(nonTerminals: GenericNonTerminal[]) {
         // First, compute the counts of all the non-terminals that produce literals
 
         // The first step is to initialize the tables for size 0
         for (const nonTerminal of nonTerminals) {
             const nonTerminalIdx = nonTerminal.id;
 
-            const productions = getProductions(nonTerminalIdx);
+            const productions = getProductions(
+                finalProductions,
+                nonTerminalIdx,
+            );
 
             // Transform count 0 to whatever representation of counts we are currently using
             updateNonTerminalCounts(
@@ -821,7 +943,10 @@ function computeCountTables(
             for (const nonTerminal of nonTerminals) {
                 const nonTerminalIdx = nonTerminal.id;
 
-                const productions = getProductions(nonTerminalIdx);
+                const productions = getProductions(
+                    finalProductions,
+                    nonTerminalIdx,
+                );
 
                 for (const prod of productions) {
                     for (
@@ -857,13 +982,13 @@ function computeCountTables(
         // From 0 to minSize-1, set counts to 0, since we are not going to choose those sizes
         // Transform the count 0 to whatever representation we are currently using
         for (let size = 0; size < minSize; size++) {
-            for (const nonTerminal of Object.values(NonTerminal)) {
+            for (const nonTerminal of nonTerminals) {
                 updateTotalCounts(nonTerminal.id, size, transform(0));
             }
         }
 
         for (let size = minSize; size <= maxSize; size++) {
-            for (const nonTerminal of Object.values(NonTerminal)) {
+            for (const nonTerminal of nonTerminals) {
                 updateTotalCounts(
                     nonTerminal.id,
                     size,
@@ -881,7 +1006,7 @@ function computeCountTables(
 
     function normalizeCounts() {
         // The total counts
-        for (const nonTerminal of Object.values(NonTerminal)) {
+        for (const nonTerminal of nonTerminals) {
             const counts = totalCounts[nonTerminal.id];
             if (typeof counts === "undefined") {
                 throw new Error(`Index ${nonTerminal.id} out of bounds`);
@@ -891,7 +1016,7 @@ function computeCountTables(
         }
 
         // The non-terminal counts
-        for (const nonTerminal of Object.values(NonTerminal)) {
+        for (const nonTerminal of nonTerminals) {
             for (let size = 0; size <= maxSize; size++) {
                 const counts = lookupNonTerminalCounts(
                     nonTerminalCounts,
@@ -904,10 +1029,13 @@ function computeCountTables(
         }
 
         // Split size counts
-        for (const nonTerminal of Object.values(NonTerminal)) {
+        for (const nonTerminal of nonTerminals) {
             const nonTerminalIdx = nonTerminal.id;
 
-            const productions = getProductions(nonTerminalIdx);
+            const productions = getProductions(
+                finalProductions,
+                nonTerminalIdx,
+            );
 
             for (const prod of productions) {
                 for (
@@ -939,18 +1067,13 @@ function computeCountTables(
 
     // First, fill the non-terminals that compute literals
     doCountsForNonTerminals(
-        Object.values(NonTerminal).filter((nonTerminal) => nonTerminal.literal),
+        nonTerminals.filter((nonTerminal) => nonTerminal.literal),
     );
 
-    // Now the rest of non-terminals, but not the initial non-terminal
+    // Now the rest of non-terminals
     doCountsForNonTerminals(
-        Object.values(NonTerminal).filter(
-            (nonTerminal) => !nonTerminal.literal && nonTerminal.id !== 0,
-        ),
+        nonTerminals.filter((nonTerminal) => !nonTerminal.literal),
     );
-
-    // Finally, the initial non-terminal
-    doCountsForNonTerminals([NonTerminal.Initial]);
 
     doTotalCounts();
 
@@ -958,9 +1081,6 @@ function computeCountTables(
     // into non-negative integers (because they may be currently encoded
     // in a different way. For example, when using logarithms to represent
     // counts, the numbers have fractional part, and may also include -Inf).
-    // Also, once they are normalized into non-negative integers,
-    // we need to compute their partial sums, in preparation for the generation
-    // process.
     normalizeCounts();
 
     return {
@@ -1023,8 +1143,11 @@ function lookupTotalCounts(
     return nTCounts;
 }
 
-function getProductions(idx: number): ExprProduction[] {
-    const prods = allProductions[idx];
+function getProductions(
+    productions: ExprProduction[][],
+    idx: number,
+): ExprProduction[] {
+    const prods = productions[idx];
     if (typeof prods === "undefined") {
         throw new Error(`${idx} is not a valid id for a non-terminal`);
     }
@@ -1039,7 +1162,7 @@ function getTokenAt(tokens: Token[], id: number): Token {
     return token;
 }
 
-function getNonTerminalAt(tokens: Token[], id: number): NonTerminalEnum {
+function getNonTerminalAt(tokens: Token[], id: number): GenericNonTerminal {
     const token = getTokenAt(tokens, id);
     if (token.terminal) {
         throw new Error(`Was expecting a non-terminal`);
@@ -1057,10 +1180,11 @@ function getProductionAt(prods: ExprProduction[], id: number): ExprProduction {
 
 function makeExpression(
     astF: FactoryAst,
-    type: NonTerminalEnum,
+    nonTerminalId: number,
     ctx: GenContext,
     nonTerminalCounts: number[][][],
     sizeSplitCounts: number[][][][][],
+    finalProductions: ExprProduction[][],
     size: number,
 ): fc.Arbitrary<Ast.Expression> {
     const makeF = getMakeAst(astF);
@@ -1070,7 +1194,7 @@ function makeExpression(
         id: number,
         size: number,
     ): fc.Arbitrary<Ast.Expression> {
-        const prods = getProductions(id);
+        const prods = getProductions(finalProductions, id);
         const nonTerminalOptions = lookupNonTerminalCounts(
             nonTerminalCounts,
             id,
@@ -1531,7 +1655,7 @@ function makeExpression(
         }
     }
 
-    return genFromNonTerminal(type.id, size);
+    return genFromNonTerminal(nonTerminalId, size);
 }
 
 export function initializeGenerator(
@@ -1539,12 +1663,34 @@ export function initializeGenerator(
     maxSize: number,
     ctx: GenContext,
     astF: FactoryAst,
-): (type: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
-    const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
-        computeCountTables(minSize, maxSize);
+): (nonTerminal: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
+    const { productions, nonTerminals, reindexMap } = filterProductions(
+        ctx.allowedNonTerminals,
+        ctx.allowedTerminals,
+    );
 
-    return (type: NonTerminalEnum) => {
-        const sizes = lookupTotalCounts(totalCounts, type.id);
+    const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
+        computeCountTables(minSize, maxSize, productions, nonTerminals);
+
+    return (nonTerminal: NonTerminalEnum) => {
+        const nonTerminalId = reindexMap.get(nonTerminal.id);
+        if (typeof nonTerminalId === "undefined") {
+            throw new Error(
+                `Non-terminal ${nonTerminal.id} does not have a re-indexing`,
+            );
+        }
+
+        if (nonTerminals.every((n) => n.id !== nonTerminalId)) {
+            throw new Error(
+                `Non-terminal ${nonTerminalId} is not among the allowed non-terminals`,
+            );
+        }
+        const sizes = lookupTotalCounts(totalCounts, nonTerminalId);
+        if (sizes.every((s) => s === 0)) {
+            throw new Error(
+                `There are no trees for non-terminal ${nonTerminalId}`,
+            );
+        }
         const weightedSizes: fc.WeightedArbitrary<number>[] = sizes.map(
             (w, i) => {
                 return { arbitrary: fc.constant(i), weight: w };
@@ -1554,10 +1700,11 @@ export function initializeGenerator(
         return fc.oneof(...weightedSizes).chain((size) => {
             return makeExpression(
                 astF,
-                type,
+                nonTerminalId,
                 ctx,
                 nonTerminalCounts,
                 sizeSplitCounts,
+                productions,
                 size,
             );
         });
