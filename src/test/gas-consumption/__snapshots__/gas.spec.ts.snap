@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`benchmarks benchmark BaseTrait: code size inline 1`] = `410`;
+exports[`benchmarks benchmark BaseTrait: code size inline instanceInline 1`] = `410`;
 
-exports[`benchmarks benchmark BaseTrait: code size trait 1`] = `437`;
+exports[`benchmarks benchmark BaseTrait: code size inline instanceTrait 1`] = `437`;
 
 exports[`benchmarks benchmark BaseTrait: gas used for ForwardMessage in contract instanceInline 1`] = `3917`;
 

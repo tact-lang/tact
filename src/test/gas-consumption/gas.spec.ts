@@ -402,10 +402,12 @@ describe("benchmarks", () => {
             }
         }
 
-        let codeSize = instanceInline.init!.code.toBoc().length;
-        expect(codeSize).toMatchSnapshot(`code size inline`);
-
-        codeSize = instanceTrait.init!.code.toBoc().length;
-        expect(codeSize).toMatchSnapshot(`code size trait`);
+        for (const [name, instance] of Object.entries({
+            instanceInline,
+            instanceTrait,
+        })) {
+            const codeSize = instance.init!.code.toBoc().length;
+            expect(codeSize).toMatchSnapshot(`code size inline ${name}`);
+        }
     });
 });
