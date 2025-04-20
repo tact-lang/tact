@@ -51,6 +51,32 @@
         "revoke": "5217",
         "take excess": "8096"
       }
+    },
+    {
+      "label": "1.6.6 with contract parameters",
+      "pr": "https://github.com/tact-lang/tact/pull/2863",
+      "gas": {
+        "deploy": "4994",
+        "request owner": "5308",
+        "prove ownership": "5488",
+        "get static data": "5112",
+        "destroy": "7283",
+        "revoke": "4788",
+        "take excess": "5949"
+      }
+    },
+    {
+      "label": "1.6.6 with revokedAt with uint64 type",
+      "pr": "https://github.com/tact-lang/tact/pull/2863",
+      "gas": {
+        "deploy": "4146",
+        "request owner": "5048",
+        "prove ownership": "5228",
+        "get static data": "4852",
+        "destroy": "6325",
+        "revoke": "3940",
+        "take excess": "5689"
+      }
     }
   ]
 }
