@@ -105,9 +105,9 @@ Generating truly secure random numbers in TON is challenging. The [`random()`](/
 * Use [`random(){:tact}`](/ref/core-random#random) with randomized logical time to enhance security by making predictions harder for attackers without access to a validator node. Note, however, that it is still **not entirely foolproof**.
 
 * Consider using the **commit-and-disclose scheme**:
-  1. Participants generate random numbers off-chain and send their hashes to the contract.
-  2. Once all hashes are received, participants disclose their original numbers.
-  3. Combine the disclosed numbers (e.g., summing them) to produce a secure random value.
+1. Participants generate random numbers off-chain and send their hashes to the contract.
+2. Once all hashes are received, participants disclose their original numbers.
+3. Combine the disclosed numbers (e.g., summing them) to produce a secure random value.
 
 For more details, refer to the [Secure Random Number Generation page in TON Docs](https://docs.ton.org/v3/guidelines/smart-contracts/security/random-number-generation).
 
@@ -309,6 +309,102 @@ contract Sample(
     receive() { cashback(sender()) }
 }
 ```
+
+## Preventing front-running with signature verification
+
+Front-running can occur when an attacker observes a pending transaction containing a valid signature and quickly submits their own transaction using the same signature before the original transaction is processed. This is particularly relevant in scenarios where signatures authorize actions or fund transfers.
+
+##### Do's ✅
+
+Include critical parameters like the recipient address (`to`) within the data that is signed. This ensures that the signature is valid only for the intended operation and recipient, preventing attackers from reusing the signature for their benefit. Also, implement replay protection to prevent the same signed message from being used multiple times.
+
+```tact
+message(0x988d4037) Request {
+    signature: Slice as bytes64;
+    to: Address; // Recipient address is part of the message
+    seqno: Int as uint64;
+    // Other data fields...
+}
+
+contract SecureChecker(
+    public_key: Int as uint256,
+    seqno: Int as uint64, // Add seqno for replay protection
+) {
+    receive(request: Request) {
+        // Construct the data that was originally signed, including 'to' address
+        let dataToVerify: Cell = beginCell()
+            .storeAddress(request.to)
+            // Store other data fields...
+            // Store seqno as well for replay protection
+            .storeUint(self.seqno, 64)
+            .endCell();
+
+        // Verify the signature against the reconstructed data hash
+        require(checkSignature(dataToVerify.hash(), request.signature, self.public_key), "Invalid signature!");
+
+        // Check replay protection
+        require(request.seqno == self.seqno, "Invalid seqno"); // Assuming external message with seqno
+        self.seqno += 1; // Increment seqno after successful processing
+
+        // Ensure the message is sent to the address specified in the signed data
+        message(MessageParameters{
+            to: request.to, // Use the 'to' from the signed request
+            value: 0,
+            mode: SendRemainingBalance,
+            bounce: false,
+            body: "Your action payload here".asComment(), // Example body
+        });
+    }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+
+    // Getter for seqno might be needed depending on the replay protection mechanism
+    get fun seqno(): Int {
+        return self.seqno;
+    }
+}
+```
+
+Remember to also implement [replay protection](#replay-protection) to prevent reusing the same signature even if it's correctly targeted.
+
+##### Don'ts ❌
+
+Do not sign data without including essential context like the recipient address. An attacker could intercept the message, copy the signature, and replace the recipient address in their own transaction, effectively redirecting the intended action or funds.
+
+```tact
+message(0x988d4037) Request {
+    signature: Slice as bytes64;
+    data: Slice as remaining; // 'to' address is not part of the signed data
+}
+
+contract InsecureChecker(
+    public_key: Int as uint256,
+) {
+    receive(request: Request) {
+        // The signature only verifies 'request.data', not the intended recipient.
+        if(checkDataSignature(request.data.hash(), request.signature, self.public_key)) {
+            // Attacker can see this message, copy the signature, and send their own
+            // message to a different 'to' address before this one confirms.
+            // The 'sender()' here is the original sender, but the attacker can initiate
+            // a similar transaction targeting themselves or another address.
+            message(MessageParameters{
+                to: sender(), // Vulnerable: recipient isn't verified by the signature
+                value: 0,
+                mode: SendRemainingBalance,
+                bounce: false,
+            });
+        }
+    }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+}
+```
+
+Furthermore, once a signature is used in a transaction, it becomes publicly visible on the blockchain. Without proper replay protection, anyone can potentially reuse this signature and the associated data in a new transaction if the contract logic doesn't prevent it.
 
 ## Race condition of messages
 
