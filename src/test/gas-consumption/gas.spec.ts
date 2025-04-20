@@ -375,12 +375,12 @@ describe("benchmarks", () => {
         };
 
         for (const [messageName, message] of Object.entries(messages)) {
-            for (const [name, instance] of Object.entries({
+            for (const [instanceName, instance] of Object.entries({
                 instanceInline,
                 instanceTrait,
             })) {
                 const sendResult = await step(
-                    `${name} with ${messageName}`,
+                    `${instanceName} with ${messageName}`,
                     () =>
                         instance.send(
                             treasury.getSender(),
@@ -397,7 +397,7 @@ describe("benchmarks", () => {
 
                 const gasUsed = measureGas(sendResult.transactions);
                 expect(gasUsed).toMatchSnapshot(
-                    `gas used for ${messageName} in contract ${name}`,
+                    `gas used for ${messageName} in contract ${instanceName}`,
                 );
             }
         }
