@@ -24,7 +24,7 @@
     "build:fast": "yarn clean && yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && tsc --project tsconfig.fast.json && yarn copy:stdlib && yarn copy:func && yarn to-relative",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=4096 tsc && yarn copy:stdlib && yarn copy:func && yarn to-relative",
     "gen:config": "ts-to-zod -k --skipValidation src/config/config.ts src/config/config.zod.ts",
-    "gen:grammar": "pgen src/grammar/grammar.gg -o src/grammar/grammar.ts",
+    "gen:grammar": "pgen src/grammar/grammar.peggy -o src/grammar/grammar.ts",
     "gen:stdlib": "ts-node src/stdlib/stdlib.build.ts",
     "gen:func-js": "ts-node src/func/func.build.ts",
     "gen:contracts:test": "ts-node src/test/contracts.build.ts",

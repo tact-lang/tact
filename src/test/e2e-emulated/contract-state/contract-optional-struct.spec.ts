@@ -8,7 +8,7 @@ import "@ton/test-utils";
 
 describe("contract optional struct field", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<TestGetterOptional>;
     let contract2: SandboxContract<TestGetterOptional2>;
     let contract3: SandboxContract<TestGetterOptional3>;
@@ -16,7 +16,7 @@ describe("contract optional struct field", () => {
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
         contract = blockchain.openContract(await TestGetterOptional.fromInit());
         contract2 = blockchain.openContract(
             await TestGetterOptional2.fromInit(),
@@ -26,7 +26,7 @@ describe("contract optional struct field", () => {
         );
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -34,14 +34,14 @@ describe("contract optional struct field", () => {
         );
 
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
         });
 
         const result2 = await contract2.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -49,14 +49,14 @@ describe("contract optional struct field", () => {
         );
 
         expect(result2.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract2.address,
             success: true,
             deploy: true,
         });
 
         const result3 = await contract3.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -64,7 +64,7 @@ describe("contract optional struct field", () => {
         );
 
         expect(result3.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract3.address,
             success: true,
             deploy: true,

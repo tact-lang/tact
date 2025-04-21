@@ -9,7 +9,7 @@ import "@ton/test-utils";
 
 describe("initOf inside init via global function", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<Test>;
     let contract2: SandboxContract<Test2>;
     let childContract: SandboxContract<MasterV0>;
@@ -18,14 +18,14 @@ describe("initOf inside init via global function", () => {
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
         contract = blockchain.openContract(await Test.fromInit());
         contract2 = blockchain.openContract(await Test2.fromInit());
         childContract = blockchain.openContract(await MasterV0.fromInit());
         childContract2 = blockchain.openContract(await MasterV02.fromInit());
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -33,14 +33,14 @@ describe("initOf inside init via global function", () => {
         );
 
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
         });
 
         const result2 = await contract2.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -48,7 +48,7 @@ describe("initOf inside init via global function", () => {
         );
 
         expect(result2.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract2.address,
             success: true,
             deploy: true,

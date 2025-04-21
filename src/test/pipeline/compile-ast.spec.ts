@@ -11,6 +11,7 @@ import { Logger, LogLevel } from "@/context/logger";
 import { compileFunc, compileTact } from "@/pipeline/compile";
 import { AssemblyWriter, disassembleRoot } from "@tact-lang/opcode";
 import { Cell } from "@ton/core";
+import { getType } from "@/types/resolveDescriptors";
 
 // This function manually creates a module containing a contract with a reference to StateInit in its single field.
 // StateInit is declared in stdlib.
@@ -95,7 +96,8 @@ describe("compilation of ASTs", () => {
             errorMessages: [],
         };
 
-        const compileRes = await compileTact(bCtx, contractName);
+        const contract = getType(ctx, contractName);
+        const compileRes = await compileTact(bCtx, contract);
         if (!compileRes) {
             fail(`Tact compiler failed`);
         }

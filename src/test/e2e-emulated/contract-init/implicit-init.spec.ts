@@ -6,13 +6,13 @@ import "@ton/test-utils";
 
 describe("implicit-init", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<MyContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await MyContract.fromInit());
     });
@@ -20,13 +20,13 @@ describe("implicit-init", () => {
     it("should deploy", async () => {
         // Deploy the contract
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("1") },
             { $$type: "Deploy", queryId: 0n },
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -39,12 +39,12 @@ describe("implicit-init", () => {
     it("should increment counter", async () => {
         // Deploy the contract
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("1") },
             { $$type: "Deploy", queryId: 0n },
         );
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -55,24 +55,24 @@ describe("implicit-init", () => {
 
         // Increment counter
         const incrementResult1 = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("1") },
             "increment",
         );
         expect(incrementResult1.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });
         expect(await contract.getGetCounter()).toBe(1n);
 
         const incrementResult2 = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("1") },
             "increment",
         );
         expect(incrementResult2.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });

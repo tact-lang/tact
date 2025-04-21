@@ -7,24 +7,24 @@ import "@ton/test-utils";
 
 describe("cashback", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<CashbackTester>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await CashbackTester.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -32,14 +32,14 @@ describe("cashback", () => {
     });
 
     it("should bounce on unknown message", async () => {
-        const sendResult = await treasure.send({
+        const sendResult = await treasury.send({
             to: contract.address,
             value: toNano("10"),
             body: beginCell().storeStringTail("Unknown").endCell(),
         });
 
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: false,
             exitCode: 130,
@@ -48,13 +48,13 @@ describe("cashback", () => {
 
     it("should send reply", async () => {
         const sendResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "Hello",
         );
 
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             body: beginCell()
@@ -68,16 +68,16 @@ describe("cashback", () => {
         const valForSend = toNano("10");
         const msgText = "sender";
 
-        const valBefore = await getBalance(blockchain, treasure.address);
+        const valBefore = await getBalance(blockchain, treasury.address);
         const sendResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: valForSend },
             msgText,
         );
 
         // To the contract
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             body: textMsg(msgText),
@@ -86,13 +86,13 @@ describe("cashback", () => {
         // From the contract
         expect(sendResult.transactions).toHaveTransaction({
             from: contract.address,
-            to: treasure.address,
+            to: treasury.address,
             success: true,
             inMessageBounceable: false,
             body: beginCell().endCell(),
         });
 
-        const valAfter = await getBalance(blockchain, treasure.address);
+        const valAfter = await getBalance(blockchain, treasury.address);
         expect(valAfter - valBefore <= valForSend).toBe(true);
     });
 
@@ -102,14 +102,14 @@ describe("cashback", () => {
 
         const valBefore = await getBalance(blockchain, contract.address);
         const sendResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: valForSend },
             msgText,
         );
 
         // To the contract
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             body: textMsg(msgText),

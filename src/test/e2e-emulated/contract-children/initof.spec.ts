@@ -9,19 +9,19 @@ import "@ton/test-utils";
 
 describe("initOf", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
     });
 
     it("should implement initOf correctly - 1", async () => {
         const contract = blockchain.openContract(await Self.fromInit());
 
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
@@ -35,7 +35,7 @@ describe("initOf", () => {
         const contract = blockchain.openContract(await Parent.fromInit());
 
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
@@ -49,7 +49,7 @@ describe("initOf", () => {
         const contract = blockchain.openContract(await TestInit.fromInit());
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "Deploy",
@@ -67,13 +67,13 @@ describe("initOf", () => {
         const contract = blockchain.openContract(await A.fromInit());
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "aa",
         );
 
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });
