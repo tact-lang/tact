@@ -49,18 +49,14 @@ jobs:
         run: |
           yarn lint
 
-      - name: Check formatting with Prettier
-        run: |
-          yarn fmt:check
-
       - name: Build Tact compiler fast
         run: |
           yarn install
           yarn build:fast
 
-      - name: Check formatting with Tact formatter
+      - name: Check formatting with Prettier
         run: |
-          yarn tact:fmt:check
+          yarn fmt:check
 
       - name: Spellcheck code base
         run: |
