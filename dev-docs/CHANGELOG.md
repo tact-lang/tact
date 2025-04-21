@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `inMsg()` function as an optimized version of `msg.toSlice()`: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
 
+### Tooling
+
+- Formatter now shortens `Foo { value: value }` to `Foo { value }`: PR [#2884](https://github.com/tact-lang/tact/pull/2884)
+
 ### Docs
 
 - Added `inMsg()` function to the gas best practices page: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
