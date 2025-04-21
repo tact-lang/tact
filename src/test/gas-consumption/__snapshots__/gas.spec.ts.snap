@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`benchmarks benchmark cashback: gas used cashback 1`] = `3337`;
+
 exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `750n`;
 
 exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `754n`;
