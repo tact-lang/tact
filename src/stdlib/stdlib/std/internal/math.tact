@@ -207,8 +207,20 @@ asm fun abs(x: Int): Int { ABS }
 /// * https://docs.tact-lang.org/ref/core-math#log
 /// * https://docs.tact-lang.org/ref/core-math#log2
 ///
-@name(__tact_log)
-native log(num: Int, base: Int): Int;
+inline fun log(num: Int, base: Int): Int {
+    throwUnless(5, num > 0);
+    throwUnless(5, base > 1);
+    if (num < base) {
+        return 0;
+    }
+
+    let result = 0;
+    while (num >= base) {
+        num /= base;
+        result += 1;
+    }
+    return result;
+}
 
 /// Global function.
 ///
