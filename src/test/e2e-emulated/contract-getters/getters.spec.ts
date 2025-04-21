@@ -106,7 +106,7 @@ describe("getters", () => {
     });
 
     it("should take empty message as parameter", async () => {
-        const res = await contract2.getFoo({$$type: "Foo"});
-        expect(res).toMatchObject({})
-    })
+        const res = await contract2.getFoo({ $$type: "Foo" });
+        expect(res).toMatchObject({});
+    });
 });
