@@ -53,6 +53,11 @@ jobs:
         run: |
           yarn fmt:check
 
+      - name: Build Tact compiler fast
+        run: |
+          yarn install
+          yarn build:fast
+
       - name: Check formatting with Tact formatter
         run: |
           yarn tact:fmt:check
