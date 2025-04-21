@@ -53,6 +53,10 @@ jobs:
         run: |
           yarn fmt:check
 
+      - name: Check formatting with Tact formatter
+        run: |
+          yarn tact:fmt:check
+
       - name: Spellcheck code base
         run: |
           yarn spell

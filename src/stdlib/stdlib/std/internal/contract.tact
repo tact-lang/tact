@@ -98,9 +98,9 @@ struct StateInit {
 /// Global function. Available since Tact 1.6.1.
 ///
 /// Checks if the given `address` corresponds to the contract address in the workchain ID 0 (basechain) derived from the `StateInit` `self`. Returns `true` if the addresses match and `false` otherwise.
-/// 
+///
 /// This function works correctly only for basechain addresses. It may produce false positives or negatives if the specified `address` or the address derived from the `StateInit{:tact}` `self{:tact}` has a non-zero workchain ID.
-/// 
+///
 /// #### Usage
 ///
 /// ```tact
