@@ -385,10 +385,26 @@ export function createABITypeRefFromTypeRef(
     ctx: CompilerContext,
     src: TypeRef,
     loc: SrcInfo,
+    as: Ast.Id | undefined,
 ): ABITypeRef {
     if (src.kind === "ref") {
         // Primitives
         if (src.name === "Int") {
+            if (as) {
+                const fmt = intFormats[idText(as)];
+                if (!fmt) {
+                    throwCompilationError(
+                        `Unsupported format ${idTextErr(as)}`,
+                        loc,
+                    );
+                }
+                return {
+                    kind: "simple",
+                    type: fmt.type,
+                    optional: src.optional,
+                    format: fmt.format,
+                };
+            }
             return {
                 kind: "simple",
                 type: "int",
@@ -403,6 +419,21 @@ export function createABITypeRefFromTypeRef(
             return { kind: "simple", type: "cell", optional: src.optional };
         }
         if (src.name === "Slice") {
+            if (as) {
+                const fmt = sliceFormats[idText(as)];
+                if (!fmt) {
+                    throwCompilationError(
+                        `Unsupported format ${idTextErr(as)}`,
+                        loc,
+                    );
+                }
+                return {
+                    kind: "simple",
+                    type: fmt.type,
+                    optional: src.optional,
+                    format: fmt.format,
+                };
+            }
             return { kind: "simple", type: "slice", optional: src.optional };
         }
         if (src.name === "Builder") {

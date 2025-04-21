@@ -30,6 +30,16 @@ struct C {
 }
 
 contract MainContract {
+    field: Int as uint8;
+    value: Int as int256;
+    data: Slice as bytes64;
+
+    init(field: Int as uint8, value: Int as int256, data: Slice as bytes64) {
+        self.field = field;
+        self.value = value;
+        self.data = data;
+    }
+
     get fun testAugmentedAssignOperators(intVal: Int, intVal2: Int, boolVal: Bool, boolVal2: Bool): Int {
         let a = intVal;
 

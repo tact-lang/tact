@@ -502,7 +502,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 params.push({
                     name: r.name,
                     type,
-                    as: r.as?.text ?? null,
+                    as: r.as,
                     loc: r.loc,
                 });
                 if (isRuntimeType(type)) {
@@ -1139,7 +1139,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             params.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
-                as: null,
+                as: r.as,
                 loc: r.loc,
             });
         }

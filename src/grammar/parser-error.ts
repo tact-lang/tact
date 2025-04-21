@@ -155,6 +155,9 @@ export const syntaxErrorSchema = <T, U>(
         fieldOnlyOneAs: () => {
             return handle(sub`Cannot use several "as" on a field type`);
         },
+        parameterOnlyOneAs: () => {
+            return handle(sub`Cannot use several "as" on a parameter type`);
+        },
         noOptionalFieldType: () => {
             return handle(sub`Field type cannot be optional`);
         },

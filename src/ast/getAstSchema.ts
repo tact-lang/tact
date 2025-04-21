@@ -627,12 +627,14 @@ export const getAstSchema = (
         TypedParameter: (
             name: Ast.OptionalId,
             type: Ast.Type,
+            as: Ast.Id | undefined,
             loc: Loc,
         ): Ast.TypedParameter =>
             createNode<Ast.TypedParameter>({
                 kind: "typed_parameter",
                 name,
                 type,
+                as,
                 loc: toSrcInfo(loc),
             }),
     };
