@@ -208,18 +208,20 @@ export async function compileFunc(
             return undefined;
         }
 
-        const pathCodeBoc = project.resolve(
-            config.output,
-            // need to keep `.code.boc` here because Blueprint looks for this pattern
-            `${config.name}_${contract}.code.boc`,
-        );
-        const pathCodeFif = project.resolve(
-            config.output,
-            `${config.name}_${contract}.fif`,
-        );
+        if (config.mode !== "bocOnly") {
+            const pathCodeBoc = project.resolve(
+                config.output,
+                // need to keep `.code.boc` here because Blueprint looks for this pattern
+                `${config.name}_${contract}.code.boc`,
+            );
+            const pathCodeFif = project.resolve(
+                config.output,
+                `${config.name}_${contract}.fif`,
+            );
 
-        project.writeFile(pathCodeFif, c.fift);
-        project.writeFile(pathCodeBoc, c.output);
+            project.writeFile(pathCodeFif, c.fift);
+            project.writeFile(pathCodeBoc, c.output);
+        }
         return c.output;
     } catch (e) {
         logger.error("FunC compiler crashed");
@@ -249,14 +251,16 @@ export async function compileTact(
 
         const { abi, funcFile, constants, entrypoint: entrypointPath } = res;
 
-        const pathFunc = project.resolve(config.output, funcFile.name);
-        project.writeFile(pathFunc, funcFile.code);
+        if (config.mode !== "bocOnly") {
+            const pathFunc = project.resolve(config.output, funcFile.name);
+            project.writeFile(pathFunc, funcFile.code);
 
-        const pathAbi = project.resolve(
-            config.output,
-            `${config.name}_${contract.name}.abi`,
-        );
-        project.writeFile(pathAbi, abi);
+            const pathAbi = project.resolve(
+                config.output,
+                `${config.name}_${contract.name}.abi`,
+            );
+            project.writeFile(pathAbi, abi);
+        }
 
         const funcSource: FuncSource = {
             path: posixNormalize(project.resolve(config.output, funcFile.name)),

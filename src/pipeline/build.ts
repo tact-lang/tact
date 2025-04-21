@@ -134,6 +134,16 @@ export async function build(args: {
         return BuildOk();
     }
 
+    if (bCtx.config.mode === "bocOnly") {
+        bCtx.logger.info("✔️ Compilation succeeded.");
+
+        Object.entries(bCtx.built).forEach(([name, contract]) => {
+            console.log("Contract: " + name);
+            console.log("  BoC:", contract?.codeBoc.toString("hex"));
+        });
+        return BuildOk();
+    }
+
     const packages = doPackaging(bCtx);
     if (!packages) {
         return BuildFail(bCtx.errorMessages);

@@ -79,7 +79,12 @@ export type Options = {
     readonly enableLazyDeploymentCompletedGetter?: boolean;
 };
 
-export type Mode = "fullWithDecompilation" | "full" | "funcOnly" | "checkOnly";
+export type Mode =
+    | "fullWithDecompilation"
+    | "full"
+    | "funcOnly"
+    | "checkOnly"
+    | "bocOnly";
 
 /**
  * Per-project configuration options

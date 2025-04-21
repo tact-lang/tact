@@ -75,6 +75,7 @@ export const modeSchema: z.ZodType<C.Mode> = z.union([
     z.literal("full"),
     z.literal("funcOnly"),
     z.literal("checkOnly"),
+    z.literal("bocOnly"),
 ]);
 
 /**
