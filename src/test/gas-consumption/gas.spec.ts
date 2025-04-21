@@ -25,6 +25,8 @@ import { CodeOfVsInitOf } from "@/test/gas-consumption/contracts/output/codeOf_C
 import { WithDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithDeploy";
 import { WithoutDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithoutDeploy";
 import { Sqrt } from "@/test/gas-consumption/contracts/output/sqrt_Sqrt";
+import { Cashback } from "@/test/gas-consumption/contracts/output/cashback_Cashback";
+import { Log } from "@/test/gas-consumption/contracts/output/log_Log";
 
 import type {
     ForwardMsg,
@@ -271,6 +273,37 @@ describe("benchmarks", () => {
             await blockchain.runGetMethod(testContract.address, "myCode")
         ).gasUsed;
         expect(gasUsed2).toMatchSnapshot("gas used myCode");
+    });
+
+    it("benchmark cashback", async () => {
+        const testContract = blockchain.openContract(await Cashback.fromInit());
+        const res = await testContract.send(
+            treasury.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        expect(getUsedGas(res, "internal")).toMatchSnapshot(
+            "gas used cashback",
+        );
+    });
+
+    it("benchmark log", async () => {
+        const testContract = blockchain.openContract(await Log.fromInit());
+        await testContract.send(
+            treasury.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        const gasUsed = (
+            await blockchain.runGetMethod(testContract.address, "log", [
+                { type: "int", value: 1000n },
+                {
+                    type: "int",
+                    value: 3n,
+                },
+            ])
+        ).gasUsed;
+        expect(gasUsed).toMatchSnapshot("gas used log");
     });
 
     it("benchmark deployable trait vs raw deploy", async () => {
