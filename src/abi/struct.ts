@@ -1,8 +1,12 @@
 import { ops } from "@/generator/writers/ops";
 import { writeExpression } from "@/generator/writers/writeExpression";
-import { throwCompilationError } from "@/error/errors";
+import {
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "@/error/errors";
 import { getType } from "@/types/resolveDescriptors";
 import type { AbiFunction } from "@/abi/AbiFunction";
+import { messageOpcode } from "@/generator/writers/writeRouter";
 
 export const StructFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -100,6 +104,49 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 return `${ops.readerNonModifying(arg0.name, ctx)}(${writeExpression(resolved[1]!, ctx)}.begin_parse())`;
+            },
+        },
+    ],
+    [
+        "opcode",
+        {
+            name: "opcode",
+            resolve: (_ctx, args, ref) => {
+                if (args.length !== 1) {
+                    throwCompilationError("opcode() expects no arguments", ref);
+                }
+                return { kind: "ref", name: "Int", optional: false };
+            },
+            generate: (ctx, args, _resolved, ref) => {
+                if (args.length !== 1) {
+                    throwCompilationError(
+                        "opcode() expects no arguments",
+                        ref,
+                    );
+                }
+                const arg = args[0]!;
+                if (arg.kind !== "ref") {
+                    throwCompilationError(
+                        `opcode() is not implemented for type '${arg.kind}'`,
+                        ref,
+                    );
+                }
+                const type = getType(ctx.ctx, arg.name);
+                if (type.kind !== "struct") {
+                    throwCompilationError(
+                        `opcode() is not implemented for type '${arg.kind}'`,
+                        ref,
+                    );
+                }
+
+                if (!type.header) {
+                    throwInternalCompilerError(
+                        `Invalid allocation: ${type.name}`,
+                        type.ast.name.loc,
+                    );
+                }
+
+                return messageOpcode(type.header);
             },
         },
     ],
