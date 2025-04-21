@@ -11,8 +11,6 @@ export function writeStdlib(ctx: WriterContext): void {
 
     ctx.skip("__tact_set");
     ctx.skip("__tact_nop");
-    ctx.skip("__tact_str_to_slice");
-    ctx.skip("__tact_slice_to_str");
 
     //
     // Addresses
