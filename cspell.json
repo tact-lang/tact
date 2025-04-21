@@ -39,7 +39,7 @@
     "src/grammar/test/items-asm-funs.tact",
     "src/grammar/test-asm/*.tact",
     "src/grammar/test-failed/funcid-*.tact",
-    "src/grammar/grammar.gg",
+    "src/grammar/grammar.peggy",
     "src/grammar/grammar.ts",
     "src/stdlib/stdlib.ts",
     "src/stdlib/stdlib/std/stdlib.fc",
