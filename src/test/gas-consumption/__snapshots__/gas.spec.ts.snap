@@ -24,6 +24,8 @@ exports[`benchmarks benchmark functions: code size 1`] = `172`;
 
 exports[`benchmarks benchmark functions: gas used 1`] = `1997`;
 
+exports[`benchmarks benchmark log: gas used log 1`] = `1884n`;
+
 exports[`benchmarks benchmark readFwdFee: code size 1`] = `116`;
 
 exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1968`;

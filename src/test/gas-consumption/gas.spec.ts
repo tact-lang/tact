@@ -26,6 +26,7 @@ import { WithDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithD
 import { WithoutDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithoutDeploy";
 import { Sqrt } from "@/test/gas-consumption/contracts/output/sqrt_Sqrt";
 import { Cashback } from "@/test/gas-consumption/contracts/output/cashback_Cashback";
+import { Log } from "@/test/gas-consumption/contracts/output/log_Log";
 
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
@@ -277,6 +278,25 @@ describe("benchmarks", () => {
         expect(getUsedGas(res, "internal")).toMatchSnapshot(
             "gas used cashback",
         );
+    });
+
+    it("benchmark log", async () => {
+        const testContract = blockchain.openContract(await Log.fromInit());
+        await testContract.send(
+            treasury.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        const gasUsed = (
+            await blockchain.runGetMethod(testContract.address, "log", [
+                { type: "int", value: 1000n },
+                {
+                    type: "int",
+                    value: 3n,
+                },
+            ])
+        ).gasUsed;
+        expect(gasUsed).toMatchSnapshot("gas used log");
     });
 
     it("benchmark deployable trait vs raw deploy", async () => {
