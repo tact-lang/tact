@@ -311,6 +311,26 @@ const parseStructInstance =
         );
     };
 
+const parseMapField = ({ key, value }: $ast.mapField): Handler<Ast.MapField> => ctx => {
+    return { key: parseExpression(key)(ctx), value: parseExpression(value)(ctx) };
+};
+
+const parseMapLiteral = ({ typeArgs, fields, loc }: $ast.MapLiteral): Handler<Ast.MapLiteral | Ast.Id> => (ctx) => {
+    const type = parseMapType(typeArgs, loc)(ctx);
+    if (type.kind === 'type_id') {
+        return ctx.ast.Id("ERROR", loc);
+    }
+    return ctx.ast.MapLiteral(
+        type,
+        map(parseList(fields), parseMapField)(ctx),
+        loc,
+    );
+};
+const parseSetLiteral = ({ loc }: $ast.SetLiteral): Handler<Ast.Id> => (ctx) => {
+    ctx.err.noSetLiterals()(loc);
+    return ctx.ast.Id("ERROR", loc);
+};
+
 const parseInitOf =
     ({ name, params, loc }: $ast.InitOf): Handler<Ast.InitOf> =>
     (ctx) => {
@@ -459,6 +479,8 @@ type Expression =
     | $ast.Suffix
     | $ast.Parens
     | $ast.StructInstance
+    | $ast.MapLiteral
+    | $ast.SetLiteral
     | $ast.IntegerLiteral
     | $ast.BoolLiteral
     | $ast.InitOf
@@ -475,6 +497,8 @@ const parseExpression: (input: Expression) => Handler<Ast.Expression> =
         Suffix: parseSuffix,
         Parens: parseParens,
         StructInstance: parseStructInstance,
+        MapLiteral: parseMapLiteral,
+        SetLiteral: parseSetLiteral,
         IntegerLiteral: parseIntegerLiteral,
         BoolLiteral: parseBoolLiteral,
         InitOf: parseInitOf,
@@ -841,6 +865,53 @@ const parseTypeId =
         return ctx.ast.TypeId(name, loc);
     };
 
+const parseMapType = (args: $ast.commaList<$ast.TypeAs> | undefined, loc: $.Loc): Handler<Ast.MapType | Ast.TypeId> => ctx => {
+    const parsedArgs = parseList(args);
+    const [key, value, ...rest] = parsedArgs;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+    if (!key || !value || rest.length > 0) {
+        ctx.err.genericArgCount(
+            "map",
+            2,
+            parsedArgs.length,
+        )(loc);
+        return ctx.ast.TypeId("ERROR", loc);
+    }
+    const [keyAs, ...restKeyAs] = key.as;
+    if (restKeyAs.length > 0) {
+        ctx.err.mapOnlyOneAs("key")(loc);
+    }
+    if (key.type.optionals.length > 0) {
+        ctx.err.cannotBeOptional("map key types")(key.loc);
+    }
+    if (key.type.type.$ !== "TypeRegular") {
+        ctx.err.onlyTypeId("key")(loc);
+        return ctx.ast.TypeId("ERROR", loc);
+    }
+    const [valueAs, ...restValueAs] = value.as;
+    if (restValueAs.length > 0) {
+        ctx.err.mapOnlyOneAs("value")(loc);
+    }
+    if (value.type.optionals.length > 0) {
+        ctx.err.cannotBeOptional("map value types")(value.loc);
+    }
+    if (value.type.type.$ !== "TypeRegular") {
+        ctx.err.onlyTypeId("value")(loc);
+        return ctx.ast.TypeId("ERROR", loc);
+    }
+    const keyType = key.type.type.child;
+    const valueType = value.type.type.child;
+    return ctx.ast.MapType(
+        ctx.ast.TypeId(keyType.name, keyType.loc),
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+        keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : undefined,
+        ctx.ast.TypeId(valueType.name, valueType.loc),
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+        valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : undefined,
+        loc,
+    );
+};
+
 const parseTypeOptional =
     ({ type, loc }: $ast.$type): Handler<Ast.Type> =>
     (ctx) => {
@@ -873,50 +944,7 @@ const parseTypeOptional =
         }
         const { name, args, loc: genericLoc } = innerType;
         if (name.$ === "MapKeyword") {
-            const parsedArgs = parseList(args);
-            const [key, value, ...rest] = parsedArgs;
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-            if (!key || !value || rest.length > 0) {
-                ctx.err.genericArgCount(
-                    "map",
-                    2,
-                    parsedArgs.length,
-                )(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const [keyAs, ...restKeyAs] = key.as;
-            if (restKeyAs.length > 0) {
-                ctx.err.mapOnlyOneAs("key")(genericLoc);
-            }
-            if (key.type.optionals.length > 0) {
-                ctx.err.cannotBeOptional("map key types")(key.loc);
-            }
-            if (key.type.type.$ !== "TypeRegular") {
-                ctx.err.onlyTypeId("key")(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const [valueAs, ...restValueAs] = value.as;
-            if (restValueAs.length > 0) {
-                ctx.err.mapOnlyOneAs("value")(genericLoc);
-            }
-            if (value.type.optionals.length > 0) {
-                ctx.err.cannotBeOptional("map value types")(value.loc);
-            }
-            if (value.type.type.$ !== "TypeRegular") {
-                ctx.err.onlyTypeId("value")(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const keyType = key.type.type.child;
-            const valueType = value.type.type.child;
-            return ctx.ast.MapType(
-                ctx.ast.TypeId(keyType.name, keyType.loc),
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-                keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : undefined,
-                ctx.ast.TypeId(valueType.name, valueType.loc),
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-                valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : undefined,
-                genericLoc,
-            );
+            return parseMapType(args, genericLoc)(ctx);
         }
         if (name.$ === "Bounced") {
             const parsedArgs = parseList(args);

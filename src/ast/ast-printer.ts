@@ -199,6 +199,24 @@ export const ppAstAddress = ({ value }: Ast.Address) =>
 export const ppAstCell = ({ value }: Ast.Cell) => `cell("${value.toString()}")`;
 export const ppAstSlice = ({ value }: Ast.Slice) =>
     `slice("${value.toString()}")`;
+export const ppAstMapLiteral = ({ type, fields }: Ast.MapLiteral) => {
+    const key = ppAstTypeIdWithStorage(type.keyType, type.keyStorageType);
+    const value = ppAstTypeIdWithStorage(type.valueType, type.valueStorageType);
+    const exprs = fields.map(expr => {
+        const key = ppAstExpression(expr.key);
+        const value = ppAstExpression(expr.value);
+        return `${key}: ${value}`;
+    }).join(', ');
+    return `map<${key}, ${value}> { ${exprs} }`;
+};
+export const ppAstSetLiteral = ({ valueType, valueStorageType, fields }: Ast.SetLiteral) => {
+    const type = ppAstTypeIdWithStorage(valueType, valueStorageType);
+    const exprs = fields.map(expr => ppAstExpression(expr)).join(', ');
+    return `set<${type}> { ${exprs} }`;
+};
+export const ppAstMapValue = (_: Ast.MapValue): string => {
+    return `map<...>(...)`;
+};
 
 export const ppAstStaticCall = ({ function: func, args }: Ast.StaticCall) => {
     return `${ppAstId(func)}(${ppExprArgs(args)})`;
@@ -268,6 +286,9 @@ export const ppAstExpressionNested = makeVisitor<Ast.Expression>()({
     address: ppLeaf(ppAstAddress),
     cell: ppLeaf(ppAstCell),
     slice: ppLeaf(ppAstSlice),
+    map_literal: ppLeaf(ppAstMapLiteral),
+    set_literal: ppLeaf(ppAstSetLiteral),
+    map_value: ppLeaf(ppAstMapValue),
 
     method_call: ppAstMethodCall,
     field_access: ppAstFieldAccess,
@@ -916,6 +937,9 @@ export const ppAstNode: Printer<Ast.AstNode> = makeVisitor<Ast.AstNode>()({
     method_call: exprNode(ppAstExpression),
     static_call: exprNode(ppAstExpression),
     struct_instance: exprNode(ppAstExpression),
+    map_literal: exprNode(ppAstExpression),
+    set_literal: exprNode(ppAstExpression),
+    map_value: exprNode(ppAstExpression),
     struct_value: exprNode(ppAstStructValue),
     init_of: exprNode(ppAstExpression),
     code_of: exprNode(ppAstExpression),

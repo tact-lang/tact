@@ -25,29 +25,39 @@ export type TypeDescription = {
     constants: ConstantDescription[];
 };
 
+export type TypeRefRef = {
+    kind: "ref";
+    name: string;
+    optional: boolean;
+}
+
+export type TypeRefMap = {
+    kind: "map";
+    key: string;
+    keyAs: string | null;
+    value: string;
+    valueAs: string | null;
+}
+
+export type TypeRefBounced = {
+    kind: "ref_bounced";
+    name: string;
+}
+
+export type TypeRefVoid = {
+    kind: "void";
+}
+
+export type TypeRefNull = {
+    kind: "null";
+}
+
 export type TypeRef =
-    | {
-          kind: "ref";
-          name: string;
-          optional: boolean;
-      }
-    | {
-          kind: "map";
-          key: string;
-          keyAs: string | null;
-          value: string;
-          valueAs: string | null;
-      }
-    | {
-          kind: "ref_bounced";
-          name: string;
-      }
-    | {
-          kind: "void";
-      }
-    | {
-          kind: "null";
-      };
+    | TypeRefRef
+    | TypeRefMap
+    | TypeRefBounced
+    | TypeRefVoid
+    | TypeRefNull;
 
 export type FieldDescription = {
     name: string;

@@ -41,6 +41,9 @@ import {
 } from "@/ast/ast-helpers";
 import { enabledDebug, enabledNullChecks } from "@/config/features";
 import type { CompilerContext } from "@/context/context";
+import { getKeyParser, getValueParser, mapSerializers } from "@/bindings/typescript/serializers";
+import { getMapAbi } from "@/types/resolveABITypeRef";
+import type { SrcInfo } from "@/grammar";
 
 function isNull(wCtx: WriterContext, expr: Ast.Expression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -894,7 +897,10 @@ export function writeExpressionInCondition(
 }
 
 export function writeTypescriptValue(
+    ctx: CompilerContext,
     val: Ast.Literal | undefined,
+    type: TypeRef,
+    loc: SrcInfo,
 ): string | undefined {
     if (typeof val === "undefined") return undefined;
 
@@ -914,16 +920,37 @@ export function writeTypescriptValue(
         case "null":
             return "null";
         case "struct_value": {
+            if (type.kind !== 'ref') {
+                throwInternalCompilerError("Map value must have map type");
+            }
             const typeName = val.type.text;
+            const structType = getType(ctx, type.name);
             const args = val.args
                 .map(
-                    (it) =>
-                        it.field.text +
-                        ": " +
-                        writeTypescriptValue(it.initializer),
+                    (it) => {
+                        const field = structType.fields.find(field => field.name === it.field.text);
+                        if (typeof field === 'undefined') {
+                            throwInternalCompilerError(`Field "${it.field.text}" not found in type`);
+                        }
+                        return it.field.text +
+                            ": " +
+                            writeTypescriptValue(ctx, it.initializer, field.type, field.loc);
+                    }
                 )
                 .join(", ");
             return `{ $$type: "${typeName}" as const, ${args} }`;
+        }
+        case "map_value": {
+            if (type.kind !== 'map') {
+                throwInternalCompilerError("Map value must have map type");
+            }
+            const res = mapSerializers.abiMatcher(getMapAbi(type, loc));
+            if (res === null) {
+                throwInternalCompilerError("Wrong map ABI");
+            }
+            const keyType = getKeyParser(res.key);
+            const valueType = getValueParser(res.value);
+            return `Dictionary.load(${keyType}, ${valueType}, Cell.fromHex("${val.bocHex}").beginParse())`
         }
     }
 }

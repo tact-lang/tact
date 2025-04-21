@@ -391,6 +391,8 @@ export type Expression =
     | Id
     | InitOf
     | CodeOf
+    | MapLiteral
+    | SetLiteral
     | Literal;
 
 export type Literal =
@@ -401,6 +403,7 @@ export type Literal =
     | Address
     | Cell
     | Slice
+    | MapValue
     | StructValue;
 
 export type BinaryOperation =
@@ -472,6 +475,28 @@ export type StructInstance = {
     readonly kind: "struct_instance";
     readonly type: Id;
     readonly args: readonly StructFieldInitializer[];
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type MapLiteral = {
+    readonly kind: "map_literal";
+    readonly type: MapType;
+    readonly fields: readonly MapField[];
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type MapField = {
+    readonly key: Expression;
+    readonly value: Expression;
+};
+
+export type SetLiteral = {
+    readonly kind: "set_literal";
+    readonly valueType: TypeId;
+    readonly valueStorageType: Id | undefined;
+    readonly fields: readonly Expression[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -610,6 +635,14 @@ export type Slice = {
     readonly id: number;
     readonly loc: SrcInfo;
 };
+
+export type MapValue = {
+    readonly kind: "map_value";
+    readonly bocHex: string;
+    readonly type: MapType;
+    readonly id: number;
+    readonly loc: SrcInfo;
+}
 
 export type StructValue = {
     readonly kind: "struct_value";

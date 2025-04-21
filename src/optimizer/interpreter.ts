@@ -1,4 +1,4 @@
-import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
+import { Address, beginCell, BitString, Cell, Dictionary, DictionaryKeyTypes, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import { crc32 } from "@/utils/crc32";
 import type * as Ast from "@/ast/ast";
@@ -37,6 +37,8 @@ import {
 import { divFloor, modFloor } from "@/optimizer/util";
 import { sha256 } from "@/utils/sha256";
 import { prettyPrint } from "@/ast/ast-printer";
+import { MapSerializerDescrKey, MapSerializerDescrValue, mapSerializers } from "@/bindings/typescript/serializers";
+import { getMapAbi } from "@/types/resolveABITypeRef";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -105,14 +107,14 @@ function ensureArgumentForEquality(val: Ast.Literal): Ast.Literal {
         case "string":
         case "slice":
             return val;
-        case "struct_value":
+        case "map_value":
+        case "struct_value": {
             throwErrorConstEval(
                 `struct ${prettyPrint(val)} cannot be an argument to == operator`,
                 val.loc,
             );
             break;
-        default:
-            throwInternalCompilerError("Unrecognized ast literal kind");
+        }
     }
 }
 
@@ -851,8 +853,12 @@ export class Interpreter {
                 return this.interpretFieldAccess(ast);
             case "static_call":
                 return this.interpretStaticCall(ast);
-            default:
-                throwInternalCompilerError("Unrecognized expression kind");
+            case "map_value":
+                return this.interpretMapValue(ast);
+            case "map_literal":
+                return this.interpretMapLiteral(ast);
+            case "set_literal":
+                return throwInternalCompilerError("Set literals are not supported");
         }
     }
 
@@ -1077,6 +1083,97 @@ export class Interpreter {
     private interpretStructValue(ast: Ast.StructValue): Ast.StructValue {
         // Struct values are already simplified to their simplest form
         return ast;
+    }
+    private interpretMapValue(ast: Ast.MapValue): Ast.MapValue {
+        return ast;
+    }
+
+    private interpretMapLiteral(ast: Ast.MapLiteral): Ast.MapValue {
+        const keyTy = getType(this.context, ast.type.keyType);
+        const valTy = getType(this.context, ast.type.valueType);
+        const res = mapSerializers.abiMatcher(getMapAbi({
+            kind: "map",
+            key: keyTy.name,
+            keyAs:
+                ast.type.keyStorageType !== undefined
+                    ? idText(ast.type.keyStorageType)
+                    : null,
+            value: valTy.name,
+            valueAs:
+                ast.type.valueStorageType !== undefined
+                    ? idText(ast.type.valueStorageType)
+                    : null,
+        }, ast.loc));
+        if (res === null) {
+            throwInternalCompilerError("Wrong map ABI");
+        }
+        const d = Dictionary.empty<DictionaryKeyTypes, unknown>(
+            this.getKeyParser(res.key),
+            this.getValueParser(res.value, ast.loc),
+        );
+        for (const { key: keyExpr, value: valueExpr } of ast.fields) {
+            const keyValue = this.interpretExpressionInternal(keyExpr);
+            const valValue = this.interpretExpressionInternal(valueExpr);
+            d.set(keyValue, valValue) // TODO: double existential
+        }
+    }
+
+    getKeyParser(src: MapSerializerDescrKey) {
+        switch (src.kind) {
+            case "int": {
+                if (src.bits <= 32) {
+                    return Dictionary.Keys.Int(src.bits);
+                } else {
+                    return Dictionary.Keys.BigInt(src.bits);
+                }
+            }
+            case "uint": {
+                if (src.bits <= 32) {
+                    return Dictionary.Keys.Uint(src.bits);
+                } else {
+                    return Dictionary.Keys.BigUint(src.bits);
+                }
+            }
+            case "address": {
+                return Dictionary.Keys.Address();
+            }
+        }
+    }
+    getValueParser(src: MapSerializerDescrValue, loc: SrcInfo) {
+        switch (src.kind) {
+            case "int": {
+                if (src.bits <= 32) {
+                    return Dictionary.Values.Int(src.bits);
+                } else {
+                    return Dictionary.Values.BigInt(src.bits);
+                }
+            }
+            case "uint": {
+                if (src.bits <= 32) {
+                    return Dictionary.Values.Uint(src.bits);
+                } else {
+                    return Dictionary.Values.BigUint(src.bits);
+                }
+            }
+            case "varuint": {
+                return Dictionary.Values.BigVarUint(src.length);
+            }
+            case "varint": {
+                return Dictionary.Values.BigVarInt(src.length);
+            }
+            case "address": {
+                return Dictionary.Values.Address();
+            }
+            case "cell": {
+                return Dictionary.Values.Cell();
+            }
+            case "boolean": {
+                return Dictionary.Values.Bool();
+            }
+            case "struct": {
+                return throwNonFatalErrorConstEval("Cannot evaluate map with struct values", loc);
+            }
+        }
     }
 
     private interpretFieldAccess(ast: Ast.FieldAccess): Ast.Literal {
