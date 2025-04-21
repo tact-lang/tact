@@ -69,9 +69,9 @@ In such cases, it's more gas-efficient to group these common fields at the begin
 contract NFTItem(
     index: Int,
     ownerAddress: Address?, // starts as null
-    content: Cell?,        // starts as null
     collectionAddress: Address,
-    someOtherField: Int
+    someOtherField: Int,
+    content: Cell?,        // starts as null
 ) {
     // Contract implementation
 }
