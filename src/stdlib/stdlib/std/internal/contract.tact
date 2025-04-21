@@ -97,34 +97,51 @@ struct StateInit {
 
 /// Global function. Available since Tact 1.6.1.
 ///
-/// Efficiently compares if the given address matches the basechain address of the contract.
-/// Returns true if addresses are the same, false otherwise.
+/// Checks if the given `address` corresponds to the contract address in the workchain ID 0 (basechain) derived from the `StateInit` `self`. Returns `true` if the addresses match and `false` otherwise.
+/// 
+/// This function works correctly only for basechain addresses. It may produce false positives or negatives if the specified `address` or the address derived from the `StateInit{:tact}` `self{:tact}` has a non-zero workchain ID.
+/// 
+/// #### Usage
 ///
 /// ```tact
-/// fun example() {
-///     let init = initOf SomeContract();
-///     init.hasSameBasechainAddress(sender()); // returns true if sender matches contract's basechain address
+/// contract Parent() {
+///     receive() {
+///         let childContract = initOf Child(myAddress());
+///
+///         // If you are working with contracts on the basechain, this
+///         let expensiveCheck = contractAddress(childContract) == sender();
+///
+///         // is more expensive than doing this
+///         let cheaperCheck = childContract.hasSameBasechainAddress(sender());
+///
+///         // while the results are the same
+///         expensiveCheck == cheaperCheck; // true
+///     }
+/// }
+///
+/// contract Child(parentAddr: Address) {
+///     receive() {
+///         // Forwards surplus to the parent address by sending a message
+///         // with an empty body and all remaining funds from the received message
+///         cashback(self.parentAddr);
+///     }
 /// }
 /// ```
 ///
-/// This function provides a gas-optimized implementation compared to direct address comparison:
+/// #### Exit codes
 ///
-/// ```tact
-/// fun example() {
-///     let init = initOf SomeContract();
-///     sender() == contractAddress(sender()); // less efficient approach
-/// }
-/// ```
-///
-/// Note that this function works only for basechain addresses!
+/// * 9: [Cell underflow] — Thrown when the specified `address` cannot be parsed as a `StdAddress`.
 ///
 /// See:
+/// * https://docs.tact-lang.org/ref/core-addresses#stateinithassamebasechainaddress
 /// * https://docs.tact-lang.org/ref/core-addresses#contractaddress
 ///
-inline extends fun hasSameBasechainAddress(self: StateInit, sender: Address): Bool {
-    let senderAddress = parseStdAddress(sender.asSlice()).address;
+/// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
+///
+inline extends fun hasSameBasechainAddress(self: StateInit, address: Address): Bool {
+    let addressHash = parseStdAddress(address.asSlice()).address;
     let baseAddress = contractBasechainAddress(self);
-    return baseAddress.hash!! == senderAddress;
+    return baseAddress.hash!! == addressHash;
 }
 
 /// Global function.

@@ -7,26 +7,26 @@ import "@ton/test-utils";
 
 describe("compute phase errors", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<TestContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure", {
+        treasury = await blockchain.treasury("treasury", {
             resetBalanceIfZero: true,
         });
 
         contract = blockchain.openContract(await TestContract.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10000") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -35,63 +35,63 @@ describe("compute phase errors", () => {
 
     // 0: success
     it("should test exit code 0", async () => {
-        await testComputePhaseExitCode(0, contract, treasure);
+        await testComputePhaseExitCode(0, contract, treasury);
     });
 
     // 1: alt. success code
     it("should test exit code 1", async () => {
-        await testComputePhaseExitCode(1, contract, treasure);
+        await testComputePhaseExitCode(1, contract, treasury);
     });
 
     // 2: stack underflow
     it("should test exit code 2", async () => {
-        await testComputePhaseExitCode(2, contract, treasure);
+        await testComputePhaseExitCode(2, contract, treasury);
     });
 
     // 3: Stack overflow
     it("should test exit code 3", async () => {
-        await testComputePhaseExitCode(3, contract, treasure);
+        await testComputePhaseExitCode(3, contract, treasury);
     });
 
     // 4: Integer overflow
     it("should test exit code 4", async () => {
-        await testComputePhaseExitCode(4, contract, treasure);
+        await testComputePhaseExitCode(4, contract, treasury);
     });
 
     // 5: Integer out of expected range
     it("should test exit code 5", async () => {
-        await testComputePhaseExitCode(5, contract, treasure);
+        await testComputePhaseExitCode(5, contract, treasury);
     });
 
     // 6: Invalid opcode
     it("should test exit code 6", async () => {
-        await testComputePhaseExitCode(8, contract, treasure);
+        await testComputePhaseExitCode(8, contract, treasury);
     });
 
     // 7: Type check error
     it("should test exit code 7", async () => {
-        await testComputePhaseExitCode(7, contract, treasure);
+        await testComputePhaseExitCode(7, contract, treasury);
     });
 
     // 8: Cell overflow
     it("should test exit code 8", async () => {
-        await testComputePhaseExitCode(8, contract, treasure);
+        await testComputePhaseExitCode(8, contract, treasury);
     });
 
     // 9: Cell underflow
     it("should test exit code 9", async () => {
-        await testComputePhaseExitCode(9, contract, treasure);
+        await testComputePhaseExitCode(9, contract, treasury);
     });
 
     // 10: Dictionary error
     it("should test exit code 10", async () => {
-        await testComputePhaseExitCode(10, contract, treasure);
+        await testComputePhaseExitCode(10, contract, treasury);
     });
 
     // 11: "Unknown" error
     // NOTE: Thrown in various unrelated cases
     it("should test exit code 11", async () => {
-        await testComputePhaseExitCode(11, contract, treasure);
+        await testComputePhaseExitCode(11, contract, treasury);
     });
 
     // 12: Fatal error
@@ -99,7 +99,7 @@ describe("compute phase errors", () => {
 
     // 13 (actually, -14): Out of gas
     it("should test exit code 13", async () => {
-        await testComputePhaseExitCode(13, contract, treasure);
+        await testComputePhaseExitCode(13, contract, treasury);
     });
 
     // 14: Virtualization error
@@ -109,7 +109,7 @@ describe("compute phase errors", () => {
 async function testComputePhaseExitCode(
     code: number,
     contract: SandboxContract<TestContract>,
-    treasure: SandboxContract<TreasuryContract>,
+    treasury: SandboxContract<TreasuryContract>,
 ) {
     expect(code).toBeGreaterThanOrEqual(0);
     expect(code).toBeLessThan(128);
@@ -130,7 +130,7 @@ async function testComputePhaseExitCode(
         | "13";
 
     const sendResult = await contract.send(
-        treasure.getSender(),
+        treasury.getSender(),
         { value: toNano("10") },
         code === 4
             ? {
@@ -142,7 +142,7 @@ async function testComputePhaseExitCode(
     );
 
     expect(sendResult.transactions).toHaveTransaction({
-        from: treasure.address,
+        from: treasury.address,
         to: contract.address,
         success: code === 0 || code === 1,
         exitCode: code === 13 ? -14 : code,

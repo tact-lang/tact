@@ -7,38 +7,38 @@ import "@ton/test-utils";
 
 describe("strings", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<SampleContract>;
     let contract2: SandboxContract<SampleContract2>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await SampleContract.fromInit());
         contract2 = blockchain.openContract(await SampleContract2.fromInit());
 
         // Deploy contracts
         let deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
         });
 
         deployResult = await contract2.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract2.address,
             success: true,
             deploy: true,
@@ -51,7 +51,7 @@ describe("strings", () => {
 
         // Send EntryFirst message
         let result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "EntryFirst",
@@ -60,7 +60,7 @@ describe("strings", () => {
             },
         );
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });
@@ -70,7 +70,7 @@ describe("strings", () => {
 
         // Send EntrySecond message
         result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "EntrySecond",
@@ -79,7 +79,7 @@ describe("strings", () => {
             },
         );
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });

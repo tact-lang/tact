@@ -158,7 +158,13 @@ struct VarAddress {
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when the specified `slice` cannot be parsed as a `StdAddress`.
+///
 /// See: https://docs.tact-lang.org/ref/core-addresses#parsestdaddress
+///
+/// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 
@@ -182,7 +188,13 @@ asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when the specified `slice` cannot be parsed as a `VarAddress`.
+///
 /// See: https://docs.tact-lang.org/ref/core-addresses#parsevaraddress
+///
+/// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 
