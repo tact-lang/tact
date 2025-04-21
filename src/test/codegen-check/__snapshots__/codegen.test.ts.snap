@@ -12,7 +12,7 @@ exports[`codegen should correctly generate FunC code 1`] = `
 ;;
 
 ;; $MainContract$_load
-(slice, ((int, int, slice))) $MainContract$_load(slice sc_0) inline;
+(slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline;
 
 ;; $A$_to_external
 (int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v) inline;
@@ -24,43 +24,43 @@ exports[`codegen should correctly generate FunC code 1`] = `
 (cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v) inline;
 
 ;; $MainContract$init$_load
-(slice, ((int, int, slice))) $MainContract$init$_load(slice sc_0) inline;
+(slice, ((int, int, slice, cell))) $MainContract$init$_load(slice sc_0) inline;
 
 ;; $MainContract$_contract_init
-(int, int, slice) $MainContract$_contract_init(int $field, int $value, slice $data) impure inline;
+(int, int, slice, cell) $MainContract$_contract_init(int $field, int $value, slice $data, cell $mapping) impure inline;
 
 ;; $MainContract$_contract_load
-(int, int, slice) $MainContract$_contract_load() impure inline;
+(int, int, slice, cell) $MainContract$_contract_load() impure inline;
 
 ;; $MainContract$_fun_testAugmentedAssignOperators
-((int, int, slice), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref;
+((int, int, slice, cell), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice, cell) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref;
 
 ;; $A$_constructor_a_b_c_d_e_f_g
 ((int, int, int, int, int, int, int)) $A$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline;
 
 ;; $MainContract$_fun_writeSerializationForA
-((int, int, slice), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForA((int, int, slice) $self) impure inline_ref;
+((int, int, slice, cell), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForA((int, int, slice, cell) $self) impure inline_ref;
 
 ;; $B$_constructor_a_b_c_d_e_f_g
 ((int, int, int, int, int, int, int)) $B$_constructor_a_b_c_d_e_f_g(int $a, int $b, int $c, int $d, int $e, int $f, int $g) inline;
 
 ;; $MainContract$_fun_writeSerializationForB
-((int, int, slice), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForB((int, int, slice) $self) impure inline_ref;
+((int, int, slice, cell), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForB((int, int, slice, cell) $self) impure inline_ref;
 
 ;; $C$_constructor_a_b_c_d_e_f_g_h
 ((cell, cell, slice, slice, int, int, int, slice)) $C$_constructor_a_b_c_d_e_f_g_h(cell $a, cell $b, slice $c, slice $d, int $e, int $f, int $g, slice $h) inline;
 
 ;; $MainContract$_fun_writeSerializationForC
-((int, int, slice), (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC((int, int, slice) $self) impure inline_ref;
+((int, int, slice, cell), (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC((int, int, slice, cell) $self) impure inline_ref;
 
 ;; $MainContract$_fun_testIfOptimizationPositive
-((int, int, slice), ()) $MainContract$_fun_testIfOptimizationPositive((int, int, slice) $self, int $a) impure inline_ref;
+((int, int, slice, cell), ()) $MainContract$_fun_testIfOptimizationPositive((int, int, slice, cell) $self, int $a) impure inline_ref;
 
 ;; $MainContract$_fun_testIfOptimizationComplexPositive
-((int, int, slice), ()) $MainContract$_fun_testIfOptimizationComplexPositive((int, int, slice) $self, int $a) impure inline_ref;
+((int, int, slice, cell), ()) $MainContract$_fun_testIfOptimizationComplexPositive((int, int, slice, cell) $self, int $a) impure inline_ref;
 
 ;; $MainContract$_fun_testIfOptimizationNegative
-((int, int, slice), ()) $MainContract$_fun_testIfOptimizationNegative((int, int, slice) $self, int $a) impure inline_ref;
+((int, int, slice, cell), ()) $MainContract$_fun_testIfOptimizationNegative((int, int, slice, cell) $self, int $a) impure inline_ref;
 
 
 ;; main_MainContract.stdlib.fc
@@ -126,33 +126,35 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
 
 ;;
 ;; Type: MainContract
-;; TLB: _ field:uint8 value:int256 data:fixed_bytes64 = MainContract
+;; TLB: _ field:uint8 value:int256 data:fixed_bytes64 mapping:dict<uint8, int256> = MainContract
 ;;
 
-(slice, ((int, int, slice))) $MainContract$_load(slice sc_0) inline {
+(slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline {
     var v'field = sc_0~load_uint(8);
     var v'value = sc_0~load_int(256);
     var v'data = sc_0~load_bits(512);
-    return (sc_0, (v'field, v'value, v'data));
+    var v'mapping = sc_0~load_dict();
+    return (sc_0, (v'field, v'value, v'data, v'mapping));
 }
 
-(slice, ((int, int, slice))) $MainContract$init$_load(slice sc_0) inline {
+(slice, ((int, int, slice, cell))) $MainContract$init$_load(slice sc_0) inline {
     var v'field = sc_0~load_uint(8);
     var v'value = sc_0~load_int(256);
     var v'data = sc_0~load_bits(512);
-    return (sc_0, (v'field, v'value, v'data));
+    var v'mapping = sc_0~load_dict();
+    return (sc_0, (v'field, v'value, v'data, v'mapping));
 }
 
-(int, int, slice) $MainContract$_contract_load() impure inline {
+(int, int, slice, cell) $MainContract$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
         return $sc~$MainContract$_load();
     }
     else {
-        (int $field, int $value, slice $data) = $sc~$MainContract$init$_load();
+        (int $field, int $value, slice $data, cell $mapping) = $sc~$MainContract$init$_load();
         $sc.end_parse();
-        return $MainContract$_contract_init($field, $value, $data);
+        return $MainContract$_contract_init($field, $value, $data, $mapping);
     }
 }
 
@@ -160,16 +162,17 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
 ;; Contract MainContract functions
 ;;
 
-(int, int, slice) $MainContract$_contract_init(int $field, int $value, slice $data) impure inline {
-    var (($self'field, $self'value, $self'data)) = (null(), null(), null());
+(int, int, slice, cell) $MainContract$_contract_init(int $field, int $value, slice $data, cell $mapping) impure inline {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = (null(), null(), null(), null());
     $self'field = $field;
     $self'value = $value;
     $self'data = $data;
-    return ($self'field, $self'value, $self'data);
+    $self'mapping = $mapping;
+    return ($self'field, $self'value, $self'data, $self'mapping);
 }
 
-((int, int, slice), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref {
-    var (($self'field, $self'value, $self'data)) = $self;
+((int, int, slice, cell), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice, cell) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     int $a = $intVal;
     $a = $a + $intVal2;
     $a = $a - $intVal2;
@@ -177,106 +180,106 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
     $b = ($b ? $boolVal2 : (false));
     $b = ($b ? (true) : $boolVal2);
     var $fresh$ret_0 = ($a + ($b ? 10 : 20));
-    return (($self'field, $self'value, $self'data), $fresh$ret_0);
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_0);
 }
 
-((int, int, slice), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForA((int, int, slice) $self) impure inline_ref {
-    var (($self'field, $self'value, $self'data)) = $self;
+((int, int, slice, cell), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForA((int, int, slice, cell) $self) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     var $fresh$ret_1 = $A$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, true, 3, 4);
-    return (($self'field, $self'value, $self'data), $fresh$ret_1);
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_1);
 }
 
-((int, int, slice), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForB((int, int, slice) $self) impure inline_ref {
-    var (($self'field, $self'value, $self'data)) = $self;
+((int, int, slice, cell), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForB((int, int, slice, cell) $self) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     var $fresh$ret_2 = $B$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, null(), 3, 4);
-    return (($self'field, $self'value, $self'data), $fresh$ret_2);
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_2);
 }
 
-((int, int, slice), (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC((int, int, slice) $self) impure inline_ref {
-    var (($self'field, $self'value, $self'data)) = $self;
+((int, int, slice, cell), (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC((int, int, slice, cell) $self) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     var $fresh$ret_3 = $C$_constructor_a_b_c_d_e_f_g_h($Builder$_fun_endCell(store_int($global_beginCell(), 0, 32)), null(), null(), null(), true, 1, 2, $global_myAddress());
-    return (($self'field, $self'value, $self'data), $fresh$ret_3);
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_3);
 }
 
-((int, int, slice), ()) $MainContract$_fun_testIfOptimizationPositive((int, int, slice) $self, int $a) impure inline_ref {
-    var (($self'field, $self'value, $self'data)) = $self;
+((int, int, slice, cell), ()) $MainContract$_fun_testIfOptimizationPositive((int, int, slice, cell) $self, int $a) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     ifnot ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     if ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     ifnot ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     if ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     ifnot ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     if ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     ifnot ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     if ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     ifnot ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     if ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     ifnot ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     if ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    return (($self'field, $self'value, $self'data), ());
+    return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 
-((int, int, slice), ()) $MainContract$_fun_testIfOptimizationComplexPositive((int, int, slice) $self, int $a) impure inline_ref {
-    var (($self'field, $self'value, $self'data)) = $self;
+((int, int, slice, cell), ()) $MainContract$_fun_testIfOptimizationComplexPositive((int, int, slice, cell) $self, int $a) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     ifnot ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     } elseif ($a) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     ifnot ($a) {
         ifnot ($a) {
-            return (($self'field, $self'value, $self'data), ());
+            return (($self'field, $self'value, $self'data, $self'mapping), ());
         } elseif ($a) {
-            return (($self'field, $self'value, $self'data), ());
+            return (($self'field, $self'value, $self'data, $self'mapping), ());
         }
     } elseif ($a) {
         ifnot ($a) {
-            return (($self'field, $self'value, $self'data), ());
+            return (($self'field, $self'value, $self'data, $self'mapping), ());
         } elseifnot ($a) {
-            return (($self'field, $self'value, $self'data), ());
+            return (($self'field, $self'value, $self'data, $self'mapping), ());
         }
     }
-    return (($self'field, $self'value, $self'data), ());
+    return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 
-((int, int, slice), ()) $MainContract$_fun_testIfOptimizationNegative((int, int, slice) $self, int $a) impure inline_ref {
-    var (($self'field, $self'value, $self'data)) = $self;
+((int, int, slice, cell), ()) $MainContract$_fun_testIfOptimizationNegative((int, int, slice, cell) $self, int $a) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     if (($a == 1)) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     if (($a != 1)) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     if ((1 == $a)) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     if ((1 != $a)) {
-        return (($self'field, $self'value, $self'data), ());
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    return (($self'field, $self'value, $self'data), ());
+    return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 
 ;;
@@ -352,7 +355,7 @@ _ %testIfOptimizationNegative(int $a) method_id(87434) {
     __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
-    var ($self'field, $self'value, $self'data) = $MainContract$_contract_load();
+    var ($self'field, $self'value, $self'data, $self'mapping) = $MainContract$_contract_load();
     
     ;; Handle bounced messages
     if (msg_bounced) { return (); }
