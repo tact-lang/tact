@@ -2,6 +2,7 @@ import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { Test, Test_getterMapping } from "./output/getters_Test";
+import { Test as Test2 } from "./output/empty-message-getter-parameter_Test";
 import "@ton/test-utils";
 
 // disable tests on MacOS
@@ -11,6 +12,7 @@ describe("getters", () => {
     let blockchain: Blockchain;
     let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<Test>;
+    let contract2: SandboxContract<Test2>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -18,6 +20,7 @@ describe("getters", () => {
         treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await Test.fromInit());
+        contract2 = blockchain.openContract(await Test2.fromInit());
 
         const deployResult = await contract.send(
             treasury.getSender(),
@@ -31,6 +34,19 @@ describe("getters", () => {
         expect(deployResult.transactions).toHaveTransaction({
             from: treasury.address,
             to: contract.address,
+            success: true,
+            deploy: true,
+        });
+
+        const deployResult2 = await contract2.send(
+            treasury.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult2.transactions).toHaveTransaction({
+            from: treasury.address,
+            to: contract2.address,
             success: true,
             deploy: true,
         });
@@ -88,4 +104,9 @@ describe("getters", () => {
         expect(await contract.getMethodIdMin()).toBe(true);
         expect(await contract.getMethodIdMax()).toBe(true);
     });
+
+    it("should take empty message as parameter", async () => {
+        const res = await contract2.getFoo({$$type: "Foo"});
+        expect(res).toMatchObject({})
+    })
 });
