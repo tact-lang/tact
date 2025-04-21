@@ -58,7 +58,7 @@ export async function run(provider: NetworkProvider) {
 }
 ```
 
-### Group common initial data in contract parameters
+### Group contract parameters with common initial values
 
 When deploying multiple instances of the same contract type (like NFT Items in a collection), it's common to have some data fields that are initially set to the same values. For example, in NFT Item contracts, fields like `ownerAddress`, `content`, and `collectionAddress` might start as `null` or have the same collection address for all items.
 
