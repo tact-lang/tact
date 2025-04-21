@@ -119,10 +119,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
             },
             generate: (ctx, args, _resolved, ref) => {
                 if (args.length !== 1) {
-                    throwCompilationError(
-                        "opcode() expects no arguments",
-                        ref,
-                    );
+                    throwCompilationError("opcode() expects no arguments", ref);
                 }
                 const arg = args[0]!;
                 if (arg.kind !== "ref") {
