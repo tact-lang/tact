@@ -929,27 +929,6 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun(`__tact_log`, () => {
-        ctx.signature(`int __tact_log(int num, int base)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                throw_unless(5, num > 0);
-                throw_unless(5, base > 1);
-                if (num < base) {
-                    return 0;
-                }
-                int result = 0;
-                while (num >= base) {
-                    num /= base;
-                    result += 1;
-                }
-                return result;
-            `);
-        });
-    });
-
     // generate dict operations for all combinations of key/value types
     for (const key of keyTypes) {
         for (const val of valTypes) {
