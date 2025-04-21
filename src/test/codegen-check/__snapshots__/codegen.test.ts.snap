@@ -47,6 +47,15 @@ tuple $MainContract$_contract_load() impure inline;
 ;; $MainContract$_fun_writeSerializationForC
 (tuple, (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC(tuple $self) impure inline_ref;
 
+;; $MainContract$_fun_testIfOptimizationPositive
+(tuple, ()) $MainContract$_fun_testIfOptimizationPositive(tuple $self, int $a) impure inline_ref;
+
+;; $MainContract$_fun_testIfOptimizationComplexPositive
+(tuple, ()) $MainContract$_fun_testIfOptimizationComplexPositive(tuple $self, int $a) impure inline_ref;
+
+;; $MainContract$_fun_testIfOptimizationNegative
+(tuple, ()) $MainContract$_fun_testIfOptimizationNegative(tuple $self, int $a) impure inline_ref;
+
 
 ;; main_MainContract.stdlib.fc
 global (int, slice, int, slice) __tact_context;
@@ -164,6 +173,87 @@ tuple $MainContract$_contract_init() impure inline {
     return ($self, $fresh$ret_3);
 }
 
+(tuple, ()) $MainContract$_fun_testIfOptimizationPositive(tuple $self, int $a) impure inline_ref {
+    var ($self) = $self;
+    ifnot ($a) {
+        return ($self, ());
+    }
+    if ($a) {
+        return ($self, ());
+    }
+    ifnot ($a) {
+        return ($self, ());
+    }
+    if ($a) {
+        return ($self, ());
+    }
+    ifnot ($a) {
+        return ($self, ());
+    }
+    if ($a) {
+        return ($self, ());
+    }
+    ifnot ($a) {
+        return ($self, ());
+    }
+    if ($a) {
+        return ($self, ());
+    }
+    ifnot ($a) {
+        return ($self, ());
+    }
+    if ($a) {
+        return ($self, ());
+    }
+    ifnot ($a) {
+        return ($self, ());
+    }
+    if ($a) {
+        return ($self, ());
+    }
+    return ($self, ());
+}
+
+(tuple, ()) $MainContract$_fun_testIfOptimizationComplexPositive(tuple $self, int $a) impure inline_ref {
+    var ($self) = $self;
+    ifnot ($a) {
+        return ($self, ());
+    } elseif ($a) {
+        return ($self, ());
+    }
+    ifnot ($a) {
+        ifnot ($a) {
+            return ($self, ());
+        } elseif ($a) {
+            return ($self, ());
+        }
+    } elseif ($a) {
+        ifnot ($a) {
+            return ($self, ());
+        } elseifnot ($a) {
+            return ($self, ());
+        }
+    }
+    return ($self, ());
+}
+
+(tuple, ()) $MainContract$_fun_testIfOptimizationNegative(tuple $self, int $a) impure inline_ref {
+    var ($self) = $self;
+    if (($a == 1)) {
+        return ($self, ());
+    }
+    if (($a != 1)) {
+        return ($self, ());
+    }
+    if ((1 == $a)) {
+        return ($self, ());
+    }
+    if ((1 != $a)) {
+        return ($self, ());
+    }
+    return ($self, ());
+}
+
 ;;
 ;; Get methods of a Contract MainContract
 ;;
@@ -194,6 +284,27 @@ _ %writeSerializationForC() method_id(129889) {
     var self = $MainContract$_contract_load();
     var res = self~$MainContract$_fun_writeSerializationForC();
     return $C$_to_external(res);
+}
+
+_ %testIfOptimizationPositive(int $a) method_id(72553) {
+    int $a = $a;
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testIfOptimizationPositive($a);
+    return res;
+}
+
+_ %testIfOptimizationComplexPositive(int $a) method_id(67196) {
+    int $a = $a;
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testIfOptimizationComplexPositive($a);
+    return res;
+}
+
+_ %testIfOptimizationNegative(int $a) method_id(87434) {
+    int $a = $a;
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testIfOptimizationNegative($a);
+    return res;
 }
 
 ;;

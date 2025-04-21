@@ -30,7 +30,9 @@ contract NFTCollection {
         self.royaltyParams = royaltyParams;
 
         self.commonCode = codeOf NFTItem;
-        self.commonData = beginCell().storeBit(false).storeAddress(myAddress()); // Use lazy bit
+        self.commonData = beginCell()
+            .storeUint(0, 3) // 0b00 - null address and 0b0 - null content cell
+            .storeAddress(myAddress());
     }
 
     receive() {} // ignore empty messages
@@ -96,7 +98,7 @@ contract NFTCollection {
     }
 
     get fun get_nft_address_by_index(index: Int): Address {
-        let stateInit = initOf NFTItem(InitNFTData { itemIndex: index, collectionAddress: myAddress() });
+        let stateInit = initOf NFTItem(null, null, myAddress(), index);
         return contractAddress(stateInit);
     }
 

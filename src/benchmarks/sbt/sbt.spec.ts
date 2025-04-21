@@ -124,11 +124,7 @@ describe("itemSBT", () => {
         // ITEM
         {
             itemSBT = blockchain.openContract(
-                await SBTItem.fromInit({
-                    $$type: "InitNFTData",
-                    itemIndex: 0n,
-                    collectionAddress: owner.address,
-                }),
+                await SBTItem.fromInit(0n, owner.address, null, null, null, 0n),
             );
 
             const deployResult = await sendDeploy(
@@ -185,11 +181,7 @@ describe("itemSBT", () => {
     it("deploy", async () => {
         const runDeployTactTest = async () => {
             const newItemSBT = blockchain.openContract(
-                await SBTItem.fromInit({
-                    $$type: "InitNFTData",
-                    itemIndex: 1n,
-                    collectionAddress: owner.address,
-                }),
+                await SBTItem.fromInit(1n, owner.address, null, null, null, 0n),
             );
             const sendResult = await step("request owner", async () =>
                 sendDeploy(owner, newItemSBT, newItemSBT.init!),

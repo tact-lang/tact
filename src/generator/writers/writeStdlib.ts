@@ -11,8 +11,6 @@ export function writeStdlib(ctx: WriterContext): void {
 
     ctx.skip("__tact_set");
     ctx.skip("__tact_nop");
-    ctx.skip("__tact_str_to_slice");
-    ctx.skip("__tact_slice_to_str");
 
     //
     // Addresses
@@ -925,27 +923,6 @@ export function writeStdlib(ctx: WriterContext): void {
             ctx.write(`
                 builders~${ctx.used("__tact_string_builder_append")}(sc);
                 return builders;
-            `);
-        });
-    });
-
-    ctx.fun(`__tact_log`, () => {
-        ctx.signature(`int __tact_log(int num, int base)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                throw_unless(5, num > 0);
-                throw_unless(5, base > 1);
-                if (num < base) {
-                    return 0;
-                }
-                int result = 0;
-                while (num >= base) {
-                    num /= base;
-                    result += 1;
-                }
-                return result;
             `);
         });
     });

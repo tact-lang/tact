@@ -14,7 +14,7 @@ import {
     visit,
 } from "@/fmt/cst/cst-helpers";
 import { CodeBuilder } from "@/fmt/formatter/code-builder";
-import { formatId, formatSeparatedList } from "@/fmt/formatter/helpers";
+import { formatId, formatSeparatedList, idText } from "@/fmt/formatter/helpers";
 import { formatType } from "@/fmt/formatter/format-types";
 import {
     formatComment,
@@ -386,11 +386,16 @@ const formatStructInstance: FormatRule = (code, node) => {
             //      ^^^^^ this
             const initOpt = childByField(field, "init");
             if (initOpt) {
-                code.add(":").space();
                 const expression = nonLeafChild(initOpt);
-                if (expression) {
-                    formatExpression(code, expression);
+                if (expression === undefined) return;
+
+                if (idText(name) === idText(expression)) {
+                    // value: value -> value
+                    return;
                 }
+
+                code.add(":").space();
+                formatExpression(code, expression);
             }
         },
         {
