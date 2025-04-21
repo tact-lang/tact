@@ -54,7 +54,7 @@ jobs:
           yarn install
           yarn build:fast
 
-      - name: Check formatting with Prettier
+      - name: Check formatting with Prettier and Tact formatter
         run: |
           yarn fmt:check
 
