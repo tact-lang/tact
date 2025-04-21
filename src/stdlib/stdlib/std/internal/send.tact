@@ -464,7 +464,7 @@ asm fun deploy(params: DeployParameters) {
 asm fun cashback(to: Address) {
     NEWC
     x{42_} STSLICECONST // .storeUint(0x10, 6)
-    STSLICE             // .storeAddress(to)
+    STSLICE          // .storeAddress(to)
     0 PUSHINT        // 0
     111 STUR         // .storeUint(0, 111)
                      // 4 zeros for coins and 107 zeros for lt, fees, etc.
