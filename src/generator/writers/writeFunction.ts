@@ -10,6 +10,7 @@ import { resolveFuncType } from "@/generator/writers/resolveFuncType";
 import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
 import { funcIdOf } from "@/generator/writers/id";
 import {
+    constEval,
     writeExpression,
     writeExpressionInCondition,
     writePathExpression,
@@ -22,6 +23,7 @@ import { idTextErr, throwInternalCompilerError } from "@/error/errors";
 import { ppAsmShuffle } from "@/ast/ast-printer";
 import { zip } from "@/utils/array";
 import { binaryOperationFromAugmentedAssignOperation } from "@/ast/util";
+import type { CompilerContext } from "@/context/context";
 
 export function writeCastedExpression(
     expression: Ast.Expression,
@@ -557,31 +559,47 @@ export function writeStatement(
     throw Error("Unknown statement kind");
 }
 
-const rewriteWithIfNot = (expr: Ast.Expression): [Ast.Expression, string] => {
+const isZero = (expr: Ast.Expression): boolean => {
+    return expr.kind === "number" && expr.value === 0n;
+};
+
+const rewriteWithIfNot = (
+    expr: Ast.Expression,
+    ctx: CompilerContext,
+): ["if" | "ifnot", Ast.Expression] => {
     if (expr.kind === "op_unary" && expr.op === "!") {
         // `if (~ cond)` => `ifnot (cond)`
-        return [expr.operand, "ifnot"];
-    }
-    if (
-        expr.kind === "op_binary" &&
-        expr.op === "==" &&
-        expr.right.kind === "number" &&
-        expr.right.value === 0n
-    ) {
-        // if (a == 0) => ifnot (a)
-        return [expr.left, "ifnot"];
-    }
-    if (
-        expr.kind === "op_binary" &&
-        expr.op === "!=" &&
-        expr.right.kind === "number" &&
-        expr.right.value === 0n
-    ) {
-        // if (a != 0) => if (a)
-        return [expr.left, "if"];
+        return ["ifnot", expr.operand];
     }
 
-    return [expr, "if"];
+    if (expr.kind === "op_binary" && (expr.op === "==" || expr.op === "!=")) {
+        const left = constEval(expr.left, ctx);
+        const right = constEval(expr.right, ctx);
+
+        if (expr.op === "==") {
+            if (isZero(right)) {
+                // if (a == 0) => ifnot (a)
+                return ["ifnot", expr.left];
+            }
+            if (isZero(left)) {
+                // if (0 == a) => ifnot (a)
+                return ["ifnot", expr.right];
+            }
+        }
+
+        if (expr.op === "!=") {
+            if (isZero(right)) {
+                // if (a != 0) => if (a)
+                return ["if", expr.left];
+            }
+            if (isZero(left)) {
+                // if (0 != a) => if (a)
+                return ["if", expr.right];
+            }
+        }
+    }
+
+    return ["if", expr];
 };
 
 // HACK ALERT: if `returns` is a string, it contains the code to invoke before returning from a receiver
@@ -593,7 +611,7 @@ function writeCondition(
     returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
-    const [condition, ifKind] = rewriteWithIfNot(f.condition);
+    const [ifKind, condition] = rewriteWithIfNot(f.condition, ctx.ctx);
 
     ctx.append(
         `${elseif ? "} else" : ""}${ifKind} (${writeExpressionInCondition(condition, ctx)}) {`,
