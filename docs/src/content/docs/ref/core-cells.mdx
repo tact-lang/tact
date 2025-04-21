@@ -2025,6 +2025,30 @@ fun cautiousParse(payload: Slice): TripleAxe? {
 }
 ```
 
+## Message.opcode
+
+```tact
+extends fun opcode(self: Message): Int;
+```
+
+Extension function for any [Message][message] type.
+
+Returns the [opcode][opcode] of the [Message][message].
+
+Usage example:
+
+```tact
+message(0x777) TripleAxe {
+    prize: Int as uint32;
+}
+
+contract Example {
+    receive(msg: TripleAxe) {
+        dump(TripleAxe.opcode()); // 0x777
+   }
+}
+```
+
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
