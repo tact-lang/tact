@@ -413,9 +413,30 @@ export function createABITypeRefFromTypeRef(
             }; // Default is maximum size int
         }
         if (src.name === "Bool") {
+            if (as) {
+                throwCompilationError(
+                    `Unsupported format ${idTextErr(as)}`,
+                    loc,
+                );
+            }
             return { kind: "simple", type: "bool", optional: src.optional };
         }
         if (src.name === "Cell") {
+            if (as) {
+                const fmt = cellFormats[idText(as)];
+                if (!fmt) {
+                    throwCompilationError(
+                        `Unsupported format ${idTextErr(as)}`,
+                        loc,
+                    );
+                }
+                return {
+                    kind: "simple",
+                    type: fmt.type,
+                    optional: src.optional,
+                    format: fmt.format,
+                };
+            }
             return { kind: "simple", type: "cell", optional: src.optional };
         }
         if (src.name === "Slice") {
@@ -437,12 +458,39 @@ export function createABITypeRefFromTypeRef(
             return { kind: "simple", type: "slice", optional: src.optional };
         }
         if (src.name === "Builder") {
+            if (as) {
+                const fmt = builderFormats[idText(as)];
+                if (!fmt) {
+                    throwCompilationError(
+                        `Unsupported format ${idTextErr(as)}`,
+                        loc,
+                    );
+                }
+                return {
+                    kind: "simple",
+                    type: fmt.type,
+                    optional: src.optional,
+                    format: fmt.format,
+                };
+            }
             return { kind: "simple", type: "builder", optional: src.optional };
         }
         if (src.name === "Address") {
+            if (as) {
+                throwCompilationError(
+                    `Unsupported format ${idTextErr(as)}`,
+                    loc,
+                );
+            }
             return { kind: "simple", type: "address", optional: src.optional };
         }
         if (src.name === "String") {
+            if (as) {
+                throwCompilationError(
+                    `Unsupported format ${idTextErr(as)}`,
+                    loc,
+                );
+            }
             return { kind: "simple", type: "string", optional: src.optional };
         }
         if (src.name === "StringBuilder") {
