@@ -118,10 +118,10 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 return { kind: "ref", name: "Int", optional: false };
             },
             generate: (ctx, args, _resolved, ref) => {
-                if (args.length !== 1) {
+                const [arg] = args;
+                if (typeof arg === "undefined" || args.length !== 1) {
                     throwCompilationError("opcode() expects no arguments", ref);
                 }
-                const arg = args[0]!;
                 if (arg.kind !== "ref") {
                     throwCompilationError(
                         `opcode() is not implemented for type '${arg.kind}'`,
