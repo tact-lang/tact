@@ -394,7 +394,7 @@ fun AnyMessage_fromCell(cell: Cell): M;
 ///
 fun AnyMessage_fromSlice(slice: Slice): M;
 
-/// Extension function for any Message type.
+/// Extension function for any Message type. Available since Tact 1.7.0.
 ///
 /// Returns the message opcode.
 ///
