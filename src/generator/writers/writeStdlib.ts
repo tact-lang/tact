@@ -9,7 +9,6 @@ export function writeStdlib(ctx: WriterContext): void {
     // stdlib extension functions
     //
 
-    ctx.skip("__tact_set");
     ctx.skip("__tact_nop");
 
     //
