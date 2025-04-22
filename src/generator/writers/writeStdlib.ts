@@ -9,7 +9,29 @@ export function writeStdlib(ctx: WriterContext): void {
     // stdlib extension functions
     //
 
-    ctx.skip("__tact_nop");
+    ctx.fun("__tact_nop", () => {
+        ctx.signature(`() __tact_nop()`);
+        ctx.context("stdlib");
+        ctx.asm("", "NOP");
+    });
+
+    ctx.fun("__tact_sha256", () => {
+        ctx.signature(`int __tact_sha256(slice data)`);
+        ctx.context("stdlib");
+        ctx.asm(
+            "",
+            `
+            <{
+                <{ DUP SREFS }> PUSHCONT
+                <{ LDREFRTOS }> PUSHCONT
+                WHILE
+                DEPTH
+                HASHEXT_SHA256
+            }> PUSHCONT
+            1 1 CALLXARGS
+        `,
+        );
+    });
 
     //
     // Addresses
