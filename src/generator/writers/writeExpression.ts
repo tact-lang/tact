@@ -840,7 +840,7 @@ export function writeExpression(
 
 // Evaluate the `expr` expression and return the resulting literal,
 // or the original expression if the evaluation fails.
-function constEval(
+export function constEval(
     expr: Ast.Expression,
     ctx: CompilerContext,
 ): Ast.Literal | Ast.Expression {
