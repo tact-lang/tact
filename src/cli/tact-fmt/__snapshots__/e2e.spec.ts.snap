@@ -16,7 +16,7 @@ exports[`tact-fmt foo.tact Check on directory with formatted files 1`] = `
   "kind": "exited",
   "stderr": "",
   "stdout": "Checking formatting...
-All Tact files use official code style!
+All Tact files use Tact code style!
 ",
 }
 `;
@@ -40,7 +40,8 @@ exports[`tact-fmt foo.tact Check on several directories 1`] = `
   "code": 1,
   "kind": "exited",
   "stderr": "",
-  "stdout": "Checking formatting...
+  "stdout": "Duplicate immediate argument. Only first argument will be used
+Checking formatting...
 [warn] file2.tact
 Code style issues found in the above file. Run tact-fmt with --write to fix.
 ",
@@ -49,11 +50,11 @@ Code style issues found in the above file. Run tact-fmt with --write to fix.
 
 exports[`tact-fmt foo.tact Check on several formatted files 1`] = `
 {
-  "code": 0,
+  "code": 30,
   "kind": "exited",
   "stderr": "",
-  "stdout": "Checking formatting...
-All Tact files use official code style!
+  "stdout": "Duplicate immediate argument. Only first argument will be used
+Checking formatting...
 ",
 }
 `;
