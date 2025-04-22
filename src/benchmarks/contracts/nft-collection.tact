@@ -124,7 +124,7 @@ inline fun deployNFTItem(commonCode: Cell, itemIndex: Int, amount: Int, initNFTB
     deploy(DeployParameters {
         value: amount,
         body: initNFTBody,
-        init: StateInit { code: commonCode, data: data },
+        init: StateInit { code: commonCode, data },
         mode: SendPayFwdFeesSeparately,
     });
 }

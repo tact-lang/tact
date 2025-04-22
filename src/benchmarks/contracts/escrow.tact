@@ -1,13 +1,13 @@
 import "./messages";
 
 inline fun calculateJettonWalletAddress(owner: Address, master: Address, code: Cell): Address {
-    let initData = JettonWalletData{balance: 0, owner, master, code};
-    return contractAddress(StateInit{code: code, data: initData.toCell()});
+    let initData = JettonWalletData { balance: 0, owner, master, code };
+    return contractAddress(StateInit { code, data: initData.toCell() });
 }
 
 inline fun calculateJettonBasechainWalletAddress(owner: Address, master: Address, code: Cell): BasechainAddress {
-    let initData = JettonWalletData{balance: 0, owner, master, code};
-    return contractBasechainAddress(StateInit{code: code, data: initData.toCell()});
+    let initData = JettonWalletData { balance: 0, owner, master, code };
+    return contractBasechainAddress(StateInit { code, data: initData.toCell() });
 }
 
 message(0x9eacde91) UpdateJettonWalletCode {
@@ -34,7 +34,7 @@ struct EscrowData {
     buyerAddress: Address?; // null if not funded, set after funding
 }
 
-contract Escrow (
+contract Escrow(
     id: Int as uint32,
     sellerAddress: Address,
     guarantorAddress: Address,
@@ -45,38 +45,37 @@ contract Escrow (
     assetAddress: Address?,
     jettonWalletCode: Cell?,
 ) {
-
     const GUARANTOR_PERCENT_CONST: Int = 100000;
     const GUARANTOR_PERCENT_MAX: Int = 90000;
     const JETTON_TRANSFER_GAS: Int = ton("0.05");
     const TON_TRANSFER_GAS: Int = ton("0.015");
-    
+
     fun sendJettons(receiver: Address, amount: Int, mode: Int) {
-        let escrowJettonWalletAddress = calculateJettonWalletAddress(myAddress(),
+        let escrowJettonWalletAddress = calculateJettonWalletAddress(
+            myAddress(),
             self.assetAddress!!,
-            self.jettonWalletCode!!
+            self.jettonWalletCode!!,
         );
-        message(MessageParameters{
-                to: escrowJettonWalletAddress,
-                value: self.JETTON_TRANSFER_GAS,
-                body: JettonTransfer{
-                    queryId: 0,
-                    amount: amount,
-                    destination: receiver,
-                    responseDestination: receiver,
-                    forwardTonAmount: ton("0.01"),
-                    forwardPayload: emptySlice(),
-                    customPayload: null
-                }.toCell(),
-                mode: mode
-            }
-        );
+        message(MessageParameters {
+            to: escrowJettonWalletAddress,
+            value: self.JETTON_TRANSFER_GAS,
+            body: JettonTransfer {
+                queryId: 0,
+                amount,
+                destination: receiver,
+                responseDestination: receiver,
+                forwardTonAmount: ton("0.01"),
+                forwardPayload: emptySlice(),
+                customPayload: null,
+            }.toCell(),
+            mode,
+        });
     }
 
     receive(_: Funding) {
         throwIf(400, self.isFunded);
         throwUnless(400, self.assetAddress == null);
-        
+
         let ctx: Context = context();
         throwUnless(401, ctx.value == self.dealAmount);
 
@@ -96,9 +95,10 @@ contract Escrow (
         throwUnless(400, !self.isFunded);
         throwUnless(400, self.assetAddress != null);
 
-        let escrowJettonWalletAddress = calculateJettonBasechainWalletAddress(myAddress(),
+        let escrowJettonWalletAddress = calculateJettonBasechainWalletAddress(
+            myAddress(),
             self.assetAddress!!,
-            self.jettonWalletCode!!
+            self.jettonWalletCode!!,
         );
         let sender = parseStdAddress(sender().asSlice());
 
@@ -122,18 +122,16 @@ contract Escrow (
 
         if (self.assetAddress == null) {
             throwUnless(404, ctx.value > (2 * self.TON_TRANSFER_GAS));
-            message(MessageParameters{
-                    to: self.sellerAddress,
-                    value: self.dealAmount - royaltyAmount,
-                    mode: SendPayFwdFeesSeparately
-                }
-            );
-            message(MessageParameters{
-                    to: self.guarantorAddress,
-                    value: royaltyAmount,
-                    mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
-                }
-            );
+            message(MessageParameters {
+                to: self.sellerAddress,
+                value: self.dealAmount - royaltyAmount,
+                mode: SendPayFwdFeesSeparately,
+            });
+            message(MessageParameters {
+                to: self.guarantorAddress,
+                value: royaltyAmount,
+                mode: SendRemainingBalance | SendDestroyIfZero, // send all remaining and destroy escrow
+            });
         } else {
             throwUnless(404, ctx.value > (2 * self.JETTON_TRANSFER_GAS));
             self.sendJettons(self.sellerAddress, self.dealAmount - royaltyAmount, SendPayFwdFeesSeparately);
@@ -149,12 +147,11 @@ contract Escrow (
         // it's up to business logic to decide if guarantor gets royalty in case of cancel
         // in this implementation we don't pay royalty in case of cancel
         if (self.assetAddress == null) {
-            message(MessageParameters{
-                    to: self.buyerAddress!!,
-                    value: self.dealAmount,
-                    mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
-                }
-            );
+            message(MessageParameters {
+                to: self.buyerAddress!!,
+                value: self.dealAmount,
+                mode: SendRemainingBalance | SendDestroyIfZero, // send all remaining and destroy escrow
+            });
         } else {
             self.sendJettons(self.buyerAddress!!, self.dealAmount, SendRemainingBalance | SendDestroyIfZero);
         }
@@ -162,11 +159,11 @@ contract Escrow (
 
     // on-chain data access, could be useful to guarantor contract
     receive(_: ProvideEscrowData) {
-        message(MessageParameters{
+        message(MessageParameters {
             bounce: false,
             value: 0,
             to: sender(),
-            body: TakeEscrowData{
+            body: TakeEscrowData {
                 escrowData: EscrowData {
                     id: self.id,
                     sellerAddress: self.sellerAddress,
@@ -176,10 +173,10 @@ contract Escrow (
                     isFunded: self.isFunded,
                     assetAddress: self.assetAddress,
                     jettonWalletCode: self.jettonWalletCode,
-                    buyerAddress: self.buyerAddress
-                }
+                    buyerAddress: self.buyerAddress,
+                },
             }.toCell(),
-            mode: SendRemainingValue
+            mode: SendRemainingValue,
         });
     }
 
