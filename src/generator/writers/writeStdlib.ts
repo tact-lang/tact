@@ -18,7 +18,9 @@ export function writeStdlib(ctx: WriterContext): void {
     ctx.fun("__tact_sha256", () => {
         ctx.signature(`int __tact_sha256(slice data)`);
         ctx.context("stdlib");
-        ctx.asm("", `
+        ctx.asm(
+            "",
+            `
             <{
                 <{ DUP SREFS }> PUSHCONT
                 <{ LDREFRTOS }> PUSHCONT
@@ -27,7 +29,8 @@ export function writeStdlib(ctx: WriterContext): void {
                 HASHEXT_SHA256
             }> PUSHCONT
             1 1 CALLXARGS
-        `);
+        `,
+        );
     });
 
     //
