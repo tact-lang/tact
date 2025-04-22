@@ -400,6 +400,9 @@ contract InsecureChecker(
     receive() { cashback(sender()) }
 }
 ```
+:::caution[Sandbox Limitations]
+This specific front-running scenario is not reproducible in the `@ton/sandbox` environment due to differences in transaction processing and the absence of a mempool compared to the real network. Always be mindful that local testing environments like the sandbox may not fully capture all real-world network conditions and potential attack vectors.
+:::
 
 Furthermore, once a signature is used in a transaction, it becomes publicly visible on the blockchain. Without proper replay protection, anyone can potentially reuse this signature and the associated data in a new transaction if the contract logic doesn't prevent it.
 
