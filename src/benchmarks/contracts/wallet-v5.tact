@@ -24,7 +24,6 @@ message(0x7369676E) ExternalSignedRequest {
 }
 
 // leave as example for discussion
-
 // message(0x73696e74) InternalSignedRequest {
 //     data: Slice as remaining;
 // }
@@ -64,68 +63,8 @@ contract WalletV5(
     seqno: Int as uint32,
     walletId: Int as int32,
     publicKey: Int as uint256,
-    extensions: map<Int as uint256, Bool>
+    extensions: map<Int as uint256, Bool>,
 ) {
-    inline fun processSignedRequestExternal(msg: ExternalSignedRequest, isExternal: Bool) {
-        let signature = msg.toSlice().lastBits(512);
-        let signedSlice = msg.toSlice().skipLastBits(512);
-
-        let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
-        if (!isSignatureValid) {
-            if (isExternal) {
-                throw(135);
-            } else {
-                return;
-            }
-        }
-
-        throwIf(132, !self.isSignatureAllowed && self.extensions.isEmpty());
-        throwUnless(133, msg.seqno == self.seqno);
-        throwUnless(134, msg.walletId == self.walletId);
-        throwIf(136, msg.validUntil <= now());
-
-        if (isExternal) {
-            acceptMessage();
-        }
-
-        self.seqno += 1;
-        // NOTE: fix, blocked by #2073
-        commit();
-
-        signedSlice.skipBits(32 + 32 + 32 + 32); // skip opcode, walletId, validUntil, seqno
-        self.processActions(signedSlice, isExternal, false);
-    }
-
-    // duplicate of processSignedRequestExternal, but with InternalSignedRequest
-    inline fun processSignedRequestInternal(msg: InternalSignedRequest, isExternal: Bool) {
-        let signature = msg.toSlice().lastBits(512);
-        let signedSlice = msg.toSlice().skipLastBits(512);
-
-        let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
-        if (!isSignatureValid) {
-            if (isExternal) {
-                throw(135);
-            } else {
-                return;
-            }
-        }
-
-        throwIf(132, !self.isSignatureAllowed && self.extensions.isEmpty());
-        throwUnless(133, msg.seqno == self.seqno);
-        throwUnless(134, msg.walletId == self.walletId);
-        throwIf(136, msg.validUntil <= now());
-
-        if (isExternal) {
-            acceptMessage();
-        }
-
-        self.seqno += 1;
-        commit();
-
-        signedSlice.skipBits(32 + 32 + 32 + 32); // skip opcode, walletId, validUntil, seqno
-        self.processActions(signedSlice, isExternal, false);
-    }
-
     /*
     actions has the following structure:
 
@@ -148,7 +87,7 @@ contract WalletV5(
         while (true) {
             // check tag, process action, try to load next ref while we can
             let isAddExt = actions.checkAndRemoveAddExtensionPrefix();
-            let isDeleteExt = isAddExt ? false :  actions.checkAndRemoveDeleteExtensionPrefix();
+            let isDeleteExt = isAddExt ? false : actions.checkAndRemoveDeleteExtensionPrefix();
 
             if (isAddExt || isDeleteExt) {
                 let addr = parseStdAddress(actions.loadAddress().asSlice());
@@ -194,7 +133,25 @@ contract WalletV5(
     }
 
     receive(msg: InternalSignedRequest) {
-        self.processSignedRequestInternal(msg, false);
+        let msgSlice = inMsg();
+        let signature = msgSlice.lastBits(512);
+        let signedSlice = msgSlice.skipLastBits(512);
+
+        let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
+        if (!isSignatureValid) {
+            return;
+        }
+
+        throwIf(132, !self.isSignatureAllowed && self.extensions.isEmpty());
+        throwUnless(133, msg.seqno == self.seqno);
+        throwUnless(134, msg.walletId == self.walletId);
+        throwIf(136, msg.validUntil <= now());
+
+        self.seqno += 1;
+        commit();
+
+        signedSlice.skipBits(32 + 32 + 32 + 32); // skip opcode, walletId, validUntil, seqno
+        self.processActions(signedSlice, false, false);
     }
 
     receive(_: Slice) {
@@ -202,7 +159,28 @@ contract WalletV5(
     }
 
     external(msg: ExternalSignedRequest) {
-        self.processSignedRequestExternal(msg, true);
+        let msgSlice = inMsg();
+        let signature = msgSlice.lastBits(512);
+        let signedSlice = msgSlice.skipLastBits(512);
+
+        let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
+        if (!isSignatureValid) {
+            throw(135);
+        }
+
+        throwIf(132, !self.isSignatureAllowed && self.extensions.isEmpty());
+        throwUnless(133, msg.seqno == self.seqno);
+        throwUnless(134, msg.walletId == self.walletId);
+        throwIf(136, msg.validUntil <= now());
+
+        acceptMessage();
+
+        self.seqno += 1;
+        // NOTE: fix, blocked by #2073
+        commit();
+
+        signedSlice.skipBits(32 + 32 + 32 + 32); // skip opcode, walletId, validUntil, seqno
+        self.processActions(signedSlice, true, false);
     }
 
     get fun seqno(): Int {

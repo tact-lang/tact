@@ -80,6 +80,64 @@ let check: Bool = checkDataSignature(data, signature, publicKey);
 
 :::
 
+## SignedBundle
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+```tact
+struct SignedBundle {
+    /// A 512-bit Ed25519 signature of the `signedData`.
+    signature: Slice as bytes64;
+
+    /// The remaining non-serialized data of the enclosing struct or message struct,
+    /// which was used to obtain the 512-bit Ed25519 `signature`.
+    signedData: Slice as remaining;
+}
+```
+
+A [struct][struct] that contains a 512-bit [Ed25519][ed] signature and the data it signs.
+
+See the usage example for the [`SignedBundle.verifySignature(){:tact}`](#signedbundleverifysignature) function.
+
+## SignedBundle.verifySignature
+
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun verifySignature(self: SignedBundle, publicKey: Int): Bool;
+```
+
+Extension function for the [`SignedBundle{:tact}`](#signedbundle) [struct][struct].
+
+Checks whether `self.signedData` was signed by the 512-bit [Ed25519][ed] signature `self.signature`, using the given `publicKey`. Returns `true` if the signature is valid, `false` otherwise.
+
+Usage example:
+
+```tact
+contract Example(publicKey: Int as uint256) {
+    external(msg: MessageWithSignedData) {
+        // Checks that the signature of the SignedBundle from the incoming external
+        // message wasn't forged and made by the owner of this self.publicKey with
+        // its respective private key managed elsewhere.
+        throwUnless(35, msg.bundle.verifySignature(self.publicKey));
+
+        // ...rest of the checks and code...
+    }
+}
+
+message MessageWithSignedData {
+    // The `bundle.signature` contains the 512-bit Ed25519 signature
+    // of the remaining data fields of this message struct,
+    // while `bundle.signedData` references those data fields.
+    // In this case, the fields are `walletId` and `seqno`.
+    bundle: SignedBundle;
+
+    // These fields are common to external messages to user wallets.
+    walletId: Int as int32;
+    seqno: Int as uint32;
+}
+```
+
 ## sha256
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
@@ -116,6 +174,42 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 
 :::
 
+## keccak256
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun keccak256(data: Slice): Int;
+```
+
+Computes and returns the Ethereum-compatible [Keccak-256](https://en.wikipedia.org/wiki/SHA-3) hash as a 256-bit unsigned [`Int{:tact}`][int] from the passed [`Slice{:tact}`][slice] `data`.
+
+The `data` slice should have a number of bits divisible by 8 and no more than a single reference per cell, because only the first reference of each nested cell will be taken into account.
+
+Attempts to specify a [`Slice{:tact}`][slice] with a number of bits **not** divisible by 8 throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage examples:
+
+```tact
+contract Examples() {
+    receive(rawMsg: Slice) {
+        // Hash incoming message body Slice
+        let hash: Int = keccak256(rawMsg);
+
+        // Process data that spans multiple cells
+        let b: Builder = beginCell()
+            .storeUint(123456789, 32)
+            .storeRef(beginCell().storeString("Extra data in a ref").endCell());
+        let largeDataHash: Int = keccak256(b.asSlice());
+
+        // Match Ethereum's hash format
+        let ethAddress: String = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045";
+        let ethAddressHash: Int = keccak256(ethAddress.asSlice());
+    }
+}
+```
+
 :::note
 
   Crypto extension functions for [`Cell{:tact}`][cell], [`Builder{:tact}`][builder], and [`Slice{:tact}`][slice] types are listed on their reference page: [Cells, Builders and Slices](/ref/core-cells).
@@ -127,6 +221,8 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 [cell]: /book/cells#cells
 [builder]: /book/cells#builders
 [slice]: /book/cells#slices
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [ed]: https://en.wikipedia.org/wiki/EdDSA#Ed25519

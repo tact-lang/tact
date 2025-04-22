@@ -3,8 +3,8 @@
     {
       "label": "FunC",
       "gas": {
-        "transfer": "7159",
-        "get static data": "4560",
+        "transfer": "7109",
+        "get static data": "4535",
         "deploy nft": "10469",
         "batch deploy nft": "1049281"
       },
@@ -48,6 +48,76 @@
         "get static data": "6159",
         "deploy nft": "11657",
         "batch deploy nft": "722774"
+      }
+    },
+    {
+      "label": "1.6.5 store optional cells with store_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2647",
+      "gas": {
+        "transfer": "7840",
+        "get static data": "5882",
+        "deploy nft": "11490",
+        "batch deploy nft": "706074"
+      }
+    },
+    {
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
+      "gas": {
+        "transfer": "7660",
+        "get static data": "5815",
+        "deploy nft": "11500",
+        "batch deploy nft": "707074"
+      }
+    },
+    {
+      "label": "1.6.5 with zero comparison optimization",
+      "pr": "https://github.com/tact-lang/tact/pull/2655",
+      "gas": {
+        "transfer": "7634",
+        "get static data": "5763",
+        "deploy nft": "11500",
+        "batch deploy nft": "704448"
+      }
+    },
+    {
+      "label": "1.6.6 with deployNFTItem outside contract",
+      "pr": null,
+      "gas": {
+        "transfer": "7634",
+        "get static data": "5763",
+        "deploy nft": "11328",
+        "batch deploy nft": "661073"
+      }
+    },
+    {
+      "label": "1.6.6 with optimized builder storage",
+      "pr": "https://github.com/tact-lang/tact/pull/2836",
+      "gas": {
+        "transfer": "7634",
+        "get static data": "5763",
+        "deploy nft": "10651",
+        "batch deploy nft": "660506"
+      }
+    },
+    {
+      "label": "1.6.6 with contract parameters",
+      "pr": "https://github.com/tact-lang/tact/pull/2866",
+      "gas": {
+        "transfer": "7305",
+        "get static data": "4697",
+        "deploy nft": "10719",
+        "batch deploy nft": "658396"
+      }
+    },
+    {
+      "label": "1.6.6 with init parameter with as type",
+      "pr": "https://github.com/tact-lang/tact/pull/https://github.com/tact-lang/tact/pull/2890",
+      "gas": {
+        "transfer": "7305",
+        "get static data": "4697",
+        "deploy nft": "10629",
+        "batch deploy nft": "658306"
       }
     }
   ]

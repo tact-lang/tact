@@ -10,7 +10,9 @@ import { resolveFuncType } from "@/generator/writers/resolveFuncType";
 import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
 import { funcIdOf } from "@/generator/writers/id";
 import {
+    constEval,
     writeExpression,
+    writeExpressionInCondition,
     writePathExpression,
 } from "@/generator/writers/writeExpression";
 import { cast } from "@/generator/writers/cast";
@@ -20,6 +22,8 @@ import { freshIdentifier } from "@/generator/writers/freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "@/error/errors";
 import { ppAsmShuffle } from "@/ast/ast-printer";
 import { zip } from "@/utils/array";
+import { binaryOperationFromAugmentedAssignOperation } from "@/ast/util";
+import type { CompilerContext } from "@/context/context";
 
 export function writeCastedExpression(
     expression: Ast.Expression,
@@ -200,8 +204,9 @@ export function writeStatement(
                 return;
             }
 
+            const op = binaryOperationFromAugmentedAssignOperation(f.op);
             ctx.append(
-                `${path} = ${cast(t, t, `${path} ${f.op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
+                `${path} = ${cast(t, t, `${path} ${op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
             );
             return;
         }
@@ -218,7 +223,9 @@ export function writeStatement(
         }
         case "statement_while": {
             ctx.appendDebugMark(f.loc);
-            ctx.append(`while (${writeExpression(f.condition, ctx)}) {`);
+            ctx.append(
+                `while (${writeExpressionInCondition(f.condition, ctx)}) {`,
+            );
             ctx.inIndent(() => {
                 for (const s of f.statements) {
                     writeStatement(s, self, returns, ctx);
@@ -235,7 +242,9 @@ export function writeStatement(
                     writeStatement(s, self, returns, ctx);
                 }
             });
-            ctx.append(`} until (${writeExpression(f.condition, ctx)});`);
+            ctx.append(
+                `} until (${writeExpressionInCondition(f.condition, ctx)});`,
+            );
             return;
         }
         case "statement_repeat": {
@@ -568,6 +577,49 @@ export function writeStatement(
     throw Error("Unknown statement kind");
 }
 
+const isZero = (expr: Ast.Expression): boolean => {
+    return expr.kind === "number" && expr.value === 0n;
+};
+
+const rewriteWithIfNot = (
+    expr: Ast.Expression,
+    ctx: CompilerContext,
+): ["if" | "ifnot", Ast.Expression] => {
+    if (expr.kind === "op_unary" && expr.op === "!") {
+        // `if (~ cond)` => `ifnot (cond)`
+        return ["ifnot", expr.operand];
+    }
+
+    if (expr.kind === "op_binary" && (expr.op === "==" || expr.op === "!=")) {
+        const left = constEval(expr.left, ctx);
+        const right = constEval(expr.right, ctx);
+
+        if (expr.op === "==") {
+            if (isZero(right)) {
+                // if (a == 0) => ifnot (a)
+                return ["ifnot", expr.left];
+            }
+            if (isZero(left)) {
+                // if (0 == a) => ifnot (a)
+                return ["ifnot", expr.right];
+            }
+        }
+
+        if (expr.op === "!=") {
+            if (isZero(right)) {
+                // if (a != 0) => if (a)
+                return ["if", expr.left];
+            }
+            if (isZero(left)) {
+                // if (0 != a) => if (a)
+                return ["if", expr.right];
+            }
+        }
+    }
+
+    return ["if", expr];
+};
+
 // HACK ALERT: if `returns` is a string, it contains the code to invoke before returning from a receiver
 // this is used to save the contract state before returning
 function writeCondition(
@@ -577,8 +629,10 @@ function writeCondition(
     returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
+    const [ifKind, condition] = rewriteWithIfNot(f.condition, ctx.ctx);
+
     ctx.append(
-        `${elseif ? "} else" : ""}if (${writeExpression(f.condition, ctx)}) {`,
+        `${elseif ? "} else" : ""}${ifKind} (${writeExpressionInCondition(condition, ctx)}) {`,
     );
     ctx.inIndent(() => {
         for (const s of f.trueStatements) {
@@ -630,9 +684,12 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             resolveFuncType(self, ctx, isSelfOpt) + " " + funcIdOf("self"),
         );
     }
-    for (const a of f.params) {
-        params.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
-    }
+
+    f.params.forEach((a, index) => {
+        const name =
+            a.name.kind === "wildcard" ? `_${index}` : funcIdOf(a.name);
+        params.push(resolveFuncType(a.type, ctx) + " " + name);
+    });
 
     const fAst = f.ast;
     switch (fAst.kind) {
@@ -719,7 +776,8 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                             !resolveFuncPrimitive(
                                 resolveTypeRef(ctx.ctx, a.type),
                                 ctx,
-                            )
+                            ) &&
+                            a.name.kind !== "wildcard"
                         ) {
                             ctx.append(
                                 `var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), funcIdOf(a.name), ctx)}) = ${funcIdOf(a.name)};`,

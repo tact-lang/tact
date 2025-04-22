@@ -5,7 +5,7 @@ inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, paylo
     let msgBody = beginCell().storeUint(op, 32).storeUint(queryId, 64);
 
     if (payload.bits() != 0) {
-        msgBody.storeBuilder(payload);
+        msgBody = msgBody.storeBuilder(payload);
     }
 
     message(MessageParameters {
@@ -17,20 +17,13 @@ inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, paylo
     });
 }
 
-contract NFTItem {
-    itemIndex: Int as uint64;
-    collectionAddress: Address;
-
-    // state init data don't have this parameters
-    owner: Address? = null;
-    content: Cell? = null;
-
-    init(initNFTData: InitNFTData) {
-        self.itemIndex = initNFTData.itemIndex;
-        self.collectionAddress = initNFTData.collectionAddress;
-    }
-
-    receive() {} //to ignore empty messages 
+contract NFTItem(
+    owner: Address?,
+    content: Cell?,
+    collectionAddress: Address,
+    itemIndex: Int as uint64,
+) {
+    receive() {} //to ignore empty messages
 
     receive(msg: Slice) {
         // Check if owner == null, which means the contract hasn't been initialized yet

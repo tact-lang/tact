@@ -271,6 +271,51 @@ function uidForName(name: string, types: Map<string, TypeDescription>) {
     return uid;
 }
 
+/**
+ * Collect global variables usage **per project**, not per contract!
+ */
+export function computeGlobalVariablesUsages(
+    ctx: CompilerContext,
+): CompilerContext {
+    const ast = getRawAST(ctx);
+
+    const globalVariables: Set<string> = new Set();
+
+    const handler = (node: Ast.AstNode) => {
+        traverse(node, (node) => {
+            if (node.kind === "static_call") {
+                const name = idText(node.function);
+                if (name === "inMsg") {
+                    globalVariables.add("inMsg");
+                }
+                if (name === "sender") {
+                    globalVariables.add("sender");
+                }
+                if (name === "context") {
+                    globalVariables.add("context");
+                }
+            }
+        });
+    };
+
+    for (const a of ast.types) {
+        handler(a);
+    }
+
+    for (const a of ast.functions) {
+        handler(a);
+    }
+
+    for (const a of ast.types) {
+        if (a.kind === "contract") {
+            const contract = getType(ctx, a.name);
+            contract.globalVariables = globalVariables;
+        }
+    }
+
+    return ctx;
+}
+
 export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
@@ -307,6 +352,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         functions: new Map(),
                         receivers: [],
                         dependsOn: [],
+                        globalVariables: new Set(),
                         init: null,
                         ast: a,
                         interfaces: [],
@@ -330,6 +376,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         functions: new Map(),
                         receivers: [],
                         dependsOn: [],
+                        globalVariables: new Set(),
                         init: null,
                         ast: a,
                         interfaces: a.attributes.map((v) => v.name.value),
@@ -354,6 +401,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         functions: new Map(),
                         receivers: [],
                         dependsOn: [],
+                        globalVariables: new Set(),
                         init: null,
                         ast: a,
                         interfaces: [],
@@ -376,6 +424,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     functions: new Map(),
                     receivers: [],
                     dependsOn: [],
+                    globalVariables: new Set(),
                     init: null,
                     ast: a,
                     interfaces: a.attributes.map((v) => v.name.value),
@@ -453,7 +502,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 params.push({
                     name: r.name,
                     type,
-                    as: r.as?.text ?? null,
+                    as: r.as,
                     loc: r.loc,
                 });
                 if (isRuntimeType(type)) {
@@ -500,6 +549,16 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }) as Ast.ContractInit,
                 contract: a,
             };
+        }
+
+        if (a.kind === "contract" && a.params === undefined) {
+            // check `as` types
+            const init = a.declarations.find(
+                (it) => it.kind === "contract_init",
+            );
+            if (init) {
+                init.params.forEach((param) => resolveABIType(param));
+            }
         }
     }
 
@@ -784,12 +843,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             throwCompilationError(
                 "Abstract functions cannot be virtual",
                 isAbstract.loc,
-            );
-        }
-        if (isVirtual && isOverride) {
-            throwCompilationError(
-                "Overrides functions cannot be virtual",
-                isOverride.loc,
             );
         }
         if (isAbstract && isOverride) {
@@ -1096,7 +1149,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             params.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
-                as: null,
+                as: r.as,
                 loc: r.loc,
             });
         }
@@ -1709,17 +1762,38 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 continue;
             }
 
-            const foundOverriddenFunction = contractOrTrait.traits.some((t) =>
-                t.functions.has(funInContractOrTrait.name),
-            );
+            const overriddenFunction = contractOrTrait.traits
+                .flatMap((t) => {
+                    const fun = t.functions.get(funInContractOrTrait.name);
+                    if (!fun) return [];
+                    return [fun];
+                })
+                .at(0);
 
-            if (!foundOverriddenFunction) {
+            if (typeof overriddenFunction === "undefined") {
                 const msg =
                     contractOrTrait.traits.length === 0 || inheritOnlyBaseTrait
                         ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
                         : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
 
                 throwCompilationError(msg, funInContractOrTrait.ast.loc);
+            }
+
+            if (
+                !overriddenFunction.isAbstract &&
+                !overriddenFunction.isVirtual
+            ) {
+                // override fun foo() { ... }
+                // ^^^^^^^^
+                const overrideLoc =
+                    funInContractOrTrait.ast.attributes.find(
+                        (it) => it.type === "override",
+                    )?.loc ?? funInContractOrTrait.ast.loc;
+
+                throwCompilationError(
+                    `Cannot override function "${funInContractOrTrait.name}" because function "${funInContractOrTrait.name}" does not have a virtual or abstract modifier in parent trait`,
+                    overrideLoc,
+                );
             }
         }
 
@@ -1732,19 +1806,67 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 continue;
             }
 
-            const foundOverriddenConstant = contractOrTrait.traits.some((t) =>
-                t.constants.some(
-                    (c) => c.name === constantInContractOrTrait.name,
-                ),
-            );
+            const overriddenConstant = contractOrTrait.traits
+                .flatMap((t) => {
+                    const constant = t.constants.find(
+                        (it) => it.name == constantInContractOrTrait.name,
+                    );
+                    if (!constant) return [];
+                    return [constant];
+                })
+                .at(0);
 
-            if (!foundOverriddenConstant) {
+            if (typeof overriddenConstant === "undefined") {
                 const msg =
                     contractOrTrait.traits.length === 0 || inheritOnlyBaseTrait
                         ? `Constant "${constantInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this constant`
                         : `Constant "${constantInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
 
                 throwCompilationError(msg, constantInContractOrTrait.ast.loc);
+            }
+
+            const iaAbstractOrVirtual = overriddenConstant.ast.attributes.find(
+                (a) => a.type === "virtual" || a.type === "abstract",
+            );
+
+            if (!iaAbstractOrVirtual) {
+                // override const A: Int = 10;
+                // ^^^^^^^^
+                const overrideLoc =
+                    constantInContractOrTrait.ast.attributes.find(
+                        (it) => it.type === "override",
+                    )?.loc ?? constantInContractOrTrait.ast.loc;
+
+                throwCompilationError(
+                    `Cannot override constant "${constantInContractOrTrait.name}" because constant "${constantInContractOrTrait.name}" does not have a virtual or abstract modifier in parent trait`,
+                    overrideLoc,
+                );
+            }
+        }
+
+        const seenMethods: Map<string, [FunctionDescription, TypeDescription]> =
+            new Map();
+        for (const inheritedTrait of contractOrTrait.traits) {
+            for (const traitFunction of inheritedTrait.functions.values()) {
+                const previousInfo = seenMethods.get(traitFunction.name);
+                if (typeof previousInfo !== "undefined") {
+                    const [method, owner] = previousInfo;
+                    if (
+                        owner !== inheritedTrait &&
+                        !traitFunction.isOverride &&
+                        !method.isOverride
+                    ) {
+                        throwCompilationError(
+                            `Both "${inheritedTrait.name}" and "${owner.name}" define method "${traitFunction.name}"`,
+                            contractOrTrait.ast.name.loc,
+                        );
+                    }
+                }
+
+                seenMethods.set(traitFunction.name, [
+                    traitFunction,
+                    inheritedTrait,
+                ]);
             }
         }
 
@@ -2247,10 +2369,8 @@ export function getAllTypes(ctx: CompilerContext): TypeDescription[] {
     return Array.from(getTypeStore(ctx).values());
 }
 
-export function getContracts(ctx: CompilerContext): string[] {
-    return getAllTypes(ctx)
-        .filter((v) => v.kind === "contract")
-        .map((v) => v.name);
+export function getContracts(ctx: CompilerContext): TypeDescription[] {
+    return getAllTypes(ctx).filter((v) => v.kind === "contract");
 }
 
 export function getStaticFunction(
@@ -2471,6 +2591,11 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
                 );
             }
         }
+
+        indices.clear();
+        lowLinks.clear();
+        onStack.clear();
+        selfReferencingVertices.clear();
     }
 
     function strongConnect(struct: TypeDescription) {

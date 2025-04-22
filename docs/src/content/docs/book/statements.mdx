@@ -11,22 +11,23 @@ The following statements can appear anywhere in a [function](/book/functions) bo
 
 The `let{:tact}` statement allows local and [block](#block)-scoped variable declaration.
 
-In Tact, declaring a local variable always requires an initial value. However, the type ascription can be omitted, and Tact will try to infer it from the initial value:
+In Tact, declaring a local variable always **requires** an initial value. However, the type ascription can be omitted, and Tact will try to infer it from the initial value:
 
 ```tact
 let value: Int = 123; // full declaration with type and value
-let vInferred = 123;  // inferred type Int
+let vInferred = 123;  // inferred type Int from the mandatory value
 
 let vExplicitCtx: Context = context(); // explicit type Context, a built-in Struct
 let vCtx = context();                  // inferred type Context
 ```
 
-Note that the initial value of `null{:tact}` can mean either an empty [`map<K, V>{:tact}`](/book/maps) with arbitrary `K{:tact}` and `V{:tact}` types or the intentional absence of any other value for the [optional](/book/optionals) type. Therefore, whenever you declare an [optional](/book/optionals) or a [`map<K, V>{:tact}`](/book/maps), you must explicitly specify the type, as it cannot be inferred:
+Note that the initial value of `null{:tact}` can mean either an empty [`map<K, V>{:tact}`](/book/maps) with arbitrary `K{:tact}` and `V{:tact}` types or the intentional absence of any other value for the [optional](/book/optionals) type. Therefore, whenever you declare a [`map<K, V>{:tact}`](/book/maps) or assign a [`null{:tact}`](/book/optionals) value, you must explicitly specify the type, as it cannot be inferred:
 
 ```tact
 let vOptional: Int? = null; // explicit type Int or null
 let vOptInt = 42;           // implicit type Int
-vOptInt = null;             // COMPILATION ERROR!
+vOptInt = null;             // COMPILATION ERROR, type mismatch!
+let vOpt = null;            // COMPILATION ERROR, cannot infer type!
 
 let vMap: map<Int, Int> = emptyMap(); // explicit type map<Int, Int>
 let vMapWithSerialization: map<Int as uint8, Int as uint8> = emptyMap();
@@ -87,9 +88,9 @@ dump(2 + 2); // stdlib function
 Assignment statements use an [assignment operator](/book/operators#assignment) (`={:tact}`) or [augmented assignment operators](/book/operators#augmented-assignment) (assignments combined with an operation):
 
 ```tact
-let value: Int; // declaration
-value = 5;      // assignment
-value += 5;     // augmented assignment (one of many — see below)
+let value: Int = 0; // definition
+value = 5;          // assignment
+value += 5;         // augmented assignment (one of many)
 ```
 
 :::note

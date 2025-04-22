@@ -29,6 +29,7 @@ compilables
 Compilables
 comptime
 Comptime
+CSBT
 Daniil
 Danil
 decompilation
@@ -51,6 +52,8 @@ Epva
 errno
 Esorat
 extracurrency
+flamegraph
+flamegraphs
 forall
 formedness
 frontmatter
@@ -64,6 +67,8 @@ guarantor
 Héctor
 hehe
 heisenbugs
+hippity
+Hoppity
 idict
 Ikko
 Ilya
@@ -93,7 +98,10 @@ Laika
 langle
 langtools
 letrec
+learnXinYminutes
 Liskov
+llm
+llms
 logomark
 lparen
 lvalue
@@ -114,6 +122,7 @@ mktemp
 multiformats
 nanoton
 nanotons
+Nemo
 Neovim
 nextra
 nobounce
@@ -204,6 +213,7 @@ varint
 varuint
 verytactical
 viiii
+Viltrum
 vogons
 Vsevolod
 workchain
@@ -212,4 +222,5 @@ xffff
 XMODEM
 xpyctumo
 xtwitter
+yeehaw
 привет

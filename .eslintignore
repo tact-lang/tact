@@ -3,7 +3,7 @@ dist/
 coverage/
 **/output/
 src/test/**/output/
-src/test/e2e-emulated/map-property-tests/build
+src/test/e2e-slow/map-property-tests/build
 src/func/funcfiftlib.js
 src/grammar/grammar.ts
 jest.setup.js
@@ -11,5 +11,7 @@ jest.globalSetup.js
 jest.teardown.js
 /docs
 version.build.ts
+format.build.ts
 bin/*
 **/.testing/
+src/fmt/cst/cst-parser.ts

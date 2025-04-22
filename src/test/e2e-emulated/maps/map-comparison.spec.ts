@@ -7,26 +7,26 @@ import "@ton/test-utils";
 
 describe("map-comparison", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<MapComparisonTestContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(
             await MapComparisonTestContract.fromInit(),
         );
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -192,7 +192,7 @@ describe("map-comparison", () => {
                 .storeBit(true) // value
                 .endCell();
 
-            let result = await treasure.send({
+            let result = await treasury.send({
                 to: contract.address,
                 value: toNano("0.1"),
                 body: beginCell()
@@ -208,13 +208,13 @@ describe("map-comparison", () => {
             });
 
             expect(result.transactions).toHaveTransaction({
-                from: treasure.address,
+                from: treasury.address,
                 to: contract.address,
                 success: false,
                 exitCode: 53111,
             });
 
-            result = await treasure.send({
+            result = await treasury.send({
                 to: contract.address,
                 value: toNano("0.1"),
                 body: beginCell()
@@ -231,7 +231,7 @@ describe("map-comparison", () => {
             });
 
             expect(result.transactions).toHaveTransaction({
-                from: treasure.address,
+                from: treasury.address,
                 to: contract.address,
                 success: true,
             });
