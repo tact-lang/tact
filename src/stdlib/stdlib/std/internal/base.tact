@@ -23,41 +23,89 @@ trait BaseTrait {
     virtual const storageReserve: Int = 0;
 
     /// Sends a bounceable message back to the sender of the current message.
-    /// An alias function to calling the `self.forward()` function with
-    /// the following arguments:
+    /// A similar but more gas-efficient version of calling the `self.forward()`
+    /// function with the following arguments:
     ///
     /// ```tact
     /// self.forward(sender(), body, true, null);
-    ///              ↑         ↑     ↑     ↑
-    ///              |         |     |     init: StateInit?
-    ///              |         |     bounce: Bool
-    ///              |         body: Cell?
-    ///              to: Address
+    /// //           ↑         ↑     ↑     ↑
+    /// //           |         |     |     init: StateInit?
+    /// //           |         |     bounce: Bool
+    /// //           |         body: Cell?
+    /// //           to: Address
     /// ```
     ///
     /// See: https://docs.tact-lang.org/ref/core-base#self-forward
     ///
     virtual inline fun reply(body: Cell?) {
-        self.forward(sender(), body, true, null);
+        if (self.storageReserve > 0) { // Optimized in compile-time
+            let ctx: Context = context();
+            let balance: Int = myBalance();
+            let balanceBeforeMessage: Int = balance - ctx.value;
+            if (balanceBeforeMessage < self.storageReserve) {
+                nativeReserve(self.storageReserve, ReserveExact);
+                message(MessageParameters {
+                    bounce: true,
+                    to: sender(),
+                    value: 0,
+                    mode: SendRemainingBalance | SendIgnoreErrors,
+                    body,
+                });
+                return;
+            }
+        }
+
+        // Just send with remaining balance
+        message(MessageParameters {
+            bounce: true,
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors,
+            body,
+        });
     }
 
     /// Sends a non-bounceable message back to the sender of the current message.
-    /// An alias function to calling the `self.forward()` function with
-    /// the following arguments:
+    /// A similar but more gas-efficient version of calling the `self.forward()`
+    /// function with the following arguments:
     ///
     /// ```tact
     /// self.forward(sender(), body, false, null);
-    ///              ↑         ↑     ↑     ↑
-    ///              |         |     |     init: StateInit?
-    ///              |         |     bounce: Bool
-    ///              |         body: Cell?
-    ///              to: Address
+    /// //           ↑         ↑     ↑     ↑
+    /// //           |         |     |     init: StateInit?
+    /// //           |         |     bounce: Bool
+    /// //           |         body: Cell?
+    /// //           to: Address
     /// ```
     ///
     /// See: https://docs.tact-lang.org/ref/core-base#self-forward
     ///
     virtual inline fun notify(body: Cell?) {
-        self.forward(sender(), body, false, null);
+        if (self.storageReserve > 0) { // Optimized in compile-time
+            let ctx: Context = context();
+            let balance: Int = myBalance();
+            let balanceBeforeMessage: Int = balance - ctx.value;
+            if (balanceBeforeMessage < self.storageReserve) {
+                nativeReserve(self.storageReserve, ReserveExact);
+                message(MessageParameters {
+                    bounce: false,
+                    to: sender(),
+                    value: 0,
+                    mode: SendRemainingBalance | SendIgnoreErrors,
+                    body,
+                });
+                return;
+            }
+        }
+
+        // Just send with remaining balance
+        message(MessageParameters {
+            bounce: false,
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors,
+            body,
+        });
     }
 
     /// Queues the message (bounceable or non-bounceable) to be sent to the specified address `to`.
@@ -76,12 +124,34 @@ trait BaseTrait {
     /// See: https://docs.tact-lang.org/ref/core-base#self-forward
     ///
     virtual fun forward(to: Address, body: Cell?, bounce: Bool, init: StateInit?) {
-        let code: Cell? = null;
-        let data: Cell? = null;
-        if (init != null) {
-            let init2: StateInit = init!!;
-            code = init2.code;
-            data = init2.data;
+        if (init == null) {
+            // Lock storage if needed
+            if (self.storageReserve > 0) { // Optimized in compile-time
+                let ctx: Context = context();
+                let balance: Int = myBalance();
+                let balanceBeforeMessage: Int = balance - ctx.value;
+                if (balanceBeforeMessage < self.storageReserve) {
+                    nativeReserve(self.storageReserve, ReserveExact);
+                    message(MessageParameters {
+                        bounce,
+                        to,
+                        value: 0,
+                        mode: SendRemainingBalance | SendIgnoreErrors,
+                        body,
+                    });
+                    return;
+                }
+            }
+
+            // Just send with remaining balance
+            message(MessageParameters {
+                bounce,
+                to,
+                value: 0,
+                mode: SendRemainingValue | SendIgnoreErrors,
+                body,
+            });
+            return;
         }
 
         // Lock storage if needed
@@ -92,13 +162,13 @@ trait BaseTrait {
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
                 send(SendParameters {
-                    bounce,
                     to,
-                    value: 0,
                     mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
-                    code,
-                    data,
+                    value: 0,
+                    bounce,
+                    code: init!!.code,
+                    data: init!!.data,
                 });
                 return;
             }
@@ -111,8 +181,8 @@ trait BaseTrait {
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body,
-            code,
-            data,
+            code: init!!.code,
+            data: init!!.data,
         });
     }
 }
