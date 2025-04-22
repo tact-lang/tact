@@ -45,7 +45,7 @@ asm fun messageBounceTrue(params: MessageParametersWithoutBounce) {
 
 asm fun messageBounceFalse(params: MessageParametersWithoutBounce) {
     NEWC
-    b{010000} STSLICECONST  // store tag = $0, ihr_disabled = true, bounce = true,  bounced = false, src = addr_none
+    b{010000} STSLICECONST  // store tag = $0, ihr_disabled = true, bounce = false,  bounced = false, src = addr_none
     STSLICE             // store `to`
     SWAP
     STGRAMS             // store `value`
