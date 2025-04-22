@@ -13,22 +13,10 @@ message ReplyMsg {
     body: Cell?;
 }
 
-trait TestBaseTrait with BaseTrait {
+contract BaseTraitTest {
     receive(msg: ForwardMsg) { self.forward(msg.to, msg.body, msg.bounce, msg.init) }
 
     receive(msg: NotifyMsg) { self.notify(msg.body) }
 
     receive(msg: ReplyMsg) { self.reply(msg.body) }
-}
-
-contract BaseTraitInline {
-    receive(msg: ForwardMsg) { self.forward(msg.to, msg.body, msg.bounce, msg.init) }
-
-    receive(msg: NotifyMsg) { self.notify(msg.body) }
-
-    receive(msg: ReplyMsg) { self.reply(msg.body) }
-}
-
-contract BaseTraitTrait with TestBaseTrait {
-    receive() {}
 }
