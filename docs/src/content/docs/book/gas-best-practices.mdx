@@ -62,7 +62,7 @@ export async function run(provider: NetworkProvider) {
 
 When deploying multiple instances of the same contract type, it's common for some data fields to be initially set to the same values. For example, in [NFT Item contracts](/cookbook/nfts), fields like `ownerAddress`, `content`, and `collectionAddress` might start as `null` or have the same collection address for all items.
 
-In such cases, it's more gas-efficient to group these common fields at the beginning of the contract parameters. This allows the TVM to optimize storage by sharing these common values across multiple contract instances.
+In such cases, it's more gas-efficient to group these common fields at the beginning of the contract parameters. It enables us to store the commonData separately and then append only the unique parts (for example, the index) during each deployment.
 
 ```tact
 // Less efficient - common values scattered
