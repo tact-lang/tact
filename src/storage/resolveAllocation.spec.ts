@@ -19,7 +19,7 @@ const stdlib = fs.readFileSync(primitivesPath, "utf-8");
 const src = `
 
 trait BaseTrait {
-    
+
 }
 
 struct Point3 {

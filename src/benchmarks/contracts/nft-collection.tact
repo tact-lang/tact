@@ -23,7 +23,7 @@ contract NFTCollection {
     commonCode: Cell;
     commonData: Builder;
 
-    init(owner: Address, nextItemIndex: Int, collectionContent: Cell, royaltyParams: RoyaltyParams) {
+    init(owner: Address, nextItemIndex: Int as uint64, collectionContent: Cell, royaltyParams: RoyaltyParams) {
         self.owner = owner;
         self.nextItemIndex = nextItemIndex;
         self.content = collectionContent;
