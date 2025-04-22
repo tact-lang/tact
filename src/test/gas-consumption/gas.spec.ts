@@ -27,13 +27,13 @@ import { WithoutDeploy } from "@/test/gas-consumption/contracts/output/deploy_Wi
 import { Sqrt } from "@/test/gas-consumption/contracts/output/sqrt_Sqrt";
 import { Cashback } from "@/test/gas-consumption/contracts/output/cashback_Cashback";
 import { Log } from "@/test/gas-consumption/contracts/output/log_Log";
-
 import type {
     ForwardMsg,
     NotifyMsg,
     ReplyMsg,
-} from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitInline";
+} from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTest";
 import { BaseTraitTest } from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTest";
+
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
         (
