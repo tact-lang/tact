@@ -23,6 +23,19 @@ struct MessageParametersWithoutBounce {
     to: Address;
 }
 
+
+struct MessageParametersWithoutBounceWithoutValue{
+    /// An 8-bit value that configures how to send a message, defaults to 0.
+    /// See: https://docs.tact-lang.org/book/message-mode
+    mode: Int = SendDefaultMode;
+
+    /// Optional message body as a `Cell`.
+    body: Cell? = null;
+
+    /// Recipient internal `Address` on TON Blockchain.
+    to: Address;
+}
+
 asm fun messageBounceTrue(params: MessageParametersWithoutBounce) {
     NEWC
     b{011000} STSLICECONST  // store tag = $0, ihr_disabled = true, bounce = true,  bounced = false, src = addr_none
@@ -63,6 +76,26 @@ asm fun messageBounceFalse(params: MessageParametersWithoutBounce) {
     SENDRAWMSG
 }
 
+asm fun messageBounceTrueValueZero(params: MessageParametersWithoutBounceWithoutValue) {
+    NEWC
+    b{011000} STSLICECONST  // store tag = $0, ihr_disabled = true, bounce = true,  bounced = false, src = addr_none
+    STSLICE             // store `to`
+    x{0} STSLICECONST   // store `value` = 0
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
+}
+
+
 trait BaseTrait {
     /// The amount of nanoToncoins to reserve before forwarding a message with
     /// `SendRemainingBalance` mode. Default is 0 (no reserve).
@@ -96,15 +129,13 @@ trait BaseTrait {
     /// See: https://docs.tact-lang.org/ref/core-base#self-forward
     ///
     virtual inline fun reply(body: Cell?) {
-        let to: Address = sender();
         if (self.storageReserve > 0) { // Optimized in compile-time
             let balance: Int = myBalance();
             let balanceBeforeMessage: Int = balance - context().value;
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
-                messageBounceTrue(MessageParametersWithoutBounce {
-                    to,
-                    value: 0,
+                messageBounceTrueValueZero(MessageParametersWithoutBounceWithoutValue {
+                    to: sender(),
                     mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
                 });
@@ -113,9 +144,8 @@ trait BaseTrait {
         }
 
         // Just send with remaining balance
-        messageBounceTrue(MessageParametersWithoutBounce {
-            to,
-            value: 0,
+        messageBounceTrueValueZero(MessageParametersWithoutBounceWithoutValue {
+            to: sender(),
             mode: SendRemainingValue | SendIgnoreErrors,
             body,
         });
@@ -137,15 +167,13 @@ trait BaseTrait {
     /// See: https://docs.tact-lang.org/ref/core-base#self-forward
     ///
     virtual inline fun notify(body: Cell?) {
-        let to: Address = sender();
-        let bounce: Bool = false;
         if (self.storageReserve > 0) { // Optimized in compile-time
             let balance: Int = myBalance();
             let balanceBeforeMessage: Int = balance - context().value;
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
                 messageBounceFalse(MessageParametersWithoutBounce {
-                    to,
+                    to: sender(),
                     value: 0,
                     mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
@@ -156,7 +184,7 @@ trait BaseTrait {
 
         // Just send with remaining balance
         messageBounceFalse(MessageParametersWithoutBounce {
-            to,
+            to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body,
