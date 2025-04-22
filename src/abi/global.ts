@@ -393,13 +393,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                     // Otherwise, revert back to runtime hash through HASHEXT_SHA256
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `__tact_sha256(${exp})`;
+                    return `${ctx.used('__tact_sha256')}(${exp})`;
                 }
 
                 // Slice case
                 if (arg0.name === "Slice") {
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `__tact_sha256(${exp})`;
+                    return `${ctx.used('__tact_sha256')}(${exp})`;
                 }
 
                 throwCompilationError(

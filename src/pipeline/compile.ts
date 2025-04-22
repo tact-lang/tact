@@ -169,23 +169,16 @@ export async function compileFunc(
     try {
         const stdlibPath = stdlib.resolve("std/stdlib.fc");
         const stdlibCode = stdlib.readFile(stdlibPath).toString();
-        const stdlibExPath = stdlib.resolve("std/stdlib_ex.fc");
-        const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
 
         const c = await funcCompile({
             entries: [
                 stdlibPath,
-                stdlibExPath,
                 posixNormalize(project.resolve(config.output, entrypointPath)),
             ],
             sources: [
                 {
                     path: stdlibPath,
                     content: stdlibCode,
-                },
-                {
-                    path: stdlibExPath,
-                    content: stdlibExCode,
                 },
                 funcSource,
             ],
