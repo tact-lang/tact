@@ -446,6 +446,24 @@ exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for init-with-invalid-bytes128-as-type 1`] = `
+"<unknown>:6:10: Unsupported format "bytes128"
+  5 | contract Foo {
+> 6 |     init(val: Slice as bytes128) {}
+               ^~~~~~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for init-with-invalid-int260-as-type 1`] = `
+"<unknown>:6:10: Unsupported format "int260"
+  5 | contract Foo {
+> 6 |     init(val: Int as int260) {}
+               ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for message-decl-remainder-in-the-middle 1`] = `
 "<unknown>:8:5: The "as remaining" field can only be the last field of the message
   7 |     a: Int;

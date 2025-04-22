@@ -550,6 +550,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 contract: a,
             };
         }
+
+        if (a.kind === "contract" && a.params === undefined) {
+            // check `as` types
+            const init = a.declarations.find(it => it.kind === "contract_init")
+            if (init) {
+                init.params.forEach(param => resolveABIType(param))
+            }
+        }
     }
 
     for (const a of ast.types) {
