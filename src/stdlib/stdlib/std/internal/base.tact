@@ -92,7 +92,7 @@ trait BaseTrait {
                     to: sender(),
                     value: 0,
                     mode: SendRemainingBalance | SendIgnoreErrors,
-                    body: body,
+                    body,
                 });
                 return;
             }
