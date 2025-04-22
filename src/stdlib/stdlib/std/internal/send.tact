@@ -462,9 +462,8 @@ asm fun deploy(params: DeployParameters) {
 /// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun cashback(to: Address) {
-    16 PUSHINT       // 0x10, i.e. 0x18 but with bounce = false
     NEWC
-    6 STU            // .storeUint(0x10, 6)
+    x{42_} STSLICECONST // .storeUint(0x10, 6)
     STSLICE          // .storeAddress(to)
     0 PUSHINT        // 0
     111 STUR         // .storeUint(0, 111)
