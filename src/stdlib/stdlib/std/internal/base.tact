@@ -39,7 +39,6 @@ trait BaseTrait {
     ///
     virtual inline fun reply(body: Cell?) {
         let to: Address = sender();
-        let mode: Int = SendRemainingBalance | SendIgnoreErrors;
         let bounce: Bool = true;
         if (self.storageReserve > 0) { // Optimized in compile-time
             let balance: Int = myBalance();
@@ -50,7 +49,7 @@ trait BaseTrait {
                     bounce,
                     to,
                     value: 0,
-                    mode,
+                    mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
                 });
                 return;
@@ -62,7 +61,7 @@ trait BaseTrait {
             bounce,
             to,
             value: 0,
-            mode,
+            mode: SendRemainingValue | SendIgnoreErrors,
             body,
         });
     }
@@ -84,7 +83,6 @@ trait BaseTrait {
     ///
     virtual inline fun notify(body: Cell?) {
         let to: Address = sender();
-        let mode: Int = SendRemainingBalance | SendIgnoreErrors;
         let bounce: Bool = false;
         if (self.storageReserve > 0) { // Optimized in compile-time
             let balance: Int = myBalance();
@@ -95,7 +93,7 @@ trait BaseTrait {
                     bounce,
                     to,
                     value: 0,
-                    mode,
+                    mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
                 });
                 return;
@@ -107,7 +105,7 @@ trait BaseTrait {
             bounce,
             to,
             value: 0,
-            mode,
+            mode: SendRemainingValue | SendIgnoreErrors,
             body,
         });
     }
