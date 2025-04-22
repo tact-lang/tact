@@ -39,7 +39,7 @@ contract SBTItem(
             ownerAddress: self.owner!!,
             body: msg.body,
             revokedAt: self.revokedAt,
-            content: content,
+            content,
         };
 
         message(MessageParameters {
@@ -63,7 +63,7 @@ contract SBTItem(
             ownerAddress: self.owner!!,
             body: msg.body,
             revokedAt: self.revokedAt,
-            content: content,
+            content,
         };
 
         message(MessageParameters {
