@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Tooling
 
 - Formatter now shortens `Foo { value: value }` to `Foo { value }`: PR [#2884](https://github.com/tact-lang/tact/pull/2884)
+- Formatter now supports formatting several files and directories: PR [#2906](https://github.com/tact-lang/tact/pull/2906)
 
 ### Docs
 
