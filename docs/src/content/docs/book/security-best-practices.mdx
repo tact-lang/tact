@@ -349,7 +349,7 @@ contract SecureChecker(
         message(MessageParameters{
             to: request.requestBody.to, // Use the 'to' from the signed request
             value: 0,
-            mode: SendRemainingBalance,
+            mode: SendRemainingBalance, // Caution: sending the whole balance!
             bounce: false,
             body: "Your action payload here".asComment(), // Example body
         });
@@ -390,7 +390,7 @@ contract InsecureChecker(
             message(MessageParameters{
                 to: sender(), // Vulnerable: recipient isn't verified by the signature
                 value: 0,
-                mode: SendRemainingBalance,
+                mode: SendRemainingBalance, // Caution: sending the whole balance!
                 bounce: false,
             });
         }
