@@ -323,30 +323,27 @@ Include critical parameters like the recipient address (`to`) within the data th
 struct RequestBody {
     to: Address;
     seqno: Int as uint64;
-    // Other data fields...
 }
 
 message(0x988d4037) Request {
     signature: Slice as bytes64;
     requestBody: RequestBody;
-    // Other data fields...
 }
 
 contract SecureChecker(
-    public_key: Int as uint256,
+    publicKey: Int as uint256,
     seqno: Int as uint64, // Add seqno for replay protection
 ) {
     receive(request: Request) {
-
         // Verify the signature against the reconstructed data hash
-        require(checkSignature(request.requestBody.toCell().hash(), request.signature, self.public_key), "Invalid signature!");
+        require(checkSignature(request.requestBody.toCell().hash(), request.signature, self.publicKey), "Invalid signature!");
 
         // Check replay protection
         require(request.requestBody.seqno == self.seqno, "Invalid seqno"); // Assuming external message with seqno
         self.seqno += 1; // Increment seqno after successful processing
 
         // Ensure the message is sent to the address specified in the signed data
-        message(MessageParameters{
+        message(MessageParameters {
             to: request.requestBody.to, // Use the 'to' from the signed request
             value: 0,
             mode: SendRemainingBalance, // Caution: sending the whole balance!
@@ -363,6 +360,7 @@ contract SecureChecker(
         return self.seqno;
     }
 }
+
 ```
 
 Remember to also implement [replay protection](#replay-protection) to prevent reusing the same signature even if it's correctly targeted.
@@ -378,16 +376,16 @@ message(0x988d4037) Request {
 }
 
 contract InsecureChecker(
-    public_key: Int as uint256,
+    publicKey: Int as uint256,
 ) {
     receive(request: Request) {
         // The signature only verifies 'request.data', not the intended recipient.
-        if(checkDataSignature(request.data.hash(), request.signature, self.public_key)) {
+        if (checkDataSignature(request.data.hash(), request.signature, self.publicKey)) {
             // Attacker can see this message, copy the signature, and send their own
             // message to a different 'to' address before this one confirms.
             // The 'sender()' here is the original sender, but the attacker can initiate
             // a similar transaction targeting themselves or another address.
-            message(MessageParameters{
+            message(MessageParameters {
                 to: sender(), // Vulnerable: recipient isn't verified by the signature
                 value: 0,
                 mode: SendRemainingBalance, // Caution: sending the whole balance!
