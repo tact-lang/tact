@@ -1,4 +1,14 @@
-import { Address, beginCell, BitString, Cell, Dictionary, DictionaryKeyTypes, toNano } from "@ton/core";
+import {
+    Address,
+    beginCell,
+    BitString,
+    Cell,
+    Dictionary,
+    type DictionaryKey,
+    type DictionaryKeyTypes,
+    type DictionaryValue,
+    toNano,
+} from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import { crc32 } from "@/utils/crc32";
 import type * as Ast from "@/ast/ast";
@@ -37,7 +47,7 @@ import {
 import { divFloor, modFloor } from "@/optimizer/util";
 import { sha256 } from "@/utils/sha256";
 import { prettyPrint } from "@/ast/ast-printer";
-import { MapSerializerDescrKey, MapSerializerDescrValue, mapSerializers } from "@/bindings/typescript/serializers";
+import { type MapSerializerDescrKey, type MapSerializerDescrValue, mapSerializers } from "@/bindings/typescript/serializers";
 import { getMapAbi } from "@/types/resolveABITypeRef";
 
 // TVM integers are signed 257-bit integers
@@ -627,6 +637,48 @@ const defaultInterpreterConfig: InterpreterConfig = {
     maxLoopIterations: maxRepeatStatement,
 };
 
+type KeyExist = <R>(
+    cb: <K extends DictionaryKeyTypes>(
+        type: DictionaryKey<K>,
+        parse: (value: Ast.Literal, keyExprLoc: SrcInfo) => K,
+    ) => R
+) => R
+
+type ValueExist = <R>(
+    cb: <V>(
+        type: DictionaryValue<V>,
+        parse: (value: Ast.Literal, valueExprLoc: SrcInfo) => V,
+    ) => R
+) => R
+
+const expectNumber = (node: Ast.Literal, loc: SrcInfo): bigint => {
+    if (node.kind !== 'number') {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+}
+
+const expectAddress = (node: Ast.Literal, loc: SrcInfo): Address => {
+    if (node.kind !== 'address') {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+}
+
+const expectCell = (node: Ast.Literal, loc: SrcInfo): Cell => {
+    if (node.kind !== 'cell') {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+}
+
+const expectBool = (node: Ast.Literal, loc: SrcInfo): boolean => {
+    if (node.kind !== 'boolean') {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+}
+
 /*
 Interprets Tact AST trees.
 The constructor receives an optional CompilerContext which includes
@@ -1107,71 +1159,72 @@ export class Interpreter {
         if (res === null) {
             throwInternalCompilerError("Wrong map ABI");
         }
-        const d = Dictionary.empty<DictionaryKeyTypes, unknown>(
-            this.getKeyParser(res.key),
-            this.getValueParser(res.value, ast.loc),
+        const keyExist = this.getKeyParser(res.key);
+        const valueExist = this.getValueParser(res.value);
+        const bocHex = keyExist((keyType, parseKey) => {
+            return valueExist((valueType, parseValue) => {
+                let dict = Dictionary.empty(keyType, valueType);
+                for (const { key: keyExpr, value: valueExpr } of ast.fields) {
+                    const keyValue = parseKey(
+                        this.interpretExpressionInternal(keyExpr),
+                        keyExpr.loc
+                    );
+                    const valValue = parseValue(
+                        this.interpretExpressionInternal(valueExpr),
+                        valueExpr.loc
+                    );
+                    dict = dict.set(keyValue, valValue);
+                }
+                return beginCell().storeDictDirect(dict).endCell().toBoc().toString('hex');
+            })
+        });
+        return this.util.makeMapValue(
+            bocHex,
+            ast.type,
+            ast.loc,
         );
-        for (const { key: keyExpr, value: valueExpr } of ast.fields) {
-            const keyValue = this.interpretExpressionInternal(keyExpr);
-            const valValue = this.interpretExpressionInternal(valueExpr);
-            d.set(keyValue, valValue) // TODO: double existential
-        }
     }
 
-    getKeyParser(src: MapSerializerDescrKey) {
+    getKeyParser(src: MapSerializerDescrKey): KeyExist {
         switch (src.kind) {
             case "int": {
-                if (src.bits <= 32) {
-                    return Dictionary.Keys.Int(src.bits);
-                } else {
-                    return Dictionary.Keys.BigInt(src.bits);
-                }
+                return cb => cb(Dictionary.Keys.BigInt(src.bits), expectNumber);
             }
             case "uint": {
-                if (src.bits <= 32) {
-                    return Dictionary.Keys.Uint(src.bits);
-                } else {
-                    return Dictionary.Keys.BigUint(src.bits);
-                }
+                return cb => cb(Dictionary.Keys.BigUint(src.bits), expectNumber);
             }
             case "address": {
-                return Dictionary.Keys.Address();
+                return cb => cb(Dictionary.Keys.Address(), expectAddress);
             }
         }
     }
-    getValueParser(src: MapSerializerDescrValue, loc: SrcInfo) {
+    getValueParser(src: MapSerializerDescrValue): ValueExist {
         switch (src.kind) {
             case "int": {
-                if (src.bits <= 32) {
-                    return Dictionary.Values.Int(src.bits);
-                } else {
-                    return Dictionary.Values.BigInt(src.bits);
-                }
+                return cb => cb(Dictionary.Values.BigInt(src.bits), expectNumber);
             }
             case "uint": {
-                if (src.bits <= 32) {
-                    return Dictionary.Values.Uint(src.bits);
-                } else {
-                    return Dictionary.Values.BigUint(src.bits);
-                }
-            }
-            case "varuint": {
-                return Dictionary.Values.BigVarUint(src.length);
+                return cb => cb(Dictionary.Values.BigUint(src.bits), expectNumber);
             }
             case "varint": {
-                return Dictionary.Values.BigVarInt(src.length);
+                return cb => cb(Dictionary.Values.BigVarInt(src.length), expectNumber);
+            }
+            case "varuint": {
+                return cb => cb(Dictionary.Values.BigVarUint(src.length), expectNumber);
             }
             case "address": {
-                return Dictionary.Values.Address();
+                return cb => cb(Dictionary.Values.Address(), expectAddress);
             }
             case "cell": {
-                return Dictionary.Values.Cell();
+                return cb => cb(Dictionary.Values.Cell(), expectCell);
             }
             case "boolean": {
-                return Dictionary.Values.Bool();
+                return cb => cb(Dictionary.Values.Bool(), expectBool);
             }
             case "struct": {
-                return throwNonFatalErrorConstEval("Cannot evaluate map with struct values", loc);
+                return cb => cb(Dictionary.Values.Cell(), (_, loc) => {
+                    throwNonFatalErrorConstEval("Cannot evaluate map with struct values", loc);
+                });
             }
         }
     }

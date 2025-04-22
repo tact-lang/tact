@@ -189,8 +189,9 @@ export function writeValue(
             }
             return value;
         }
-        default:
-            throwInternalCompilerError("Unrecognized ast literal kind");
+        case "map_value": {
+            return /* TODO */;
+        }
     }
 }
 
