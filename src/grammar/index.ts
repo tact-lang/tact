@@ -813,6 +813,24 @@ const parseParameter =
         return ctx.ast.TypedParameter(
             parseOptionalId(name)(ctx),
             parseType(type)(ctx),
+            undefined,
+            loc,
+        );
+    };
+
+const parseInitParameter =
+    ({ name, type, loc }: $ast.Parameter): Handler<Ast.TypedParameter> =>
+    (ctx) => {
+        const t = parseTypeOptional(type)(ctx);
+        const [as, ...restAs] = type.as;
+        if (restAs.length > 0) {
+            ctx.err.parameterOnlyOneAs()(loc);
+        }
+        return ctx.ast.TypedParameter(
+            parseOptionalId(name)(ctx),
+            t,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+            as ? ctx.ast.Id(as.name, as.loc) : undefined,
             loc,
         );
     };
@@ -1095,7 +1113,7 @@ const parseContractInit =
     ({ parameters, body, loc }: $ast.ContractInit): Handler<Ast.ContractInit> =>
     (ctx) => {
         return ctx.ast.ContractInit(
-            map(parseList(parameters.values), parseParameter)(ctx),
+            map(parseList(parameters.values), parseInitParameter)(ctx),
             map(body, parseStatement)(ctx),
             loc,
         );

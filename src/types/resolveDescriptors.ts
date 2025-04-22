@@ -502,7 +502,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 params.push({
                     name: r.name,
                     type,
-                    as: r.as?.text ?? null,
+                    as: r.as,
                     loc: r.loc,
                 });
                 if (isRuntimeType(type)) {
@@ -549,6 +549,16 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }) as Ast.ContractInit,
                 contract: a,
             };
+        }
+
+        if (a.kind === "contract" && a.params === undefined) {
+            // check `as` types
+            const init = a.declarations.find(
+                (it) => it.kind === "contract_init",
+            );
+            if (init) {
+                init.params.forEach((param) => resolveABIType(param));
+            }
         }
     }
 
@@ -1139,7 +1149,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             params.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
-                as: null,
+                as: r.as,
                 loc: r.loc,
             });
         }

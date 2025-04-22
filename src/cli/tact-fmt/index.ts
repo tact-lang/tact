@@ -56,7 +56,7 @@ const ArgSchema = (Parser: ArgParser) => {
 const showHelp = () => {
     console.log(`
     Usage
-      $ tact-fmt [...flags] <file> or <directory>
+      $ tact-fmt [...flags] <files> or <directories>
 
     Flags
       -w, --write                 Write result to same file
@@ -75,7 +75,10 @@ const showHelp = () => {
       Format and rewrite file.tact
 
       $ tact-fmt -w ./sources
-      Format and rewrite all Tact files in ./sources`);
+      Format and rewrite all Tact files in ./sources
+
+      $ tact-fmt -w ./sources ./scripts
+      Format and rewrite all Tact files in ./sources and ./scripts`);
 };
 
 type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
@@ -152,69 +155,66 @@ const parseArgs = (Errors: FormatterErrors, Args: Args) => {
         return;
     }
 
-    const filePath = Args.single("immediate");
-    if (filePath) {
-        const write = Args.single("write") ?? false;
-        const onlyCheck = Args.single("check") ?? false;
+    const write = Args.single("write") ?? false;
+    const onlyCheck = Args.single("check") ?? false;
 
-        if (write && onlyCheck) {
-            Errors.checkAndWrite();
-            process.exit(1);
-        }
+    if (write && onlyCheck) {
+        Errors.checkAndWrite();
+        process.exit(1);
+    }
 
-        const mode = onlyCheck
-            ? "check"
-            : write
-              ? "format-and-write"
-              : "format";
-
-        if (mode === "check") {
-            console.log("Checking formatting...");
-        }
-
-        if (!fs.statSync(filePath).isFile()) {
-            const files = globSync(["**/*.tact"], {
-                cwd: filePath,
-            });
-
-            let someFileCannotBeFormatted = false;
-            let allFormatted = true;
-            for (const file of files) {
-                const res = formatFile(join(filePath, file), mode);
-                if (typeof res === "undefined") {
-                    someFileCannotBeFormatted = true;
-                } else {
-                    allFormatted &&= res;
-                }
-            }
-
-            if (onlyCheck) {
-                if (!allFormatted) {
-                    console.log(
-                        "Code style issues found in the above file. Run tact-fmt with --write to fix.",
-                    );
-                    process.exit(1);
-                } else {
-                    console.log("All Tact files use Tact code style!");
-                }
-            }
-
-            if (someFileCannotBeFormatted) {
-                process.exit(1);
-            }
-            return;
-        }
-
-        const res = formatFile(filePath, mode);
-        if (typeof res === "undefined") {
-            process.exit(1);
+    const filePaths = Args.multiple("immediate") ?? [];
+    if (filePaths.length === 0) {
+        if (noUnknownParams(Errors, Args)) {
+            showHelp();
         }
         return;
     }
 
-    if (noUnknownParams(Errors, Args)) {
-        showHelp();
+    const mode = onlyCheck ? "check" : write ? "format-and-write" : "format";
+    if (mode === "check") {
+        console.log("Checking formatting...");
     }
+
+    const filesToFormat = collectFilesToFormat(filePaths);
+
+    let someFileCannotBeFormatted = false;
+    let allFormatted = true;
+    for (const file of filesToFormat) {
+        const res = formatFile(file, mode);
+        if (typeof res === "undefined") {
+            someFileCannotBeFormatted = true;
+        } else {
+            allFormatted &&= res;
+        }
+    }
+
+    if (onlyCheck) {
+        if (!allFormatted) {
+            console.log(
+                "Code style issues found in the above file. Run tact-fmt with --write to fix.",
+            );
+            process.exit(1);
+        } else {
+            console.log("All Tact files use official code style!");
+        }
+    }
+
+    if (someFileCannotBeFormatted) {
+        process.exit(1);
+    }
+};
+
+const collectFilesToFormat = (paths: string[]): string[] => {
+    return paths.flatMap((path) => {
+        if (!fs.statSync(path).isFile()) {
+            return globSync(["**/*.tact"], { cwd: path }).map((file) =>
+                join(path, file),
+            );
+        } else {
+            return path;
+        }
+    });
 };
 
 const noUnknownParams = (Errors: FormatterErrors, Args: Args): boolean => {
