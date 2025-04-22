@@ -130,7 +130,7 @@ function packageContract(
                       bCtx.ctx,
                       v.type,
                       v.loc,
-                      undefined,
+                      v.as,
                   ),
               }))
             : (init.contract.params ?? []).map((v) => ({
