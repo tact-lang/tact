@@ -27,6 +27,12 @@ import { WithoutDeploy } from "@/test/gas-consumption/contracts/output/deploy_Wi
 import { Sqrt } from "@/test/gas-consumption/contracts/output/sqrt_Sqrt";
 import { Cashback } from "@/test/gas-consumption/contracts/output/cashback_Cashback";
 import { Log } from "@/test/gas-consumption/contracts/output/log_Log";
+import type {
+    ForwardMsg,
+    NotifyMsg,
+    ReplyMsg,
+} from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTest";
+import { BaseTraitTest } from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTest";
 
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
@@ -363,6 +369,56 @@ describe("benchmarks", () => {
 
             const gasUsed = measureGas(sendResult.transactions);
             expect(gasUsed).toMatchSnapshot(`gas used for value ${value}`);
+        }
+
+        const codeSize = instance.init!.code.toBoc().length;
+        expect(codeSize).toMatchSnapshot(`code size`);
+    });
+
+    it("benchmark BaseTrait", async () => {
+        const instance = blockchain.openContract(
+            await BaseTraitTest.fromInit(),
+        );
+
+        const ForwardMessage: ForwardMsg = {
+            $$type: "ForwardMsg",
+            to: treasury.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+        };
+        const NotifyMessage: NotifyMsg = {
+            $$type: "NotifyMsg",
+            body: beginCell().endCell(),
+        };
+        const ReplyMessage: ReplyMsg = {
+            $$type: "ReplyMsg",
+            body: beginCell().endCell(),
+        };
+
+        const messages = {
+            ForwardMessage,
+            NotifyMessage,
+            ReplyMessage,
+        };
+
+        for (const [messageName, message] of Object.entries(messages)) {
+            const sendResult = await step(messageName, () =>
+                instance.send(
+                    treasury.getSender(),
+                    { value: toNano(1) },
+                    message,
+                ),
+            );
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: treasury.address,
+                to: instance.address,
+                success: true,
+            });
+
+            const gasUsed = measureGas(sendResult.transactions);
+            expect(gasUsed).toMatchSnapshot(`gas used for ${messageName}`);
         }
 
         const codeSize = instance.init!.code.toBoc().length;

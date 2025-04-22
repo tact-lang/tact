@@ -1,4 +1,3 @@
-forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 () __tact_nop() asm "NOP";
 
 int __tact_sha256(slice data) asm """

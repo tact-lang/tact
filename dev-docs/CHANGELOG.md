@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compiler now generates more efficient code for `Address?` fields deserialization: PR [#2834](https://github.com/tact-lang/tact/pull/2834)
 - Compiler now generates more efficient code for `if` statements: PR [#2844](https://github.com/tact-lang/tact/pull/2844)
 - Contract `init` function now can have parameters with `as` annotations: PR [#2890](https://github.com/tact-lang/tact/pull/2890)
+- [fix] Compiler now correctly handles get functions with an empty message parameter: PR [#2892](https://github.com/tact-lang/tact/pull/2892)
 
 ### Standard Library
 
