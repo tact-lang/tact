@@ -161,7 +161,7 @@ trait BaseTrait {
             let balanceBeforeMessage: Int = balance - ctx.value;
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
-                send(SendParameters{
+                send(SendParameters {
                     to,
                     mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
@@ -175,7 +175,7 @@ trait BaseTrait {
         }
 
         // Just send with remaining balance
-        send(SendParameters{
+        send(SendParameters {
             bounce,
             to,
             value: 0,
