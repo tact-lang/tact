@@ -207,7 +207,7 @@ describe("tact-fmt foo.tact", () => {
         //   file1.tact
         //   inner-2
         //      file2.tact
-        //   inner-2
+        //   inner-3
         //      file3.tact
         const file1 = join(innerDir, "file1.tact");
         const file2 = join(innerInnerDir, "file2.tact");
