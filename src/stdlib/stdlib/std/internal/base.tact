@@ -29,7 +29,8 @@ asm fun messageBounceTrue(params: MessageParametersWithoutBounce) {
     STSLICE             // store `to`
     SWAP
     STGRAMS             // store `value`
-    x{000000000000000000000000002_} STSLICECONST         // storeUint(0, 1 + 4 + 4 + 64 + 32 + 1)
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
     // → Stack state
     // s0: Builder
     // s1: `data`
@@ -48,7 +49,8 @@ asm fun messageBounceFalse(params: MessageParametersWithoutBounce) {
     STSLICE             // store `to`
     SWAP
     STGRAMS             // store `value`
-    x{000000000000000000000000002_} STSLICECONST         // storeUint(0, 1 + 4 + 4 + 64 + 32 + 1)
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
     // → Stack state
     // s0: Builder
     // s1: `data`
