@@ -27,14 +27,13 @@ import { WithoutDeploy } from "@/test/gas-consumption/contracts/output/deploy_Wi
 import { Sqrt } from "@/test/gas-consumption/contracts/output/sqrt_Sqrt";
 import { Cashback } from "@/test/gas-consumption/contracts/output/cashback_Cashback";
 import { Log } from "@/test/gas-consumption/contracts/output/log_Log";
-
 import type {
     ForwardMsg,
     NotifyMsg,
     ReplyMsg,
-} from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitInline";
-import { BaseTraitInline } from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitInline";
-import { BaseTraitTrait } from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTrait";
+} from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTest";
+import { BaseTraitTest } from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTest";
+
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
         (
@@ -377,17 +376,13 @@ describe("benchmarks", () => {
     });
 
     it("benchmark BaseTrait", async () => {
-        const instanceInline = blockchain.openContract(
-            await BaseTraitInline.fromInit(),
-        );
-
-        const instanceTrait = blockchain.openContract(
-            await BaseTraitTrait.fromInit(),
+        const instance = blockchain.openContract(
+            await BaseTraitTest.fromInit(),
         );
 
         const ForwardMessage: ForwardMsg = {
             $$type: "ForwardMsg",
-            to: instanceInline.address,
+            to: treasury.address,
             body: beginCell().endCell(),
             bounce: false,
             init: null,
@@ -408,39 +403,25 @@ describe("benchmarks", () => {
         };
 
         for (const [messageName, message] of Object.entries(messages)) {
-            for (const [instanceName, instance] of Object.entries({
-                instanceInline,
-                instanceTrait,
-            })) {
-                const sendResult = await step(
-                    `${instanceName} with ${messageName}`,
-                    () =>
-                        instance.send(
-                            treasury.getSender(),
-                            { value: toNano(1) },
-                            message,
-                        ),
-                );
+            const sendResult = await step(messageName, () =>
+                instance.send(
+                    treasury.getSender(),
+                    { value: toNano(1) },
+                    message,
+                ),
+            );
 
-                expect(sendResult.transactions).toHaveTransaction({
-                    from: treasury.address,
-                    to: instance.address,
-                    success: true,
-                });
+            expect(sendResult.transactions).toHaveTransaction({
+                from: treasury.address,
+                to: instance.address,
+                success: true,
+            });
 
-                const gasUsed = measureGas(sendResult.transactions);
-                expect(gasUsed).toMatchSnapshot(
-                    `gas used for ${messageName} in contract ${instanceName}`,
-                );
-            }
+            const gasUsed = measureGas(sendResult.transactions);
+            expect(gasUsed).toMatchSnapshot(`gas used for ${messageName}`);
         }
 
-        for (const [name, instance] of Object.entries({
-            instanceInline,
-            instanceTrait,
-        })) {
-            const codeSize = instance.init!.code.toBoc().length;
-            expect(codeSize).toMatchSnapshot(`code size inline ${name}`);
-        }
+        const codeSize = instance.init!.code.toBoc().length;
+        expect(codeSize).toMatchSnapshot(`code size`);
     });
 });
