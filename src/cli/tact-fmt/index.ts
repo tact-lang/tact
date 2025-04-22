@@ -244,5 +244,3 @@ function readFileOrFail(filePath: string): string | undefined {
 const globSync = (globs: string[], options: { cwd: string }) => {
     return globs.flatMap((g) => glob.sync(g, options));
 };
-
-// void main();®
