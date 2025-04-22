@@ -4,9 +4,9 @@ exports[`benchmarks benchmark BaseTrait: code size 1`] = `356`;
 
 exports[`benchmarks benchmark BaseTrait: gas used for ForwardMessage 1`] = `3638`;
 
-exports[`benchmarks benchmark BaseTrait: gas used for NotifyMessage 1`] = `3421`;
+exports[`benchmarks benchmark BaseTrait: gas used for NotifyMessage 1`] = `3411`;
 
-exports[`benchmarks benchmark BaseTrait: gas used for ReplyMessage 1`] = `3488`;
+exports[`benchmarks benchmark BaseTrait: gas used for ReplyMessage 1`] = `3478`;
 
 exports[`benchmarks benchmark cashback: gas used cashback 1`] = `3337`;
 
@@ -24,7 +24,7 @@ exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `858n`;
 
 exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2516n`;
 
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `3975`;
+exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `3965`;
 
 exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1505`;
 
