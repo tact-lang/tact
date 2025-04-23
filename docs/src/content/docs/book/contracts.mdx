@@ -481,11 +481,11 @@ contract HelloWorld {
         self.counter += 1;
 
         // sending the message back to the sender
-        send(SendParameters{
+        send(SendParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: CanBounce{counter: self.counter}.toCell(),
+            body: CanBounce { counter: self.counter }.toCell(),
         });
     }
 
