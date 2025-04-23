@@ -602,11 +602,11 @@ fun showcase() {
     // unpack structures into distinct variables.
     let st = StdAddress { workchain: 0, address: 0 }; // let statement
     let StdAddress { address, .. } = st;              // destructuring statement
-    //              -------  --
-    //              ↑        ↑
-    //              |        ignores all unspecified fields
-    //              Int as uint256,
-    //              a variable out of the second field of StdAddress struct
+    //               -------  --
+    //               ↑        ↑
+    //               |        ignores all unspecified fields
+    //               Int as uint256,
+    //               a variable out of the second field of StdAddress struct
     address; // 0
 
     // You can also define new names for variables
