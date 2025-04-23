@@ -10,7 +10,7 @@ import { NotThrowOnlyFallback } from "@/test/e2e-emulated/exit-codes/output/thro
 
 describe("throw only fallback", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let throwOnlyFallbackEmptyContract: SandboxContract<ThrowOnlyFallbackEmpty>;
     let throwOnlyFallbackTextContract: SandboxContract<ThrowOnlyFallbackText>;
     let throwOnlyFallbackBinaryContract: SandboxContract<ThrowOnlyFallbackBinary>;
@@ -29,7 +29,7 @@ describe("throw only fallback", () => {
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure", {
+        treasury = await blockchain.treasury("treasury", {
             resetBalanceIfZero: true,
         });
 
@@ -59,13 +59,13 @@ describe("throw only fallback", () => {
 
         for (const contract of contracts) {
             const deployResult = await contract.send(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano("10") },
                 beginCell().asSlice(),
             );
 
             expect(deployResult.transactions).toHaveTransaction({
-                from: treasure.address,
+                from: treasury.address,
                 to: contract.address,
                 deploy: true,
             });
@@ -76,7 +76,7 @@ describe("throw only fallback", () => {
         const addresses = getThrowOnlyAddresses();
 
         for (const address of addresses) {
-            const sendResult = await treasure.send({
+            const sendResult = await treasury.send({
                 to: address,
                 value: toNano("1"),
                 bounce: true,
@@ -84,7 +84,7 @@ describe("throw only fallback", () => {
             });
 
             expect(sendResult.transactions).toHaveTransaction({
-                from: treasure.address,
+                from: treasury.address,
                 to: address,
                 success: false,
                 exitCode: 0xffff,
@@ -95,7 +95,7 @@ describe("throw only fallback", () => {
     it("should not change not-throw-only fallback", async () => {
         const address = notThrowOnlyFallbackContract.address;
 
-        const sendResult = await treasure.send({
+        const sendResult = await treasury.send({
             to: address,
             value: toNano("1"),
             bounce: true,
@@ -103,7 +103,7 @@ describe("throw only fallback", () => {
         });
 
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: address,
             success: true,
         });

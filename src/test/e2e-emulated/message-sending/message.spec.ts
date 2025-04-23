@@ -7,24 +7,24 @@ import "@ton/test-utils";
 
 describe("message", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<MessageTester>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await MessageTester.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             { $$type: "Deploy", queryId: 0n },
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -33,13 +33,13 @@ describe("message", () => {
 
     it("should send reply correctly", async () => {
         const sendResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "Hello",
         );
 
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             body: beginCell()
@@ -50,14 +50,14 @@ describe("message", () => {
     });
 
     it("should bounce on unknown message", async () => {
-        const sendResult = await treasure.send({
+        const sendResult = await treasury.send({
             to: contract.address,
             value: toNano("10"),
             body: beginCell().storeStringTail("Unknown").endCell(),
         });
 
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: false,
             exitCode: 130,
@@ -69,7 +69,7 @@ describe("message", () => {
         let balanceBefore = (await blockchain.getContract(contract.address))
             .balance;
         await expectMessageFromToWithDefaults({
-            treasure,
+            treasury,
             contract,
             body: textMsg("ReserveAtMost_1"),
         });
@@ -82,7 +82,7 @@ describe("message", () => {
         balanceBefore = (await blockchain.getContract(contract.address))
             .balance;
         await expectMessageFromToWithDefaults({
-            treasure,
+            treasury,
             contract,
             body: textMsg("ReserveAtMost_2"),
         });
@@ -98,7 +98,7 @@ describe("message", () => {
  * to be successful or not (`success`), and if not — expect a certain exit code from it
  */
 async function expectMessageFromTo(args: {
-    treasure: SandboxContract<TreasuryContract>;
+    treasury: SandboxContract<TreasuryContract>;
     contract: SandboxContract<MessageTester>;
     body: Cell | null;
     value: bigint;
@@ -106,14 +106,14 @@ async function expectMessageFromTo(args: {
     success: boolean;
     exitCode: number;
 }) {
-    const sendResult = await args.treasure.send({
+    const sendResult = await args.treasury.send({
         to: args.contract.address,
         value: args.value,
         bounce: args.bounce,
         body: args.body,
     });
     expect(sendResult.transactions).toHaveTransaction({
-        from: args.treasure.address,
+        from: args.treasury.address,
         to: args.contract.address,
         success: args.success,
         exitCode: args.exitCode,
@@ -128,12 +128,12 @@ async function expectMessageFromTo(args: {
  * * exitCode: `0`
  */
 async function expectMessageFromToWithDefaults(args: {
-    treasure: SandboxContract<TreasuryContract>;
+    treasury: SandboxContract<TreasuryContract>;
     contract: SandboxContract<MessageTester>;
     body: Cell | null;
 }) {
     await expectMessageFromTo({
-        treasure: args.treasure,
+        treasury: args.treasury,
         contract: args.contract,
         body: args.body,
         value: toNano("10"),

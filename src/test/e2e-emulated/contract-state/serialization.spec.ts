@@ -8,12 +8,12 @@ import "@ton/test-utils";
 
 describe("serialization", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
     });
 
     //
@@ -63,13 +63,13 @@ describe("serialization", () => {
                 );
 
                 const deployResult = await contract.send(
-                    treasure.getSender(),
+                    treasury.getSender(),
                     { value: toNano("10") },
                     null,
                 );
 
                 expect(deployResult.transactions).toHaveTransaction({
-                    from: treasure.address,
+                    from: treasury.address,
                     to: contract.address,
                     success: true,
                     deploy: true,
@@ -140,13 +140,13 @@ describe("serialization", () => {
                 );
 
                 const deployResult = await contract.send(
-                    treasure.getSender(),
+                    treasury.getSender(),
                     { value: toNano("10") },
                     null,
                 );
 
                 expect(deployResult.transactions).toHaveTransaction({
-                    from: treasure.address,
+                    from: treasury.address,
                     to: contract.address,
                     success: true,
                     deploy: true,
@@ -198,13 +198,13 @@ describe("serialization", () => {
         );
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,

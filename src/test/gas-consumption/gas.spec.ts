@@ -24,6 +24,15 @@ import { Addresses } from "@/test/gas-consumption/contracts/output/address_Addre
 import { CodeOfVsInitOf } from "@/test/gas-consumption/contracts/output/codeOf_CodeOfVsInitOf";
 import { WithDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithDeploy";
 import { WithoutDeploy } from "@/test/gas-consumption/contracts/output/deploy_WithoutDeploy";
+import { Sqrt } from "@/test/gas-consumption/contracts/output/sqrt_Sqrt";
+import { Cashback } from "@/test/gas-consumption/contracts/output/cashback_Cashback";
+import { Log } from "@/test/gas-consumption/contracts/output/log_Log";
+import type {
+    ForwardMsg,
+    NotifyMsg,
+    ReplyMsg,
+} from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTest";
+import { BaseTraitTest } from "@/test/gas-consumption/contracts/output/base-trait_BaseTraitTest";
 
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
@@ -36,7 +45,7 @@ function measureGas(txs: BlockchainTransaction[]): number {
 
 describe("benchmarks", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
 
     let step: Step;
 
@@ -50,7 +59,7 @@ describe("benchmarks", () => {
     });
 
     beforeEach(async () => {
-        treasure = await blockchain.treasury("benchmarks");
+        treasury = await blockchain.treasury("benchmarks");
     });
 
     it("benchmark functions", async () => {
@@ -58,7 +67,7 @@ describe("benchmarks", () => {
 
         const sendResult = await step("benchmark functions", () =>
             functions.send(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano(1) },
                 { $$type: "Add", value: 10n },
             ),
@@ -75,7 +84,7 @@ describe("benchmarks", () => {
     it("benchmark readFwdFee", async () => {
         const testContract = blockchain.openContract(await Forward.fromInit());
         const sendResult = await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             {
                 $$type: "TestGetFwdFee",
@@ -96,7 +105,7 @@ describe("benchmarks", () => {
         s: string,
     ): Promise<number> {
         const result = await sha256.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             { $$type: "HashData", value: s },
         );
@@ -109,7 +118,7 @@ describe("benchmarks", () => {
         s: string,
     ): Promise<number> {
         const result = await sha256.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             { $$type: "HashData", value: s },
         );
@@ -122,7 +131,7 @@ describe("benchmarks", () => {
         s: string,
     ): Promise<number> {
         const result = await sha256.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             { $$type: "HashData", value: s },
         );
@@ -140,13 +149,13 @@ describe("benchmarks", () => {
         );
 
         await sha256Small.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
-        await sha256Big.send(treasure.getSender(), { value: toNano(1) }, null);
+        await sha256Big.send(treasury.getSender(), { value: toNano(1) }, null);
         await sha256AsSlice.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -191,7 +200,7 @@ describe("benchmarks", () => {
             await CellsCreation.fromInit(),
         );
         await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -212,7 +221,7 @@ describe("benchmarks", () => {
             await Addresses.fromInit(),
         );
         await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -230,7 +239,7 @@ describe("benchmarks", () => {
             await CodeOfVsInitOf.fromInit(),
         );
         await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -250,7 +259,7 @@ describe("benchmarks", () => {
             await CodeOfVsInitOf.fromInit(),
         );
         await testContract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             null,
         );
@@ -265,6 +274,37 @@ describe("benchmarks", () => {
         expect(gasUsed2).toMatchSnapshot("gas used myCode");
     });
 
+    it("benchmark cashback", async () => {
+        const testContract = blockchain.openContract(await Cashback.fromInit());
+        const res = await testContract.send(
+            treasury.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        expect(getUsedGas(res, "internal")).toMatchSnapshot(
+            "gas used cashback",
+        );
+    });
+
+    it("benchmark log", async () => {
+        const testContract = blockchain.openContract(await Log.fromInit());
+        await testContract.send(
+            treasury.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        const gasUsed = (
+            await blockchain.runGetMethod(testContract.address, "log", [
+                { type: "int", value: 1000n },
+                {
+                    type: "int",
+                    value: 3n,
+                },
+            ])
+        ).gasUsed;
+        expect(gasUsed).toMatchSnapshot("gas used log");
+    });
+
     it("benchmark deployable trait vs raw deploy", async () => {
         const withDeployTrait = blockchain.openContract(
             await WithDeploy.fromInit(),
@@ -274,7 +314,7 @@ describe("benchmarks", () => {
         );
 
         const deployResultTrait = await withDeployTrait.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             {
                 $$type: "Deploy",
@@ -283,7 +323,7 @@ describe("benchmarks", () => {
         );
 
         const deployRawResult = await withoutDeploy.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             beginCell().endCell().beginParse(),
         );
@@ -293,5 +333,95 @@ describe("benchmarks", () => {
 
         const gasUsedRaw = measureGas(deployRawResult.transactions);
         expect(gasUsedRaw).toMatchSnapshot("gas used raw deploy");
+    });
+
+    const variants: [string, "GetSqrt" | "GetSqrtViaGeomMean"][] = [
+        ["sqrt via geom mean", "GetSqrtViaGeomMean"],
+        ["sqrt", "GetSqrt"],
+    ];
+
+    it.each(variants)("benchmark %s", async (name, message) => {
+        const instance = blockchain.openContract(await Sqrt.fromInit());
+
+        const testValues = [
+            0n,
+            100n,
+            toNano("1"),
+            toNano("10"),
+            2n ** 255n,
+            2n ** 256n - 1n,
+        ];
+
+        for (const value of testValues) {
+            const sendResult = await step(`${name} with value ${value}`, () =>
+                instance.send(
+                    treasury.getSender(),
+                    { value: toNano(1) },
+                    { $$type: message, value },
+                ),
+            );
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: treasury.address,
+                to: instance.address,
+                success: true,
+            });
+
+            const gasUsed = measureGas(sendResult.transactions);
+            expect(gasUsed).toMatchSnapshot(`gas used for value ${value}`);
+        }
+
+        const codeSize = instance.init!.code.toBoc().length;
+        expect(codeSize).toMatchSnapshot(`code size`);
+    });
+
+    it("benchmark BaseTrait", async () => {
+        const instance = blockchain.openContract(
+            await BaseTraitTest.fromInit(),
+        );
+
+        const ForwardMessage: ForwardMsg = {
+            $$type: "ForwardMsg",
+            to: treasury.address,
+            body: beginCell().endCell(),
+            bounce: false,
+            init: null,
+        };
+        const NotifyMessage: NotifyMsg = {
+            $$type: "NotifyMsg",
+            body: beginCell().endCell(),
+        };
+        const ReplyMessage: ReplyMsg = {
+            $$type: "ReplyMsg",
+            body: beginCell().endCell(),
+        };
+
+        const messages = {
+            ForwardMessage,
+            NotifyMessage,
+            ReplyMessage,
+        };
+
+        for (const [messageName, message] of Object.entries(messages)) {
+            const sendResult = await step(messageName, () =>
+                instance.send(
+                    treasury.getSender(),
+                    { value: toNano(1) },
+                    message,
+                ),
+            );
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: treasury.address,
+                to: instance.address,
+                success: true,
+            });
+
+            const gasUsed = measureGas(sendResult.transactions);
+            expect(gasUsed).toMatchSnapshot(`gas used for ${messageName}`);
+        }
+
+        const codeSize = instance.init!.code.toBoc().length;
+        expect(codeSize).toMatchSnapshot(`code size`);
     });
 });

@@ -10,11 +10,6 @@ struct NFTData {
     content: Cell?;
 }
 
-struct InitNFTData {
-    collectionAddress: Address;
-    itemIndex: Int as uint64;
-}
-
 message(0xd0c3bfea) RequestOwner {
     queryId: Int as uint64;
     destination: Address;

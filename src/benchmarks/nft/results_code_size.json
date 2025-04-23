@@ -89,6 +89,46 @@
         "item cells": "12",
         "item bits": "6530"
       }
+    },
+    {
+      "label": "1.6.6 with optimized builder storage",
+      "pr": "https://github.com/tact-lang/tact/pull/2836",
+      "size": {
+        "collection cells": "43",
+        "collection bits": "22386",
+        "item cells": "12",
+        "item bits": "6530"
+      }
+    },
+    {
+      "label": "1.6.6 with optimized __tact_store_address_opt",
+      "pr": "https://github.com/tact-lang/tact/pull/2834",
+      "size": {
+        "collection cells": "43",
+        "collection bits": "22322",
+        "item cells": "12",
+        "item bits": "6498"
+      }
+    },
+    {
+      "label": "1.6.6 with contract parameters",
+      "pr": "https://github.com/tact-lang/tact/pull/2866",
+      "size": {
+        "collection cells": "40",
+        "collection bits": "20692",
+        "item cells": "10",
+        "item bits": "5601"
+      }
+    },
+    {
+      "label": "1.6.6 with init parameter with as type",
+      "pr": "https://github.com/tact-lang/tact/pull/2890",
+      "size": {
+        "collection cells": "39",
+        "collection bits": "20572",
+        "item cells": "10",
+        "item bits": "5601"
+      }
     }
   ]
 }

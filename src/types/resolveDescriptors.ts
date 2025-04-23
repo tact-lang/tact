@@ -271,6 +271,51 @@ function uidForName(name: string, types: Map<string, TypeDescription>) {
     return uid;
 }
 
+/**
+ * Collect global variables usage **per project**, not per contract!
+ */
+export function computeGlobalVariablesUsages(
+    ctx: CompilerContext,
+): CompilerContext {
+    const ast = getRawAST(ctx);
+
+    const globalVariables: Set<string> = new Set();
+
+    const handler = (node: Ast.AstNode) => {
+        traverse(node, (node) => {
+            if (node.kind === "static_call") {
+                const name = idText(node.function);
+                if (name === "inMsg") {
+                    globalVariables.add("inMsg");
+                }
+                if (name === "sender") {
+                    globalVariables.add("sender");
+                }
+                if (name === "context") {
+                    globalVariables.add("context");
+                }
+            }
+        });
+    };
+
+    for (const a of ast.types) {
+        handler(a);
+    }
+
+    for (const a of ast.functions) {
+        handler(a);
+    }
+
+    for (const a of ast.types) {
+        if (a.kind === "contract") {
+            const contract = getType(ctx, a.name);
+            contract.globalVariables = globalVariables;
+        }
+    }
+
+    return ctx;
+}
+
 export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
@@ -307,6 +352,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         functions: new Map(),
                         receivers: [],
                         dependsOn: [],
+                        globalVariables: new Set(),
                         init: null,
                         ast: a,
                         interfaces: [],
@@ -330,6 +376,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         functions: new Map(),
                         receivers: [],
                         dependsOn: [],
+                        globalVariables: new Set(),
                         init: null,
                         ast: a,
                         interfaces: a.attributes.map((v) => v.name.value),
@@ -354,6 +401,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         functions: new Map(),
                         receivers: [],
                         dependsOn: [],
+                        globalVariables: new Set(),
                         init: null,
                         ast: a,
                         interfaces: [],
@@ -376,6 +424,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     functions: new Map(),
                     receivers: [],
                     dependsOn: [],
+                    globalVariables: new Set(),
                     init: null,
                     ast: a,
                     interfaces: a.attributes.map((v) => v.name.value),
@@ -453,7 +502,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 params.push({
                     name: r.name,
                     type,
-                    as: r.as?.text ?? null,
+                    as: r.as,
                     loc: r.loc,
                 });
                 if (isRuntimeType(type)) {
@@ -500,6 +549,16 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }) as Ast.ContractInit,
                 contract: a,
             };
+        }
+
+        if (a.kind === "contract" && a.params === undefined) {
+            // check `as` types
+            const init = a.declarations.find(
+                (it) => it.kind === "contract_init",
+            );
+            if (init) {
+                init.params.forEach((param) => resolveABIType(param));
+            }
         }
     }
 
@@ -1090,7 +1149,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             params.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
-                as: null,
+                as: r.as,
                 loc: r.loc,
             });
         }

@@ -23,14 +23,16 @@ contract NFTCollection {
     commonCode: Cell;
     commonData: Builder;
 
-    init(owner: Address, nextItemIndex: Int, collectionContent: Cell, royaltyParams: RoyaltyParams) {
+    init(owner: Address, nextItemIndex: Int as uint64, collectionContent: Cell, royaltyParams: RoyaltyParams) {
         self.owner = owner;
         self.nextItemIndex = nextItemIndex;
         self.content = collectionContent;
         self.royaltyParams = royaltyParams;
 
         self.commonCode = codeOf NFTItem;
-        self.commonData = beginCell().storeBit(false).storeAddress(myAddress()); // Use lazy bit
+        self.commonData = beginCell()
+            .storeUint(0, 3) // 0b00 - null address and 0b0 - null content cell
+            .storeAddress(myAddress());
     }
 
     receive() {} // ignore empty messages
@@ -96,7 +98,7 @@ contract NFTCollection {
     }
 
     get fun get_nft_address_by_index(index: Int): Address {
-        let stateInit = initOf NFTItem(InitNFTData { itemIndex: index, collectionAddress: myAddress() });
+        let stateInit = initOf NFTItem(null, null, myAddress(), index);
         return contractAddress(stateInit);
     }
 
@@ -122,7 +124,7 @@ inline fun deployNFTItem(commonCode: Cell, itemIndex: Int, amount: Int, initNFTB
     deploy(DeployParameters {
         value: amount,
         body: initNFTBody,
-        init: StateInit { code: commonCode, data: data },
+        init: StateInit { code: commonCode, data },
         mode: SendPayFwdFeesSeparately,
     });
 }

@@ -20,6 +20,7 @@ export type TypeDescription = {
     init: InitDescription | null;
     ast: Ast.TypeDecl;
     dependsOn: TypeDescription[];
+    globalVariables: Set<string>;
     interfaces: string[];
     constants: ConstantDescription[];
 };
@@ -189,7 +190,7 @@ export type ReceiverDescription = {
 export type InitParameter = {
     name: Ast.OptionalId;
     type: TypeRef;
-    as: string | null;
+    as: Ast.Id | undefined;
     loc: SrcInfo;
 };
 
