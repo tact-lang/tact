@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`benchmarks benchmark BaseTrait: code size 1`] = `337`;
+exports[`benchmarks benchmark BaseTrait: code size 1`] = `334`;
 
 exports[`benchmarks benchmark BaseTrait: gas used for ForwardMessage 1`] = `3638`;
 
-exports[`benchmarks benchmark BaseTrait: gas used for NotifyMessage 1`] = `3317`;
+exports[`benchmarks benchmark BaseTrait: gas used for NotifyMessage 1`] = `3253`;
 
 exports[`benchmarks benchmark BaseTrait: gas used for ReplyMessage 1`] = `3320`;
 
@@ -24,7 +24,7 @@ exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `858n`;
 
 exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2516n`;
 
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `3761`;
+exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `3697`;
 
 exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1505`;
 

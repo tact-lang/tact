@@ -95,6 +95,25 @@ asm fun messageBounceTrueValueZero(params: MessageParametersWithoutBounceWithout
     SENDRAWMSG
 }
 
+asm fun messageBounceFalseValueZero(params: MessageParametersWithoutBounceWithoutValue) {
+    NEWC
+    b{010000} STSLICECONST  // store tag = $0, ihr_disabled = true, bounce = false,  bounced = false, src = addr_none
+    STSLICE             // store `to`
+    x{0} STSLICECONST   // store `value` = 0
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
+}
+
 
 trait BaseTrait {
     /// The amount of nanoToncoins to reserve before forwarding a message with
@@ -172,9 +191,8 @@ trait BaseTrait {
             let balanceBeforeMessage: Int = balance - context().value;
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
-                messageBounceFalse(MessageParametersWithoutBounce {
+                messageBounceFalseValueZero(MessageParametersWithoutBounceWithoutValue {
                     to: sender(),
-                    value: 0,
                     mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
                 });
@@ -183,9 +201,8 @@ trait BaseTrait {
         }
 
         // Just send with remaining balance
-        messageBounceFalse(MessageParametersWithoutBounce {
+        messageBounceFalseValueZero(MessageParametersWithoutBounceWithoutValue {
             to: sender(),
-            value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body,
         });
