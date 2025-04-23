@@ -376,6 +376,24 @@ contract TheySeeMeTrailing {
 }
 ```
 
+<Badge text="Available since Tact 1.7" variant="tip" size="medium"/> The parameters of the `init(){:tact}` function can specify [serialization formats](/book/integers#serialization) using the `as` keyword, just like you can with contract fields:
+
+```tact {4}
+contract Example {
+    param: Int as uint32;
+
+    init(param: Int as uint32) {
+        self.param = param;
+    }
+}
+```
+
+:::tip
+
+  Always specify serialization formats for initialization parameters with same types as for contract fields that you want to initialize.
+
+:::
+
 Usage of the `init(){:tact}` function conflicts with the use of [contract parameters](#parameters). Use one or the other, but not both.
 
 ```tact
