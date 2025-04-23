@@ -22,29 +22,28 @@ message(0xe8c15681) Approve {}
 message(0xcc0f2526) Cancel {}
 message(0xc33b3126) ProvideEscrowData {}
 
-struct SecondCell {
-    guarantorRoyaltyPercent: Int as uint32; // 3 decimal points, see GUARANTOR_PERCENT_CONST
-    buyerAddress: Address?; // null if not funded, set after funding
-    isFunded: Int as uint2;
-    jettonWalletCode: Cell?;
-}   
-
 struct EscrowData {
     id: Int as uint32; // contract address salt
     sellerAddress: Address;
     guarantorAddress: Address;
     dealAmount: Int as coins;
+    guarantorRoyaltyPercent: Int as uint32; // 3 decimal points, see GUARANTOR_PERCENT_CONST
+    isFunded: Bool;
     assetAddress: Address?; // null for TON
-    secondCell: SecondCell;
+    jettonWalletCode: Cell?;
+    buyerAddress: Address?; // null if not funded, set after funding
 }
 
 contract Escrow(
     id: Int as uint32,
     sellerAddress: Address,
     guarantorAddress: Address,
-    dealAmount: Int as uint64,
+    buyerAddress: Address?,
+    dealAmount: Int as coins,
+    guarantorRoyaltyPercent: Int as uint32,
+    isFunded: Bool,
     assetAddress: Address?,
-    secondCell: SecondCell,
+    jettonWalletCode: Cell?,
 ) {
     const GUARANTOR_PERCENT_CONST: Int = 100000;
     const GUARANTOR_PERCENT_MAX: Int = 90000;
@@ -55,26 +54,7 @@ contract Escrow(
         let escrowJettonWalletAddress = calculateJettonWalletAddress(
             myAddress(),
             self.assetAddress!!,
-<<<<<<< HEAD
-            self.secondCell.jettonWalletCode!!
-        );
-        message(MessageParameters{
-                to: escrowJettonWalletAddress,
-                value: self.JETTON_TRANSFER_GAS,
-                body: JettonTransfer{
-                    queryId: 0,
-                    amount: amount,
-                    destination: receiver,
-                    responseDestination: receiver,
-                    forwardTonAmount: ton("0.01"),
-                    forwardPayload: emptySlice(),
-                    customPayload: null
-                }.toCell(),
-                mode: mode
-            }
-=======
             self.jettonWalletCode!!,
->>>>>>> main
         );
         message(MessageParameters {
             to: escrowJettonWalletAddress,
@@ -93,35 +73,32 @@ contract Escrow(
     }
 
     receive(_: Funding) {
-        throwUnless(400, self.secondCell.isFunded == 0);
+        throwIf(400, self.isFunded);
         throwUnless(400, self.assetAddress == null);
 
         let ctx: Context = context();
         throwUnless(401, ctx.value == self.dealAmount);
 
-        self.secondCell.isFunded = 1;
-        self.secondCell.buyerAddress = ctx.sender;
+        self.isFunded = true;
+        self.buyerAddress = ctx.sender;
     }
 
     receive(msg: UpdateJettonWalletCode) {
-        throwUnless(400, (self.secondCell.isFunded == 0) && (self.assetAddress != null));
+        throwIf(400, self.isFunded);
+        throwIf(400, self.assetAddress == null);
         throwUnless(403, self.sellerAddress == sender());
 
-        self.secondCell.jettonWalletCode = msg.newJettonWalletCode;
+        self.jettonWalletCode = msg.newJettonWalletCode;
     }
 
     receive(msg: JettonNotification) {
-        throwUnless(400, self.secondCell.isFunded == 0);
+        throwUnless(400, !self.isFunded);
         throwUnless(400, self.assetAddress != null);
 
         let escrowJettonWalletAddress = calculateJettonBasechainWalletAddress(
             myAddress(),
             self.assetAddress!!,
-<<<<<<< HEAD
-            self.secondCell.jettonWalletCode!!
-=======
             self.jettonWalletCode!!,
->>>>>>> main
         );
         let sender = parseStdAddress(sender().asSlice());
 
@@ -129,18 +106,18 @@ contract Escrow(
 
         throwUnless(401, self.dealAmount == msg.amount);
 
-        self.secondCell.isFunded = 1;
-        self.secondCell.buyerAddress = msg.sender;
+        self.isFunded = true;
+        self.buyerAddress = msg.sender;
     }
 
     // send funds to seller and royalty to guarantor
     receive(_: Approve) {
-        throwUnless(403, self.secondCell.isFunded == 1);
+        throwUnless(403, self.isFunded);
 
         let ctx: Context = context();
 
-        throwUnless(403, self.guarantorAddress == sender());
-        let percent: Int = max(self.secondCell.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
+        throwUnless(403, self.guarantorAddress == ctx.sender);
+        let percent: Int = max(self.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
         let royaltyAmount: Int = muldivc(percent, self.dealAmount, self.GUARANTOR_PERCENT_CONST);
 
         if (self.assetAddress == null) {
@@ -164,28 +141,19 @@ contract Escrow(
 
     // send funds back to buyer
     receive(_: Cancel) {
-        throwUnless(403, self.secondCell.isFunded == 1);
+        throwUnless(403, self.isFunded);
         throwUnless(403, self.guarantorAddress == sender());
 
         // it's up to business logic to decide if guarantor gets royalty in case of cancel
         // in this implementation we don't pay royalty in case of cancel
         if (self.assetAddress == null) {
-<<<<<<< HEAD
-            message(MessageParameters{
-                    to: self.secondCell.buyerAddress!!,
-                    value: self.dealAmount,
-                    mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
-                }
-            );
-=======
             message(MessageParameters {
                 to: self.buyerAddress!!,
                 value: self.dealAmount,
                 mode: SendRemainingBalance | SendDestroyIfZero, // send all remaining and destroy escrow
             });
->>>>>>> main
         } else {
-            self.sendJettons(self.secondCell.buyerAddress!!, self.dealAmount, SendRemainingBalance | SendDestroyIfZero);
+            self.sendJettons(self.buyerAddress!!, self.dealAmount, SendRemainingBalance | SendDestroyIfZero);
         }
     }
 
@@ -201,15 +169,12 @@ contract Escrow(
                     sellerAddress: self.sellerAddress,
                     guarantorAddress: self.guarantorAddress,
                     dealAmount: self.dealAmount,
+                    guarantorRoyaltyPercent: self.guarantorRoyaltyPercent,
+                    isFunded: self.isFunded,
                     assetAddress: self.assetAddress,
-<<<<<<< HEAD
-                    secondCell: self.secondCell,
-                }
-=======
                     jettonWalletCode: self.jettonWalletCode,
                     buyerAddress: self.buyerAddress,
                 },
->>>>>>> main
             }.toCell(),
             mode: SendRemainingValue,
         });
@@ -218,13 +183,13 @@ contract Escrow(
     get fun calculateRoyaltyAmount(): Int {
         // using integer math to avoid floating point issues
         // see https://tact-by-example.org/04-decimal-point
-        let percent: Int = max(self.secondCell.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
+        let percent: Int = max(self.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
 
         return muldivc(percent, self.dealAmount, self.GUARANTOR_PERCENT_CONST);
     }
 
     get fun walletAddress(): Address {
-        return calculateJettonWalletAddress(myAddress(), self.assetAddress!!, self.secondCell.jettonWalletCode!!);
+        return calculateJettonWalletAddress(myAddress(), self.assetAddress!!, self.jettonWalletCode!!);
     }
 
     get fun escrowInfo(): Escrow {
