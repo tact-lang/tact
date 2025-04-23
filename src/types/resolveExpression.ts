@@ -924,7 +924,9 @@ export function resolveExpression(
             return resolveMapLiteral(exp, sctx, ctx);
         }
         case "map_value": {
-            return throwInternalCompilerError("Map value should never get here");
+            return throwInternalCompilerError(
+                "Map value should never get here",
+            );
         }
         case "set_literal": {
             return throwInternalCompilerError("Set literals are not supported");

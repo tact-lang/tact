@@ -642,7 +642,7 @@ export type MapValue = {
     readonly type: MapType;
     readonly id: number;
     readonly loc: SrcInfo;
-}
+};
 
 export type StructValue = {
     readonly kind: "struct_value";

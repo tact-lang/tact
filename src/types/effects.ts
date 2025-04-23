@@ -271,18 +271,12 @@ function expressionEffects(
             );
         }
         case "map_literal": {
-            return unionAll(expr.fields.flatMap(({ key, value }) => [
-                expressionEffects(
-                    key,
-                    processedContractMethods,
-                    ctx,
-                ),
-                expressionEffects(
-                    value,
-                    processedContractMethods,
-                    ctx,
-                ),
-            ]));
+            return unionAll(
+                expr.fields.flatMap(({ key, value }) => [
+                    expressionEffects(key, processedContractMethods, ctx),
+                    expressionEffects(value, processedContractMethods, ctx),
+                ]),
+            );
         }
         case "set_literal": {
             throwInternalCompilerError("Set literals are not supported");

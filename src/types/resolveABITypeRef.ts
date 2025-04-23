@@ -585,9 +585,7 @@ export function getMapAbi(src: TypeRefMap, loc: SrcInfo): ABITypeRef {
             );
         }
     } else if (src.value === "Slice") {
-        throwInternalCompilerError(
-            `Unsupported map value type "${src.value}"`,
-        );
+        throwInternalCompilerError(`Unsupported map value type "${src.value}"`);
     } else if (src.value === "Address") {
         value = "address";
         if (src.valueAs) {
@@ -597,13 +595,9 @@ export function getMapAbi(src: TypeRefMap, loc: SrcInfo): ABITypeRef {
             );
         }
     } else if (src.value === "String") {
-        throwInternalCompilerError(
-            `Unsupported map value type "${src.value}"`,
-        );
+        throwInternalCompilerError(`Unsupported map value type "${src.value}"`);
     } else if (src.value === "StringBuilder" || src.value === "Builder") {
-        throwInternalCompilerError(
-            `Unsupported map value type "${src.value}"`,
-        );
+        throwInternalCompilerError(`Unsupported map value type "${src.value}"`);
     } else {
         value = src.value;
         valueFormat = "ref";

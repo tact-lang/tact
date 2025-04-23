@@ -29,7 +29,7 @@ export type TypeRefRef = {
     kind: "ref";
     name: string;
     optional: boolean;
-}
+};
 
 export type TypeRefMap = {
     kind: "map";
@@ -37,20 +37,20 @@ export type TypeRefMap = {
     keyAs: string | null;
     value: string;
     valueAs: string | null;
-}
+};
 
 export type TypeRefBounced = {
     kind: "ref_bounced";
     name: string;
-}
+};
 
 export type TypeRefVoid = {
     kind: "void";
-}
+};
 
 export type TypeRefNull = {
     kind: "null";
-}
+};
 
 export type TypeRef =
     | TypeRefRef

@@ -202,16 +202,22 @@ export const ppAstSlice = ({ value }: Ast.Slice) =>
 export const ppAstMapLiteral = ({ type, fields }: Ast.MapLiteral) => {
     const key = ppAstTypeIdWithStorage(type.keyType, type.keyStorageType);
     const value = ppAstTypeIdWithStorage(type.valueType, type.valueStorageType);
-    const exprs = fields.map(expr => {
-        const key = ppAstExpression(expr.key);
-        const value = ppAstExpression(expr.value);
-        return `${key}: ${value}`;
-    }).join(', ');
+    const exprs = fields
+        .map((expr) => {
+            const key = ppAstExpression(expr.key);
+            const value = ppAstExpression(expr.value);
+            return `${key}: ${value}`;
+        })
+        .join(", ");
     return `map<${key}, ${value}> { ${exprs} }`;
 };
-export const ppAstSetLiteral = ({ valueType, valueStorageType, fields }: Ast.SetLiteral) => {
+export const ppAstSetLiteral = ({
+    valueType,
+    valueStorageType,
+    fields,
+}: Ast.SetLiteral) => {
     const type = ppAstTypeIdWithStorage(valueType, valueStorageType);
-    const exprs = fields.map(expr => ppAstExpression(expr)).join(', ');
+    const exprs = fields.map((expr) => ppAstExpression(expr)).join(", ");
     return `set<${type}> { ${exprs} }`;
 };
 export const ppAstMapValue = (_: Ast.MapValue): string => {

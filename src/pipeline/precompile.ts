@@ -26,7 +26,7 @@ export function precompile(
 ) {
     const ast = getAstFactory();
     setAstFactoryToStore(ctx, ast);
-    
+
     const parser = getParser(ast);
 
     // Load all sources
