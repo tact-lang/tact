@@ -183,6 +183,7 @@ export async function compileFunc(
                 funcSource,
             ],
             logger,
+            debugInfo: false,
         });
 
         if (!c.ok) {
