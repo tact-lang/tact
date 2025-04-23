@@ -693,6 +693,33 @@ exports[`resolveDescriptors should fail descriptors for not-extend-function-self
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for opcode-method-on-instance-int 1`] = `
+"<unknown>:7:16: Type "Int" does not have a function named "opcode"
+  6 |     get fun foo(): Int {
+> 7 |         return 10.opcode();
+                     ^~~~~~~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for opcode-method-on-sruct 1`] = `
+"<unknown>:11:16: opcode() method can be used only for messages
+  10 |     get fun foo(): Int {
+> 11 |         return Bar.opcode();
+                      ^~~~~~~~~~~~
+  12 |     }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for opcode-method-on-trait 1`] = `
+"<unknown>:8:16: Cannot find 'Ownable'
+  7 |     get fun foo(): Int {
+> 8 |         return Ownable.opcode();
+                     ^~~~~~~
+  9 |     }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-contract-from-base-trait 1`] = `
 "<unknown>:8:5: Constant "BAR" overrides nothing, remove "override" modifier or inherit any traits with this constant
   7 | contract Test {

@@ -16,7 +16,7 @@ exports[`tact-fmt foo.tact Check on directory with formatted files 1`] = `
   "kind": "exited",
   "stderr": "",
   "stdout": "Checking formatting...
-All Tact files use Tact code style!
+All Tact files use official code style!
 ",
 }
 `;

@@ -111,9 +111,23 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "opcode",
         {
             name: "opcode",
-            resolve: (_ctx, args, ref) => {
-                if (args.length !== 1) {
+            resolve: (ctx, args, ref) => {
+                const [arg] = args;
+                if (typeof arg === "undefined" || args.length !== 1) {
                     throwCompilationError("opcode() expects no arguments", ref);
+                }
+                if (arg.kind !== "ref") {
+                    throwCompilationError(
+                        `opcode() method can be used only for messages`,
+                        ref,
+                    );
+                }
+                const type = getType(ctx, arg.name);
+                if (type.kind !== "struct" || type.ast.kind === "struct_decl") {
+                    throwCompilationError(
+                        `opcode() method can be used only for messages`,
+                        ref,
+                    );
                 }
                 return { kind: "ref", name: "Int", optional: false };
             },
@@ -124,14 +138,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 }
                 if (arg.kind !== "ref") {
                     throwCompilationError(
-                        `opcode() is not implemented for type '${arg.kind}'`,
+                        `opcode() method can be used only for messages`,
                         ref,
                     );
                 }
                 const type = getType(ctx.ctx, arg.name);
-                if (type.kind !== "struct") {
+                if (type.kind !== "struct" || type.ast.kind === "struct_decl") {
                     throwCompilationError(
-                        `opcode() is not implemented for type '${arg.kind}'`,
+                        `opcode() method can be used only for messages`,
                         ref,
                     );
                 }
