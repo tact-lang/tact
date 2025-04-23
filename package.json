@@ -88,7 +88,7 @@
     "@tact-lang/opcode": "^0.3.0",
     "@ton/core": "0.60.1",
     "@ton/crypto": "^3.2.0",
-    "@tonstudio/parser-runtime": "^0.0.1",
+    "@tonstudio/parser-runtime": "0.0.1",
     "blockstore-core": "1.0.5",
     "ipfs-unixfs-importer": "9.0.10",
     "path-normalize": "^6.0.13",
