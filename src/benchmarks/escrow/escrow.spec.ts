@@ -51,7 +51,7 @@ function testEscrow(
         guarantorRoyaltyPercent: bigint,
         isFunded: boolean,
         assetAddress: Address | null,
-        jettonWalletCode: Cell | null
+        jettonWalletCode: Cell | null,
     ) => Promise<Escrow>,
 ) {
     let blockchain: Blockchain;
