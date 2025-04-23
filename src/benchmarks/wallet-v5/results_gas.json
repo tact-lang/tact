@@ -104,10 +104,10 @@
       "label": "1.6.6 with return instead of throw",
       "pr": "https://github.com/tact-lang/tact/pull/2875",
       "gas": {
-        "externalTransfer": "5299",
-        "addExtension": "5778",
-        "internalTransfer": "5844",
-        "extensionTransfer": "4754"
+        "externalTransfer": "5171",
+        "addExtension": "5834",
+        "internalTransfer": "5944",
+        "extensionTransfer": "4738"
       }
     }
   ]

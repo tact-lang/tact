@@ -97,7 +97,8 @@ contract WalletV5(
 
                 if (isAddExt) {
                     // blocked by https://github.com/tact-lang/tact/issues/2842
-                    // throwUnless(139, self.extensions.set(addr.address, true));
+                    // throwUnless(139, self.extensions.add(addr.address, true));
+                    throwIf(139, self.extensions.exists(addr.address));
                     self.extensions.set(addr.address, true);
                 } else if (isDeleteExt) {
                     throwUnless(140, self.extensions.del(addr.address));
@@ -130,10 +131,11 @@ contract WalletV5(
 
         // Before signature checking we handle errors silently (return), after signature checking we throw exceptions.
         if (addr.workchain != myAddr.workchain) {
-            return;
+            // throw(0) is idiom to successfully exit current continuation without saving state
+            throw(0);
         }
         if (!self.extensions.exists(addr.address)) {
-            return;
+            throw(0);
         }
 
         self.processActions(msg.actions, false, true);
