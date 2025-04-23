@@ -394,6 +394,26 @@ fun AnyMessage_fromCell(cell: Cell): M;
 ///
 fun AnyMessage_fromSlice(slice: Slice): M;
 
+/// Extension function for any Message type. Available since Tact 1.7.0.
+///
+/// Returns the message opcode.
+///
+/// ```tact
+/// message(0x777) TripleAxe {
+///     prize: Int as uint32;
+/// }
+///
+/// contract Example {
+///     receive(msg: TripleAxe) {
+///         dump(TripleAxe.opcode()); // 0x777
+///    }
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#messageopcode
+///
+fun AnyMessage_opcode(): Int;
+
 /// Extension function for any Struct.
 ///
 /// Converts the Struct to a `Cell` and returns it.

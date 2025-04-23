@@ -166,6 +166,20 @@ message((crc32("Tact") + 42) & 0xFFFF_FFFF) MsgWithExprOpcode {
 
 :::
 
+<Badge text="Available since Tact 1.7" variant="tip" size="small"/> A message opcode can be obtained by calling the `opcode()` method on any message type:
+
+```tact
+message(0x777) TripleAxe {
+    prize: Int as uint32;
+}
+
+contract Example {
+    receive(msg: TripleAxe) {
+        dump(TripleAxe.opcode()); // 0x777
+   }
+}
+```
+
 ## Operations
 
 ### Instantiate

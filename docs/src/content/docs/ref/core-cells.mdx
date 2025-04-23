@@ -1832,7 +1832,7 @@ fun coinSlice(): Slice {
 ## Struct.fromCell
 
 ```tact
-extends fun fromCell(self: Struct, cell: Cell): Struct;
+fun Struct.fromCell(cell: Cell): Struct;
 ```
 
 Extension function for any [Struct][struct] type.
@@ -1867,7 +1867,7 @@ fun cautiousParse(payload: Cell): GuessCoin? {
 ## Struct.fromSlice
 
 ```tact
-extends fun fromSlice(self: Struct, slice: Slice): Struct;
+fun Struct.fromSlice(slice: Slice): Struct;
 ```
 
 Extension function for any [Struct][struct] type.
@@ -1956,7 +1956,7 @@ fun coinSlice(): Slice {
 ## Message.fromCell
 
 ```tact
-extends fun fromCell(self: Message, cell: Cell): Message;
+fun Message.fromCell(cell: Cell): Message;
 ```
 
 Extension function for any [Message][message] type.
@@ -1992,7 +1992,7 @@ fun cautiousParse(payload: Cell): TripleAxe? {
 ## Message.fromSlice
 
 ```tact
-extends fun fromSlice(self: Message, slice: Slice): Message;
+fun Message.fromSlice(slice: Slice): Message;
 ```
 
 Extension function for any [Message][message] type.
@@ -2022,6 +2022,32 @@ fun cautiousParse(payload: Slice): TripleAxe? {
         dump("Slice payload doesn't match TripleAxe Message!");
     }
     return coin;
+}
+```
+
+## Message.opcode
+
+<Badge text="Available since Tact 1.7" variant="tip" size="medium"/><p/>
+
+```tact
+fun Message.opcode(): Int;
+```
+
+Extension function for any [Message][message] type.
+
+Returns the [opcode][opcode] of the [Message][message].
+
+Usage example:
+
+```tact
+message(0x777) TripleAxe {
+    prize: Int as uint32;
+}
+
+contract Example {
+    receive(msg: TripleAxe) {
+        dump(TripleAxe.opcode()); // 0x777
+   }
 }
 ```
 
