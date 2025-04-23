@@ -396,10 +396,10 @@ fun usage() {
     // Instantiation of a struct.
     // Notice the lack of the "new" keyword used for this in many
     // other traditional languages.
-    let val: One = One{ number: 50 };
+    let val: One = One { number: 50 };
 
     // You can omit the fields with default values.
-    let _ = Params{ val }; // the field punning works —
+    let _ = Params { val }; // the field punning works —
                            // instead of `val: val` you could write just `val`
 
     // Convert a struct to a Cell or a Slice.
@@ -525,7 +525,7 @@ contract MyContract() {
         let azAZ09_ = 5; azAZ09_;
 
         // Instantiations or instance expressions of structs and message structs.
-        let addr = BasechainAddress{ hash: null, };
+        let addr = BasechainAddress { hash: null, };
 
         // Field access.
         addr.hash; // null
@@ -557,7 +557,7 @@ contract MyContract() {
 
         // initOf, which obtains the initial code and initial data
         // of the given contract, i.e., it's initial state.
-        initOf MyContract(); // StateInit{ code, data }
+        initOf MyContract(); // StateInit { code, data }
 
         // codeOf, which only obtains the code.
         codeOf MyContract;
@@ -600,8 +600,8 @@ fun showcase() {
 
     // Destructuring assignment is a concise way to
     // unpack structures into distinct variables.
-    let st = StdAddress{ workchain: 0, address: 0 }; // let statement
-    let StdAddress{ address, .. } = st;              // destructuring statement
+    let st = StdAddress { workchain: 0, address: 0 }; // let statement
+    let StdAddress { address, .. } = st;              // destructuring statement
     //              -------  --
     //              ↑        ↑
     //              |        ignores all unspecified fields
@@ -691,7 +691,7 @@ fun add(a: Int, b: Int): Int {
 // function inlined in all places where this function is called,
 // increasing the total code size and possibly reducing computational fees.
 inline fun reply(str: String) {
-    message(MessageParameters{
+    message(MessageParameters {
         to: sender(),
         value: 0,
         mode: SendRemainingValue | SendIgnoreErrors,
@@ -795,7 +795,7 @@ fun examples() {
     // See the links given right after this code block.
     //
     // This is most general and simple function to send an internal message:
-    message(MessageParameters{
+    message(MessageParameters {
         // Recipient address.
         to: address("UQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p9dz"),
 
@@ -915,7 +915,7 @@ contract MyContract(
         self.accumulator += msg.someVal;
 
         // Send a message back to the sender() with MyMsg
-        message(MessageParameters{
+        message(MessageParameters {
             to: sender(),
             value: ton("0.04"),
             body: MyMsg{ someVal: self.accumulator }.toCell(),
@@ -1137,7 +1137,7 @@ fun showcase() {
     // one must send the new contract's initial state, i.e.,
     // its initial code and initial data, to its Address,
     // which is deterministically obtained from the initial state.
-    deploy(DeployParameters{
+    deploy(DeployParameters {
         // Use initOf expression to provide initial code and data
         init: initOf MyContract(),
         // Attaching 1 Toncoin, which will be used to pay various fees
@@ -1266,7 +1266,7 @@ contract JettonWallet(
 
         // Transfer Jetton from the current owner to the target user's JettonWallet.
         // If that wallet does not exist, it is deployed on-chain in the same transfer.
-        deploy(DeployParameters{
+        deploy(DeployParameters {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
@@ -1306,7 +1306,7 @@ contract JettonWallet(
         if (msg.forwardTonAmount > 0) {
             let fwdFee: Int = ctx.readForwardFee();
             msgValue -= msg.forwardTonAmount + fwdFee;
-            message(MessageParameters{
+            message(MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayGasSeparately,
@@ -1326,7 +1326,7 @@ contract JettonWallet(
 
         // And forward excesses (cashback) to the original sender.
         if (msg.responseDestination != null && msgValue > 0) {
-            message(MessageParameters{
+            message(MessageParameters {
                 to: msg.responseDestination!!,
                 value: msgValue,
                 mode: SendRemainingBalance + SendIgnoreErrors,
@@ -1356,7 +1356,7 @@ contract JettonWallet(
 
         // Send a message to the JettonMinter to reduce the total supply
         // of the Jettons. That is, to burn some.
-        message(MessageParameters{
+        message(MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,

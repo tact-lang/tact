@@ -1794,7 +1794,7 @@ struct GuessCoin {
 }
 
 fun coinCell(): Cell {
-    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let s: GuessCoin = GuessCoin { probably: 42, nothing: 27 };
     let fizz: Cell = s.toCell();
 
     return fizz; // "x{12A11B}"
@@ -1822,7 +1822,7 @@ struct GuessCoin {
 }
 
 fun coinSlice(): Slice {
-    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let s: GuessCoin = GuessCoin { probably: 42, nothing: 27 };
     let fizz: Slice = s.toSlice();
 
     return fizz; // "CS{Cell{000612a11b} bits: 0..24; refs: 0..0}"
@@ -1918,7 +1918,7 @@ message GuessCoin {
 }
 
 fun coinCell(): Cell {
-    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let s: GuessCoin = GuessCoin { probably: 42, nothing: 27 };
     let fizz: Cell = s.toCell();
 
     return fizz; // "x{AB37107712A11B}"
@@ -1946,7 +1946,7 @@ message GuessCoin {
 }
 
 fun coinSlice(): Slice {
-    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let s: GuessCoin = GuessCoin { probably: 42, nothing: 27 };
     let fizz: Slice = s.toSlice();
 
     return fizz; // "CS{Cell{000eab37107712a11b} bits: 0..56; refs: 0..0}"

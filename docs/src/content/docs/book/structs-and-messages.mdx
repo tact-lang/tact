@@ -63,8 +63,8 @@ contract StructsShowcase {
     params: Params; // Struct as a contract's persistent state variable
 
     init() {
-        self.params = Params{
-            point: Point{
+        self.params = Params {
+            point: Point {
                 x: 4,
                 y: 2,
             },
@@ -185,13 +185,13 @@ message MsgB {
 
 fun example() {
     // Instance of a Struct StA
-    StA{
+    StA {
         field1: 42,
         field2: 68 + 1, // trailing comma is allowed
     };
 
     // Instance of a Message MsgB
-    MsgB{
+    MsgB {
         field1: "May the 4th",
         field2: "be with you!", // trailing comma is allowed
     };
@@ -213,11 +213,11 @@ fun example() {
 
     // You may instantiate the Struct as usual and assign variables to fields,
     // but that can be a bit repetitive and tedious at times
-    PopQuiz{ vogonsCount: vogonsCount, nicestNumber: nicestNumber };
+    PopQuiz { vogonsCount: vogonsCount, nicestNumber: nicestNumber };
 
     // Let's use field punning and type less,
     // because our variable names happen to be the same as the field names
-    PopQuiz{
+    PopQuiz {
         vogonsCount,
         nicestNumber, // trailing comma is allowed here too!
     };
@@ -245,7 +245,7 @@ struct Big {
 }
 
 fun conversionFun() {
-    dump(Big{
+    dump(Big {
         f1: 10000000000, f2: 10000000000, f3: 10000000000,
         f4: 10000000000, f5: 10000000000, f6: 10000000000,
     }.toCell()); // x{...cell with references...}
@@ -271,8 +271,8 @@ struct Fizz { foo: Int }
 message(100) Buzz { bar: Int }
 
 fun constructThenParse() {
-    let fizzCell = Fizz{foo: 42}.toCell();
-    let buzzCell = Buzz{bar: 27}.toCell();
+    let fizzCell = Fizz { foo: 42 }.toCell();
+    let buzzCell = Buzz { bar: 27 }.toCell();
 
     let parsedFizz: Fizz = Fizz.fromCell(fizzCell);
     let parsedBuzz: Buzz = Buzz.fromCell(buzzCell);
@@ -300,8 +300,8 @@ struct ArbitraryStruct { fieldNotFound: Int = 404 }
 message(0x2A) ArbitraryMessage {}
 
 fun lawOne() {
-    let structInst = ArbitraryStruct{};
-    let messageInst = ArbitraryMessage{};
+    let structInst = ArbitraryStruct {};
+    let messageInst = ArbitraryMessage {};
 
     ArbitraryStruct.fromCell(structInst.toCell());   // = structInst
     ArbitraryMessage.fromCell(messageInst.toCell()); // = messageInst

@@ -124,6 +124,7 @@ describe("Wallet Gas Tests", () => {
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
+        blockchain.verbosity.vmLogs = "vm_logs_verbose";
 
         keypair = keyPairFromSeed(await getSecureRandomBytes(32));
 

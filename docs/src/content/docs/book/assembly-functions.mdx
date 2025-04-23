@@ -135,12 +135,12 @@ asm fun mulOfSums(n: Nested): Int { ADD -ROT ADD MUL }
 
 // Action!
 fun showcase() {
-    sum(AB{ a: 27, b: 50 }); // 77
+    sum(AB { a: 27, b: 50 }); // 77
     //      ↑      ↑
     //      |      Pushed last, sits on top of the stack
     //      Pushed first, sits at the bottom of the stack
 
-    mulOfSums(Nested{ ab1: AB{ a: 1, b: 2 }, ab2: AB{ a: 3, b: 4 } }); // 21
+    mulOfSums(Nested { ab1: AB { a: 1, b: 2 }, ab2: AB { a: 3, b: 4 } }); // 21
     //                         ↑     ↑                ↑     ↑
     //                         |     |                |     Pushed last,
     //                         |     |                |     sits on top of the stack
