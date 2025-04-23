@@ -125,7 +125,7 @@ function handleStructOrOtherValue(
     throwCompilationError(`"${t.name}" can't be value of a map`, ref);
 }
 
-export function generateSet(
+function generateSet(
     ctx: WriterContext,
     ref: SrcInfo,
     self: TypeRefMap,
