@@ -159,10 +159,8 @@ asm fun message(params: MessageParameters) {
     STZEROES
     // → Stack state
     // s0: Builder
-    // s1: `data`
-    // s2: `code`
-    // s3: `body`
-    // s4: `mode`
+    // s1: `body`
+    // s2: `mode`
     STDICT
     ENDC
     SWAP
