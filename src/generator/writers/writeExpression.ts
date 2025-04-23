@@ -200,7 +200,7 @@ export function writeValue(
                 return "null()";
             }
             const res = writeCell(
-                Cell.fromBoc(Buffer.from(val.bocHex, "hex"))[0]!,
+                Cell.fromHex(val.bocHex),
                 wCtx,
             );
             wCtx.used(res);
