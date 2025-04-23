@@ -12,6 +12,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# All unset values default to none
+# https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#permissions
+permissions:
+  actions: write
+  checks: write
+  contents: read
+  pull-requests: write
+  security-events: write
+  statuses: read
+
 jobs:
   backwards-compat:
     strategy:
