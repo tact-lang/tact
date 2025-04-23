@@ -9,6 +9,20 @@ export function writeStdlib(ctx: WriterContext): void {
     // stdlib extension functions
     //
 
+    // () __mark(int val) impure inline {
+    //     ;; return val;
+    // }
+
+    ctx.fun("__mark", () => {
+        ctx.signature(`() __mark(int val)`);
+        ctx.flag("impure");
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`;; return val;`);
+        })
+    });
+
     ctx.fun("__tact_nop", () => {
         ctx.signature(`() __tact_nop()`);
         ctx.context("stdlib");

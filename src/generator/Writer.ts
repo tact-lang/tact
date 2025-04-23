@@ -60,7 +60,7 @@ export class WriterContext {
 
     public appendDebugMark(loc: SrcInfo) {
         this.#nextStatementId++;
-        this.append(`__mark(${this.#nextStatementId});`);
+        // this.append(`${this.used("__mark")}(${this.#nextStatementId});`);
 
         this.#debugMapping.set(this.#nextStatementId.toString(), loc);
     }
