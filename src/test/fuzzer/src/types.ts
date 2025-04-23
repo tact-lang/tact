@@ -9,7 +9,7 @@ import {
 } from "@/test/fuzzer/src/util";
 import type { Scope } from "@/test/fuzzer/src/scope";
 import type { TypeRef } from "@/types/types";
-import fc from "fast-check";
+import fc, { option } from "fast-check";
 import { GlobalContext } from "@/test/fuzzer/src/context";
 
 /**
@@ -107,6 +107,8 @@ export function tyToString(ty: Type): string {
             return ty.name;
         case "map":
             return `map<${tyToString(ty.type.key)}, ${tyToString(ty.type.value)}>`;
+        case "optional":
+            return `${tyToString(ty.type)}?`;
         default:
             throwTyError(ty);
     }
@@ -202,6 +204,10 @@ export function tyToAstType(ty: Type, isBounced = false): Ast.Type {
                 undefined,
                 generateAstTypeId(tyToString(ty.type.value)),
                 undefined,
+            );
+        case "optional":
+            return GlobalContext.makeF.makeDummyOptionalType(
+                tyToAstType(ty.type, isBounced),
             );
         default:
             throwTyError(ty);

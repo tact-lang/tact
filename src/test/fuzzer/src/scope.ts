@@ -1,5 +1,5 @@
 import type { Type } from "@/test/fuzzer/src/types";
-import { getReturnType } from "@/test/fuzzer/src/types";
+import { getReturnType, tyEq } from "@/test/fuzzer/src/types";
 import type { GenerativeEntity } from "@/test/fuzzer/src/generators";
 import type * as Ast from "@/ast/ast";
 import type { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
@@ -279,7 +279,7 @@ export class Scope {
      */
     public getNames(kind: NamedScopeItemKind, ty: Type): string[] {
         return this.getNamedEntries(kind)
-            .filter(([_name, type]) => type === ty)
+            .filter(([_name, type]) => tyEq(type, ty))
             .map(([name, _type]) => name);
     }
 
