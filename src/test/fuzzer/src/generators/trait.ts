@@ -1,7 +1,6 @@
 import type * as Ast from "@/ast/ast";
 import {
     createSample,
-    dummySrcInfoPrintable,
     generateAstId,
     randomBool,
 } from "@/test/fuzzer/src/util";
@@ -18,6 +17,7 @@ import { Scope } from "@/test/fuzzer/src/scope";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 export interface TraitParameters {
     /**
@@ -84,7 +84,7 @@ export class Trait extends NamedGenerativeEntity<Ast.Trait> {
         return ty.kind === "map" || randomBool()
             ? undefined
             : new Expression(this.scope, ty, {
-                  compileTimeEval: true,
+                  useIdentifiers: false,
               }).generate();
     }
 
@@ -133,14 +133,10 @@ export class Trait extends NamedGenerativeEntity<Ast.Trait> {
             .map((c) => c.generate());
         const fields = this.fieldDeclarations.map((f) => f.generate());
         const methods = this.methodDeclarations.map((m) => m.generate());
-        return fc.record<Ast.Trait>({
-            kind: fc.constant("trait"),
-            id: fc.constant(this.idx),
-            name: fc.constant(this.name),
-            traits: fc.constant([]),
-            attributes: fc.constant([]),
-            declarations: fc.tuple(...constants, ...fields, ...methods),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return fc
+            .tuple(...constants, ...fields, ...methods)
+            .map((decl) =>
+                GlobalContext.makeF.makeDummyTrait(this.name, [], [], decl),
+            );
     }
 }

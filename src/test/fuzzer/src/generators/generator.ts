@@ -1,19 +1,13 @@
 import type * as Ast from "@/ast/ast";
-import { nextId } from "@/test/fuzzer/src/id";
-import type { IDIdx } from "@/test/fuzzer/src/id";
 import type { Type } from "@/test/fuzzer/src/types";
 
 import type fc from "fast-check";
 
 abstract class GenerativeEntityBase {
-    /** The unique index of the entity. */
-    public idx: IDIdx;
-
     /** The type of the entity. */
     public type: Type;
 
     constructor(type: Type) {
-        this.idx = nextId();
         this.type = type;
     }
 }

@@ -9,67 +9,47 @@ import { Scope } from "@/test/fuzzer/src/scope";
 import { GenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 import {
     createSample,
-    dummySrcInfoPrintable,
     randomBool,
     randomElement,
 } from "@/test/fuzzer/src/util";
-import {
-    Expression,
-    generateString,
-} from "@/test/fuzzer/src/generators/expression";
+import { Expression } from "@/test/fuzzer/src/generators/expression";
 import { Parameter } from "@/test/fuzzer/src/generators/parameter";
 import { StatementExpression } from "@/test/fuzzer/src/generators/statement";
 
 import fc from "fast-check";
-import { nextId } from "@/test/fuzzer/src/id";
+import { GlobalContext } from "@/test/fuzzer/src/context";
+import { generateString } from "@/test/fuzzer/src/generators/uniform-expr-gen";
 
 const RECEIVE_RETURN_TY: Type = { kind: "util", type: UtilType.Unit };
 
 function generateReceiverSimpleSubKind(
     param: Parameter,
 ): fc.Arbitrary<Ast.ReceiverSimple> {
-    return fc.record<Ast.ReceiverSimple>({
-        kind: fc.constant("simple"),
-        param: param.generate(),
-        id: fc.constant(nextId()),
-    });
+    return param
+        .generate()
+        .map((p) => GlobalContext.makeF.makeReceiverSimple(p));
 }
 
 function generateReceiverFallbackSubKind(): fc.Arbitrary<Ast.ReceiverFallback> {
-    return fc.record<Ast.ReceiverFallback>({
-        kind: fc.constant("fallback"),
-        id: fc.constant(nextId()),
-    });
+    return fc.constant(GlobalContext.makeF.makeReceiverFallback());
 }
 
 function generateReceiverCommentSubKind(): fc.Arbitrary<Ast.ReceiverComment> {
-    return fc.record<Ast.ReceiverComment>({
-        kind: fc.constant("comment"),
-        comment: generateString(/*nonEmpty=*/ true),
-        id: fc.constant(nextId()),
-    });
+    return generateString(/*nonEmpty=*/ true).map((s) =>
+        GlobalContext.makeF.makeReceiverComment(s),
+    );
 }
 
 function generateInternalReceiverKind(
     subKind: fc.Arbitrary<Ast.ReceiverSubKind>,
-): fc.Arbitrary<Ast.ReceiverKind> {
-    return fc.record<Ast.ReceiverKind>({
-        kind: fc.constant("internal"),
-        subKind,
-        id: fc.constant(nextId()),
-        loc: fc.constant(dummySrcInfoPrintable),
-    }) as fc.Arbitrary<Ast.ReceiverKind>;
+): fc.Arbitrary<Ast.ReceiverInternal> {
+    return subKind.map((k) => GlobalContext.makeF.makeDummyReceiverInternal(k));
 }
 
 function generateExternalReceiverKind(
     subKind: fc.Arbitrary<Ast.ReceiverSubKind>,
-): fc.Arbitrary<Ast.ReceiverKind> {
-    return fc.record<Ast.ReceiverKind>({
-        kind: fc.constant("external"),
-        subKind,
-        id: fc.constant(nextId()),
-        loc: fc.constant(dummySrcInfoPrintable),
-    }) as fc.Arbitrary<Ast.ReceiverKind>;
+): fc.Arbitrary<Ast.ReceiverExternal> {
+    return subKind.map((k) => GlobalContext.makeF.makeDummyReceiverExternal(k));
 }
 
 /**
@@ -119,12 +99,9 @@ export class Receive extends GenerativeEntity<Ast.Receiver> {
                 isBouncedMessage(msg.type),
             );
             this.scope.addNamed("parameter", param);
-            return fc.record<Ast.ReceiverKind>({
-                kind: fc.constantFrom("bounce"),
-                param: param.generate(),
-                id: fc.constant(nextId()),
-                loc: fc.constant(dummySrcInfoPrintable),
-            }) as fc.Arbitrary<Ast.ReceiverKind>;
+            return param
+                .generate()
+                .map((p) => GlobalContext.makeF.makeDummyReceiverBounce(p));
         }
 
         const internalFallback = generateInternalReceiverKind(
@@ -164,12 +141,10 @@ export class Receive extends GenerativeEntity<Ast.Receiver> {
     }
 
     public generate(): fc.Arbitrary<Ast.Receiver> {
-        return fc.record<Ast.Receiver>({
-            kind: fc.constant("receiver"),
-            id: fc.constant(this.idx),
-            selector: this.generateSelector(),
-            statements: this.generateBody(),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return fc
+            .tuple(this.generateSelector(), this.generateBody())
+            .map(([sel, stmt]) =>
+                GlobalContext.makeF.makeDummyReceiver(sel, stmt),
+            );
     }
 }

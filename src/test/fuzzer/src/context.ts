@@ -2,6 +2,10 @@ import { prettyPrint } from "@/ast/ast-printer";
 import { FuzzConfig } from "@/test/fuzzer/src/config";
 import type { AstNode } from "@/ast/ast";
 import { stringify } from "@/test/fuzzer/src/util";
+import { getAstFactory } from "@/ast/ast-helpers";
+import type { FactoryAst } from "@/ast/ast-helpers";
+import { getMakeAst } from "@/ast/generated/make-factory";
+import type { MakeAstFactory } from "@/ast/generated/make-factory";
 
 /**
  * FuzzContext represents a stateful context that handles AST generation.
@@ -22,6 +26,16 @@ export class FuzzContext {
      * Current depth of AST expression generation, which limits recursive generation.
      */
     private currentDepth: number = 0;
+
+    /**
+     * The generic AST Factory
+     */
+    public astF: FactoryAst = getAstFactory();
+
+    /**
+     * The factory with the makeX methods
+     */
+    public makeF: MakeAstFactory = getMakeAst(this.astF);
 
     constructor() {
         this.config = new FuzzConfig();

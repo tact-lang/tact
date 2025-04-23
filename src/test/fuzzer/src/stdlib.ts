@@ -1,13 +1,9 @@
 import type * as Ast from "@/ast/ast";
-import { nextId } from "@/test/fuzzer/src/id";
-
 import * as path from "path";
 import { files } from "@/stdlib/stdlib";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
-import {
-    dummySrcInfoPrintable,
-    generateAstIdFromName,
-} from "@/test/fuzzer/src/util";
+import { generateAstIdFromName } from "@/test/fuzzer/src/util";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 const StdlibFilePath = path.join(
     __dirname,
@@ -29,14 +25,11 @@ export const StdlibCode = StdlibVFS.readFile(StdlibPath).toString();
  */
 export function getStdlibTraits(): Ast.TypeDecl[] {
     return [
-        {
-            kind: "trait",
-            id: nextId(),
-            name: generateAstIdFromName("BaseTrait"),
-            traits: [],
-            attributes: [],
-            declarations: [],
-            loc: dummySrcInfoPrintable,
-        },
+        GlobalContext.makeF.makeDummyTrait(
+            generateAstIdFromName("BaseTrait"),
+            [],
+            [],
+            [],
+        ),
     ];
 }

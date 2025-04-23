@@ -1,6 +1,5 @@
 import type { Type } from "@/test/fuzzer/src/types";
 import { getReturnType } from "@/test/fuzzer/src/types";
-import type { IDIdx } from "@/test/fuzzer/src/id";
 import type { GenerativeEntity } from "@/test/fuzzer/src/generators";
 import type * as Ast from "@/ast/ast";
 import type { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
@@ -76,12 +75,12 @@ export class Scope {
      */
     private mapUnnamed: Map<
         UnnamedScopeItemKind,
-        Map<IDIdx, GenerativeEntity<any>> // eslint-disable-line @typescript-eslint/no-explicit-any
+        Map<number, GenerativeEntity<any>> // eslint-disable-line @typescript-eslint/no-explicit-any
     > = new Map();
 
     private mapNamed: Map<
         NamedScopeItemKind,
-        Map<IDIdx, NamedGenerativeEntity<any>> // eslint-disable-line @typescript-eslint/no-explicit-any
+        Map<string, NamedGenerativeEntity<any>> // eslint-disable-line @typescript-eslint/no-explicit-any
     > = new Map();
 
     constructor(kind: ScopeKind, parentScope: Scope | undefined) {
@@ -168,18 +167,19 @@ export class Scope {
      * Put a new entity in the scope according to the Tact semantics.
      */
     public addUnnamed<T extends UnnamedScopeItemKind>(
-        kind: T,
-        entity: GenerativeEntityMap[T],
+        _kind: T,
+        _entity: GenerativeEntityMap[T],
     ): void {
-        const targetScope = this.getTargetScopeToAdd(kind);
-        if (targetScope.mapUnnamed.has(kind)) {
-            targetScope.mapUnnamed.get(kind)!.set(entity.idx, entity);
-        } else {
-            targetScope.mapUnnamed
-                .set(kind, new Map())
-                .get(kind)!
-                .set(entity.idx, entity);
-        }
+        throw new Error("Currently not supported");
+        // const targetScope = this.getTargetScopeToAdd(kind);
+        // if (targetScope.mapUnnamed.has(kind)) {
+        //     targetScope.mapUnnamed.get(kind)!.set(entity.idx, entity);
+        // } else {
+        //     targetScope.mapUnnamed
+        //         .set(kind, new Map())
+        //         .get(kind)!
+        //         .set(entity.idx, entity);
+        // }
     }
 
     /**
@@ -193,25 +193,27 @@ export class Scope {
 
         if (isNamedScopeItemKind(kind)) {
             if (targetScope.mapNamed.has(kind)) {
-                targetScope.mapNamed.get(kind)!.set(entity.idx, entity);
+                targetScope.mapNamed.get(kind)!.set(entity.name.text, entity);
             } else {
                 targetScope.mapNamed
                     .set(kind, new Map())
                     .get(kind)!
-                    .set(entity.idx, entity);
+                    .set(entity.name.text, entity);
             }
         }
     }
 
     public getAllUnnamed<T extends UnnamedScopeItemKind>(
-        kind: T,
+        _kind: T,
     ): GenerativeEntityMap[T][] {
-        const kindMap = this.mapUnnamed.get(kind);
-        if (kindMap) {
-            return Array.from(kindMap.values());
-        }
-        return [];
+        throw new Error("Currently not supported");
+        // const kindMap = this.mapUnnamed.get(kind);
+        // if (kindMap) {
+        //     return Array.from(kindMap.values());
+        // }
+        // return [];
     }
+
     public getAllNamed<T extends NamedScopeItemKind>(
         kind: T,
     ): NamedGenerativeEntityMap[T][] {

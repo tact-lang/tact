@@ -3,14 +3,11 @@ import fc from "fast-check";
 
 import {
     Expression,
-    generateBoolean,
-    NonGenerativeExpressionParams,
-    StaticCall,
-    MethodCall,
     generateFunctionCallArgs,
     generateMethodCallArgs,
-    generateThisID,
-    generateFieldAccess,
+    makeSelfID,
+    MethodCall,
+    StaticCall,
 } from "@/test/fuzzer/src/generators/expression";
 import {
     randomBool,
@@ -20,7 +17,6 @@ import {
     randomElement,
     generateAstId,
     generateAstIdFromName,
-    dummySrcInfoPrintable,
 } from "@/test/fuzzer/src/util";
 import {
     GenerativeEntity,
@@ -30,6 +26,7 @@ import { StdlibType, UtilType, tyToAstType } from "@/test/fuzzer/src/types";
 import type { Type } from "@/test/fuzzer/src/types";
 import { Scope } from "@/test/fuzzer/src/scope";
 import type { NamedScopeItemKind } from "@/test/fuzzer/src/scope";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 /** Type all the imperative constructions have. */
 const STMT_TY: Type = { kind: "util", type: UtilType.Unit };
@@ -48,15 +45,14 @@ export class Return extends GenerativeEntity<Ast.Statement> {
         super(type);
     }
     generate(): fc.Arbitrary<Ast.Statement> {
-        return fc.record<Ast.StatementReturn>({
-            kind: fc.constant("statement_return"),
-            id: fc.constant(this.idx),
-            expression:
-                this.type.kind === "util" && this.type.type === UtilType.Unit
-                    ? fc.constant(undefined)
-                    : new Expression(this.parentScope, this.type).generate(),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        const gen =
+            this.type.kind === "util" && this.type.type === UtilType.Unit
+                ? fc.constant(undefined)
+                : new Expression(this.parentScope, this.type).generate();
+
+        return gen.map((expr) =>
+            GlobalContext.makeF.makeDummyStatementReturn(expr),
+        );
     }
 }
 
@@ -79,14 +75,13 @@ export class Let extends NamedGenerativeEntity<Ast.Statement> {
     }
 
     generate(): fc.Arbitrary<Ast.Statement> {
-        return fc.record<Ast.StatementLet>({
-            kind: fc.constant("statement_let"),
-            id: fc.constant(this.idx),
-            name: fc.constantFrom(this.name),
-            type: fc.constantFrom(tyToAstType(this.type)),
-            expression: this.expr,
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return this.expr.map((expr) =>
+            GlobalContext.makeF.makeDummyStatementLet(
+                this.name,
+                tyToAstType(this.type),
+                expr,
+            ),
+        );
     }
 }
 
@@ -111,13 +106,9 @@ export class AssignStatement extends GenerativeEntity<Ast.Statement> {
 
     generate(): fc.Arbitrary<Ast.Statement> {
         const assigns: fc.Arbitrary<Ast.Statement>[] = [
-            fc.record<Ast.StatementAssign>({
-                kind: fc.constant("statement_assign"),
-                id: fc.constant(this.idx),
-                path: fc.constant(this.path),
-                expression: this.rhs,
-                loc: fc.constant(dummySrcInfoPrintable),
-            }),
+            this.rhs.map((expr) =>
+                GlobalContext.makeF.makeDummyStatementAssign(this.path, expr),
+            ),
         ];
         // Only integer types in augmented assignments are supported.
         // See: https://github.com/tact-lang/tact/issues/353.
@@ -126,19 +117,22 @@ export class AssignStatement extends GenerativeEntity<Ast.Statement> {
             this.rhsTy.type === StdlibType.Int
         ) {
             assigns.push(
-                fc.record<Ast.StatementAugmentedAssign>({
-                    kind: fc.constant("statement_augmentedassign"),
-                    id: fc.constant(this.idx),
-                    op: fc.constantFrom<Ast.AugmentedAssignOperation>(
-                        "+=",
-                        "-=",
-                        "*=",
-                        "/=",
-                        "%=",
-                    ),
-                    path: fc.constantFrom(this.path),
-                    expression: this.rhs,
-                    loc: fc.constant(dummySrcInfoPrintable),
+                this.rhs.chain((expr) => {
+                    return fc
+                        .constantFrom<Ast.AugmentedAssignOperation>(
+                            "+=",
+                            "-=",
+                            "*=",
+                            "/=",
+                            "%=",
+                        )
+                        .map((op) =>
+                            GlobalContext.makeF.makeDummyStatementAugmentedAssign(
+                                op,
+                                this.path,
+                                expr,
+                            ),
+                        );
                 }),
             );
         }
@@ -159,13 +153,21 @@ export class WhileUntilStatement extends GenerativeEntity<Ast.Statement> {
         super(type);
     }
     generate(): fc.Arbitrary<Ast.Statement> {
-        return fc.record({
-            kind: fc.constant(`statement_${this.kind}`),
-            id: fc.constant(this.idx),
-            condition: this.condition,
-            statements: packArbitraries(this.body),
-            loc: fc.constant(dummySrcInfoPrintable),
-        }) as fc.Arbitrary<Ast.StatementWhile | Ast.StatementUntil>;
+        return packArbitraries(this.body).chain((stmts) =>
+            this.condition.map((expr) => {
+                if (this.kind === "until") {
+                    return GlobalContext.makeF.makeDummyStatementUntil(
+                        expr,
+                        stmts,
+                    );
+                } else {
+                    return GlobalContext.makeF.makeDummyStatementWhile(
+                        expr,
+                        stmts,
+                    );
+                }
+            }),
+        );
     }
 }
 
@@ -185,13 +187,11 @@ export class RepeatStatement extends GenerativeEntity<Ast.Statement> {
             kind: "stdlib",
             type: StdlibType.Int,
         }).generate();
-        return fc.record({
-            kind: fc.constant(`statement_repeat`),
-            id: fc.constant(this.idx),
-            iterations,
-            statements: packArbitraries(this.body),
-            loc: fc.constant(dummySrcInfoPrintable),
-        }) as fc.Arbitrary<Ast.StatementRepeat>;
+        return iterations.chain((iter) =>
+            packArbitraries(this.body).map((stmts) =>
+                GlobalContext.makeF.makeDummyStatementRepeat(iter, stmts),
+            ),
+        );
     }
 }
 
@@ -209,15 +209,16 @@ export class ForeachStatement extends GenerativeEntity<Ast.Statement> {
         super(type);
     }
     generate(): fc.Arbitrary<Ast.Statement> {
-        return fc.record<Ast.StatementForEach>({
-            kind: fc.constant("statement_foreach"),
-            keyName: fc.constant(generateAstIdFromName(this.keyName)),
-            valueName: fc.constant(generateAstIdFromName(this.valueName)),
-            map: this.map,
-            statements: packArbitraries(this.body),
-            id: fc.constant(this.idx),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return this.map.chain((map) =>
+            packArbitraries(this.body).map((stmts) =>
+                GlobalContext.makeF.makeDummyStatementForEach(
+                    generateAstIdFromName(this.keyName),
+                    generateAstIdFromName(this.valueName),
+                    map,
+                    stmts,
+                ),
+            ),
+        );
     }
 }
 
@@ -239,16 +240,21 @@ export class ConditionStatement extends GenerativeEntity<Ast.StatementCondition>
             kind: "stdlib",
             type: StdlibType.Bool,
         }).generate();
-        return fc.record<Ast.StatementCondition>({
-            kind: fc.constant(`statement_condition`),
-            condition,
-            trueStatements: packArbitraries(this.trueStmts),
-            falseStatements: this.falseStmts
-                ? packArbitraries(this.falseStmts)
-                : fc.constant(undefined),
-            id: fc.constant(this.idx),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        const falseArb = this.falseStmts
+            ? packArbitraries(this.falseStmts)
+            : fc.constant(undefined);
+
+        return condition.chain((cond) =>
+            packArbitraries(this.trueStmts).chain((trueStmts) =>
+                falseArb.map((falseStmts) =>
+                    GlobalContext.makeF.makeDummyStatementCondition(
+                        cond,
+                        trueStmts,
+                        falseStmts,
+                    ),
+                ),
+            ),
+        );
     }
 }
 
@@ -264,13 +270,9 @@ export class TryCatch extends GenerativeEntity<Ast.Statement> {
         super(type);
     }
     generate(): fc.Arbitrary<Ast.Statement> {
-        return fc.record<Ast.StatementTry>({
-            kind: fc.constant("statement_try"),
-            id: fc.constant(this.idx),
-            statements: packArbitraries(this.tryStmts),
-            catchBlock: fc.constant(this.catchBlock),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return packArbitraries(this.tryStmts).map((stmts) =>
+            GlobalContext.makeF.makeDummyStatementTry(stmts, this.catchBlock),
+        );
     }
 }
 
@@ -286,12 +288,9 @@ export class StatementExpression extends GenerativeEntity<Ast.Statement> {
         super(type);
     }
     generate(): fc.Arbitrary<Ast.Statement> {
-        return fc.record<Ast.StatementExpression>({
-            kind: fc.constant("statement_expression"),
-            id: fc.constant(this.idx),
-            expression: this.expr,
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return this.expr.map((expr) =>
+            GlobalContext.makeF.makeDummyStatementExpression(expr),
+        );
     }
 }
 
@@ -402,13 +401,12 @@ export class Statement extends GenerativeEntity<Ast.Statement> {
             return undefined;
         }
         const arbs = fieldEntries.map(([name, ty]) => {
-            const expr = new Expression(
-                this.parentScope,
-                ty,
-                NonGenerativeExpressionParams,
-            ).generate();
+            const expr = new Expression(this.parentScope, ty).generate();
             return new AssignStatement(
-                generateFieldAccess(name),
+                GlobalContext.makeF.makeDummyFieldAccess(
+                    makeSelfID(),
+                    GlobalContext.makeF.makeDummyId(name),
+                ),
                 expr,
                 ty,
             ).generate();
@@ -423,11 +421,10 @@ export class Statement extends GenerativeEntity<Ast.Statement> {
         if (this.recursionLevel >= this.nestedBlocksNum) {
             return undefined;
         }
-        const condition = new Expression(
-            this.parentScope,
-            { kind: "stdlib", type: StdlibType.Bool },
-            NonGenerativeExpressionParams,
-        ).generate();
+        const condition = new Expression(this.parentScope, {
+            kind: "stdlib",
+            type: StdlibType.Bool,
+        }).generate();
         const body = this.makeStmtsBlock();
         return new WhileUntilStatement(
             condition,
@@ -469,7 +466,10 @@ export class Statement extends GenerativeEntity<Ast.Statement> {
             .getNamedEntriesRecursive(...entryKinds)
             .filter(([_, mapTy]: [string, Type]) => mapTy.kind === "map")
             .map(([mapName, _]: [string, Type]) =>
-                generateFieldAccess(mapName),
+                GlobalContext.makeF.makeDummyFieldAccess(
+                    makeSelfID(),
+                    GlobalContext.makeF.makeDummyId(mapName),
+                ),
             );
     }
 
@@ -566,7 +566,7 @@ export class Statement extends GenerativeEntity<Ast.Statement> {
                 new MethodCall(
                     funTy,
                     funName,
-                    generateThisID(),
+                    makeSelfID(),
                     generateMethodCallArgs(funTy, this.parentScope),
                 ).generate(),
             ).generate();
@@ -610,7 +610,10 @@ export class Statement extends GenerativeEntity<Ast.Statement> {
      * `while (false) { }`
      */
     private makeDummyStmt(): fc.Arbitrary<Ast.Statement> {
-        const falseExpr = generateBoolean(false);
-        return new WhileUntilStatement(falseExpr, [], "while").generate();
+        return new WhileUntilStatement(
+            fc.constant(GlobalContext.makeF.makeDummyBoolean(false)),
+            [],
+            "while",
+        ).generate();
     }
 }

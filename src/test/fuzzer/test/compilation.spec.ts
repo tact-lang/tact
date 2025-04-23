@@ -31,68 +31,69 @@ function getContract(program: Ast.Module): Ast.Contract | undefined {
 }
 
 async function compileProgram(program: Ast.Module) {
-    await withNodeFS(async (vfs) => {
-        const factoryAst = getAstFactory();
-        let ctx = createContext(program);
-        ctx = enableFeatures(ctx, "external");
-        ctx = precompile(ctx, factoryAst);
-        const compilationOutput = vfs.root;
+    throw new Error("Deprecated function");
+    // await withNodeFS(async (vfs) => {
+    //     const factoryAst = getAstFactory();
+    //     let ctx = createContext(program);
+    //     ctx = enableFeatures(ctx, "external");
+    //     ctx = precompile(ctx, factoryAst);
+    //     const compilationOutput = vfs.root;
 
-        const contract = getContract(program)!;
+    //     const contract = getContract(program)!;
 
-        // Save the generated contract to a file
-        const contractCode = GlobalContext.format(contract, "ast");
-        writeFileSync(
-            path.join(compilationOutput, "contract.tact"),
-            contractCode,
-        );
+    //     // Save the generated contract to a file
+    //     const contractCode = GlobalContext.format(contract, "ast");
+    //     writeFileSync(
+    //         path.join(compilationOutput, "contract.tact"),
+    //         contractCode,
+    //     );
 
-        // Compile contracts to FunC
-        const res = await compile(ctx, contract.name.text);
-        for (const files of res.output.files) {
-            const ffc = vfs.resolve(compilationOutput, files.name);
-            vfs.writeFile(ffc, files.code);
-        }
+    //     // Compile contracts to FunC
+    //     const res = await compile(ctx, contract.name.text);
+    //     for (const files of res.output.files) {
+    //         const ffc = vfs.resolve(compilationOutput, files.name);
+    //         vfs.writeFile(ffc, files.code);
+    //     }
 
-        // Process compilation output
-        const codeFc = res.output.files.map((v) => ({
-            path: posixNormalize(vfs.resolve(compilationOutput, v.name)),
-            content: v.code,
-        }));
-        const codeEntrypoint = res.output.entrypoint;
+    //     // Process compilation output
+    //     const codeFc = res.output.files.map((v) => ({
+    //         path: posixNormalize(vfs.resolve(compilationOutput, v.name)),
+    //         content: v.code,
+    //     }));
+    //     const codeEntrypoint = res.output.entrypoint;
 
-        // Compile the resulted FunC code
-        // NOTE: We intentionally disabled stdlibEx, since the generated
-        // contracts currently don't use it.
-        const c = await funcCompile({
-            entries: [
-                StdlibPath,
-                // stdlibExPath,
-                posixNormalize(vfs.resolve(compilationOutput, codeEntrypoint)),
-            ],
-            sources: [
-                { path: StdlibPath, content: StdlibCode },
-                // {
-                //     path: stdlibExPath,
-                //     content: stdlibExCode,
-                // },
-                ...codeFc,
-            ],
-            logger: {
-                info: (_) => {},
-                debug: (_) => {},
-                warn: (_) => {},
-                error: (_) => {},
-            },
-        });
-        try {
-            expect(c.ok).toBeTruthy();
-        } catch (_error) {
-            throw new Error(`FunC compilation failed:\n${c.log}`);
-        }
+    //     // Compile the resulted FunC code
+    //     // NOTE: We intentionally disabled stdlibEx, since the generated
+    //     // contracts currently don't use it.
+    //     const c = await funcCompile({
+    //         entries: [
+    //             StdlibPath,
+    //             // stdlibExPath,
+    //             posixNormalize(vfs.resolve(compilationOutput, codeEntrypoint)),
+    //         ],
+    //         sources: [
+    //             { path: StdlibPath, content: StdlibCode },
+    //             // {
+    //             //     path: stdlibExPath,
+    //             //     content: stdlibExCode,
+    //             // },
+    //             ...codeFc,
+    //         ],
+    //         logger: {
+    //             info: (_) => {},
+    //             debug: (_) => {},
+    //             warn: (_) => {},
+    //             error: (_) => {},
+    //         },
+    //     });
+    //     try {
+    //         expect(c.ok).toBeTruthy();
+    //     } catch (_error) {
+    //         throw new Error(`FunC compilation failed:\n${c.log}`);
+    //     }
 
-        GlobalContext.resetDepth();
-    });
+    //     GlobalContext.resetDepth();
+    // });
 }
 
 describe("properties", () => {

@@ -12,6 +12,7 @@ import type { Scope } from "@/test/fuzzer/src/scope";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 /**
  * An object that encapsulates a generated Ast.ConstantDecl.
@@ -32,14 +33,13 @@ export class ConstantDecl extends NamedGenerativeEntity<Ast.ConstantDecl> {
     private generateImpl(
         extraAttrs: Ast.ConstantAttribute[],
     ): fc.Arbitrary<Ast.ConstantDecl> {
-        return fc.record<Ast.ConstantDecl>({
-            kind: fc.constant("constant_decl"),
-            id: fc.constant(this.idx),
-            name: fc.constant(this.name),
-            type: fc.constant(tyToAstType(this.type)),
-            attributes: fc.constantFrom(this.getAttributes(extraAttrs)),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return fc.constant(
+            GlobalContext.makeF.makeDummyConstantDecl(
+                this.getAttributes(extraAttrs),
+                this.name,
+                tyToAstType(this.type),
+            ),
+        );
     }
 
     /**
@@ -93,15 +93,14 @@ export class ConstantDef extends NamedGenerativeEntity<Ast.ConstantDef> {
         init?: fc.Arbitrary<Ast.Expression>,
     ): fc.Arbitrary<Ast.ConstantDef> {
         const chosenInit = init ?? this.init;
-        return fc.record<Ast.ConstantDef>({
-            kind: fc.constant("constant_def"),
-            id: fc.constant(this.idx),
-            name: fc.constant(this.name),
-            type: fc.constant(tyToAstType(this.type)),
-            initializer: chosenInit,
-            attributes: fc.constantFrom(extraAttrs),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return chosenInit.map((init) =>
+            GlobalContext.makeF.makeDummyConstantDef(
+                extraAttrs,
+                this.name,
+                tyToAstType(this.type),
+                init,
+            ),
+        );
     }
 
     /**

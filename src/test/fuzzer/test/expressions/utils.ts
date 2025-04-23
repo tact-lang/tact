@@ -1,10 +1,5 @@
 import type * as Ast from "@/ast/ast";
 import type { MakeAstFactory } from "@/ast/generated/make-factory";
-import { getMakeAst } from "@/ast/generated/make-factory";
-import type {
-    AllowedTypeEnum,
-    NonTerminalEnum,
-} from "../../src/generators/uniform-expr-gen";
 import { NonTerminal } from "../../src/generators/uniform-expr-gen";
 import { GlobalContext } from "../../src/context";
 import { Interpreter } from "@/optimizer/interpreter";
@@ -12,7 +7,6 @@ import { CompilerContext } from "@/context/context";
 import type { AstUtil } from "@/ast/util";
 import { getAstUtil } from "@/ast/util";
 import type { FactoryAst } from "@/ast/ast-helpers";
-import { getAstFactory } from "@/ast/ast-helpers";
 import type { CustomStdlib } from "../../src/util";
 import {
     buildModule,
@@ -22,7 +16,6 @@ import {
 import { Blockchain } from "@ton/sandbox";
 import type { Sender } from "@ton/core";
 import { toNano } from "@ton/core";
-import fc from "fast-check";
 import * as fs from "node:fs";
 
 export function bindingsAndExpressionPrtinter([bindings, expr]: [
@@ -103,8 +96,8 @@ export type ExpressionTestingEnvironment = {
 };
 
 export async function setupEnvironment(): Promise<ExpressionTestingEnvironment> {
-    const astF = getAstFactory();
-    const makeF = getMakeAst(astF);
+    const astF = GlobalContext.astF;
+    const makeF = GlobalContext.makeF;
     const customStdlib = filterStdlib(
         parseStandardLibrary(astF),
         makeF,
@@ -219,6 +212,7 @@ export async function compileExpression(
     }
 }
 
+/*
 export function generateBindings(
     expressionTestingEnvironment: ExpressionTestingEnvironment,
     expressionGenerationIds: Map<AllowedTypeEnum, string[]>,
@@ -258,6 +252,7 @@ export function generateBindings(
             ),
     );
 }
+*/
 
 export function saveExpressionTest(
     bindings: Ast.StatementLet[],

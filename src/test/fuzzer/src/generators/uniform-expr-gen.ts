@@ -3,13 +3,18 @@ import type { FactoryAst } from "@/ast/ast-helpers";
 import { getMakeAst } from "@/ast/generated/make-factory";
 import { getAstUtil } from "@/ast/util";
 import { Interpreter } from "@/optimizer/interpreter";
+import { GlobalContext } from "@/test/fuzzer/src/context";
+import type { Scope } from "@/test/fuzzer/src/scope";
+import { StdlibType } from "@/test/fuzzer/src/types";
+import type { Type } from "@/test/fuzzer/src/types";
+import { stringify } from "@/test/fuzzer/src/util";
 import { beginCell } from "@ton/core";
 import type { Address, Cell } from "@ton/core";
 import { sha256_sync } from "@ton/crypto";
 import { TreasuryContract } from "@ton/sandbox";
 import * as fc from "fast-check";
 
-export const AllowedType = {
+/*export const AllowedType = {
     Int: "Int",
     OptInt: "Int?",
     Bool: "Bool",
@@ -25,13 +30,14 @@ export const AllowedType = {
 } as const;
 
 export type AllowedTypeEnum = (typeof AllowedType)[keyof typeof AllowedType];
+*/
 
-export type GenContext = {
-    // Identifier names to choose from, by type
-    identifiers: Map<AllowedTypeEnum, string[]>;
+export type GenInitConfig = {
+    // The minimum expression size
+    minSize: number;
 
-    // Contract names to choose from
-    contractNames: string[];
+    // The maximum expression size
+    maxSize: number;
 
     // The non-terminals to choose from. Non-terminals not listed here will
     // be disallowed during generation
@@ -40,6 +46,8 @@ export type GenContext = {
     // The terminals to choose from. Terminals not listed here will
     // be disallowed during generation
     allowedTerminals: TerminalEnum[];
+
+    useIdentifiers: boolean;
 };
 
 export const NonTerminal = {
@@ -106,35 +114,35 @@ export const Terminal = {
     not: { terminal: true, id: 23 },
 
     cell: { terminal: true, id: 24 },
-    code_of: { terminal: true, id: 25 },
+    //code_of: { terminal: true, id: 25 },
 
-    slice: { terminal: true, id: 26 },
+    slice: { terminal: true, id: 25 },
 
-    address: { terminal: true, id: 27 },
+    address: { terminal: true, id: 26 },
 
-    string: { terminal: true, id: 28 },
+    string: { terminal: true, id: 27 },
 
     // opt_inj: { terminal: true, id: 30 },
     // null: { terminal: true, id: 30 },
-    non_null_assert: { terminal: true, id: 29 },
+    non_null_assert: { terminal: true, id: 28 },
 
-    cond: { terminal: true, id: 30 },
+    cond: { terminal: true, id: 29 },
 
-    id_int: { terminal: true, id: 31 },
-    id_opt_int: { terminal: true, id: 32 },
-    id_bool: { terminal: true, id: 33 },
-    id_opt_bool: { terminal: true, id: 34 },
-    id_cell: { terminal: true, id: 35 },
-    id_opt_cell: { terminal: true, id: 36 },
-    id_slice: { terminal: true, id: 37 },
-    id_opt_slice: { terminal: true, id: 38 },
-    id_address: { terminal: true, id: 39 },
-    id_opt_address: { terminal: true, id: 40 },
-    id_string: { terminal: true, id: 41 },
-    id_opt_string: { terminal: true, id: 42 },
+    id_int: { terminal: true, id: 30 },
+    id_opt_int: { terminal: true, id: 31 },
+    id_bool: { terminal: true, id: 32 },
+    id_opt_bool: { terminal: true, id: 33 },
+    id_cell: { terminal: true, id: 34 },
+    id_opt_cell: { terminal: true, id: 35 },
+    id_slice: { terminal: true, id: 36 },
+    id_opt_slice: { terminal: true, id: 37 },
+    id_address: { terminal: true, id: 38 },
+    id_opt_address: { terminal: true, id: 39 },
+    id_string: { terminal: true, id: 40 },
+    id_opt_string: { terminal: true, id: 41 },
 } as const;
 
-type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];
+export type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];
 
 type Token = TerminalEnum | GenericNonTerminal;
 
@@ -395,11 +403,10 @@ const allProductions: ExprProduction[][] = [
     // ],
     [
         // Productions for Cell
-        { id: 0, tokens: [Terminal.code_of] },
-
-        { id: 1, tokens: [Terminal.non_null_assert, NonTerminal.OptCell] },
+        //{ id: 0, tokens: [Terminal.code_of] },
+        { id: 0, tokens: [Terminal.non_null_assert, NonTerminal.OptCell] },
         {
-            id: 2,
+            id: 1,
             tokens: [
                 Terminal.cond,
                 NonTerminal.Bool,
@@ -407,8 +414,8 @@ const allProductions: ExprProduction[][] = [
                 NonTerminal.Cell,
             ],
         },
-        { id: 3, tokens: [Terminal.id_cell] },
-        { id: 4, tokens: [NonTerminal.LiteralCell] },
+        { id: 2, tokens: [Terminal.id_cell] },
+        { id: 3, tokens: [NonTerminal.LiteralCell] },
     ],
     [
         // Productions for OptCell
@@ -623,19 +630,16 @@ function transform(n: number): number {
     return Math.log2(n);
 }
 
-function filterProductions(
-    nonTerminalsToInclude: NonTerminalEnum[],
-    terminalsToInclude: TerminalEnum[],
-): {
+function filterProductions(initConfig: GenInitConfig): {
     productions: ExprProduction[][];
     nonTerminals: GenericNonTerminal[];
     reindexMap: Map<number, number>;
 } {
     const nonTerminalIdsToInclude: Set<number> = new Set(
-        nonTerminalsToInclude.map((e) => e.id),
+        initConfig.allowedNonTerminals.map((e) => e.id),
     );
     const terminalIdsToInclude: Set<number> = new Set(
-        terminalsToInclude.map((e) => e.id),
+        initConfig.allowedTerminals.map((e) => e.id),
     );
 
     // Make a copy of all the productions
@@ -646,7 +650,27 @@ function filterProductions(
         });
     }
 
-    // Remove productions that use terminals and non-terminals not listed in the provided argument lists.
+    // If flag useIdentifiers is off, remove generation of identifiers
+    if (!initConfig.useIdentifiers) {
+        [
+            Terminal.id_address,
+            Terminal.id_bool,
+            Terminal.id_cell,
+            Terminal.id_int,
+            Terminal.id_opt_address,
+            Terminal.id_opt_bool,
+            Terminal.id_opt_cell,
+            Terminal.id_opt_int,
+            Terminal.id_opt_slice,
+            Terminal.id_opt_string,
+            Terminal.id_slice,
+            Terminal.id_string,
+        ].forEach((terminal) => {
+            terminalIdsToInclude.delete(terminal.id);
+        });
+    }
+
+    // Remove productions that use terminals and non-terminals not listed in the allowed lists.
     let initialNonTerminalsCount;
     do {
         initialNonTerminalsCount = nonTerminalIdsToInclude.size;
@@ -1181,7 +1205,7 @@ function getProductionAt(prods: ExprProduction[], id: number): ExprProduction {
 function makeExpression(
     astF: FactoryAst,
     nonTerminalId: number,
-    ctx: GenContext,
+    scope: Scope,
     nonTerminalCounts: number[][][],
     sizeSplitCounts: number[][][][][],
     finalProductions: ExprProduction[][],
@@ -1337,11 +1361,11 @@ function makeExpression(
         );
     }
 
-    function makeIdentifier(t: AllowedTypeEnum): fc.Arbitrary<Ast.Expression> {
-        const names = ctx.identifiers.get(t);
-        if (typeof names === "undefined" || names.length === 0) {
+    function makeIdentifier(ty: Type): fc.Arbitrary<Ast.Expression> {
+        const names = scope.getNamesRecursive("let", ty);
+        if (names.length === 0) {
             throw new Error(
-                `There must exist at least one identifier for type ${t}`,
+                `There must exist at least one identifier for type ${stringify(ty, 0)}`,
             );
         }
         return fc.constantFrom(...names).map((id) => makeF.makeDummyId(id));
@@ -1540,18 +1564,18 @@ function makeExpression(
             case Terminal.cell.id: {
                 return _generateCell().map((c) => makeF.makeDummyCell(c));
             }
-            case Terminal.code_of.id: {
-                if (ctx.contractNames.length === 0) {
-                    throw new Error(
-                        "There must exist at least one contract name in generator context",
-                    );
-                }
-                return fc
-                    .constantFrom(...ctx.contractNames)
-                    .map((name) =>
-                        makeF.makeDummyCodeOf(makeF.makeDummyId(name)),
-                    );
-            }
+            //case Terminal.code_of.id: {
+            //    if (ctx.contractNames.length === 0) {
+            //        throw new Error(
+            //            "There must exist at least one contract name in generator context",
+            //        );
+            //    }
+            //    return fc
+            //        .constantFrom(...ctx.contractNames)
+            //        .map((name) =>
+            //            makeF.makeDummyCodeOf(makeF.makeDummyId(name)),
+            //        );
+            //}
             case Terminal.slice.id: {
                 return _generateCell().map((c) =>
                     makeF.makeDummySlice(c.asSlice()),
@@ -1617,40 +1641,73 @@ function makeExpression(
                 });
             }
             case Terminal.id_int.id: {
-                return makeIdentifier("Int");
+                return makeIdentifier({ kind: "stdlib", type: StdlibType.Int });
             }
             case Terminal.id_opt_int.id: {
-                return makeIdentifier("Int?");
+                return makeIdentifier({
+                    kind: "optional",
+                    type: { kind: "stdlib", type: StdlibType.Int },
+                });
             }
             case Terminal.id_bool.id: {
-                return makeIdentifier("Bool");
+                return makeIdentifier({
+                    kind: "stdlib",
+                    type: StdlibType.Bool,
+                });
             }
             case Terminal.id_opt_bool.id: {
-                return makeIdentifier("Bool?");
+                return makeIdentifier({
+                    kind: "optional",
+                    type: { kind: "stdlib", type: StdlibType.Bool },
+                });
             }
             case Terminal.id_cell.id: {
-                return makeIdentifier("Cell");
+                return makeIdentifier({
+                    kind: "stdlib",
+                    type: StdlibType.Cell,
+                });
             }
             case Terminal.id_opt_cell.id: {
-                return makeIdentifier("Cell?");
+                return makeIdentifier({
+                    kind: "optional",
+                    type: { kind: "stdlib", type: StdlibType.Cell },
+                });
             }
             case Terminal.id_slice.id: {
-                return makeIdentifier("Slice");
+                return makeIdentifier({
+                    kind: "stdlib",
+                    type: StdlibType.Slice,
+                });
             }
             case Terminal.id_opt_slice.id: {
-                return makeIdentifier("Slice?");
+                return makeIdentifier({
+                    kind: "optional",
+                    type: { kind: "stdlib", type: StdlibType.Slice },
+                });
             }
             case Terminal.id_address.id: {
-                return makeIdentifier("Address");
+                return makeIdentifier({
+                    kind: "stdlib",
+                    type: StdlibType.Address,
+                });
             }
             case Terminal.id_opt_address.id: {
-                return makeIdentifier("Address?");
+                return makeIdentifier({
+                    kind: "optional",
+                    type: { kind: "stdlib", type: StdlibType.Address },
+                });
             }
             case Terminal.id_string.id: {
-                return makeIdentifier("String");
+                return makeIdentifier({
+                    kind: "stdlib",
+                    type: StdlibType.String,
+                });
             }
             case Terminal.id_opt_string.id: {
-                return makeIdentifier("String?");
+                return makeIdentifier({
+                    kind: "optional",
+                    type: { kind: "stdlib", type: StdlibType.String },
+                });
             }
         }
     }
@@ -1659,20 +1716,23 @@ function makeExpression(
 }
 
 export function initializeGenerator(
-    minSize: number,
-    maxSize: number,
-    ctx: GenContext,
-    astF: FactoryAst,
-): (nonTerminal: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
-    const { productions, nonTerminals, reindexMap } = filterProductions(
-        ctx.allowedNonTerminals,
-        ctx.allowedTerminals,
-    );
+    initConfig: GenInitConfig,
+): (
+    scope: Scope,
+    nonTerminal: NonTerminalEnum,
+) => fc.Arbitrary<Ast.Expression> {
+    const { productions, nonTerminals, reindexMap } =
+        filterProductions(initConfig);
 
     const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
-        computeCountTables(minSize, maxSize, productions, nonTerminals);
+        computeCountTables(
+            initConfig.minSize,
+            initConfig.maxSize,
+            productions,
+            nonTerminals,
+        );
 
-    return (nonTerminal: NonTerminalEnum) => {
+    return (scope: Scope, nonTerminal: NonTerminalEnum) => {
         const nonTerminalId = reindexMap.get(nonTerminal.id);
         if (typeof nonTerminalId === "undefined") {
             throw new Error(
@@ -1699,9 +1759,9 @@ export function initializeGenerator(
 
         return fc.oneof(...weightedSizes).chain((size) => {
             return makeExpression(
-                astF,
+                GlobalContext.astF,
                 nonTerminalId,
-                ctx,
+                scope,
                 nonTerminalCounts,
                 sizeSplitCounts,
                 productions,
@@ -1742,4 +1802,24 @@ function _generateIntBitLength(
     } else {
         return fc.bigInt(0n, maxUnsigned);
     }
+}
+
+function generateStringValue(
+    nonEmpty: boolean,
+    constValue?: string,
+): fc.Arbitrary<string> {
+    return constValue === undefined
+        ? nonEmpty
+            ? fc.string({ minLength: 1 })
+            : fc.string()
+        : fc.constantFrom(constValue);
+}
+
+export function generateString(
+    nonEmpty: boolean,
+    constValue?: string,
+): fc.Arbitrary<Ast.String> {
+    return generateStringValue(nonEmpty, constValue).map((s) =>
+        GlobalContext.makeF.makeDummyString(s),
+    );
 }

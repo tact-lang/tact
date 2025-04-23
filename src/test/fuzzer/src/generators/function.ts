@@ -20,6 +20,7 @@ import {
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 /**
  * Utility type, used inside function definition and declaration classes and in shared functions.
@@ -154,26 +155,19 @@ export class FunctionDef extends NamedGenerativeEntity<Ast.FunctionDef> {
         extraAttrs: Ast.FunctionAttribute[],
     ): fc.Arbitrary<Ast.FunctionDef> {
         const returnTy = getReturnType(this.type as FunctionType);
-        return fc.record<Ast.FunctionDef>({
-            kind: fc.constant("function_def"),
-            id: fc.constant(this.idx),
-            attributes: fc.constant(
+        return this.generateBody().map((stmt) =>
+            GlobalContext.makeF.makeDummyFunctionDef(
                 getAttributes(extraAttrs, this.kind, false),
-            ),
-            name: fc.constant(this.name),
-            return: fc.constant(
+                this.name,
                 isUnit(returnTy) ? undefined : tyToAstType(returnTy),
-            ),
-            params: fc.constant(
                 generateParameters(
                     this.kind,
                     this.type as FunctionType,
                     this.scope,
                 ),
+                stmt,
             ),
-            statements: this.generateBody(),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        );
     }
 
     /**
@@ -205,23 +199,18 @@ export class FunctionDecl extends NamedGenerativeEntity<Ast.FunctionDecl> {
         extraAttrs: Ast.FunctionAttribute[],
     ): fc.Arbitrary<Ast.FunctionDecl> {
         const returnTy = getReturnType(this.type as FunctionType);
-        return fc.record<Ast.FunctionDecl>({
-            kind: fc.constant("function_decl"),
-            id: fc.constant(this.idx),
-            attributes: fc.constant(getAttributes(extraAttrs, this.kind, true)),
-            name: fc.constant(this.name),
-            return: fc.constant(
+        return fc.constant(
+            GlobalContext.makeF.makeDummyFunctionDecl(
+                getAttributes(extraAttrs, this.kind, true),
+                this.name,
                 isUnit(returnTy) ? undefined : tyToAstType(returnTy),
-            ),
-            params: fc.constant(
                 generateParameters(
                     this.kind,
                     this.type as FunctionType,
                     this.scope,
                 ),
             ),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        );
     }
 
     /**

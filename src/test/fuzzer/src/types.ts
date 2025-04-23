@@ -5,14 +5,12 @@ import {
     randomInt,
     randomBool,
     generateAstIdFromName,
-    dummySrcInfoPrintable,
     stringify,
 } from "@/test/fuzzer/src/util";
 import type { Scope } from "@/test/fuzzer/src/scope";
 import type { TypeRef } from "@/types/types";
-
-import { nextId } from "@/test/fuzzer/src/id";
 import fc from "fast-check";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 /**
  * Types from Tact stdlib.
@@ -55,6 +53,11 @@ export enum UtilType {
     Unit = "Unit",
 }
 
+export type OptionalType = {
+    kind: "optional";
+    type: Type;
+};
+
 /**
  * Represents the signature of a function in a format typical for functional languages, such as Int -> Int -> Int.
  * The last element of the list means the return type, previous elements are types of the arguments.
@@ -87,7 +90,8 @@ export type Type =
           kind: "util";
           type: UtilType;
       }
-    | FunctionType;
+    | FunctionType
+    | OptionalType;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function throwTyError(ty: any): never {
@@ -122,21 +126,14 @@ export const SUPPORTED_STDLIB_TYPES: StdlibType[] = [
 ];
 
 function makePrimitiveType(name: string): Ast.PrimitiveTypeDecl {
-    return {
-        kind: "primitive_type_decl",
-        id: nextId(),
-        name: generateAstIdFromName(name),
-        loc: dummySrcInfoPrintable,
-    };
+    return GlobalContext.makeF.makeDummyPrimitiveTypeDecl(
+        generateAstIdFromName(name),
+    );
 }
 function makeASTTypeRef(name: string): Ast.TypeId {
-    return {
-        kind: "type_id",
-        id: nextId(),
-        text: name,
-        loc: dummySrcInfoPrintable,
-    };
+    return GlobalContext.makeF.makeDummyTypeId(name);
 }
+
 function makeTypeRef(name: string): TypeRef {
     return {
         kind: "ref",
@@ -182,12 +179,7 @@ export function tyToAstTypeDecl(ty: Type): Ast.TypeDecl {
 }
 export function tyToAstType(ty: Type, isBounced = false): Ast.Type {
     const generateAstTypeId = (text: string) =>
-        ({
-            kind: "type_id",
-            text,
-            id: nextId(),
-            loc: dummySrcInfoPrintable,
-        }) as Ast.TypeId;
+        GlobalContext.makeF.makeDummyTypeId(text);
 
     switch (ty.kind) {
         case "stdlib": {
@@ -199,31 +191,18 @@ export function tyToAstType(ty: Type, isBounced = false): Ast.Type {
         }
         case "struct":
         case "message": {
-            const simpleType: Ast.TypeId = {
-                kind: "type_id",
-                text: ty.name,
-                id: nextId(),
-                loc: dummySrcInfoPrintable,
-            };
+            const simpleType = GlobalContext.makeF.makeDummyTypeId(ty.name);
             return isBounced
-                ? {
-                      kind: "bounced_message_type",
-                      messageType: simpleType,
-                      id: nextId(),
-                      loc: dummySrcInfoPrintable,
-                  }
+                ? GlobalContext.makeF.makeDummyBouncedMessageType(simpleType)
                 : simpleType;
         }
         case "map":
-            return {
-                kind: "map_type",
-                id: nextId(),
-                keyType: generateAstTypeId(tyToString(ty.type.key)),
-                keyStorageType: undefined,
-                valueType: generateAstTypeId(tyToString(ty.type.value)),
-                valueStorageType: undefined,
-                loc: dummySrcInfoPrintable,
-            };
+            return GlobalContext.makeF.makeDummyMapType(
+                generateAstTypeId(tyToString(ty.type.key)),
+                undefined,
+                generateAstTypeId(tyToString(ty.type.value)),
+                undefined,
+            );
         default:
             throwTyError(ty);
     }

@@ -1,15 +1,12 @@
 import type * as Ast from "@/ast/ast";
-import {
-    createSample,
-    dummySrcInfoPrintable,
-    generateAstId,
-} from "@/test/fuzzer/src/util";
+import { createSample, generateAstId } from "@/test/fuzzer/src/util";
 import { tyToAstType } from "@/test/fuzzer/src/types";
 import type { Type } from "@/test/fuzzer/src/types";
 import type { Scope } from "@/test/fuzzer/src/scope";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 /**
  * An object that encapsulates generated Ast.TypedParameter.
@@ -33,12 +30,11 @@ export class Parameter extends NamedGenerativeEntity<Ast.TypedParameter> {
     }
 
     generate(): fc.Arbitrary<Ast.TypedParameter> {
-        return fc.record<Ast.TypedParameter>({
-            kind: fc.constant("typed_parameter"),
-            id: fc.constant(this.idx),
-            name: fc.constant(this.name),
-            type: fc.constant(tyToAstType(this.type, this.isBounced)),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return fc.constant(
+            GlobalContext.makeF.makeDummyTypedParameter(
+                this.name,
+                tyToAstType(this.type, this.isBounced),
+            ),
+        );
     }
 }

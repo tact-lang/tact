@@ -10,7 +10,6 @@ import type { NamedScopeItemKind, Scope } from "@/test/fuzzer/src/scope";
 import { GlobalContext } from "@/test/fuzzer/src/context";
 import type { Type } from "@/test/fuzzer/src/types";
 import type * as Ast from "@/ast/ast";
-import { nextId } from "@/test/fuzzer/src/id";
 import { getSrcInfo } from "@/grammar/src-info";
 import type { FactoryAst } from "@/ast/ast-helpers";
 import { idText } from "@/ast/ast-helpers";
@@ -220,12 +219,7 @@ export function generateName(
  * Generates Ast.Id from string name and with new id.
  */
 export function generateAstIdFromName(name: string): Ast.Id {
-    return {
-        kind: "id",
-        text: name,
-        id: nextId(),
-        loc: dummySrcInfoPrintable,
-    };
+    return GlobalContext.makeF.makeDummyId(name);
 }
 
 /**
@@ -238,12 +232,9 @@ export function generateAstId(
     shadowing: boolean = true,
     isType: boolean = false,
 ): fc.Arbitrary<Ast.Id> {
-    return fc.record({
-        kind: fc.constant("id"),
-        text: generateName(scope, shadowing, isType),
-        id: fc.constant(nextId()),
-        loc: fc.constant(dummySrcInfoPrintable),
-    });
+    return generateName(scope, shadowing, isType).map((s) =>
+        GlobalContext.makeF.makeDummyId(s),
+    );
 }
 
 /**

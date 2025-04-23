@@ -4,10 +4,7 @@ import * as fs from "fs";
 import { Scope } from "@/test/fuzzer/src/scope";
 import { SUPPORTED_STDLIB_TYPES } from "@/test/fuzzer/src/types";
 import type { Type } from "@/test/fuzzer/src/types";
-import {
-    Expression,
-    NonGenerativeExpressionParams,
-} from "@/test/fuzzer/src/generators";
+import { Expression } from "@/test/fuzzer/src/generators";
 import path from "path";
 
 /**
@@ -267,11 +264,7 @@ function main() {
         .constantFrom(...SUPPORTED_STDLIB_TYPES)
         .chain((type) => {
             const ty: Type = { kind: "stdlib", type };
-            return new Expression(
-                globalScope,
-                ty,
-                NonGenerativeExpressionParams,
-            ).generate();
+            return new Expression(globalScope, ty).generate();
         });
     statistics(generator, 50000, path.join(__dirname, "counts.txt"));
 }

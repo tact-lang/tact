@@ -15,6 +15,7 @@ import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
 import { Field } from "@/test/fuzzer/src/generators/field";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 export interface ContractParameters {
     /**
@@ -63,14 +64,14 @@ export class Contract extends NamedGenerativeEntity<Ast.Contract> {
         if (this.trait !== undefined) {
             traitFields = this.trait.fieldDeclarations.map(({ type, name }) => {
                 const init = new Expression(this.scope, type, {
-                    compileTimeEval: true,
+                    useIdentifiers: false,
                 }).generate();
                 return new Field(this.scope, type, init, name).generate();
             });
             traitConstants = this.trait.constantDeclarations
                 .map((decl) => {
                     const init = new Expression(this.scope, decl.type, {
-                        compileTimeEval: true,
+                        useIdentifiers: false,
                     }).generate();
                     return decl
                         .createDefinition(init)
@@ -117,15 +118,8 @@ export class Contract extends NamedGenerativeEntity<Ast.Contract> {
         const generatedFields = Array.from(this.scope.getAllNamed("field")).map(
             (f) => f.generate(),
         );
-        return fc.record<Ast.Contract>({
-            kind: fc.constant("contract"),
-            id: fc.constant(this.idx),
-            name: fc.constant(this.name),
-            traits: fc.constant(
-                this.trait === undefined ? [] : [this.trait.name],
-            ),
-            attributes: fc.constantFrom([]),
-            declarations: fc.tuple(
+        return fc
+            .tuple(
                 ...traitConstants,
                 ...generatedConstants,
                 ...traitFields,
@@ -134,9 +128,15 @@ export class Contract extends NamedGenerativeEntity<Ast.Contract> {
                 ...traitMethods,
                 ...generatedMethods,
                 ...requestedMethods,
-            ),
-            loc: fc.constant(dummySrcInfoPrintable),
-            params: fc.constant(undefined),
-        });
+            )
+            .map((decls) =>
+                GlobalContext.makeF.makeDummyContract(
+                    this.name,
+                    this.trait === undefined ? [] : [this.trait.name],
+                    [],
+                    undefined,
+                    decls,
+                ),
+            );
     }
 }

@@ -3,14 +3,11 @@ import { tyToString, throwTyError } from "@/test/fuzzer/src/types";
 import type { Type, StructField } from "@/test/fuzzer/src/types";
 import type { Scope } from "@/test/fuzzer/src/scope";
 import { Field } from "@/test/fuzzer/src/generators/field";
-import {
-    dummySrcInfoPrintable,
-    generateAstIdFromName,
-    packArbitraries,
-} from "@/test/fuzzer/src/util";
+import { generateAstIdFromName, packArbitraries } from "@/test/fuzzer/src/util";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
-import fc from "fast-check";
+import type fc from "fast-check";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 /**
  * An object that generates Ast.StructDecl object.
@@ -48,13 +45,9 @@ export class Struct extends NamedGenerativeEntity<Ast.StructDecl> {
                 generateAstIdFromName(fieldTy.name),
             ).generate();
         });
-        return fc.record<Ast.StructDecl>({
-            kind: fc.constant("struct_decl"),
-            id: fc.constant(this.idx),
-            name: fc.constant(this.name),
-            fields: packArbitraries(fields),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return packArbitraries(fields).map((f) =>
+            GlobalContext.makeF.makeDummyStructDecl(this.name, f),
+        );
     }
 }
 
@@ -94,13 +87,8 @@ export class Message extends NamedGenerativeEntity<Ast.MessageDecl> {
                 generateAstIdFromName(fieldTy.name),
             ).generate();
         });
-        return fc.record<Ast.MessageDecl>({
-            kind: fc.constant("message_decl"),
-            id: fc.constant(this.idx),
-            name: fc.constant(this.name!),
-            opcode: fc.constant(undefined),
-            fields: packArbitraries(fields),
-            loc: fc.constant(dummySrcInfoPrintable),
-        });
+        return packArbitraries(fields).map((f) =>
+            GlobalContext.makeF.makeDummyMessageDecl(this.name, undefined, f),
+        );
     }
 }

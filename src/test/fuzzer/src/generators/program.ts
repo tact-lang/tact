@@ -14,8 +14,8 @@ import { Trait } from "@/test/fuzzer/src/generators/trait";
 import { Scope } from "@/test/fuzzer/src/scope";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 import { getStdlibTraits } from "@/test/fuzzer/src/stdlib";
-
 import fc from "fast-check";
+import { GlobalContext } from "@/test/fuzzer/src/context";
 
 export interface ProgramParameters {
     /** Add definitions that mock stdlib ones to the generated program. */
@@ -123,10 +123,8 @@ export class Program extends NamedGenerativeEntity<Ast.Module> {
         const functions = Array.from(this.scope.getAllNamed("functionDef")).map(
             (f) => f.generate(),
         );
-        return fc.record<Ast.Module>({
-            kind: fc.constantFrom("module"),
-            id: fc.constantFrom(this.idx),
-            items: fc.tuple(
+        return fc
+            .tuple(
                 ...stdlibEntries,
                 ...structs,
                 ...messages,
@@ -134,9 +132,8 @@ export class Program extends NamedGenerativeEntity<Ast.Module> {
                 ...functions,
                 ...traits,
                 ...contracts,
-            ),
-            imports: fc.constant([]),
-        });
+            )
+            .map((decls) => GlobalContext.makeF.makeModule([], decls));
     }
 
     /**
