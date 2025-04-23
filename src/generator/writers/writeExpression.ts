@@ -199,10 +199,7 @@ export function writeValue(
             if (typeof val.bocHex === "undefined") {
                 return "null()";
             }
-            const res = writeCell(
-                Cell.fromHex(val.bocHex),
-                wCtx,
-            );
+            const res = writeCell(Cell.fromHex(val.bocHex), wCtx);
             wCtx.used(res);
             return `${res}()`;
         }
