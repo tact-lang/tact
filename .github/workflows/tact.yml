@@ -15,8 +15,8 @@ concurrency:
 # All unset values default to none
 # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#permissions
 permissions:
-  contents: read
-  security-events: write
+  contents: read # allows repository contents to be read
+  security-events: write # allows updating statuses of code alerts
 
 jobs:
   backwards-compat:
