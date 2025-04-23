@@ -1163,6 +1163,9 @@ export class Interpreter {
         const valueExist = this.getValueParser(res.value);
         const bocHex = keyExist((keyType, parseKey) => {
             return valueExist((valueType, parseValue) => {
+                if (ast.fields.length === 0) {
+                    return undefined;
+                }
                 let dict = Dictionary.empty(keyType, valueType);
                 for (const { key: keyExpr, value: valueExpr } of ast.fields) {
                     const keyValue = parseKey(
@@ -1175,7 +1178,11 @@ export class Interpreter {
                     );
                     dict = dict.set(keyValue, valValue);
                 }
-                return beginCell().storeDictDirect(dict).endCell().toBoc().toString('hex');
+                return beginCell()
+                    .storeDictDirect(dict)
+                    .endCell()
+                    .toBoc()
+                    .toString('hex');
             })
         });
         return this.util.makeMapValue(

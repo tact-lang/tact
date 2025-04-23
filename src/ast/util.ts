@@ -121,7 +121,7 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
     }
 
     function makeMapValue(
-        bocHex: string,
+        bocHex: string | undefined,
         type: Ast.MapType,
         loc: SrcInfo,
     ): Ast.MapValue {

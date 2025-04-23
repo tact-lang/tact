@@ -638,7 +638,7 @@ export type Slice = {
 
 export type MapValue = {
     readonly kind: "map_value";
-    readonly bocHex: string;
+    readonly bocHex: string | undefined;
     readonly type: MapType;
     readonly id: number;
     readonly loc: SrcInfo;

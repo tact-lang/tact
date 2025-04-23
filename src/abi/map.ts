@@ -1,6 +1,6 @@
 import type { CompilerContext } from "@/context/context";
 import type { SrcInfo } from "@/grammar";
-import type { TypeRef } from "@/types/types";
+import type { TypeRef, TypeRefMap } from "@/types/types";
 import { printTypeRef } from "@/types/types";
 import type { WriterContext } from "@/generator/Writer";
 import { ops } from "@/generator/writers/ops";
@@ -125,6 +125,58 @@ function handleStructOrOtherValue(
     throwCompilationError(`"${t.name}" can't be value of a map`, ref);
 }
 
+export function generateSet(
+    ctx: WriterContext,
+    ref: SrcInfo,
+    self: TypeRefMap,
+    value: TypeRef | undefined,
+    resolved: string[],
+) {
+    const [selfCode, keyCode, valueCode] = resolved;
+    const argsCode = `${keyCode}, ${valueCode}`;
+    const { bits, kind } = resolveMapKeyBits(self, ref);
+    if (self.value === "Int") {
+        let vBits = 257;
+        let vKind = "int";
+        if (self.valueAs?.startsWith("int")) {
+            vBits = parseInt(self.valueAs.slice(3), 10);
+        } else if (self.valueAs?.startsWith("uint")) {
+            vBits = parseInt(self.valueAs.slice(4), 10);
+            vKind = "uint";
+        } else if (self.valueAs?.startsWith("coins")) {
+            vKind = "coins";
+            ctx.used(`__tact_dict_set_${kind}_${vKind}`);
+            return `${selfCode}~__tact_dict_set_${kind}_${vKind}(${bits}, ${argsCode})`;
+        } else if (self.valueAs?.startsWith("var")) {
+            vKind = self.valueAs;
+            ctx.used(`__tact_dict_set_${kind}_${vKind}`);
+            return `${selfCode}~__tact_dict_set_${kind}_${vKind}(${bits}, ${argsCode})`;
+        }
+        ctx.used(`__tact_dict_set_${kind}_${vKind}`);
+        return `${selfCode}~__tact_dict_set_${kind}_${vKind}(${bits}, ${argsCode}, ${vBits})`;
+    } else if (self.value === "Bool") {
+        ctx.used(`__tact_dict_set_${kind}_int`);
+        return `${selfCode}~__tact_dict_set_${kind}_int(${bits}, ${argsCode}, 1)`;
+    } else if (self.value === "Cell") {
+        ctx.used(`__tact_dict_set_${kind}_cell`);
+        return `${selfCode}~__tact_dict_set_${kind}_cell(${bits}, ${argsCode})`;
+    } else if (self.value === "Address") {
+        ctx.used(`__tact_dict_set_${kind}_slice`);
+        return `${selfCode}~__tact_dict_set_${kind}_slice(${bits}, ${argsCode})`;
+    } else {
+        return handleStructOrOtherValue(
+            self,
+            value!,
+            resolved,
+            ctx,
+            ref,
+            bits,
+            kind,
+            "set",
+        );
+    }
+}
+
 // The fully refactored MapFunctions object
 export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
     [
@@ -158,48 +210,8 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
                 checkMapType(self, ref);
 
                 const resolved = exprs.map((v) => writeExpression(v, ctx));
-                const { bits, kind } = resolveMapKeyBits(self, ref);
 
-                if (self.value === "Int") {
-                    let vBits = 257;
-                    let vKind = "int";
-                    if (self.valueAs?.startsWith("int")) {
-                        vBits = parseInt(self.valueAs.slice(3), 10);
-                    } else if (self.valueAs?.startsWith("uint")) {
-                        vBits = parseInt(self.valueAs.slice(4), 10);
-                        vKind = "uint";
-                    } else if (self.valueAs?.startsWith("coins")) {
-                        vKind = "coins";
-                        ctx.used(`__tact_dict_set_${kind}_${vKind}`);
-                        return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                    } else if (self.valueAs?.startsWith("var")) {
-                        vKind = self.valueAs;
-                        ctx.used(`__tact_dict_set_${kind}_${vKind}`);
-                        return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                    }
-                    ctx.used(`__tact_dict_set_${kind}_${vKind}`);
-                    return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
-                } else if (self.value === "Bool") {
-                    ctx.used(`__tact_dict_set_${kind}_int`);
-                    return `${resolved[0]}~__tact_dict_set_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
-                } else if (self.value === "Cell") {
-                    ctx.used(`__tact_dict_set_${kind}_cell`);
-                    return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                } else if (self.value === "Address") {
-                    ctx.used(`__tact_dict_set_${kind}_slice`);
-                    return `${resolved[0]}~__tact_dict_set_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                } else {
-                    return handleStructOrOtherValue(
-                        self,
-                        value!,
-                        resolved,
-                        ctx,
-                        ref,
-                        bits,
-                        kind,
-                        "set",
-                    );
-                }
+                return generateSet(ctx, ref, self, value, resolved);
             },
         },
     ],
