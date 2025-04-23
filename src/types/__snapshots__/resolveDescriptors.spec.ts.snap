@@ -446,6 +446,24 @@ exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for init-with-invalid-bytes128-as-type 1`] = `
+"<unknown>:6:10: Unsupported format "bytes128"
+  5 | contract Foo {
+> 6 |     init(val: Slice as bytes128) {}
+               ^~~~~~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for init-with-invalid-int260-as-type 1`] = `
+"<unknown>:6:10: Unsupported format "int260"
+  5 | contract Foo {
+> 6 |     init(val: Int as int260) {}
+               ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for message-decl-remainder-in-the-middle 1`] = `
 "<unknown>:8:5: The "as remaining" field can only be the last field of the message
   7 |     a: Int;
@@ -1447,6 +1465,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
           },
           "params": [
             {
+              "as": undefined,
               "id": 11,
               "kind": "typed_parameter",
               "loc": self: Slice,
@@ -1615,6 +1634,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
       },
       "params": [
         {
+          "as": undefined,
           "id": 8,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -1744,6 +1764,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
       },
       "params": [
         {
+          "as": undefined,
           "id": 8,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -1761,6 +1782,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
           },
         },
         {
+          "as": undefined,
           "id": 11,
           "kind": "typed_parameter",
           "loc": y: Int,
@@ -1900,6 +1922,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 2`
       },
       "params": [
         {
+          "as": undefined,
           "id": 6,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -2163,6 +2186,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
       },
       "params": [
         {
+          "as": undefined,
           "id": 17,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -2180,6 +2204,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
           },
         },
         {
+          "as": undefined,
           "id": 20,
           "kind": "typed_parameter",
           "loc": y: Int,
@@ -2851,6 +2876,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
               "id": 18,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 17,
                 "kind": "typed_parameter",
                 "loc": src: A,
@@ -2882,6 +2908,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 23,
               "kind": "typed_parameter",
               "loc": src: Slice,
@@ -2961,6 +2988,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
               "id": 18,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 17,
                 "kind": "typed_parameter",
                 "loc": src: A,
@@ -3005,6 +3033,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 23,
               "kind": "typed_parameter",
               "loc": src: Slice,
@@ -3444,6 +3473,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
               "id": 25,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 24,
                 "kind": "typed_parameter",
                 "loc": src: A,
@@ -3475,6 +3505,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 31,
               "kind": "typed_parameter",
               "loc": src: bounced<A>,
@@ -3594,6 +3625,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
               "id": 25,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 24,
                 "kind": "typed_parameter",
                 "loc": src: A,
@@ -3638,6 +3670,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 31,
               "kind": "typed_parameter",
               "loc": src: bounced<A>,
@@ -4800,17 +4833,18 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
     },
           "params": [
             {
+              "as": undefined,
               "id": 22,
               "kind": "typed_parameter",
               "loc": cell: Cell,
               "name": {
-                "id": 20,
+                "id": 21,
                 "kind": "id",
                 "loc": cell,
                 "text": "cell",
               },
               "type": {
-                "id": 21,
+                "id": 20,
                 "kind": "type_id",
                 "loc": Cell,
                 "text": "Cell",
@@ -5022,17 +5056,18 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
     },
         "params": [
           {
+            "as": undefined,
             "id": 22,
             "kind": "typed_parameter",
             "loc": cell: Cell,
             "name": {
-              "id": 20,
+              "id": 21,
               "kind": "id",
               "loc": cell,
               "text": "cell",
             },
             "type": {
-              "id": 21,
+              "id": 20,
               "kind": "type_id",
               "loc": Cell,
               "text": "Cell",
@@ -5073,10 +5108,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
       "kind": "init-function",
       "params": [
         {
-          "as": null,
+          "as": undefined,
           "loc": cell: Cell,
           "name": {
-            "id": 20,
+            "id": 21,
             "kind": "id",
             "loc": cell,
             "text": "cell",
@@ -5335,6 +5370,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
               "id": 15,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 14,
                 "kind": "typed_parameter",
                 "loc": msg: A,
@@ -5465,6 +5501,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
               "id": 15,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 14,
                 "kind": "typed_parameter",
                 "loc": msg: A,
@@ -7162,6 +7199,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
           },
           "params": [
             {
+              "as": undefined,
               "id": 18,
               "kind": "typed_parameter",
               "loc": self: Builder,
@@ -7265,6 +7303,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
           },
           "params": [
             {
+              "as": undefined,
               "id": 24,
               "kind": "typed_parameter",
               "loc": self: Cell,
@@ -8619,6 +8658,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 19,
               "kind": "typed_parameter",
               "loc": self: Int,
@@ -8636,6 +8676,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 23,
               "kind": "typed_parameter",
               "loc": y: Int?,
@@ -8737,6 +8778,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 32,
               "kind": "typed_parameter",
               "loc": self: Int?,
@@ -8759,6 +8801,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 35,
               "kind": "typed_parameter",
               "loc": y: Int,
@@ -8860,6 +8903,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 43,
               "kind": "typed_parameter",
               "loc": self: Int,
@@ -8877,6 +8921,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 47,
               "kind": "typed_parameter",
               "loc": y: Int?,
@@ -8983,6 +9028,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 56,
               "kind": "typed_parameter",
               "loc": self: Int?,
@@ -9005,6 +9051,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 59,
               "kind": "typed_parameter",
               "loc": y: Int,
@@ -9106,6 +9153,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 69,
               "kind": "typed_parameter",
               "loc": self: Int?,
@@ -9128,6 +9176,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 72,
               "kind": "typed_parameter",
               "loc": y: Int,
@@ -9241,6 +9290,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
       },
       "params": [
         {
+          "as": undefined,
           "id": 7,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -9258,6 +9308,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
         },
         {
+          "as": undefined,
           "id": 11,
           "kind": "typed_parameter",
           "loc": y: Int?,
@@ -10003,6 +10054,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       },
       "params": [
         {
+          "as": undefined,
           "id": 19,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -10020,6 +10072,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           },
         },
         {
+          "as": undefined,
           "id": 22,
           "kind": "typed_parameter",
           "loc": b: Bool,
@@ -10322,17 +10375,18 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     },
           "params": [
             {
+              "as": undefined,
               "id": 18,
               "kind": "typed_parameter",
               "loc": a: Int,
               "name": {
-                "id": 16,
+                "id": 17,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               "type": {
-                "id": 17,
+                "id": 16,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -10664,17 +10718,18 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     },
         "params": [
           {
+            "as": undefined,
             "id": 18,
             "kind": "typed_parameter",
             "loc": a: Int,
             "name": {
-              "id": 16,
+              "id": 17,
               "kind": "id",
               "loc": a,
               "text": "a",
             },
             "type": {
-              "id": 17,
+              "id": 16,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -10715,10 +10770,10 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "kind": "init-function",
       "params": [
         {
-          "as": null,
+          "as": undefined,
           "loc": a: Int,
           "name": {
-            "id": 16,
+            "id": 17,
             "kind": "id",
             "loc": a,
             "text": "a",
@@ -10823,6 +10878,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
           },
           "params": [
             {
+              "as": undefined,
               "id": 11,
               "kind": "typed_parameter",
               "loc": self: Int,
@@ -11102,6 +11158,7 @@ native sample(a: Int): Int;,
       },
       "params": [
         {
+          "as": undefined,
           "id": 11,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -11211,6 +11268,7 @@ mutates extends native inc(self: Int): Int;,
           },
           "params": [
             {
+              "as": undefined,
               "id": 11,
               "kind": "typed_parameter",
               "loc": self: Int,
@@ -15469,6 +15527,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
               "id": 22,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 21,
                 "kind": "typed_parameter",
                 "loc": msg: MsgWithExprOpcode,
@@ -15542,6 +15601,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
               "id": 22,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 21,
                 "kind": "typed_parameter",
                 "loc": msg: MsgWithExprOpcode,
@@ -34118,6 +34178,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 25,
               "kind": "typed_parameter",
               "loc": msg: bounced<Add>,
@@ -34153,6 +34214,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 31,
               "kind": "typed_parameter",
               "loc": msg: bounced<Is>,
@@ -34241,6 +34303,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 25,
               "kind": "typed_parameter",
               "loc": msg: bounced<Add>,
@@ -34290,6 +34353,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 31,
               "kind": "typed_parameter",
               "loc": msg: bounced<Is>,
@@ -39436,6 +39500,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
       },
       "params": [
         {
+          "as": undefined,
           "id": 11,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -39453,6 +39518,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
         },
         {
+          "as": undefined,
           "id": 14,
           "kind": "typed_parameter",
           "loc": _: String,
@@ -39469,6 +39535,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
         },
         {
+          "as": undefined,
           "id": 17,
           "kind": "typed_parameter",
           "loc": _: Int,
@@ -39485,6 +39552,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
         },
         {
+          "as": undefined,
           "id": 20,
           "kind": "typed_parameter",
           "loc": _: Cell,
@@ -39728,6 +39796,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
           "params": [
             {
+              "as": undefined,
               "id": 12,
               "kind": "typed_parameter",
               "loc": _: Int,
@@ -39744,6 +39813,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
             },
             {
+              "as": undefined,
               "id": 15,
               "kind": "typed_parameter",
               "loc": _: Int,
@@ -39822,6 +39892,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
           "params": [
             {
+              "as": undefined,
               "id": 12,
               "kind": "typed_parameter",
               "loc": _: Int,
@@ -39838,6 +39909,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
             },
             {
+              "as": undefined,
               "id": 15,
               "kind": "typed_parameter",
               "loc": _: Int,
@@ -39962,6 +40034,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
           "params": [
             {
+              "as": undefined,
               "id": 26,
               "kind": "typed_parameter",
               "loc": a: Int,
@@ -39979,6 +40052,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
             },
             {
+              "as": undefined,
               "id": 29,
               "kind": "typed_parameter",
               "loc": b: Int,
@@ -40102,6 +40176,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
           "params": [
             {
+              "as": undefined,
               "id": 26,
               "kind": "typed_parameter",
               "loc": a: Int,
@@ -40119,6 +40194,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
             },
             {
+              "as": undefined,
               "id": 29,
               "kind": "typed_parameter",
               "loc": b: Int,
@@ -40327,6 +40403,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
               "params": [
                 {
+                  "as": undefined,
                   "id": 12,
                   "kind": "typed_parameter",
                   "loc": _: Int,
@@ -40343,6 +40420,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                   },
                 },
                 {
+                  "as": undefined,
                   "id": 15,
                   "kind": "typed_parameter",
                   "loc": _: Int,
@@ -40421,6 +40499,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
               "params": [
                 {
+                  "as": undefined,
                   "id": 12,
                   "kind": "typed_parameter",
                   "loc": _: Int,
@@ -40437,6 +40516,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                   },
                 },
                 {
+                  "as": undefined,
                   "id": 15,
                   "kind": "typed_parameter",
                   "loc": _: Int,

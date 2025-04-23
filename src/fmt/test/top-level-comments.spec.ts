@@ -96,6 +96,26 @@ describe("top level declarations comments formatting", () => {
     );
 
     it(
+        "comment after last field in struct",
+        intact(`
+        struct RequestBody {
+            field: Address;
+            // Other data fields...
+        }
+    `),
+    );
+
+    it(
+        "comment after last field in message",
+        intact(`
+        message RequestBody {
+            field: Address;
+            // Other data fields...
+        }
+    `),
+    );
+
+    it(
         "comments in message declarations",
         intact(`
         // before message

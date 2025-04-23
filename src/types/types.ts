@@ -190,7 +190,7 @@ export type ReceiverDescription = {
 export type InitParameter = {
     name: Ast.OptionalId;
     type: TypeRef;
-    as: string | null;
+    as: Ast.Id | undefined;
     loc: SrcInfo;
 };
 

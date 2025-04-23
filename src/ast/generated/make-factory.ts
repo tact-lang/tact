@@ -1481,6 +1481,7 @@ export const getMakeAst = (astF: FactoryAst) => {
             name: p_name,
             type: p_type,
             loc: p_loc,
+            as: undefined,
         }) as Ast.TypedParameter;
     }
 
@@ -1493,6 +1494,7 @@ export const getMakeAst = (astF: FactoryAst) => {
             name: p_name,
             type: p_type,
             loc: emptySrcInfo,
+            as: undefined,
         }) as Ast.TypedParameter;
     }
 

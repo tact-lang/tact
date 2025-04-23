@@ -35,6 +35,29 @@ Code style issues found in the above file. Run tact-fmt with --write to fix.
 }
 `;
 
+exports[`tact-fmt foo.tact Check on several directories 1`] = `
+{
+  "code": 1,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Checking formatting...
+[warn] file2.tact
+Code style issues found in the above file. Run tact-fmt with --write to fix.
+",
+}
+`;
+
+exports[`tact-fmt foo.tact Check on several formatted files 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": "Checking formatting...
+All Tact files use official code style!
+",
+}
+`;
+
 exports[`tact-fmt foo.tact Default run 1`] = `
 {
   "code": 0,

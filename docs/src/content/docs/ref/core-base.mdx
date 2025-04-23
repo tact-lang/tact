@@ -41,7 +41,7 @@ contract AllYourStorageBelongsToUs {
 virtual fun reply(body: Cell?);
 ```
 
-An alias to calling the [`self.forward(){:tact}`](#self-forward) function with the following arguments:
+A similar but more gas-efficient version of calling the [`self.forward(){:tact}`](#self-forward) function with the following arguments:
 
 ```tact
 self.forward(sender(), body, true, null);
@@ -65,7 +65,7 @@ self.reply("Beware, this is my reply to you!".asComment());
 virtual fun notify(body: Cell?);
 ```
 
-An alias to calling the [`self.forward(){:tact}`](#self-forward) function with the following arguments:
+A similar but more gas-efficient version of calling the [`self.forward(){:tact}`](#self-forward) function with the following arguments:
 
 ```tact
 self.forward(sender(), body, false, null);

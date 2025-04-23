@@ -115,9 +115,9 @@ const formatFields: FormatRule = (code, node) => {
 
                 if (field.type === "Comment") {
                     if (needNewline) {
-                        code.add(" ");
+                        code.newLine();
                     }
-                    code.apply(formatComment, child);
+                    code.apply(formatComment, field);
                     code.newLine();
                     needNewline = false;
                 } else if (field.type === "FieldDecl") {

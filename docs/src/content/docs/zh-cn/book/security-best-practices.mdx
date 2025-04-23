@@ -324,7 +324,7 @@ contract JettonDefaultWallet {
         let fwdFee: Int = ctx.readForwardFee();
         require(ctx.value > fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value - Burn");
 
-        send(SendParameters{
+        send(SendParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
@@ -370,7 +370,7 @@ contract Sample {
     receive(msg: Vote) {
         self.votes += msg.votes;
 
-        send(SendParameters{
+        send(SendParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,

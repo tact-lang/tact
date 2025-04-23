@@ -23,7 +23,7 @@ contract NFTCollection {
     commonCode: Cell;
     commonData: Builder;
 
-    init(owner: Address, nextItemIndex: Int, collectionContent: Cell, royaltyParams: RoyaltyParams) {
+    init(owner: Address, nextItemIndex: Int as uint64, collectionContent: Cell, royaltyParams: RoyaltyParams) {
         self.owner = owner;
         self.nextItemIndex = nextItemIndex;
         self.content = collectionContent;
@@ -124,7 +124,7 @@ inline fun deployNFTItem(commonCode: Cell, itemIndex: Int, amount: Int, initNFTB
     deploy(DeployParameters {
         value: amount,
         body: initNFTBody,
-        init: StateInit { code: commonCode, data: data },
+        init: StateInit { code: commonCode, data },
         mode: SendPayFwdFeesSeparately,
     });
 }

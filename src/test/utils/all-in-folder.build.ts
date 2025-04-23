@@ -145,8 +145,6 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
 
         const stdlibPath = stdlib.resolve("std/stdlib.fc");
         const stdlibCode = stdlib.readFile(stdlibPath).toString();
-        const stdlibExPath = stdlib.resolve("std/stdlib_ex.fc");
-        const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
 
         // we need to regex match the imports and add them to sources
         // statements like #include "params.fc";
@@ -190,17 +188,12 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
         const funcArgs = {
             entries: [
                 stdlibPath,
-                stdlibExPath,
                 posixNormalize(project.resolve(contractInfo.path)),
             ],
             sources: [
                 {
                     path: stdlibPath,
                     content: stdlibCode,
-                },
-                {
-                    path: stdlibExPath,
-                    content: stdlibExCode,
                 },
                 ...includePaths,
                 {

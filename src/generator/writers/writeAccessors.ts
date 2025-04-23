@@ -192,8 +192,13 @@ export function writeAccessors(
     });
 
     ctx.fun(ops.typeFromTuple(type.name, ctx), () => {
+        const returnType =
+            type.fields.length === 0
+                ? "tuple"
+                : `(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(", ")})`;
+
         ctx.signature(
-            `(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(", ")}) ${ops.typeFromTuple(type.name, ctx)}(tuple v)`,
+            `${returnType} ${ops.typeFromTuple(type.name, ctx)}(tuple v)`,
         );
         ctx.flag("inline");
         ctx.context("type:" + type.name);
@@ -201,6 +206,12 @@ export function writeAccessors(
             // Resolve vars
             const vars: string[] = [];
             const out: string[] = [];
+
+            if (type.fields.length === 0) {
+                ctx.append(`return empty_tuple();`);
+                return;
+            }
+
             for (const f of type.fields) {
                 if (f.type.kind === "ref") {
                     const t = getType(ctx.ctx, f.type.name);

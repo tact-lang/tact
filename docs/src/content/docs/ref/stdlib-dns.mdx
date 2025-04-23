@@ -165,10 +165,10 @@ trait DNSResolver {
 
         // Resolve
         let res: DNSResolveResult = self.doResolveDNS(subdomain, category);
-        return DNSResolveResult{prefix: res.prefix + delta, record: res.record};
+        return DNSResolveResult { prefix: res.prefix + delta, record: res.record };
     }
     virtual fun doResolveDNS(subdomain: Slice, category: Int): DNSResolveResult {
-        return DNSResolveResult{prefix: subdomain.bits(), record: null};
+        return DNSResolveResult { prefix: subdomain.bits(), record: null };
     }
 }
 ```
