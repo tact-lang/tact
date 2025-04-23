@@ -1,5 +1,5 @@
 import "@ton/test-utils";
-import type { Address, StateInit } from "@ton/core";
+import type { Address } from "@ton/core";
 import { Cell, beginCell, toNano, contractAddress } from "@ton/core";
 
 import type { Sender } from "@ton/core";
@@ -39,10 +39,10 @@ const loadFunCEscrowBoc = () => {
     return { bocEscrow };
 };
 
-async function testEscrow(
+function testEscrow(
     benchmarkResults: BenchmarkResult,
     codeSizeResults: CodeSizeResult,
-    fromInit: any,
+    fromInit: (...args: any[]) => Promise<Escrow>,
 ) {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
