@@ -3,7 +3,6 @@ import { ZodError } from "zod";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import { parseAndEvalExpression } from "@/optimizer/interpreter";
-import { showValue } from "@/types/types";
 import type { Config, Project } from "@/config/parseConfig";
 import { parseConfig } from "@/config/parseConfig";
 import type { GetParserResult } from "@/cli/arg-parser";
@@ -16,10 +15,11 @@ import { entries } from "@/utils/tricks";
 import { Logger, LogLevel } from "@/context/logger";
 import { build } from "@/pipeline/build";
 import type { TactErrorCollection } from "@/error/errors";
-import files from "@/stdlib/stdlib";
+import * as Stdlib from "@/stdlib/stdlib";
 import { cwd } from "process";
 import { getVersion, showCommit } from "@/cli/version";
 import { watchAndCompile } from "@/cli/tact/watch";
+import { prettyPrint } from "@/ast/ast-printer";
 
 export type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
@@ -268,7 +268,7 @@ const compile = async (
     }
     setConfigOptions(config, options);
 
-    const stdlib = createVirtualFileSystem("@stdlib", files);
+    const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
 
     if (await noUnknownParams(Errors, Args)) {
         // TODO: all flags on the cli should take precedence over flags in the config
@@ -369,8 +369,15 @@ const evaluate = (expression: string) => {
     const result = parseAndEvalExpression(expression);
     switch (result.kind) {
         case "ok":
-            console.log(showValue(result.value));
-            process.exit(0);
+            {
+                if (result.value.kind === "number") {
+                    // all numbers get printed in base 10, even hex, oct and bin literals
+                    console.log(prettyPrint({ ...result.value, base: 10 }));
+                } else {
+                    console.log(prettyPrint(result.value));
+                }
+                process.exit(0);
+            }
             break;
         case "error": {
             console.log(result.message);

@@ -111,12 +111,12 @@ function strEq(a: SomeGenericStruct | null, b: SomeGenericStruct | null) {
 
 describe("features", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
     });
 
     const eV = {
@@ -193,12 +193,12 @@ describe("features", () => {
             );
 
             const deployResult = await contract.send(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano("10") },
                 null,
             );
             expect(deployResult.transactions).toHaveTransaction({
-                from: treasure.address,
+                from: treasury.address,
                 to: contract.address,
                 success: true,
             });
@@ -260,18 +260,18 @@ describe("features", () => {
         const contract = blockchain.openContract(await Opt4.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });
 
         const sendResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano(1) },
             {
                 $$type: "OptAddr",
@@ -281,7 +281,7 @@ describe("features", () => {
             },
         );
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });

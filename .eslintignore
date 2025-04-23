@@ -11,5 +11,7 @@ jest.globalSetup.js
 jest.teardown.js
 /docs
 version.build.ts
+format.build.ts
 bin/*
 **/.testing/
+src/fmt/cst/cst-parser.ts

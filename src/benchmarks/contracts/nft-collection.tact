@@ -23,25 +23,16 @@ contract NFTCollection {
     commonCode: Cell;
     commonData: Builder;
 
-    init(owner: Address, nextItemIndex: Int, collectionContent: Cell, royaltyParams: RoyaltyParams) {
+    init(owner: Address, nextItemIndex: Int as uint64, collectionContent: Cell, royaltyParams: RoyaltyParams) {
         self.owner = owner;
         self.nextItemIndex = nextItemIndex;
         self.content = collectionContent;
         self.royaltyParams = royaltyParams;
 
         self.commonCode = codeOf NFTItem;
-        self.commonData = beginCell().storeBit(false).storeAddress(myAddress()); // Use lazy bit 
-    }
-
-    inline fun deployNFTItem(itemIndex: Int, amount: Int, initNFTBody: Cell) {
-        let data: Cell = self.commonData.storeUint(itemIndex, 64).endCell(); // IndexSizeBits = 64
-
-        deploy(DeployParameters {
-            value: amount,
-            body: initNFTBody,
-            init: StateInit { code: self.commonCode, data: data },
-            mode: SendPayFwdFeesSeparately,
-        });
+        self.commonData = beginCell()
+            .storeUint(0, 3) // 0b00 - null address and 0b0 - null content cell
+            .storeAddress(myAddress());
     }
 
     receive() {} // ignore empty messages
@@ -63,7 +54,7 @@ contract NFTCollection {
         throwUnless(IncorrectSender, sender() == self.owner);
         throwUnless(IncorrectIndex, msg.itemIndex <= self.nextItemIndex);
 
-        self.deployNFTItem(msg.itemIndex, msg.amount, msg.initNFTBody);
+        deployNFTItem(self.commonCode, msg.itemIndex, msg.amount, msg.initNFTBody, self.commonData);
 
         if (msg.itemIndex == self.nextItemIndex) {
             self.nextItemIndex += 1;
@@ -83,7 +74,7 @@ contract NFTCollection {
 
             throwUnless(IncorrectIndexes + counter, currNFTItem.itemIndex!! <= self.nextItemIndex);
 
-            self.deployNFTItem(currNFTItem.itemIndex!!, currNFTItem.item!!.loadCoins(), currNFTItem.item!!.loadRef());
+            deployNFTItem(self.commonCode, currNFTItem.itemIndex!!, currNFTItem.item!!.loadCoins(), currNFTItem.item!!.loadRef(), self.commonData);
             if (currNFTItem.itemIndex!! == self.nextItemIndex) {
                 self.nextItemIndex += 1;
             }
@@ -107,7 +98,7 @@ contract NFTCollection {
     }
 
     get fun get_nft_address_by_index(index: Int): Address {
-        let stateInit = initOf NFTItem(InitNFTData { itemIndex: index, collectionAddress: myAddress() });
+        let stateInit = initOf NFTItem(null, null, myAddress(), index);
         return contractAddress(stateInit);
     }
 
@@ -120,9 +111,20 @@ contract NFTCollection {
         cs.skipRef();
         let commonContent = cs.loadRef().beginParse();
         return beginCell()
-            .storeUint(1, 8) // off-chain tag 
+            .storeUint(1, 8) // off-chain tag
             .storeSlice(commonContent)
             .storeRef(individualNFTContent)
             .endCell();
     }
+}
+
+inline fun deployNFTItem(commonCode: Cell, itemIndex: Int, amount: Int, initNFTBody: Cell, commonData: Builder) {
+    let data: Cell = commonData.storeUint(itemIndex, 64).endCell(); // IndexSizeBits = 64
+
+    deploy(DeployParameters {
+        value: amount,
+        body: initNFTBody,
+        init: StateInit { code: commonCode, data },
+        mode: SendPayFwdFeesSeparately,
+    });
 }

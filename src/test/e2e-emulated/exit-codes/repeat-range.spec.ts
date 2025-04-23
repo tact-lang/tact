@@ -6,26 +6,26 @@ import "@ton/test-utils";
 
 describe("repeat range", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<TestContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure", {
+        treasury = await blockchain.treasury("treasury", {
             resetBalanceIfZero: true,
         });
 
         contract = blockchain.openContract(await TestContract.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -44,12 +44,12 @@ describe("repeat range", () => {
 
         // max effective range
         const sendResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "testMaxEffectiveRange",
         );
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: false,
             exitCode: -14,

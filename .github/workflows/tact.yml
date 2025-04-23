@@ -12,6 +12,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# All unset values default to none
+# https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#permissions
+permissions: read-all
+
 jobs:
   backwards-compat:
     strategy:
@@ -37,7 +41,7 @@ jobs:
           # Install dependencies, gen and build the compiler
           yarn install
           yarn clean
-          yarn gen
+          ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
           yarn build
           # Test some specific things for backwards compatibility.
           # It's important to restrain from using too much of Node.js 22+ features
@@ -158,7 +162,7 @@ jobs:
           # corepack enable
           yarn install
           yarn clean
-          yarn gen
+          ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
           yarn build
 
       - name: (npm) Test creation of new Blueprint projects

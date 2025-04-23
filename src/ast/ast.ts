@@ -667,6 +667,7 @@ export type TypedParameter = {
     readonly kind: "typed_parameter";
     readonly name: OptionalId;
     readonly type: Type;
+    readonly as: Id | undefined; // only in `init()`
     readonly id: number;
     readonly loc: SrcInfo;
 };

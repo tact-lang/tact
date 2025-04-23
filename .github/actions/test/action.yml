@@ -32,19 +32,13 @@ runs:
       shell: bash
       run: |
         yarn clean
-        yarn gen
+        ${{ runner.os != 'Windows' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
         yarn build
 
     - name: Test Tact compiler
       shell: bash
       run: |
         yarn coverage
-
-    - name: Show an example .pkg file on Windows
-      shell: pwsh
-      if: runner.os == 'Windows'
-      run: |
-        type examples\output\echo_Echo.pkg
 
     - name: Link Tact yarn package
       shell: bash

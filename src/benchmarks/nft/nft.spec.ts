@@ -25,6 +25,7 @@ import { posixNormalize } from "@/utils/filePath";
 import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     NFTCollection,
+    ReportStaticData,
     loadInitNFTBody,
 } from "@/benchmarks/contracts/output/nft-collection_NFTCollection";
 import type {
@@ -34,7 +35,6 @@ import type {
     BatchDeploy,
     RoyaltyParams,
     InitNFTBody,
-    InitNFTData,
 } from "@/benchmarks/contracts/output/nft-collection_NFTCollection";
 import {
     NFTItem,
@@ -199,14 +199,8 @@ describe("itemNFT", () => {
 
         // ITEM
         {
-            const initNFTData: InitNFTData = {
-                $$type: "InitNFTData",
-                itemIndex: 0n,
-                collectionAddress: owner.address,
-            };
-
             itemNFT = blockchain.openContract(
-                await NFTItem.fromInit(initNFTData),
+                await NFTItem.fromInit(null, null, owner.address, 0n),
             );
 
             const deployItemMsg: InitNFTBody = {
@@ -341,6 +335,7 @@ describe("itemNFT", () => {
                     0n,
                 ),
             );
+
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
@@ -371,10 +366,23 @@ describe("itemNFT", () => {
 
         const runGetStaticTest = async (
             scopeItemNFT: SandboxContract<NFTItem>,
+            scopeCollectionNFTAddress: Address,
         ) => {
             const sendResult = await step("get static data", async () =>
                 sendGetStaticData(scopeItemNFT, owner.getSender(), toNano(1)),
             );
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: scopeItemNFT.address,
+                to: owner.address,
+                body: beginCell()
+                    .storeUint(ReportStaticData, 32) // opCode
+                    .storeUint(0n, 64) // queryId
+                    .storeUint(0n, 256) // itemIndex
+                    .storeAddress(scopeCollectionNFTAddress) // collectionAddress
+                    .endCell(),
+                success: true,
+            });
 
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
@@ -383,8 +391,14 @@ describe("itemNFT", () => {
             return getUsedGas(sendResult, "internal");
         };
 
-        const getStaticGasUsedTact = await runGetStaticTest(itemNFT);
-        const getStaticGasUsedFunC = await runGetStaticTest(funcItemNFT);
+        const getStaticGasUsedTact = await runGetStaticTest(
+            itemNFT,
+            owner.address,
+        ); // just because we deployed like that
+        const getStaticGasUsedFunC = await runGetStaticTest(
+            funcItemNFT,
+            owner.address,
+        );
 
         expect(getStaticGasUsedTact).toEqual(
             expectedResult.gas["get static data"],

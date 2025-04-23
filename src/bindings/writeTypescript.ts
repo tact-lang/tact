@@ -56,7 +56,7 @@ export type WrappersConstantDescription = {
 export function writeTypescript(
     abi: ContractABI,
     ctx: CompilerContext,
-    constants: WrappersConstantDescription[],
+    constants: readonly WrappersConstantDescription[],
     contract: undefined | TypeDescription,
     init?: {
         code: string;
@@ -73,22 +73,22 @@ export function writeTypescript(
     const w = new Writer();
 
     w.write(`
-        import { 
+        import {
             Cell,
-            Slice, 
-            Address, 
-            Builder, 
-            beginCell, 
-            ComputeError, 
-            TupleItem, 
-            TupleReader, 
-            Dictionary, 
-            contractAddress, 
-            address, 
-            ContractProvider, 
-            Sender, 
-            Contract, 
-            ContractABI, 
+            Slice,
+            Address,
+            Builder,
+            beginCell,
+            ComputeError,
+            TupleItem,
+            TupleReader,
+            Dictionary,
+            contractAddress,
+            address,
+            ContractProvider,
+            Sender,
+            Contract,
+            ContractABI,
             ABIType,
             ABIGetter,
             ABIReceiver,
@@ -219,7 +219,7 @@ export function writeTypescript(
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
                 w.append(
-                    `${k}: { message: \`${abiError.message.replaceAll("`", "\\`")}\` },`,
+                    `${k}: { message: ${JSON.stringify(abiError.message)} },`,
                 );
             });
         }

@@ -107,7 +107,7 @@ function writeSerializerCell(
         ctx.append(`var build_${gen + 1} = begin_cell();`);
         writeSerializerCell(cell.next, gen + 1, ctx);
         ctx.append(
-            `build_${gen} = store_ref(build_${gen}, build_${gen + 1}.end_cell());`,
+            `build_${gen} = store_builder_ref(build_${gen}, build_${gen + 1});`,
         );
     }
 }
@@ -219,11 +219,11 @@ function writeSerializerField(
                     {
                         if (op.optional) {
                             ctx.append(
-                                `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`,
+                                `build_${gen} = build_${gen}.store_maybe_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
                             );
                         } else {
                             ctx.append(
-                                `build_${gen} = build_${gen}.store_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
+                                `build_${gen} = build_${gen}.store_builder_ref(begin_cell().store_slice(${fieldName}));`,
                             );
                         }
                     }
@@ -245,11 +245,11 @@ function writeSerializerField(
                     {
                         if (op.optional) {
                             ctx.append(
-                                `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}.end_cell().begin_parse()).end_cell()) : build_${gen}.store_int(false, 1);`,
+                                `build_${gen} = build_${gen}.store_maybe_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
                             );
                         } else {
                             ctx.append(
-                                `build_${gen} = build_${gen}.store_ref(begin_cell().store_slice(${fieldName}.end_cell().begin_parse()).end_cell());`,
+                                `build_${gen} = build_${gen}.store_builder_ref(${fieldName});`,
                             );
                         }
                     }
@@ -268,11 +268,11 @@ function writeSerializerField(
         case "string": {
             if (op.optional) {
                 ctx.append(
-                    `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`,
+                    `build_${gen} = build_${gen}.store_maybe_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
                 );
             } else {
                 ctx.append(
-                    `build_${gen} = build_${gen}.store_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
+                    `build_${gen} = build_${gen}.store_builder_ref(begin_cell().store_slice(${fieldName}));`,
                 );
             }
             return;
@@ -539,9 +539,7 @@ function writeFieldParser(
                 if (op.format !== "default") {
                     throw new Error(`Impossible`);
                 }
-                ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref() : null();`,
-                );
+                ctx.append(`${varName} = sc_${gen}~load_maybe_ref();`);
             } else {
                 switch (op.format) {
                     case "default":

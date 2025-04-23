@@ -12,6 +12,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: read-all
+
 jobs:
   linter:
     runs-on: ubuntu-latest
@@ -49,7 +51,12 @@ jobs:
         run: |
           yarn lint
 
-      - name: Check formatting with Prettier
+      - name: Build Tact compiler fast
+        run: |
+          yarn install
+          yarn build:fast
+
+      - name: Check formatting with Prettier and Tact formatter
         run: |
           yarn fmt:check
 

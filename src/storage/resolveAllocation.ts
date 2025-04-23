@@ -157,6 +157,7 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
                         ctx,
                         f.type,
                         f.loc,
+                        f.as,
                     );
                     ops.push({
                         name: f.name.kind === "id" ? f.name.text : "_",
