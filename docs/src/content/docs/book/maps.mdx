@@ -139,6 +139,24 @@ fizz.set(42, 42);
 fizz.set(7, 68); // key 7 now points to value 68
 ```
 
+### Add values, `.add()` {#add}
+
+```tact
+// K and V correspond to the key and value types of the given map
+extends mutates fun add(self: map<K, V>, key: K, val: V): Bool;
+```
+
+To add a value to a map, call the `.add(){:tact}` [method](/book/functions#extension-function). If the key already exists, do nothing and return `false{:tact}`. Otherwise, add the value and return `true{:tact}`.
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Adding a value
+let added1 = fizz.add(7, 7); // true
+fizz.add(7, 7);              // false, because the key 7 already exists
+```
+
 ### Get values, `.get()` {#get}
 
 ```tact

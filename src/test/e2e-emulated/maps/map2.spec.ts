@@ -4,6 +4,7 @@ import { randomAddress } from "@/test/utils/random-utils";
 import type {
     MapTestContract$Data,
     SetAllMaps,
+    AddAllMaps,
     DelAllMaps,
     ReplaceAllMaps,
     ReplaceGetAllMaps,
@@ -617,6 +618,107 @@ describe("MapTestContract", () => {
                 const map = clearedMaps[mapName] as Dictionary<any, any>;
                 expect(map.size).toBe(0);
             });
+        }
+    });
+
+
+    it("add: should not overwrite values", async () => {
+        for (const { keys } of testCases) {
+            for (const { values } of testCases) {
+                // Send the set operation
+                const addMessage: AddAllMaps = {
+                    $$type: "AddAllMaps",
+                    ...keys,
+                    ...values,
+                };
+
+                await contract.send(
+                    treasury.getSender(),
+                    { value: toNano("1") },
+                    addMessage,
+                );
+
+                // Retrieve all maps using `allMaps` getter
+                const allMaps = await contract.getAllMaps();
+
+                // Iterate over mapConfigs and perform assertions
+                mapConfigs.forEach(
+                    ({ mapName, key, value, keyTransform, valueTransform }) => {
+                        const map = allMaps[mapName] as Dictionary<any, any>;
+
+                        expect(map.size).toBe(1);
+
+                        let mapKey = keys[key];
+                        if (keyTransform) {
+                            mapKey = keyTransform(mapKey);
+                        }
+
+                        let expectedValue = values[value];
+                        if (valueTransform) {
+                            expectedValue = valueTransform(expectedValue);
+                        }
+
+                        const actualValue = map.get(mapKey);
+
+                        expect(actualValue).toEqual(expectedValue);
+                    },
+                );
+            }
+
+            // Clear all maps by setting values to null
+            const clearMessage: AddAllMaps = {
+                $$type: "AddAllMaps",
+                keyInt: 0n,
+                keyInt8: 0n,
+                keyInt42: 0n,
+                keyInt256: 0n,
+                keyUint8: 0n,
+                keyUint42: 0n,
+                keyUint256: 0n,
+                keyAddress: randomAddress(0, "address0"),
+                valueInt: 0n,
+                valueInt8: 0n,
+                valueInt42: 0n,
+                valueInt256: 0n,
+                valueUint8: 0n,
+                valueUint42: 0n,
+                valueUint256: 0n,
+                valueCoins: 0n,
+            };
+
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                clearMessage,
+            );
+
+            // Retrieve all maps again to ensure they are empty
+            const allMaps = await contract.getAllMaps();
+
+            for (const { values } of testCases) {
+                // Iterate over mapConfigs and perform assertions
+                mapConfigs.forEach(
+                    ({mapName, key, value, keyTransform, valueTransform}) => {
+                        const map = allMaps[mapName] as Dictionary<any, any>;
+
+                        expect(map.size).toBe(1);
+
+                        let mapKey = keys[key];
+                        if (keyTransform) {
+                            mapKey = keyTransform(mapKey);
+                        }
+
+                        let expectedValue = values[value];
+                        if (valueTransform) {
+                            expectedValue = valueTransform(expectedValue);
+                        }
+
+                        const actualValue = map.get(mapKey);
+
+                        expect(actualValue).toEqual(expectedValue);
+                    },
+                );
+            }
         }
     });
 

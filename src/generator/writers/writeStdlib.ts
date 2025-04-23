@@ -121,6 +121,14 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.asm("(value index dict key_len)", "DICTSETREF");
     });
 
+    ctx.fun("__tact_dict_add_ref", () => {
+        ctx.signature(
+            `((cell), int) __tact_dict_add_ref(cell dict, int key_len, slice index, cell value)`,
+        );
+        ctx.context("stdlib");
+        ctx.asm("(value index dict key_len)", "DICTADDREF");
+    });
+
     ctx.fun("__tact_dict_replace_ref", () => {
         ctx.signature(
             `((cell), (int)) __tact_dict_replace_ref(cell dict, int key_len, slice index, cell value)`,
@@ -955,6 +963,7 @@ export function writeStdlib(ctx: WriterContext): void {
             genTactDictGetMin(ctx, key, val);
             genTactDictGetNext(ctx, key, val);
             genTactDictSet(ctx, key, val);
+            genTactDictAdd(ctx, key, val);
             genTactDictReplace(ctx, key, val);
             genTactDictReplaceGet(ctx, key, val);
         }
@@ -1164,6 +1173,72 @@ function genTactDictSet(
                 } else {
                     return ${returnExpr()};
                 }
+            `);
+        });
+    });
+}
+
+function genTactDictAdd(
+    ctx: WriterContext,
+    key: KeyType,
+    value: ValType,
+): void {
+    const signatureKeyType = getSignatureKeyType(key);
+    const signatureValueType = getSignatureValueType(value);
+    const valBitsArg = () => {
+        switch (value) {
+            case "slice":
+            case "cell":
+            case "coins":
+            case "varint16":
+            case "varint32":
+            case "varuint16":
+            case "varuint32":
+                return "";
+            case "uint":
+            case "int":
+                return ", int vl";
+        }
+    };
+    // prettier-ignore
+    const returnExpr = () => match(key, value)
+        .on("int", "int")(() => "(idict_add_builder?(d, kl, k, begin_cell().store_int(v, vl)))")
+        .on("int", "uint")(() => "(idict_add_builder?(d, kl, k, begin_cell().store_uint(v, vl)))")
+        .on("int", "coins")(() => "(idict_add_builder?(d, kl, k, begin_cell().store_coins(v)))")
+        .on("int", "varint16")(() => "(idict_add_builder?(d, kl, k, begin_cell().store_varint16(v)))")
+        .on("int", "varint32")(() => "(idict_add_builder?(d, kl, k, begin_cell().store_varint32(v)))")
+        .on("int", "varuint16")(() => "(idict_add_builder?(d, kl, k, begin_cell().store_varuint16(v)))")
+        .on("int", "varuint32")(() => "(idict_add_builder?(d, kl, k, begin_cell().store_varuint32(v)))")
+        .on("uint", "int")(() => "(udict_add_builder?(d, kl, k, begin_cell().store_int(v, vl)))")
+        .on("uint", "uint")(() => "(udict_add_builder?(d, kl, k, begin_cell().store_uint(v, vl)))")
+        .on("uint", "coins")(() => "(udict_add_builder?(d, kl, k, begin_cell().store_coins(v)))")
+        .on("uint", "varint16")(() => "(udict_add_builder?(d, kl, k, begin_cell().store_varint16(v)))")
+        .on("uint", "varint32")(() => "(udict_add_builder?(d, kl, k, begin_cell().store_varint32(v)))")
+        .on("uint", "varuint16")(() => "(udict_add_builder?(d, kl, k, begin_cell().store_varuint16(v)))")
+        .on("uint", "varuint32")(() => "(udict_add_builder?(d, kl, k, begin_cell().store_varuint32(v)))")
+        .on("slice", "int")(() => "(dict_add_builder?(d, kl, k, begin_cell().store_int(v, vl)))")
+        .on("slice", "uint")(() => "(dict_add_builder?(d, kl, k, begin_cell().store_uint(v, vl)))")
+        .on("slice", "coins")(() => "(dict_add_builder?(d, kl, k, begin_cell().store_coins(v)))")
+        .on("slice", "varint16")(() => "(dict_add_builder?(d, kl, k, begin_cell().store_varint16(v)))")
+        .on("slice", "varint32")(() => "(dict_add_builder?(d, kl, k, begin_cell().store_varint32(v)))")
+        .on("slice", "varuint16")(() => "(dict_add_builder?(d, kl, k, begin_cell().store_varuint16(v)))")
+        .on("slice", "varuint32")(() => "(dict_add_builder?(d, kl, k, begin_cell().store_varuint32(v)))")
+        .on("int", "cell")(() => "(idict_add_ref(d, kl, k, v))")
+        .on("uint", "cell")(() => "(udict_add_ref(d, kl, k, v))")
+        .on("int", "slice")(() => "(idict_add?(d, kl, k, v))")
+        .on("uint", "slice")(() => "(udict_add?(d, kl, k, v))")
+        .on("slice", "cell")(() => `${ctx.used("__tact_dict_add_ref")}(d, kl, k, v)`)
+        .on("slice", "slice")(() => "(dict_add_builder?(d, kl, k, begin_cell().store_slice(v)))")
+        .end();
+    ctx.fun(`__tact_dict_add_${key}_${value}`, () => {
+        ctx.signature(
+            `(cell, int) __tact_dict_add_${key}_${value}(cell d, int kl, ${signatureKeyType} k, ${signatureValueType} v${valBitsArg()})`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return ${returnExpr()};
             `);
         });
     });

@@ -204,6 +204,81 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         },
     ],
     [
+        "add",
+        {
+            name: "add",
+            resolve(
+                _ctx: CompilerContext,
+                args: readonly (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(args, 3, "add expects two arguments", ref);
+
+                const [self, key, value] = args;
+                checkMapType(self, ref);
+                checkKeyType(key, self.key, ref);
+                checkValueType(value, self.value, ref);
+
+                return { kind: "ref", name: "Bool", optional: false };
+            },
+            generate(
+                ctx: WriterContext,
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly Ast.Expression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(args, 3, "add expects two arguments", ref);
+
+                const [self, , value] = args;
+                checkMapType(self, ref);
+
+                const resolved = exprs.map((v) => writeExpression(v, ctx));
+                const { bits, kind } = resolveMapKeyBits(self, ref);
+
+                if (self.value === "Int") {
+                    let vBits = 257;
+                    let vKind = "int";
+                    if (self.valueAs?.startsWith("int")) {
+                        vBits = parseInt(self.valueAs.slice(3), 10);
+                    } else if (self.valueAs?.startsWith("uint")) {
+                        vBits = parseInt(self.valueAs.slice(4), 10);
+                        vKind = "uint";
+                    } else if (self.valueAs?.startsWith("coins")) {
+                        vKind = "coins";
+                        ctx.used(`__tact_dict_add_${kind}_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_add_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                    } else if (self.valueAs?.startsWith("var")) {
+                        vKind = self.valueAs;
+                        ctx.used(`__tact_dict_add_${kind}_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_add_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                    }
+                    ctx.used(`__tact_dict_add_${kind}_${vKind}`);
+                    return `${resolved[0]}~__tact_dict_add_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
+                } else if (self.value === "Bool") {
+                    ctx.used(`__tact_dict_add_${kind}_int`);
+                    return `${resolved[0]}~__tact_dict_add_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
+                } else if (self.value === "Cell") {
+                    ctx.used(`__tact_dict_add_${kind}_cell`);
+                    return `${resolved[0]}~__tact_dict_add_${kind}_cell(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                } else if (self.value === "Address") {
+                    ctx.used(`__tact_dict_add_${kind}_slice`);
+                    return `${resolved[0]}~__tact_dict_add_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                } else {
+                    return handleStructOrOtherValue(
+                        self,
+                        value!,
+                        resolved,
+                        ctx,
+                        ref,
+                        bits,
+                        kind,
+                        "add",
+                    );
+                }
+            },
+        },
+    ],
+    [
         "get",
         {
             name: "get",

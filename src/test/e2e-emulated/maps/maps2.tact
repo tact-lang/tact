@@ -493,6 +493,28 @@ message SetAllMaps {
     valueCoins: Int?;
 }
 
+message AddAllMaps {
+    // Key fields
+    keyInt: Int;
+    keyInt8: Int;
+    keyInt42: Int;
+    keyInt256: Int;
+    keyUint8: Int;
+    keyUint42: Int;
+    keyUint256: Int;
+    keyAddress: Address;
+
+    // Value fields
+    valueInt: Int?;
+    valueInt8: Int?;
+    valueInt42: Int?;
+    valueInt256: Int?;
+    valueUint8: Int?;
+    valueUint42: Int?;
+    valueUint256: Int?;
+    valueCoins: Int?;
+}
+
 message DelAllMaps {
     // Key fields
     keyInt: Int;
@@ -550,7 +572,7 @@ message ReplaceGetAllMaps {
 }
 
 message CheckNullReference {
-    
+
 }
 
 // ===============================
@@ -742,6 +764,82 @@ contract MapTestContract {
         self.address_uint42.set(msg.keyAddress, msg.valueUint42);
         self.address_uint256.set(msg.keyAddress, msg.valueUint256);
         self.address_coins.set(msg.keyAddress, msg.valueCoins);
+    }
+
+    receive(msg: AddAllMaps) {
+        // Integer Key Maps
+        self.int_int.add(msg.keyInt, msg.valueInt);
+        self.int_int8.add(msg.keyInt, msg.valueInt8);
+        self.int_int42.add(msg.keyInt, msg.valueInt42);
+        self.int_int256.add(msg.keyInt, msg.valueInt256);
+        self.int_uint8.add(msg.keyInt, msg.valueUint8);
+        self.int_uint42.add(msg.keyInt, msg.valueUint42);
+        self.int_uint256.add(msg.keyInt, msg.valueUint256);
+        self.int_coins.add(msg.keyInt, msg.valueCoins);
+
+        self.int8_int.add(msg.keyInt8, msg.valueInt);
+        self.int8_int8.add(msg.keyInt8, msg.valueInt8);
+        self.int8_int42.add(msg.keyInt8, msg.valueInt42);
+        self.int8_int256.add(msg.keyInt8, msg.valueInt256);
+        self.int8_uint8.add(msg.keyInt8, msg.valueUint8);
+        self.int8_uint42.add(msg.keyInt8, msg.valueUint42);
+        self.int8_uint256.add(msg.keyInt8, msg.valueUint256);
+        self.int8_coins.add(msg.keyInt8, msg.valueCoins);
+
+        self.int42_int.add(msg.keyInt42, msg.valueInt);
+        self.int42_int8.add(msg.keyInt42, msg.valueInt8);
+        self.int42_int42.add(msg.keyInt42, msg.valueInt42);
+        self.int42_int256.add(msg.keyInt42, msg.valueInt256);
+        self.int42_uint8.add(msg.keyInt42, msg.valueUint8);
+        self.int42_uint42.add(msg.keyInt42, msg.valueUint42);
+        self.int42_uint256.add(msg.keyInt42, msg.valueUint256);
+        self.int42_coins.add(msg.keyInt42, msg.valueCoins);
+
+        self.int256_int.add(msg.keyInt256, msg.valueInt);
+        self.int256_int8.add(msg.keyInt256, msg.valueInt8);
+        self.int256_int42.add(msg.keyInt256, msg.valueInt42);
+        self.int256_int256.add(msg.keyInt256, msg.valueInt256);
+        self.int256_uint8.add(msg.keyInt256, msg.valueUint8);
+        self.int256_uint42.add(msg.keyInt256, msg.valueUint42);
+        self.int256_uint256.add(msg.keyInt256, msg.valueUint256);
+        self.int256_coins.add(msg.keyInt256, msg.valueCoins);
+
+        self.uint8_int.add(msg.keyUint8, msg.valueInt);
+        self.uint8_int8.add(msg.keyUint8, msg.valueInt8);
+        self.uint8_int42.add(msg.keyUint8, msg.valueInt42);
+        self.uint8_int256.add(msg.keyUint8, msg.valueInt256);
+        self.uint8_uint8.add(msg.keyUint8, msg.valueUint8);
+        self.uint8_uint42.add(msg.keyUint8, msg.valueUint42);
+        self.uint8_uint256.add(msg.keyUint8, msg.valueUint256);
+        self.uint8_coins.add(msg.keyUint8, msg.valueCoins);
+
+        self.uint42_int.add(msg.keyUint42, msg.valueInt);
+        self.uint42_int8.add(msg.keyUint42, msg.valueInt8);
+        self.uint42_int42.add(msg.keyUint42, msg.valueInt42);
+        self.uint42_int256.add(msg.keyUint42, msg.valueInt256);
+        self.uint42_uint8.add(msg.keyUint42, msg.valueUint8);
+        self.uint42_uint42.add(msg.keyUint42, msg.valueUint42);
+        self.uint42_uint256.add(msg.keyUint42, msg.valueUint256);
+        self.uint42_coins.add(msg.keyUint42, msg.valueCoins);
+
+        self.uint256_int.add(msg.keyUint256, msg.valueInt);
+        self.uint256_int8.add(msg.keyUint256, msg.valueInt8);
+        self.uint256_int42.add(msg.keyUint256, msg.valueInt42);
+        self.uint256_int256.add(msg.keyUint256, msg.valueInt256);
+        self.uint256_uint8.add(msg.keyUint256, msg.valueUint8);
+        self.uint256_uint42.add(msg.keyUint256, msg.valueUint42);
+        self.uint256_uint256.add(msg.keyUint256, msg.valueUint256);
+        self.uint256_coins.add(msg.keyUint256, msg.valueCoins);
+
+        // Address Key Maps
+        self.address_int.add(msg.keyAddress, msg.valueInt);
+        self.address_int8.add(msg.keyAddress, msg.valueInt8);
+        self.address_int42.add(msg.keyAddress, msg.valueInt42);
+        self.address_int256.add(msg.keyAddress, msg.valueInt256);
+        self.address_uint8.add(msg.keyAddress, msg.valueUint8);
+        self.address_uint42.add(msg.keyAddress, msg.valueUint42);
+        self.address_uint256.add(msg.keyAddress, msg.valueUint256);
+        self.address_coins.add(msg.keyAddress, msg.valueCoins);
     }
 
     receive(msg: DelAllMaps) {

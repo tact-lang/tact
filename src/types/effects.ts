@@ -337,6 +337,7 @@ function methodEffects(
                 {
                     switch (idText(method)) {
                         case "set":
+                        case "add":
                         case "replace":
                         case "replaceGet":
                         case "del": {

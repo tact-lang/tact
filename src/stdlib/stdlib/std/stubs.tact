@@ -505,6 +505,13 @@ fun emptyMap(): map<K, V>;
 ///
 extends mutates fun set(self: map<K, V>, key: K, val: V?);
 
+/// Sets a value `val` under a `key` in the map if it doesn't exist yet.
+/// Returns `true` if the key was added and `false` otherwise.
+///
+/// See: https://docs.tact-lang.org/book/maps/#add
+///
+extends mutates fun add(self: map<K, V>, key: K, val: V): Bool;
+
 /// Gets a value by its `key` from the map. Returns `null` if the `key` is missing,
 /// or the value if the `key` is found.
 ///

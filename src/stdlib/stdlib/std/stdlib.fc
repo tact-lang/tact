@@ -536,10 +536,14 @@ tuple parse_addr(slice s) asm "PARSEMSGADDR";
 cell idict_set_ref(cell dict, int key_len, int index, cell value) asm(value index dict key_len) "DICTISETREF";
 (cell, ()) ~idict_set_ref(cell dict, int key_len, int index, cell value) asm(value index dict key_len) "DICTISETREF";
 
+cell idict_add_ref(cell dict, int key_len, int index, cell value) asm(value index dict key_len) "DICTIADDREF";
+
 ;;; Sets the value associated with [key_len]-bit key unsigned index in dictionary [dict] to [value] (cell),
 ;;; and returns the resulting dictionary.
 cell udict_set_ref(cell dict, int key_len, int index, cell value) asm(value index dict key_len) "DICTUSETREF";
 (cell, ()) ~udict_set_ref(cell dict, int key_len, int index, cell value) asm(value index dict key_len) "DICTUSETREF";
+
+cell udict_add_ref(cell dict, int key_len, int index, cell value) asm(value index dict key_len) "DICTUADDREF";
 
 cell idict_get_ref(cell dict, int key_len, int index) asm(index dict key_len) "DICTIGETOPTREF";
 (cell, int) idict_get_ref?(cell dict, int key_len, int index) asm(index dict key_len) "DICTIGETREF" "NULLSWAPIFNOT";
@@ -584,6 +588,7 @@ cell idict_set_builder(cell dict, int key_len, int index, builder value) asm(val
 (cell, ()) ~idict_set_builder(cell dict, int key_len, int index, builder value) asm(value index dict key_len) "DICTISETB";
 cell dict_set_builder(cell dict, int key_len, slice index, builder value) asm(value index dict key_len) "DICTSETB";
 (cell, ()) ~dict_set_builder(cell dict, int key_len, slice index, builder value) asm(value index dict key_len) "DICTSETB";
+(cell, int) dict_add_builder?(cell dict, int key_len, slice index, builder value) asm(value index dict key_len) "DICTADDB";
 (cell, int) dict_replace_builder?(cell dict, int key_len, slice index, builder value) asm(value index dict key_len) "DICTREPLACEB";
 (cell, builder, int) dict_replaceget_builder?(cell dict, int key_len, slice index, builder value) asm(value index dict key_len) "DICTREPLACEGETB" "NULLSWAPIFNOT";
 (cell, slice, int) dict_replaceget?(cell dict, int key_len, slice index, slice value) asm(value index dict key_len) "DICTREPLACEGET" "NULLSWAPIFNOT";
