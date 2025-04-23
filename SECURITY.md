@@ -1,4 +1,4 @@
-# Security policy
+# Security Policy
 
 The Tact team and community take security bugs in Tact seriously. We appreciate your efforts to disclose your findings responsibly and will make every effort to acknowledge your contributions and fix your findings as soon as possible.
 
@@ -6,19 +6,18 @@ The Tact team and community take security bugs in Tact seriously. We appreciate 
 
 - [Supported Versions](#supported-versions)
 - [Reporting Security Issues](#reporting-security-issues)
-  - [How to Report](#how-to-report)
-- [In scope](#in-scope)
-- [Out of scope](#out-of-scope)
-- [Responsible Disclosure](#responsible-disclosure)
-- [PGP key to use if reporting via email](#pgp-key-to-use-if-reporting-via-email)
+- [Response Times](#response-times)
+- [How to Report](#how-to-report)
+- [In Scope](#in-scope)
+- [Out of Scope](#out-of-scope)
+- [PGP Key to Use If Reporting via Email](#pgp-key-to-use-if-reporting-via-email)
 
 ## Supported Versions
 
-We currently support the latest stable release of the Tact compiler and infrastructure libraries.
+We currently support only the latest stable release of the Tact compiler and infrastructure libraries.
 
 | Versions | Supported |
 | -------- | --------- |
-| Latest   | ✅ Yes    |
 | 1.6.x    | ✅ Yes    |
 | < 1.6    | ❌ No     |
 
@@ -26,20 +25,26 @@ You can check the latest Tact compiler version at <https://www.npmjs.com/package
 
 ## Reporting Security Issues
 
-If you discover a security vulnerability in the Tact compiler, standard library, tooling, or related infrastructure, **please report it privately and responsibly**.
+If you discover a security vulnerability in the Tact compiler, standard library, and tooling, **please report it privately and responsibly**.
+
+We appreciate responsible disclosure and are committed to working with the security community. If you report a valid vulnerability, we will credit you in our release notes unless you request otherwise.
+
+## Response Times
+
+We will acknowledge your report within three business days and aim to provide a resolution or mitigation plan within 30 calendar days. If a resolution requires more time, we will keep you updated on the progress.
 
 ### How to Report
 
 Please send us a detailed report using either email or the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/tact-lang/tact/security/advisories/new) tab.
 
-📧 **Email:** `it+tact@tonstudio.io`
-🔒 Please encrypt your email using our [PGP key](#pgp-key-to-use-if-reporting-via-email).
+**Email:** `it+tact@tonstudio.io`
+Please encrypt your email using our [PGP key](#pgp-key-to-use-if-reporting-via-email). If you're unfamiliar with PGP encryption, please still send us an email without disclosing the vulnerability and we will coordinate a secure channel with you.
 
 Your report should include:
 
-- A description of the vulnerability.
-- Steps to reproduce (if applicable).
-- The potential impact.
+- A description of the vulnerability,
+- Steps to reproduce (if applicable),
+- The potential impact,
 - Any suggestions for remediation (if known).
 
 Please include all details necessary to reproduce the vulnerability, such as:
@@ -49,44 +54,38 @@ Please include all details necessary to reproduce the vulnerability, such as:
 - target TVM version,
 - the link to the mainnet or testnet transaction that demonstrates the bug,
 - if reproducing the bug using local emulators, such as [Sandbox](https://github.com/ton-org/sandbox), please add the test script, the instructions to install its dependencies, and the command to run the script to reproduce the issue,
-- the Tact language server version,
-- IDE or text editor, if applicable,
+- the Tact language server version, and IDE or text editor, if applicable,
 - any relevant details about your execution environment, like the Node.js version or your operating system.
 
 Please include steps to reproduce the bug you have found in as much detail as possible.
 
-We will acknowledge your report within three business days and aim to provide a resolution or mitigation plan within 30 days. If a resolution requires more time, we will keep you updated on the progress.
-
-## In scope
+## In Scope
 
 This policy applies to:
 
-- The Tact compiler, including the TypeScript wrappers it generates,
+- The Tact compiler, including the TypeScript wrappers and compilation report it generates,
 - The Tact standard library (`stdlib`),
-- Developer tooling: Tact's CLI, VS Code plugin, and the Tact [language server](https://github.com/tact-lang/tact-language-server),
+- The Tact source code formatter (`tact-fmt`),
 - The Tact [documentation](https://docs.tact-lang.org),
-- Web-based compiler services, such as [TON Web IDE](https://ide.ton.org),
-- Smart contract generation and deployment utilities.
 
-A security issue, in this case, may stem from miscompilation, incorrect documentation description, incorrect language server, editor plugin, or TON Web IDE suggestions, which can lead to monetary loss if an affected smart contract is deployed in the mainnet and a malicious third party interacts with it.
+A security issue, in this case, may stem from miscompilation, incorrect formatting, incorrect documentation description, which can lead to monetary loss, permanent or temporary unintended funds freezing, if an affected smart contract is deployed in the mainnet and a malicious third party interacts with it.
 
-## Out of scope
+## Out of Scope
 
-Only the targets listed under in-scope are part of the security policy. This means that, for example, our infrastructure, such as webpages, is not part of the scope.
+Only the targets listed under the "In Scope" section are part of the security policy.
 
-Please note that Tact does not hold security guarantees regarding the compilation of untrusted input, and we do not consider compiler crashes on maliciously generated data as security issues.
-
-This policy does _not_ cover third-party tools, libraries, or smart contracts written by individual developers or companies using Tact.
-
-## Responsible Disclosure
-
-We appreciate responsible disclosure and are committed to working with the security community. If you report a valid vulnerability, we will credit you in our release notes unless you request otherwise.
+The following are considered out of scope:
+- Any issues with processing an untrusted input by the compiler, formatter, and any other tool in this repository,
+- Compiler crashes / exceptions / out-of-memory errors that do not result in generation of vulnerable TVM bitcode,
+- Security vulnerabilities due to compiler misconfiguration by the user,
+- Infrastructure: server backend components, static webpages, Web applications, GitHub services,
+- Any third-party tools, libraries, or smart contracts that are not part of this repository.
 
 ---
 
 **Thank you for helping us make Tact safer for everyone building on TON.**
 
-## PGP key to use if reporting via email
+## PGP Key to Use If Reporting via Email
 
 To encrypt your email, use the following PGP key:
 

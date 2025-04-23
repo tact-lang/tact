@@ -21,6 +21,7 @@
   ```
 - [ ] Request or perform the plugins/parsers/tools updates and releases:
   - [ ] <https://github.com/tact-lang/tact-template> (tracked in: )
+  - [ ] <https://github.com/tact-lang/create-tact> (tracked in: )
   - [ ] <https://github.com/tact-lang/tree-sitter-tact> (tracked in: )
   - [ ] <https://github.com/tact-lang/tact.vim> (tracked in: )
   - [ ] <https://github.com/tact-lang/tact-sublime> (tracked in: )
@@ -30,6 +31,5 @@
     - [ ] [Open VSX Registry](https://open-vsx.org/extension/tonstudio/vscode-tact)
   - [ ] <https://github.com/tact-lang/web-ide> (tracked in: )
   - [ ] <https://github.com/tact-lang/prism-ton> (tracked in: )
-  - [ ] <https://github.com/ton-blockchain/intellij-ton> (tracked in: )
   - [ ] <https://github.com/ton-blockchain/verifier> (tracked in: )
 - [ ] [TON Dev News](https://t.me/tondev_news) Telegram channel announcement
