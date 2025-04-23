@@ -42,7 +42,17 @@ const loadFunCEscrowBoc = () => {
 function testEscrow(
     benchmarkResults: BenchmarkResult,
     codeSizeResults: CodeSizeResult,
-    fromInit: (...args: any[]) => Promise<Escrow>,
+    fromInit: (
+        id: bigint,
+        sellerAddress: Address,
+        guarantorAddress: Address,
+        buyerAddress: Address | null,
+        dealAmount: bigint,
+        guarantorRoyaltyPercent: bigint,
+        isFunded: boolean,
+        assetAddress: Address | null,
+        jettonWalletCode: Cell | null
+    ) => Promise<Escrow>,
 ) {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
@@ -269,7 +279,7 @@ describe("Escrow Gas Tests", () => {
         const funcCodeSize = fullCodeSizeResults.at(0)!;
         const funcResult = fullResults.at(0)!;
 
-        async function fromInit(
+        function fromInit(
             id: bigint,
             sellerAddress: Address,
             guarantorAddress: Address,
@@ -291,13 +301,13 @@ describe("Escrow Gas Tests", () => {
             const cell2 = beginCell()
                 .storeUint(guarantorRoyaltyPercent, 32)
                 .storeAddress(buyerAddress)
-                .storeUint(isFunded == true ? 1 : 0, 2)
+                .storeUint(isFunded ? 1 : 0, 2)
                 .storeMaybeRef(assetAddress ? jettonWalletCode : null)
                 .endCell();
             const __data = cell1.storeRef(cell2).endCell();
             const __gen_init = { code: __code, data: __data };
             const address = contractAddress(0, __gen_init);
-            return new Escrow(address, __gen_init);
+            return Promise.resolve(new Escrow(address, __gen_init));
         }
 
         testEscrow(funcResult, funcCodeSize, fromInit);
