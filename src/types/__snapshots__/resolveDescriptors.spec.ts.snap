@@ -720,7 +720,7 @@ exports[`resolveDescriptors should fail descriptors for opcode-method-on-instanc
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for opcode-method-on-sruct 1`] = `
+exports[`resolveDescriptors should fail descriptors for opcode-method-on-struct 1`] = `
 "<unknown>:11:16: opcode() method can be used only for messages
   10 |     get fun foo(): Int {
 > 11 |         return Bar.opcode();
