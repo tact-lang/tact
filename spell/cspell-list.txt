@@ -29,6 +29,7 @@ compilables
 Compilables
 comptime
 Comptime
+CSBT
 Daniil
 Danil
 decompilation
@@ -51,6 +52,8 @@ Epva
 errno
 Esorat
 extracurrency
+flamegraph
+flamegraphs
 forall
 formedness
 frontmatter
@@ -97,6 +100,8 @@ langtools
 learnXinYminutes
 letrec
 Liskov
+llm
+llms
 logomark
 lparen
 lvalue
@@ -218,4 +223,5 @@ xffff
 XMODEM
 xpyctumo
 xtwitter
+yeehaw
 привет

@@ -29,15 +29,16 @@ import {
 } from "@/generator/writers/writeContract";
 import { funcInitIdOf } from "@/generator/writers/id";
 import { idToHex } from "@/utils/idToHex";
-import { trimIndent } from "@/utils/text";
 import type { ContractsCodes } from "@/generator/writers/writeContract";
 import { writeTypescriptValue } from "@/generator/writers/writeExpression";
+import type { TypeDescription } from "@/types/types";
 
 export async function writeProgram(
     ctx: CompilerContext,
+    contract: TypeDescription,
     abiSrc: ContractABI,
     basename: string,
-    contractCodes: ContractsCodes,
+    contractCodes: Readonly<ContractsCodes>,
     debug: boolean,
 ) {
     //
@@ -106,12 +107,23 @@ export async function writeProgram(
     // stdlib
     //
 
-    const stdlibHeader = trimIndent(`
-        global (int, slice, int, slice) __tact_context;
-        global slice __tact_context_sender;
-        global cell __tact_child_contract_codes;
-        global int __tact_randomized;
-    `);
+    const globalVariables: string[] = [];
+
+    if (contract.globalVariables.has("context")) {
+        globalVariables.push("global (int, slice, int, slice) __tact_context;");
+    }
+    if (contract.globalVariables.has("sender")) {
+        globalVariables.push("global slice __tact_context_sender;");
+    }
+
+    globalVariables.push("global cell __tact_child_contract_codes;");
+    globalVariables.push("global int __tact_randomized;");
+
+    if (contract.globalVariables.has("inMsg")) {
+        globalVariables.push("global slice __tact_in_msg;");
+    }
+
+    const stdlibHeader = globalVariables.join("\n");
 
     const stdlibFunctions = tryExtractModule(functions, "stdlib", []);
     if (stdlibFunctions) {
@@ -262,7 +274,7 @@ export async function writeProgram(
 
     return {
         entrypoint: `${basename}.fc`,
-        files: [{ name: `${basename}.fc`, code }],
+        funcFile: { name: `${basename}.fc`, code },
         constants,
         abi,
     };
@@ -318,7 +330,7 @@ function writeAll(
     wCtx: WriterContext,
     name: string,
     abiLink: string,
-    contractCodes: ContractsCodes,
+    contractCodes: Readonly<ContractsCodes>,
 ) {
     // Load all types
     const allTypes = getAllTypes(ctx);

@@ -462,9 +462,8 @@ asm fun deploy(params: DeployParameters) {
 /// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun cashback(to: Address) {
-    16 PUSHINT       // 0x10, i.e. 0x18 but with bounce = false
     NEWC
-    6 STU            // .storeUint(0x10, 6)
+    x{42_} STSLICECONST // .storeUint(0x10, 6)
     STSLICE          // .storeAddress(to)
     0 PUSHINT        // 0
     111 STUR         // .storeUint(0, 111)
@@ -474,39 +473,91 @@ asm fun cashback(to: Address) {
     SENDRAWMSG
 }
 
-/// Global function.
+/// Global function. **Deprecated** since Tact 1.6.6.
 ///
-/// Queues the message to be sent by specifying the complete `cell` and the message `mode`.
+/// Use `sendRawMessage()` instead.
 ///
-/// Prefer using a much more common and user-friendly `send()` function unless you have a complex logic that can't be expressed otherwise.
+/// Queues the message to be sent by specifying the complete `msg` cell and the message `mode`.
 ///
 /// #### Exit codes
 ///
 /// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
+/// * https://docs.tact-lang.org/ref/core-send#sendrawmessage
 /// * https://docs.tact-lang.org/ref/core-send#nativesendmessage
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
+///
+asm fun nativeSendMessage(msg: Cell, mode: Int) { SENDRAWMSG }
+
+/// Global function. Available since Tact 1.6.6.
+///
+/// Queues the message to be sent by specifying the complete `msg` cell and the message `mode`.
+///
+/// Prefer using the more user-friendly `message()`, `deploy()`, or `send()` functions unless you have a complex logic that cannot be expressed otherwise.
+///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-send#sendrawmessage
+/// * https://docs.tact-lang.org/ref/core-send#message
+/// * https://docs.tact-lang.org/ref/core-send#deploy
 /// * https://docs.tact-lang.org/ref/core-send#send
 ///
 /// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
-asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
+asm fun sendRawMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 
-/// Global function. Available since Tact 1.5.0.
+/// Global function. **Deprecated** since Tact 1.6.6.
 ///
-/// Similar to `nativeSendMessage()`, but also calculates and returns the forward fee in nanoToncoins.
+/// Use `sendRawMessageReturnForwardFee()` instead.
+///
+/// Similar to `sendRawMessage()`, but also calculates and returns the forward fee in nanoToncoin.
 ///
 /// #### Exit codes
 ///
+/// * 5: [Integer out of expected range] - Thrown if the message mode is invalid.
+/// * 7: [Type check error] - Thrown if any of the blockchain config, contract balance or incoming message value are invalid.
+/// * 9: [Cell underflow] - Thrown if the blockchain config is invalid.
+/// * 11: ["Unknown" error] - Thrown if the message cell is ill-formed or the blockchain config is invalid.
 /// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-send#nativesendmessagereturnforwardfee
-/// * https://docs.tact-lang.org/ref/core-send#nativesendmessage
+/// * https://docs.tact-lang.org/ref/core-send#sendrawmessage
 ///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
+/// [Type check error]: https://docs.tact-lang.org/book/exit-codes#7
+/// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
+/// ["Unknown" error]: https://docs.tact-lang.org/book/exit-codes#11
 /// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
+
+/// Global function. Available since Tact 1.6.6.
+///
+/// Similar to `sendRawMessage()`, but also calculates and returns the forward fee in nanoToncoin.
+///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] - Thrown if the message mode is invalid.
+/// * 7: [Type check error] - Thrown if any of the blockchain config, contract balance or incoming message value are invalid.
+/// * 11: ["Unknown" error] - Thrown if the message cell is ill-formed or the TVM config is invalid.
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-send#sendrawmessagereturnforwardfee
+/// * https://docs.tact-lang.org/ref/core-send#sendrawmessage
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
+/// [Type check error]: https://docs.tact-lang.org/book/exit-codes#7
+/// ["Unknown" error]: https://docs.tact-lang.org/book/exit-codes#11
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
+///
+asm fun sendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 
 /// Global function.
 ///
@@ -535,7 +586,7 @@ inline fun emit(body: Cell) {
         .storeUint(15211807202738752817960438464513, 104)
         .storeRef(body)
         .endCell();
-    nativeSendMessage(c, 0);
+    sendRawMessage(c, 0);
 }
 
 /// Global function.

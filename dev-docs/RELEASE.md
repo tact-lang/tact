@@ -4,6 +4,7 @@
 - [ ] Make sure there are no open issues for the [vX.Y.Z milestone](https://github.com/tact-lang/tact/issues?q=is%3Aopen+is%3Aissue+milestone%3AvX.Y.Z) (except for the current one, of course)
 - [ ] Remove `(not released yet)` from docs:
 - [ ] Update `SECURITY.md` if needed
+- [ ] Update test snapshots with Tact version
 - [ ] Bump Tact version in [`package.json`](../package.json) file
 - [ ] Bump Tact version in [CHANGELOG.md](./CHANGELOG.md): `Unreleased` -> `vX.Y.Z`
 - [ ] Tag the new `vX.Y.Z` release in Git

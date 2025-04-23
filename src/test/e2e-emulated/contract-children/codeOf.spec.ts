@@ -7,14 +7,14 @@ import "@ton/test-utils";
 
 describe("codeOf", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<CodeOfTester>;
     let childContract: SandboxContract<ChildContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
         contract = blockchain.openContract(
             await CodeOfTester.fromInit(0n, true),
         );
@@ -23,7 +23,7 @@ describe("codeOf", () => {
         );
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -31,7 +31,7 @@ describe("codeOf", () => {
         );
 
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,

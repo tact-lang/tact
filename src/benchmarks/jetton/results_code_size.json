@@ -4,9 +4,9 @@
       "label": "FunC",
       "size": {
         "minter cells": "34",
-        "minter bits": "11449",
+        "minter bits": "11447",
         "wallet cells": "37",
-        "wallet bits": "12752"
+        "wallet bits": "12748"
       },
       "pr": null
     },
@@ -108,6 +108,36 @@
         "minter bits": "14712",
         "wallet cells": "16",
         "wallet bits": "8211"
+      }
+    },
+    {
+      "label": "1.6.5 with reordered wallet fields",
+      "pr": "https://github.com/tact-lang/tact/pull/2699",
+      "size": {
+        "minter cells": "30",
+        "minter bits": "14688",
+        "wallet cells": "16",
+        "wallet bits": "8211"
+      }
+    },
+    {
+      "label": "1.6.6 with optimized __tact_store_address_opt",
+      "pr": "https://github.com/tact-lang/tact/pull/2834",
+      "size": {
+        "minter cells": "30",
+        "minter bits": "14672",
+        "wallet cells": "16",
+        "wallet bits": "8203"
+      }
+    },
+    {
+      "label": "1.6.6 with optimized if with ifnot",
+      "pr": "https://github.com/tact-lang/tact/pull/2844",
+      "size": {
+        "minter cells": "30",
+        "minter bits": "14664",
+        "wallet cells": "16",
+        "wallet bits": "8195"
       }
     }
   ]

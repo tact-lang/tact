@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should fail abstract-const-without-modifier.fail 1`] = `
-"<unknown>:2:5: Abstract constant doesn't have abstract modifier
+"<unknown>:2:5: Abstract constant can only be declared inside traits and should have the abstract modifier
   1 | trait t {
 > 2 |     const c: Int;
           ^~~~~~~~~~~~~
@@ -9,11 +9,29 @@ exports[`should fail abstract-const-without-modifier.fail 1`] = `
 "
 `;
 
+exports[`should fail asm-function-in-contract.fail 1`] = `
+"<unknown>:2:5: Assembly functions are only allowed at the module level - outside contracts or traits
+  1 | contract AssemblyTest {
+> 2 |     asm fun depth(): Int { DEPTH }
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  3 | 
+"
+`;
+
+exports[`should fail asm-function-in-trait.fail 1`] = `
+"<unknown>:2:5: Assembly functions are only allowed at the module level - outside contracts or traits
+  1 | trait AssemblyTest {
+> 2 |     asm fun depth(): Int { DEPTH }
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  3 | }
+"
+`;
+
 exports[`should fail asm-getter.fail 1`] = `
-"<unknown>:7:9: Expected ":"
+"<unknown>:7:5: Assembly functions are only allowed at the module level - outside contracts or traits
   6 | contract Foo {
 > 7 |     asm get fun illegalGetter(): Int {
-              ^
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   8 |         DEPTH
 "
 `;
@@ -525,7 +543,7 @@ exports[`should fail item-fun-void-trailing-comma-no-params.fail 1`] = `
 `;
 
 exports[`should fail item-fun-without-body.fail 1`] = `
-"<unknown>:1:1: Abstract function doesn't have abstract modifier
+"<unknown>:1:1: Abstract function can only be declared inside traits and should have the abstract modifier
 > 1 | fun testFunc(): Int;
       ^~~~~~~~~~~~~~~~~~~~
 "
@@ -655,6 +673,33 @@ exports[`should fail literal-underscore-after-leading-zero.fail 1`] = `
   1 | fun test_fun(): Int {
 > 2 |     return 0_123;
                  ^~~~~
+  3 | }
+"
+`;
+
+exports[`should fail optional-map-key.fail 1`] = `
+"<unknown>:2:12: map key types cannot be optional
+  1 | contract TestContract {
+> 2 |     m: map<Int?, Int>; // Int? is invalid for keys
+                 ^~~~
+  3 | 
+"
+`;
+
+exports[`should fail optional-map-value.fail 1`] = `
+"<unknown>:2:17: map value types cannot be optional
+  1 | contract TestContract {
+> 2 |     m: map<Int, Int?>; // Int? is invalid for values
+                      ^~~~
+  3 | 
+"
+`;
+
+exports[`should fail several-as-for-init-param-type.fail 1`] = `
+"<unknown>:2:10: Cannot use several "as" on a parameter type
+  1 | contract Test {
+> 2 |     init(x: Int as uint32 as int8) {}
+               ^~~~~~~~~~~~~~~~~~~~~~~~
   3 | }
 "
 `;
@@ -1544,34 +1589,36 @@ exports[`should parse contract-with-init 1`] = `
     },
           "params": [
             {
+              "as": undefined,
               "id": 10,
               "kind": "typed_parameter",
               "loc": a: Int,
               "name": {
-                "id": 8,
+                "id": 9,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               "type": {
-                "id": 9,
+                "id": 8,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
               },
             },
             {
+              "as": undefined,
               "id": 13,
               "kind": "typed_parameter",
               "loc": b: Int,
               "name": {
-                "id": 11,
+                "id": 12,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               "type": {
-                "id": 12,
+                "id": 11,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -3075,6 +3122,7 @@ exports[`should parse expr-chaining-unbox 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 7,
           "kind": "typed_parameter",
           "loc": m: map<Int, Int>,
@@ -3180,6 +3228,7 @@ exports[`should parse expr-condition-with-or 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 5,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -3323,6 +3372,7 @@ exports[`should parse expr-conditional 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 5,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -3418,6 +3468,7 @@ exports[`should parse expr-conditional-with-let 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 5,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -3772,6 +3823,7 @@ exports[`should parse expr-nested-conditional 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 5,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -4254,6 +4306,7 @@ exports[`should parse items-asm-funs 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 5,
           "kind": "typed_parameter",
           "loc": s: Slice,
@@ -4306,6 +4359,7 @@ exports[`should parse items-asm-funs 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 13,
           "kind": "typed_parameter",
           "loc": self: Slice,
@@ -4373,6 +4427,7 @@ exports[`should parse items-asm-funs 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 20,
           "kind": "typed_parameter",
           "loc": b: Builder,
@@ -4390,6 +4445,7 @@ exports[`should parse items-asm-funs 1`] = `
           },
         },
         {
+          "as": undefined,
           "id": 23,
           "kind": "typed_parameter",
           "loc": c: Cell,
@@ -4450,6 +4506,7 @@ exports[`should parse items-asm-funs 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 33,
           "kind": "typed_parameter",
           "loc": self: Slice,
@@ -4467,6 +4524,7 @@ exports[`should parse items-asm-funs 1`] = `
           },
         },
         {
+          "as": undefined,
           "id": 36,
           "kind": "typed_parameter",
           "loc": len: Int,
@@ -4541,6 +4599,7 @@ exports[`should parse items-asm-funs 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 42,
           "kind": "typed_parameter",
           "loc": self: Slice,
@@ -4790,6 +4849,7 @@ incinc
       },
       "params": [
         {
+          "as": undefined,
           "id": 65,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -4843,6 +4903,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 5,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -4860,6 +4921,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
           },
         },
         {
+          "as": undefined,
           "id": 8,
           "kind": "typed_parameter",
           "loc": b: Int,
@@ -4964,6 +5026,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 24,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -4981,6 +5044,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
           },
         },
         {
+          "as": undefined,
           "id": 27,
           "kind": "typed_parameter",
           "loc": b: Int,
@@ -5088,6 +5152,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 42,
           "kind": "typed_parameter",
           "loc": self: Int,
@@ -5105,6 +5170,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
           },
         },
         {
+          "as": undefined,
           "id": 45,
           "kind": "typed_parameter",
           "loc": c: Int,
@@ -5122,6 +5188,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
           },
         },
         {
+          "as": undefined,
           "id": 48,
           "kind": "typed_parameter",
           "loc": d: Int,
@@ -5201,6 +5268,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 59,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -5218,6 +5286,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
           },
         },
         {
+          "as": undefined,
           "id": 62,
           "kind": "typed_parameter",
           "loc": b: Int,
@@ -5363,6 +5432,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 84,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -5380,6 +5450,7 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
           },
         },
         {
+          "as": undefined,
           "id": 87,
           "kind": "typed_parameter",
           "loc": b: Int,
@@ -5454,34 +5525,36 @@ exports[`should parse items-method-def-initof-trailing-comma-shifts 1`] = `
     ) {},
           "params": [
             {
+              "as": undefined,
               "id": 97,
               "kind": "typed_parameter",
               "loc": arg1: Int,
               "name": {
-                "id": 95,
+                "id": 96,
                 "kind": "id",
                 "loc": arg1,
                 "text": "arg1",
               },
               "type": {
-                "id": 96,
+                "id": 95,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
               },
             },
             {
+              "as": undefined,
               "id": 100,
               "kind": "typed_parameter",
               "loc": arg2: Int,
               "name": {
-                "id": 98,
+                "id": 99,
                 "kind": "id",
                 "loc": arg2,
                 "text": "arg2",
               },
               "type": {
-                "id": 99,
+                "id": 98,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -9739,6 +9812,7 @@ exports[`should parse stmt-if 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 6,
           "kind": "typed_parameter",
           "loc": src: Int?,
@@ -9849,6 +9923,7 @@ exports[`should parse stmt-if-else 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 6,
           "kind": "typed_parameter",
           "loc": src: Int?,
@@ -11698,6 +11773,7 @@ exports[`should parse types-optional 1`] = `
       },
       "params": [
         {
+          "as": undefined,
           "id": 6,
           "kind": "typed_parameter",
           "loc": src: Int?,

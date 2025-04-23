@@ -24,7 +24,6 @@ import {
 } from "@/types/resolveDescriptors";
 import { getExpType } from "@/types/resolveExpression";
 import type { TypeRef } from "@/types/types";
-import { showValue } from "@/types/types";
 import { getParser, type Parser, type SrcInfo } from "@/grammar";
 import { dummySrcInfo } from "@/grammar";
 import type { FactoryAst } from "@/ast/ast-helpers";
@@ -37,6 +36,7 @@ import {
 } from "@/ast/ast-helpers";
 import { divFloor, modFloor } from "@/optimizer/util";
 import { sha256 } from "@/utils/sha256";
+import { prettyPrint } from "@/ast/ast-printer";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -89,7 +89,7 @@ export function ensureInt(val: Ast.Expression): Ast.Number {
         return val;
     } else {
         throwErrorConstEval(
-            `integer '${showValue(val)}' does not fit into TVM Int type`,
+            `integer '${prettyPrint(val)}' does not fit into TVM Int type`,
             val.loc,
         );
     }
@@ -107,7 +107,7 @@ function ensureArgumentForEquality(val: Ast.Literal): Ast.Literal {
             return val;
         case "struct_value":
             throwErrorConstEval(
-                `struct ${showValue(val)} cannot be an argument to == operator`,
+                `struct ${prettyPrint(val)} cannot be an argument to == operator`,
                 val.loc,
             );
             break;
@@ -127,7 +127,7 @@ function ensureRepeatInt(val: Ast.Expression): Ast.Number {
         return val;
     } else {
         throwErrorConstEval(
-            `repeat argument '${showValue(val)}' must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)`,
+            `repeat argument '${prettyPrint(val)}' must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)`,
             val.loc,
         );
     }
@@ -1015,8 +1015,15 @@ export class Interpreter {
         const resultMap: Map<string, Ast.Literal> = new Map();
 
         for (const field of structTy.fields) {
-            if (typeof field.default !== "undefined") {
-                resultMap.set(field.name, field.default);
+            const fieldInit = field.ast.initializer;
+            if (fieldInit) {
+                const defaultValue =
+                    field.default ??
+                    evalConstantExpression(fieldInit, this.context, this.util);
+
+                if (typeof defaultValue !== "undefined") {
+                    resultMap.set(field.name, defaultValue);
+                }
             } else {
                 if (field.type.kind === "ref" && field.type.optional) {
                     resultMap.set(
@@ -1133,7 +1140,7 @@ export class Interpreter {
         const valStruct = this.interpretExpressionInternal(ast.aggregate);
         if (valStruct.kind !== "struct_value") {
             throwErrorConstEval(
-                `constant struct expected, but got ${showValue(valStruct)}`,
+                `constant struct expected, but got ${prettyPrint(valStruct)}`,
                 ast.aggregate.loc,
             );
         }
@@ -1203,7 +1210,7 @@ export class Interpreter {
                 );
                 if (valExp.value < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(ast.function)} builtin called with negative exponent ${showValue(valExp)}`,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${prettyPrint(valExp)}`,
                         ast.loc,
                     );
                 }
@@ -1230,7 +1237,7 @@ export class Interpreter {
                 );
                 if (valExponent.value < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(ast.function)} builtin called with negative exponent ${showValue(valExponent)}`,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${prettyPrint(valExponent)}`,
                         ast.loc,
                     );
                 }
@@ -1282,7 +1289,7 @@ export class Interpreter {
                         );
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid base64 encoding for a cell: ${showValue(str)}`,
+                            `invalid base64 encoding for a cell: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1301,7 +1308,7 @@ export class Interpreter {
                         );
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid base64 encoding for a cell: ${showValue(str)}`,
+                            `invalid base64 encoding for a cell: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1316,7 +1323,7 @@ export class Interpreter {
 
                     if (!/^[0-9a-fA-F]*_?$/.test(str.value)) {
                         throwErrorConstEval(
-                            `invalid hex string: ${showValue(str)}`,
+                            `invalid hex string: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1414,14 +1421,14 @@ export class Interpreter {
                             address.workChain !== -1
                         ) {
                             throwErrorConstEval(
-                                `${showValue(str)} is invalid address`,
+                                `${prettyPrint(str)} is invalid address`,
                                 ast.loc,
                             );
                         }
                         return this.util.makeAddressLiteral(address, ast.loc);
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid address encoding: ${showValue(str)}`,
+                            `invalid address encoding: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1655,7 +1662,7 @@ export class Interpreter {
         const val = this.interpretExpressionInternal(ast.expression);
         if (val.kind !== "struct_value") {
             throwErrorConstEval(
-                `destructuring assignment expected a struct, but got ${showValue(
+                `destructuring assignment expected a struct, but got ${prettyPrint(
                     val,
                 )}`,
                 ast.expression.loc,

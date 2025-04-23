@@ -6,24 +6,24 @@ import "@ton/test-utils";
 
 describe("ternary", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<TernaryTester>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await TernaryTester.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -62,5 +62,10 @@ describe("ternary", () => {
         expect(await contract.getTest10(4n)).toEqual(45n);
         expect(await contract.getTest10(0n)).toEqual(45n);
         expect(await contract.getTest10(42n)).toEqual(45n);
+    });
+    it("should implement zero inequality comparison correctly", async () => {
+        expect(
+            await contract.getConditionZeroComparisonOptimization(3n),
+        ).toEqual(42n);
     });
 });

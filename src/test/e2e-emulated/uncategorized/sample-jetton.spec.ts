@@ -7,18 +7,18 @@ import "@ton/test-utils";
 
 describe("bugs", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<SampleJetton>;
     let target: SandboxContract<JettonDefaultWallet>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(
             await SampleJetton.fromInit(
-                treasure.address,
+                treasury.address,
                 beginCell().endCell(),
                 toNano("100"),
             ),
@@ -27,22 +27,22 @@ describe("bugs", () => {
         target = blockchain.openContract(
             await JettonDefaultWallet.fromInit(
                 contract.address,
-                treasure.address,
+                treasury.address,
             ),
         );
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "Mint",
-                receiver: treasure.address,
+                receiver: treasury.address,
                 amount: toNano("10"),
             },
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -52,17 +52,17 @@ describe("bugs", () => {
     it("should deploy sample jetton correctly", async () => {
         // Ensure that the Mint operation was successful and the transaction was correct
         const mintResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "Mint",
-                receiver: treasure.address,
+                receiver: treasury.address,
                 amount: toNano("10"),
             },
         );
 
         expect(mintResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });
@@ -72,7 +72,7 @@ describe("bugs", () => {
             success: true,
         });
         expect(mintResult.transactions).toHaveTransaction({
-            to: treasure.address,
+            to: treasury.address,
             op: 0xd53276db,
         });
 

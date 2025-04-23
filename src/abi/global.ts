@@ -8,15 +8,15 @@ import {
 } from "@/generator/writers/writeConstant";
 import { writeExpression } from "@/generator/writers/writeExpression";
 import { idTextErr, throwCompilationError } from "@/error/errors";
-import { getErrorId } from "@/types/resolveErrors";
+import { evaluateRequireErrorString, getErrorId } from "@/types/resolveErrors";
 import type { AbiFunction } from "@/abi/AbiFunction";
 import path from "path";
 import { cwd } from "process";
 import { posixNormalize } from "@/utils/filePath";
 import { ensureString } from "@/optimizer/interpreter";
-import { isLiteral } from "@/ast/ast-helpers";
+import { getAstFactory, isLiteral } from "@/ast/ast-helpers";
 import { sha256 } from "@/utils/sha256";
-import { ops } from "@/generator/writers/ops";
+import { getAstUtil } from "@/ast/util";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -105,7 +105,12 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved1 = resolved[1]!;
-                const str = ensureString(resolved1).value;
+                const evaluated = evaluateRequireErrorString(
+                    resolved1,
+                    ctx.ctx,
+                    getAstUtil(getAstFactory()),
+                );
+                const str = ensureString(evaluated).value;
                 return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
         },
@@ -260,31 +265,31 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 if (arg0.kind === "map") {
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `${ctx.used(`__tact_debug`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                    return `${ctx.used(`__tact_dump`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                 } else if (arg0.kind === "null") {
-                    return `${ctx.used(`__tact_debug_str`)}("null", ${debugPrint2}, "${debugPrint1}")`;
+                    return `${ctx.used(`__tact_dump_str`)}("null", ${debugPrint2}, "${debugPrint1}")`;
                 } else if (arg0.kind === "void") {
-                    return `${ctx.used(`__tact_debug_str`)}("void", ${debugPrint2}, "${debugPrint1}")`;
+                    return `${ctx.used(`__tact_dump_str`)}("void", ${debugPrint2}, "${debugPrint1}")`;
                 } else if (arg0.kind === "ref") {
                     if (arg0.name === "Int") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_str`)}(${ctx.used(ops.extension("Int", "toString"))}(${exp}), ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump_int`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "Bool") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_bool`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump_bool`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "String") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_str`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump_string`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "Address") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_address`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump_address`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (
                         arg0.name === "Builder" ||
                         arg0.name === "Slice" ||
                         arg0.name === "Cell"
                     ) {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
+                        return `${ctx.used(`__tact_dump`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     }
                     throwCompilationError(
                         "dump() not supported for type: " + arg0.name,
@@ -321,7 +326,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
                 const debugPrint1 = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}:`;
-                return `${ctx.used(`__tact_debug_stack`)}("dumpStack()", "${debugPrint1}")`;
+                return `${ctx.used(`__tact_dump_stack`)}("dumpStack()", "${debugPrint1}")`;
             },
         },
     ],
@@ -388,13 +393,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                     // Otherwise, revert back to runtime hash through HASHEXT_SHA256
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `__tact_sha256(${exp})`;
+                    return `${ctx.used("__tact_sha256")}(${exp})`;
                 }
 
                 // Slice case
                 if (arg0.name === "Slice") {
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `__tact_sha256(${exp})`;
+                    return `${ctx.used("__tact_sha256")}(${exp})`;
                 }
 
                 throwCompilationError(
