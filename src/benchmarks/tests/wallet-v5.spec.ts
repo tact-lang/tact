@@ -188,7 +188,7 @@ describe("Wallet v5 correctness tests", () => {
         );
 
         const extensions = await walletV5.getGetExtensions();
-        // first successfull extension add
+        // first successful extension add
         expect(extensions.get(packAddress(deployer.address))).toEqual(true);
 
         const secondAddExtensionResult = await sendSignedActionBody(
