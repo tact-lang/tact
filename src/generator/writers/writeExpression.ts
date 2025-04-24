@@ -833,6 +833,7 @@ const writeMapLiteral =
             "Only constant map literals are supported",
             node.loc,
         );
+        // NB! Intentionally left here for when we can distinguish which Ast.Id are variables
         // const { fields, loc } = node;
 
         // const fnName = freshIdentifier(`map_literal_`);
