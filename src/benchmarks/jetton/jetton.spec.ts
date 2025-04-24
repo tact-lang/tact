@@ -261,8 +261,8 @@ function testJetton(
             exitCode: 0,
         });
 
-        const transferGasUsedTact = await getUsedGas(sendResult, "internal");
-        expect(transferGasUsedTact).toEqual(benchmarkResults.gas["transfer"]);
+        const transferGasUsed = await getUsedGas(sendResult, "internal");
+        expect(transferGasUsed).toEqual(benchmarkResults.gas["transfer"]);
     });
 
     it("burn", async () => {
@@ -285,8 +285,8 @@ function testJetton(
             exitCode: 0,
         });
 
-        const burnGasUsedTact = getUsedGas(burnResult, "internal");
-        expect(burnGasUsedTact).toEqual(benchmarkResults.gas["burn"]);
+        const burnGasUsed = getUsedGas(burnResult, "internal");
+        expect(burnGasUsed).toEqual(benchmarkResults.gas["burn"]);
     });
 
     it("discovery", async () => {
@@ -306,8 +306,8 @@ function testJetton(
             success: true,
         });
 
-        const discoveryGasUsedTact = getUsedGas(discoveryResult, "internal");
-        expect(discoveryGasUsedTact).toEqual(benchmarkResults.gas["discovery"]);
+        const discoveryGasUsed = getUsedGas(discoveryResult, "internal");
+        expect(discoveryGasUsed).toEqual(benchmarkResults.gas["discovery"]);
     });
 
     it("minter cells", async () => {
