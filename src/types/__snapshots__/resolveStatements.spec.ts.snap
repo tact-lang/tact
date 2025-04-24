@@ -846,6 +846,51 @@ exports[`resolveStatements should fail statements for map-deepEquals-type-mismat
 "
 `;
 
+exports[`resolveStatements should fail statements for map-literal-invalid-storage 1`] = `
+"<unknown>:6:42: "int640" is invalid as-annotation for map value type "Int"
+  5 |     get fun test3(): Int {
+> 6 |         let x = map<Int as int32, Int as int640> {};
+                                               ^~~~~~
+  7 |         return 0;
+"
+`;
+
+exports[`resolveStatements should fail statements for map-literal-invalid-type 1`] = `
+"<unknown>:7:21: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+  6 |     get fun test3(): Int {
+> 7 |         let x = map<Cell, Cell> {};
+                          ^~~~
+  8 |         return 0;
+"
+`;
+
+exports[`resolveStatements should fail statements for map-literal-mismatch-return 1`] = `
+"<unknown>:8:9: Type mismatch: "map<Address, Cell>" is not assignable to "map<Int as int32, Int as int32>"
+  7 |     get fun test1(): map<Int as int32, Int as int32> {
+> 8 |         return map<Address, Cell> {};
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for map-literal-mismatch-storage 1`] = `
+"<unknown>:6:9: Type mismatch: "map<Int as int32, Int as int64>" is not assignable to "map<Int as int64, Int as int32>"
+  5 |     get fun test3(): map<Int as int64, Int as int32> {
+> 6 |         return map<Int as int32, Int as int64> {};
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for map-literal-mismatch-var 1`] = `
+"<unknown>:8:9: Type mismatch: "map<Int as int32, Int as int32>" is not assignable to "map<Address, Cell>"
+  7 |     get fun test2(): Int {
+> 8 |         let x: map<Address, Cell> =
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |             map<Int as int32, Int as int32> {};
+"
+`;
+
 exports[`resolveStatements should fail statements for return-analysis-catch-if 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
   3 | 

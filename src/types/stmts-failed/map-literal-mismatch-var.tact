@@ -1,3 +1,8 @@
+primitive Int;
+primitive Cell;
+primitive Address;
+trait BaseTrait {}
+
 contract MapLiteralMismatch {
     get fun test2(): Int {
         let x: map<Address, Cell> =

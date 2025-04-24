@@ -85,6 +85,8 @@ Dictionary {
 }
 `;
 
+exports[`should work anonymously 1`] = `3n`;
+
 exports[`should work as global constant map 1`] = `-2n`;
 
 exports[`should work with expressions in keys and values 1`] = `
