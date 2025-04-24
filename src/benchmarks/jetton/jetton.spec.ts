@@ -326,13 +326,23 @@ function testJetton(
 
     it("wallet cells", async () => {
         expect(
-            (await getStateSizeForAccount(blockchain, deployerJettonWallet.address)).cells,
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    deployerJettonWallet.address,
+                )
+            ).cells,
         ).toEqual(codeSizeResults.size["wallet cells"]);
     });
 
     it("wallet bits", async () => {
         expect(
-            (await getStateSizeForAccount(blockchain, deployerJettonWallet.address)).bits,
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    deployerJettonWallet.address,
+                )
+            ).bits,
         ).toEqual(codeSizeResults.size["wallet bits"]);
     });
 }
