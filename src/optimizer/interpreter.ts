@@ -1,4 +1,14 @@
-import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
+import {
+    Address,
+    beginCell,
+    BitString,
+    Cell,
+    Dictionary,
+    type DictionaryKey,
+    type DictionaryKeyTypes,
+    type DictionaryValue,
+    toNano,
+} from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import { crc32 } from "@/utils/crc32";
 import type * as Ast from "@/ast/ast";
@@ -37,6 +47,12 @@ import {
 import { divFloor, modFloor } from "@/optimizer/util";
 import { sha256 } from "@/utils/sha256";
 import { prettyPrint } from "@/ast/ast-printer";
+import {
+    type MapSerializerDescrKey,
+    type MapSerializerDescrValue,
+    mapSerializers,
+} from "@/bindings/typescript/serializers";
+import { getMapAbi } from "@/types/resolveABITypeRef";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -105,14 +121,14 @@ function ensureArgumentForEquality(val: Ast.Literal): Ast.Literal {
         case "string":
         case "slice":
             return val;
-        case "struct_value":
+        case "map_value":
+        case "struct_value": {
             throwErrorConstEval(
                 `struct ${prettyPrint(val)} cannot be an argument to == operator`,
                 val.loc,
             );
             break;
-        default:
-            throwInternalCompilerError("Unrecognized ast literal kind");
+        }
     }
 }
 
@@ -625,6 +641,48 @@ const defaultInterpreterConfig: InterpreterConfig = {
     maxLoopIterations: maxRepeatStatement,
 };
 
+type KeyExist = <R>(
+    cb: <K extends DictionaryKeyTypes>(
+        type: DictionaryKey<K>,
+        parse: (value: Ast.Literal, keyExprLoc: SrcInfo) => K,
+    ) => R,
+) => R;
+
+type ValueExist = <R>(
+    cb: <V>(
+        type: DictionaryValue<V>,
+        parse: (value: Ast.Literal, valueExprLoc: SrcInfo) => V,
+    ) => R,
+) => R;
+
+const expectNumber = (node: Ast.Literal, loc: SrcInfo): bigint => {
+    if (node.kind !== "number") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
+const expectAddress = (node: Ast.Literal, loc: SrcInfo): Address => {
+    if (node.kind !== "address") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
+const expectCell = (node: Ast.Literal, loc: SrcInfo): Cell => {
+    if (node.kind !== "cell") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
+const expectBool = (node: Ast.Literal, loc: SrcInfo): boolean => {
+    if (node.kind !== "boolean") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
 /*
 Interprets Tact AST trees.
 The constructor receives an optional CompilerContext which includes
@@ -851,8 +909,14 @@ export class Interpreter {
                 return this.interpretFieldAccess(ast);
             case "static_call":
                 return this.interpretStaticCall(ast);
-            default:
-                throwInternalCompilerError("Unrecognized expression kind");
+            case "map_value":
+                return this.interpretMapValue(ast);
+            case "map_literal":
+                return this.interpretMapLiteral(ast);
+            case "set_literal":
+                return throwInternalCompilerError(
+                    "Set literals are not supported",
+                );
         }
     }
 
@@ -1077,6 +1141,116 @@ export class Interpreter {
     private interpretStructValue(ast: Ast.StructValue): Ast.StructValue {
         // Struct values are already simplified to their simplest form
         return ast;
+    }
+    private interpretMapValue(ast: Ast.MapValue): Ast.MapValue {
+        return ast;
+    }
+
+    private interpretMapLiteral(ast: Ast.MapLiteral): Ast.MapValue {
+        const keyTy = getType(this.context, ast.type.keyType);
+        const valTy = getType(this.context, ast.type.valueType);
+        const res = mapSerializers.abiMatcher(
+            getMapAbi(
+                {
+                    kind: "map",
+                    key: keyTy.name,
+                    keyAs:
+                        ast.type.keyStorageType !== undefined
+                            ? idText(ast.type.keyStorageType)
+                            : null,
+                    value: valTy.name,
+                    valueAs:
+                        ast.type.valueStorageType !== undefined
+                            ? idText(ast.type.valueStorageType)
+                            : null,
+                },
+                ast.loc,
+            ),
+        );
+        if (res === null) {
+            throwInternalCompilerError("Wrong map ABI");
+        }
+        const keyExist = this.getKeyParser(res.key);
+        const valueExist = this.getValueParser(res.value);
+        const bocHex = keyExist((keyType, parseKey) => {
+            return valueExist((valueType, parseValue) => {
+                if (ast.fields.length === 0) {
+                    return undefined;
+                }
+                let dict = Dictionary.empty(keyType, valueType);
+                for (const { key: keyExpr, value: valueExpr } of ast.fields) {
+                    const keyValue = parseKey(
+                        this.interpretExpressionInternal(keyExpr),
+                        keyExpr.loc,
+                    );
+                    const valValue = parseValue(
+                        this.interpretExpressionInternal(valueExpr),
+                        valueExpr.loc,
+                    );
+                    dict = dict.set(keyValue, valValue);
+                }
+                return beginCell()
+                    .storeDictDirect(dict)
+                    .endCell()
+                    .toBoc()
+                    .toString("hex");
+            });
+        });
+        return this.util.makeMapValue(bocHex, ast.type, ast.loc);
+    }
+
+    getKeyParser(src: MapSerializerDescrKey): KeyExist {
+        switch (src.kind) {
+            case "int": {
+                return (cb) =>
+                    cb(Dictionary.Keys.BigInt(src.bits), expectNumber);
+            }
+            case "uint": {
+                return (cb) =>
+                    cb(Dictionary.Keys.BigUint(src.bits), expectNumber);
+            }
+            case "address": {
+                return (cb) => cb(Dictionary.Keys.Address(), expectAddress);
+            }
+        }
+    }
+    getValueParser(src: MapSerializerDescrValue): ValueExist {
+        switch (src.kind) {
+            case "int": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigInt(src.bits), expectNumber);
+            }
+            case "uint": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigUint(src.bits), expectNumber);
+            }
+            case "varint": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigVarInt(src.length), expectNumber);
+            }
+            case "varuint": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigVarUint(src.length), expectNumber);
+            }
+            case "address": {
+                return (cb) => cb(Dictionary.Values.Address(), expectAddress);
+            }
+            case "cell": {
+                return (cb) => cb(Dictionary.Values.Cell(), expectCell);
+            }
+            case "boolean": {
+                return (cb) => cb(Dictionary.Values.Bool(), expectBool);
+            }
+            case "struct": {
+                return (cb) =>
+                    cb(Dictionary.Values.Cell(), (_, loc) => {
+                        throwNonFatalErrorConstEval(
+                            "Cannot evaluate map with struct values",
+                            loc,
+                        );
+                    });
+            }
+        }
     }
 
     private interpretFieldAccess(ast: Ast.FieldAccess): Ast.Literal {

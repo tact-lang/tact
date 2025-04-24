@@ -109,7 +109,7 @@ function verifyMapTypes(
     verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation, kind);
 }
 
-function verifyMapType(mapTy: Ast.MapType, isValTypeStruct: boolean) {
+export function verifyMapType(mapTy: Ast.MapType, isValTypeStruct: boolean) {
     // optional and other compound key and value types are disallowed at the level of grammar
 
     // check allowed key types

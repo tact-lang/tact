@@ -178,6 +178,9 @@ export const syntaxErrorSchema = <T, U>(
                 sub`Assembly functions are only allowed at the module level - outside contracts or traits`,
             );
         },
+        noSetLiterals: () => {
+            return handle(text(`Set literals not supported yet`));
+        },
     };
 };
 

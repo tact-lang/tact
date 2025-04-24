@@ -686,10 +686,10 @@ const struct: Serializer<{ name: string; optional: boolean }> = {
     },
 };
 
-type MapSerializerDescrKey =
+export type MapSerializerDescrKey =
     | { kind: "int" | "uint"; bits: number }
     | { kind: "address" };
-type MapSerializerDescrValue =
+export type MapSerializerDescrValue =
     | { kind: "int" | "uint"; bits: number }
     | { kind: "varuint"; length: number }
     | { kind: "varint"; length: number }
@@ -701,7 +701,7 @@ type MapSerializerDescr = {
     key: MapSerializerDescrKey;
     value: MapSerializerDescrValue;
 };
-function getKeyParser(src: MapSerializerDescrKey) {
+export function getKeyParser(src: MapSerializerDescrKey) {
     switch (src.kind) {
         case "int": {
             if (src.bits <= 32) {
@@ -722,7 +722,7 @@ function getKeyParser(src: MapSerializerDescrKey) {
         }
     }
 }
-function getValueParser(src: MapSerializerDescrValue) {
+export function getValueParser(src: MapSerializerDescrValue) {
     switch (src.kind) {
         case "int": {
             if (src.bits <= 32) {
@@ -759,7 +759,7 @@ function getValueParser(src: MapSerializerDescrValue) {
     }
 }
 
-const map: Serializer<MapSerializerDescr> = {
+export const mapSerializers: Serializer<MapSerializerDescr> = {
     abiMatcher(src) {
         if (src.kind === "dict") {
             if (src.format !== null && src.format !== undefined) {
@@ -966,5 +966,5 @@ export const serializers: Serializer<any>[] = [
 
     // Structs as fallback
     struct,
-    map,
+    mapSerializers,
 ];

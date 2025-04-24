@@ -3,7 +3,7 @@ trait BaseTrait { }
 
 message Withdraw {
     data: Int as uint128;
-    amount: Int as uint128; // exceeds 224 bytes
+    amount: Int as uint128; // exceeds 224 bits
 }
 
 contract Fund {
