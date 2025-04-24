@@ -1,6 +1,7 @@
 import type { Range, TypeId } from "@/next/ast/common";
 
 export type Type =
+    | TypeMap
     | TypeCons
     | TypeInt
     | TypeSlice
@@ -84,5 +85,12 @@ export type TypeUnit = {
 export type TypeTensor = {
     readonly kind: "tensor_type";
     readonly typeArgs: readonly Type[];
+    readonly loc: Range;
+};
+
+export type TypeMap = {
+    readonly kind: "map_type";
+    readonly key: Type; // any type except tensor
+    readonly value: Type; // any type except tensor
     readonly loc: Range;
 };

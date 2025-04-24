@@ -342,6 +342,79 @@ const parseStructInstance =
         );
     };
 
+const parseMapArgs =
+    (typeArgs: $ast.typeArgs, range: Range): Handler<Ast.TypeMap> =>
+    (ctx) => {
+        const args = parseList(typeArgs);
+        const [keyType, valueType] = args;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (args.length !== 2 || !keyType || !valueType) {
+            ctx.err.mapArgCount()(range);
+            return Ast.TypeMap(
+                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+                range,
+            );
+        }
+        return Ast.TypeMap(
+            parseType(keyType)(ctx),
+            parseType(valueType)(ctx),
+            range,
+        );
+    };
+
+const parseMapLiteral =
+    ({ typeArgs, fields, loc }: $ast.MapLiteral): Handler<Ast.MapLiteral> =>
+    (ctx) => {
+        const range = toRange(loc);
+        return Ast.MapLiteral(
+            parseMapArgs(typeArgs, range)(ctx),
+            map(parseList(fields), parseMapField)(ctx),
+            range,
+        );
+    };
+
+const parseMapField =
+    ({ key, value }: $ast.mapField): Handler<Ast.MapField> =>
+    (ctx) => {
+        return Ast.MapField(
+            parseExpression(key)(ctx),
+            parseExpression(value)(ctx),
+        );
+    };
+
+const parseSetArgs =
+    (typeArgs: $ast.typeArgs, range: Range): Handler<Ast.TypeMap> =>
+    (ctx) => {
+        const args = parseList(typeArgs);
+        const [valueType] = args;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (args.length !== 1 || !valueType) {
+            ctx.err.setArgCount()(range);
+            return Ast.TypeMap(
+                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+                Ast.TypeUnit(range),
+                range,
+            );
+        }
+        return Ast.TypeMap(
+            parseType(valueType)(ctx),
+            Ast.TypeUnit(range),
+            range,
+        );
+    };
+
+const parseSetLiteral =
+    ({ typeArgs, fields, loc }: $ast.SetLiteral): Handler<Ast.SetLiteral> =>
+    (ctx) => {
+        const range = toRange(loc);
+        return Ast.SetLiteral(
+            parseSetArgs(typeArgs, range)(ctx),
+            map(parseList(fields), parseExpression)(ctx),
+            range,
+        );
+    };
+
 const parseInitOf =
     ({ name, params, loc }: $ast.InitOf): Handler<Ast.InitOf> =>
     (ctx) => {
@@ -539,7 +612,9 @@ type Expression =
     | $ast.Id
     | $ast.Unit
     | $ast.Tensor
-    | $ast.Tuple;
+    | $ast.Tuple
+    | $ast.MapLiteral
+    | $ast.SetLiteral;
 
 const parseExpression: (input: Expression) => Handler<Ast.Expression> =
     makeVisitor<Expression>()({
@@ -559,6 +634,8 @@ const parseExpression: (input: Expression) => Handler<Ast.Expression> =
         Unit: parseUnit,
         Tensor: parseTensor,
         Tuple: parseTuple,
+        MapLiteral: parseMapLiteral,
+        SetLiteral: parseSetLiteral,
     });
 
 const parseStatementLet =
@@ -1787,7 +1864,10 @@ const parseModule =
 //         return map(imports, parseImport)(ctx);
 //     };
 
-export const parse = (log: SourceLogger<string, void>, text: string): Ast.Module => {
+export const parse = (
+    log: SourceLogger<string, void>,
+    text: string,
+): Ast.Module => {
     const err = SyntaxErrors(log);
 
     const result = $.parse({

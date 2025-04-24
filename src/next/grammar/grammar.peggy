@@ -322,6 +322,8 @@ primary
     / Tensor
     / Tuple
     / Parens
+    / MapLiteral
+    / SetLiteral
     / StructInstance
     / IntegerLiteral
     / BoolLiteral
@@ -347,6 +349,21 @@ StructInstance =
     fields:commaList<StructFieldInitializer>?
     "}";
 StructFieldInitializer = name:Id init:(":" @expression)?;
+
+MapLiteral =
+    keyword<"map">
+    typeArgs:typeArgs
+    "{"
+    fields:commaList<mapField>?
+    "}";
+mapField = key:expression ":" value:expression;
+
+SetLiteral =
+    "set"
+    typeArgs:typeArgs
+    "{"
+    fields:commaList<expression>?
+    "}";
 
 InitOf = keyword<"initOf"> name:TypeId params:parameterList<expression>;
 CodeOf = "codeOf" name:TypeId;

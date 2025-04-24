@@ -218,6 +218,14 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     constDeclNoType: () => (loc: Range) => {
         return l.at(loc).error(l.text`Constant declaration must have a type`);
     },
+    mapArgCount: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(l.text`map<K, V> takes exactly two type arguments`);
+    },
+    setArgCount: () => (loc: Range) => {
+        return l.at(loc).error(l.text`set<V> takes exactly one type argument`);
+    },
 });
 
 export type SyntaxErrors<M, R> = ReturnType<typeof SyntaxErrors<M, R>>;

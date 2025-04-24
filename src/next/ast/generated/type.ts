@@ -138,3 +138,12 @@ export const TypeCons = (
     });
 export const isTypeCons = ($value: TypeCons) => $value.kind === "cons_type";
 export type Type = $.Type;
+export type TypeMap = $.TypeMap;
+export const TypeMap = (key: $.Type, value: $.Type, loc: $c.Range): $.TypeMap =>
+    Object.freeze({
+        kind: "map_type",
+        key,
+        value,
+        loc,
+    });
+export const isTypeMap = ($value: TypeMap) => $value.kind === "map_type";

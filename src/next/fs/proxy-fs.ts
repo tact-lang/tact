@@ -11,9 +11,9 @@ import type { Logger } from "@/error/logger-util";
 const asRecord = <T>(t: Record<string, T>) => t;
 
 type Options = {
-    readonly log: Logger<string, void>,
-    readonly root: string,
-    readonly isReadonly: boolean,
+    readonly log: Logger<string, void>;
+    readonly root: string;
+    readonly isReadonly: boolean;
 };
 
 /**

@@ -5,14 +5,14 @@ export type TactSource = {
     readonly imports: readonly ResolvedImport[];
     readonly items: readonly ModuleItem[];
 };
-export type ResolvedImport = TactImport | FuncImport
+export type ResolvedImport = TactImport | FuncImport;
 export type TactImport = {
-    readonly kind: 'tact';
+    readonly kind: "tact";
     readonly source: TactSource;
     readonly loc: Range;
-}
+};
 export type FuncImport = {
-    readonly kind: 'func';
+    readonly kind: "func";
     readonly code: string;
     readonly loc: Range;
-}
+};

@@ -1,5 +1,5 @@
 import type { Id, Range, TypeId } from "@/next/ast/common";
-import type { Type } from "@/next/ast/type";
+import type { Type, TypeMap } from "@/next/ast/type";
 
 export type Expression =
     | OpBinary
@@ -18,7 +18,9 @@ export type Expression =
     | Var
     | Unit
     | Tuple
-    | Tensor;
+    | Tensor
+    | MapLiteral
+    | SetLiteral;
 
 export type Var = {
     readonly kind: "var";
@@ -130,6 +132,25 @@ export type StructFieldInitializer = {
     readonly kind: "struct_field_initializer";
     readonly field: Id;
     readonly initializer: Expression;
+    readonly loc: Range;
+};
+
+export type MapLiteral = {
+    readonly kind: "map_literal";
+    readonly type: TypeMap;
+    readonly fields: readonly MapField[];
+    readonly loc: Range;
+};
+
+export type MapField = {
+    readonly key: Expression;
+    readonly value: Expression;
+};
+
+export type SetLiteral = {
+    readonly kind: "set_literal";
+    readonly valueType: Type;
+    readonly fields: readonly Expression[];
     readonly loc: Range;
 };
 

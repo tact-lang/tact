@@ -493,6 +493,16 @@ export namespace $ast {
         readonly $: "Parens";
         readonly child: parens;
     }>;
+    export type MapLiteral = $.Located<{
+        readonly $: "MapLiteral";
+        readonly typeArgs: typeArgs;
+        readonly fields: commaList<mapField> | undefined;
+    }>;
+    export type SetLiteral = $.Located<{
+        readonly $: "SetLiteral";
+        readonly typeArgs: typeArgs;
+        readonly fields: commaList<expression> | undefined;
+    }>;
     export type StructInstance = $.Located<{
         readonly $: "StructInstance";
         readonly type: TypeId;
@@ -528,6 +538,8 @@ export namespace $ast {
         | Tensor
         | Tuple
         | Parens
+        | MapLiteral
+        | SetLiteral
         | StructInstance
         | IntegerLiteral
         | BoolLiteral
@@ -542,6 +554,10 @@ export namespace $ast {
         readonly name: Id;
         readonly init: expression | undefined;
     }>;
+    export type mapField = {
+        readonly key: expression;
+        readonly value: expression;
+    };
     export type ParameterList<T> = $.Located<{
         readonly $: "ParameterList";
         readonly values: commaList<T> | undefined;
@@ -2290,6 +2306,48 @@ export const Parens: $.Parser<$ast.Parens> = $.loc(
         ),
     ),
 );
+export const MapLiteral: $.Parser<$ast.MapLiteral> = $.loc(
+    $.field(
+        $.pure("MapLiteral"),
+        "$",
+        $.right(
+            keyword($.str("map")),
+            $.field(
+                typeArgs,
+                "typeArgs",
+                $.right(
+                    $.str("{"),
+                    $.field(
+                        $.opt(commaList($.lazy(() => mapField))),
+                        "fields",
+                        $.right($.str("}"), $.eps),
+                    ),
+                ),
+            ),
+        ),
+    ),
+);
+export const SetLiteral: $.Parser<$ast.SetLiteral> = $.loc(
+    $.field(
+        $.pure("SetLiteral"),
+        "$",
+        $.right(
+            $.str("set"),
+            $.field(
+                typeArgs,
+                "typeArgs",
+                $.right(
+                    $.str("{"),
+                    $.field(
+                        $.opt(commaList(expression)),
+                        "fields",
+                        $.right($.str("}"), $.eps),
+                    ),
+                ),
+            ),
+        ),
+    ),
+);
 export const StructInstance: $.Parser<$ast.StructInstance> = $.loc(
     $.field(
         $.pure("StructInstance"),
@@ -2380,16 +2438,25 @@ export const primary: $.Parser<$ast.primary> = $.alt(
             $.alt(
                 Parens,
                 $.alt(
-                    StructInstance,
+                    MapLiteral,
                     $.alt(
-                        IntegerLiteral,
+                        SetLiteral,
                         $.alt(
-                            BoolLiteral,
+                            StructInstance,
                             $.alt(
-                                InitOf,
+                                IntegerLiteral,
                                 $.alt(
-                                    CodeOf,
-                                    $.alt(Null, $.alt(StringLiteral, Id)),
+                                    BoolLiteral,
+                                    $.alt(
+                                        InitOf,
+                                        $.alt(
+                                            CodeOf,
+                                            $.alt(
+                                                Null,
+                                                $.alt(StringLiteral, Id),
+                                            ),
+                                        ),
+                                    ),
                                 ),
                             ),
                         ),
@@ -2415,6 +2482,11 @@ export const StructFieldInitializer: $.Parser<$ast.StructFieldInitializer> =
             ),
         ),
     );
+export const mapField: $.Parser<$ast.mapField> = $.field(
+    expression,
+    "key",
+    $.right($.str(":"), $.field(expression, "value", $.eps)),
+);
 export const ParameterList = <T>(
     T: $.Parser<T>,
 ): $.Parser<$ast.ParameterList<T>> =>

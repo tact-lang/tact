@@ -7,35 +7,38 @@ import type { Logger } from "@/error/logger-util";
 
 type Options = {
     // FIXME: should we pass log here, or into functions?
-    readonly log: Logger<string, void>,
+    readonly log: Logger<string, void>;
 
     /**
      * Files present in memory file system at creation time
      */
-    readonly files: Map<string, Blob>,
+    readonly files: Map<string, Blob>;
 
     /**
      * Path to the root, used only for logging
-     * 
+     *
      * Absolute paths do not make sense in memory FS, as
      * it doesn't have the actual root
      */
-    readonly root: RelativePath,
+    readonly root: RelativePath;
 
     /**
      * Whether it's possible to `write` into
      */
-    readonly isReadonly: boolean,
-}
+    readonly isReadonly: boolean;
+};
 
 export const emptyFiles: Map<string, Blob> = new Map();
 
 /**
  * Create in-memory file system
  */
-export function createMemoryFs(
-    { log, files, root, isReadonly }: Options
-): Cursor {
+export function createMemoryFs({
+    log,
+    files,
+    root,
+    isReadonly,
+}: Options): Cursor {
     const errors = FsErrors(log);
 
     function builder(currPath: RelativePath): Cursor {

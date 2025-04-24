@@ -7,30 +7,34 @@ import type { AnyLogger, Logger, SourceLogger } from "@/error/logger-util";
 import type { ResolvedImport, TactSource } from "@/next/imports/source";
 
 type Options = {
-    readonly log: Logger<string, void>,
+    readonly log: Logger<string, void>;
     /**
      * Cursor to root of file system with project files
      */
-    readonly project: Cursor,
+    readonly project: Cursor;
     /**
      * Cursor to root of stdlib file system
      */
-    readonly stdlib: Cursor,
+    readonly stdlib: Cursor;
     /**
      * Implicit imports (without `import "..."`) to add
      * into every source
      */
-    readonly implicits: readonly ResolvedImport[],
+    readonly implicits: readonly ResolvedImport[];
     /**
      * Name of root source file of the project
      */
-    readonly root: string,
-}
+    readonly root: string;
+};
 
 const readSource = async ({
-    log, project, stdlib, implicits, root
+    log,
+    project,
+    stdlib,
+    implicits,
+    root,
 }: Options): Promise<TactSource | undefined> => {
-    const status: Map<string, 'pending' | TactSource> = new Map();
+    const status: Map<string, "pending" | TactSource> = new Map();
 
     const resolveImports = async (
         log: SourceLogger<string, void>,
@@ -41,16 +45,17 @@ const readSource = async ({
         const imports: ResolvedImport[] = [...implicits];
         for (const { importPath, loc } of rawImports) {
             const { language, path, type } = importPath;
-            const importedFile = type === 'relative'
-                ? file.focus(parentPath).focus(path)
-                : stdlib.focus(path);
-            if (language === 'tact') {
+            const importedFile =
+                type === "relative"
+                    ? file.focus(parentPath).focus(path)
+                    : stdlib.focus(path);
+            if (language === "tact") {
                 const source = await resolveSource(importedFile, log);
                 if (source) {
-                    imports.push({ kind: 'tact', source, loc });
+                    imports.push({ kind: "tact", source, loc });
                 }
             } else {
-                imports.push({ kind: 'func', code, loc });
+                imports.push({ kind: "func", code, loc });
             }
         }
         return { code, imports, items };
@@ -62,14 +67,16 @@ const readSource = async ({
     ): Promise<TactSource | undefined> => {
         const path = file.getAbsolutePathForLog();
         const res = status.get(path);
-        if (typeof res === 'object') {
+        if (typeof res === "object") {
             return res;
         }
-        if (res === 'pending') {
-            parentLog.error(parentLog.text`Cyclic import: ${parentLog.path(path)}`);
+        if (res === "pending") {
+            parentLog.error(
+                parentLog.text`Cyclic import: ${parentLog.path(path)}`,
+            );
             return;
         }
-        status.set(path, 'pending');
+        status.set(path, "pending");
         const code = await file.read();
         if (!code) {
             return;
@@ -81,10 +88,7 @@ const readSource = async ({
         return source;
     };
 
-    return resolveSource(
-        project.focus(fromString(root)),
-        log,
-    );
+    return resolveSource(project.focus(fromString(root)), log);
 };
 
 /**
@@ -103,7 +107,7 @@ export const ProjectReader = async (log: Logger<string, void>) => {
         project: stdRoot,
         stdlib: stdLibs,
         implicits: [],
-        root: 'std/stdlib.tact',
+        root: "std/stdlib.tact",
     });
     if (!stdStd) {
         // Could not load standard library
@@ -114,20 +118,19 @@ export const ProjectReader = async (log: Logger<string, void>) => {
     /**
      * Read project
      */
-    const read = async (
-        fsRootPath: string,
-        tactRoot: string,
-    ) => {
+    const read = async (fsRootPath: string, tactRoot: string) => {
         const project = createProxyFs({
             log,
             root: fsRootPath,
             isReadonly: false,
         });
-        const implicits: ResolvedImport[] = [{
-            kind: 'tact',
-            source: stdStd,
-            loc: { start: 0, end: 0 },
-        }];
+        const implicits: ResolvedImport[] = [
+            {
+                kind: "tact",
+                source: stdStd,
+                loc: { start: 0, end: 0 },
+            },
+        ];
         return await readSource({
             log,
             project,
@@ -136,6 +139,6 @@ export const ProjectReader = async (log: Logger<string, void>) => {
             root: tactRoot,
         });
     };
-    
+
     return { read };
 };

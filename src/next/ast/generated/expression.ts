@@ -251,3 +251,37 @@ export const OpBinary = (
     });
 export const isOpBinary = ($value: OpBinary) => $value.kind === "op_binary";
 export type Expression = $.Expression;
+export type MapField = $.MapField;
+export const MapField = (key: $.Expression, value: $.Expression): $.MapField =>
+    Object.freeze({
+        key,
+        value,
+    });
+export type MapLiteral = $.MapLiteral;
+export const MapLiteral = (
+    type_: $t.TypeMap,
+    fields: readonly $.MapField[],
+    loc: $c.Range,
+): $.MapLiteral =>
+    Object.freeze({
+        kind: "map_literal",
+        type: type_,
+        fields,
+        loc,
+    });
+export const isMapLiteral = ($value: MapLiteral) =>
+    $value.kind === "map_literal";
+export type SetLiteral = $.SetLiteral;
+export const SetLiteral = (
+    valueType: $t.Type,
+    fields: readonly $.Expression[],
+    loc: $c.Range,
+): $.SetLiteral =>
+    Object.freeze({
+        kind: "set_literal",
+        valueType,
+        fields,
+        loc,
+    });
+export const isSetLiteral = ($value: SetLiteral) =>
+    $value.kind === "set_literal";
