@@ -496,7 +496,7 @@ function resolveFieldAccess(
     const fieldIndex = srcT.fields.findIndex((v) => eqNames(v.name, exp.field));
     const field = fieldIndex !== -1 ? srcT.fields[fieldIndex] : undefined;
 
-    // If we found a field of bounced<T>, check if the field doesn't fit in 224 bytes and cannot be accessed
+    // If we found a field of bounced<T>, check if the field doesn't fit in 224 bits and cannot be accessed
     if (
         src.kind === "ref_bounced" &&
         field &&
@@ -504,13 +504,13 @@ function resolveFieldAccess(
     ) {
         if (srcT.fields.length === 1) {
             throwCompilationError(
-                `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes`,
+                `Maximum size of the bounced message is 224 bits, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bits`,
                 exp.field.loc,
             );
         }
 
         throwCompilationError(
-            `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes`,
+            `Maximum size of the bounced message is 224 bits, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bits`,
             exp.field.loc,
         );
     }
