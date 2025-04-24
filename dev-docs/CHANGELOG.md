@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.7] - 2025-04-24
+
 ### Language features
 
 - Fixed incorrect error message for bounced messages: PR [#2932](https://github.com/tact-lang/tact/pull/2932)
@@ -14,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the `inMsg()` built-in function as an optimized version of `msg.toSlice()`: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
 - Compiler now generates more efficient code for structure fields serialization: PR [#2836](https://github.com/tact-lang/tact/pull/2836)
 - Compiler now generates more efficient code for `Address?` fields deserialization: PR [#2834](https://github.com/tact-lang/tact/pull/2834)
-- Optimized `self.notify`, `self.reply`, and `self.forward` in `BaseTrait` by using message directly where possible and avoiding unnecessary use of alias: PR [#2515](https://github.com/tact-lang/tact/pull/2515)
+- Optimized `self.notify`, `self.reply`, and `self.forward` in `BaseTrait` by using the `message` function directly where possible and avoiding unnecessary use of alias: PR [#2515](https://github.com/tact-lang/tact/pull/2515)
 - Compiler now generates more efficient code for `if` statements: PR [#2844](https://github.com/tact-lang/tact/pull/2844)
 - Any message now has an `opcode()` method to obtain its opcode: PR [#2886](https://github.com/tact-lang/tact/pull/2886)
 - Contract `init` function now can have parameters with `as` annotations: PR [#2890](https://github.com/tact-lang/tact/pull/2890)
