@@ -123,7 +123,7 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("transfer") {
-        send(SendParameters{
+        send(SendParameters {
             to: self.nftItemAddress,
             value: ton("0.1"),
             body: NFTTransfer{
@@ -186,7 +186,7 @@ contract Example {
     receive("get static data") {
         // FIXME: Put proper address("[NFT_ADDRESS]") here
         let nftAddress = sender();
-        send(SendParameters{
+        send(SendParameters {
             to: nftAddress,
             value: ton("0.1"),
             body: NFTGetStaticData{
@@ -230,7 +230,7 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("get royalty params") {
-        send(SendParameters{
+        send(SendParameters {
             to: self.nftCollectionAddress,
             value: ton("0.1"),
             body: NFTGetRoyaltyParams{
@@ -277,7 +277,7 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("deploy") {
-        send(SendParameters{
+        send(SendParameters {
             to: self.nftCollectionAddress,
             value: ton("0.14"),
             body: NFTDeploy{
@@ -309,7 +309,7 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("change owner") {
-        send(SendParameters{
+        send(SendParameters {
             to: self.nftCollectionAddress,
             value: ton("0.05"),
             body: NFTChangeOwner{

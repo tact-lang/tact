@@ -144,7 +144,7 @@ fun jettonToJetton(myJettonWalletAddress: Address) {
     };
 
     // Start a swap with the message to the Jetton wallet
-    send(SendParameters{
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: FeeSwapJettonToJetton,
         body: JettonTransfer{
@@ -246,7 +246,7 @@ fun jettonToToncoin(myJettonWalletAddress: Address) {
     };
 
     // Start a swap with the message to the Jetton wallet
-    send(SendParameters{
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: FeeSwapJettonToToncoin,
         body: JettonTransfer{
@@ -367,7 +367,7 @@ fun toncoinToJetton() {
     };
 
     // Start a swap with the message to the proxy Toncoin wallet
-    send(SendParameters{
+    send(SendParameters {
         to: RouterProxyTonWallet,
         value: FeeSwapToncoinToJetton + offerAmount,
         body: ProxyToncoinTransfer{
@@ -513,7 +513,7 @@ const RouterProxyTonWallet: Address =
 
 // Router's Jetton wallet address
 const RouterJettonWallet: Address =
-    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK"); 
+    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
 
 /// NOTE: To calculate and provide Jetton wallet address for the target user,
 ///       make sure to check links after this code snippet
@@ -534,7 +534,7 @@ fun jettonDeposit(myJettonWalletAddress: Address) {
         },
     };
 
-    send(SendParameters{
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: FeeSingleSideProvideLpJetton,
         body: JettonTransfer{
@@ -621,7 +621,7 @@ fun toncoinDeposit() {
         },
     };
 
-    send(SendParameters{
+    send(SendParameters {
         to: RouterProxyTonWallet,
         value: FeeSingleSideProvideLpToncoin + offerAmount,
         body: ProxyToncoinTransfer{

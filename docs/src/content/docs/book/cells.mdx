@@ -175,15 +175,15 @@ contract SerializationExample {
     // Constructor function,
     // necessary for this example contract to compile
     init() {
-        self.cell2 = TwoCell{
+        self.cell2 = TwoCell {
             cRef: emptyCell(),
             cRem: emptyCell(),
         };
-        self.builder2 = TwoBuilder{
+        self.builder2 = TwoBuilder {
             bRef: beginCell(),
             bRem: beginCell(),
         };
-        self.slice2 = TwoSlice{
+        self.slice2 = TwoSlice {
             sRef: emptySlice(),
             sRem: emptySlice(),
         };
@@ -313,14 +313,14 @@ struct Adventure {
 fun example() {
     // Basics
     let s = Showcase.fromCell(
-        Showcase{
+        Showcase {
             id: 7,
             someImportantNumber: 42,
             isThatCool: true,
             payload: emptySlice(),
             nanoToncoins: 1330 + 7,
             wackyTacky: myAddress(),
-            jojoRef: Adventure{ bizarre: true, time: false },
+            jojoRef: Adventure { bizarre: true, time: false },
         }.toCell());
     s.isThatCool; // true
 }

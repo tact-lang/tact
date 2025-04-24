@@ -490,11 +490,11 @@ contract Sample(
     receive(msg: Vote) {
         self.votes += msg.votes;
 
-        message(MessageParameters{
+        message(MessageParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: Excesses{}.toCell(),
+            body: Excesses {}.toCell(),
         });
     }
 
@@ -523,11 +523,11 @@ contract OneContract(
     money: Int as coins,
 ) {
     receive(msg: ProvideMoney) {
-        message(MessageParameters{
+        message(MessageParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: TakeMoney{money: self.money}.toCell(),
+            body: TakeMoney { money: self.money }.toCell(),
         });
     }
 
@@ -540,12 +540,12 @@ contract AnotherContract(
     oneContractAddress: Address,
 ) {
     receive(_: GetMoney) {
-        message(MessageParameters{
+        message(MessageParameters {
             to: self.oneContractAddress,
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: false,
-            body: ProvideMoney{}.toCell(),
+            body: ProvideMoney {}.toCell(),
         });
     }
 
