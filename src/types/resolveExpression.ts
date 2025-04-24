@@ -14,6 +14,8 @@ import {
     getType,
     hasStaticConstant,
     hasStaticFunction,
+    resolveTypeRef,
+    verifyMapType,
 } from "@/types/resolveDescriptors";
 import type { FunctionParameter, TypeRef } from "@/types/types";
 import { printTypeRef, typeRefEquals } from "@/types/types";
@@ -203,6 +205,51 @@ function resolveStructNew(
         kind: "ref",
         name: tp.name,
         optional: false,
+    });
+}
+
+function resolveMapLiteral(
+    exp: Ast.MapLiteral,
+    sctx: StatementContext,
+    ctx: CompilerContext,
+): CompilerContext {
+    const keyTy = getType(ctx, exp.type.keyType);
+    const valTy = getType(ctx, exp.type.valueType);
+    verifyMapType(exp.type, valTy.kind === "struct");
+    const keyFormalType = resolveTypeRef(ctx, exp.type.keyType);
+    const valueFormalType = resolveTypeRef(ctx, exp.type.valueType);
+
+    for (const { key, value } of exp.fields) {
+        ctx = resolveExpression(key, sctx, ctx);
+        ctx = resolveExpression(value, sctx, ctx);
+        const keyType = getExpType(ctx, key);
+        const valueType = getExpType(ctx, value);
+        if (!isAssignable(keyType, keyFormalType)) {
+            throwCompilationError(
+                `Key of type "${printTypeRef(keyType)}" cannot be used as a key for map with keys of type "${printTypeRef(keyFormalType)}"`,
+                key.loc,
+            );
+        }
+        if (!isAssignable(valueType, valueFormalType)) {
+            throwCompilationError(
+                `Value of type "${printTypeRef(valueType)}" cannot be used as a value for map with values of type "${printTypeRef(valueFormalType)}"`,
+                key.loc,
+            );
+        }
+    }
+
+    return registerExpType(ctx, exp, {
+        kind: "map",
+        key: keyTy.name,
+        keyAs:
+            exp.type.keyStorageType !== undefined
+                ? idText(exp.type.keyStorageType)
+                : null,
+        value: valTy.name,
+        valueAs:
+            exp.type.valueStorageType !== undefined
+                ? idText(exp.type.valueStorageType)
+                : null,
     });
 }
 
@@ -872,6 +919,17 @@ export function resolveExpression(
         }
         case "struct_instance": {
             return resolveStructNew(exp, sctx, ctx);
+        }
+        case "map_literal": {
+            return resolveMapLiteral(exp, sctx, ctx);
+        }
+        case "map_value": {
+            return throwInternalCompilerError(
+                "Map value should never get here",
+            );
+        }
+        case "set_literal": {
+            return throwInternalCompilerError("Set literals are not supported");
         }
         case "op_binary": {
             return resolveBinaryOp(exp, sctx, ctx);

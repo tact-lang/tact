@@ -375,7 +375,7 @@ export function containsSeveralNewlines(text: string): boolean {
     return text.slice(index + 1).includes("\n");
 }
 
-export function multilineComments(comments: Cst[]): boolean {
+export function multilineComments(comments: readonly Cst[]): boolean {
     return comments.some((it) => visit(it).includes("\n"));
 }
 

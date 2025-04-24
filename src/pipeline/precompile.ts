@@ -15,6 +15,7 @@ import { getAstFactory } from "@/ast/ast-helpers";
 import { getParser } from "@/grammar";
 import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
 import { computeReceiversEffects } from "@/types/effects";
+import { setAstFactoryToStore } from "@/pipeline/ast-factory-store";
 
 export function precompile(
     ctx: CompilerContext,
@@ -24,6 +25,8 @@ export function precompile(
     parsedModules?: Ast.Module[],
 ) {
     const ast = getAstFactory();
+    setAstFactoryToStore(ctx, ast);
+
     const parser = getParser(ast);
 
     // Load all sources

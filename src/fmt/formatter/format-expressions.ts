@@ -4,6 +4,7 @@ import {
     childByType,
     childIdxByField,
     childLeafIdxWithText,
+    childrenByField,
     containsComments,
     countNewlines,
     filterComments,
@@ -126,6 +127,10 @@ export const formatExpression = (code: CodeBuilder, node: Cst): void => {
         }
         case "Id": {
             code.apply(formatId, node);
+            return;
+        }
+        case "MapLiteral": {
+            formatMapLiteral(code, node);
             return;
         }
     }
@@ -582,4 +587,86 @@ const formatSuffixCall: FormatRule = (code, node) => {
     formatSeparatedList(code, args, formatExpression, { endIndex });
 
     formatTrailingComments(code, args, endIndex, true);
+};
+
+const formatTypeArgs: FormatRule = (code, node) => {
+    // <Int , String, Foo>
+    //  ^^^ ^^^^^^^^^^^^^
+    //  |   |
+    //  |   tail
+    //  head
+    const head = childByField(node, "head");
+    const tail = childByField(node, "tail");
+
+    if (!head) {
+        throw new Error("Invalid type args");
+    }
+
+    code.add("<");
+    code.apply(formatType, head);
+
+    if (tail) {
+        const right = childrenByField(tail, "right");
+        right.forEach((type) => {
+            code.add(", ");
+            code.apply(formatType, type);
+        });
+    }
+
+    code.add(">");
+};
+
+const formatMapLiteral: FormatRule = (code, node) => {
+    // map<Int, Int> { }
+    // ^^^^^^^^^^^^^ ^ ^
+    // |             | |
+    // |             | closeBrace
+    // |             openBrace
+    // typeArgs
+    const typeArgs = childByField(node, "typeArgs");
+    const openBrace = childLeafIdxWithText(node, "{");
+    const closeBrace = childLeafIdxWithText(node, "}");
+
+    if (!typeArgs || openBrace === -1 || closeBrace === -1) {
+        throw new Error("Invalid map literal");
+    }
+
+    code.add("map");
+    code.apply(formatTypeArgs, typeArgs);
+    code.add(" ");
+
+    formatSeparatedList(
+        code,
+        node,
+        (code, item) => {
+            const key = childByField(item, "key");
+            const value = childByField(item, "value");
+
+            if (!key || !value) {
+                throw new Error("Invalid map literal field");
+            }
+
+            code.apply(formatExpression, key);
+            code.add(": ");
+            code.apply(formatExpression, value);
+        },
+        {
+            startIndex: openBrace,
+            endIndex: closeBrace,
+            wrapperLeft: "{",
+            wrapperRight: "}",
+            extraWrapperSpace: " ",
+            provideTrailingComments: (field) => {
+                if (field.$ !== "node") return [];
+
+                // 10: 20
+                //     ^^ this
+                const value = childByField(field, "value");
+                if (!value) return [];
+
+                const endIndex = childIdxByField(field, "value");
+                return filterComments(field.children.slice(endIndex));
+            },
+        },
+    );
 };

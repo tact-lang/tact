@@ -64,7 +64,7 @@ export async function writeProgram(
         .filter((it) => it.loc.origin === "user")
         .map((it) => ({
             name: it.name,
-            value: writeTypescriptValue(it.value),
+            value: writeTypescriptValue(ctx, it.value, it.type, it.loc),
             fromContract: false,
         }));
 
@@ -205,7 +205,7 @@ export async function writeProgram(
             constants.push(
                 ...t.constants.map((it) => ({
                     name: it.name,
-                    value: writeTypescriptValue(it.value),
+                    value: writeTypescriptValue(ctx, it.value, it.type, it.loc),
                     fromContract: true,
                 })),
             );

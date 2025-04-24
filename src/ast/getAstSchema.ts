@@ -533,6 +533,30 @@ export const getAstSchema = (
                 initializer,
                 loc: toSrcInfo(loc),
             }),
+        MapLiteral: (
+            type: Ast.MapType,
+            fields: readonly Ast.MapField[],
+            loc: Loc,
+        ): Ast.MapLiteral =>
+            createNode<Ast.MapLiteral>({
+                kind: "map_literal",
+                type,
+                fields,
+                loc: toSrcInfo(loc),
+            }),
+        SetLiteral: (
+            valueType: Ast.TypeId,
+            valueStorageType: Ast.Id | undefined,
+            fields: readonly Ast.Expression[],
+            loc: Loc,
+        ): Ast.SetLiteral =>
+            createNode<Ast.SetLiteral>({
+                kind: "set_literal",
+                valueType,
+                valueStorageType,
+                fields,
+                loc: toSrcInfo(loc),
+            }),
         InitOf: (
             contract: Ast.Id,
             args: Ast.Expression[],

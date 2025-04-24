@@ -184,6 +184,9 @@ Bounced = "bounced";
 
 TypeId "capitalized identifier" = name:#$([A-Z] [a-zA-Z0-9_]*);
 
+typeArgs = generic<type>;
+generic<T> = "<" @commaList<T>? ">";
+
 statement
     = StatementLet
     / StatementDestruct
@@ -258,6 +261,8 @@ SuffixFieldAccess = "." name:Id;
 // Order is important
 primary
     = Parens
+    / MapLiteral
+    / SetLiteral
     / StructInstance
     / IntegerLiteral
     / BoolLiteral
@@ -274,6 +279,22 @@ Parens = child:parens;
 
 StructInstance = type:TypeId body:StructInstanceFields;
 StructInstanceFields = "{" fields:commaList<StructFieldInitializer>? "}";
+
+MapLiteral =
+    keyword<"map">
+    typeArgs:typeArgs
+    "{"
+    fields:commaList<mapField>?
+    "}";
+mapField = key:expression ":" value:expression;
+
+SetLiteral =
+    "set"
+    typeArgs:typeArgs
+    "{"
+    fields:commaList<expression>?
+    "}";
+
 InitOf = keyword<"initOf"> name:Id params:ParameterList<expression>;
 CodeOf = "codeOf" name:Id;
 

@@ -244,7 +244,8 @@ fun showcase() {
     // keys of type K with corresponding values of type V.
 
     // A map of Int keys to Int values.
-    // Type ascription is mandatory.
+    // Type ascription is mandatory unless you use a map literal for initialization.
+    // See below for more info.
     let myMap: map<Int, Int> = emptyMap();
 
     // Maps have a number of built-in methods.
@@ -258,6 +259,14 @@ fun showcase() {
     myMap.del(0);              // false and not an error, because deletion is idempotent
     myMap.exists(0);           // false, there is no entry under key 0
     myMap.isEmpty();           // true, there is no other entries
+
+    // Since Tact 1.6.7 statically known `set`s can be replaced by map literals.
+    // Because the map is created at compile-time, it doesn't consume as much gas.
+    let myMap2: map<Int as uint8, Int as int13> = map<Int as uint8, Int as int13> {
+        // Key expression: Value expression
+        1 + 2: 10 * pow2(3), // key 3, value 80
+        1 + 3: 20 * pow2(4), // key 4, value 320
+    };
 
     // In most cases, to compare two maps it's sufficient to use the shallow
     // comparison via the equality == and inequality != operators.
@@ -514,6 +523,9 @@ contract MyContract() {
         self; // used to reference the current contract from within
               // and the value of the currently extended type inside
               // the extension function. See the "Functions" section below for more.
+
+        // Map literals.
+        map<Int, Int as coins> { 11: 11 };
 
         // Identifiers, with usual naming conventions:
         // They may contain Latin lowercase letters `a-z`,
