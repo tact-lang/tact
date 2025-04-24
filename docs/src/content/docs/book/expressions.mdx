@@ -178,7 +178,7 @@ Map literals create maps by enclosing a comma-delimited list of zero or more pre
 
 ```tact
 // A compile-time map literal
-let myMap = map<Int as uint8, Int as int13> {
+let myMap: map<Int as uint8, Int as int13> = map<Int as uint8, Int as int13> {
     // Key expression: Value expression
     1 + 2: 10 * pow2(3), // key 3, value 80
     1 + 3: 20 * pow2(4), // key 4, value 320
