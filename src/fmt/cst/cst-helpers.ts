@@ -82,6 +82,16 @@ export const childByField = (node: Cst, field: string): undefined | CstNode => {
     return undefined;
 };
 
+export const childrenByField = (node: Cst, field: string): CstNode[] => {
+    if (node.$ === "leaf") {
+        return [];
+    }
+
+    return node.children
+        .filter((c) => c.$ === "node")
+        .filter((c) => c.field === field);
+};
+
 export const childIdxByField = (node: Cst, field: string): number => {
     if (node.$ === "leaf") {
         return -1;
