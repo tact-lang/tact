@@ -127,18 +127,18 @@ Note that [persistent state variables](/book/contracts#variables) of type `map<K
 map<K, V> { key1: value1, key2: value2, /* ... */, keyN: valueN };
 ```
 
-Map literals (or initializers) are expressions that provide a concise way to create maps. First goes the `map<K, V>{:tact}` type expression, then a curly-brace enclosed comma-delimited list of zero or more predefined key-value pairs.
+Map literals are expressions that provide a concise way to create maps. First goes the `map<K, V>{:tact}` type expression, then a curly-brace enclosed comma-delimited list of zero or more predefined key-value pairs.
 
 ```tact
 // Declaring a map as a local variable via a map literal expression
-let myMap: map<Int, Int> = map<Int, Int> {
+let myMap: map<Int as uint8, Int as uint8> = map<Int as uint8, Int as uint8> {
     // Key: Value
     1: 100, // key 1, value 100
     2: 200, // key 2, value 200
 };
 
 // Notice that type ascription can be omitted since the type can be inferred
-let inferredMap = map<Int, Int> {
+let inferredMap = map<Int as uint8, Int as uint8> {
     1: 100,
     2: 200, // trailing comma is allowed
 };
@@ -160,13 +160,13 @@ myMap == myMap2; // true
 When using the same key for the multiple entries, the last occurrence of each key-value pair takes precedence. That is, if there are multiple entries with the same key, only the last one will be used.
 
 ```tact
-let putItBluntly = map<Int, Int> {
+let allTheSame = map<Int, Int> {
     1: 100,
     1: 200,
     1: 300,
-    1: 420,
+    1: 400,
 };
-putItBluntly.get(1)!!; // 420
+allTheSame.get(1)!!; // 400
 ```
 
 Both keys and values can be arbitrary compile-time expressions as long as their resulting types match the respective key-value types of the map literal.
@@ -180,7 +180,7 @@ fun getExchangesList(): map<Address, Cell> {
 }
 ```
 
-Finally, serialization annotations of key and value types are allowed with the [`as{:tact}` keyword](/book/integers#serialization).
+Because maps are represented as cells with binary data, `Int` and `Uint` types must be used with [storage annotations](/book/integers#serialization).
 
 ```tact
 let smartMoney = map<Int as uint8, Int as coins> {};

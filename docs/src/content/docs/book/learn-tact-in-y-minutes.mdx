@@ -260,8 +260,8 @@ fun showcase() {
     myMap.exists(0);           // false, there is no entry under key 0
     myMap.isEmpty();           // true, there is no other entries
 
-    // Since Tact 1.6.7, maps can also be initialized with compile-time literals,
-    // which do not require type ascriptions in the respective let statements.
+    // Since Tact 1.6.7 statically known `set`s can be replaced by map literals.
+    // Because the map is created at compile-time, it doesn't consume as much gas.
     let myMap2 = map<Int as uint8, Int as int13> {
         // Key expression: Value expression
         1 + 2: 10 * pow2(3), // key 3, value 80
