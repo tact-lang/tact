@@ -1,46 +1,39 @@
 # Security Policy
 
-The Tact team and community take security bugs in Tact seriously. We appreciate your efforts to disclose your findings responsibly and will make every effort to acknowledge your contributions and fix your findings as soon as possible.
-
-## Table of Contents
-
-- [Supported Versions](#supported-versions)
-- [Reporting Security Issues](#reporting-security-issues)
-- [Response Times](#response-times)
-- [How to Report](#how-to-report)
-- [In Scope](#in-scope)
-- [Out of Scope](#out-of-scope)
-- [PGP Key to Use If Reporting via Email](#pgp-key-to-use-if-reporting-via-email)
-
 ## Supported Versions
 
-We currently support only the latest stable release of the Tact compiler and infrastructure libraries.
+We release security patches for the following versions:
 
 | Versions | Supported |
 | -------- | --------- |
-| 1.6.x    | ✅ Yes    |
+| 1.6.6    | ✅ Yes    |
+| 1.5.4    | ✅ Yes    |
 | < 1.6    | ❌ No     |
 
-You can check the latest Tact compiler version at <https://www.npmjs.com/package/@tact-lang/compiler>.
+You can find the latest release here: <https://github.com/tact-lang/tact/releases>.
 
-## Reporting Security Issues
+## Reporting a Vulnerability
 
-If you discover a security vulnerability in the Tact compiler, standard library, and tooling, **please report it privately and responsibly**.
+If you discover a security vulnerability, please **do not open an issue**.
+Instead, please send us a detailed report using either email ([it+tact@tonstudio.io](mailto:it+tact@tonstudio.io)) or the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/tact-lang/tact/security/advisories/new) tab.
 
-We appreciate responsible disclosure and are committed to working with the security community. If you report a valid vulnerability, we will credit you in our release notes unless you request otherwise.
+If you use email, please encrypt your email using our [PGP key](#pgp-key-to-use-if-reporting-via-email). If you're unfamiliar with PGP encryption, please still send us an email without disclosing the vulnerability and we will coordinate a secure channel with you.
+
+Thank you for helping us make Tact safer for everyone building on TON.
 
 ## Response Times
 
 We will acknowledge your report within three business days and aim to provide a resolution or mitigation plan within 30 calendar days. If a resolution requires more time, we will keep you updated on the progress.
 
-### How to Report
+## Disclosure Policy
 
-Please send us a detailed report using either email or the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/tact-lang/tact/security/advisories/new) tab.
+If we confirm the vulnerability, we will work with you to coordinate a fix before public disclosure.
 
-**Email:** `it+tact@tonstudio.io`
-Please encrypt your email using our [PGP key](#pgp-key-to-use-if-reporting-via-email). If you're unfamiliar with PGP encryption, please still send us an email without disclosing the vulnerability and we will coordinate a secure channel with you.
+- We follow [responsible disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure).
+- Fixes will be announced in a security advisory with a CVE (if applicable).
+- Credit will be given to the reporter unless anonymity is requested.
 
-Your report should include:
+## What to Include in the Security Report
 
 - A description of the vulnerability,
 - Steps to reproduce (if applicable),
@@ -59,31 +52,7 @@ Please include all details necessary to reproduce the vulnerability, such as:
 
 Please include steps to reproduce the bug you have found in as much detail as possible.
 
-## In Scope
-
-This policy applies to:
-
-- The Tact compiler, including the TypeScript wrappers and compilation report it generates,
-- The Tact standard library (`stdlib`),
-- The Tact source code formatter (`tact-fmt`),
-- The Tact [documentation](https://docs.tact-lang.org),
-
-A security issue, in this case, may stem from miscompilation, incorrect formatting, incorrect documentation description, which can lead to monetary loss, permanent or temporary unintended funds freezing, if an affected smart contract is deployed in the mainnet and a malicious third party interacts with it.
-
-## Out of Scope
-
-Only the targets listed under the "In Scope" section are part of the security policy.
-
-The following are considered out of scope:
-- Any issues with processing an untrusted input by the compiler, formatter, and any other tool in this repository,
-- Compiler crashes / exceptions / out-of-memory errors that do not result in generation of vulnerable TVM bitcode,
-- Security vulnerabilities due to compiler misconfiguration by the user,
-- Infrastructure: server backend components, static webpages, Web applications, GitHub services,
-- Any third-party tools, libraries, or smart contracts that are not part of this repository.
-
----
-
-**Thank you for helping us make Tact safer for everyone building on TON.**
+We aim to respond to security reports within **5 business days**. If we confirm the vulnerability, we will work with you to coordinate a fix before public disclosure.
 
 ## PGP Key to Use If Reporting via Email
 
