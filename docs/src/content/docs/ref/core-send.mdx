@@ -26,7 +26,7 @@ Attempts to queue more than 255 messages throw an exception with [exit code 33](
 Usage example:
 
 ```tact
-send(SendParameters{
+send(SendParameters {
     to: sender(),    // back to the sender,
     value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
                      // and no message body
@@ -60,7 +60,7 @@ Attempts to queue more than 255 messages throw an exception with an [exit code 3
 Usage example:
 
 ```tact
-message(MessageParameters{
+message(MessageParameters {
     to: sender(),    // back to the sender,
     value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
                      // and no message body
@@ -101,7 +101,7 @@ Attempts to queue more than 255 messages throw an exception with an [exit code 3
 Usage example:
 
 ```tact
-deploy(DeployParameters{
+deploy(DeployParameters {
     init: initOf SomeContract(), // with initial code and data of SomeContract
                                  // and no additional message body
     mode: SendIgnoreErrors,      // skip the message in case of errors
@@ -140,7 +140,7 @@ cashback(sender());
 
 // The cashback() function above is cheaper, but functionally
 // equivalent to the following call to the message() function
-message(MessageParameters{
+message(MessageParameters {
     mode: SendRemainingValue | SendIgnoreErrors,
     body: null,
     value: 0,

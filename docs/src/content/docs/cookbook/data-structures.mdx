@@ -113,7 +113,7 @@ extends mutates fun deleteAll(self: Array) {
 
 // Global static function for creating an empty Array
 fun emptyArray(): Array {
-    return Array{m: emptyMap(), length: 0}; // length defaults to 0
+    return Array { m: emptyMap(), length: 0 }; // length defaults to 0
 }
 
 // Contract emulating an Array using the map
@@ -216,7 +216,7 @@ extends mutates fun deleteAll(self: Stack) {
 
 // Global static function for creating an empty Stack
 fun emptyStack(): Stack {
-    return Stack{m: emptyMap(), length: 0}; // length defaults to 0
+    return Stack { m: emptyMap(), length: 0 }; // length defaults to 0
 }
 
 contract MapAsStack {

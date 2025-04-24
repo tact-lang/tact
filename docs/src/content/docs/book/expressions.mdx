@@ -199,10 +199,10 @@ struct StExample {
 
 fun example() {
     // Instance with default value of fieldInit
-    StExample{ fieldUninit: 2 };
+    StExample { fieldUninit: 2 };
 
     // Instance with both fields set
-    StExample{
+    StExample {
         fieldInit: 0,
         fieldUninit: 2, // trailing comma is allowed
     };
@@ -223,7 +223,7 @@ struct StExample {
 }
 
 fun example(): Int {
-    let struct: StExample = StExample{ fieldUninit: 2 }; // instantiation
+    let struct: StExample = StExample { fieldUninit: 2 }; // instantiation
 
     struct.fieldInit;          // access a field
     return struct.fieldUninit; // return field value from the function

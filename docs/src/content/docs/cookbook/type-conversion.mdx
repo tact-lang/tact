@@ -82,12 +82,12 @@ message(0x45) Nice {
 }
 
 fun convert() {
-    let st = Profit{
+    let st = Profit {
         big: null,
         dict: null,
         energy: 42,
     };
-    let msg = Nice{ maybeStr: "Message of the day!" };
+    let msg = Nice { maybeStr: "Message of the day!" };
 
     st.toCell();
     msg.toCell();
@@ -118,12 +118,12 @@ message(0x45) Nice {
 }
 
 fun convert() {
-    let stCell = Profit{
+    let stCell = Profit {
         big: null,
         dict: null,
         energy: 42,
     }.toCell();
-    let msgCell = Nice{ maybeStr: "Message of the day!" }.toCell();
+    let msgCell = Nice { maybeStr: "Message of the day!" }.toCell();
 
     Profit.fromCell(stCell);
     Nice.fromCell(msgCell);
