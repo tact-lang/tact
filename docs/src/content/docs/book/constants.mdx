@@ -25,6 +25,20 @@ contract MyContract {
 }
 ```
 
+Since Tact 1.6.7 type annotations can be omitted.
+
+```tact
+const MY_CONSTANT = 42;
+
+trait MyTrait {
+    const MY_CONSTANT = 42;
+}
+
+contract MyContract {
+    const MY_CONSTANT = 42;
+}
+```
+
 ## Virtual and abstract constants
 
 Virtual constants are constants that can be defined in a trait but changed in a contract. This is useful when you need to configure some traits at compile time. Let's define a virtual constant and an abstract one:
@@ -67,6 +81,6 @@ trait Treasure {
 }
 
 contract MyContract with Treasure {
-    override const ENABLE_TIMELOCK: Bool = false;
+    override const ENABLE_TIMELOCK = false;
 }
 ```
