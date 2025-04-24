@@ -1194,9 +1194,13 @@ const parseConstant =
     ): Handler<Ast.ConstantDecl | Ast.ConstantDef> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
-        const type = parseType(node.type)(ctx);
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        const type = node.type ? parseType(node.type)(ctx) : undefined;
 
         if (node.body.$ === "ConstantDeclaration") {
+            if (typeof type === "undefined") {
+                return ctx.err.constantDeclMustHaveType()(node.loc);
+            }
             const attributes = parseConstantAttributes(
                 node.attributes,
                 true,

@@ -182,7 +182,7 @@ export function cloneNode<T extends AstNode>(
         } else if (src.kind === "constant_def") {
             return cloneNode({
                 ...src,
-                type: cloneNode(src.type),
+                type: src.type ? cloneNode(src.type) : src.type,
                 initializer: recurse(src.initializer),
             });
         } else if (src.kind === "constant_decl") {

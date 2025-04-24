@@ -103,7 +103,7 @@ export const getAstSchema = (
         ConstantDef: (
             attributes: Ast.ConstantAttribute[],
             name: Ast.Id,
-            type: Ast.Type,
+            type: Ast.Type | undefined,
             initializer: Ast.Expression,
             loc: Loc,
         ): Ast.ConstantDef =>
