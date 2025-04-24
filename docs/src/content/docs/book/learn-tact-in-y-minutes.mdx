@@ -244,7 +244,8 @@ fun showcase() {
     // keys of type K with corresponding values of type V.
 
     // A map of Int keys to Int values.
-    // Type ascription is mandatory.
+    // Type ascription is mandatory unless you use a map literal for initialization.
+    // See below for more info.
     let myMap: map<Int, Int> = emptyMap();
 
     // Maps have a number of built-in methods.
@@ -259,9 +260,18 @@ fun showcase() {
     myMap.exists(0);           // false, there is no entry under key 0
     myMap.isEmpty();           // true, there is no other entries
 
+    // Since Tact 1.6.7, maps can also be initialized with compile-time literals,
+    // which do not require type ascriptions in the respective let statements.
+    let myMap2 = map<Int as uint8, Int as int13> {
+        // Key expression: Value expression
+        1 + 2: 10 * pow2(3), // key 3, value 80
+        1 + 3: 20 * pow2(4), // key 4, value 320
+    };
+
     // In most cases, to compare two maps it's sufficient to use the shallow
     // comparison via the equality == and inequality != operators.
     myMap == emptyMap(); // true
+    myMap != myMap2;     // true
 
     // To traverse maps, the foreach statement is used.
     // See the "Statements" section below for more info.

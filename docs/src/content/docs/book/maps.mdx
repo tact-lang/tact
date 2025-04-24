@@ -118,6 +118,92 @@ contract Example {
 
 Note that [persistent state variables](/book/contracts#variables) of type `map<K, V>{:tact}` are initialized empty by default and do not need default values or initialization in the [`init(){:tact}` function](/book/contracts#init-function).
 
+### Initialize with a map literal {#initialize}
+
+<Badge text="Available since Tact 1.6.7" variant="tip" size="medium"/><p/>
+
+```tact
+// K and V correspond to the key and value types of the target map
+map<K, V> { key1: value1, key2: value2, /* ... */, keyN: valueN };
+```
+
+Map literals (or initializers) are expressions that provide a concise way to create maps. First goes the `map<K, V>{:tact}` type expression, then a curly-brace enclosed comma-delimited list of zero or more predefined key-value pairs.
+
+```tact
+// Declaring a map as a local variable via a map literal expression
+let myMap: map<Int, Int> = map<Int, Int> {
+    // Key: Value
+    1: 100, // key 1, value 100
+    2: 200, // key 2, value 200
+};
+
+// Notice that type ascription can be omitted since the type can be inferred
+let inferredMap = map<Int, Int> {
+    1: 100,
+    2: 200, // trailing comma is allowed
+};
+
+// However, if you specify the type of ascription in the let statement,
+// it should exactly match the one in the map literal, or it will not compile.
+let mismatch: map<Address, Cell> = map<Address, Int> {}; // COMPILATION ERROR! Type mismatch
+```
+
+Empty map literals are also supported. They produce the same value as the [`emptyMap(){:tact}`](#emptymap) function but allow omitting type ascriptions.
+
+```tact
+let myMap = map<Int, Cell> {};
+let myMap2: map<Int, Cell> = emptyMap();
+
+myMap == myMap2; // true
+```
+
+When using the same key for the multiple entries, the last occurrence of each key-value pair takes precedence. That is, if there are multiple entries with the same key, only the last one will be used.
+
+```tact
+let putItBluntly = map<Int, Int> {
+    1: 100,
+    1: 200,
+    1: 300,
+    1: 420,
+};
+putItBluntly.get(1)!!; // 420
+```
+
+Both keys and values can be arbitrary compile-time expressions as long as their resulting types match the respective key-value types of the map literal.
+
+```tact
+fun getExchangesList(): map<Address, Cell> {
+    return map<Address, Cell> {
+        address("UQD5vcDeRhwaLgAvralVC7sJXI-fc2aNcMUXqcx-BQ-OWi5c"): "One Known eXchange".asCell(),
+        address("UQABGo8KCza3ea8DNHMnSWZmbRzW-05332eTdfvW-XDQEmnJ"): "yRacket".asCell(),
+    };
+}
+```
+
+Finally, serialization annotations of key and value types are allowed with the [`as{:tact}` keyword](/book/integers#serialization).
+
+```tact
+let smartMoney = map<Int as uint8, Int as coins> {};
+
+// Notice that annotations are checked and
+let tryAndSerializeMe = map<Int as uint1, Int as uint8> {
+    1: 100,
+    2: 200, // COMPILATION ERROR! bitLength is too small
+};
+
+// If you explicitly specify the type of ascription in the let statement,
+// it should exactly match the one in the map literal, or it will not compile.
+let nope: map<Int as uint8, Int as coins> = map<Int as int257, Int as varuint32> {};
+//                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                                          COMPILATION ERROR! Type mismatch
+```
+
+:::note
+
+  Support for runtime initialization values that are not resolved at [compile-time](/ref/core-comptime) is planned for future Tact releases.
+
+:::
+
 ### Set values, `.set()` {#set}
 
 ```tact
