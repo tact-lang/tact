@@ -112,3 +112,9 @@ it("should work anonymously", async () => {
     const result = await contract.getAnonymous();
     expect(result).toMatchSnapshot();
 });
+
+it("the last value of the same key should be used", async () => {
+    const { contract } = await setup();
+    const result = await contract.getDuplicates();
+    expect(result).toMatchSnapshot();
+});

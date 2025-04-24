@@ -88,4 +88,11 @@ contract Flat {
             2: 4,
         }.get(1)!!;
     }
+
+    get fun duplicates(): Int {
+        return map<Int as uint16, Int as int32> {
+            1: 3,
+            1: 4,
+        }.get(1)!!;
+    }
 }

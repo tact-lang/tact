@@ -321,3 +321,5 @@ Dictionary {
   },
 }
 `;
+
+exports[`the last value of the same key should be used 1`] = `4n`;
