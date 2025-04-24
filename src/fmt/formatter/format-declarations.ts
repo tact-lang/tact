@@ -316,13 +316,13 @@ export const formatConstant: FormatRule = (code, decl) => {
     //       ^^^ ^^^^^ ^^^^^
     //       |   |     |
     //       |   |     bodyOpt
-    //       |   type
+    //       |   typeOpt
     //       name
     const name = childByField(decl, "name");
-    const type = childByField(decl, "type");
+    const typeOpt = childByField(decl, "type");
     const bodyOpt = childByField(decl, "body");
 
-    if (!name || !type) {
+    if (!name) {
         throw new Error("Invalid constant declaration");
     }
 
@@ -332,10 +332,11 @@ export const formatConstant: FormatRule = (code, decl) => {
     }
 
     // const FOO: Int
-    code.add("const")
-        .space()
-        .apply(formatId, name)
-        .apply(formatAscription, type);
+    code.add("const").space().apply(formatId, name);
+
+    if (typeOpt) {
+        code.apply(formatAscription, typeOpt);
+    }
 
     if (bodyOpt && bodyOpt.type === "ConstantDefinition") {
         // const Foo: Int = 100;

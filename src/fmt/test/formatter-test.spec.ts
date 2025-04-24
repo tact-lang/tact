@@ -2484,6 +2484,20 @@ describe("should format", () => {
 
     describe("top level declarations", () => {
         it(
+            "constant with type",
+            intact(`
+                const FOO: Int = 100;
+            `),
+        );
+
+        it(
+            "constant without type",
+            intact(`
+                const FOO = 100;
+            `),
+        );
+
+        it(
             "empty struct",
             intact(`
             struct Foo {}
@@ -2719,6 +2733,15 @@ describe("should format", () => {
                 const Foo: Int = 0;
             }
         `),
+        );
+
+        it(
+            "contract with constant without type",
+            intact(`
+                contract Foo {
+                    const FOO = 0;
+                }
+            `),
         );
 
         it(
