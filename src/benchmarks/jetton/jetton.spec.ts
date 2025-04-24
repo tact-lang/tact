@@ -325,22 +325,14 @@ function testJetton(
     });
 
     it("wallet cells", async () => {
-        const walletAddress = await jettonMinter.getGetWalletAddress(
-            deployer.address,
-        );
-
         expect(
-            (await getStateSizeForAccount(blockchain, walletAddress)).cells,
+            (await getStateSizeForAccount(blockchain, deployerJettonWallet.address)).cells,
         ).toEqual(codeSizeResults.size["wallet cells"]);
     });
 
     it("wallet bits", async () => {
-        const walletAddress = await jettonMinter.getGetWalletAddress(
-            deployer.address,
-        );
-
         expect(
-            (await getStateSizeForAccount(blockchain, walletAddress)).bits,
+            (await getStateSizeForAccount(blockchain, deployerJettonWallet.address)).bits,
         ).toEqual(codeSizeResults.size["wallet bits"]);
     });
 }
