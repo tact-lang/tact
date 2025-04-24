@@ -1342,7 +1342,7 @@
   dependencies:
     node-inspect-extracted "^2.0.0"
 
-"@tonstudio/parser-runtime@^0.0.1":
+"@tonstudio/parser-runtime@0.0.1":
   version "0.0.1"
   resolved "https://npm.dev-internal.org/@tonstudio/parser-runtime/-/parser-runtime-0.0.1.tgz#469955fb7ea354d4fadaa5964359b11fd17f926b"
   integrity sha512-5s4fLkXWxa4SAd7QGGvJXe13GakEo0J3VF5dUI/i3A//bGZxMwCp1FcnbErpNs3y0LcAZoXE5FCUnDowDQptqw==
