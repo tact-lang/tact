@@ -79,7 +79,7 @@ Constant =
     attributes:ConstantAttribute*
     keyword<"const">
     name:Id
-    type:ascription
+    type:ascription?
     body:(ConstantDefinition / ConstantDeclaration);
 
 ConstantAttribute = name:(

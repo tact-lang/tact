@@ -105,7 +105,9 @@ export function traverseAndCheck(
             break;
         case "constant_def":
             traverseAndCheck(node.name, callback);
-            traverseAndCheck(node.type, callback);
+            if (node.type) {
+                traverseAndCheck(node.type, callback);
+            }
             traverseAndCheck(node.initializer, callback);
             break;
         case "constant_decl":

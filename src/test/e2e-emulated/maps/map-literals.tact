@@ -1,5 +1,4 @@
-const globalConst: map<Int as uint16, Int as int32> =
-    map<Int as uint16, Int as int32> { 1: -2 };
+const globalConst = map<Int as uint16, Int as int32> { 1: -2 };
 
 struct Foo {
     x: Int as uint2;
@@ -28,8 +27,7 @@ contract Flat {
         return map<Int as uint16, Int as int32> {};
     }
 
-    const contractConst: map<Int as int16, Int as uint32> =
-        map<Int as int16, Int as uint32> { -1: 2 };
+    const contractConst = map<Int as int16, Int as uint32> { -1: 2 };
 
     get fun contractConst(): map<Int as int16, Int as uint32> {
         return self.contractConst;
