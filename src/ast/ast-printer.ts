@@ -614,9 +614,8 @@ export const ppAstConstant: Printer<Ast.ConstantDef> =
     ({ attributes, initializer, name, type }) =>
     (c) => {
         const attrsCode = attributes.map(({ type }) => type + " ").join("");
-        const ascription = type ? `: ${ppAstType(type)}` : "";
         return c.row(
-            `${attrsCode}const ${ppAstId(name)}${ascription} = ${ppAstExpression(initializer)};`,
+            `${attrsCode}const ${ppAstId(name)}: ${ppAstType(type)} = ${ppAstExpression(initializer)};`,
         );
     };
 

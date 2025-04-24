@@ -472,12 +472,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     function buildConstantDescription(
         src: Ast.ConstantDef | Ast.ConstantDecl,
     ): ConstantDescription {
-        const constDeclTy = src.type
-            ? buildTypeRef(src.type, types)
-            : ({
-                  // will be set further in typechecking phase
-                  kind: "void",
-              } as const);
+        const constDeclTy = buildTypeRef(src.type, types);
         return {
             name: idText(src.name),
             type: constDeclTy,
@@ -2339,7 +2334,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     // A pass that initializes constants and default field values
-    ctx = checkConstantsAndDefaultContractAndStructFields(ctx, types);
+    ctx = checkConstantsAndDefaultContractAndStructFields(ctx);
 
     // detect self-referencing or mutually-recursive types
     checkRecursiveTypes(ctx);
@@ -2497,33 +2492,17 @@ function checkConstants(
     constants: ConstantDescription[],
     ctx: CompilerContext,
     typeRef: TypeRef | undefined,
-    types: Map<string, TypeDescription>,
 ): CompilerContext {
     for (const constant of constants) {
         if (constant.ast.kind === "constant_def") {
-            const declaredType = constant.ast.type
-                ? buildTypeRef(constant.ast.type, types)
-                : undefined;
-            const initializer = constant.ast.initializer;
-            let stmtCtx = emptyContext(initializer.loc, null, {
-                kind: "void",
-            });
-            if (typeRef) {
-                stmtCtx = addVariable(selfId, typeRef, ctx, stmtCtx);
-            }
-            ctx = resolveExpression(initializer, stmtCtx, ctx);
-            const initTy = getExpType(ctx, initializer);
-            if (declaredType) {
-                constant.type = declaredType;
-                if (!isAssignable(initTy, constant.type)) {
-                    throwCompilationError(
-                        `Constant ${idTextErr(constant.name)} has declared type "${printTypeRef(constant.type)}", but its initializer has incompatible type "${printTypeRef(initTy)}"`,
-                        initializer.loc,
-                    );
-                }
-            } else {
-                constant.type = initTy;
-            }
+            ctx = checkInitializerType(
+                constant.name,
+                "Constant",
+                constant.type,
+                constant.ast.initializer,
+                ctx,
+                typeRef,
+            );
         }
     }
     return ctx;
@@ -2531,13 +2510,12 @@ function checkConstants(
 
 function checkConstantsAndDefaultContractAndStructFields(
     ctx: CompilerContext,
-    types: Map<string, TypeDescription>,
 ): CompilerContext {
     const staticConstants = getAllStaticConstants(ctx);
 
     // we split the handling of constants into two steps:
     // first we check all constants to make sure the types of initializers are correct
-    ctx = checkConstants(staticConstants, ctx, undefined, types);
+    ctx = checkConstants(staticConstants, ctx, undefined);
 
     for (const aggregateTy of getAllTypes(ctx)) {
         switch (aggregateTy.kind) {
@@ -2556,7 +2534,6 @@ function checkConstantsAndDefaultContractAndStructFields(
                         aggregateTy.constants,
                         ctx,
                         selfTypeRef,
-                        types,
                     );
 
                     for (const field of aggregateTy.fields) {

@@ -181,9 +181,6 @@ export const syntaxErrorSchema = <T, U>(
         noSetLiterals: () => {
             return handle(text(`Set literals not supported yet`));
         },
-        constantDeclMustHaveType: () => {
-            return handle(text(`Constant declaration must have type`));
-        },
     };
 };
 

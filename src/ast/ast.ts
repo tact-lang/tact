@@ -96,7 +96,7 @@ export type ConstantDef = {
     readonly kind: "constant_def";
     readonly attributes: readonly ConstantAttribute[];
     readonly name: Id;
-    readonly type: Type | undefined;
+    readonly type: Type;
     readonly initializer: Expression;
     readonly id: number;
     readonly loc: SrcInfo;
