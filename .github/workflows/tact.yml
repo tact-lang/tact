@@ -80,43 +80,32 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [22]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test
       - name: Test compatibility with tact-template
         run: |
-          # !!!!!!! Don't forget to update test-windows below !!!!!!!
+          # NOTE:
+          # The ${{}} here and elsewhere is a templating syntax that allows injecting strings
+          # into the code of the resulting action. This is handy for keeping workflows together
+          # and using their default shells (PowerShell on Windows, Bash/Zsh elsewhere)
+          #
+          # Making PowerShell fail on errors
+          ${{ matrix.os != 'windows-latest' && '$ErrorActionPreference = "Stop"' || '' }}
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
-          # Hijack the dependency on Tact to avoid redundant npm downloads
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
-          mv temp.json package.json
-          yarn link @tact-lang/compiler
-          yarn install
-          yarn build
-          yarn test
-
-  test-windows:
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [22]
-        os: [windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/test
-      - name: Test compatibility with tact-template
-        run: |
-          # !!!!!!! Don't forget to update test above !!!!!!!
-          $ErrorActionPreference = 'Stop'
-          git clone https://github.com/tact-lang/tact-template.git
-          cd tact-template
-          # Hijack the dependency on Tact to avoid redundant npm downloads
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
-          Move-Item temp.json package.json -Force
+          # Hijacking the dependency on Tact to avoid redundant npm downloads
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json ${{
+            matrix.os == 'windows-latest' # this template allows to adjust a part of the command
+            && '-M | Set-Content'
+            || '>' }} temp.json
+          ${{
+            matrix.os == 'windows-latest'
+            && 'Move-Item -Force temp.json package.json' # this will be executed on Windows
+            || 'mv -f temp.json package.json'            # and this — elsewhere
+          }}
           yarn link @tact-lang/compiler
           yarn install
           yarn build
