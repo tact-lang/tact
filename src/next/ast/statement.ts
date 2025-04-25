@@ -131,16 +131,3 @@ export type StatementBlock = {
     readonly statements: readonly Statement[];
     readonly loc: Range;
 };
-
-export type DestructMapping = {
-    readonly kind: "destruct_mapping";
-    readonly field: Id;
-    readonly name: Id;
-    readonly loc: Range;
-};
-
-export type DestructEnd = {
-    readonly kind: "destruct_end";
-    readonly ignoreUnspecifiedFields: boolean;
-    readonly loc: Range;
-};

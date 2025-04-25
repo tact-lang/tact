@@ -3,8 +3,11 @@ import { emptyPath, fromString } from "@/imports/path";
 import { parentPath, createMemoryFs, createProxyFs } from "@/next/fs";
 import { getFiles } from "@/next/stdlib";
 import type { Cursor } from "@/next/fs";
-import type { AnyLogger, Logger, SourceLogger } from "@/error/logger-util";
-import type { ResolvedImport, TactSource } from "@/next/imports/source";
+import type { Logger, SourceLogger } from "@/error/logger-util";
+import type { FuncImport, ResolvedImport, Source } from "@/next/imports/source";
+import type { ImportPath, ModuleItem } from "@/next/ast";
+import type { Language, Range } from "@/next/ast/common";
+import { throwInternal } from "@/error/errors";
 
 type Options = {
     readonly log: Logger<string, void>;
@@ -24,7 +27,30 @@ type Options = {
     /**
      * Name of root source file of the project
      */
-    readonly root: string;
+    readonly rootPath: ImportPath;
+};
+
+type DepId = string;
+type RawTactSource = {
+    readonly code: string;
+    readonly imports: readonly RawImport[];
+    readonly items: readonly ModuleItem[];
+};
+type RawFuncSource = {
+    readonly code: string;
+    readonly imports: readonly RawFuncImport[];
+}
+
+type RawImport = RawTactImport | RawFuncImport;
+type RawTactImport = {
+    readonly language: "tact";
+    readonly depId: DepId;
+    readonly loc: Range;
+};
+type RawFuncImport = {
+    readonly language: "func";
+    readonly depId: DepId;
+    readonly loc: Range;
 };
 
 const readSource = async ({
@@ -32,63 +58,156 @@ const readSource = async ({
     project,
     stdlib,
     implicits,
-    root,
-}: Options): Promise<TactSource | undefined> => {
-    const status: Map<string, "pending" | TactSource> = new Map();
+    rootPath,
+}: Options) => {
+    const status: Map<DepId, 'pending' | 'errored' | 'done'> = new Map();
+    const tactRaw: Map<DepId, RawTactSource> = new Map();
+    const funcRaw: Map<DepId, RawFuncSource> = new Map();
 
-    const resolveImports = async (
+    const resolveTactImports = async (
         log: SourceLogger<string, void>,
-        file: Cursor,
+        dir: Cursor,
         code: string,
-    ): Promise<TactSource> => {
+    ): Promise<RawTactSource> => {
         const { imports: rawImports, items } = parse(log, code);
-        const imports: ResolvedImport[] = [...implicits];
-        for (const { importPath, loc } of rawImports) {
-            const { language, path, type } = importPath;
-            const importedFile =
-                type === "relative"
-                    ? file.focus(parentPath).focus(path)
-                    : stdlib.focus(path);
-            if (language === "tact") {
-                const source = await resolveSource(importedFile, log);
-                if (source) {
-                    imports.push({ kind: "tact", source, loc });
-                }
-            } else {
-                imports.push({ kind: "func", code, loc });
-            }
+        const imports: RawImport[] = [];
+        for (const { importPath: { language, path, type }, loc } of rawImports) {
+            imports.push({
+                language,
+                depId: await resolveSource(
+                    type === "relative"
+                        ? dir.focus(path)
+                        : stdlib.focus(path),
+                    language,
+                ),
+                loc,
+            });
         }
         return { code, imports, items };
     };
 
-    const resolveSource = async (
-        file: Cursor,
-        parentLog: AnyLogger<string, void>,
-    ): Promise<TactSource | undefined> => {
-        const path = file.getAbsolutePathForLog();
-        const res = status.get(path);
-        if (typeof res === "object") {
-            return res;
-        }
-        if (res === "pending") {
-            parentLog.error(
-                parentLog.text`Cyclic import: ${parentLog.path(path)}`,
-            );
-            return;
-        }
-        status.set(path, "pending");
-        const code = await file.read();
-        if (!code) {
-            return;
-        }
-        const source = await log.source(path, code, (log) => {
-            return resolveImports(log, file, code);
-        });
-        status.set(path, source);
-        return source;
+    const resolveFuncImports = async (
+        _log: SourceLogger<string, void>,
+        _file: Cursor,
+        code: string,
+        // eslint-disable-next-line @typescript-eslint/require-await
+    ): Promise<RawFuncSource> => {
+        // TODO: resolve imports
+        return { code, imports: [] };
     };
 
-    return resolveSource(project.focus(fromString(root)), log);
+    const resolveSource = async (file: Cursor, language: Language): Promise<DepId> => {
+        const path = file.getAbsolutePathForLog();
+        // this file is already currently being resolved
+        if (status.has(path)) {
+            return path;
+        }
+        status.set(path, 'pending');
+        const code = await file.read();
+        if (!code) {
+            status.set(path, 'errored');
+            return path;
+        }
+        const dir = file.focus(parentPath);
+        await log.source(path, code, async (log) => {
+            if (language === 'tact') {
+                tactRaw.set(path, await resolveTactImports(log, dir, code));
+            } else {
+                funcRaw.set(path, await resolveFuncImports(log, dir, code));
+            }
+        });
+        status.set(path, 'done');
+        return path;
+    };
+
+    if (rootPath.type !== 'relative') {
+        log.error(log.text`Cannot build standard library as root`);
+        return undefined;
+    }
+    if (rootPath.language !== 'tact') {
+        log.error(log.text`Use ${rootPath.language} compiler`);
+        return undefined;
+    }
+
+    const rootDepId = await resolveSource(project.focus(rootPath.path), rootPath.language);
+
+    if ([...status.values()].includes("errored")) {
+        return undefined;
+    }
+
+    const func: Map<DepId, {
+        readonly kind: 'func';
+        readonly code: string;
+        /* mutable */ imports: readonly FuncImport[];
+    }> = new Map();
+    for (const [key, { code }] of funcRaw) {
+        func.set(key, {
+            kind: 'func',
+            code,
+            imports: [],
+        });
+    }
+    for (const [key, { imports }] of funcRaw) {
+        const entry = func.get(key);
+        if (!entry) {
+            return throwInternal("Impossible");
+        }
+        entry.imports = imports.map(({ depId, language, loc }): FuncImport => {
+            const source = func.get(depId);
+            if (!source) {
+                return throwInternal("Impossible");
+            }
+            return { kind: language, source, loc };
+        });
+    }
+
+    const tact: Map<DepId, {
+        readonly kind: 'tact';
+        readonly code: string;
+        /* mutable */ imports: readonly ResolvedImport[];
+        readonly items: readonly ModuleItem[];
+    }> = new Map();
+    for (const [key, { code, items }] of tactRaw) {
+        tact.set(key, {
+            kind: 'tact',
+            code,
+            imports: [],
+            items,
+        });
+    }
+    for (const [key, { imports }] of tactRaw) {
+        const entry = tact.get(key);
+        if (!entry) {
+            return throwInternal("Impossible");
+        }
+        entry.imports = [
+            ...implicits,
+            ...imports.map((i): ResolvedImport => {
+                if (i.language === 'func') {
+                    const source = func.get(i.depId);
+                    if (!source) {
+                        return throwInternal("Impossible");
+                    }
+                    return { kind: 'func', source, loc: i.loc };
+                } else {
+                    const source = tact.get(i.depId);
+                    if (!source) {
+                        return throwInternal("Impossible");
+                    }
+                    return { kind: 'tact', source, loc: i.loc };
+                }
+            }),
+        ];
+    }
+
+    const sources: Source[] = [...func.values(), ...tact.values()];
+    const root = tact.get(rootDepId);
+
+    if (!root) {
+        return undefined;
+    }
+
+    return { sources, root };
 };
 
 /**
@@ -107,7 +226,11 @@ export const ProjectReader = async (log: Logger<string, void>) => {
         project: stdRoot,
         stdlib: stdLibs,
         implicits: [],
-        root: "std/stdlib.tact",
+        rootPath: {
+            type: 'relative',
+            language: 'tact',
+            path: fromString("std/stdlib.tact"),
+        },
     });
     if (!stdStd) {
         // Could not load standard library
@@ -118,7 +241,7 @@ export const ProjectReader = async (log: Logger<string, void>) => {
     /**
      * Read project
      */
-    const read = async (fsRootPath: string, tactRoot: string) => {
+    const read = async (fsRootPath: string, rootPath: ImportPath) => {
         const project = createProxyFs({
             log,
             root: fsRootPath,
@@ -127,17 +250,25 @@ export const ProjectReader = async (log: Logger<string, void>) => {
         const implicits: ResolvedImport[] = [
             {
                 kind: "tact",
-                source: stdStd,
+                source: stdStd.root,
                 loc: { start: 0, end: 0 },
             },
         ];
-        return await readSource({
+        const result = await readSource({
             log,
             project,
             stdlib: stdLibs,
             implicits,
-            root: tactRoot,
+            rootPath,
         });
+        if (!result) {
+            return undefined;
+        }
+
+        return {
+            root: result.root,
+            sources: [...stdStd.sources, ...result.sources],
+        };
     };
 
     return { read };

@@ -2,8 +2,10 @@ import path from "path";
 import { TerminalLogger } from "@/cli/logger";
 import { getAnsiMarkup, isColorSupported } from "@/cli/colors";
 import { ProjectReader } from "@/next/imports/reader";
-
-const target = "wallet-v4.tact";
+import { fromString } from "@/imports/path";
+import { inspect } from 'util';
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+const dump = (obj: unknown) => console.log(inspect(obj, { colors: false, depth: Infinity }));
 
 const main = async () => {
     const ansi = getAnsiMarkup(isColorSupported());
@@ -12,11 +14,18 @@ const main = async () => {
             // TODO: new CLI based (see typegen)
             const reader = await ProjectReader(log);
             if (!reader) return;
-            const root = await reader.read(
-                path.join(__dirname, "example"),
-                target,
+            const result = await reader.read(
+                path.join(__dirname, "example"), 
+                // TODO: parseImportString(root, ImportErrors(log)) when there are CLI/config loggers
+                {
+                    language: 'tact',
+                    type: 'relative',
+                    path: fromString("mutual1.tact"),
+                },
             );
-            console.log(root);
+            if (result) {
+                dump(result.sources.length);
+            }
         });
     });
 };

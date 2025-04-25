@@ -4,10 +4,10 @@ import type { $ast } from "@/next/grammar/grammar";
 import * as G from "@/next/grammar/grammar";
 import { SyntaxErrors } from "@/next/grammar/errors";
 import { makeMakeVisitor } from "@/utils/tricks";
-import { emptyPath, fromString } from "@/next/fs";
-import type { Language, Range } from "@/next/ast/common";
+import type { Range } from "@/next/ast/common";
 import { throwInternal } from "@/error/errors";
 import type { SourceLogger } from "@/error/logger-util";
+import { parseImportString } from "@/next/grammar/import-parser";
 
 const makeVisitor = makeMakeVisitor("$");
 
@@ -1767,84 +1767,13 @@ const parseModuleItem =
         return [parseModuleItemAux(node)(ctx)];
     };
 
-const detectLanguage = (path: string): Language | undefined => {
-    if (path.endsWith(".fc") || path.endsWith(".func")) {
-        return "func";
-    }
-
-    if (path.endsWith(".tact")) {
-        return "tact";
-    }
-
-    return undefined;
-};
-
-const guessExtension = (
-    importText: string,
-): { language: Language; guessedPath: string } => {
-    const language = detectLanguage(importText);
-    if (language) {
-        return { guessedPath: importText, language };
-    } else {
-        return { guessedPath: `${importText}.tact`, language: "tact" };
-    }
-};
-
-const stdlibPrefix = "@stdlib/";
-
-const parseImportString =
-    (importText: string, loc: $.Loc): Handler<Ast.ImportPath> =>
-    (ctx) => {
-        if (importText.endsWith("/")) {
-            ctx.err.noFolderImports()(toRange(loc));
-            importText = importText.slice(0, -1);
-        }
-
-        if (importText.includes("\\")) {
-            ctx.err.importWithBackslash()(toRange(loc));
-            importText = importText.replace(/\\/g, "/");
-        }
-
-        const { guessedPath, language } = guessExtension(importText);
-
-        if (guessedPath.startsWith(stdlibPrefix)) {
-            const path = fromString(guessedPath.substring(stdlibPrefix.length));
-
-            if (path.stepsUp !== 0) {
-                ctx.err.importWithBackslash()(toRange(loc));
-            }
-
-            return {
-                path,
-                type: "stdlib",
-                language,
-            };
-        } else if (
-            guessedPath.startsWith("./") ||
-            guessedPath.startsWith("../")
-        ) {
-            return {
-                path: fromString(guessedPath),
-                type: "relative",
-                language,
-            };
-        } else {
-            ctx.err.invalidImport()(toRange(loc));
-            return {
-                path: emptyPath,
-                type: "relative",
-                language: "tact",
-            };
-        }
-    };
-
 const parseImport =
     ({ path, loc }: $ast.Import): Handler<Ast.Import> =>
     (ctx) => {
         const stringLiteral = parseStringLiteral(path)(ctx);
         const parsedString: string = JSON.parse(`"${stringLiteral.value}"`);
         return Ast.Import(
-            parseImportString(parsedString, loc)(ctx),
+            parseImportString(parsedString, toRange(loc), ctx.err.imports),
             toRange(loc),
         );
     };

@@ -220,29 +220,3 @@ export const StatementCondition = (
 export const isStatementCondition = ($value: StatementCondition) =>
     $value.kind === "statement_condition";
 export type Statement = $.Statement;
-export type DestructMapping = $.DestructMapping;
-export const DestructMapping = (
-    field: $c.Id,
-    name: $c.Id,
-    loc: $c.Range,
-): $.DestructMapping =>
-    Object.freeze({
-        kind: "destruct_mapping",
-        field,
-        name,
-        loc,
-    });
-export const isDestructMapping = ($value: DestructMapping) =>
-    $value.kind === "destruct_mapping";
-export type DestructEnd = $.DestructEnd;
-export const DestructEnd = (
-    ignoreUnspecifiedFields: boolean,
-    loc: $c.Range,
-): $.DestructEnd =>
-    Object.freeze({
-        kind: "destruct_end",
-        ignoreUnspecifiedFields,
-        loc,
-    });
-export const isDestructEnd = ($value: DestructEnd) =>
-    $value.kind === "destruct_end";

@@ -1,5 +1,6 @@
 import type { SourceLogger } from "@/error/logger-util";
 import type { Range } from "@/error/range";
+import { ImportErrors } from "@/next/grammar/import-parser";
 
 const attributeSchema = <M, R>(name: string, l: SourceLogger<M, R>) => ({
     duplicate: (attr: string) => (loc: Range) => {
@@ -22,6 +23,7 @@ const attributeSchema = <M, R>(name: string, l: SourceLogger<M, R>) => ({
 export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     constant: attributeSchema("constant", l),
     function: attributeSchema("function", l),
+    imports: ImportErrors(l),
 
     topLevelConstantWithAttribute: () => (loc: Range) => {
         return l
@@ -45,9 +47,6 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     },
     restShouldBeLast: () => (loc: Range) => {
         return l.at(loc).error(l.text`Rest parameter should be last`);
-    },
-    importWithBackslash: () => (loc: Range) => {
-        return l.at(loc).error(l.text`Import path can't contain "\\"`);
     },
     reservedVarPrefix: (prefix: string) => (loc: Range) => {
         return l
@@ -99,19 +98,6 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
             .error(
                 l.text`Numbers with leading zeroes cannot use underscores for JS compatibility`,
             );
-    },
-    noFolderImports: () => (loc: Range) => {
-        return l.at(loc).error(l.text`Cannot import a folder`);
-    },
-    invalidImport: () => (loc: Range) => {
-        return l
-            .at(loc)
-            .error(l.text`Import must start with ./, ../ or @stdlib/`);
-    },
-    escapingImport: () => (loc: Range) => {
-        return l
-            .at(loc)
-            .error(l.text`Standard library imports should be inside its root`);
     },
     asNotAllowed: () => (loc: Range) => {
         return l.at(loc).error(l.text`"as" type is not allowed here`);
