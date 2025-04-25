@@ -566,11 +566,4 @@ describe("math", () => {
             );
         }
     });
-
-    it("should perform left shifts with comparisons correctly", async () => {
-        expect(await contract.getShiftLeft0(0n)).toStrictEqual(true);
-    });
-    it("should perform right shifts with comparisons correctly", async () => {
-        expect(await contract.getShiftRight0(0n)).toStrictEqual(true);
-    });
 });

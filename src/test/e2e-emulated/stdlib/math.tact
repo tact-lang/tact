@@ -426,44 +426,4 @@ contract MathTester with Deployable {
         a >>= b;
         return a;
     }
-
-    // test FunC optimization bug
-    get fun shiftLeft0(i: Int): Bool {
-        let mask = 1 << i;
-        return mask == 1;
-    }
-
-    // test FunC optimization bug
-    get fun shiftRight0(i: Int): Bool {
-        let mask = 1 >> i;
-        return mask == 1;
-    }
-
-    get fun sign(x: Int): Int {
-        return sign(x);
-    }
-
-    get fun divc(x: Int, y: Int): Int {
-        return divc(x, y);
-    }
-
-    get fun muldivc(x: Int, y: Int, z: Int): Int {
-        return muldivc(x, y, z);
-    }
-
-    get fun mulShiftRight(x: Int, y: Int, z: Int): Int {
-        return mulShiftRight(x, y, z);
-    }
-
-    get fun mulShiftRightRound(x: Int, y: Int, z: Int): Int {
-        return mulShiftRightRound(x, y, z);
-    }
-
-    get fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int {
-        return mulShiftRightCeil(x, y, z);
-    }
-
-    get fun sqrt(x: Int): Int {
-        return sqrt(x);
-    }
 }
