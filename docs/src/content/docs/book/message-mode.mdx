@@ -49,7 +49,7 @@ Here's how the latter example would look in code:
 ```tact
 let to: Address = address("...");
 let value: Int = ton("1");
-send(SendParameters{
+send(SendParameters {
     to: to,
     value: value,
     mode: SendRemainingBalance | SendDestroyIfZero,

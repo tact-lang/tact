@@ -317,19 +317,12 @@ describe("should format", () => {
     );
 
     it(
-        "assign statement with augmented operator with space",
-        test(
-            `
+        "augmented assign",
+        intact(`
         fun foo() {
-            a << = 100;
+            foo += 10;
         }
-    `,
-            `
-        fun foo() {
-            a <<= 100;
-        }
-    `,
-        ),
+    `),
     );
 
     it(
@@ -1696,6 +1689,113 @@ describe("should format", () => {
                     10 /* comment */;
                 }
             `),
+            );
+        });
+
+        describe("map literals", () => {
+            it(
+                "empty map literal",
+                intact(`
+                    fun foo() {
+                        map<Int, Int> {};
+                    }
+                `),
+            );
+
+            it(
+                "empty map literal with as types",
+                intact(`
+                    fun foo() {
+                        map<Int as coins, Int as uint8> {};
+                    }
+                `),
+            );
+
+            it(
+                "map literal with single inline entry",
+                intact(`
+                    fun foo() {
+                        map<Int, Int> { 10: 20 };
+                    }
+                `),
+            );
+
+            it(
+                "map literal with single inline entry with comment",
+                intact(`
+                    fun foo() {
+                        map<Int, Int> { 10: 20 /* some comment */ };
+                    }
+                `),
+            );
+
+            it(
+                "map literal with several entries",
+                intact(`
+                    fun foo() {
+                        map<Int, Int> {
+                            10: 20,
+                            30: 40,
+                        };
+                    }
+                `),
+            );
+
+            it(
+                "map literal with several entries and comment",
+                intact(`
+                    fun foo() {
+                        map<Int, Int> {
+                            // comment
+                            10: 20,
+                            30: 40,
+                        };
+                    }
+                `),
+            );
+
+            it(
+                "map literal with several entries and multiline value",
+                intact(`
+                    fun foo() {
+                        map<Int, Cell> {
+                            10: beginCell()
+                                .storeUint()
+                                .endCell(),
+                            30: beginCell().endCell(),
+                        };
+                    }
+                `),
+            );
+
+            it(
+                "map literal with several entries and struct instances",
+                intact(`
+                    fun foo() {
+                        map<Int as uint16, Foo> {
+                            1: Foo { x: 1, y: 2 },
+                            2: Foo { x: 0, y: 1 },
+                        };
+                    }
+                `),
+            );
+
+            it(
+                "map literal with several entries and multiline struct instances",
+                intact(`
+                    fun foo() {
+                        map<Int as uint16, Foo> {
+                            1: Foo {
+                                x: 1,
+                                y: 2,
+                            },
+                            2: Foo {
+                                x: 0,
+                                y: 1,
+                            },
+                        };
+                    }
+                `),
             );
         });
     });

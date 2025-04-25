@@ -6,12 +6,12 @@ import "@ton/test-utils";
 
 describe("masterchain", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
     });
 
     //
@@ -24,13 +24,13 @@ describe("masterchain", () => {
         );
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "DeployToWorkchain",
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -38,7 +38,7 @@ describe("masterchain", () => {
     });
 
     it("should not deploy to workchain from masterchain", async () => {
-        const treasure = await blockchain.treasury("treasure", {
+        const treasury = await blockchain.treasury("treasury", {
             workchain: -1,
         });
         const contract = blockchain.openContract(
@@ -46,13 +46,13 @@ describe("masterchain", () => {
         );
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "DeployToWorkchain",
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: false,
             deploy: true,
@@ -61,7 +61,7 @@ describe("masterchain", () => {
     });
 
     it("should deploy to masterchain from masterchain", async () => {
-        const treasure = await blockchain.treasury("treasure", {
+        const treasury = await blockchain.treasury("treasury", {
             workchain: -1,
         });
         const contract = blockchain.openContract(
@@ -69,13 +69,13 @@ describe("masterchain", () => {
         );
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "DeployToMasterchain",
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,

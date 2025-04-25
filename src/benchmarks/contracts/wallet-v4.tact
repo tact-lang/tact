@@ -197,7 +197,7 @@ contract WalletV4(
                     queryId,
                     op: RemovePluginAction,
                     extra: null,
-                    amount: amount,
+                    amount,
                     receiver: addr,
                 }.toCell(),
                 64,

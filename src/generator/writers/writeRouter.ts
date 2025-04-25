@@ -710,7 +710,7 @@ function writeRcvStatement(
     writeStatement(stmt, null, returns, wCtx);
 }
 
-function messageOpcode(n: Ast.Number): string {
+export function messageOpcode(n: Ast.Number): string {
     // FunC does not support binary and octal numerals
     switch (n.base) {
         case 10:

@@ -488,8 +488,8 @@ contract Iterated {
         oh_my.set(1, 27);
 
         self.oh_my = oh_my; // assigning local map to the storage one
-        let fizz = Fizz{ oh_my }; // field punning
-        let buzz = Buzz{ oh_my }; // field punning
+        let fizz = Fizz { oh_my }; // field punning
+        let buzz = Buzz { oh_my }; // field punning
 
         // Iterating over map in contract storage
         foreach (key, value in self.oh_my) {

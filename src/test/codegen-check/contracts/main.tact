@@ -30,6 +30,18 @@ struct C {
 }
 
 contract MainContract {
+    field: Int as uint8;
+    value: Int as int256;
+    data: Slice as bytes64;
+    mapping: map<Int as uint8, Int as int256>;
+
+    init(field: Int as uint8, value: Int as int256, data: Slice as bytes64, mapping: map<Int as uint8, Int as int256>) {
+        self.field = field;
+        self.value = value;
+        self.data = data;
+        self.mapping = mapping;
+    }
+
     get fun testAugmentedAssignOperators(intVal: Int, intVal2: Int, boolVal: Bool, boolVal2: Bool): Int {
         let a = intVal;
 
@@ -78,6 +90,99 @@ contract MainContract {
             f: 1,
             g: 2,
             h: myAddress()
+        }
+    }
+
+    const FOO_ZERO: Int = 0;
+    const FOO_ONE: Int = 1;
+
+    get fun testIfOptimizationPositive(a: Int) {
+        if (a == 0) {
+            return;
+        }
+
+        if (a != 0) {
+            return;
+        }
+
+        if (0 == a) {
+            return;
+        }
+
+        if (0 != a) {
+            return;
+        }
+
+        if (a == self.FOO_ZERO) {
+            return;
+        }
+
+        if (a != self.FOO_ZERO) {
+            return;
+        }
+
+        if (self.FOO_ZERO == a) {
+            return;
+        }
+
+        if (self.FOO_ZERO != a) {
+            return;
+        }
+
+        if (a == self.FOO_ONE - 1) {
+            return;
+        }
+
+        if (a != self.FOO_ONE - 1) {
+            return;
+        }
+
+        if (self.FOO_ONE - 1 == a) {
+            return;
+        }
+
+        if (self.FOO_ONE - 1 != a) {
+            return;
+        }
+    }
+
+    get fun testIfOptimizationComplexPositive(a: Int) {
+        if (a == 0) {
+            return;
+        } else if (a != 0) {
+            return;
+        }
+
+        if (a == 0) {
+            if (a == 0) {
+                return;
+            } else if (0 != a) {
+                return;
+            }
+        } else if (a != 0) {
+            if (0 == a) {
+                return;
+            } else if (a == 0) {
+                return;
+            }
+        }
+    }
+
+    get fun testIfOptimizationNegative(a: Int) {
+        if (a == self.FOO_ONE) {
+            return;
+        }
+
+        if (a != self.FOO_ONE) {
+            return;
+        }
+
+        if (self.FOO_ONE == a) {
+            return;
+        }
+
+        if (self.FOO_ONE != a) {
+            return;
         }
     }
 }

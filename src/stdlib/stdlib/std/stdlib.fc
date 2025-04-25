@@ -670,6 +670,7 @@ int equal_slices_bits(slice a, slice b) asm "SDEQ";
 int builder_null?(builder b) asm "ISNULL";
 ;;; Concatenates two builders
 builder store_builder(builder to, builder from) asm "STBR";
+builder store_builder_ref(builder to, builder from) asm "STBREFR";
 
 ;; CUSTOM:
 

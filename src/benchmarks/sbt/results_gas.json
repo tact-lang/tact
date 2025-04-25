@@ -25,6 +25,58 @@
         "revoke": "5253",
         "take excess": "8132"
       }
+    },
+    {
+      "label": "1.6.6 with optimized builder storage",
+      "pr": "https://github.com/tact-lang/tact/pull/2836",
+      "gas": {
+        "deploy": "4841",
+        "request owner": "7302",
+        "prove ownership": "7600",
+        "get static data": "7267",
+        "destroy": "7760",
+        "revoke": "5217",
+        "take excess": "8096"
+      }
+    },
+    {
+      "label": "1.6.6 with optimized __tact_store_address_opt",
+      "pr": "https://github.com/tact-lang/tact/pull/2834",
+      "gas": {
+        "deploy": "4841",
+        "request owner": "7302",
+        "prove ownership": "7600",
+        "get static data": "7267",
+        "destroy": "7684",
+        "revoke": "5217",
+        "take excess": "8096"
+      }
+    },
+    {
+      "label": "1.6.6 with contract parameters",
+      "pr": "https://github.com/tact-lang/tact/pull/2863",
+      "gas": {
+        "deploy": "4994",
+        "request owner": "5308",
+        "prove ownership": "5488",
+        "get static data": "5112",
+        "destroy": "7283",
+        "revoke": "4788",
+        "take excess": "5949"
+      }
+    },
+    {
+      "label": "1.6.6 with revokedAt with uint64 type",
+      "pr": "https://github.com/tact-lang/tact/pull/2863",
+      "gas": {
+        "deploy": "4146",
+        "request owner": "5048",
+        "prove ownership": "5228",
+        "get static data": "4852",
+        "destroy": "6325",
+        "revoke": "3940",
+        "take excess": "5689"
+      }
     }
   ]
 }

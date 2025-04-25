@@ -27,15 +27,15 @@ You can try Tact without installing anything locally using the [Web IDE](https:/
 // Defining a contract
 contract HelloWorld {
     // Listens to incoming Ping messages
-    receive(_: Ping) {
+    receive(msg: Ping) {
         // Sends a Pong reply message
         reply(Pong {}.toCell());
     }
 
     // Listens to incoming Hello messages
-    receive(_: Hello) {
-        // Sends a Pong reply message
-        reply(Hello {}.toCell());
+    receive(msg: Hello) {
+        // Replies with the received Hello message
+        reply(msg.toCell());
     }
 
     // Listens to incoming empty messages,
@@ -225,15 +225,6 @@ fun showcase() {
     } else {
         // not happening right now
     }
-
-    // Declared but not explicitly defined optional variables and fields
-    // implicitly hold the null value by default.
-    let veryOptional: Bool? = null; // null
-    if (veryOptional != null) {
-        // not happening
-    } else {
-        // here we go
-    }
 }
 
 // You can make almost any variable or field optional by adding
@@ -267,6 +258,14 @@ fun showcase() {
     myMap.del(0);              // false and not an error, because deletion is idempotent
     myMap.exists(0);           // false, there is no entry under key 0
     myMap.isEmpty();           // true, there is no other entries
+
+    // Statically known `.set`s can be replaced by map literals.
+    // That way, map entries will be defined at compile-time and consume much less gas.
+    let myMap2: map<Int as uint8, Int as int13> = map<Int as uint8, Int as int13> {
+        // Key expression: Value expression
+        1 + 2: 10 * pow2(3), // key 3, value 80
+        1 + 3: 20 * pow2(4), // key 4, value 320
+    };
 
     // In most cases, to compare two maps it's sufficient to use the shallow
     // comparison via the equality == and inequality != operators.
@@ -405,10 +404,10 @@ fun usage() {
     // Instantiation of a struct.
     // Notice the lack of the "new" keyword used for this in many
     // other traditional languages.
-    let val: One = One{ number: 50 };
+    let val: One = One { number: 50 };
 
     // You can omit the fields with default values.
-    let _ = Params{ val }; // the field punning works —
+    let _ = Params { val }; // the field punning works —
                            // instead of `val: val` you could write just `val`
 
     // Convert a struct to a Cell or a Slice.
@@ -524,6 +523,9 @@ contract MyContract() {
               // and the value of the currently extended type inside
               // the extension function. See the "Functions" section below for more.
 
+        // Map literals.
+        map<Int, Int as coins> { 11: 11 };
+
         // Identifiers, with usual naming conventions:
         // They may contain Latin lowercase letters `a-z`,
         // Latin uppercase letters `A-Z`, underscores `_`,
@@ -534,7 +536,7 @@ contract MyContract() {
         let azAZ09_ = 5; azAZ09_;
 
         // Instantiations or instance expressions of structs and message structs.
-        let addr = BasechainAddress{ hash: null, };
+        let addr = BasechainAddress { hash: null, };
 
         // Field access.
         addr.hash; // null
@@ -566,7 +568,7 @@ contract MyContract() {
 
         // initOf, which obtains the initial code and initial data
         // of the given contract, i.e., it's initial state.
-        initOf MyContract(); // StateInit{ code, data }
+        initOf MyContract(); // StateInit { code, data }
 
         // codeOf, which only obtains the code.
         codeOf MyContract;
@@ -609,13 +611,13 @@ fun showcase() {
 
     // Destructuring assignment is a concise way to
     // unpack structures into distinct variables.
-    let st = StdAddress{ workchain: 0, address: 0 }; // let statement
-    let StdAddress{ address, .. } = st;              // destructuring statement
-    //              -------  --
-    //              ↑        ↑
-    //              |        ignores all unspecified fields
-    //              Int as uint256,
-    //              a variable out of the second field of StdAddress struct
+    let st = StdAddress { workchain: 0, address: 0 }; // let statement
+    let StdAddress { address, .. } = st;              // destructuring statement
+    //               -------  --
+    //               ↑        ↑
+    //               |        ignores all unspecified fields
+    //               Int as uint256,
+    //               a variable out of the second field of StdAddress struct
     address; // 0
 
     // You can also define new names for variables
@@ -687,52 +689,6 @@ fun showcase() {
 
 Read more: [Statements](/book/statements).
 
-## Constants
-
-```tact
-// Global, top-level constants.
-// Type ascription is mandatory.
-const MY_CONSTANT: Int =
-    ascii("⚡"); // expressions are computed at compile-time
-
-// Trait-level constants.
-trait MyTrait {
-    const I_AM_ON_THE_TRAIT_LEVEL: Int = 420;
-
-    // On the trait-level, you can make constants abstract,
-    // which requires the contracts that inherit this trait
-    // to override those constants with some values.
-    abstract const OVERRIDE_ME: Int;
-
-    // Virtual constants allow overrides, but do not require them.
-    virtual const YOU_CAN_OVERRIDE_ME: Int = crc32("babecafe");
-}
-
-// Contract-level constants.
-contract MyContract() with MyTrait {
-    const iAmOnTheContractLevel: Int = 4200;
-
-    // Because this contract inherits from MyTrait,
-    // the I_AM_ON_THE_TRAIT_LEVEL constant is also in scope of this contract,
-    // but we cannot override it.
-
-    // However, we can override the virtual constant.
-    override const YOU_CAN_OVERRIDE_ME: Int = crc32("deadbeef");
-
-    // And we MUST override and define the value of the abstract constant.
-    override const OVERRIDE_ME: Int = ton("0.5");
-}
-
-// All constants are inlined, i.e., their values are embedded in the resulting
-// code in all places where their values are referenced in Tact code.
-//
-// The main difference is the scope — global can be referenced
-// from anywhere, while contract and trait-level constants are
-// only accessible within them via `self` references.
-```
-
-Read more: [Constants](/book/constants).
-
 ## Functions
 
 ```tact
@@ -746,7 +702,7 @@ fun add(a: Int, b: Int): Int {
 // function inlined in all places where this function is called,
 // increasing the total code size and possibly reducing computational fees.
 inline fun reply(str: String) {
-    message(MessageParameters{
+    message(MessageParameters {
         to: sender(),
         value: 0,
         mode: SendRemainingValue | SendIgnoreErrors,
@@ -850,7 +806,7 @@ fun examples() {
     // See the links given right after this code block.
     //
     // This is most general and simple function to send an internal message:
-    message(MessageParameters{
+    message(MessageParameters {
         // Recipient address.
         to: address("UQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p9dz"),
 
@@ -970,7 +926,7 @@ contract MyContract(
         self.accumulator += msg.someVal;
 
         // Send a message back to the sender() with MyMsg
-        message(MessageParameters{
+        message(MessageParameters {
             to: sender(),
             value: ton("0.04"),
             body: MyMsg{ someVal: self.accumulator }.toCell(),
@@ -1041,6 +997,52 @@ message(123) MyMsg {
 
 Read more: [Contracts](/book/contracts).
 
+## Constants
+
+```tact
+// Global, top-level constants.
+// Type ascription is mandatory.
+const MY_CONSTANT: Int =
+    ascii("⚡"); // expressions are computed at compile-time
+
+// Trait-level constants.
+trait MyTrait {
+    const I_AM_ON_THE_TRAIT_LEVEL: Int = 420;
+
+    // On the trait-level, you can make constants abstract,
+    // which requires the contracts that inherit this trait
+    // to override those constants with some values.
+    abstract const OVERRIDE_ME: Int;
+
+    // Virtual constants allow overrides, but do not require them.
+    virtual const YOU_CAN_OVERRIDE_ME: Int = crc32("babecafe");
+}
+
+// Contract-level constants.
+contract MyContract() with MyTrait {
+    const iAmOnTheContractLevel: Int = 4200;
+
+    // Because this contract inherits from MyTrait,
+    // the I_AM_ON_THE_TRAIT_LEVEL constant is also in scope of this contract,
+    // but we cannot override it.
+
+    // However, we can override the virtual constant.
+    override const YOU_CAN_OVERRIDE_ME: Int = crc32("deadbeef");
+
+    // And we MUST override and define the value of the abstract constant.
+    override const OVERRIDE_ME: Int = ton("0.5");
+}
+
+// All constants are inlined, i.e., their values are embedded in the resulting
+// code in all places where their values are referenced in Tact code.
+//
+// The main difference is the scope — global can be referenced
+// from anywhere, while contract and trait-level constants are
+// only accessible within them via `self` references.
+```
+
+Read more: [Constants](/book/constants).
+
 ## Persistent state {#state}
 
 ```tact
@@ -1048,6 +1050,7 @@ Read more: [Contracts](/book/contracts).
 // and thus commonly referred to as storage variables.
 // Contracts in TON pay rent in proportion to the amount of persistent space
 // they consume, so compact representations via serialization are encouraged.
+// Unlike variables, constants do not consume space in the persistent state.
 
 contract StateActor(
     // Persistent state variables
@@ -1145,7 +1148,7 @@ fun showcase() {
     // one must send the new contract's initial state, i.e.,
     // its initial code and initial data, to its Address,
     // which is deterministically obtained from the initial state.
-    deploy(DeployParameters{
+    deploy(DeployParameters {
         // Use initOf expression to provide initial code and data
         init: initOf MyContract(),
         // Attaching 1 Toncoin, which will be used to pay various fees
@@ -1274,7 +1277,7 @@ contract JettonWallet(
 
         // Transfer Jetton from the current owner to the target user's JettonWallet.
         // If that wallet does not exist, it is deployed on-chain in the same transfer.
-        deploy(DeployParameters{
+        deploy(DeployParameters {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
@@ -1314,7 +1317,7 @@ contract JettonWallet(
         if (msg.forwardTonAmount > 0) {
             let fwdFee: Int = ctx.readForwardFee();
             msgValue -= msg.forwardTonAmount + fwdFee;
-            message(MessageParameters{
+            message(MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayGasSeparately,
@@ -1334,7 +1337,7 @@ contract JettonWallet(
 
         // And forward excesses (cashback) to the original sender.
         if (msg.responseDestination != null && msgValue > 0) {
-            message(MessageParameters{
+            message(MessageParameters {
                 to: msg.responseDestination!!,
                 value: msgValue,
                 mode: SendRemainingBalance + SendIgnoreErrors,
@@ -1364,7 +1367,7 @@ contract JettonWallet(
 
         // Send a message to the JettonMinter to reduce the total supply
         // of the Jettons. That is, to burn some.
-        message(MessageParameters{
+        message(MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
