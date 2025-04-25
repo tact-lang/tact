@@ -107,6 +107,7 @@
     "@ton/sandbox": "^0.28.0",
     "@ton/test-utils": "^0.5.0",
     "@tonstudio/pgen": "^0.0.1",
+    "@types/allure-js-commons": "^2.0.4",
     "@types/diff": "^7.0.0",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.12",
