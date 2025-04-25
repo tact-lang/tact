@@ -1,4 +1,4 @@
-import "./messages";
+import "./messages-not";
 import "./jetton-wallet-notcoin";
 
 const Workchain: Int = 0;
