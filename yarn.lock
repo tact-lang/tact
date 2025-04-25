@@ -1628,6 +1628,11 @@ ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+allure-commandline@^2.34.0:
+  version "2.34.0"
+  resolved "https://npm.dev-internal.org/allure-commandline/-/allure-commandline-2.34.0.tgz#eab7b752908ab765578849bad8c9b8a19d90e84b"
+  integrity sha512-+SgVJ9+o7OH43KVCln0KT7VIsXCfMVEvFuYArIFNtS0fWu61UFdeiCYvrlQPC9trEoFhOe2e5i8Xhghwo46iRQ==
+
 allure-jest@^3.2.1:
   version "3.2.1"
   resolved "https://npm.dev-internal.org/allure-jest/-/allure-jest-3.2.1.tgz#82231ef0beb5d907f2795350c957fd986964741e"
