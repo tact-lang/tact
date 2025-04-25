@@ -15,7 +15,6 @@ import type { Scope } from "@/test/fuzzer/src/scope";
 import {
     initializeGenerator,
     NonTerminal,
-    Terminal,
 } from "@/test/fuzzer/src/generators/uniform-expr-gen";
 import type {
     GenInitConfig,
@@ -23,35 +22,36 @@ import type {
     TerminalEnum,
 } from "@/test/fuzzer/src/generators/uniform-expr-gen";
 import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzConfig } from "@/test/fuzzer/src/config";
 
 export type ExpressionParameters = {
     /**
      * Indicates whether the generated expression could use identifiers declared in the scope.
-     * @default true
+     * @default FuzzConfig.useIdentifiersInExpressions
      */
-    useIdentifiers: boolean;
+    useIdentifiersInExpressions: boolean;
 
     /**
      * The minimum expression size.
-     * @default 1
+     * @default FuzzConfig.minExpressionSize
      */
-    minSize: number;
+    minExpressionSize: number;
 
     /**
      * The maximum expression size.
-     * @default 5
+     * @default FuzzConfig.maxExpressionSize
      */
-    maxSize: number;
+    maxExpressionSize: number;
 
     /**
      * Lists the non-terminals that the generator is allowed to use.
-     * @default Object.values(NonTerminal)
+     * @default FuzzConfig.allowedNonTerminals
      */
     allowedNonTerminals: NonTerminalEnum[];
 
     /**
      * Lists the terminals that the generator is allowed to use.
-     * @default Object.values(Terminal);
+     * @default FuzzConfig.allowedTerminals
      */
     allowedTerminals: TerminalEnum[];
 };
@@ -165,18 +165,18 @@ export class Expression extends GenerativeEntity<Ast.Expression> {
         this.parentScope = parentScope;
 
         const {
-            useIdentifiers = true,
-            minSize = 1,
-            maxSize = 5,
-            allowedNonTerminals = Object.values(NonTerminal),
-            allowedTerminals = Object.values(Terminal),
+            useIdentifiersInExpressions = FuzzConfig.useIdentifiersInExpressions,
+            minExpressionSize = FuzzConfig.minExpressionSize,
+            maxExpressionSize = FuzzConfig.maxExpressionSize,
+            allowedNonTerminals = FuzzConfig.allowedNonTerminalsInExpressions,
+            allowedTerminals = FuzzConfig.allowedTerminalsInExpressions,
         } = params;
         const config: GenInitConfig = {
-            minSize,
-            maxSize,
+            minSize: minExpressionSize,
+            maxSize: maxExpressionSize,
             allowedNonTerminals,
             allowedTerminals,
-            useIdentifiers,
+            useIdentifiers: useIdentifiersInExpressions,
         };
         const configKey = JSON.stringify(config);
         const initGen = Expression.initializedGens.get(configKey);

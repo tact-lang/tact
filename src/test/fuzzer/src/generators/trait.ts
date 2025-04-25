@@ -18,25 +18,26 @@ import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
 import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzConfig } from "@/test/fuzzer/src/config";
 
 export interface TraitParameters {
     /**
      * Number of fields generated within a trait.
-     * @default 1
+     * @default FuzzConfig.traitFieldNum
      */
-    fieldNum: number;
+    traitFieldNum: number;
 
     /**
      * Number of method declarations generated within a trait.
-     * @default 1
+     * @default FuzzConfig.traitMethodDeclarationsNum
      */
-    methodDeclarationsNum: number;
+    traitMethodDeclarationsNum: number;
 
     /**
      * Number of constant declarations generated within a trait.
-     * @default 1
+     * @default FuzzConfig.traitConstantNum
      */
-    constantNum: number;
+    traitConstantNum: number;
 }
 
 /**
@@ -66,13 +67,13 @@ export class Trait extends NamedGenerativeEntity<Ast.Trait> {
         this.scope = scope;
 
         const {
-            fieldNum = 1,
-            methodDeclarationsNum = 1,
-            constantNum = 1,
+            traitFieldNum = FuzzConfig.traitFieldNum,
+            traitMethodDeclarationsNum = FuzzConfig.traitMethodDeclarationsNum,
+            traitConstantNum = FuzzConfig.traitConstantNum,
         } = params;
-        this.fieldNum = fieldNum;
-        this.methodDeclarationsNum = methodDeclarationsNum;
-        this.constantNum = constantNum;
+        this.fieldNum = traitFieldNum;
+        this.methodDeclarationsNum = traitMethodDeclarationsNum;
+        this.constantNum = traitConstantNum;
 
         this.prepareDeclarationTypes();
     }
@@ -84,7 +85,7 @@ export class Trait extends NamedGenerativeEntity<Ast.Trait> {
         return ty.kind === "map" || randomBool()
             ? undefined
             : new Expression(this.scope, ty, {
-                  useIdentifiers: false,
+                  useIdentifiersInExpressions: false,
               }).generate();
     }
 

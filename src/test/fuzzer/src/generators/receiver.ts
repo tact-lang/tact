@@ -14,11 +14,12 @@ import {
 } from "@/test/fuzzer/src/util";
 import { Expression } from "@/test/fuzzer/src/generators/expression";
 import { Parameter } from "@/test/fuzzer/src/generators/parameter";
-import { StatementExpression } from "@/test/fuzzer/src/generators/statement";
+import { Let, Statement } from "@/test/fuzzer/src/generators/statement";
 
 import fc from "fast-check";
 import { GlobalContext } from "@/test/fuzzer/src/context";
 import { generateString } from "@/test/fuzzer/src/generators/uniform-expr-gen";
+import { FuzzConfig } from "@/test/fuzzer/src/config";
 
 const RECEIVE_RETURN_TY: Type = { kind: "util", type: UtilType.Unit };
 
@@ -52,6 +53,32 @@ function generateExternalReceiverKind(
     return subKind.map((k) => GlobalContext.makeF.makeDummyReceiverExternal(k));
 }
 
+export interface ReceiveParameters {
+    /**
+     * Minimum number of let statements at the start of function body.
+     * @default FuzzConfig.letStatementsMinNum
+     */
+    letStatementsMinNum: number;
+
+    /**
+     * Maximum number of let statements at the start of function body.
+     * @default FuzzConfig.letStatementsMaxNum
+     */
+    letStatementsMaxNum: number;
+
+    /**
+     * Minimum number of statements in the function body (not counting initial let statements and final return)
+     * @default FuzzConfig.statementsMinLength
+     */
+    statementsMinLength: number;
+
+    /**
+     * Maximum number of statements in the function body (not counting initial let statements and final return)
+     * @default FuzzConfig.statementsMaxLength
+     */
+    statementsMaxLength: number;
+}
+
 /**
  * An object that encapsulates an Ast.Receiver.
  */
@@ -62,9 +89,24 @@ export class Receive extends GenerativeEntity<Ast.Receiver> {
     /** Scope used within the generated receive method. */
     private scope: Scope;
 
-    constructor(parentScope: Scope) {
+    private letStatementsMinNum: number;
+    private letStatementsMaxNum: number;
+    private statementsMinLength: number;
+    private statementsMaxLength: number;
+
+    constructor(parentScope: Scope, params: Partial<ReceiveParameters> = {}) {
         super(RECEIVE_RETURN_TY);
         this.scope = new Scope("receive", parentScope);
+        const {
+            letStatementsMinNum = FuzzConfig.letStatementsMinNum,
+            letStatementsMaxNum = FuzzConfig.letStatementsMaxNum,
+            statementsMinLength = FuzzConfig.statementsMinLength,
+            statementsMaxLength = FuzzConfig.statementsMaxLength,
+        } = params;
+        this.letStatementsMinNum = letStatementsMinNum;
+        this.letStatementsMaxNum = letStatementsMaxNum;
+        this.statementsMinLength = statementsMinLength;
+        this.statementsMaxLength = statementsMaxLength;
     }
 
     private generateSelector(): fc.Arbitrary<Ast.ReceiverKind> {
@@ -127,17 +169,40 @@ export class Receive extends GenerativeEntity<Ast.Receiver> {
 
     private generateBody(): fc.Arbitrary<Ast.Statement[]> {
         // Create a dummy expression to execute the bottom-up AST generation.
-        const expr = new Expression(this.scope, this.type).generate();
-        const stmt = new StatementExpression(expr).generate();
+        //const expr = new Expression(this.scope, this.type).generate();
+        //const stmt = new StatementExpression(expr).generate();
 
-        const generatedLetBindings = Array.from(
-            this.scope.getAllNamed("let"),
-        ).map((c) => c.generate());
-        const generatedStmts = Array.from(
-            this.scope.getAllUnnamed("statement"),
-        ).map((c) => c.generate());
-        this.body = [...generatedLetBindings, ...generatedStmts, stmt];
-        return fc.tuple(...this.body);
+        //const generatedLetBindings = Array.from(
+        //    this.scope.getAllNamed("let"),
+        //).map((c) => c.generate());
+        //const generatedStmts = Array.from(
+        //    this.scope.getAllUnnamed("statement"),
+        //).map((c) => c.generate());
+
+        // TODO: Make it generate arbitrary types
+        const generatedLetBindings = fc.array(
+            new Let(
+                this.scope,
+                { kind: "stdlib", type: StdlibType.Int },
+                new Expression(this.scope, {
+                    kind: "stdlib",
+                    type: StdlibType.Int,
+                }).generate(),
+            ).generate(),
+            {
+                minLength: this.letStatementsMinNum,
+                maxLength: this.letStatementsMaxNum,
+            },
+        );
+
+        const generatedStmts = fc.array(new Statement(this.scope).generate(), {
+            minLength: this.statementsMinLength,
+            maxLength: this.statementsMaxLength,
+        });
+
+        return fc
+            .tuple(generatedLetBindings, generatedStmts)
+            .map((tup) => tup.flat());
     }
 
     public generate(): fc.Arbitrary<Ast.Receiver> {

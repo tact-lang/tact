@@ -16,28 +16,98 @@ import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 import { getStdlibTraits } from "@/test/fuzzer/src/stdlib";
 import fc from "fast-check";
 import { GlobalContext } from "@/test/fuzzer/src/context";
+import { ConstantDef } from "@/test/fuzzer/src/generators/constant";
+import { Expression } from "@/test/fuzzer/src/generators/expression";
+import { FunctionDef } from "@/test/fuzzer/src/generators/function";
+import { FuzzConfig } from "@/test/fuzzer/src/config";
 
 export interface ProgramParameters {
     /** Add definitions that mock stdlib ones to the generated program. */
     addStdlib: boolean;
 
     /**
-     * Number of structures generated on the program level.
-     * @default Random: [1-3]
+     * Minimum number of structures generated on the program level.
+     * @default FuzzConfig.structsMinNum
      */
-    structsNum: number;
+    structsMinNum: number;
 
     /**
-     * Number of messages generated on the program level.
-     * @default Random: [1-3]
+     * Maximum number of structures generated on the program level.
+     * @default FuzzConfig.structsMaxNum
      */
-    messagesNum: number;
+    structsMaxNum: number;
 
     /**
-     * Number of the generated traits. Some of them might be used by the generated contracts.
-     * @default Random: [1-2]
+     * Minimum number of messages generated on the program level.
+     * @default FuzzConfig.messagesMinNum
      */
-    traitsNum: number;
+    messagesMinNum: number;
+
+    /**
+     * Maximum number of messages generated on the program level.
+     * @default FuzzConfig.messagesMaxNum
+     */
+    messagesMaxNum: number;
+
+    /**
+     * Minimum number of the generated traits. Some of them might be used by the generated contracts.
+     * @default FuzzConfig.traitsMinNum
+     */
+    traitsMinNum: number;
+
+    /**
+     * Maximum number of the generated traits. Some of them might be used by the generated contracts.
+     * @default FuzzConfig.traitsMaxNum
+     */
+    traitsMaxNum: number;
+
+    /**
+     * Minimum number of generated contracts
+     * @default FuzzConfig.contractsMinNum
+     */
+    contractsMinNum: number;
+
+    /**
+     * Maximum number of generated contracts
+     * @default FuzzConfig.contractsMaxNum
+     */
+    contractsMaxNum: number;
+
+    /**
+     * Minimum number of generated functions
+     * @default FuzzConfig.functionsMinNum
+     */
+    functionsMinNum: number;
+
+    /**
+     * Maximum number of generated functions
+     * @default FuzzConfig.functionsMaxNum
+     */
+    functionsMaxNum: number;
+
+    /**
+     * Minimum number of function arguments
+     * @default FuzzConfig.functionArgsMinNum
+     */
+    functionArgsMinNum: number;
+
+    /**
+     * Maximum number of function arguments
+     * @default FuzzConfig.functionArgsMaxNum
+     */
+    functionArgsMaxNum: number;
+
+    /**
+     * Minimum number of generated constants
+     * @default FuzzConfig.constantsMinNum
+     */
+    constantsMinNum: number;
+
+    /**
+     * Maximum number of generated constants
+     * @default FuzzConfig.constantsMaxNum
+     */
+    constantsMaxNum: number;
 }
 
 /**
@@ -57,10 +127,21 @@ export class Program extends NamedGenerativeEntity<Ast.Module> {
         );
 
         const {
-            addStdlib = false,
-            structsNum = randomInt(1, 3),
-            messagesNum = randomInt(1, 3),
-            traitsNum = randomInt(1, 2),
+            addStdlib = FuzzConfig.addStdlib,
+            structsMinNum = FuzzConfig.structsMinNum,
+            structsMaxNum = FuzzConfig.structsMaxNum,
+            messagesMinNum = FuzzConfig.messagesMinNum,
+            messagesMaxNum = FuzzConfig.messagesMaxNum,
+            traitsMinNum = FuzzConfig.traitsMinNum,
+            traitsMaxNum = FuzzConfig.traitsMaxNum,
+            contractsMinNum = FuzzConfig.contractsMinNum,
+            contractsMaxNum = FuzzConfig.constantsMaxNum,
+            functionsMinNum = FuzzConfig.functionsMinNum,
+            functionsMaxNum = FuzzConfig.functionsMaxNum,
+            functionArgsMinNum = FuzzConfig.functionArgsMinNum,
+            functionArgsMaxNum = FuzzConfig.functionArgsMaxNum,
+            constantsMinNum = FuzzConfig.constantsMinNum,
+            constantsMaxNum = FuzzConfig.constantsMaxNum,
         } = params;
         this.addStdlib = addStdlib;
 
@@ -68,26 +149,56 @@ export class Program extends NamedGenerativeEntity<Ast.Module> {
 
         // NOTE: Structures and messages must be generated prior to contracts in order
         // to add their entries to scopes for further reuse.
-        Array.from({ length: structsNum }).forEach((_) => {
-            this.scope.addNamed("struct", this.makeStruct());
-        });
+        Array.from({ length: randomInt(structsMinNum, structsMaxNum) }).forEach(
+            (_) => {
+                this.scope.addNamed("struct", this.makeStruct());
+            },
+        );
 
-        Array.from({ length: messagesNum }).forEach((_) => {
+        Array.from({
+            length: randomInt(messagesMinNum, messagesMaxNum),
+        }).forEach((_) => {
             this.scope.addNamed("message", this.makeMessage());
         });
 
         // NOTE: Traits must be generated prior to contracts to enable them implement them.
         const traits: Trait[] = [];
-        Array.from({ length: traitsNum }).forEach((_) => {
-            const trait = this.makeTrait();
-            traits.push(trait);
-            this.scope.addNamed("trait", trait);
+        Array.from({ length: randomInt(traitsMinNum, traitsMaxNum) }).forEach(
+            (_) => {
+                const trait = this.makeTrait();
+                traits.push(trait);
+                this.scope.addNamed("trait", trait);
+            },
+        );
+
+        // One of the traits could be implemented by the generated contracts.
+        Array.from({
+            length: randomInt(contractsMinNum, contractsMaxNum),
+        }).forEach((_) => {
+            const traitToImplement =
+                traits.length > 0 && randomBool()
+                    ? randomElement(traits)
+                    : undefined;
+            this.scope.addNamed(
+                "contract",
+                this.makeContract(traitToImplement),
+            );
         });
 
-        // One of the traits could be implemented by the main contract.
-        const traitToImplement =
-            traitsNum > 0 && randomBool() ? randomElement(traits) : undefined;
-        this.scope.addNamed("contract", this.makeContract(traitToImplement));
+        Array.from({
+            length: randomInt(functionsMinNum, functionsMaxNum),
+        }).forEach((_) => {
+            this.scope.addNamed(
+                "functionDef",
+                this.makeFunction(functionArgsMinNum, functionArgsMaxNum),
+            );
+        });
+
+        Array.from({
+            length: randomInt(constantsMinNum, constantsMaxNum),
+        }).forEach((_) => {
+            this.scope.addNamed("constantDef", this.makeConstant());
+        });
     }
 
     /**
@@ -105,6 +216,7 @@ export class Program extends NamedGenerativeEntity<Ast.Module> {
                   .concat(getStdlibTypes())
                   .map((entry) => fc.constant(entry))
             : [];
+
         const traits = Array.from(this.scope.getAllNamed("trait")).map((t) =>
             t.generate(),
         );
@@ -174,5 +286,23 @@ export class Program extends NamedGenerativeEntity<Ast.Module> {
      */
     private makeTrait(): Trait {
         return new Trait(this.scope);
+    }
+
+    private makeConstant(): ConstantDef {
+        const ty = createSample(TypeGen.fromScope(this.scope).generate());
+        return ConstantDef.fromScope(
+            this.scope,
+            ty,
+            new Expression(this.scope, ty, {
+                useIdentifiersInExpressions: false,
+            }).generate(),
+        );
+    }
+
+    private makeFunction(minArgsNum: number, maxArgsNum: number): FunctionDef {
+        const ty = createSample(
+            TypeGen.fromScope(this.scope).generateFun(minArgsNum, maxArgsNum),
+        );
+        return new FunctionDef(this.scope, "function", ty);
     }
 }

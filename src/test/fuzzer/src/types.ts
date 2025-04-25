@@ -9,7 +9,7 @@ import {
 } from "@/test/fuzzer/src/util";
 import type { Scope } from "@/test/fuzzer/src/scope";
 import type { TypeRef } from "@/types/types";
-import fc, { option } from "fast-check";
+import fc from "fast-check";
 import { GlobalContext } from "@/test/fuzzer/src/context";
 
 /**

@@ -29,15 +29,18 @@ const namedScopeItemKinds = [
     "parameter",
 ] as const;
 export type NamedScopeItemKind = (typeof namedScopeItemKinds)[number];
+
+/*
 function isNamedScopeItemKind(val: string): val is NamedScopeItemKind {
     return namedScopeItemKinds.find((tpe) => tpe === val) ? true : false;
 }
+*/
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const unnamedScopeItemKinds = ["statement", "receive"] as const;
-export type UnnamedScopeItemKind = (typeof unnamedScopeItemKinds)[number];
+//const unnamedScopeItemKinds = ["statement", "receive"] as const;
+//export type UnnamedScopeItemKind = (typeof unnamedScopeItemKinds)[number];
 
-export type ScopeItemKind = NamedScopeItemKind | UnnamedScopeItemKind;
+export type ScopeItemKind = NamedScopeItemKind; //| UnnamedScopeItemKind;
 
 /** Maps each ScopeItemKind to its respective GenerativeEntity specialization. */
 type NamedGenerativeEntityMap = {
@@ -55,10 +58,10 @@ type NamedGenerativeEntityMap = {
     contract: NamedGenerativeEntity<Ast.Contract>;
     trait: NamedGenerativeEntity<Ast.Trait>;
 };
-type GenerativeEntityMap = {
+/*type GenerativeEntityMap = {
     statement: GenerativeEntity<Ast.Statement>;
     receive: GenerativeEntity<Ast.Receiver>;
-};
+};*/
 
 /**
  * Scope contains AST entries generated during the bottom-up AST generation and
@@ -72,11 +75,12 @@ export class Scope {
 
     /**
      * Contains AST entries generated during the bottom-up AST generation.
-     */
+     *
     private mapUnnamed: Map<
         UnnamedScopeItemKind,
         Map<number, GenerativeEntity<any>> // eslint-disable-line @typescript-eslint/no-explicit-any
     > = new Map();
+     */
 
     private mapNamed: Map<
         NamedScopeItemKind,
@@ -130,7 +134,7 @@ export class Scope {
         switch (kind) {
             case "let":
             case "parameter":
-            case "statement":
+                //case "statement":
                 // eslint-disable-next-line @typescript-eslint/no-this-alias
                 targetScope = this;
                 break;
@@ -146,7 +150,7 @@ export class Scope {
             case "methodDecl":
             case "methodDef":
             case "field":
-            case "receive":
+                //case "receive":
                 targetScope = this.findParent("trait", "contract");
                 break;
             case "contract":
@@ -165,7 +169,7 @@ export class Scope {
 
     /**
      * Put a new entity in the scope according to the Tact semantics.
-     */
+     *
     public addUnnamed<T extends UnnamedScopeItemKind>(
         _kind: T,
         _entity: GenerativeEntityMap[T],
@@ -180,7 +184,7 @@ export class Scope {
         //         .get(kind)!
         //         .set(entity.idx, entity);
         // }
-    }
+    }*/
 
     /**
      * Put a new entity in the scope according to the Tact semantics.
@@ -191,18 +195,19 @@ export class Scope {
     ): void {
         const targetScope = this.getTargetScopeToAdd(kind);
 
-        if (isNamedScopeItemKind(kind)) {
-            if (targetScope.mapNamed.has(kind)) {
-                targetScope.mapNamed.get(kind)!.set(entity.name.text, entity);
-            } else {
-                targetScope.mapNamed
-                    .set(kind, new Map())
-                    .get(kind)!
-                    .set(entity.name.text, entity);
-            }
+        //if (isNamedScopeItemKind(kind)) {
+        if (targetScope.mapNamed.has(kind)) {
+            targetScope.mapNamed.get(kind)!.set(entity.name.text, entity);
+        } else {
+            targetScope.mapNamed
+                .set(kind, new Map())
+                .get(kind)!
+                .set(entity.name.text, entity);
         }
+        //}
     }
 
+    /*
     public getAllUnnamed<T extends UnnamedScopeItemKind>(
         _kind: T,
     ): GenerativeEntityMap[T][] {
@@ -212,7 +217,7 @@ export class Scope {
         //     return Array.from(kindMap.values());
         // }
         // return [];
-    }
+    }*/
 
     public getAllNamed<T extends NamedScopeItemKind>(
         kind: T,
@@ -325,9 +330,10 @@ export class Scope {
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public getItems(kind: ScopeItemKind): GenerativeEntity<any>[] {
-        const result = isNamedScopeItemKind(kind)
-            ? this.mapNamed.get(kind)
-            : this.mapUnnamed.get(kind);
+        //const result = isNamedScopeItemKind(kind)
+        //    ? this.mapNamed.get(kind)
+        //    : this.mapUnnamed.get(kind);
+        const result = this.mapNamed.get(kind);
         return result === undefined ? [] : Array.from(result.values());
     }
 
@@ -339,11 +345,11 @@ export class Scope {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         acc?: GenerativeEntity<any>[], // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): NamedGenerativeEntity<any>[];
-    public getItemsRecursive(
-        kind: UnnamedScopeItemKind,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        acc?: GenerativeEntity<any>[], // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ): GenerativeEntity<any>[];
+    //public getItemsRecursive(
+    //    kind: UnnamedScopeItemKind,
+    //    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //    acc?: GenerativeEntity<any>[], // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //): GenerativeEntity<any>[];
     public getItemsRecursive(
         kind: ScopeItemKind,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -353,9 +359,10 @@ export class Scope {
         const currentItems = this.getItems(kind);
         const accN = acc.concat(currentItems);
         if (!this.isProgramScope() && this.parentScope)
-            return isNamedScopeItemKind(kind)
-                ? this.parentScope.getItemsRecursive(kind, accN)
-                : this.parentScope.getItemsRecursive(kind, accN);
+            //return isNamedScopeItemKind(kind)
+            //    ? this.parentScope.getItemsRecursive(kind, accN)
+            //    : this.parentScope.getItemsRecursive(kind, accN);
+            return this.parentScope.getItemsRecursive(kind, accN);
         else {
             return accN;
         }

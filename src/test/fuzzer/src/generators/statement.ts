@@ -27,6 +27,7 @@ import type { Type } from "@/test/fuzzer/src/types";
 import { Scope } from "@/test/fuzzer/src/scope";
 import type { NamedScopeItemKind } from "@/test/fuzzer/src/scope";
 import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzConfig } from "@/test/fuzzer/src/config";
 
 /** Type all the imperative constructions have. */
 const STMT_TY: Type = { kind: "util", type: UtilType.Unit };
@@ -230,7 +231,6 @@ export class ConditionStatement extends GenerativeEntity<Ast.StatementCondition>
         private parentScope: Scope,
         private trueStmts: fc.Arbitrary<Ast.Statement>[],
         private falseStmts?: fc.Arbitrary<Ast.Statement>[],
-        private elseif?: fc.Arbitrary<Ast.StatementCondition>,
         type: Type = STMT_TY,
     ) {
         super(type);
@@ -297,13 +297,13 @@ export class StatementExpression extends GenerativeEntity<Ast.Statement> {
 export interface StatementParameters {
     /**
      * Determines the maximum depth of nested statement blocks.
-     * @default 2
+     * @default FuzzConfig.nestedBlocksNum
      */
     nestedBlocksNum: number;
 
     /**
      * Number of statements in each block.
-     * @default 3
+     * @default FuzzConfig.stmtsInBlock
      */
     stmtsInBlock: number;
 }
@@ -335,7 +335,10 @@ export class Statement extends GenerativeEntity<Ast.Statement> {
         }
         super(type);
 
-        const { nestedBlocksNum = 2, stmtsInBlock = 3 } = params;
+        const {
+            nestedBlocksNum = FuzzConfig.nestedBlocksNum,
+            stmtsInBlock = FuzzConfig.stmtsInBlock,
+        } = params;
         this.nestedBlocksNum = nestedBlocksNum;
         this.stmtsInBlock = stmtsInBlock;
 

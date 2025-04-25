@@ -6,9 +6,10 @@ import {
     getReturnType,
     isUnit,
     UtilType,
+    SUPPORTED_STDLIB_TYPES,
 } from "@/test/fuzzer/src/types";
 import type { FunctionType, Type } from "@/test/fuzzer/src/types";
-import { Return } from "@/test/fuzzer/src/generators/statement";
+import { Let, Return, Statement } from "@/test/fuzzer/src/generators/statement";
 import { Parameter } from "@/test/fuzzer/src/generators/parameter";
 import { Scope } from "@/test/fuzzer/src/scope";
 import {
@@ -21,6 +22,8 @@ import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
 import { GlobalContext } from "@/test/fuzzer/src/context";
+import { Expression } from "@/test/fuzzer/src/generators/expression";
+import { FuzzConfig } from "@/test/fuzzer/src/config";
 
 /**
  * Utility type, used inside function definition and declaration classes and in shared functions.
@@ -101,6 +104,32 @@ function getAttributes(
     return attrs;
 }
 
+export interface FunctionParameters {
+    /**
+     * Minimum number of let statements at the start of function body.
+     * @default FuzzConfig.letStatementsMinNum
+     */
+    letStatementsMinNum: number;
+
+    /**
+     * Maximum number of let statements at the start of function body.
+     * @default FuzzConfig.letStatementsMaxNum
+     */
+    letStatementsMaxNum: number;
+
+    /**
+     * Minimum number of statements in the function body (not counting initial let statements and final return)
+     * @default FuzzConfig.statementsMinLength
+     */
+    statementsMinLength: number;
+
+    /**
+     * Maximum number of statements in the function body (not counting initial let statements and final return)
+     * @default FuzzConfig.statementsMaxLength
+     */
+    statementsMaxLength: number;
+}
+
 /**
  * An object that encapsulates the generated free function or contract method definition including
  * its scope and nested elements.
@@ -108,6 +137,11 @@ function getAttributes(
 export class FunctionDef extends NamedGenerativeEntity<Ast.FunctionDef> {
     /** Generated body items. */
     private body: fc.Arbitrary<Ast.Statement>[] = [];
+
+    private letStatementsMinNum: number;
+    private letStatementsMaxNum: number;
+    private statementsMinLength: number;
+    private statementsMaxLength: number;
 
     /** Scope used within the generated function. */
     private scope: Scope;
@@ -119,6 +153,7 @@ export class FunctionDef extends NamedGenerativeEntity<Ast.FunctionDef> {
         kind: FunctionKind,
         type: FunctionType,
         name?: string,
+        params: Partial<FunctionParameters> = {},
     ) {
         const scope = new Scope(kind, parentScope);
         super(
@@ -129,6 +164,16 @@ export class FunctionDef extends NamedGenerativeEntity<Ast.FunctionDef> {
         );
         this.scope = scope;
         this.kind = kind;
+        const {
+            letStatementsMinNum = FuzzConfig.letStatementsMinNum,
+            letStatementsMaxNum = FuzzConfig.letStatementsMaxNum,
+            statementsMinLength = FuzzConfig.statementsMinLength,
+            statementsMaxLength = FuzzConfig.statementsMaxLength,
+        } = params;
+        this.letStatementsMinNum = letStatementsMinNum;
+        this.letStatementsMaxNum = letStatementsMaxNum;
+        this.statementsMinLength = statementsMinLength;
+        this.statementsMaxLength = statementsMaxLength;
     }
 
     /**
@@ -141,14 +186,43 @@ export class FunctionDef extends NamedGenerativeEntity<Ast.FunctionDef> {
                 ? getReturnType(type)
                 : { kind: "util", type: UtilType.Unit };
         const returnStmt = new Return(this.scope, returnTy).generate();
-        const generatedLetBindings = Array.from(
-            this.scope.getAllNamed("let"),
-        ).map((c) => c.generate());
-        const generatedStmts = Array.from(
-            this.scope.getAllUnnamed("statement"),
-        ).map((c) => c.generate());
-        this.body = [...generatedLetBindings, ...generatedStmts, returnStmt];
-        return fc.tuple(...this.body);
+        //const generatedLetBindings = Array.from(
+        //    this.scope.getAllNamed("let"),
+        //).map((c) => c.generate());
+
+        // TODO: Augment the SUPPORTED_STDLIB_TYPES
+        const generatedLetEntities = fc
+            .constantFrom(...SUPPORTED_STDLIB_TYPES)
+            .map(
+                (ty) =>
+                    new Let(
+                        this.scope,
+                        { kind: "stdlib", type: ty },
+                        new Expression(this.scope, {
+                            kind: "stdlib",
+                            type: ty,
+                        }).generate(),
+                    ),
+            )
+            .chain((l) => l.generate());
+
+        const generatedLetBindings = fc.array(generatedLetEntities, {
+            minLength: this.letStatementsMinNum,
+            maxLength: this.letStatementsMaxNum,
+        });
+
+        const generatedStmts = fc.array(new Statement(this.scope).generate(), {
+            minLength: this.statementsMinLength,
+            maxLength: this.statementsMaxLength,
+        });
+
+        //const generatedStmts = Array.from(
+        //    this.scope.getAllUnnamed("statement"),
+        //).map((c) => c.generate());
+
+        return fc
+            .tuple(generatedLetBindings, generatedStmts, returnStmt)
+            .map((tup) => tup.flat());
     }
 
     public generateImpl(
