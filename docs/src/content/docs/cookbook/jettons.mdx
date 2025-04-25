@@ -102,14 +102,14 @@ fun calculateJettonWalletAddress(
     jettonWalletCode: Cell
 ): Address {
 
-    let initData = JettonWalletData{
+    let initData = JettonWalletData {
         balance: 0,
         ownerAddress,
         jettonMasterAddress,
         jettonWalletCode,
     };
 
-    return contractAddress(StateInit{
+    return contractAddress(StateInit {
         code: jettonWalletCode,
         data: initData.toCell(),
     });
@@ -184,14 +184,14 @@ fun calculateJettonWalletAddress(
     jettonWalletCode: Cell,
 ): Address {
 
-    let initData = JettonWalletData{
+    let initData = JettonWalletData {
         balance: 0,
         ownerAddress,
         jettonMasterAddress,
         jettonWalletCode,
     };
 
-    return contractAddress(StateInit{
+    return contractAddress(StateInit {
         code: jettonWalletCode,
         data: initData.toCell(),
     });
@@ -223,10 +223,10 @@ contract Example {
             "Not enough funds to withdraw"
         );
 
-        send(SendParameters{
+        send(SendParameters {
             to: self.myJettonWalletAddress,
             value: JettonTransferGas,
-            body: JettonTransfer{
+            body: JettonTransfer {
                 // Unique identifier used to trace transactions across multiple contracts
                 queryId: 42,
                 // Jetton amount to transfer
@@ -281,14 +281,14 @@ fun calculateJettonWalletAddress(
     jettonWalletCode: Cell,
 ): Address {
 
-    let initData = JettonWalletData{
+    let initData = JettonWalletData {
         balance: 0,
         ownerAddress,
         jettonMasterAddress,
         jettonWalletCode,
     };
 
-    return contractAddress(StateInit{
+    return contractAddress(StateInit {
         code: jettonWalletCode,
         data: initData.toCell(),
     });
@@ -320,10 +320,10 @@ contract Example {
             "Not enough funds to throw away",
         );
 
-        send(SendParameters{
+        send(SendParameters {
             to: self.myJettonWalletAddress,
             value: JettonBurnGas,
-            body: JettonBurn{
+            body: JettonBurn {
                 // Unique identifier used to trace transactions across multiple contracts
                 queryId: 42,
                 // Jetton amount you want to burn
@@ -331,7 +331,7 @@ contract Example {
                 // Destination address for a confirmation notice of a successful burn
                 // and the remainder of the incoming message value
                 responseDestination: sender(),
-                // Can be used for custom logic of Jettons; 
+                // Can be used for custom logic of Jettons;
                 // if unused, it can be set to null
                 customPayload: null,
             }.toCell(),
@@ -359,14 +359,14 @@ fun calculateJettonWalletAddress(
     jettonWalletCode: Cell
 ): Address {
 
-    let initData = JettonWalletData{
+    let initData = JettonWalletData {
         status: 0,
         balance: 0,
         ownerAddress,
         jettonMasterAddress,
     };
 
-    return contractAddress(StateInit{
+    return contractAddress(StateInit {
         code: jettonWalletCode,
         data: initData.toCell(),
     });

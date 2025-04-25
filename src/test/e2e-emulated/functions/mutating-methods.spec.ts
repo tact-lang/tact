@@ -6,24 +6,24 @@ import "@ton/test-utils";
 
 describe("bugs", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<Tester>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await Tester.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -33,13 +33,13 @@ describe("bugs", () => {
     it("should implement mutating method chaining correctly", async () => {
         // Ensure initial transaction works as expected
         const initialResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("1") },
             null,
         );
 
         expect(initialResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
         });

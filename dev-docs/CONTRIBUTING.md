@@ -177,6 +177,21 @@ yarn test -u spec-name-pattern1 spec-name-pattern2
 
 Beware that updating snapshots from Javascript Debug Terminal in VSCode might lead to unexpected results. E2E CLI tests check `stderr` of child `tact` processes, but JS Debug Terminal adds "Debugger attached" messages into it.
 
+## Coverage
+
+To compute coverage, run
+
+```shell
+yarn istanbul
+```
+
+The log will be generated into `/coverage` folder. For better UX, serve its contents locally with
+
+```shell
+cd coverage
+npx http-server . -p 3000
+```
+
 ## Benchmarks
 
 The benchmark system tracks gas consumption changes after making changes to the compiler.
@@ -276,7 +291,7 @@ For more info, refer to the package's GitHub repository: [`tact-lang/ton-opcode`
 
 ### Parser
 
-The [`src/grammar/grammar.gg`](../src/grammar/grammar.gg) file contains the Tact grammar expressed in the PEG language of the [pgen](https://github.com/tact-lang/syntax-tools/tree/main/packages/pgen) parser generator.
+The [`src/grammar/grammar.peggy`](../src/grammar/grammar.peggy) file contains the Tact grammar expressed in the PEG language of the [pgen](https://github.com/tact-lang/syntax-tools/tree/main/packages/pgen) parser generator.
 
 The helper file [`src/grammar/index.ts`](../src/grammar/index.ts) contains the logic that transforms concrete syntax trees produced with the help of parser into abstract syntax trees (ASTs) defined in [src/ast/ast.ts](../src/ast/ast.ts). The index.ts file also does grammar validation, like checking that function or constant attributes are not duplicated or that user identifiers do not start with specific reserved prefixes.
 

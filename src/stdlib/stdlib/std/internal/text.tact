@@ -443,8 +443,7 @@ extends fun asComment(self: String): Cell {
 /// See: https://docs.tact-lang.org/ref/core-strings#stringasslice
 ///
 ///
-@name(__tact_str_to_slice)
-extends native asSlice(self: String): Slice;
+asm extends fun asSlice(self: String): Slice {}
 
 /// Extension function for the `Slice` type.
 ///
@@ -462,8 +461,7 @@ extends native asSlice(self: String): Slice;
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceasstring
 ///
-@name(__tact_slice_to_str)
-extends native asString(self: Slice): String;
+asm extends fun asString(self: Slice): String {}
 
 /// Extension function for the `Slice` type.
 ///

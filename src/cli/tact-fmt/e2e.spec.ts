@@ -48,6 +48,8 @@ describe("tact-fmt foo.tact", () => {
         writeFileSync(file, goodContract);
         const result = await tactFmt(file);
         expect(result).toMatchObject({ kind: "exited", code: 0 });
+
+        rmSync(file);
     });
 
     testExceptWindows("Default run", async () => {
@@ -56,6 +58,8 @@ describe("tact-fmt foo.tact", () => {
         writeFileSync(file, goodContract);
         const result = await tactFmt(file);
         expect(result).toMatchSnapshot();
+
+        rmSync(file);
     });
 
     testExceptWindows("Default run with write to file", async () => {
@@ -101,12 +105,132 @@ describe("tact-fmt foo.tact", () => {
         rmSync(innerDir, { recursive: true });
     });
 
+    testExceptWindows("Check on directory with formatted files", async () => {
+        const dir = outputDir;
+        const innerDir = join(dir, "inner");
+        const innerInnerDir = join(innerDir, "inner-2");
+
+        await mkdir(dir, { recursive: true });
+        await mkdir(innerDir, { recursive: true });
+        await mkdir(innerInnerDir, { recursive: true });
+
+        // inner
+        //   file1.tact
+        //   inner-2
+        //      file2.tact
+        //      file3.tact
+        const file1 = join(innerDir, "file1.tact");
+        const file2 = join(innerInnerDir, "file2.tact");
+        const file3 = join(innerInnerDir, "file3.tact");
+
+        writeFileSync(file1, "fun foo1() {}\n");
+        writeFileSync(file2, "fun foo2() {}\n");
+        writeFileSync(file3, "fun foo3() {}\n");
+
+        const result = await tactFmt(innerDir, "--check");
+        expect(result).toMatchSnapshot();
+
+        rmSync(innerDir, { recursive: true });
+    });
+
+    testExceptWindows(
+        "Check on directory with not formatted files",
+        async () => {
+            const dir = outputDir;
+            const innerDir = join(dir, "inner");
+            const innerInnerDir = join(innerDir, "inner-2");
+
+            await mkdir(dir, { recursive: true });
+            await mkdir(innerDir, { recursive: true });
+            await mkdir(innerInnerDir, { recursive: true });
+
+            // inner
+            //   file1.tact
+            //   inner-2
+            //      file2.tact
+            //      file3.tact
+            const file1 = join(innerDir, "file1.tact");
+            const file2 = join(innerInnerDir, "file2.tact");
+            const file3 = join(innerInnerDir, "file3.tact");
+
+            writeFileSync(file1, "fun foo1() {  }\n");
+            writeFileSync(file2, "fun foo2() {  }\n");
+            writeFileSync(file3, "fun foo3() {  }\n");
+
+            const result = await tactFmt(innerDir, "--check");
+            expect(result).toMatchSnapshot();
+
+            rmSync(innerDir, { recursive: true });
+        },
+    );
+
+    testExceptWindows("Check on several formatted files", async () => {
+        const dir = outputDir;
+        const innerDir = join(dir, "inner");
+        const innerInnerDir = join(innerDir, "inner-2");
+
+        await mkdir(dir, { recursive: true });
+        await mkdir(innerDir, { recursive: true });
+        await mkdir(innerInnerDir, { recursive: true });
+
+        // inner
+        //   file1.tact
+        //   inner-2
+        //      file2.tact
+        //      file3.tact
+        const file1 = join(innerDir, "file1.tact");
+        const file2 = join(innerInnerDir, "file2.tact");
+        const file3 = join(innerInnerDir, "file3.tact");
+
+        writeFileSync(file1, "fun foo1() {}\n");
+        writeFileSync(file2, "fun foo2() {  }\n"); // not checked
+        writeFileSync(file3, "fun foo3() {}\n");
+
+        const result = await tactFmt("--check", file1, file3);
+        expect(result).toMatchSnapshot();
+
+        rmSync(innerDir, { recursive: true });
+    });
+
+    testExceptWindows("Check on several directories", async () => {
+        const dir = outputDir;
+        const innerDir = join(dir, "inner");
+        const innerInnerDir = join(innerDir, "inner-2");
+        const innerInnerDir2 = join(innerDir, "inner-3");
+
+        await mkdir(dir, { recursive: true });
+        await mkdir(innerDir, { recursive: true });
+        await mkdir(innerInnerDir, { recursive: true });
+        await mkdir(innerInnerDir2, { recursive: true });
+
+        // inner
+        //   file1.tact
+        //   inner-2
+        //      file2.tact
+        //   inner-3
+        //      file3.tact
+        const file1 = join(innerDir, "file1.tact");
+        const file2 = join(innerInnerDir, "file2.tact");
+        const file3 = join(innerInnerDir2, "file3.tact");
+
+        writeFileSync(file1, "fun foo1() { }\n"); // not checked
+        writeFileSync(file2, "fun foo2() {  }\n");
+        writeFileSync(file3, "fun foo3() {}\n");
+
+        const result = await tactFmt("--check", innerInnerDir, innerInnerDir2);
+        expect(result).toMatchSnapshot();
+
+        rmSync(innerDir, { recursive: true });
+    });
+
     testExceptWindows("With error", async () => {
         await mkdir(outputDir, { recursive: true });
         const file = join(outputDir, "contract.tact");
         writeFileSync(file, badContract);
         const result = await tactFmt(file);
         expect(result).toMatchObject({ kind: "exited", code: 1 });
+
+        rmSync(file);
     });
 
     testExceptWindows("With syntax error", async () => {
@@ -115,5 +239,17 @@ describe("tact-fmt foo.tact", () => {
         writeFileSync(file, contractWithSyntaxError);
         const result = await tactFmt(file, "-w");
         expect(result).toMatchSnapshot();
+
+        rmSync(file);
+    });
+
+    testExceptWindows("Check and write flags simultaneously", async () => {
+        await mkdir(outputDir, { recursive: true });
+        const file = join(outputDir, "contact.tact");
+        writeFileSync(file, contractWithSyntaxError);
+        const result = await tactFmt(file, "-w", "--check");
+        expect(result).toMatchSnapshot();
+
+        rmSync(file);
     });
 });

@@ -28,58 +28,58 @@ type MessageInfo = {
    - The Calculator contract, responsible for receiving requests from the tester and sending the results back to the tester.
 
    The Calculator contract receives requests to compute averages of numbers in close integer intervals [a,b]. For example,
-   the average of all integers in the interval [0,4] is 2. The Calculator reports an error if the interval is ill-formed, 
+   the average of all integers in the interval [0,4] is 2. The Calculator reports an error if the interval is ill-formed,
    for example [3,1].
 
    All the test in this file explore the behavior of sending requests to the Calculator using the message mode SendDefaultMode
    with no flags.
 */
 
-/* TECHNICAL OBSERVATION: When comparing amounts of TON in equalities of `expect` assertions, 
-   instead of strict equality use equality within an error interval (an error of 1 unit seems to be enough), 
+/* TECHNICAL OBSERVATION: When comparing amounts of TON in equalities of `expect` assertions,
+   instead of strict equality use equality within an error interval (an error of 1 unit seems to be enough),
    just to be on the safe side. The reason is that the computation of some fees are subject to rounding and it is
-   unclear if Sandbox uses the rounded quantities or the quantities previous to rounding to compute some amounts or 
+   unclear if Sandbox uses the rounded quantities or the quantities previous to rounding to compute some amounts or
    how the rounding errors get propagated.
-   For example, the total transaction fees are subject to rounding: 
+   For example, the total transaction fees are subject to rounding:
    https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#basic-fees-formula
 
    These tests use equality testing within an error interval of 1 unit.
 */
 describe("SendDefaultMode with no flags", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let tester: SandboxContract<MessageModeTester>;
     let calculator: SandboxContract<Calculator>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         tester = blockchain.openContract(await MessageModeTester.fromInit());
         calculator = blockchain.openContract(await Calculator.fromInit());
 
         const testerDeployResult = await tester.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(testerDeployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: tester.address,
             success: true,
             deploy: true,
         });
 
         const calculatorDeployResult = await calculator.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(calculatorDeployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: calculator.address,
             success: true,
             deploy: true,
@@ -89,27 +89,27 @@ describe("SendDefaultMode with no flags", () => {
     /* This test represents the normal behavior when all transactions finalize without errors.
    The summary of the test is as follows:
 
-   1) The treasury will send a message to the tester, indicating the tester to start a 
+   1) The treasury will send a message to the tester, indicating the tester to start a
       request to the calculator for computing the average of the interval [0,4].
-      
-   2) The tester creates an AverageRequest message (SendDefaultMode with no flags), 
+
+   2) The tester creates an AverageRequest message (SendDefaultMode with no flags),
       indicating that it will include 1 TON in the "value" of the message.
       The tester also includes in its request that the Calculator should pay 1 TON when it sends its response back to the tester.
 
    3) During the action phase, message forward fees will be deducted from the 1 TON payed by the tester. The message is sent
       to the calculator with a final value of: "1 TON - message forward fees". Call this value "ReqV" (i.e., Request Value).
 
-   4) The calculator receives the message. An amount of ReqV TONs (i.e., the value in the incoming message) 
-      is added to the calculator's balance. 
-    
-   5) The calculator computes the average of the interval [0,4], producing 2 as result. All the transaction fees
-      are deducted from the calculator's balance. 
+   4) The calculator receives the message. An amount of ReqV TONs (i.e., the value in the incoming message)
+      is added to the calculator's balance.
 
-   6) The calculator creates an AverageResult message (SendDefaultMode with no flags), 
+   5) The calculator computes the average of the interval [0,4], producing 2 as result. All the transaction fees
+      are deducted from the calculator's balance.
+
+   6) The calculator creates an AverageResult message (SendDefaultMode with no flags),
       indicating that it will include 1 TON in the "value" of the message.
-   
-   7) During the action phase of the calculator, message forward fees will be deducted from the 1 TON payed by the calculator. 
-      The message is sent to the tester with a final value of: "1 TON - message forward fees". 
+
+   7) During the action phase of the calculator, message forward fees will be deducted from the 1 TON payed by the calculator.
+      The message is sent to the tester with a final value of: "1 TON - message forward fees".
       Call this value "ResV" (i.e., Response Value).
 
    8) The tester receives the message. An amount of ResV TONs (i.e., the value in the incoming message)
@@ -136,10 +136,10 @@ describe("SendDefaultMode with no flags", () => {
         ).balance;
 
         // Treasury triggers the test by telling the tester to request the computation of the average of the interval [0,4]
-        // The treasure also indicates that the tester should pay 1 TON in its request, and that the calculator
+        // The treasury also indicates that the tester should pay 1 TON in its request, and that the calculator
         // should pay 1 TON in its response message.
         const { transactions } = await tester.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "DoCalculatorRequest",
@@ -162,7 +162,7 @@ describe("SendDefaultMode with no flags", () => {
         // Transaction T1 (see summary of transactions at the start of the test)
         const testerRequestTsx = ensureTransactionIsDefined(
             findTransaction(transactions, {
-                from: treasure.address,
+                from: treasury.address,
                 to: tester.address,
                 success: true,
             }),
@@ -190,7 +190,7 @@ describe("SendDefaultMode with no flags", () => {
         expect(testerRequestTsx.lt < calculatorTsx.lt).toBe(true);
         expect(calculatorTsx.lt < testerResultTsx.lt).toBe(true);
 
-        /* In SendDefaultMode with no flags, outbound messages must pay for forward fees. The forward fees are deducted from the 
+        /* In SendDefaultMode with no flags, outbound messages must pay for forward fees. The forward fees are deducted from the
        initial "value" passed as parameter to the send function. So that if we execute:
 
        send(SendParameters{
@@ -200,7 +200,7 @@ describe("SendDefaultMode with no flags", () => {
                 });
 
        the message final value is: V - msg_fwd_fee
-       
+
        where msg_fwd_fee is the forward fee computed during the action phase.
 
        Additionally, one fraction of msg_fwd_fee is assigned as forward fees for the blockchain validators:
@@ -219,23 +219,23 @@ describe("SendDefaultMode with no flags", () => {
        During the action phase, an amount of msg_fwd_fee will be removed from the above chunk (i.e., the message forward fees):
 
        |--------------------|--------------------------|
-             final value             msg_fwd_fee    
+             final value             msg_fwd_fee
 
        Additionally, a fraction of msg_fwd_fee will be reserved as forward fees for validators, while the rest will be deemed
        to be action fees:
 
        |--------------------|--------------|-----------|
              final value         fwd_fee     action fee
-                                      msg_fwd_fee 
+                                      msg_fwd_fee
 
-       When the message is sent to the calculator, the message will carry the final value chunk and the fwd_fee chunk. 
-       During the message transit, the fwd_fee chunk is consumed by the validators, and when the message arrives to 
+       When the message is sent to the calculator, the message will carry the final value chunk and the fwd_fee chunk.
+       During the message transit, the fwd_fee chunk is consumed by the validators, and when the message arrives to
        the calculator, the "final value" chunk is added to the calculator's balance.
 
-       The above computation is carried out for each sent message. 
+       The above computation is carried out for each sent message.
        In this test, since each action phase in every transaction sends a single message, we can extract msg_fwd_fee from
        the total message forward fee computed in the action phase of the transaction object.
-       This is what we are going to do now in order to check that the final value of the outbound messages 
+       This is what we are going to do now in order to check that the final value of the outbound messages
        are actually their initial value minus the message forward fees.
     */
 
@@ -309,30 +309,30 @@ describe("SendDefaultMode with no flags", () => {
         expect(finalValue.toString()).toBe("2");
     });
 
-    /* This test checks when the tester contract makes a request to the calculator, but the tester does not 
+    /* This test checks when the tester contract makes a request to the calculator, but the tester does not
        include enough funds to pay for message forward fees.
-       
+
        The summary of the test is as follows:
-    
-       1) The treasury will send a message to the tester, indicating the tester to start a 
+
+       1) The treasury will send a message to the tester, indicating the tester to start a
           request to the calculator for computing the average of the interval [0,4].
-          
-       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags), 
+
+       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags),
           indicating that it will include 0 TON in the "value" of the message.
           The tester sets its "val" contract field to -3 ("op requested, no answer yet").
-          The computation phase for the tester contract succeeds. 
-    
-       3) During the action phase for the tester contract, since there is not enough funds for message forward fees 
-          in the "value" of the request message, the action phase will fail with result code 40. 
+          The computation phase for the tester contract succeeds.
+
+       3) During the action phase for the tester contract, since there is not enough funds for message forward fees
+          in the "value" of the request message, the action phase will fail with result code 40.
           This means that the request never reaches the calculator.
-    
+
        4) The tester's transaction is rolled back. The tester contract field "val" is reset to -1 ("initial state").
           However, the tester contract still payed for the transaction fees.
-        
+
 
        Summary of transactions:
-    
-       T1) Triggered by message sent from treasury to tester. Attempts to send request to calculator in action phase, 
+
+       T1) Triggered by message sent from treasury to tester. Attempts to send request to calculator in action phase,
            but fails and it is rolled back.
     */
     it("should test a request with not enough funds to pay for request message forward fees", async () => {
@@ -353,10 +353,10 @@ describe("SendDefaultMode with no flags", () => {
         ).balance;
 
         // Treasury triggers the test by telling the tester to request the computation of the average of the interval [0,4].
-        // The treasure also indicates that the tester should pay 0 TON in its request, and that the calculator
+        // The treasury also indicates that the tester should pay 0 TON in its request, and that the calculator
         // should pay 0 TON in its response message (in this test, the calculator never receives the request in the first place).
         const { transactions } = await tester.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "DoCalculatorRequest",
@@ -379,7 +379,7 @@ describe("SendDefaultMode with no flags", () => {
         // Transaction T1 (see summary of transactions at the start of the test)
         const testerRequestTsx = ensureTransactionIsDefined(
             findTransaction(transactions, {
-                from: treasure.address,
+                from: treasury.address,
                 to: tester.address,
                 success: false,
             }),
@@ -448,40 +448,40 @@ describe("SendDefaultMode with no flags", () => {
 
     /* This test checks when the tester contract sends an invalid request to the calculator, and the tester contract
        includes enough funds in the request to receive a bounced message from the calculator, signaling the error.
-       
+
        The summary of the test is as follows:
-    
-       1) The treasury will send a message to the tester, indicating the tester to start a 
+
+       1) The treasury will send a message to the tester, indicating the tester to start a
           request to the calculator for computing the average of the INVALID interval [4,0].
-          
-       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags), 
+
+       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags),
           indicating that it will include 1 TON in the "value" of the message. This amount is enough to cover the
-          calculator's transaction fees and message forward fees for the bounced message. 
+          calculator's transaction fees and message forward fees for the bounced message.
           The tester sets its "val" contract field to -3 ("op requested, no answer yet").
-          The computation phase for the tester contract succeeds. 
-    
+          The computation phase for the tester contract succeeds.
+
        3) The action phase for the tester contract successfully sends the request.
-    
-       4) The calculator receives the request and aborts its computation phase because the interval [4,0] is 
+
+       4) The calculator receives the request and aborts its computation phase because the interval [4,0] is
           invalid, i.e, there must exist at least one number in the interval because [4,0] is an empty interval.
-       
-       5) The calculator skips its action phase, but enters its bounce phase. 
-          The calculator sends a bounced message back to the tester, because there is still enough funds 
+
+       5) The calculator skips its action phase, but enters its bounce phase.
+          The calculator sends a bounced message back to the tester, because there is still enough funds
           in the incoming request to pay for message forward fees in the bounced message (after the transaction fees
           were deducted from the value in the incoming message).
-        
+
        6) The tester receives the bounced message. The tester sets its contract field "val" to -2 ("error").
 
        Summary of transactions:
-    
-       T1) Triggered by message sent from treasury to tester. Sends request to calculator to compute 
+
+       T1) Triggered by message sent from treasury to tester. Sends request to calculator to compute
            average of invalid interval [4,0] with enough funds to receive the bounced message.
-        
-       T2) Triggered by the message sent from tester to calculator. The transaction is aborted during the 
+
+       T2) Triggered by the message sent from tester to calculator. The transaction is aborted during the
            computation phase (due to an invalid request from the tester) and sends a bounced message back to the tester,
            because there was still enough funds in the incoming request.
 
-       T3) Triggered by the bounced message sent from calculator to tester. Receives the bounced message and 
+       T3) Triggered by the bounced message sent from calculator to tester. Receives the bounced message and
            sets the tester's field "val" to -2 ("error").
     */
     it("should test an invalid request to calculator with enough funds to pay for bounced message forward fees", async () => {
@@ -501,11 +501,11 @@ describe("SendDefaultMode with no flags", () => {
         ).balance;
 
         // Treasury triggers the test by telling the tester to request the computation of the average of the INVALID interval [4,0].
-        // The treasure also indicates that the tester should pay 1 TON in its request, and that the calculator
+        // The treasury also indicates that the tester should pay 1 TON in its request, and that the calculator
         // should pay 0 TON in its response message (in this test, the calculator will not send the response back to the tester due
         // to an invalid request).
         const { transactions } = await tester.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "DoCalculatorRequest",
@@ -529,7 +529,7 @@ describe("SendDefaultMode with no flags", () => {
         // This transaction sends the invalid request to the calculator.
         const testerRequestTsx = ensureTransactionIsDefined(
             findTransaction(transactions, {
-                from: treasure.address,
+                from: treasury.address,
                 to: tester.address,
                 success: true,
             }),
@@ -687,38 +687,38 @@ describe("SendDefaultMode with no flags", () => {
         expect(finalValue.toString()).toBe("-2");
     });
 
-    /* This test checks when the tester contract sends a request that causes an out of gas error during the calculator's computation phase, 
+    /* This test checks when the tester contract sends a request that causes an out of gas error during the calculator's computation phase,
        due to the tester not including enough funds in the request.
-       
+
        The summary of the test is as follows:
-    
-       1) The treasury will send a message to the tester, indicating the tester to start a 
-          request to the calculator for computing the average of the interval [0,50]. 
-          
-       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags), 
+
+       1) The treasury will send a message to the tester, indicating the tester to start a
+          request to the calculator for computing the average of the interval [0,50].
+
+       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags),
           including 0.005 TON in the "value" of the message. This amount is NOT enough to cover the
-          calculator's transaction fees and message forward fees for the bounced message. 
+          calculator's transaction fees and message forward fees for the bounced message.
           The tester sets its "val" contract field to -3 ("op requested, no answer yet").
-          The computation phase for the tester contract succeeds. 
-    
+          The computation phase for the tester contract succeeds.
+
        3) The action phase for the tester contract successfully sends the request.
-    
-       4) The calculator receives the request and aborts its computation phase because computing the interval [0,50] 
-          takes too much gas. 
-       
-       5) The calculator skips its action phase, but enters its bounce phase. 
-          The calculator does NOT send a bounced message back to the tester, because there are not enough funds 
+
+       4) The calculator receives the request and aborts its computation phase because computing the interval [0,50]
+          takes too much gas.
+
+       5) The calculator skips its action phase, but enters its bounce phase.
+          The calculator does NOT send a bounced message back to the tester, because there are not enough funds
           left in the incoming request to pay for message forward fees (after the computation fees
           were deducted from the value in the incoming message).
-        
+
        6) The tester remains with contract field "val" set to -3 ("op requested, no answer yet").
 
        Summary of transactions:
-    
-       T1) Triggered by message sent from treasury to tester. Sends request to calculator to compute 
+
+       T1) Triggered by message sent from treasury to tester. Sends request to calculator to compute
            average of interval [0,50] with NOT enough funds to pay for the calculator's transaction fees.
-        
-       T2) Triggered by the message sent from tester to calculator. The transaction is aborted during the 
+
+       T2) Triggered by the message sent from tester to calculator. The transaction is aborted during the
            computation phase (due to an out of gas error). No bounced message is sent back to the tester
            because there are no funds left in the incoming request.
     */
@@ -743,7 +743,7 @@ describe("SendDefaultMode with no flags", () => {
 
         // Treasury triggers the test by telling the tester to request the computation of the average of the interval [0,50].
         const { transactions } = await tester.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "DoCalculatorRequest",
@@ -767,7 +767,7 @@ describe("SendDefaultMode with no flags", () => {
         // This transaction sends the request to the calculator.
         const testerRequestTsx = ensureTransactionIsDefined(
             findTransaction(transactions, {
-                from: treasure.address,
+                from: treasury.address,
                 to: tester.address,
                 success: true,
             }),
@@ -902,22 +902,22 @@ describe("SendDefaultMode with no flags", () => {
         expect(finalValue.toString()).toBe("-3");
     });
 
-    /* This test checks when the tester contract sends a request that successfully passes the calculator's computation phase, 
+    /* This test checks when the tester contract sends a request that successfully passes the calculator's computation phase,
        but fails during the calculator's action phase.
-       
+
        The summary of the test is as follows:
-    
-       1) The treasury will send a message to the tester, indicating the tester to start a 
-          request to the calculator for computing the average of the interval [0,4]. 
-          
-       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags), 
+
+       1) The treasury will send a message to the tester, indicating the tester to start a
+          request to the calculator for computing the average of the interval [0,4].
+
+       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags),
           including 1 TON in the "value" of the message. This amount is enough to cover the
-          calculator's transaction fees. 
+          calculator's transaction fees.
           The tester sets its "val" contract field to -3 ("op requested, no answer yet").
-          The computation phase for the tester contract succeeds. 
-    
+          The computation phase for the tester contract succeeds.
+
        3) The action phase for the tester contract successfully sends the request.
-    
+
        4) The calculator receives the request and successfully computes the average of the interval [0,4].
           The calculator creates an AverageResponse message (SendDefaultMode with no flags),
           including 0 TON in the "value" of the message. This means that the calculator will fail its action
@@ -925,15 +925,15 @@ describe("SendDefaultMode with no flags", () => {
 
        5) The calculator enters its action phase and fails to send the response message back to the tester,
           since the response message does not have funds to pay for forward fees.
-        
+
        6) The tester remains with contract field "val" set to -3 ("op requested, no answer yet").
 
        Summary of transactions:
-    
-       T1) Triggered by message sent from treasury to tester. Sends request to calculator to compute 
+
+       T1) Triggered by message sent from treasury to tester. Sends request to calculator to compute
            average of interval [0,4] with enough funds to pay for the calculator's transaction fees.
-        
-       T2) Triggered by the message sent from tester to calculator. The transaction passes the computation 
+
+       T2) Triggered by the message sent from tester to calculator. The transaction passes the computation
            phase but fails its action phase because the calculator did not include enough funds to pay for forward
            fees in the response message. No response message is sent back to the tester.
     */
@@ -956,7 +956,7 @@ describe("SendDefaultMode with no flags", () => {
 
         // Treasury triggers the test by telling the tester to request the computation of the average of the interval [0,4].
         const { transactions } = await tester.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "DoCalculatorRequest",
@@ -980,7 +980,7 @@ describe("SendDefaultMode with no flags", () => {
         // This transaction sends the request to the calculator.
         const testerRequestTsx = ensureTransactionIsDefined(
             findTransaction(transactions, {
-                from: treasure.address,
+                from: treasury.address,
                 to: tester.address,
                 success: true,
             }),
@@ -1099,40 +1099,40 @@ function computeBalanceDelta(
         /* For transactions initiated by an internal message, the delta consists on the following formula:
 
                delta = inValue - totalFees - outMsgInfo.value - outMsgInfo.validatorsForwardFee
-           
+
            where inValue = value in the incoming message
-                 
-                 totalFees = total transaction fees  (i.e., storage fees + import external message fees + 
+
+                 totalFees = total transaction fees  (i.e., storage fees + import external message fees +
              computation fees + action fees + outbound external message fees)
              see https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#basic-fees-formula
-                 
+
                  outMsgInfo.value = value in the outbound message
 
                  outMsgInfo.validatorsForwardFee = validator's forward fee in the outbound message
-                 
+
            The rationale for the formula is as follows:
-               
+
             1) The value of the incoming message is added to the contract's balance. This explains the positive sign in inValue.
             2) All transaction fees are subtracted from the contract's balance. This explains the negative sign in totalFees.
             3) For the outbound message, we need to remove from the contract's balance the amount set in the send function.
                However, we need to be careful. Why? Recall the diagram of how the amount payed by the contract in the send function
                is split into "final value", message forward fees (msg_fwd_fee), forward fees for validators (fwd_fee), and action fees:
- 
+
                ----Total amount payed by contract in the send function-------
                |                                                            |
                v                                                            v
                |------------------------------|--------------|--------------|
                            final value        /\  fwd_fee       action fee  /\
                                                |                             |
-                                               ---------msg_fwd_fee----------- 
-            
-                Note that in the formula for the totalFees, the action fees already occur as a term. Therefore, if we subtract 
+                                               ---------msg_fwd_fee-----------
+
+                Note that in the formula for the totalFees, the action fees already occur as a term. Therefore, if we subtract
                 the total amount payed by the contract in the send function, we would be subtracting the action fees TWICE.
                 Hence, we should only subtract the "final value" (contained in outMsgInfo.value)
                 and the forward fees for validators (contained in outMsgInfo.validatorsForwardFee).
-            
-           WARNING: According to TON Documentation https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#ihr, 
-           there is an extra IHR Fee in internal messages that should be set to 0 because IHR is yet not implemented. 
+
+           WARNING: According to TON Documentation https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#ihr,
+           there is an extra IHR Fee in internal messages that should be set to 0 because IHR is yet not implemented.
            In these tests, I am assuming that IHR fee is zero; hence, I am adding assertions that IHR fee is zero.
         */
         expect(tsx.inMessage.info.ihrDisabled).toBe(true);
@@ -1153,8 +1153,8 @@ function computeBalanceDelta(
 
 function getMessageInfo(msg: Message): MessageInfo {
     if (msg.info.type === "internal") {
-        /* WARNING: According to TON Documentation https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#ihr, 
-           there is an extra IHR Fee in internal messages that should be set to 0 because IHR is yet not implemented. 
+        /* WARNING: According to TON Documentation https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#ihr,
+           there is an extra IHR Fee in internal messages that should be set to 0 because IHR is yet not implemented.
            In these tests, I am assuming that IHR fee is zero; hence, I am adding assertions that IHR fee is zero.
         */
         expect(msg.info.ihrDisabled).toBe(true);
