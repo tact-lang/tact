@@ -38,7 +38,6 @@ import {
 import benchmarkResults from "@/benchmarks/notcoin/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/notcoin/results_code_size.json";
 
-
 const loadNotcoinJettonsBoc = () => {
     const bocMinter = readFileSync(
         posixNormalize(
@@ -64,7 +63,12 @@ const loadNotcoinJettonsBoc = () => {
 function testNotcoin(
     benchmarkResults: BenchmarkResult,
     codeSizeResults: CodeSizeResult,
-    fromInit: (totalSupply: bigint, owner: Address, nextOwner: Address, jettonContent: Cell) => Promise<JettonMinterNotcoin>,
+    fromInit: (
+        totalSupply: bigint,
+        owner: Address,
+        nextOwner: Address,
+        jettonContent: Cell,
+    ) => Promise<JettonMinterNotcoin>,
 ) {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
@@ -91,7 +95,12 @@ function testNotcoin(
         };
 
         jettonMinterNotcoin = blockchain.openContract(
-            await fromInit(0n, deployer.address, deployer.address, defaultContent),
+            await fromInit(
+                0n,
+                deployer.address,
+                deployer.address,
+                defaultContent,
+            ),
         );
 
         const deployResult = await jettonMinterNotcoin.send(
@@ -312,15 +321,23 @@ function testNotcoin(
 
     it("minter cells", async () => {
         expect(
-            (await getStateSizeForAccount(blockchain, jettonMinterNotcoin.address))
-                .cells,
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    jettonMinterNotcoin.address,
+                )
+            ).cells,
         ).toEqual(codeSizeResults.size["minter cells"]);
     });
 
     it("minter bits", async () => {
         expect(
-            (await getStateSizeForAccount(blockchain, jettonMinterNotcoin.address))
-                .bits,
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    jettonMinterNotcoin.address,
+                )
+            ).bits,
         ).toEqual(codeSizeResults.size["minter bits"]);
     });
 
@@ -357,7 +374,12 @@ describe("Notcoin Gas Tests", () => {
         const funcCodeSize = fullCodeSizeResults.at(0)!;
         const funcResult = fullResults.at(0)!;
 
-        function fromInit(totalSupply: bigint, owner: Address, nextOwner: Address, jettonContent: Cell) {
+        function fromInit(
+            totalSupply: bigint,
+            owner: Address,
+            nextOwner: Address,
+            jettonContent: Cell,
+        ) {
             const jettonData = loadNotcoinJettonsBoc();
             const minterCell = Cell.fromBoc(jettonData.bocMinter)[0]!;
             const walletCell = Cell.fromBoc(jettonData.bocWallet)[0]!;
