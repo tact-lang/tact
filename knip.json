@@ -32,5 +32,10 @@
     "src/fmt/cst/cst-parser.ts",
     "src/pipeline/ast-factory-store.ts"
   ],
-  "ignoreDependencies": ["@tact-lang/ton-abi", "husky", "tsconfig-paths"]
+  "ignoreDependencies": [
+    "@tact-lang/ton-abi",
+    "husky",
+    "tsconfig-paths",
+    "@tact-lang/ton-jest"
+  ]
 }
