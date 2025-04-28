@@ -6,9 +6,10 @@ import { getAnsiMarkup } from "@/cli/colors";
 import { TerminalLogger } from "@/cli/logger";
 import pathWindows from "path/win32";
 import pathPosix from "path/posix";
+import { vi } from "vitest";
 
 const catchProcessExit = <T>(fn: () => T): T | string => {
-    const exitSpy = jest.spyOn(process, "exit").mockImplementation((code) => {
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
         throw new Error(`process.exit called with code ${code}`);
     });
 
@@ -41,7 +42,7 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     const ansi = getAnsiMarkup(false);
 
     test("only first error without error recovery", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.error(log.text`Error 1`);
@@ -54,7 +55,7 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("all info logs are logged", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.info(log.text`Info 1`);
@@ -67,7 +68,7 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("warn verbosity does not show info", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "warn", ansi, (log) => {
                 log.warn(log.text`Warn`);
@@ -80,8 +81,8 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("path is resolved relative to cwd", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-        const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.error(log.text`See ${log.path("/foo/bar")}.`);
@@ -94,7 +95,7 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("raw internal error", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (_log) => {
                 throwInternal(`OMG`);
@@ -106,7 +107,7 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("logger internal error", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.internal(log.text`OMG`);
@@ -118,8 +119,8 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("raw internal error in source", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-        const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.source("/foo/bar", "Hello, world", () => {
@@ -134,8 +135,8 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("logger internal error in source", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-        const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.source("/foo/bar", "Hello, world", (log) => {
@@ -151,8 +152,8 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("internal error in source at range", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-        const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.source("/foo/bar", "Hello, world", (log) => {
@@ -168,7 +169,7 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("uncaught error", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, () => {
                 throw new Error("Uncaught!");
@@ -180,8 +181,8 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("uncaught error in source", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-        const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 return log.source("/foo/bar", "Hello, world", () => {
@@ -196,7 +197,7 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("multiple errors", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.recover((log) => {
@@ -211,7 +212,7 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("exit on error", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.recover((log) => {
@@ -228,8 +229,8 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("multiple errors inside source", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-        const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.source("/foo/bar", "Hello, world", (log) => {
@@ -249,8 +250,8 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("source inside multiple errors", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-        const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.recover((log) => {
@@ -270,8 +271,8 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("typed errors", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-        const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const fooBarSchema = <M, R>(l: Logger<M, R>) => ({
             fooError: () => l.error(l.text`Foo!`),
             barError: () => l.error(l.text`Bar!`),
@@ -292,8 +293,8 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("typed errors for source", () => {
-        const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-        const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const fooBarSchemaSrc = <M, R>(l: SourceLogger<M, R>) => ({
             fooError: (at: Range) => l.at(at).error(l.text`Foo!`),
             barError: () => l.error(l.text`Bar!`),

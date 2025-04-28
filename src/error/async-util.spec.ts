@@ -1,4 +1,5 @@
 import { catchUncolored, thenUncolored } from "@/error/async-util";
+import { vi } from "vitest";
 
 describe("catchUncolored", () => {
     it("should return the result of a synchronous function when it does not throw an error", () => {
@@ -12,7 +13,7 @@ describe("catchUncolored", () => {
     });
 
     it("should call onError callback when the synchronous function throws an error", () => {
-        const onError = jest.fn(() => "Handled");
+        const onError = vi.fn(() => "Handled");
         const result = catchUncolored(() => {
             throw new Error("Test Error");
         }, onError);
@@ -31,7 +32,7 @@ describe("catchUncolored", () => {
     });
 
     it("should handle error in asynchronous function and return result from synchronous onError", async () => {
-        const onError = jest.fn(() => "Handled");
+        const onError = vi.fn(() => "Handled");
         // eslint-disable-next-line @typescript-eslint/require-await
         const result = await catchUncolored(async () => {
             throw new Error("Async Error");
@@ -43,7 +44,7 @@ describe("catchUncolored", () => {
 
     it("should handle error in asynchronous function and return result from asynchronous onError", async () => {
         // eslint-disable-next-line @typescript-eslint/require-await
-        const onError = jest.fn(async () => "Handled");
+        const onError = vi.fn(async () => "Handled");
         // eslint-disable-next-line @typescript-eslint/require-await
         const result = await catchUncolored(async () => {
             throw new Error("Async Error");
@@ -53,7 +54,7 @@ describe("catchUncolored", () => {
     });
 
     it("should return result from synchronous onError when async function throws an error", async () => {
-        const onError = jest.fn(() => "Handled");
+        const onError = vi.fn(() => "Handled");
         // eslint-disable-next-line @typescript-eslint/require-await
         const result = await catchUncolored(async () => {
             throw new Error("Async Error");
@@ -65,7 +66,7 @@ describe("catchUncolored", () => {
 
     it("should return result from asynchronous onError when async function throws an error", async () => {
         // eslint-disable-next-line @typescript-eslint/require-await
-        const onError = jest.fn(async () => "Handled");
+        const onError = vi.fn(async () => "Handled");
         // eslint-disable-next-line @typescript-eslint/require-await
         const result = await catchUncolored(async () => {
             throw new Error("Async Error");

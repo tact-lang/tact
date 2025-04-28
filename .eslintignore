@@ -6,8 +6,10 @@ src/test/**/output/
 src/test/e2e-slow/map-property-tests/build
 src/func/funcfiftlib.js
 src/grammar/grammar.ts
-jest.setup.js
-jest.globalSetup.js
+vitest.setup.ts
+vitest.globalSetup.js
+vitest.config.ts
+vitest-fast.config.ts
 jest.teardown.js
 /docs
 version.build.ts

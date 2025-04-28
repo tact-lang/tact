@@ -1,4 +1,12 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const coverage = require("@tact-lang/coverage");
 const fc = require("fast-check");
+
+module.exports = async () => {
+    if (process.env.COVERAGE === "true") {
+        coverage.beginCoverage();
+    }
+};
 
 function sanitizeObject(
     obj,

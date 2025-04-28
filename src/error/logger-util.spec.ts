@@ -6,23 +6,24 @@ import {
     handleTopLevelErrors,
     rethrowWithPath,
 } from "@/error/logger-util";
+import { vi } from "vitest";
 
 describe("handleTopLevelErrors", () => {
     const mockLogger = {
-        internal: jest.fn(() => {
+        internal: vi.fn(() => {
             throw new _ExitError();
         }),
-        text: jest.fn().mockReturnValue("mock text"),
+        text: vi.fn().mockReturnValue("mock text"),
     } as unknown as Logger<string, unknown>;
 
     const exit = () => process.exit(30);
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     it("should return result when no error is thrown", () => {
-        const cb = jest.fn(() => "result");
+        const cb = vi.fn(() => "result");
 
         const result = handleTopLevelErrors(mockLogger, cb, exit);
 
@@ -31,16 +32,14 @@ describe("handleTopLevelErrors", () => {
     });
 
     it("should handle _ExitError and call process.exit(30)", () => {
-        const cb = jest.fn(() => {
+        const cb = vi.fn(() => {
             throw new _ExitError();
         });
 
         // Mock process.exit to throw an error that we can catch
-        const exitSpy = jest
-            .spyOn(process, "exit")
-            .mockImplementation((code) => {
-                throw new Error(`process.exit called with code ${code}`);
-            });
+        const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+            throw new Error(`process.exit called with code ${code}`);
+        });
 
         let caughtError: unknown = null;
 
@@ -62,15 +61,13 @@ describe("handleTopLevelErrors", () => {
 
     it("should handle TactInternalError and call process.exit(30)", () => {
         const internalError = new TactInternalError("Internal error");
-        const cb = jest.fn(() => {
+        const cb = vi.fn(() => {
             throw internalError;
         });
 
-        const exitSpy = jest
-            .spyOn(process, "exit")
-            .mockImplementation((code) => {
-                throw new Error(`process.exit called with code ${code}`);
-            });
+        const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+            throw new Error(`process.exit called with code ${code}`);
+        });
 
         let caughtError: unknown = null;
 
@@ -91,15 +88,13 @@ describe("handleTopLevelErrors", () => {
 
     it("should handle general error and call process.exit(30)", () => {
         const generalError = new Error("General error");
-        const cb = jest.fn(() => {
+        const cb = vi.fn(() => {
             throw generalError;
         });
 
-        const exitSpy = jest
-            .spyOn(process, "exit")
-            .mockImplementation((code) => {
-                throw new Error(`process.exit called with code ${code}`);
-            });
+        const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+            throw new Error(`process.exit called with code ${code}`);
+        });
 
         let caughtError: unknown = null;
 
@@ -119,7 +114,7 @@ describe("handleTopLevelErrors", () => {
     });
 
     it("should handle Promise resolving with a value", async () => {
-        const cb = jest.fn(() => Promise.resolve("resolved value"));
+        const cb = vi.fn(() => Promise.resolve("resolved value"));
 
         const result = await handleTopLevelErrors(mockLogger, cb, exit);
 
@@ -129,14 +124,12 @@ describe("handleTopLevelErrors", () => {
     });
 
     it("should handle Promise rejecting with _ExitError", async () => {
-        const cb = jest.fn(() => Promise.reject(new _ExitError()));
+        const cb = vi.fn(() => Promise.reject(new _ExitError()));
 
         // Mock process.exit to throw an error that we can catch
-        const exitSpy = jest
-            .spyOn(process, "exit")
-            .mockImplementation((code) => {
-                throw new Error(`process.exit called with code ${code}`);
-            });
+        const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+            throw new Error(`process.exit called with code ${code}`);
+        });
 
         let caughtError: unknown = null;
 
@@ -158,13 +151,11 @@ describe("handleTopLevelErrors", () => {
 
     it("should handle Promise rejecting with TactInternalError and call process.exit(30)", async () => {
         const internalError = new TactInternalError("Internal error");
-        const cb = jest.fn(() => Promise.reject(internalError));
+        const cb = vi.fn(() => Promise.reject(internalError));
 
-        const exitSpy = jest
-            .spyOn(process, "exit")
-            .mockImplementation((code) => {
-                throw new Error(`process.exit called with code ${code}`);
-            });
+        const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+            throw new Error(`process.exit called with code ${code}`);
+        });
 
         let caughtError: unknown = null;
 
@@ -185,13 +176,11 @@ describe("handleTopLevelErrors", () => {
 
     it("should handle Promise rejecting with a general error and call process.exit(30)", async () => {
         const generalError = new Error("General error");
-        const cb = jest.fn(() => Promise.reject(generalError));
+        const cb = vi.fn(() => Promise.reject(generalError));
 
-        const exitSpy = jest
-            .spyOn(process, "exit")
-            .mockImplementation((code) => {
-                throw new Error(`process.exit called with code ${code}`);
-            });
+        const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+            throw new Error(`process.exit called with code ${code}`);
+        });
 
         let caughtError: unknown = null;
 
