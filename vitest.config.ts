@@ -11,7 +11,6 @@ export default defineConfig({
             reporter: ["text", "json", "html"],
             provider: "istanbul",
         },
-        globalSetup: "./vitest.globalSetup.js",
         setupFiles: ["./vitest.setup.ts"],
         testTimeout: 10_000,
         snapshotSerializers: ["@tact-lang/ton-jest/serializers"],
