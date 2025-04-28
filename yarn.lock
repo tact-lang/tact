@@ -1376,13 +1376,6 @@
   resolved "https://npm.dev-internal.org/@tsconfig/node16/-/node16-1.0.4.tgz"
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
-"@types/allure-js-commons@^2.0.4":
-  version "2.0.4"
-  resolved "https://npm.dev-internal.org/@types/allure-js-commons/-/allure-js-commons-2.0.4.tgz#84ab89b061a92cd74fc0066f51e1008a8f9db4bc"
-  integrity sha512-Am2Nyye8jUDUappfKWb+SD5IvSk15JRG7AQs4fCNF2w53wRX6hhGBUkhDoUiRQMYFylSiEqnaE5zsIc5qqPPOw==
-  dependencies:
-    allure-js-commons "*"
-
 "@types/babel__core@^7.1.14":
   version "7.20.5"
   resolved "https://npm.dev-internal.org/@types/babel__core/-/babel__core-7.20.5.tgz#3df15f27ba85319caa07ba08d0721889bb39c017"
@@ -1640,7 +1633,7 @@ allure-jest@^3.2.1:
   dependencies:
     allure-js-commons "3.2.1"
 
-allure-js-commons@*, allure-js-commons@3.2.1, allure-js-commons@^3.2.1:
+allure-js-commons@3.2.1, allure-js-commons@^3.2.1:
   version "3.2.1"
   resolved "https://npm.dev-internal.org/allure-js-commons/-/allure-js-commons-3.2.1.tgz#d17595678cc09e00ff0938894329762f5db8bdeb"
   integrity sha512-VGLv6u3I9NIm649dYmGpG3X5sOnI0tt7K1WYTVZPiEpnsxBbFEfDr6yAI7q509WWw/5g0VBCEtGEspd6AoYOqA==

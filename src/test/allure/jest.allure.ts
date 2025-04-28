@@ -13,7 +13,7 @@ BigInt.prototype.toJSON = function () {
 };
 const originalCreate: typeof Blockchain.create = Blockchain.create;
 
-Blockchain.create = async function proxy(
+Blockchain.create = function proxy(
     this: typeof Blockchain,
     ...args: Parameters<typeof Blockchain.create>
 ) {
