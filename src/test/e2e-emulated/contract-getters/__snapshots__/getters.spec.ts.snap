@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`getters should implement getters correctly 1`] = `
+exports[`getters > should implement getters correctly 1`] = `
 {
   "$$type": "S",
   "a": 1n,
@@ -8,7 +8,7 @@ exports[`getters should implement getters correctly 1`] = `
 }
 `;
 
-exports[`getters should implement getters correctly 2`] = `
+exports[`getters > should implement getters correctly 2`] = `
 {
   "$$type": "Test$Data",
   "anotherData": x{},
@@ -16,7 +16,7 @@ exports[`getters should implement getters correctly 2`] = `
 }
 `;
 
-exports[`getters should implement getters correctly 3`] = `
+exports[`getters > should implement getters correctly 3`] = `
 {
   "$$type": "SetIdAndData",
   "data": x{},
@@ -24,7 +24,7 @@ exports[`getters should implement getters correctly 3`] = `
 }
 `;
 
-exports[`getters should implement getters correctly 4`] = `
+exports[`getters > should implement getters correctly 4`] = `
 {
   "$$type": "Test$Data",
   "anotherData": x{000000000000007B},

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`codegen should correctly generate FunC code 1`] = `
+exports[`codegen > should correctly generate FunC code 1`] = `
 "#pragma version =0.4.6;
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;

@@ -1,8 +1,8 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`pre-compilation of ASTs should fail pre-compilation when source files and a manual AST have declaration clashes 1`] = `
-"Type "Test" already exists
+exports[`pre-compilation of ASTs > should fail pre-compilation when source files and a manual AST have declaration clashes 1`] = `
+[Error: Type "Test" already exists
 > 1 |  
       ^
-"
+]
 `;

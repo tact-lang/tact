@@ -1,8 +1,8 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TerminalLogger POSIX all info logs are logged 1`] = `undefined`;
+exports[`TerminalLogger POSIX > all info logs are logged 1`] = `undefined`;
 
-exports[`TerminalLogger POSIX all info logs are logged 2`] = `
+exports[`TerminalLogger POSIX > all info logs are logged 2`] = `
 [
   [
     "Info 1",
@@ -13,9 +13,9 @@ exports[`TerminalLogger POSIX all info logs are logged 2`] = `
 ]
 `;
 
-exports[`TerminalLogger POSIX exit on error 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > exit on error 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX exit on error 2`] = `
+exports[`TerminalLogger POSIX > exit on error 2`] = `
 [
   [
     "Error: foo",
@@ -26,12 +26,12 @@ exports[`TerminalLogger POSIX exit on error 2`] = `
 ]
 `;
 
-exports[`TerminalLogger POSIX internal error in source at range 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > internal error in source at range 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX internal error in source at range 2`] = `
+exports[`TerminalLogger POSIX > internal error in source at range 2`] = `
 [
   [
-    "Internal compiler error: ./bar:1:4 - OMG
+    "Internal compiler error: ../../../../foo/bar:1:4 - OMG
 > 1 | Hello, world
          ^~
 Please report at https://github.com/tact-lang/tact/issues",
@@ -39,9 +39,9 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger POSIX logger internal error 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > logger internal error 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX logger internal error 2`] = `
+exports[`TerminalLogger POSIX > logger internal error 2`] = `
 [
   [
     "Internal compiler error: OMG
@@ -50,20 +50,20 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger POSIX logger internal error in source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > logger internal error in source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX logger internal error in source 2`] = `
+exports[`TerminalLogger POSIX > logger internal error in source 2`] = `
 [
   [
-    "Internal compiler error: ./bar: OMG
+    "Internal compiler error: ../../../../foo/bar: OMG
 Please report at https://github.com/tact-lang/tact/issues",
   ],
 ]
 `;
 
-exports[`TerminalLogger POSIX multiple errors 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > multiple errors 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX multiple errors 2`] = `
+exports[`TerminalLogger POSIX > multiple errors 2`] = `
 [
   [
     "Error: foo",
@@ -74,24 +74,24 @@ exports[`TerminalLogger POSIX multiple errors 2`] = `
 ]
 `;
 
-exports[`TerminalLogger POSIX multiple errors inside source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > multiple errors inside source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX multiple errors inside source 2`] = `
+exports[`TerminalLogger POSIX > multiple errors inside source 2`] = `
 [
   [
-    "Error: ./bar:1:4 - foo
+    "Error: ../../../../foo/bar:1:4 - foo
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: ./bar: bar",
+    "Error: ../../../../foo/bar: bar",
   ],
 ]
 `;
 
-exports[`TerminalLogger POSIX only first error without error recovery 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > only first error without error recovery 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX only first error without error recovery 2`] = `
+exports[`TerminalLogger POSIX > only first error without error recovery 2`] = `
 [
   [
     "Error: Error 1",
@@ -99,19 +99,19 @@ exports[`TerminalLogger POSIX only first error without error recovery 2`] = `
 ]
 `;
 
-exports[`TerminalLogger POSIX path is resolved relative to cwd 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > path is resolved relative to cwd 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX path is resolved relative to cwd 2`] = `
+exports[`TerminalLogger POSIX > path is resolved relative to cwd 2`] = `
 [
   [
-    "Error: See ./bar.",
+    "Error: See ../../../../foo/bar.",
   ],
 ]
 `;
 
-exports[`TerminalLogger POSIX raw internal error 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > raw internal error 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX raw internal error 2`] = `
+exports[`TerminalLogger POSIX > raw internal error 2`] = `
 [
   [
     "Internal compiler error: OMG
@@ -120,9 +120,9 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger POSIX raw internal error in source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > raw internal error in source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX raw internal error in source 2`] = `
+exports[`TerminalLogger POSIX > raw internal error in source 2`] = `
 [
   [
     "Internal compiler error: OMG
@@ -132,24 +132,24 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger POSIX source inside multiple errors 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > source inside multiple errors 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX source inside multiple errors 2`] = `
+exports[`TerminalLogger POSIX > source inside multiple errors 2`] = `
 [
   [
-    "Error: ./bar:1:4 - foo
+    "Error: ../../../../foo/bar:1:4 - foo
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: ./bar: bar",
+    "Error: ../../../../foo/bar: bar",
   ],
 ]
 `;
 
-exports[`TerminalLogger POSIX typed errors 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > typed errors 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX typed errors 2`] = `
+exports[`TerminalLogger POSIX > typed errors 2`] = `
 [
   [
     "Error: Foo!",
@@ -160,24 +160,24 @@ exports[`TerminalLogger POSIX typed errors 2`] = `
 ]
 `;
 
-exports[`TerminalLogger POSIX typed errors for source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > typed errors for source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX typed errors for source 2`] = `
+exports[`TerminalLogger POSIX > typed errors for source 2`] = `
 [
   [
-    "Error: ./bar:1:4 - Foo!
+    "Error: ../../../../foo/bar:1:4 - Foo!
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: ./bar: Bar!",
+    "Error: ../../../../foo/bar: Bar!",
   ],
 ]
 `;
 
-exports[`TerminalLogger POSIX uncaught error 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > uncaught error 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX uncaught error 2`] = `
+exports[`TerminalLogger POSIX > uncaught error 2`] = `
 [
   [
     "Internal compiler error: Unhandled: Error: Uncaught!
@@ -186,9 +186,9 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger POSIX uncaught error in source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger POSIX > uncaught error in source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger POSIX uncaught error in source 2`] = `
+exports[`TerminalLogger POSIX > uncaught error in source 2`] = `
 [
   [
     "Internal compiler error: Unhandled: Error: hehe
@@ -198,9 +198,9 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger POSIX warn verbosity does not show info 1`] = `undefined`;
+exports[`TerminalLogger POSIX > warn verbosity does not show info 1`] = `undefined`;
 
-exports[`TerminalLogger POSIX warn verbosity does not show info 2`] = `
+exports[`TerminalLogger POSIX > warn verbosity does not show info 2`] = `
 [
   [
     "Warning: Warn",
@@ -208,9 +208,9 @@ exports[`TerminalLogger POSIX warn verbosity does not show info 2`] = `
 ]
 `;
 
-exports[`TerminalLogger Windows all info logs are logged 1`] = `undefined`;
+exports[`TerminalLogger Windows > all info logs are logged 1`] = `undefined`;
 
-exports[`TerminalLogger Windows all info logs are logged 2`] = `
+exports[`TerminalLogger Windows > all info logs are logged 2`] = `
 [
   [
     "Info 1",
@@ -221,9 +221,9 @@ exports[`TerminalLogger Windows all info logs are logged 2`] = `
 ]
 `;
 
-exports[`TerminalLogger Windows exit on error 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > exit on error 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows exit on error 2`] = `
+exports[`TerminalLogger Windows > exit on error 2`] = `
 [
   [
     "Error: foo",
@@ -234,12 +234,12 @@ exports[`TerminalLogger Windows exit on error 2`] = `
 ]
 `;
 
-exports[`TerminalLogger Windows internal error in source at range 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > internal error in source at range 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows internal error in source at range 2`] = `
+exports[`TerminalLogger Windows > internal error in source at range 2`] = `
 [
   [
-    "Internal compiler error: .\\bar:1:4 - OMG
+    "Internal compiler error: .\\\\foo\\bar:1:4 - OMG
 > 1 | Hello, world
          ^~
 Please report at https://github.com/tact-lang/tact/issues",
@@ -247,9 +247,9 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger Windows logger internal error 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > logger internal error 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows logger internal error 2`] = `
+exports[`TerminalLogger Windows > logger internal error 2`] = `
 [
   [
     "Internal compiler error: OMG
@@ -258,20 +258,20 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger Windows logger internal error in source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > logger internal error in source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows logger internal error in source 2`] = `
+exports[`TerminalLogger Windows > logger internal error in source 2`] = `
 [
   [
-    "Internal compiler error: .\\bar: OMG
+    "Internal compiler error: .\\\\foo\\bar: OMG
 Please report at https://github.com/tact-lang/tact/issues",
   ],
 ]
 `;
 
-exports[`TerminalLogger Windows multiple errors 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > multiple errors 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows multiple errors 2`] = `
+exports[`TerminalLogger Windows > multiple errors 2`] = `
 [
   [
     "Error: foo",
@@ -282,24 +282,24 @@ exports[`TerminalLogger Windows multiple errors 2`] = `
 ]
 `;
 
-exports[`TerminalLogger Windows multiple errors inside source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > multiple errors inside source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows multiple errors inside source 2`] = `
+exports[`TerminalLogger Windows > multiple errors inside source 2`] = `
 [
   [
-    "Error: .\\bar:1:4 - foo
+    "Error: .\\\\foo\\bar:1:4 - foo
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: .\\bar: bar",
+    "Error: .\\\\foo\\bar: bar",
   ],
 ]
 `;
 
-exports[`TerminalLogger Windows only first error without error recovery 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > only first error without error recovery 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows only first error without error recovery 2`] = `
+exports[`TerminalLogger Windows > only first error without error recovery 2`] = `
 [
   [
     "Error: Error 1",
@@ -307,19 +307,19 @@ exports[`TerminalLogger Windows only first error without error recovery 2`] = `
 ]
 `;
 
-exports[`TerminalLogger Windows path is resolved relative to cwd 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > path is resolved relative to cwd 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows path is resolved relative to cwd 2`] = `
+exports[`TerminalLogger Windows > path is resolved relative to cwd 2`] = `
 [
   [
-    "Error: See .\\bar.",
+    "Error: See .\\\\foo\\bar.",
   ],
 ]
 `;
 
-exports[`TerminalLogger Windows raw internal error 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > raw internal error 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows raw internal error 2`] = `
+exports[`TerminalLogger Windows > raw internal error 2`] = `
 [
   [
     "Internal compiler error: OMG
@@ -328,9 +328,9 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger Windows raw internal error in source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > raw internal error in source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows raw internal error in source 2`] = `
+exports[`TerminalLogger Windows > raw internal error in source 2`] = `
 [
   [
     "Internal compiler error: OMG
@@ -340,24 +340,24 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger Windows source inside multiple errors 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > source inside multiple errors 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows source inside multiple errors 2`] = `
+exports[`TerminalLogger Windows > source inside multiple errors 2`] = `
 [
   [
-    "Error: .\\bar:1:4 - foo
+    "Error: .\\\\foo\\bar:1:4 - foo
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: .\\bar: bar",
+    "Error: .\\\\foo\\bar: bar",
   ],
 ]
 `;
 
-exports[`TerminalLogger Windows typed errors 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > typed errors 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows typed errors 2`] = `
+exports[`TerminalLogger Windows > typed errors 2`] = `
 [
   [
     "Error: Foo!",
@@ -368,24 +368,24 @@ exports[`TerminalLogger Windows typed errors 2`] = `
 ]
 `;
 
-exports[`TerminalLogger Windows typed errors for source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > typed errors for source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows typed errors for source 2`] = `
+exports[`TerminalLogger Windows > typed errors for source 2`] = `
 [
   [
-    "Error: .\\bar:1:4 - Foo!
+    "Error: .\\\\foo\\bar:1:4 - Foo!
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: .\\bar: Bar!",
+    "Error: .\\\\foo\\bar: Bar!",
   ],
 ]
 `;
 
-exports[`TerminalLogger Windows uncaught error 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > uncaught error 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows uncaught error 2`] = `
+exports[`TerminalLogger Windows > uncaught error 2`] = `
 [
   [
     "Internal compiler error: Unhandled: Error: Uncaught!
@@ -394,9 +394,9 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger Windows uncaught error in source 1`] = `"process.exit called with code 30"`;
+exports[`TerminalLogger Windows > uncaught error in source 1`] = `"process.exit called with code 30"`;
 
-exports[`TerminalLogger Windows uncaught error in source 2`] = `
+exports[`TerminalLogger Windows > uncaught error in source 2`] = `
 [
   [
     "Internal compiler error: Unhandled: Error: hehe
@@ -406,9 +406,9 @@ Please report at https://github.com/tact-lang/tact/issues",
 ]
 `;
 
-exports[`TerminalLogger Windows warn verbosity does not show info 1`] = `undefined`;
+exports[`TerminalLogger Windows > warn verbosity does not show info 1`] = `undefined`;
 
-exports[`TerminalLogger Windows warn verbosity does not show info 2`] = `
+exports[`TerminalLogger Windows > warn verbosity does not show info 2`] = `
 [
   [
     "Warning: Warn",

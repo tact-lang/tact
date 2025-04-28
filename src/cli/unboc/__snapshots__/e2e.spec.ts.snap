@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`unboc foo.boc Default run 1`] = `
+exports[`unboc foo.boc > Default run 1`] = `
 {
   "code": 0,
   "kind": "exited",
@@ -63,7 +63,7 @@ PROGRAM{
 }
 `;
 
-exports[`unboc foo.boc With bitcode 1`] = `
+exports[`unboc foo.boc > With bitcode 1`] = `
 {
   "code": 0,
   "kind": "exited",
@@ -126,7 +126,7 @@ PROGRAM{
 }
 `;
 
-exports[`unboc foo.boc Without aliases 1`] = `
+exports[`unboc foo.boc > Without aliases 1`] = `
 {
   "code": 0,
   "kind": "exited",
@@ -189,7 +189,7 @@ PROGRAM{
 }
 `;
 
-exports[`unboc foo.boc Without refs 1`] = `
+exports[`unboc foo.boc > Without refs 1`] = `
 {
   "code": 0,
   "kind": "exited",

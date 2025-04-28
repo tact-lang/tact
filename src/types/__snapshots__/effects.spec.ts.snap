@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`effects should correctly compute effects: contractStorageAnalysis 1`] = `
+exports[`effects > should correctly compute effects: contractStorageAnalysis 1`] = `
 [
   {
     "contract": "StorageAnalysis",

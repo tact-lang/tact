@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`dump should dump values correctly in a receiver 1`] = `
+exports[`dump > should dump values correctly in a receiver 1`] = `
 "#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:2:5:
 #DEBUG#: dumpStack()
 #DEBUG#: stack(1 values) : 10999604800 

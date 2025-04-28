@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`interpreter-evaluation short-circuit-initializations should pass compilation 1`] = `
+exports[`interpreter-evaluation > short-circuit-initializations should pass compilation 1`] = `
 [
   [
     "true",
@@ -257,7 +257,7 @@ exports[`interpreter-evaluation short-circuit-initializations should pass compil
 ]
 `;
 
-exports[`interpreter-evaluation stack-deepness-recursion should pass compilation 1`] = `
+exports[`interpreter-evaluation > stack-deepness-recursion should pass compilation 1`] = `
 [
   [
     "200",

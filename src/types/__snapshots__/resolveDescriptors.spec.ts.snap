@@ -1,1425 +1,1425 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-duplicate 1`] = `
-"<unknown>:3:1: asm argument rearrangement cannot have duplicates
+exports[`resolveDescriptors > should fail descriptors for asm-fun-shuffle-arg-duplicate 1`] = `
+[Error: <unknown>:3:1: asm argument rearrangement cannot have duplicates
   2 | 
 > 3 | asm(x x) fun foo(x: Int) {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~
   4 |     DROP
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-missing-and-non-existent-param 1`] = `
-"<unknown>:3:1: asm argument rearrangement must mention all function parameters
+exports[`resolveDescriptors > should fail descriptors for asm-fun-shuffle-arg-missing-and-non-existent-param 1`] = `
+[Error: <unknown>:3:1: asm argument rearrangement must mention all function parameters
   2 | 
 > 3 | asm(x extra) fun foo(x: Int, y: Int) {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   4 |     DROP
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-missing-param 1`] = `
-"<unknown>:3:1: asm argument rearrangement must mention all function parameters
+exports[`resolveDescriptors > should fail descriptors for asm-fun-shuffle-arg-missing-param 1`] = `
+[Error: <unknown>:3:1: asm argument rearrangement must mention all function parameters
   2 | 
 > 3 | asm(x) fun foo(x: Int, y: Int) {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   4 |     DROP
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-non-existent-param 1`] = `
-"<unknown>:3:1: asm argument rearrangement must mention only function parameters
+exports[`resolveDescriptors > should fail descriptors for asm-fun-shuffle-arg-non-existent-param 1`] = `
+[Error: <unknown>:3:1: asm argument rearrangement must mention only function parameters
   2 | 
 > 3 | asm(x extra) fun foo(x: Int) {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   4 |     DROP
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-duplicate 1`] = `
-"<unknown>:3:1: asm return rearrangement cannot have duplicates
+exports[`resolveDescriptors > should fail descriptors for asm-fun-shuffle-ret-duplicate 1`] = `
+[Error: <unknown>:3:1: asm return rearrangement cannot have duplicates
   2 | 
 > 3 | asm(-> 0 0) fun foo(x: Int): Int {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   4 |     INC
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-missing-position 1`] = `
-"<unknown>:4:1: asm return rearrangement must mention all return position numbers: [0..1]
+exports[`resolveDescriptors > should fail descriptors for asm-fun-shuffle-ret-missing-position 1`] = `
+[Error: <unknown>:4:1: asm return rearrangement must mention all return position numbers: [0..1]
   3 | 
 > 4 | asm(-> 0) fun foo(x: Int, y: Int): Pair {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     SWAP
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-non-existent-position 1`] = `
-"<unknown>:4:1: asm return rearrangement must mention only valid return position numbers: [0..1]
+exports[`resolveDescriptors > should fail descriptors for asm-fun-shuffle-ret-non-existent-position 1`] = `
+[Error: <unknown>:4:1: asm return rearrangement must mention only valid return position numbers: [0..1]
   3 | 
 > 4 | asm(-> 2 1 0) fun foo(x: Int, y: Int): Pair {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     SWAP
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for asm-getter-outside-contract 1`] = `
-"<unknown>:6:5: Getters must be defined within a contract
+exports[`resolveDescriptors > should fail descriptors for asm-getter-outside-contract 1`] = `
+[Error: <unknown>:6:5: Getters must be defined within a contract
   5 | 
 > 6 | asm get fun illegalGetter(): Int {
           ^~~
   7 |     DEPTH
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for const-decl-default-field-wrong-initializer-type copy 1`] = `
-"<unknown>:4:17: Constant "C" has declared type "Bool", but its initializer has incompatible type "Int"
+exports[`resolveDescriptors > should fail descriptors for const-decl-default-field-wrong-initializer-type copy 1`] = `
+[Error: <unknown>:4:17: Constant "C" has declared type "Bool", but its initializer has incompatible type "Int"
   3 | 
 > 4 | const C: Bool = 42;
                       ^~
   5 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for const-eval-overflow 1`] = `
-"<unknown>:8:26: Cannot evaluate expression to a constant: the number of bits shifted ('-1073741824') must be within [0..256] range
+exports[`resolveDescriptors > should fail descriptors for const-eval-overflow 1`] = `
+[Error: <unknown>:8:26: Cannot evaluate expression to a constant: the number of bits shifted ('-1073741824') must be within [0..256] range
   7 | 
 > 8 | const a: Int = 1 + (1 >> -1073741824);
                                ^~~~~~~~~~~
   9 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for constant-does-not-exist 1`] = `
-"<unknown>:7:20: Cannot find 'A', did you mean 'self.A'?
+exports[`resolveDescriptors > should fail descriptors for constant-does-not-exist 1`] = `
+[Error: <unknown>:7:20: Cannot find 'A', did you mean 'self.A'?
   6 |     const A: Int = 100;
 > 7 |     const B: Int = A;
                          ^
   8 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-bounced-receiver-int 1`] = `
-"<unknown>:17:3: Bounce receive function can only accept bounced message, message or Slice
+exports[`resolveDescriptors > should fail descriptors for contract-bounced-receiver-int 1`] = `
+[Error: <unknown>:17:3: Bounce receive function can only accept bounced message, message or Slice
   16 |   
 > 17 |   bounced(src: Int) {
          ^~~~~~~~~~~~~~~~~~~
   18 |     
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-bounced-receiver-missing-type-1 1`] = `
-"<unknown>:2:14: Unknown bounced receiver parameter type: "A"
+exports[`resolveDescriptors > should fail descriptors for contract-bounced-receiver-missing-type-1 1`] = `
+[Error: <unknown>:2:14: Unknown bounced receiver parameter type: "A"
   1 | contract Test {
 > 2 |   bounced(a: A) {}
                    ^
   3 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-bounced-receiver-missing-type-2 1`] = `
-"<unknown>:2:14: Unknown bounced receiver parameter type: "A"
+exports[`resolveDescriptors > should fail descriptors for contract-bounced-receiver-missing-type-2 1`] = `
+[Error: <unknown>:2:14: Unknown bounced receiver parameter type: "A"
   1 | contract Test {
 > 2 |   bounced(a: bounced<A>) {}
                    ^~~~~~~~~~
   3 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-bounced-storage-var 1`] = `
-"<unknown>:15:3: bounced<A> is a runtime only type and can't be used as field
+exports[`resolveDescriptors > should fail descriptors for contract-bounced-storage-var 1`] = `
+[Error: <unknown>:15:3: bounced<A> is a runtime only type and can't be used as field
   14 | contract Test {
 > 15 |   src: bounced<A>;
          ^~~~~~~~~~~~~~~
   16 |   init() {}
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-const-decl-default-field-wrong-initializer-type 1`] = `
-"<unknown>:5:21: Constant "C" has declared type "Bool", but its initializer has incompatible type "Int"
+exports[`resolveDescriptors > should fail descriptors for contract-const-decl-default-field-wrong-initializer-type 1`] = `
+[Error: <unknown>:5:21: Constant "C" has declared type "Bool", but its initializer has incompatible type "Int"
   4 | contract Test {
 > 5 |     const C: Bool = 42;
                           ^~
   6 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-const-override-virtual-no-keyword 1`] = `
-"<unknown>:9:3: Constant "Foo" is defined as virtual in trait "T": you are probably missing "override" keyword
+exports[`resolveDescriptors > should fail descriptors for contract-const-override-virtual-no-keyword 1`] = `
+[Error: <unknown>:9:3: Constant "Foo" is defined as virtual in trait "T": you are probably missing "override" keyword
    8 | contract TestContract with T {
 >  9 |   const Foo: Int = 42;
          ^~~~~~~~~~~~~~~~~~~~
   10 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-decl-remainder-in-the-middle 1`] = `
-"<unknown>:8:5: The "as remaining" field can only be the last field of the contract
+exports[`resolveDescriptors > should fail descriptors for contract-decl-remainder-in-the-middle 1`] = `
+[Error: <unknown>:8:5: The "as remaining" field can only be the last field of the contract
   7 |     a: Int = 0;
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
   9 |     b: Int = 0;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-does-not-override-abstract-const 1`] = `
-"<unknown>:8:1: Trait "T" requires constant "Foo"
+exports[`resolveDescriptors > should fail descriptors for contract-does-not-override-abstract-const 1`] = `
+[Error: <unknown>:8:1: Trait "T" requires constant "Foo"
   7 | 
 > 8 | contract TestContract with T {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   9 |   // does not override an abstract const
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-does-not-override-abstract-getter 1`] = `
-"<unknown>:8:1: Trait "T" requires function "getter"
+exports[`resolveDescriptors > should fail descriptors for contract-does-not-override-abstract-getter 1`] = `
+[Error: <unknown>:8:1: Trait "T" requires function "getter"
   7 | 
 > 8 | contract TestContract with T {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   9 |   // does not override an abstract getter
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-fallback 1`] = `
-"<unknown>:24:3: Fallback bounce receive function already exists
+exports[`resolveDescriptors > should fail descriptors for contract-duplicate-bounced-fallback 1`] = `
+[Error: <unknown>:24:3: Fallback bounce receive function already exists
   23 |   
 > 24 |   bounced(msg: Slice) {
          ^~~~~~~~~~~~~~~~~~~~~
   25 |   }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced1 1`] = `
-"<unknown>:24:3: Bounce receive function for "A" already exists
+exports[`resolveDescriptors > should fail descriptors for contract-duplicate-bounced1 1`] = `
+[Error: <unknown>:24:3: Bounce receive function for "A" already exists
   23 |   
 > 24 |   bounced(msg: bounced<A>) {
          ^~~~~~~~~~~~~~~~~~~~~~~~~~
   25 |   }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced2 1`] = `
-"<unknown>:7:13: Bounce receive function for "Msg" already exists
+exports[`resolveDescriptors > should fail descriptors for contract-duplicate-bounced2 1`] = `
+[Error: <unknown>:7:13: Bounce receive function for "Msg" already exists
   6 |     bounced(msg: Msg) { }
 > 7 |     bounced(msg: Msg) { }
                   ^~~~~~~~
   8 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-external 1`] = `
-"<unknown>:7:14: Receive function for "Msg" already exists
+exports[`resolveDescriptors > should fail descriptors for contract-duplicate-external 1`] = `
+[Error: <unknown>:7:14: Receive function for "Msg" already exists
   6 |     external(msg: Msg) { }
 > 7 |     external(msg: Msg) { }
                    ^~~~~~~~
   8 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-external-fallback 1`] = `
-"<unknown>:20:5: Empty receive function already exists
+exports[`resolveDescriptors > should fail descriptors for contract-duplicate-external-fallback 1`] = `
+[Error: <unknown>:20:5: Empty receive function already exists
   19 | 
 > 20 |     external() {
            ^~~~~~~~~~~~
   21 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-init 1`] = `
-"<unknown>:13:5: Init function already exists
+exports[`resolveDescriptors > should fail descriptors for contract-duplicate-init 1`] = `
+[Error: <unknown>:13:5: Init function already exists
   12 | 
 > 13 |     init(a: Bool) {
            ^~~~~~~~~~~~~~~
   14 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-receiver 1`] = `
-"<unknown>:7:13: Receive function for "Msg" already exists
+exports[`resolveDescriptors > should fail descriptors for contract-duplicate-receiver 1`] = `
+[Error: <unknown>:7:13: Receive function for "Msg" already exists
   6 |     receive(msg: Msg) { }
 > 7 |     receive(msg: Msg) { }
                   ^~~~~~~~
   8 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-storage-var 1`] = `
-"<unknown>:11:3: Field "b" already exists
+exports[`resolveDescriptors > should fail descriptors for contract-duplicate-storage-var 1`] = `
+[Error: <unknown>:11:3: Field "b" already exists
   10 |   b: Int;
 > 11 |   b: Int;
          ^~~~~~
   12 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicates-in-trait-list 1`] = `
-"<unknown>:7:1: The list of inherited traits for contract "Test" has duplicates
+exports[`resolveDescriptors > should fail descriptors for contract-duplicates-in-trait-list 1`] = `
+[Error: <unknown>:7:1: The list of inherited traits for contract "Test" has duplicates
   6 | 
 > 7 | contract Test with Foo, Foo { }
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   8 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-field-with-trait-type 1`] = `
-"<unknown>:6:5: Fields with a trait type are not supported
+exports[`resolveDescriptors > should fail descriptors for contract-field-with-trait-type 1`] = `
+[Error: <unknown>:6:5: Fields with a trait type are not supported
   5 | contract TestContract {
 > 6 |     data: Test? = null;
           ^~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-getter-override-virtual-no-keyword 1`] = `
-"<unknown>:9:3: Function "getter" is defined as virtual in trait "T": you are probably missing "override" keyword
+exports[`resolveDescriptors > should fail descriptors for contract-getter-override-virtual-no-keyword 1`] = `
+[Error: <unknown>:9:3: Function "getter" is defined as virtual in trait "T": you are probably missing "override" keyword
    8 | contract TestContract with T {
 >  9 |   get fun getter(): Int { return 43 }
          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   10 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-missing-type 1`] = `
-"<unknown>:12:23: Type "Point" not found
+exports[`resolveDescriptors > should fail descriptors for contract-missing-type 1`] = `
+[Error: <unknown>:12:23: Type "Point" not found
   11 |     }
 > 12 |     get fun hello2(): Point {
                              ^~~~~
   13 |         return 0;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-receiver-int 1`] = `
-"<unknown>:13:3: Receive function can only accept message, Slice or String
+exports[`resolveDescriptors > should fail descriptors for contract-receiver-int 1`] = `
+[Error: <unknown>:13:3: Receive function can only accept message, Slice or String
   12 | contract Pair {
 > 13 |   receive(src: Int) {
          ^~~~~~~~~~~~~~~~~~~
   14 |     
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-receiver-optional-msg 1`] = `
-"<unknown>:13:3: Receive function can only accept non-optional message types
+exports[`resolveDescriptors > should fail descriptors for contract-receiver-optional-msg 1`] = `
+[Error: <unknown>:13:3: Receive function can only accept non-optional message types
   12 | contract Pair {
 > 13 |   receive(src: B?) {
          ^~~~~~~~~~~~~~~~~~
   14 |     
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-receiver-struct 1`] = `
-"<unknown>:13:3: Receive function can only accept message
+exports[`resolveDescriptors > should fail descriptors for contract-receiver-struct 1`] = `
+[Error: <unknown>:13:3: Receive function can only accept message
   12 | contract Pair {
 > 13 |   receive(src: B) {
          ^~~~~~~~~~~~~~~~~
   14 |     
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-without-as-typed-field-inherited-with-it 1`] = `
-"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int", but "Int as coins" given
+exports[`resolveDescriptors > should fail descriptors for contract-without-as-typed-field-inherited-with-it 1`] = `
+[Error: <unknown>:10:5: Trait "Foo" requires field "f" of type "Int", but "Int as coins" given
    9 | contract SomeContract with Foo {
 > 10 |     f: Int as coins;
            ^~~~~~~~~~~~~~~
   11 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for dump 1`] = `
-"<unknown>:11:9: Cannot dump() argument with "StringBuilder" type, see https://docs.tact-lang.org/ref/core-debug/#dump for more information
+exports[`resolveDescriptors > should fail descriptors for dump 1`] = `
+[Error: <unknown>:11:9: Cannot dump() argument with "StringBuilder" type, see https://docs.tact-lang.org/ref/core-debug/#dump for more information
   10 |     get fun foo(): Int {
 > 11 |         dump(beginString());
                ^~~~~~~~~~~~~~~~~~~
   12 |         return 0;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const1 1`] = `
-"<unknown>:4:16: Invalid type "Bool" for unary operator "~"
+exports[`resolveDescriptors > should fail descriptors for expr-bitwise-not-bool-in-const1 1`] = `
+[Error: <unknown>:4:16: Invalid type "Bool" for unary operator "~"
   3 | 
 > 4 | const a: Int = ~ true;
                      ^~~~~~
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const2 1`] = `
-"<unknown>:4:17: Invalid type "Bool" for unary operator "~"
+exports[`resolveDescriptors > should fail descriptors for expr-bitwise-not-bool-in-const2 1`] = `
+[Error: <unknown>:4:17: Invalid type "Bool" for unary operator "~"
   3 | 
 > 4 | const a: Bool = ~ true;
                       ^~~~~~
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for extend-fun-cannot-be-defined-within-contract 1`] = `
-"<unknown>:3:5: Extend functions cannot be defined within a contract
+exports[`resolveDescriptors > should fail descriptors for extend-fun-cannot-be-defined-within-contract 1`] = `
+[Error: <unknown>:3:5: Extend functions cannot be defined within a contract
   2 | contract Foo {
 > 3 |     extends fun Bar(self: Int, a: Int): Int {}    
           ^~~~~~~
   4 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for extend-fun-cannot-be-defined-within-trait 1`] = `
-"<unknown>:3:5: Extend functions cannot be defined within a contract
+exports[`resolveDescriptors > should fail descriptors for extend-fun-cannot-be-defined-within-trait 1`] = `
+[Error: <unknown>:3:5: Extend functions cannot be defined within a contract
   2 | trait Foo {
 > 3 |     extends fun Bar(self: Int, a: Int): Int {}    
           ^~~~~~~
   4 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for extend-fun-missing-type 1`] = `
-"<unknown>:1:32: Type "Bar" not found
+exports[`resolveDescriptors > should fail descriptors for extend-fun-missing-type 1`] = `
+[Error: <unknown>:1:32: Type "Bar" not found
 > 1 | extends fun Foo(self: String): Bar {
                                      ^~~
   2 |     return "";
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for extend-fun-must-have-at-least-one-parameter 1`] = `
-"<unknown>:2:1: Extend functions must have at least one parameter named "self"
+exports[`resolveDescriptors > should fail descriptors for extend-fun-must-have-at-least-one-parameter 1`] = `
+[Error: <unknown>:2:1: Extend functions must have at least one parameter named "self"
   1 | primitive Int;
 > 2 | extends fun Bar(): Int {}
       ^~~~~~~
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for getter-outside-contract 1`] = `
-"<unknown>:8:1: Getters must be defined within a contract
+exports[`resolveDescriptors > should fail descriptors for getter-outside-contract 1`] = `
+[Error: <unknown>:8:1: Getters must be defined within a contract
   7 | 
 > 8 | get fun sample(a: Int): Int {
       ^~~
   9 |     return 0;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for init-on-contract-no-fields 1`] = `
-"<unknown>:6:5: Cannot define contract fields along with contract parameters
+exports[`resolveDescriptors > should fail descriptors for init-on-contract-no-fields 1`] = `
+[Error: <unknown>:6:5: Cannot define contract fields along with contract parameters
   5 | ) {
 > 6 |     foo: Int as int16 = 0;
           ^~~~~~~~~~~~~~~~~~~~~
   7 |     get fun getFoo(): Int {
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for init-on-contract-no-init 1`] = `
-"<unknown>:6:5: init() cannot be used along with contract parameters
+exports[`resolveDescriptors > should fail descriptors for init-on-contract-no-init 1`] = `
+[Error: <unknown>:6:5: init() cannot be used along with contract parameters
   5 | ) {
 > 6 |     init(bar: Int) {
           ^~~~~~~~~~~~~~~~
   7 |         self.bar = bar;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for init-self-augmented-reassign-with 1`] = `
-"<unknown>:5:9: cannot reassign \`self\` in \`init\` function
+exports[`resolveDescriptors > should fail descriptors for init-self-augmented-reassign-with 1`] = `
+[Error: <unknown>:5:9: cannot reassign \`self\` in \`init\` function
   4 |     init() {
 > 5 |         self += 20;
               ^~~~
   6 |     }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for init-self-reassign 1`] = `
-"<unknown>:5:9: cannot reassign \`self\` in \`init\` function
+exports[`resolveDescriptors > should fail descriptors for init-self-reassign 1`] = `
+[Error: <unknown>:5:9: cannot reassign \`self\` in \`init\` function
   4 |     init() {
 > 5 |         self = 100;
               ^~~~
   6 |     }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if 1`] = `
-"<unknown>:7:17: cannot reassign \`self\` in \`init\` function
+exports[`resolveDescriptors > should fail descriptors for init-self-reassign-in-if 1`] = `
+[Error: <unknown>:7:17: cannot reassign \`self\` in \`init\` function
   6 |             if (true) {
 > 7 |                 self = 100;
                       ^~~~
   8 |             }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if-2 1`] = `
-"<unknown>:8:13: cannot reassign \`self\` in \`init\` function
+exports[`resolveDescriptors > should fail descriptors for init-self-reassign-in-if-2 1`] = `
+[Error: <unknown>:8:13: cannot reassign \`self\` in \`init\` function
   7 |             a = 30;
 > 8 |             self = 20;
                   ^~~~
   9 |         }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for init-with-invalid-bytes128-as-type 1`] = `
-"<unknown>:6:10: Unsupported format "bytes128"
+exports[`resolveDescriptors > should fail descriptors for init-with-invalid-bytes128-as-type 1`] = `
+[Error: <unknown>:6:10: Unsupported format "bytes128"
   5 | contract Foo {
 > 6 |     init(val: Slice as bytes128) {}
                ^~~~~~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for init-with-invalid-int260-as-type 1`] = `
-"<unknown>:6:10: Unsupported format "int260"
+exports[`resolveDescriptors > should fail descriptors for init-with-invalid-int260-as-type 1`] = `
+[Error: <unknown>:6:10: Unsupported format "int260"
   5 | contract Foo {
 > 6 |     init(val: Int as int260) {}
                ^~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-decl-remainder-in-the-middle 1`] = `
-"<unknown>:8:5: The "as remaining" field can only be the last field of the message
+exports[`resolveDescriptors > should fail descriptors for message-decl-remainder-in-the-middle 1`] = `
+[Error: <unknown>:8:5: The "as remaining" field can only be the last field of the message
   7 |     a: Int;
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
   9 |     b: Int;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-decl-remaining-field-with-optional-type 1`] = `
-"<unknown>:8:8: The "as remaining" field cannot have optional type
+exports[`resolveDescriptors > should fail descriptors for message-decl-remaining-field-with-optional-type 1`] = `
+[Error: <unknown>:8:8: The "as remaining" field cannot have optional type
   7 |     a: Int;
 > 8 |     s: Cell? as remaining;
              ^~~~~
   9 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-decl-remaining-field-with-optional-type-2 1`] = `
-"<unknown>:7:5: The "as remaining" field can only be the last field of the message
+exports[`resolveDescriptors > should fail descriptors for message-decl-remaining-field-with-optional-type-2 1`] = `
+[Error: <unknown>:7:5: The "as remaining" field can only be the last field of the message
   6 | message Test {
 > 7 |     s: Cell? as remaining;
           ^~~~~~~~~~~~~~~~~~~~~
   8 |     a: Int;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-field-with-contract-type 1`] = `
-"<unknown>:6:5: Fields with a contract type are not supported yet
+exports[`resolveDescriptors > should fail descriptors for message-field-with-contract-type 1`] = `
+[Error: <unknown>:6:5: Fields with a contract type are not supported yet
   5 | message TakeEscrowData {
 > 6 |     escrowData: Escrow;
           ^~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-field-with-optional-contract-type 1`] = `
-"<unknown>:6:5: Fields with a contract type are not supported yet
+exports[`resolveDescriptors > should fail descriptors for message-field-with-optional-contract-type 1`] = `
+[Error: <unknown>:6:5: Fields with a contract type are not supported yet
   5 | message TakeEscrowData {
 > 6 |     escrowData: Escrow?;
           ^~~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-field-with-optional-trait-type 1`] = `
-"<unknown>:6:5: Fields with a trait type are not supported
+exports[`resolveDescriptors > should fail descriptors for message-field-with-optional-trait-type 1`] = `
+[Error: <unknown>:6:5: Fields with a trait type are not supported
   5 | message TakeData {
 > 6 |     data: Test?;
           ^~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-field-with-trait-type 1`] = `
-"<unknown>:6:5: Fields with a trait type are not supported
+exports[`resolveDescriptors > should fail descriptors for message-field-with-trait-type 1`] = `
+[Error: <unknown>:6:5: Fields with a trait type are not supported
   5 | message TakeData {
 > 6 |     data: Test;
           ^~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-negative-opcode-1 1`] = `
-"<unknown>:1:9: Opcode of message "Foo" is negative ('-1') which is not allowed
+exports[`resolveDescriptors > should fail descriptors for message-negative-opcode-1 1`] = `
+[Error: <unknown>:1:9: Opcode of message "Foo" is negative ('-1') which is not allowed
 > 1 | message(-1) Foo { }
               ^~
   2 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-negative-opcode-2 1`] = `
-"<unknown>:1:9: Opcode of message "Foo" is negative ('-1') which is not allowed
+exports[`resolveDescriptors > should fail descriptors for message-negative-opcode-2 1`] = `
+[Error: <unknown>:1:9: Opcode of message "Foo" is negative ('-1') which is not allowed
 > 1 | message(42 - 43) Foo { }
               ^~~~~~~
   2 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-opcode-div-by-zero 1`] = `
-"<unknown>:3:14: Cannot evaluate expression to a constant: divisor expression must be non-zero
+exports[`resolveDescriptors > should fail descriptors for message-opcode-div-by-zero 1`] = `
+[Error: <unknown>:3:14: Cannot evaluate expression to a constant: divisor expression must be non-zero
   2 | 
 > 3 | message(42 / 0) DivByZeroOpcode { }
                    ^
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-opcode-too-large-1 1`] = `
-"<unknown>:1:9: Opcode of message "Foo" is too large ('137438953471'): it must fit into 32 bits
+exports[`resolveDescriptors > should fail descriptors for message-opcode-too-large-1 1`] = `
+[Error: <unknown>:1:9: Opcode of message "Foo" is too large ('137438953471'): it must fit into 32 bits
 > 1 | message(0x1_FFFFF_FFFF) Foo { }
               ^~~~~~~~~~~~~~
   2 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-opcode-too-large-2 1`] = `
-"<unknown>:1:9: Opcode of message "Foo" is too large ('8589737985'): it must fit into 32 bits
+exports[`resolveDescriptors > should fail descriptors for message-opcode-too-large-2 1`] = `
+[Error: <unknown>:1:9: Opcode of message "Foo" is too large ('8589737985'): it must fit into 32 bits
 > 1 | message(0xFFFF * 0x1FFFF) Foo { }
               ^~~~~~~~~~~~~~~~
   2 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-opcode-zero-1 1`] = `
-"<unknown>:4:9: Opcode of message "ZeroOpcode" is zero: those are reserved for text comments and cannot be used for message structs
+exports[`resolveDescriptors > should fail descriptors for message-opcode-zero-1 1`] = `
+[Error: <unknown>:4:9: Opcode of message "ZeroOpcode" is zero: those are reserved for text comments and cannot be used for message structs
   3 | // zero opcodes are reserved for string comments
 > 4 | message(0) ZeroOpcode { }
               ^
   5 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-opcode-zero-2 1`] = `
-"<unknown>:4:9: Opcode of message "ZeroOpcode" is zero: those are reserved for text comments and cannot be used for message structs
+exports[`resolveDescriptors > should fail descriptors for message-opcode-zero-2 1`] = `
+[Error: <unknown>:4:9: Opcode of message "ZeroOpcode" is zero: those are reserved for text comments and cannot be used for message structs
   3 | // zero opcodes are reserved for string comments
 > 4 | message(pow(2, 4) - 16) ZeroOpcode { }
               ^~~~~~~~~~~~~~
   5 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for method-first-param-not-self1 1`] = `
-"<unknown>:8:17: Extend function must have first parameter named "self"
+exports[`resolveDescriptors > should fail descriptors for method-first-param-not-self1 1`] = `
+[Error: <unknown>:8:17: Extend function must have first parameter named "self"
   7 | 
 > 8 | extends fun inc(a: Int): Int {
                       ^~~~~~
   9 |     return a + 1;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for method-first-param-not-self2 1`] = `
-"<unknown>:8:17: Parameter name "self" is reserved
+exports[`resolveDescriptors > should fail descriptors for method-first-param-not-self2 1`] = `
+[Error: <unknown>:8:17: Parameter name "self" is reserved
   7 | 
 > 8 | fun inc(a: Int, self: Int): Int {
                       ^~~~~~~~~
   9 |     return a + 1 + self;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-abstract-methods 1`] = `
-"<unknown>:15:10: Both "TraitB" and "TraitA" define method "f"
+exports[`resolveDescriptors > should fail descriptors for multi-inheritance-with-duplicate-abstract-methods 1`] = `
+[Error: <unknown>:15:10: Both "TraitB" and "TraitA" define method "f"
   14 | 
 > 15 | contract TestContract with TraitA, TraitB {}
                 ^~~~~~~~~~~~
   16 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods 1`] = `
-"<unknown>:17:10: Both "TraitB" and "TraitA" define method "f"
+exports[`resolveDescriptors > should fail descriptors for multi-inheritance-with-duplicate-methods 1`] = `
+[Error: <unknown>:17:10: Both "TraitB" and "TraitA" define method "f"
   16 | 
 > 17 | contract TestContract with TraitA, TraitB {}
                 ^~~~~~~~~~~~
   18 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-abstract-method 1`] = `
-"<unknown>:13:10: Both "TraitB" and "TraitA" define method "f"
+exports[`resolveDescriptors > should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-abstract-method 1`] = `
+[Error: <unknown>:13:10: Both "TraitB" and "TraitA" define method "f"
   12 | 
 > 13 | contract TestContract with TraitA, TraitB {
                 ^~~~~~~~~~~~
   14 |     fun f(): Int {}
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-virtual-method 1`] = `
-"<unknown>:15:10: Both "TraitB" and "TraitA" define method "f"
+exports[`resolveDescriptors > should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-virtual-method 1`] = `
+[Error: <unknown>:15:10: Both "TraitB" and "TraitA" define method "f"
   14 | 
 > 15 | contract TestContract with TraitA, TraitB {
                 ^~~~~~~~~~~~
   16 |     fun f(): Int {}
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-complex-hierarchy 1`] = `
-"<unknown>:24:5: Function "f" is already defined in trait "TraitA"
+exports[`resolveDescriptors > should fail descriptors for multi-inheritance-with-duplicate-methods-complex-hierarchy 1`] = `
+[Error: <unknown>:24:5: Function "f" is already defined in trait "TraitA"
   23 | contract TestContract with TraitC {
 > 24 |     fun f(): Int {
            ^~~~~~~~~~~~~~
   25 |         return 4;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-deep 1`] = `
-"<unknown>:19:10: Both "TraitB" and "TraitA" define method "f"
+exports[`resolveDescriptors > should fail descriptors for multi-inheritance-with-duplicate-methods-deep 1`] = `
+[Error: <unknown>:19:10: Both "TraitB" and "TraitA" define method "f"
   18 | 
 > 19 | contract TestContract with TraitA, TraitC {}
                 ^~~~~~~~~~~~
   20 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-for-trait 1`] = `
-"<unknown>:17:7: Both "TraitB" and "TraitA" define method "f"
+exports[`resolveDescriptors > should fail descriptors for multi-inheritance-with-duplicate-methods-for-trait 1`] = `
+[Error: <unknown>:17:7: Both "TraitB" and "TraitA" define method "f"
   16 | 
 > 17 | trait Test with TraitA, TraitB {}
              ^~~~
   18 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-three-traits 1`] = `
-"<unknown>:23:10: Both "TraitB" and "TraitA" define method "f"
+exports[`resolveDescriptors > should fail descriptors for multi-inheritance-with-duplicate-methods-three-traits 1`] = `
+[Error: <unknown>:23:10: Both "TraitB" and "TraitA" define method "f"
   22 | 
 > 23 | contract TestContract with TraitA, TraitB, TraitC {}
                 ^~~~~~~~~~~~
   24 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-virtual-and-virtual-method 1`] = `
-"<unknown>:17:10: Both "TraitB" and "TraitA" define method "f"
+exports[`resolveDescriptors > should fail descriptors for multi-inheritance-with-duplicate-methods-virtual-and-virtual-method 1`] = `
+[Error: <unknown>:17:10: Both "TraitB" and "TraitA" define method "f"
   16 | 
 > 17 | contract TestContract with TraitA, TraitB {
                 ^~~~~~~~~~~~
   18 |     override fun f(): Int {}
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for native-fun-getter 1`] = `
-"<unknown>:9:1: Native functions cannot be getters
+exports[`resolveDescriptors > should fail descriptors for native-fun-getter 1`] = `
+[Error: <unknown>:9:1: Native functions cannot be getters
   8 | @name(hello_world)
 > 9 | get native sample(a: Int): Int;
       ^~~
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for not-extend-function-self-param 1`] = `
-"<unknown>:3:30: Parameter name "self" is reserved for functions with "extends" modifier
+exports[`resolveDescriptors > should fail descriptors for not-extend-function-self-param 1`] = `
+[Error: <unknown>:3:30: Parameter name "self" is reserved for functions with "extends" modifier
   2 | 
 > 3 | asm(other self) fun testFunc(self: Int, other: Int) { 2 BLKDROP }
                                    ^~~~~~~~~
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for not-extend-function-self-param-2 1`] = `
-"<unknown>:4:28: Parameter name "self" is already used
+exports[`resolveDescriptors > should fail descriptors for not-extend-function-self-param-2 1`] = `
+[Error: <unknown>:4:28: Parameter name "self" is already used
   3 | 
 > 4 | extends fun foo(self: Int, self: String) { }
                                  ^~~~~~~~~~~~
   5 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for opcode-method-on-instance-int 1`] = `
-"<unknown>:7:16: Type "Int" does not have a function named "opcode"
+exports[`resolveDescriptors > should fail descriptors for opcode-method-on-instance-int 1`] = `
+[Error: <unknown>:7:16: Type "Int" does not have a function named "opcode"
   6 |     get fun foo(): Int {
 > 7 |         return 10.opcode();
                      ^~~~~~~~~~~
   8 |     }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for opcode-method-on-struct 1`] = `
-"<unknown>:11:16: opcode() method can be used only for messages
+exports[`resolveDescriptors > should fail descriptors for opcode-method-on-struct 1`] = `
+[Error: <unknown>:11:16: opcode() method can be used only for messages
   10 |     get fun foo(): Int {
 > 11 |         return Bar.opcode();
                       ^~~~~~~~~~~~
   12 |     }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for opcode-method-on-trait 1`] = `
-"<unknown>:8:16: Cannot find 'Ownable'
+exports[`resolveDescriptors > should fail descriptors for opcode-method-on-trait 1`] = `
+[Error: <unknown>:8:16: Cannot find 'Ownable'
   7 |     get fun foo(): Int {
 > 8 |         return Ownable.opcode();
                      ^~~~~~~
   9 |     }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-contract-from-base-trait 1`] = `
-"<unknown>:8:5: Constant "BAR" overrides nothing, remove "override" modifier or inherit any traits with this constant
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-constant-in-contract-from-base-trait 1`] = `
+[Error: <unknown>:8:5: Constant "BAR" overrides nothing, remove "override" modifier or inherit any traits with this constant
   7 | contract Test {
 > 8 |     override const BAR: Int = 10;
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   9 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-contract-with-multi-inheritance 1`] = `
-"<unknown>:13:5: Constant "FOO" overrides nothing, remove "override" modifier
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-constant-in-contract-with-multi-inheritance 1`] = `
+[Error: <unknown>:13:5: Constant "FOO" overrides nothing, remove "override" modifier
   12 | contract Test with T, T2 {
 > 13 |     override const FOO: Int = 10;
            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   14 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-contract-without-inheritance 1`] = `
-"<unknown>:6:5: Constant "FOO" overrides nothing, remove "override" modifier or inherit any traits with this constant
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-constant-in-contract-without-inheritance 1`] = `
+[Error: <unknown>:6:5: Constant "FOO" overrides nothing, remove "override" modifier or inherit any traits with this constant
   5 | contract Test {
 > 6 |     override const FOO: Int = 100;
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-trait-from-base-trait 1`] = `
-"<unknown>:8:5: Constant "BAR" overrides nothing, remove "override" modifier or inherit any traits with this constant
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-constant-in-trait-from-base-trait 1`] = `
+[Error: <unknown>:8:5: Constant "BAR" overrides nothing, remove "override" modifier or inherit any traits with this constant
   7 | trait Test {
 > 8 |     override const BAR: Int = 10;
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   9 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-trait-with-multi-inheritance 1`] = `
-"<unknown>:13:5: Constant "FOO" overrides nothing, remove "override" modifier
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-constant-in-trait-with-multi-inheritance 1`] = `
+[Error: <unknown>:13:5: Constant "FOO" overrides nothing, remove "override" modifier
   12 | trait Test with T, T2 {
 > 13 |     override const FOO: Int = 10;
            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   14 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-trait-without-inheritance 1`] = `
-"<unknown>:6:5: Constant "FOO" overrides nothing, remove "override" modifier or inherit any traits with this constant
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-constant-in-trait-without-inheritance 1`] = `
+[Error: <unknown>:6:5: Constant "FOO" overrides nothing, remove "override" modifier or inherit any traits with this constant
   5 | trait Test {
 > 6 |     override const FOO: Int = 100;
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-contract-from-base-trait 1`] = `
-"<unknown>:6:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-function-in-contract-from-base-trait 1`] = `
+[Error: <unknown>:6:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
   5 | contract Test {
 > 6 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-contract-with-inheritance 1`] = `
-"<unknown>:5:5: Function "foo" overrides nothing, remove "override" modifier
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-function-in-contract-with-inheritance 1`] = `
+[Error: <unknown>:5:5: Function "foo" overrides nothing, remove "override" modifier
   4 | contract Test with T {
 > 5 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   6 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-contract-with-multi-inheritance 1`] = `
-"<unknown>:11:5: Function "foo" overrides nothing, remove "override" modifier
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-function-in-contract-with-multi-inheritance 1`] = `
+[Error: <unknown>:11:5: Function "foo" overrides nothing, remove "override" modifier
   10 | contract Test with T, T2 {
 > 11 |     override fun foo() {}
            ^~~~~~~~~~~~~~~~~~~~~
   12 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-contract-without-inheritance 1`] = `
-"<unknown>:4:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-function-in-contract-without-inheritance 1`] = `
+[Error: <unknown>:4:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
   3 | contract Test {
 > 4 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   5 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-from-base-trait-2 1`] = `
-"<unknown>:6:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-function-in-trait-from-base-trait-2 1`] = `
+[Error: <unknown>:6:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
   5 | trait Test {
 > 6 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-with-diamond-inheritance 1`] = `
-"<unknown>:16:5: Function "foo" overrides nothing, remove "override" modifier
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-function-in-trait-with-diamond-inheritance 1`] = `
+[Error: <unknown>:16:5: Function "foo" overrides nothing, remove "override" modifier
   15 | trait Test with T2, T3 {
 > 16 |     override fun foo() {}
            ^~~~~~~~~~~~~~~~~~~~~
   17 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-with-inheritance 1`] = `
-"<unknown>:5:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-function-in-trait-with-inheritance 1`] = `
+[Error: <unknown>:5:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
   4 | trait Test with T {
 > 5 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   6 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-with-multi-inheritance 1`] = `
-"<unknown>:11:5: Function "foo" overrides nothing, remove "override" modifier
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-function-in-trait-with-multi-inheritance 1`] = `
+[Error: <unknown>:11:5: Function "foo" overrides nothing, remove "override" modifier
   10 | trait Test with T, T2 {
 > 11 |     override fun foo() {}
            ^~~~~~~~~~~~~~~~~~~~~
   12 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-without-inheritance-2 1`] = `
-"<unknown>:4:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
+exports[`resolveDescriptors > should fail descriptors for override-for-non-existing-function-in-trait-without-inheritance-2 1`] = `
+[Error: <unknown>:4:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
   3 | trait Test {
 > 4 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   5 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-virtual-non-abstract-constant 1`] = `
-"<unknown>:10:5: Cannot override constant "X" because constant "X" does not have a virtual or abstract modifier in parent trait
+exports[`resolveDescriptors > should fail descriptors for override-for-non-virtual-non-abstract-constant 1`] = `
+[Error: <unknown>:10:5: Cannot override constant "X" because constant "X" does not have a virtual or abstract modifier in parent trait
    9 | contract C with T {
 > 10 |     override const X: Int = 20;
            ^~~~~~~~
   11 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-virtual-non-abstract-function-in-contract 1`] = `
-"<unknown>:6:5: Cannot override function "foo" because function "foo" does not have a virtual or abstract modifier in parent trait
+exports[`resolveDescriptors > should fail descriptors for override-for-non-virtual-non-abstract-function-in-contract 1`] = `
+[Error: <unknown>:6:5: Cannot override function "foo" because function "foo" does not have a virtual or abstract modifier in parent trait
   5 | contract Test {
 > 6 |     override fun foo() {}
           ^~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for read-self-in-init-function 1`] = `
-"<unknown>:5:17: cannot read whole \`self\` in \`init\` function
+exports[`resolveDescriptors > should fail descriptors for read-self-in-init-function 1`] = `
+[Error: <unknown>:5:17: cannot read whole \`self\` in \`init\` function
   4 |     init() {
 > 5 |         let a = self;
                       ^~~~
   6 |     }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for read-self-in-init-function-assign 1`] = `
-"<unknown>:9:18: cannot read whole \`self\` in \`init\` function
+exports[`resolveDescriptors > should fail descriptors for read-self-in-init-function-assign 1`] = `
+[Error: <unknown>:9:18: cannot read whole \`self\` in \`init\` function
    8 |         let a = 100;
 >  9 |         self.a = self;
                         ^~~~
   10 |     }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for read-self-in-init-function-in-deep-expression 1`] = `
-"<unknown>:5:23: cannot read whole \`self\` in \`init\` function
+exports[`resolveDescriptors > should fail descriptors for read-self-in-init-function-in-deep-expression 1`] = `
+[Error: <unknown>:5:23: cannot read whole \`self\` in \`init\` function
   4 |     init() {
 > 5 |         let a = 10 + (self);
                             ^~~~
   6 |     }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for read-self-in-init-function-in-if 1`] = `
-"<unknown>:7:25: cannot read whole \`self\` in \`init\` function
+exports[`resolveDescriptors > should fail descriptors for read-self-in-init-function-in-if 1`] = `
+[Error: <unknown>:7:25: cannot read whole \`self\` in \`init\` function
   6 |             if (true) {
 > 7 |                 let a = self;
                               ^~~~
   8 |             }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for receive-message-too-big 1`] = `
-"<unknown>:4:5: receiver message is too long, max length is 123 bytes, but given 124
+exports[`resolveDescriptors > should fail descriptors for receive-message-too-big 1`] = `
+[Error: <unknown>:4:5: receiver message is too long, max length is 123 bytes, but given 124
   3 | contract Foo {
 > 4 |     receive("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") {}
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for receive-message-too-big-2 1`] = `
-"<unknown>:4:5: receiver message is too long, max length is 123 bytes, but given 156
+exports[`resolveDescriptors > should fail descriptors for receive-message-too-big-2 1`] = `
+[Error: <unknown>:4:5: receiver message is too long, max length is 123 bytes, but given 156
   3 | contract Foo {
 > 4 |     receive("💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀") {}
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-contract-shadows-contract 1`] = `
-"<unknown>:12:1: Type "Main" already exists
+exports[`resolveDescriptors > should fail descriptors for scope-contract-shadows-contract 1`] = `
+[Error: <unknown>:12:1: Type "Main" already exists
   11 | 
 > 12 | contract Main {
        ^~~~~~~~~~~~~~~
   13 |     
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-duplicate-method 1`] = `
-"<unknown>:12:1: Function "hello" already exists in type "Main"
+exports[`resolveDescriptors > should fail descriptors for scope-duplicate-method 1`] = `
+[Error: <unknown>:12:1: Function "hello" already exists in type "Main"
   11 | 
 > 12 | extends fun hello(self: Main): Bool {
        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   13 |     return true;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-fun-shadows-builtin-dumpStack 1`] = `
-"<unknown>:1:1: Static function "dumpStack" already exists
+exports[`resolveDescriptors > should fail descriptors for scope-fun-shadows-builtin-dumpStack 1`] = `
+[Error: <unknown>:1:1: Static function "dumpStack" already exists
 > 1 | fun dumpStack() {
       ^~~~~~~~~~~~~~~~~
   2 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-fun-shadows-builtin-ton 1`] = `
-"<unknown>:1:1: Static function "ton" already exists
+exports[`resolveDescriptors > should fail descriptors for scope-fun-shadows-builtin-ton 1`] = `
+[Error: <unknown>:1:1: Static function "ton" already exists
 > 1 | fun ton() {
       ^~~~~~~~~~~
   2 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-fun-shadows-fun 1`] = `
-"<unknown>:16:1: Struct "Main" must have at least one field
+exports[`resolveDescriptors > should fail descriptors for scope-fun-shadows-fun 1`] = `
+[Error: <unknown>:16:1: Struct "Main" must have at least one field
   15 | 
 > 16 | struct Main {
        ^~~~~~~~~~~~~
   17 |     
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-internal-fun-shadows-internal-fun 1`] = `
-"<unknown>:8:1: Function "hello" already exists in type "Main"
+exports[`resolveDescriptors > should fail descriptors for scope-internal-fun-shadows-internal-fun 1`] = `
+[Error: <unknown>:8:1: Function "hello" already exists in type "Main"
   7 | 
 > 8 | contract Main {
       ^~~~~~~~~~~~~~~
   9 |     fun hello(a: Main): Int {
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-param-shadows-param 1`] = `
-"<unknown>:9:24: Parameter name "a" is already used
+exports[`resolveDescriptors > should fail descriptors for scope-param-shadows-param 1`] = `
+[Error: <unknown>:9:24: Parameter name "a" is already used
    8 | contract Main {
 >  9 |     fun hello(a: Bool, a: Int): Int {
                               ^~~~~~
   10 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-storage-var-shadows-trait-const 1`] = `
-"<unknown>:8:3: Contract Foo inherits constant "storageReserve" from its traits and hence cannot have a storage variable with the same name
+exports[`resolveDescriptors > should fail descriptors for scope-storage-var-shadows-trait-const 1`] = `
+[Error: <unknown>:8:3: Contract Foo inherits constant "storageReserve" from its traits and hence cannot have a storage variable with the same name
   7 |   // is a virtual constant defined in BaseTrait
 > 8 |   storageReserve: Int;
         ^~~~~~~~~~~~~~~~~~~
   9 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-struct-shadows-contract 1`] = `
-"<unknown>:12:1: Type "Main" already exists
+exports[`resolveDescriptors > should fail descriptors for scope-struct-shadows-contract 1`] = `
+[Error: <unknown>:12:1: Type "Main" already exists
   11 | 
 > 12 | struct Main {
        ^~~~~~~~~~~~~
   13 |     
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for scope-struct-shadows-struct 1`] = `
-"<unknown>:12:1: Type "Main" already exists
+exports[`resolveDescriptors > should fail descriptors for scope-struct-shadows-struct 1`] = `
+[Error: <unknown>:12:1: Type "Main" already exists
   11 | 
 > 12 | struct Main {
        ^~~~~~~~~~~~~
   13 |     
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-clash-with-int 1`] = `
-"<unknown>:3:1: Type "Int" already exists
+exports[`resolveDescriptors > should fail descriptors for struct-decl-clash-with-int 1`] = `
+[Error: <unknown>:3:1: Type "Int" already exists
   2 | 
 > 3 | struct Int { s: Int = 42 }
       ^~~~~~~~~~~~~~~~~~~~~~~~~~
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-default-field-wrong-initializer-type 1`] = `
-"<unknown>:3:22: Struct field "s" has declared type "Bool", but its initializer has incompatible type "Int"
+exports[`resolveDescriptors > should fail descriptors for struct-decl-default-field-wrong-initializer-type 1`] = `
+[Error: <unknown>:3:22: Struct field "s" has declared type "Bool", but its initializer has incompatible type "Int"
   2 | 
 > 3 | struct S { s: Bool = 42 }
                            ^~
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-duplicate-decl 1`] = `
-"<unknown>:10:1: Type "Pair" already exists
+exports[`resolveDescriptors > should fail descriptors for struct-decl-duplicate-decl 1`] = `
+[Error: <unknown>:10:1: Type "Pair" already exists
    9 | 
 > 10 | struct Pair {
        ^~~~~~~~~~~~~
   11 |   a: Int;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-duplicate-field 1`] = `
-"<unknown>:8:3: Field "b" already exists
+exports[`resolveDescriptors > should fail descriptors for struct-decl-duplicate-field 1`] = `
+[Error: <unknown>:8:3: Field "b" already exists
   7 |   b: Int;
 > 8 |   b: Int;
         ^~~~~~
   9 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-empty-not-allowed 1`] = `
-"<unknown>:3:1: Struct "Main" must have at least one field
+exports[`resolveDescriptors > should fail descriptors for struct-decl-empty-not-allowed 1`] = `
+[Error: <unknown>:3:1: Struct "Main" must have at least one field
   2 | 
 > 3 | struct Main { }
       ^~~~~~~~~~~~~~~
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-recursive 1`] = `
-"<unknown>:4:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
+exports[`resolveDescriptors > should fail descriptors for struct-decl-mutually-recursive 1`] = `
+[Error: <unknown>:4:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
   3 | 
 > 4 | struct A1 {
              ^~
   5 |   a: Int;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-recursive-2 1`] = `
-"<unknown>:8:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
+exports[`resolveDescriptors > should fail descriptors for struct-decl-mutually-recursive-2 1`] = `
+[Error: <unknown>:8:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
   7 | 
 > 8 | struct A1 {
              ^~
   9 |   a: Int;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-recursive-with-optional 1`] = `
-"<unknown>:8:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
+exports[`resolveDescriptors > should fail descriptors for struct-decl-mutually-recursive-with-optional 1`] = `
+[Error: <unknown>:8:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
   7 | 
 > 8 | struct A1 {
              ^~
   9 |   a: Int;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-remainder-in-the-middle 1`] = `
-"<unknown>:8:5: The "as remaining" field can only be the last field of the struct
+exports[`resolveDescriptors > should fail descriptors for struct-decl-remainder-in-the-middle 1`] = `
+[Error: <unknown>:8:5: The "as remaining" field can only be the last field of the struct
   7 |     a: Int;
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
   9 |     b: Int;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-self-reference 1`] = `
-"<unknown>:4:8: Self-referencing types are not supported: type "A" refers to itself in its definition
+exports[`resolveDescriptors > should fail descriptors for struct-decl-self-reference 1`] = `
+[Error: <unknown>:4:8: Self-referencing types are not supported: type "A" refers to itself in its definition
   3 | 
 > 4 | struct A {
              ^
   5 |   a: Int;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-decl-self-reference-map 1`] = `
-"<unknown>:4:8: Self-referencing types are not supported: type "A" refers to itself in its definition
+exports[`resolveDescriptors > should fail descriptors for struct-decl-self-reference-map 1`] = `
+[Error: <unknown>:4:8: Self-referencing types are not supported: type "A" refers to itself in its definition
   3 | 
 > 4 | struct A {
              ^
   5 |   a: Int;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-field-with-contract-type 1`] = `
-"<unknown>:6:5: Fields with a contract type are not supported yet
+exports[`resolveDescriptors > should fail descriptors for struct-field-with-contract-type 1`] = `
+[Error: <unknown>:6:5: Fields with a contract type are not supported yet
   5 | struct TakeEscrowData {
 > 6 |     escrowData: Escrow;
           ^~~~~~~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-field-with-trait-type 1`] = `
-"<unknown>:6:5: Fields with a trait type are not supported
+exports[`resolveDescriptors > should fail descriptors for struct-field-with-trait-type 1`] = `
+[Error: <unknown>:6:5: Fields with a trait type are not supported
   5 | struct TakeData {
 > 6 |     data: Test;
           ^~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for ton-with-blank-string 1`] = `
-"<unknown>:3:22: ton() function requires a non-empty value
+exports[`resolveDescriptors > should fail descriptors for ton-with-blank-string 1`] = `
+[Error: <unknown>:3:22: ton() function requires a non-empty value
   2 | 
 > 3 | const FOO: Int = ton("      ");
                            ^~~~~~~~
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for ton-with-empty-string 1`] = `
-"<unknown>:3:22: ton() function requires a non-empty value
+exports[`resolveDescriptors > should fail descriptors for ton-with-empty-string 1`] = `
+[Error: <unknown>:3:22: ton() function requires a non-empty value
   2 | 
 > 3 | const FOO: Int = ton("");
                            ^~
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string 1`] = `
-"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+exports[`resolveDescriptors > should fail descriptors for ton-with-invalid-string 1`] = `
+[Error: <unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
   2 | 
 > 3 | const FOO: Int = ton("45,67");
                            ^~~~~~~
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-2 1`] = `
-"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+exports[`resolveDescriptors > should fail descriptors for ton-with-invalid-string-2 1`] = `
+[Error: <unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
   2 | 
 > 3 | const FOO: Int = ton("40+2");
                            ^~~~~~
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-3 1`] = `
-"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+exports[`resolveDescriptors > should fail descriptors for ton-with-invalid-string-3 1`] = `
+[Error: <unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
   2 | 
 > 3 | const FOO: Int = ton("hello");
                            ^~~~~~~
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for ton-with-invalid-string-11-diigits-after-dot 1`] = `
-"<unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
+exports[`resolveDescriptors > should fail descriptors for ton-with-invalid-string-11-diigits-after-dot 1`] = `
+[Error: <unknown>:3:22: ton() function requires a valid number with no more than 10 digits after the decimal point
   2 | 
 > 3 | const FOO: Int = ton("1.12345678901");
                            ^~~~~~~~~~~~~~~
   4 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-circular-deps 1`] = `
-"<unknown>:3:1: Circular dependency detected for type "A"
+exports[`resolveDescriptors > should fail descriptors for trait-circular-deps 1`] = `
+[Error: <unknown>:3:1: Circular dependency detected for type "A"
   2 | 
 > 3 | trait A with B {}
       ^~~~~~~~~~~~~~~~~
   4 | trait B with A {}
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-circular-deps-with-deep-inheritance 1`] = `
-"<unknown>:3:1: Circular dependency detected for type "A"
+exports[`resolveDescriptors > should fail descriptors for trait-circular-deps-with-deep-inheritance 1`] = `
+[Error: <unknown>:3:1: Circular dependency detected for type "A"
   2 | 
 > 3 | trait A with B {}
       ^~~~~~~~~~~~~~~~~
   4 | trait B with C {}
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-duplicates-in-trait-list 1`] = `
-"<unknown>:7:1: The list of inherited traits for trait "Test" has duplicates
+exports[`resolveDescriptors > should fail descriptors for trait-duplicates-in-trait-list 1`] = `
+[Error: <unknown>:7:1: The list of inherited traits for trait "Test" has duplicates
   6 | 
 > 7 | trait Test with Foo, Foo { }
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
   8 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-field-initialized 1`] = `
-"<unknown>:2:14: Trait field cannot have an initializer
+exports[`resolveDescriptors > should fail descriptors for trait-field-initialized 1`] = `
+[Error: <unknown>:2:14: Trait field cannot have an initializer
   1 | trait T {
 > 2 |     a: Int = 42; // error
                    ^~
   3 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-contract 1`] = `
-"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int" given
+exports[`resolveDescriptors > should fail descriptors for trait-with-as-typed-field-for-contract 1`] = `
+[Error: <unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int" given
    9 | contract SomeContract with Foo {
 > 10 |     f: Int;
            ^~~~~~
   11 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-contract-with-other-specialization 1`] = `
-"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int as int16" given
+exports[`resolveDescriptors > should fail descriptors for trait-with-as-typed-field-for-contract-with-other-specialization 1`] = `
+[Error: <unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int as int16" given
    9 | contract SomeContract with Foo {
 > 10 |     f: Int as int16 = 0;
            ^~~~~~~~~~~~~~~~~~~
   11 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-contract-with-other-type 1`] = `
-"<unknown>:10:1: Trait "Foo" requires field "f" of type "Int"
+exports[`resolveDescriptors > should fail descriptors for trait-with-as-typed-field-for-contract-with-other-type 1`] = `
+[Error: <unknown>:10:1: Trait "Foo" requires field "f" of type "Int"
    9 | 
 > 10 | contract SomeContract with Foo {
        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   11 |     f: Cell;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-trait 1`] = `
-"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int" given
+exports[`resolveDescriptors > should fail descriptors for trait-with-as-typed-field-for-trait 1`] = `
+[Error: <unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int" given
    9 | trait SomeTrait with Foo {
 > 10 |     f: Int;
            ^~~~~~
   11 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-trait-with-other-specialization 1`] = `
-"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int as int16" given
+exports[`resolveDescriptors > should fail descriptors for trait-with-as-typed-field-for-trait-with-other-specialization 1`] = `
+[Error: <unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int as int16" given
    9 | trait SomeTrait with Foo {
 > 10 |     f: Int as int16;
            ^~~~~~~~~~~~~~~
   11 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-trait-with-other-type 1`] = `
-"<unknown>:10:1: Trait "Foo" requires field "f" of type "Int"
+exports[`resolveDescriptors > should fail descriptors for trait-with-as-typed-field-for-trait-with-other-type 1`] = `
+[Error: <unknown>:10:1: Trait "Foo" requires field "f" of type "Int"
    9 | 
 > 10 | trait SomeTrait with Foo {
        ^~~~~~~~~~~~~~~~~~~~~~~~~~
   11 |     f: Cell;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-in-diamond-inheritance-and-other-specialization 1`] = `
-"<unknown>:21:5: Trait "T2" requires field "f2" of type "Int as int32", but "Int as int16" given
+exports[`resolveDescriptors > should fail descriptors for trait-with-as-typed-field-in-diamond-inheritance-and-other-specialization 1`] = `
+[Error: <unknown>:21:5: Trait "T2" requires field "f2" of type "Int as int32", but "Int as int16" given
   20 |     f1: Int as int32;
 > 21 |     f2: Int as int16;
            ^~~~~~~~~~~~~~~~
   22 |     f3: Int as int32;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-with-unsupported-format 1`] = `
-"<unknown>:6:5: Unsupported format "foo"
+exports[`resolveDescriptors > should fail descriptors for trait-with-as-typed-field-with-unsupported-format 1`] = `
+[Error: <unknown>:6:5: Unsupported format "foo"
   5 | trait Foo {
 > 6 |     f: Int as foo;
           ^~~~~~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-int257-field-for-trait-with-as-typed-coins-field 1`] = `
-"<unknown>:10:5: Trait "Trait" requires field "i" of type "Int as int257", but "Int as coins" given
+exports[`resolveDescriptors > should fail descriptors for trait-with-as-typed-int257-field-for-trait-with-as-typed-coins-field 1`] = `
+[Error: <unknown>:10:5: Trait "Trait" requires field "i" of type "Int as int257", but "Int as coins" given
    9 | contract Foo with Trait {
 > 10 |     i: Int as coins = 0;
            ^~~~~~~~~~~~~~~~~~~
   11 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for trait-without-as-typed-field-inherited-with-it 1`] = `
-"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int", but "Int as int32" given
+exports[`resolveDescriptors > should fail descriptors for trait-without-as-typed-field-inherited-with-it 1`] = `
+[Error: <unknown>:10:5: Trait "Foo" requires field "f" of type "Int", but "Int as int32" given
    9 | trait SomeTrait with Foo {
 > 10 |     f: Int as int32;
            ^~~~~~~~~~~~~~~
   11 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-const 1`] = `
-"<unknown>:4:19: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+exports[`resolveDescriptors > should fail descriptors for wf-type-const 1`] = `
+[Error: <unknown>:4:19: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
   3 | 
 > 4 | const m: map<Int, String> = null;
                         ^~~~~~
   5 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-contract-const 1`] = `
-"<unknown>:6:23: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+exports[`resolveDescriptors > should fail descriptors for wf-type-contract-const 1`] = `
+[Error: <unknown>:6:23: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
   5 | contract Test {
 > 6 |     const m: map<Int, String> = null;
                             ^~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-contract-const-incorrect-annotation 1`] = `
-"<unknown>:6:34: "Address" type cannot have as-annotation
+exports[`resolveDescriptors > should fail descriptors for wf-type-contract-const-incorrect-annotation 1`] = `
+[Error: <unknown>:6:34: "Address" type cannot have as-annotation
   5 | contract Test {
 > 6 |     const m: map<Int, Address as uint32> = null;
                                        ^~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-contract-getter 1`] = `
-"<unknown>:6:29: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+exports[`resolveDescriptors > should fail descriptors for wf-type-contract-getter 1`] = `
+[Error: <unknown>:6:29: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
   5 | contract Test {
 > 6 |     get fun foo(): map<Int, String> {
                                   ^~~~~~
   7 |         let m: map<Int, String> = null;
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-coins 1`] = `
-"<unknown>:6:19: "coins" is invalid as-annotation for map key type "Int"
+exports[`resolveDescriptors > should fail descriptors for wf-type-contract-incorrect-map-key-annotation-coins 1`] = `
+[Error: <unknown>:6:19: "coins" is invalid as-annotation for map key type "Int"
   5 | contract Test {
 > 6 |     m: map<Int as coins, Address> = emptyMap();
                         ^~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varint16 1`] = `
-"<unknown>:6:19: "varint16" is invalid as-annotation for map key type "Int"
+exports[`resolveDescriptors > should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varint16 1`] = `
+[Error: <unknown>:6:19: "varint16" is invalid as-annotation for map key type "Int"
   5 | contract Test {
 > 6 |     m: map<Int as varint16, Address> = emptyMap();
                         ^~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varint32 1`] = `
-"<unknown>:6:19: "varint32" is invalid as-annotation for map key type "Int"
+exports[`resolveDescriptors > should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varint32 1`] = `
+[Error: <unknown>:6:19: "varint32" is invalid as-annotation for map key type "Int"
   5 | contract Test {
 > 6 |     m: map<Int as varint32, Address> = emptyMap();
                         ^~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varuint16 1`] = `
-"<unknown>:6:19: "varuint16" is invalid as-annotation for map key type "Int"
+exports[`resolveDescriptors > should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varuint16 1`] = `
+[Error: <unknown>:6:19: "varuint16" is invalid as-annotation for map key type "Int"
   5 | contract Test {
 > 6 |     m: map<Int as varuint16, Address> = emptyMap();
                         ^~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varuint32 1`] = `
-"<unknown>:6:19: "varuint32" is invalid as-annotation for map key type "Int"
+exports[`resolveDescriptors > should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varuint32 1`] = `
+[Error: <unknown>:6:19: "varuint32" is invalid as-annotation for map key type "Int"
   5 | contract Test {
 > 6 |     m: map<Int as varuint32, Address> = emptyMap();
                         ^~~~~~~~~
   7 | }
-"
+]
 `;
 
-exports[`resolveDescriptors should fail descriptors for wf-type-fun-param 1`] = `
-"<unknown>:4:16: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+exports[`resolveDescriptors > should fail descriptors for wf-type-fun-param 1`] = `
+[Error: <unknown>:4:16: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
   3 | 
 > 4 | fun foo(m: map<Bool, Int>) { }
                      ^~~~
   5 | 
-"
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for asm-extends-fun 1`] = `
 [
   {
     "ast": {
@@ -1578,9 +1578,9 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for asm-extends-fun 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffle 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for asm-fun-no-arg-shuffle 1`] = `
 [
   {
     "ast": {
@@ -1615,7 +1615,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffle 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for asm-fun-no-arg-shuffle 2`] = `
 [
   {
     "ast": {
@@ -1706,7 +1706,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffle 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for asm-fun-no-ret-shuffle 1`] = `
 [
   {
     "ast": {
@@ -1741,7 +1741,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffle 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for asm-fun-no-ret-shuffle 2`] = `
 [
   {
     "ast": {
@@ -1866,7 +1866,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for asm-fun-no-shuffle 1`] = `
 [
   {
     "ast": {
@@ -1901,7 +1901,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 1`
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for asm-fun-no-shuffle 2`] = `
 [
   {
     "ast": {
@@ -1979,7 +1979,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 2`
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for asm-fun-shuffle-pair 1`] = `
 [
   {
     "ast": {
@@ -2165,7 +2165,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for asm-fun-shuffle-pair 2`] = `
 [
   {
     "ast": {
@@ -2297,7 +2297,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-default-field 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for const-decl-struct-with-default-field 1`] = `
 [
   {
     "ast": {
@@ -2469,9 +2469,9 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-default-field 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for const-decl-struct-with-default-field 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-optional-field 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for const-decl-struct-with-optional-field 1`] = `
 [
   {
     "ast": {
@@ -2641,9 +2641,9 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-optional-field 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for const-decl-struct-with-optional-field 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-bounced-slice 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for contract-bounced-slice 1`] = `
 [
   {
     "ast": {
@@ -3109,9 +3109,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-bounced-slice 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for contract-bounced-slice 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for contract-bounced-too-small-not-detected 1`] = `
 [
   {
     "ast": {
@@ -3788,9 +3788,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for contract-bounced-too-small-not-detected 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-const-override-abstract 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for contract-const-override-abstract 1`] = `
 [
   {
     "ast": {
@@ -4205,9 +4205,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-const-override-abstract 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for contract-const-override-abstract 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-const-override-virtual 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for contract-const-override-virtual 1`] = `
 [
   {
     "ast": {
@@ -4650,9 +4650,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-const-override-virtual 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for contract-const-override-virtual 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-decl-remainder 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for contract-decl-remainder 1`] = `
 [
   {
     "ast": {
@@ -5172,9 +5172,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-decl-remainder 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for contract-decl-remainder 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for contract-external-fallback-receiver 1`] = `
 [
   {
     "ast": {
@@ -5628,9 +5628,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for contract-external-fallback-receiver 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-getter-override-abstract 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for contract-getter-override-abstract 1`] = `
 [
   {
     "ast": {
@@ -6143,9 +6143,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-getter-override-abstract 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for contract-getter-override-abstract 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-getter-override-virtual 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for contract-getter-override-virtual 1`] = `
 [
   {
     "ast": {
@@ -6714,9 +6714,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-getter-override-virtual 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for contract-getter-override-virtual 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-with-as-typed-field 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for contract-with-as-typed-field 1`] = `
 [
   {
     "ast": {
@@ -7156,9 +7156,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-with-as-typed-field 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for contract-with-as-typed-field 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for dump 1`] = `
 [
   {
     "ast": {
@@ -8484,7 +8484,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for dump 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for dump 2`] = `
 [
   {
     "ast": {
@@ -8618,7 +8618,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 2`] = `
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for fun-extends-opt-self 1`] = `
 [
   {
     "ast": {
@@ -9272,7 +9272,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for fun-extends-opt-self 2`] = `
 [
   {
     "ast": {
@@ -9401,7 +9401,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for init-vars-analysis-uninit-storage-vars 1`] = `
 [
   {
     "ast": {
@@ -9835,9 +9835,9 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for init-vars-analysis-uninit-storage-vars 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies1 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for item-funs-with-errors-in-bodies1 1`] = `
 [
   {
     "ast": {
@@ -9937,7 +9937,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies1 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for item-funs-with-errors-in-bodies1 2`] = `
 [
   {
     "ast": {
@@ -10153,7 +10153,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies2 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for item-funs-with-errors-in-bodies2 1`] = `
 [
   {
     "ast": {
@@ -10836,9 +10836,9 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies2 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for item-funs-with-errors-in-bodies2 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for item-method 1`] = `
 [
   {
     "ast": {
@@ -11033,9 +11033,9 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for item-method 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for item-method 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for item-native-decl 1`] = `
 [
   {
     "ast": {
@@ -11135,7 +11135,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for item-native-decl 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for item-native-decl 2`] = `
 [
   {
     "ast": {
@@ -11218,7 +11218,7 @@ native sample(a: Int): Int;,
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for item-native-mutating-method 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for item-native-mutating-method 1`] = `
 [
   {
     "ast": {
@@ -11397,9 +11397,9 @@ mutates extends native inc(self: Int): Int;,
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for item-native-mutating-method 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for item-native-mutating-method 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for map-value-as-coins 1`] = `
 [
   {
     "ast": {
@@ -12172,9 +12172,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for map-value-as-coins 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for map-value-as-varint 1`] = `
 [
   {
     "ast": {
@@ -13565,9 +13565,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for map-value-as-varint 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for map-value-as-varuint 1`] = `
 [
   {
     "ast": {
@@ -14958,9 +14958,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for map-value-as-varuint 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for message-decl-remainder 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for message-decl-remainder 1`] = `
 [
   {
     "ast": {
@@ -15289,9 +15289,9 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for message-decl-remainder 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for message-decl-remainder 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for message-opcode-expr 1`] = `
 [
   {
     "ast": {
@@ -15677,9 +15677,9 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for message-opcode-expr 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for multi-inheritance-with-duplicate-methods-via-diamond 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for multi-inheritance-with-duplicate-methods-via-diamond 1`] = `
 [
   {
     "ast": {
@@ -17078,9 +17078,9 @@ exports[`resolveDescriptors should resolve descriptors for multi-inheritance-wit
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for multi-inheritance-with-duplicate-methods-via-diamond 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for multi-inheritance-with-duplicate-methods-via-diamond 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-abstract-constant 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-abstract-constant 1`] = `
 [
   {
     "ast": {
@@ -17495,9 +17495,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-abstract-constant 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-abstract-constant 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-abstract-function-in-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-abstract-function-in-trait 1`] = `
 [
   {
     "ast": {
@@ -17836,9 +17836,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-abstract-function-in-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-abstract-function-in-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant 1`] = `
 [
   {
     "ast": {
@@ -18281,9 +18281,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-contract 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-contract 1`] = `
 [
   {
     "ast": {
@@ -18726,9 +18726,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-contract 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-contract 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-contract-from-base-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-contract-from-base-trait 1`] = `
 [
   {
     "ast": {
@@ -19105,9 +19105,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-contract-from-base-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-contract-from-base-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-contract-with-multi-inheritance 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-contract-with-multi-inheritance 1`] = `
 [
   {
     "ast": {
@@ -19622,9 +19622,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-contract-with-multi-inheritance 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-contract-with-multi-inheritance 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-contract-with-multi-inheritance-from-base-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-contract-with-multi-inheritance-from-base-trait 1`] = `
 [
   {
     "ast": {
@@ -20465,9 +20465,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-contract-with-multi-inheritance-from-base-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-contract-with-multi-inheritance-from-base-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait 1`] = `
 [
   {
     "ast": {
@@ -20864,9 +20864,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-from-base-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-from-base-trait 1`] = `
 [
   {
     "ast": {
@@ -21230,9 +21230,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-from-base-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-from-base-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-with-deep-inheritance-in-middle 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-with-deep-inheritance-in-middle 1`] = `
 [
   {
     "ast": {
@@ -22295,9 +22295,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-with-deep-inheritance-in-middle 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-with-deep-inheritance-in-middle 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-with-diamond-inheritance 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-with-diamond-inheritance 1`] = `
 [
   {
     "ast": {
@@ -23708,9 +23708,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-with-diamond-inheritance 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-with-diamond-inheritance 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-with-multi-inheritance 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-with-multi-inheritance 1`] = `
 [
   {
     "ast": {
@@ -24179,9 +24179,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-with-multi-inheritance 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-with-multi-inheritance 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-with-multi-inheritance-from-base-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-with-multi-inheritance-from-base-trait 1`] = `
 [
   {
     "ast": {
@@ -25319,9 +25319,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-constant-in-trait-with-multi-inheritance-from-base-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-constant-in-trait-with-multi-inheritance-from-base-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-contract 1`] = `
 [
   {
     "ast": {
@@ -25664,9 +25664,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-contract 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract-from-base-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-contract-from-base-trait 1`] = `
 [
   {
     "ast": {
@@ -25976,9 +25976,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract-from-base-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-contract-from-base-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract-with-multi-inheritance 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-contract-with-multi-inheritance 1`] = `
 [
   {
     "ast": {
@@ -26439,9 +26439,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract-with-multi-inheritance 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-contract-with-multi-inheritance 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract-with-multi-inheritance-from-base-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-contract-with-multi-inheritance-from-base-trait 1`] = `
 [
   {
     "ast": {
@@ -27188,9 +27188,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-contract-with-multi-inheritance-from-base-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-contract-with-multi-inheritance-from-base-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait 1`] = `
 [
   {
     "ast": {
@@ -27579,9 +27579,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-from-base-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-from-base-trait 1`] = `
 [
   {
     "ast": {
@@ -27897,9 +27897,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-from-base-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-from-base-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-deep-inheritance 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-deep-inheritance 1`] = `
 [
   {
     "ast": {
@@ -29364,9 +29364,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-deep-inheritance 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-deep-inheritance 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-deep-inheritance-in-middle 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-deep-inheritance-in-middle 1`] = `
 [
   {
     "ast": {
@@ -30407,9 +30407,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-deep-inheritance-in-middle 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-deep-inheritance-in-middle 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-diamond-inheritance 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-diamond-inheritance 1`] = `
 [
   {
     "ast": {
@@ -31768,9 +31768,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-diamond-inheritance 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-diamond-inheritance 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-multi-inheritance 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-multi-inheritance 1`] = `
 [
   {
     "ast": {
@@ -32185,9 +32185,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-multi-inheritance 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-multi-inheritance 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-multi-inheritance-from-base-trait 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-multi-inheritance-from-base-trait 1`] = `
 [
   {
     "ast": {
@@ -33217,9 +33217,9 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-multi-inheritance-from-base-trait 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for override-for-virtual-function-in-trait-with-multi-inheritance-from-base-trait 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for receive-message-with-biggest-allowed-size 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for receive-message-with-biggest-allowed-size 1`] = `
 [
   {
     "ast": {
@@ -33390,11 +33390,11 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for receive-message-with-biggest-allowed-size 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for receive-message-with-biggest-allowed-size 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for scope-loops 1`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for scope-loops 1`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for scope-loops 2`] = `
 [
   {
     "ast": {
@@ -33797,7 +33797,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for small-bounced-type 1`] = `
 [
   {
     "ast": {
@@ -34434,9 +34434,9 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for small-bounced-type 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for small-bounced-type 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-default-field 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for struct-decl-default-field 1`] = `
 [
   {
     "ast": {
@@ -34608,9 +34608,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-default-field 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for struct-decl-default-field 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for struct-decl-nested 1`] = `
 [
   {
     "ast": {
@@ -34956,9 +34956,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for struct-decl-nested 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-types 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for struct-decl-non-rec-types 1`] = `
 [
   {
     "ast": {
@@ -35288,9 +35288,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-types 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for struct-decl-non-rec-types 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for struct-decl-remainder 1`] = `
 [
   {
     "ast": {
@@ -35612,9 +35612,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for struct-decl-remainder 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for trait-base 1`] = `
 [
   {
     "ast": {
@@ -35714,9 +35714,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for trait-base 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for trait-base 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for trait-foreach 1`] = `
 [
   {
     "ast": {
@@ -36525,9 +36525,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for trait-foreach 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for trait-foreach 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-inheritance-with-as-typed-int257-field 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for trait-int-field-with-inheritance-with-as-typed-int257-field 1`] = `
 [
   {
     "ast": {
@@ -36901,9 +36901,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-inheritance-with-as-typed-int257-field 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for trait-int-field-with-inheritance-with-as-typed-int257-field 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-field 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for trait-with-as-typed-field 1`] = `
 [
   {
     "ast": {
@@ -37297,9 +37297,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-field 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for trait-with-as-typed-field 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-field-in-diamond-inheritance 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for trait-with-as-typed-field-in-diamond-inheritance 1`] = `
 [
   {
     "ast": {
@@ -38999,9 +38999,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-field-in-diamond-inheritance 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for trait-with-as-typed-field-in-diamond-inheritance 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-int257-field-with-inheritance-without-typed-field 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for trait-with-as-typed-int257-field-with-inheritance-without-typed-field 1`] = `
 [
   {
     "ast": {
@@ -39385,9 +39385,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-int257-field-with-inheritance-without-typed-field 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for trait-with-as-typed-int257-field-with-inheritance-without-typed-field 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for wildcard-function-param 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for wildcard-function-param 1`] = `
 [
   {
     "ast": {
@@ -39482,7 +39482,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for wildcard-function-param 2`] = `
+exports[`resolveDescriptors > should resolve descriptors for wildcard-function-param 2`] = `
 [
   {
     "ast": {
@@ -39676,7 +39676,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for wildcard-function-param2 1`] = `
+exports[`resolveDescriptors > should resolve descriptors for wildcard-function-param2 1`] = `
 [
   {
     "ast": {
@@ -40622,4 +40622,4 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
 ]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for wildcard-function-param2 2`] = `[]`;
+exports[`resolveDescriptors > should resolve descriptors for wildcard-function-param2 2`] = `[]`;

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`runServer all info logs are logged 1`] = `
+exports[`runServer > all info logs are logged 1`] = `
 [
   {
     "level": "info",
@@ -25,7 +25,7 @@ exports[`runServer all info logs are logged 1`] = `
 ]
 `;
 
-exports[`runServer exit on error 1`] = `
+exports[`runServer > exit on error 1`] = `
 [
   {
     "level": "error",
@@ -50,7 +50,7 @@ exports[`runServer exit on error 1`] = `
 ]
 `;
 
-exports[`runServer internal error in source at range 1`] = `
+exports[`runServer > internal error in source at range 1`] = `
 [
   {
     "level": "internal",
@@ -73,7 +73,7 @@ exports[`runServer internal error in source at range 1`] = `
 ]
 `;
 
-exports[`runServer logger internal error 1`] = `
+exports[`runServer > logger internal error 1`] = `
 [
   {
     "level": "internal",
@@ -88,7 +88,7 @@ exports[`runServer logger internal error 1`] = `
 ]
 `;
 
-exports[`runServer logger internal error in source 1`] = `
+exports[`runServer > logger internal error in source 1`] = `
 [
   {
     "level": "internal",
@@ -108,7 +108,7 @@ exports[`runServer logger internal error in source 1`] = `
 ]
 `;
 
-exports[`runServer multiple errors 1`] = `
+exports[`runServer > multiple errors 1`] = `
 [
   {
     "level": "error",
@@ -133,7 +133,7 @@ exports[`runServer multiple errors 1`] = `
 ]
 `;
 
-exports[`runServer multiple errors inside source 1`] = `
+exports[`runServer > multiple errors inside source 1`] = `
 [
   {
     "level": "error",
@@ -171,7 +171,7 @@ exports[`runServer multiple errors inside source 1`] = `
 ]
 `;
 
-exports[`runServer only first error without error recovery 1`] = `
+exports[`runServer > only first error without error recovery 1`] = `
 [
   {
     "level": "error",
@@ -186,7 +186,7 @@ exports[`runServer only first error without error recovery 1`] = `
 ]
 `;
 
-exports[`runServer raw internal error 1`] = `
+exports[`runServer > raw internal error 1`] = `
 [
   {
     "level": "internal",
@@ -204,7 +204,7 @@ exports[`runServer raw internal error 1`] = `
 ]
 `;
 
-exports[`runServer raw internal error in source 1`] = `
+exports[`runServer > raw internal error in source 1`] = `
 [
   {
     "level": "internal",
@@ -223,7 +223,7 @@ while compiling /foo/bar",
 ]
 `;
 
-exports[`runServer source inside multiple errors 1`] = `
+exports[`runServer > source inside multiple errors 1`] = `
 [
   {
     "level": "error",
@@ -261,7 +261,7 @@ exports[`runServer source inside multiple errors 1`] = `
 ]
 `;
 
-exports[`runServer typed errors 1`] = `
+exports[`runServer > typed errors 1`] = `
 [
   {
     "level": "error",
@@ -286,7 +286,7 @@ exports[`runServer typed errors 1`] = `
 ]
 `;
 
-exports[`runServer typed errors for source 1`] = `
+exports[`runServer > typed errors for source 1`] = `
 [
   {
     "level": "error",
@@ -324,7 +324,7 @@ exports[`runServer typed errors for source 1`] = `
 ]
 `;
 
-exports[`runServer uncaught error 1`] = `
+exports[`runServer > uncaught error 1`] = `
 [
   {
     "level": "internal",
@@ -342,7 +342,7 @@ exports[`runServer uncaught error 1`] = `
 ]
 `;
 
-exports[`runServer uncaught error in source 1`] = `
+exports[`runServer > uncaught error in source 1`] = `
 [
   {
     "level": "internal",
