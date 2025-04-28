@@ -10,7 +10,6 @@ vitest.setup.ts
 vitest.globalSetup.js
 vitest.config.ts
 vitest-fast.config.ts
-jest.teardown.js
 /docs
 version.build.ts
 format.build.ts
