@@ -4,13 +4,10 @@
 
 We release security patches for the following versions:
 
-| Versions | Supported |
-| -------- | --------- |
-| 1.6.6    | ✅ Yes    |
-| 1.5.4    | ✅ Yes    |
-| < 1.6    | ❌ No     |
+- [1.6.7](https://www.npmjs.com/package/@tact-lang/compiler/v/1.6.7),
+- [1.5.4](https://www.npmjs.com/package/@tact-lang/compiler/v/1.5.4).
 
-You can find the latest release here: <https://github.com/tact-lang/tact/releases>.
+Other versions are not supported.
 
 ## Reporting a Vulnerability
 
@@ -29,15 +26,14 @@ We will acknowledge your report within three business days and aim to provide a 
 
 If we confirm the vulnerability, we will work with you to coordinate a fix before public disclosure.
 
-- We follow [responsible disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure).
-- Fixes will be announced in a security advisory with a CVE (if applicable).
+- Fixes will be announced in a security advisory.
 - Credit will be given to the reporter unless anonymity is requested.
 
 ## What to Include in the Security Report
 
 - A description of the vulnerability,
 - Steps to reproduce (if applicable),
-- The potential impact,
+- The potential impact (if known),
 - Any suggestions for remediation (if known).
 
 Please include all details necessary to reproduce the vulnerability, such as:
@@ -52,7 +48,7 @@ Please include all details necessary to reproduce the vulnerability, such as:
 
 Please include steps to reproduce the bug you have found in as much detail as possible.
 
-We aim to respond to security reports within **5 business days**. If we confirm the vulnerability, we will work with you to coordinate a fix before public disclosure.
+Please do not make the source code needed to reproduce the vulnerability publicly available.
 
 ## PGP Key to Use If Reporting via Email
 
