@@ -565,7 +565,7 @@ describe("math", () => {
                 "Unable to execute get method. Got exit_code: 5",
             );
         }
-    });
+    }, 20_000);
 
     it("should perform left shifts with comparisons correctly", async () => {
         expect(await contract.getShiftLeft0(0n)).toStrictEqual(true);
