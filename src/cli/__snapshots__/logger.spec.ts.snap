@@ -31,7 +31,7 @@ exports[`TerminalLogger POSIX > internal error in source at range 1`] = `"proces
 exports[`TerminalLogger POSIX > internal error in source at range 2`] = `
 [
   [
-    "Internal compiler error: ../../../../foo/bar:1:4 - OMG
+    "Internal compiler error: ./bar:1:4 - OMG
 > 1 | Hello, world
          ^~
 Please report at https://github.com/tact-lang/tact/issues",
@@ -55,7 +55,7 @@ exports[`TerminalLogger POSIX > logger internal error in source 1`] = `"process.
 exports[`TerminalLogger POSIX > logger internal error in source 2`] = `
 [
   [
-    "Internal compiler error: ../../../../foo/bar: OMG
+    "Internal compiler error: ./bar: OMG
 Please report at https://github.com/tact-lang/tact/issues",
   ],
 ]
@@ -79,12 +79,12 @@ exports[`TerminalLogger POSIX > multiple errors inside source 1`] = `"process.ex
 exports[`TerminalLogger POSIX > multiple errors inside source 2`] = `
 [
   [
-    "Error: ../../../../foo/bar:1:4 - foo
+    "Error: ./bar:1:4 - foo
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: ../../../../foo/bar: bar",
+    "Error: ./bar: bar",
   ],
 ]
 `;
@@ -104,7 +104,7 @@ exports[`TerminalLogger POSIX > path is resolved relative to cwd 1`] = `"process
 exports[`TerminalLogger POSIX > path is resolved relative to cwd 2`] = `
 [
   [
-    "Error: See ../../../../foo/bar.",
+    "Error: See ./bar.",
   ],
 ]
 `;
@@ -137,12 +137,12 @@ exports[`TerminalLogger POSIX > source inside multiple errors 1`] = `"process.ex
 exports[`TerminalLogger POSIX > source inside multiple errors 2`] = `
 [
   [
-    "Error: ../../../../foo/bar:1:4 - foo
+    "Error: ./bar:1:4 - foo
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: ../../../../foo/bar: bar",
+    "Error: ./bar: bar",
   ],
 ]
 `;
@@ -165,12 +165,12 @@ exports[`TerminalLogger POSIX > typed errors for source 1`] = `"process.exit cal
 exports[`TerminalLogger POSIX > typed errors for source 2`] = `
 [
   [
-    "Error: ../../../../foo/bar:1:4 - Foo!
+    "Error: ./bar:1:4 - Foo!
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: ../../../../foo/bar: Bar!",
+    "Error: ./bar: Bar!",
   ],
 ]
 `;
@@ -239,7 +239,7 @@ exports[`TerminalLogger Windows > internal error in source at range 1`] = `"proc
 exports[`TerminalLogger Windows > internal error in source at range 2`] = `
 [
   [
-    "Internal compiler error: .\\\\foo\\bar:1:4 - OMG
+    "Internal compiler error: .\\bar:1:4 - OMG
 > 1 | Hello, world
          ^~
 Please report at https://github.com/tact-lang/tact/issues",
@@ -263,7 +263,7 @@ exports[`TerminalLogger Windows > logger internal error in source 1`] = `"proces
 exports[`TerminalLogger Windows > logger internal error in source 2`] = `
 [
   [
-    "Internal compiler error: .\\\\foo\\bar: OMG
+    "Internal compiler error: .\\bar: OMG
 Please report at https://github.com/tact-lang/tact/issues",
   ],
 ]
@@ -287,12 +287,12 @@ exports[`TerminalLogger Windows > multiple errors inside source 1`] = `"process.
 exports[`TerminalLogger Windows > multiple errors inside source 2`] = `
 [
   [
-    "Error: .\\\\foo\\bar:1:4 - foo
+    "Error: .\\bar:1:4 - foo
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: .\\\\foo\\bar: bar",
+    "Error: .\\bar: bar",
   ],
 ]
 `;
@@ -312,7 +312,7 @@ exports[`TerminalLogger Windows > path is resolved relative to cwd 1`] = `"proce
 exports[`TerminalLogger Windows > path is resolved relative to cwd 2`] = `
 [
   [
-    "Error: See .\\\\foo\\bar.",
+    "Error: See .\\bar.",
   ],
 ]
 `;
@@ -345,12 +345,12 @@ exports[`TerminalLogger Windows > source inside multiple errors 1`] = `"process.
 exports[`TerminalLogger Windows > source inside multiple errors 2`] = `
 [
   [
-    "Error: .\\\\foo\\bar:1:4 - foo
+    "Error: .\\bar:1:4 - foo
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: .\\\\foo\\bar: bar",
+    "Error: .\\bar: bar",
   ],
 ]
 `;
@@ -373,12 +373,12 @@ exports[`TerminalLogger Windows > typed errors for source 1`] = `"process.exit c
 exports[`TerminalLogger Windows > typed errors for source 2`] = `
 [
   [
-    "Error: .\\\\foo\\bar:1:4 - Foo!
+    "Error: .\\bar:1:4 - Foo!
 > 1 | Hello, world
          ^~",
   ],
   [
-    "Error: .\\\\foo\\bar: Bar!",
+    "Error: .\\bar: Bar!",
   ],
 ]
 `;

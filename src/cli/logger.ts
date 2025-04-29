@@ -5,7 +5,7 @@ import {
     showExpectedText,
     showTemplate,
 } from "@/error/string-util";
-import { cwd } from "process";
+import "process";
 import { throwInternal } from "@/error/errors";
 import type { AnsiMarkup } from "@/cli/colors";
 import type * as path from "path";
@@ -36,7 +36,9 @@ export const TerminalLogger = <T>(
 ) => {
     // path is displayed relative to cwd(), so that in VSCode terminal it's a link
     const showResolvedPath = (path: string) => {
-        const relativePath = pathApi.normalize(pathApi.relative(cwd(), path));
+        const relativePath = pathApi.normalize(
+            pathApi.relative(process.cwd(), path),
+        );
         const fixedPath = relativePath.startsWith(".")
             ? relativePath
             : `.${pathApi.sep}${relativePath}`;
