@@ -30,5 +30,5 @@ describe("Pretty Print Expressions", () => {
             }),
             { seed: 1, numRuns: 5000 },
         );
-    });
+    }, 30_000);
 });

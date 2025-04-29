@@ -17,7 +17,7 @@ export default defineConfig({
             provider: "istanbul",
         },
         setupFiles: ["./vitest.setup.ts"],
-        testTimeout: 15_000,
+        testTimeout: 10_000,
         snapshotSerializers: ["@tact-lang/ton-jest/serializers"],
         logHeapUsage: true,
         pool: "forks",
