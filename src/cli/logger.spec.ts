@@ -229,9 +229,6 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     });
 
     test("multiple errors inside source", () => {
-        console.log("Init cwd");
-        console.log(process.env["INIT_CWD"]);
-        console.log(process.cwd());
         const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
