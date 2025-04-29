@@ -443,7 +443,7 @@ function testSBT(
     });
 }
 
-describe("NFT Gas Tests", () => {
+describe("SBT Gas Tests", () => {
     const fullResults = generateResults(benchmarkResults);
     const fullCodeSizeResults = generateCodeSizeResults(
         benchmarkCodeSizeResults,
@@ -461,8 +461,8 @@ describe("NFT Gas Tests", () => {
             _authorityAddress: Address | null,
             _revokedAt: bigint,
         ) {
-            const nftData = loadFunCSBTBoc();
-            const __code = Cell.fromBoc(nftData.bocItem)[0]!;
+            const sbtData = loadFunCSBTBoc();
+            const __code = Cell.fromBoc(sbtData.bocItem)[0]!;
 
             const __data = beginCell()
                 .storeUint(itemIndex, 64)
