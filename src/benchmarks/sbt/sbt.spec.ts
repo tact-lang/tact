@@ -456,10 +456,10 @@ describe("NFT Gas Tests", () => {
         function fromInitItem(
             itemIndex: bigint,
             collectionAddress: Address,
-            owner: Address | null,
-            content: Cell | null,
-            authorityAddress: Address | null,
-            revokedAt: bigint,
+            _owner: Address | null,
+            _content: Cell | null,
+            _authorityAddress: Address | null,
+            _revokedAt: bigint,
         ) {
             const nftData = loadFunCSBTBoc();
             const __code = Cell.fromBoc(nftData.bocItem)[0]!;
