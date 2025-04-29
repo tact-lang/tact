@@ -1039,31 +1039,10 @@
     "@nodelib/fs.stat" "2.0.5"
     run-parallel "^1.1.9"
 
-"@nodelib/fs.scandir@4.0.1":
-  version "4.0.1"
-  resolved "https://npm.dev-internal.org/@nodelib/fs.scandir/-/fs.scandir-4.0.1.tgz#4b981a1d6e34e2baff9a33c84b57709e30e8ce30"
-  integrity sha512-vAkI715yhnmiPupY+dq+xenu5Tdf2TBQ66jLvBIcCddtz+5Q8LbMKaf9CIJJreez8fQ8fgaY+RaywQx8RJIWpw==
-  dependencies:
-    "@nodelib/fs.stat" "4.0.0"
-    run-parallel "^1.2.0"
-
 "@nodelib/fs.stat@2.0.5", "@nodelib/fs.stat@^2.0.2":
   version "2.0.5"
   resolved "https://npm.dev-internal.org/@nodelib/fs.stat/-/fs.stat-2.0.5.tgz"
   integrity sha512-RkhPPp2zrqDAQA/2jNhnztcPAlv64XdhIp7a7454A5ovI7Bukxgt7MX7udwAu3zg1DcpPU0rz3VV1SeaqvY4+A==
-
-"@nodelib/fs.stat@4.0.0":
-  version "4.0.0"
-  resolved "https://npm.dev-internal.org/@nodelib/fs.stat/-/fs.stat-4.0.0.tgz#d609b10d9c17dac012c4d7be93602ed939861e58"
-  integrity sha512-ctr6bByzksKRCV0bavi8WoQevU6plSp2IkllIsEqaiKe2mwNNnaluhnRhcsgGZHrrHk57B3lf95MkLMO3STYcg==
-
-"@nodelib/fs.walk@3.0.1":
-  version "3.0.1"
-  resolved "https://npm.dev-internal.org/@nodelib/fs.walk/-/fs.walk-3.0.1.tgz#717a03eb1d07c09db32f884a5d0c06ccd9b657f4"
-  integrity sha512-nIh/M6Kh3ZtOmlY00DaUYB4xeeV6F3/ts1l29iwl3/cfyY/OuCfUx+v08zgx8TKPTifXRcjjqVQ4KB2zOYSbyw==
-  dependencies:
-    "@nodelib/fs.scandir" "4.0.1"
-    fastq "^1.15.0"
 
 "@nodelib/fs.walk@^1.2.3", "@nodelib/fs.walk@^1.2.8":
   version "1.2.8"
@@ -1173,15 +1152,6 @@
   integrity sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==
   dependencies:
     "@sinonjs/commons" "^3.0.0"
-
-"@snyk/github-codeowners@1.1.0":
-  version "1.1.0"
-  resolved "https://npm.dev-internal.org/@snyk/github-codeowners/-/github-codeowners-1.1.0.tgz"
-  integrity sha512-lGFf08pbkEac0NYgVf4hdANpAgApRjNByLXB+WBip3qj1iendOIyAwP2GKkKbQMNVy2r1xxDf0ssfWscoiC+Vw==
-  dependencies:
-    commander "^4.1.1"
-    ignore "^5.1.8"
-    p-map "^4.0.0"
 
 "@swc/core-darwin-arm64@1.11.18":
   version "1.11.18"
@@ -1602,14 +1572,6 @@ acorn@^8.4.1, acorn@^8.9.0:
   version "8.11.3"
   resolved "https://npm.dev-internal.org/acorn/-/acorn-8.11.3.tgz"
   integrity sha512-Y9rRfJG5jcKOE0CLisYbojUjIrIEE7AGMzA/Sm4BslANhbS+cDMpgBdcPT91oJ7OuJ9hYJBx59RjbhxVnrF8Xg==
-
-aggregate-error@^3.0.0:
-  version "3.1.0"
-  resolved "https://npm.dev-internal.org/aggregate-error/-/aggregate-error-3.1.0.tgz"
-  integrity sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==
-  dependencies:
-    clean-stack "^2.0.0"
-    indent-string "^4.0.0"
 
 ajv@^6.12.4:
   version "6.12.6"
@@ -2051,11 +2013,6 @@ cjs-module-lexer@^1.0.0:
   resolved "https://npm.dev-internal.org/cjs-module-lexer/-/cjs-module-lexer-1.4.1.tgz#707413784dbb3a72aa11c2f2b042a0bef4004170"
   integrity sha512-cuSVIHi9/9E/+821Qjdvngor+xpnlwnuwIyZOaLmHBVdXL+gP+I6QQB9VkO7RI77YIcTV+S1W9AreJ5eN63JBA==
 
-clean-stack@^2.0.0:
-  version "2.2.0"
-  resolved "https://npm.dev-internal.org/clean-stack/-/clean-stack-2.2.0.tgz"
-  integrity sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==
-
 clean-stack@^3.0.1:
   version "3.0.1"
   resolved "https://npm.dev-internal.org/clean-stack/-/clean-stack-3.0.1.tgz#155bf0b2221bf5f4fba89528d24c5953f17fe3a8"
@@ -2137,11 +2094,6 @@ commander@^13.1.0:
   version "13.1.0"
   resolved "https://npm.dev-internal.org/commander/-/commander-13.1.0.tgz#776167db68c78f38dcce1f9b8d7b8b9a488abf46"
   integrity sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==
-
-commander@^4.1.1:
-  version "4.1.1"
-  resolved "https://npm.dev-internal.org/commander/-/commander-4.1.1.tgz"
-  integrity sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==
 
 comment-json@^4.2.5:
   version "4.2.5"
@@ -2870,13 +2822,6 @@ fast-levenshtein@^2.0.6:
   resolved "https://npm.dev-internal.org/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz"
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
-fastq@^1.15.0:
-  version "1.18.0"
-  resolved "https://npm.dev-internal.org/fastq/-/fastq-1.18.0.tgz#d631d7e25faffea81887fe5ea8c9010e1b36fee0"
-  integrity sha512-QKHXPW0hD8g4UET03SdOdunzSouc9N4AuHdsX8XNcTsuz+yYFILVNIX4l9yHABMhiEI9Db0JTTIpu0wB+Y1QQw==
-  dependencies:
-    reusify "^1.0.4"
-
 fastq@^1.6.0:
   version "1.17.1"
   resolved "https://npm.dev-internal.org/fastq/-/fastq-1.17.1.tgz"
@@ -3264,7 +3209,7 @@ ieee754@^1.1.13, ieee754@^1.2.1:
   resolved "https://npm.dev-internal.org/ieee754/-/ieee754-1.2.1.tgz"
   integrity sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==
 
-ignore@^5.1.8, ignore@^5.2.0, ignore@^5.3.1:
+ignore@^5.2.0, ignore@^5.3.1:
   version "5.3.2"
   resolved "https://npm.dev-internal.org/ignore/-/ignore-5.3.2.tgz#3cd40e729f3643fd87cb04e50bf0eb722bc596f5"
   integrity sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==
@@ -4201,12 +4146,11 @@ kleur@^3.0.3:
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
 knip@^5.24.1:
-  version "5.47.0"
-  resolved "https://npm.dev-internal.org/knip/-/knip-5.47.0.tgz#76dc750fba6185839b5f99ac18b65ec29b54d0af"
-  integrity sha512-ikjijudvI81Iv49YJqgujJlGSXnCTFBTU9/NwHqW9wLA31IslEs+6npRL1TAdvT7Q+5mOOh6c8xrIwGd9sV+IQ==
+  version "5.50.5"
+  resolved "https://npm.dev-internal.org/knip/-/knip-5.50.5.tgz#cd4b6573eafaa63bdeff3cc8f203ed813107d84a"
+  integrity sha512-I3mfebuG5x8i/mJJA41xjnmHMbLw75ymbDxlS7HMP+4CjY+jXEDSJyP3A2xmI5JF5/o47Fr8D7Pq3BVT0/nQPw==
   dependencies:
-    "@nodelib/fs.walk" "3.0.1"
-    "@snyk/github-codeowners" "1.1.0"
+    "@nodelib/fs.walk" "^1.2.3"
     easy-table "1.2.0"
     enhanced-resolve "^5.18.1"
     fast-glob "^3.3.3"
@@ -4218,7 +4162,6 @@ knip@^5.24.1:
     pretty-ms "^9.0.0"
     smol-toml "^1.3.1"
     strip-json-comments "5.0.1"
-    summary "2.1.0"
     zod "^3.22.4"
     zod-validation-error "^3.0.3"
 
@@ -4601,13 +4544,6 @@ p-locate@^5.0.0:
   dependencies:
     p-limit "^3.0.2"
 
-p-map@^4.0.0:
-  version "4.0.0"
-  resolved "https://npm.dev-internal.org/p-map/-/p-map-4.0.0.tgz"
-  integrity sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==
-  dependencies:
-    aggregate-error "^3.0.0"
-
 p-try@^2.0.0:
   version "2.2.0"
   resolved "https://npm.dev-internal.org/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
@@ -4920,7 +4856,7 @@ run-async@^2.4.0:
   resolved "https://npm.dev-internal.org/run-async/-/run-async-2.4.1.tgz#8440eccf99ea3e70bd409d49aab88e10c189a455"
   integrity sha512-tvVnVv01b8c1RrA6Ep7JkStj85Guv/YrMcwqYQnwjsAS2cTmmPGBBjAjpCW7RrSodNSoE2/qg9O4bceNvUuDgQ==
 
-run-parallel@^1.1.9, run-parallel@^1.2.0:
+run-parallel@^1.1.9:
   version "1.2.0"
   resolved "https://npm.dev-internal.org/run-parallel/-/run-parallel-1.2.0.tgz"
   integrity sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==
@@ -5202,11 +5138,6 @@ strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://npm.dev-internal.org/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
-
-summary@2.1.0:
-  version "2.1.0"
-  resolved "https://npm.dev-internal.org/summary/-/summary-2.1.0.tgz"
-  integrity sha512-nMIjMrd5Z2nuB2RZCKJfFMjgS3fygbeyGk9PxPPaJR1RIcyN9yn4A63Isovzm3ZtQuEkLBVgMdPup8UeLH7aQw==
 
 supports-color@^7.1.0:
   version "7.2.0"
