@@ -50,6 +50,10 @@ Please include steps to reproduce the bug you have found in as much detail as po
 
 Please do not make the source code needed to reproduce the vulnerability publicly available.
 
+## Disclaimer
+
+Please notice this is not a bug bounty policy. When a bug bounty with the Tact compiler in its scope is available, we will update this document with the link to it.
+
 ## PGP Key to Use If Reporting via Email
 
 To encrypt your email, use the following PGP key:
