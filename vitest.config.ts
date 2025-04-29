@@ -16,7 +16,7 @@ export default defineConfig({
             reporter: ["text", "json", "html"],
             provider: "istanbul",
         },
-        setupFiles: ["./vitest.chdir.ts", "./vitest.setup.ts"],
+        setupFiles: ["./vitest.setup.ts"],
         testTimeout: 10_000,
         snapshotSerializers: ["@tact-lang/ton-jest/serializers"],
         logHeapUsage: true,
