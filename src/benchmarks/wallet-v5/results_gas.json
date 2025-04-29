@@ -92,7 +92,7 @@
     },
     {
       "label": "1.6.6 with inMsg()",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2850",
       "gas": {
         "externalTransfer": "5171",
         "addExtension": "5650",
@@ -108,6 +108,16 @@
         "addExtension": "5614",
         "internalTransfer": "5908",
         "extensionTransfer": "4698"
+      }
+    },
+    {
+      "label": "1.6.6 with return instead of throw",
+      "pr": "https://github.com/tact-lang/tact/pull/2875",
+      "gas": {
+        "externalTransfer": "5135",
+        "addExtension": "5798",
+        "internalTransfer": "5908",
+        "extensionTransfer": "4702"
       }
     }
   ]

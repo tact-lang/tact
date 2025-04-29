@@ -98,7 +98,7 @@ message(0xea06185d) NativeSwap {
 
 // Let's say `swapAmount` is `ton("0.1")`, which is 10000000 nanoToncoins
 fun swapToncoinForUSDT(swapAmount: Int) {
-    send(SendParameters{
+    send(SendParameters {
         // Address of the TON vault to send the message to
         to: address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_"),
         // Amount to swap plus a trade fee
@@ -151,7 +151,7 @@ message(0xe3a0d482) JettonSwapPayload {
 /// NOTE: To calculate and provide the Jetton wallet address for the target user,
 ///       make sure to check the links after this code snippet.
 fun swapJetton(targetJettonWalletAddress: Address) {
-    send(SendParameters{
+    send(SendParameters {
         to: targetJettonWalletAddress,
         value: ton("0.3"),
         body: JettonTransfer{
@@ -284,7 +284,7 @@ struct Asset {
     type: Int as uint4;
 
     workchain: Int as uint8 = 0; // Both these zeros will be removed during the .build() function. Only type will remain.
-    address: Int as uint256 = 0; 
+    address: Int as uint256 = 0;
 }
 
 const PoolTypeVolatile: Int = 0;
@@ -328,7 +328,7 @@ fun provideLiquidity(myJettonWalletAddress: Address) {
     }.build(); // Notice .build() instead of .toCell(),
                // since we want some custom serialization logic.
 
-    send(SendParameters{
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: JettonProvideLpGas,
         body: JettonTransfer{
@@ -354,7 +354,7 @@ fun provideLiquidity(myJettonWalletAddress: Address) {
     }.build(); // Notice .build() instead of .toCell(),
                // since we want some custom serialization logic.
 
-    send(SendParameters{
+    send(SendParameters {
         to: address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_"),
         value: tonAmount + TonProvideLpGas,
         body: nativeDepositBody,

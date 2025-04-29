@@ -25,7 +25,7 @@ contract Example {
 ```tact
 contract Example {
     receive() {
-        send(SendParameters{
+        send(SendParameters {
             bounce: true, // default
             to: sender(), // or another destination address
             value: ton("0.01"), // attached amount of Tons to send
@@ -42,7 +42,7 @@ contract Example {
 ```tact
 contract Example {
     receive() {
-        send(SendParameters{
+        send(SendParameters {
             // bounce = true by default
             to: sender(), // send the message back to the original sender
             value: 0,
@@ -60,7 +60,7 @@ contract Example {
 ```tact
 contract Example {
     receive() {
-        send(SendParameters{
+        send(SendParameters {
             // bounce = true by default
             to: sender(), // send the message back to the original sender
             value: 0,
@@ -76,7 +76,7 @@ contract Example {
 ```tact
 contract Example {
     receive() {
-        send(SendParameters{
+        send(SendParameters {
             // bounce = true by default
             to: sender(), // send the message back to the original sender
             value: 0,
@@ -100,7 +100,7 @@ contract Example {
         let longString = "..."; // Some string with more than 127 characters.
         comment.append(longString);
 
-        send(SendParameters{
+        send(SendParameters {
             // bounce = true by default
             to: sender(),
             value: 0,

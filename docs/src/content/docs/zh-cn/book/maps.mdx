@@ -388,7 +388,7 @@ contract Iteration {
         // Loop until the value of self.counter (over all the self.record entries)
         let i: Int = 0; // declare usual i for loop iterations
         while (i < self.counter) {
-           send(SendParameters{
+           send(SendParameters {
                 bounce: false,              // do not bounce back this message
                 to: self.record.get(i)!!,   // set the sender address, knowing that key i exists in the map
                 value: ton("0.0000001"),    // 100 nanoToncoins (nano-tons)

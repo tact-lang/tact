@@ -209,7 +209,7 @@ contract Example() {
 
 ### Prefer `inMsg()` to `Message.toSlice()`
 
-<Badge text="Available since Tact 1.7" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6.7" variant="tip" size="medium"/><p/>
 
 When working with an incoming message, prefer using the [`inMsg(){:tact}`](/ref/core-contextstate#inmsg) function over the [`Message.toSlice(){:tact}`](/ref/core-cells#messagetoslice) extension function, because the `inMsg(){:tact}` function provides direct access to the incoming message body [`Slice{:tact}`][p], while `msg.toSlice(){:tact}` performs redundant operations to recreate that `Slice{:tact}`.
 
@@ -240,7 +240,7 @@ When you receive an internal message, you can obtain the address of the contract
 If you only need the sender's address and no additional context on the incoming message that is contained in the `Context{:tact}` struct, then use the [`sender()`](/ref/core-contextstate#sender) function as it is less gas-consuming.
 
 ```tact /sender\\(\\)/
-message(MessageParameters{
+message(MessageParameters {
     to: sender(),
     value: ton("0.05"),
 });
@@ -306,8 +306,8 @@ Moreover, if all you want is to forward the remaining value back to the sender, 
 self.forward(sender(), null, false, initOf SomeContract());
 
 // could be replaced with this
-let initState: initOf SomeContract();
-send(SendParameters{
+let initState = initOf SomeContract();
+send(SendParameters {
     to: sender(),
     mode: SendRemainingValue | SendIgnoreErrors,
     bounce: false,
@@ -321,7 +321,7 @@ send(SendParameters{
 self.reply(null);
 
 // should be replaced with this
-message(MessageParameters{
+message(MessageParameters {
     body: null,
     to: sender(),
     mode: SendRemainingValue | SendIgnoreErrors,
@@ -341,7 +341,7 @@ cashback(sender());
 There are many [message-sending functions](/book/send#message-sending-functions), and the [`deploy(){:tact}`](/ref/core-send#deploy) function is optimized for cheaper on-chain deployments compared to the [`send(){:tact}`](/ref/core-send#send) function.
 
 ```tact
-deploy(DeployParameters{
+deploy(DeployParameters {
     init: initOf SomeContract(), // with initial code and data of SomeContract
                                  // and with an empty message body
     mode: SendIgnoreErrors,      // skip the message in case of errors
@@ -354,7 +354,7 @@ deploy(DeployParameters{
 There are many [message-sending functions](/book/send#message-sending-functions), and the [`message(){:tact}`](/ref/core-send#message) function is optimized for cheaper non-deployment regular messages compared to the [`send(){:tact}`](/ref/core-send#send) function.
 
 ```tact
-message(MessageParameters{
+message(MessageParameters {
     to: addrOfSomeInitializedContract,
     value: ton("1"), // sending 1 Toncoin (1_000_000_000 nanoToncoin),
                      // with an empty message body

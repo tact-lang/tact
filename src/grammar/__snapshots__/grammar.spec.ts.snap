@@ -37,7 +37,7 @@ exports[`should fail asm-getter.fail 1`] = `
 `;
 
 exports[`should fail augmented-assign-with-space.fail 1`] = `
-"<unknown>:7:14: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:7:14: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "map", "null", "set", "true", "~", capitalized identifier, digit, or identifier
   6 |     fun foo() {
 > 7 |         a << = 10;
                    ^
@@ -171,7 +171,7 @@ exports[`should fail contract-empty-traits-list-with-keyword.fail 1`] = `
 `;
 
 exports[`should fail contract-getter-parens-no-method-id.fail 1`] = `
-"<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "map", "null", "set", "true", "~", capitalized identifier, digit, or identifier
   1 | contract Test {
 > 2 |     get() fun test(): Int {
               ^
@@ -224,7 +224,7 @@ exports[`should fail empty-bounced-receiver.fail 1`] = `
 `;
 
 exports[`should fail expr-fun-call-trailing-comma-no-args.fail 1`] = `
-"<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "map", "null", "set", "true", "~", capitalized identifier, digit, or identifier
   5 | fun b(): Int {
 > 6 |     return a(,);
                    ^
@@ -233,7 +233,7 @@ exports[`should fail expr-fun-call-trailing-comma-no-args.fail 1`] = `
 `;
 
 exports[`should fail expr-method-call-trailing-comma-no-args.fail 1`] = `
-"<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "map", "null", "set", "true", "~", capitalized identifier, digit, or identifier
   1 | fun another() {
 > 2 |     return 42.toString(,);
                              ^
@@ -519,7 +519,7 @@ exports[`should fail ident-struct-cannot-start-with-__gen.fail 1`] = `
 `;
 
 exports[`should fail incomplete-return.fail 1`] = `
-"<unknown>:3:1: Expected "!", "(", "+", "-", "0", ";", "\\"", "codeOf", "false", "initOf", "null", "true", "}", "~", capitalized identifier, digit, or identifier
+"<unknown>:3:1: Expected "!", "(", "+", "-", "0", ";", "\\"", "codeOf", "false", "initOf", "map", "null", "set", "true", "}", "~", capitalized identifier, digit, or identifier
   2 |     return
 > 3 | 
       ^

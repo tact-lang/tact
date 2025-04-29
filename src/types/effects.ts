@@ -212,6 +212,7 @@ function expressionEffects(
         case "address":
         case "cell":
         case "struct_value":
+        case "map_value":
         case "code_of": {
             return new Set<Effect>();
         }
@@ -268,6 +269,17 @@ function expressionEffects(
                     ctx,
                 ),
             );
+        }
+        case "map_literal": {
+            return unionAll(
+                expr.fields.flatMap(({ key, value }) => [
+                    expressionEffects(key, processedContractMethods, ctx),
+                    expressionEffects(value, processedContractMethods, ctx),
+                ]),
+            );
+        }
+        case "set_literal": {
+            throwInternalCompilerError("Set literals are not supported");
         }
     }
 }

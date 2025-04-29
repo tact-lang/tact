@@ -7,18 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.7] - 2025-04-24
+
 ### Language features
 
+- Fixed incorrect error message for bounced messages: PR [#2932](https://github.com/tact-lang/tact/pull/2932)
+- Added compile-time map literals: PR [#2881](https://github.com/tact-lang/tact/pull/2881)
+- Added the `inMsg()` built-in function as an optimized version of `msg.toSlice()`: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
 - Compiler now generates more efficient code for structure fields serialization: PR [#2836](https://github.com/tact-lang/tact/pull/2836)
 - Compiler now generates more efficient code for `Address?` fields deserialization: PR [#2834](https://github.com/tact-lang/tact/pull/2834)
-- Optimized `self.notify`, `self.reply`, and `self.forward` in `BaseTrait` by using message directly where possible and avoiding unnecessary use of alias: PR [#2515](https://github.com/tact-lang/tact/pull/2515)
+- Optimized `self.notify`, `self.reply`, and `self.forward` in `BaseTrait` by using the `message` function directly where possible and avoiding unnecessary use of alias: PR [#2515](https://github.com/tact-lang/tact/pull/2515)
 - Compiler now generates more efficient code for `if` statements: PR [#2844](https://github.com/tact-lang/tact/pull/2844)
+- Any message now has an `opcode()` method to obtain its opcode: PR [#2886](https://github.com/tact-lang/tact/pull/2886)
 - Contract `init` function now can have parameters with `as` annotations: PR [#2890](https://github.com/tact-lang/tact/pull/2890)
 - [fix] Compiler now correctly handles get functions with an empty message parameter: PR [#2892](https://github.com/tact-lang/tact/pull/2892)
 
 ### Standard Library
 
-- Added `inMsg()` function as an optimized version of `msg.toSlice()`: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
+- Improved gas consumption of the `cashback` function: PR [#2882](https://github.com/tact-lang/tact/pull/2882)
+- Improved gas efficiency for the `BaseTrait` functions: PR [#2913](https://github.com/tact-lang/tact/pull/2913)
 
 ### Tooling
 
@@ -36,6 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Petr Makhnev](https://github.com/i582)
 - [Novus Nota](https://github.com/novusnota)
 - [skywardboundd](https://github.com/skywardboundd)
+- [verytactical](https://github.com/verytactical)
+- [Anton Trunov](https://github.com/anton-trunov)
 
 ## [1.6.6] - 2025-04-16
 

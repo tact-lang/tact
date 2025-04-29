@@ -41,6 +41,15 @@ import {
 } from "@/ast/ast-helpers";
 import { enabledDebug, enabledNullChecks } from "@/config/features";
 import type { CompilerContext } from "@/context/context";
+import {
+    getKeyParser,
+    getValueParser,
+    mapSerializers,
+} from "@/bindings/typescript/serializers";
+import { getMapAbi } from "@/types/resolveABITypeRef";
+import type { SrcInfo } from "@/grammar";
+import { Cell } from "@ton/core";
+import { makeVisitor } from "@/utils/tricks";
 
 function isNull(wCtx: WriterContext, expr: Ast.Expression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -186,8 +195,14 @@ export function writeValue(
             }
             return value;
         }
-        default:
-            throwInternalCompilerError("Unrecognized ast literal kind");
+        case "map_value": {
+            if (typeof val.bocHex === "undefined") {
+                return "null()";
+            }
+            const res = writeCell(Cell.fromHex(val.bocHex), wCtx);
+            wCtx.used(res);
+            return `${res}()`;
+        }
     }
 }
 
@@ -195,36 +210,9 @@ export function writePathExpression(path: Ast.Id[]): string {
     return [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`);
 }
 
-export function writeExpression(
-    f: Ast.Expression,
-    wCtx: WriterContext,
-): string {
-    // literals and constant expressions are covered here
-
-    // FIXME: Once optimization step is added, remove this try and replace it with this
-    // conditional:
-    // if (isLiteral(f)) {
-    //    return writeValue(f, wCtx);
-    // }
-    try {
-        const util = getAstUtil(getAstFactory());
-        // Let us put a limit of 2 ^ 12 = 4096 iterations on loops to increase compiler responsiveness.
-        // If a loop takes more than such number of iterations, the interpreter will fail evaluation.
-        // I think maxLoopIterations should be a command line option in case a user wants to wait more
-        // during evaluation.
-        const value = evalConstantExpression(f, wCtx.ctx, util, {
-            maxLoopIterations: 2n ** 12n,
-        });
-        return writeValue(value, false, wCtx);
-    } catch (error) {
-        if (!(error instanceof TactConstEvalError) || error.fatal) throw error;
-    }
-
-    //
-    // ID Reference
-    //
-
-    if (f.kind === "id") {
+const writeIdExpr =
+    (f: Ast.Id) =>
+    (wCtx: WriterContext): string => {
         const t = getExpType(wCtx.ctx, f);
 
         // Handle packed type
@@ -259,10 +247,14 @@ export function writeExpression(
         }
 
         return funcIdOf(f.text);
-    }
+    };
 
-    // NOTE: We always wrap expressions in parentheses to avoid operator precedence issues
-    if (f.kind === "op_binary") {
+/**
+ * NOTE: We always wrap expressions in parentheses to avoid operator precedence issues
+ */
+const writeBinaryExpr =
+    (f: Ast.OpBinary) =>
+    (wCtx: WriterContext): string => {
         // Special case for non-integer types and nullable
         if (f.op === "==" || f.op === "!=") {
             if (isNull(wCtx, f.left) && isNull(wCtx, f.right)) {
@@ -424,14 +416,15 @@ export function writeExpression(
             writeExpression(f.right, wCtx) +
             ")"
         );
-    }
+    };
 
-    //
-    // Unary operations: !, -, +, !!
-    // NOTE: We always wrap expressions in parentheses to avoid operator precedence issues
-    //
-
-    if (f.kind === "op_unary") {
+/**
+ * Unary operations: !, -, +, !!
+ * NOTE: We always wrap expressions in parentheses to avoid operator precedence issues
+ */
+const writeUnaryExpr =
+    (f: Ast.OpUnary) =>
+    (wCtx: WriterContext): string => {
         // NOTE: Logical not is written as a bitwise not
         switch (f.op) {
             case "!": {
@@ -469,14 +462,15 @@ export function writeExpression(
                 }
             }
         }
-    }
+    };
 
-    //
-    // Field Access
-    // NOTE: this branch resolves "a.b", where "a" is an expression and "b" is a field name
-    //
-
-    if (f.kind === "field_access") {
+/**
+ * Field Access
+ * NOTE: this branch resolves "a.b", where "a" is an expression and "b" is a field name
+ */
+const writeFieldExpr =
+    (f: Ast.FieldAccess) =>
+    (wCtx: WriterContext): string => {
         // Optimize Context().sender to sender()
         // This is a special case to improve gas efficiency
         if (
@@ -547,13 +541,11 @@ export function writeExpression(
                 wCtx,
             );
         }
-    }
+    };
 
-    //
-    // Static Function Call
-    //
-
-    if (f.kind === "static_call") {
+const writeStaticCall =
+    (f: Ast.StaticCall) =>
+    (wCtx: WriterContext): string => {
         // Check global functions
         if (GlobalFunctions.has(idText(f.function))) {
             return GlobalFunctions.get(idText(f.function))!.generate(
@@ -584,13 +576,11 @@ export function writeExpression(
                 .join(", ") +
             ")"
         );
-    }
+    };
 
-    //
-    // Struct Constructor
-    //
-
-    if (f.kind === "struct_instance") {
+const writeStructInstance =
+    (f: Ast.StructInstance) =>
+    (wCtx: WriterContext): string => {
         const src = getType(wCtx.ctx, f.type);
 
         // Write a constructor
@@ -612,13 +602,11 @@ export function writeExpression(
             wCtx,
         );
         return `${id}(${expressions.join(", ")})`;
-    }
+    };
 
-    //
-    // Object-based function call
-    //
-
-    if (f.kind === "method_call") {
+const writeMethodCall =
+    (f: Ast.MethodCall) =>
+    (wCtx: WriterContext): string => {
         // Resolve source type
         const selfTyRef = getExpType(wCtx.ctx, f.self);
 
@@ -759,38 +747,32 @@ export function writeExpression(
             `Cannot call function of non - direct type: "${printTypeRef(selfTyRef)}"`,
             f.loc,
         );
-    }
+    };
 
-    //
-    // Init of
-    //
-
-    if (f.kind === "init_of") {
+const writeInitOf =
+    (f: Ast.InitOf) =>
+    (wCtx: WriterContext): string => {
         const type = getType(wCtx.ctx, f.contract);
         const initArgs = f.args.map((a, i) =>
             writeCastedExpression(a, type.init!.params[i]!.type, wCtx),
         );
         return `${ops.contractInitChild(idText(f.contract), wCtx)}(${initArgs.join(", ")})`;
-    }
+    };
 
-    //
-    // Code of
-    //
-
-    if (f.kind === "code_of") {
+const writeCodeOf =
+    (f: Ast.CodeOf) =>
+    (wCtx: WriterContext): string => {
         // In case of using `codeOf T` in contract `T`, we simply use MYCODE.
         if (wCtx.name === f.contract.text) {
             return `my_code()`;
         }
 
         return `${ops.contractCodeChild(idText(f.contract), wCtx)}()`;
-    }
+    };
 
-    //
-    // Ternary operator
-    //
-
-    if (f.kind === "conditional") {
+const writeConditional =
+    (f: Ast.Conditional) =>
+    (wCtx: WriterContext): string => {
         const thenType = getExpType(wCtx.ctx, f.thenBranch);
         const elseType = getExpType(wCtx.ctx, f.elseBranch);
 
@@ -829,13 +811,144 @@ export function writeExpression(
 
         // Default case
         return `(${writeExpressionInCondition(f.condition, wCtx)} ? ${writeExpression(f.thenBranch, wCtx)} : ${writeExpression(f.elseBranch, wCtx)})`;
+    };
+
+const cannotHappen =
+    (_f: Ast.Expression) =>
+    (_wCtx: WriterContext): string => {
+        return throwInternalCompilerError(
+            "Const evaluator must have handled these cases before",
+        );
+    };
+const unsupported =
+    (_f: Ast.Expression) =>
+    (_wCtx: WriterContext): string => {
+        return throwInternalCompilerError("Set literals are not supported");
+    };
+
+const writeMapLiteral =
+    (node: Ast.MapLiteral) =>
+    (_ctx: WriterContext): string => {
+        throwCompilationError(
+            "Only constant map literals are supported",
+            node.loc,
+        );
+        // NB! Intentionally left here for when we can distinguish which Ast.Id are variables
+        // const { fields, loc } = node;
+
+        // const fnName = freshIdentifier(`map_literal_`);
+        // const varName = freshIdentifier(`$fresh`);
+
+        // const mapType = getExpType(ctx.ctx, node);
+        // if (mapType.kind !== 'map') {
+        //     throwInternalCompilerError("Map literal doesn't have map type");
+        // }
+
+        // const used: Set<string> = new Set();
+        // const params: string[] = [];
+        // const args: string[] = [];
+        // traverseAndCheck(node, (child) => {
+        //     if (child.kind === 'static_call' || child.kind === 'struct_instance') {
+        //         return false;
+        //     }
+        //     if (child.kind !== 'id') {
+        //         return true;
+        //     }
+        //     if (used.has(child.text)) {
+        //         return false;
+        //     }
+        //     used.add(child.text);
+        //     const type = resolveFuncType(
+        //         getExpType(ctx.ctx, child),
+        //         ctx,
+        //     );
+        //     const name = funcIdOf(child.text);
+        //     params.push(`${type} ${name}`);
+        //     args.push(name);
+        //     return false;
+        // });
+
+        // ctx.fun(fnName, () => {
+        //     ctx.signature(`cell ${fnName}(${params.join(', ')})`);
+        //     ctx.flag("impure");
+        //     ctx.flag("inline");
+        //     ctx.body(() => {
+        //         ctx.append(`cell ${varName} = null();`);
+        //         for (const field of fields) {
+        //             const callCode = generateSet(
+        //                 ctx,
+        //                 loc,
+        //                 mapType,
+        //                 getExpType(ctx.ctx, field.value),
+        //                 [
+        //                     varName,
+        //                     writeExpression(field.key, ctx),
+        //                     writeExpression(field.value, ctx),
+        //                 ],
+        //             );
+        //             ctx.append(`${callCode};`);
+        //         }
+        //         ctx.append(`return ${varName};`);
+        //     });
+        // });
+
+        // ctx.used(fnName);
+
+        // return `${fnName}(${args.join(', ')})`;
+    };
+
+const writeExpressionAux: (
+    f: Ast.Expression,
+) => (wCtx: WriterContext) => string = makeVisitor<Ast.Expression>()({
+    id: writeIdExpr,
+    op_binary: writeBinaryExpr,
+    op_unary: writeUnaryExpr,
+    field_access: writeFieldExpr,
+    static_call: writeStaticCall,
+    struct_instance: writeStructInstance,
+    method_call: writeMethodCall,
+    init_of: writeInitOf,
+    code_of: writeCodeOf,
+    conditional: writeConditional,
+    map_literal: writeMapLiteral,
+    string: cannotHappen,
+    number: cannotHappen,
+    boolean: cannotHappen,
+    null: cannotHappen,
+    address: cannotHappen,
+    cell: cannotHappen,
+    slice: cannotHappen,
+    map_value: cannotHappen,
+    struct_value: cannotHappen,
+    set_literal: unsupported,
+});
+
+export function writeExpression(
+    f: Ast.Expression,
+    wCtx: WriterContext,
+): string {
+    // literals and constant expressions are covered here
+
+    // FIXME: Once optimization step is added, remove this try and replace it with this
+    // conditional:
+    // if (isLiteral(f)) {
+    //    return writeValue(f, wCtx);
+    // }
+    try {
+        const util = getAstUtil(getAstFactory());
+        // Let us put a limit of 2 ^ 12 = 4096 iterations on loops to increase compiler responsiveness.
+        // If a loop takes more than such number of iterations, the interpreter will fail evaluation.
+        // I think maxLoopIterations should be a command line option in case a user wants to wait more
+        // during evaluation.
+        const value = evalConstantExpression(f, wCtx.ctx, util, {
+            maxLoopIterations: 2n ** 12n,
+        });
+        return writeValue(value, false, wCtx);
+    } catch (error) {
+        if (!(error instanceof TactConstEvalError) || error.fatal) throw error;
     }
 
-    //
-    // Unreachable
-    //
-
-    throw Error("Unknown expression");
+    return writeExpressionAux(f)(wCtx);
 }
 
 // Evaluate the `expr` expression and return the resulting literal,
@@ -894,7 +1007,10 @@ export function writeExpressionInCondition(
 }
 
 export function writeTypescriptValue(
+    ctx: CompilerContext,
     val: Ast.Literal | undefined,
+    type: TypeRef,
+    loc: SrcInfo,
 ): string | undefined {
     if (typeof val === "undefined") return undefined;
 
@@ -914,16 +1030,46 @@ export function writeTypescriptValue(
         case "null":
             return "null";
         case "struct_value": {
+            if (type.kind !== "ref") {
+                throwInternalCompilerError("Map value must have map type");
+            }
             const typeName = val.type.text;
+            const structType = getType(ctx, type.name);
             const args = val.args
-                .map(
-                    (it) =>
+                .map((it) => {
+                    const field = structType.fields.find(
+                        (field) => field.name === it.field.text,
+                    );
+                    if (typeof field === "undefined") {
+                        throwInternalCompilerError(
+                            `Field "${it.field.text}" not found in type`,
+                        );
+                    }
+                    return (
                         it.field.text +
                         ": " +
-                        writeTypescriptValue(it.initializer),
-                )
+                        writeTypescriptValue(
+                            ctx,
+                            it.initializer,
+                            field.type,
+                            field.loc,
+                        )
+                    );
+                })
                 .join(", ");
             return `{ $$type: "${typeName}" as const, ${args} }`;
+        }
+        case "map_value": {
+            if (type.kind !== "map") {
+                throwInternalCompilerError("Map value must have map type");
+            }
+            const res = mapSerializers.abiMatcher(getMapAbi(type, loc));
+            if (res === null) {
+                throwInternalCompilerError("Wrong map ABI");
+            }
+            const keyType = getKeyParser(res.key);
+            const valueType = getValueParser(res.value);
+            return `Dictionary.loadDirect(${keyType}, ${valueType}, Cell.fromHex("${val.bocHex}").beginParse())`;
         }
     }
 }

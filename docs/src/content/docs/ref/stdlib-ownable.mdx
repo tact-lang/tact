@@ -91,7 +91,7 @@ trait OwnableTransferable with Ownable {
         self.owner = msg.newOwner;
 
         // Reply result
-        self.reply(ChangeOwnerOk{ queryId: msg.queryId, newOwner: msg.newOwner }.toCell());
+        self.reply(ChangeOwnerOk { queryId: msg.queryId, newOwner: msg.newOwner }.toCell());
     }
 }
 ```

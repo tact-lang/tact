@@ -204,6 +204,8 @@ export namespace $ast {
     readonly $: "TypeId";
     readonly name: string;
   }>;
+  export type generic<T> = commaList<T> | undefined;
+  export type typeArgs = generic<$type>;
   export type StatementLet = $.Located<{
     readonly $: "StatementLet";
     readonly name: Id;
@@ -348,6 +350,16 @@ export namespace $ast {
     readonly $: "Parens";
     readonly child: parens;
   }>;
+  export type MapLiteral = $.Located<{
+    readonly $: "MapLiteral";
+    readonly typeArgs: typeArgs;
+    readonly fields: commaList<mapField> | undefined;
+  }>;
+  export type SetLiteral = $.Located<{
+    readonly $: "SetLiteral";
+    readonly typeArgs: typeArgs;
+    readonly fields: commaList<expression> | undefined;
+  }>;
   export type StructInstance = $.Located<{
     readonly $: "StructInstance";
     readonly type: TypeId;
@@ -373,12 +385,16 @@ export namespace $ast {
   export type Null = $.Located<{
     readonly $: "Null";
   }>;
-  export type primary = Parens | StructInstance | IntegerLiteral | BoolLiteral | InitOf | CodeOf | Null | StringLiteral | Id;
+  export type primary = Parens | MapLiteral | SetLiteral | StructInstance | IntegerLiteral | BoolLiteral | InitOf | CodeOf | Null | StringLiteral | Id;
   export type parens = expression;
   export type StructInstanceFields = $.Located<{
     readonly $: "StructInstanceFields";
     readonly fields: commaList<StructFieldInitializer> | undefined;
   }>;
+  export type mapField = {
+    readonly key: expression;
+    readonly value: expression;
+  };
   export type StructFieldInitializer = $.Located<{
     readonly $: "StructFieldInitializer";
     readonly name: Id;
@@ -472,6 +488,8 @@ export const typePrimary: $.Parser<$ast.typePrimary> = $.alt(TypeGeneric, TypeRe
 export const MapKeyword: $.Parser<$ast.MapKeyword> = $.loc($.field($.pure("MapKeyword"), "$", $.right(keyword($.str("map")), $.eps)));
 export const Bounced: $.Parser<$ast.Bounced> = $.loc($.field($.pure("Bounced"), "$", $.right($.str("bounced"), $.eps)));
 export const TypeId: $.Parser<$ast.TypeId> = $.named("capitalized identifier", $.loc($.field($.pure("TypeId"), "$", $.field($.lex($.stry($.right($.regex<string>("A-Z", [$.ExpRange("A", "Z")]), $.right($.star($.regex<string | string | string | "_">("a-zA-Z0-9_", [$.ExpRange("a", "z"), $.ExpRange("A", "Z"), $.ExpRange("0", "9"), $.ExpString("_")])), $.eps)))), "name", $.eps))));
+export const generic = <T,>(T: $.Parser<T>): $.Parser<$ast.generic<T>> => $.right($.str("<"), $.left($.opt(commaList($.lazy(() => T))), $.str(">")));
+export const typeArgs: $.Parser<$ast.typeArgs> = generic($type);
 export const StatementLet: $.Parser<$ast.StatementLet> = $.loc($.field($.pure("StatementLet"), "$", $.right(keyword($.str("let")), $.field(Id, "name", $.field($.opt(ascription), "type", $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps))))))));
 export const StatementDestruct: $.Parser<$ast.StatementDestruct> = $.loc($.field($.pure("StatementDestruct"), "$", $.right(keyword($.str("let")), $.field(TypeId, "type", $.right($.str("{"), $.field(inter($.lazy(() => destructItem), $.str(",")), "fields", $.field($.lazy(() => optionalRest), "rest", $.right($.str("}"), $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps)))))))))));
 export const StatementBlock: $.Parser<$ast.StatementBlock> = $.loc($.field($.pure("StatementBlock"), "$", $.field($.lazy(() => statements), "body", $.eps)));
@@ -515,15 +533,18 @@ export const SuffixCall: $.Parser<$ast.SuffixCall> = $.loc($.field($.pure("Suffi
 export const SuffixFieldAccess: $.Parser<$ast.SuffixFieldAccess> = $.loc($.field($.pure("SuffixFieldAccess"), "$", $.right($.str("."), $.field(Id, "name", $.eps))));
 export const suffix: $.Parser<$ast.suffix> = $.alt(SuffixUnboxNotNull, $.alt(SuffixCall, SuffixFieldAccess));
 export const Parens: $.Parser<$ast.Parens> = $.loc($.field($.pure("Parens"), "$", $.field($.lazy(() => parens), "child", $.eps)));
+export const MapLiteral: $.Parser<$ast.MapLiteral> = $.loc($.field($.pure("MapLiteral"), "$", $.right(keyword($.str("map")), $.field(typeArgs, "typeArgs", $.right($.str("{"), $.field($.opt(commaList($.lazy(() => mapField))), "fields", $.right($.str("}"), $.eps)))))));
+export const SetLiteral: $.Parser<$ast.SetLiteral> = $.loc($.field($.pure("SetLiteral"), "$", $.right($.str("set"), $.field(typeArgs, "typeArgs", $.right($.str("{"), $.field($.opt(commaList(expression)), "fields", $.right($.str("}"), $.eps)))))));
 export const StructInstance: $.Parser<$ast.StructInstance> = $.loc($.field($.pure("StructInstance"), "$", $.field(TypeId, "type", $.field($.lazy(() => StructInstanceFields), "body", $.eps))));
 export const IntegerLiteral: $.Parser<$ast.IntegerLiteral> = $.loc($.field($.pure("IntegerLiteral"), "$", $.field($.alt($.lazy(() => IntegerLiteralHex), $.alt($.lazy(() => IntegerLiteralBin), $.alt($.lazy(() => IntegerLiteralOct), IntegerLiteralDec))), "value", $.eps)));
 export const BoolLiteral: $.Parser<$ast.BoolLiteral> = $.loc($.field($.pure("BoolLiteral"), "$", $.field($.alt($.str("true"), $.str("false")), "value", $.right($.lookNeg($.lazy(() => idPart)), $.eps))));
 export const InitOf: $.Parser<$ast.InitOf> = $.loc($.field($.pure("InitOf"), "$", $.right(keyword($.str("initOf")), $.field(Id, "name", $.field($.lazy(() => ParameterList(expression)), "params", $.eps)))));
 export const CodeOf: $.Parser<$ast.CodeOf> = $.loc($.field($.pure("CodeOf"), "$", $.right($.str("codeOf"), $.field(Id, "name", $.eps))));
 export const Null: $.Parser<$ast.Null> = $.loc($.field($.pure("Null"), "$", $.right(keyword($.str("null")), $.eps)));
-export const primary: $.Parser<$ast.primary> = $.alt(Parens, $.alt(StructInstance, $.alt(IntegerLiteral, $.alt(BoolLiteral, $.alt(InitOf, $.alt(CodeOf, $.alt(Null, $.alt(StringLiteral, Id))))))));
+export const primary: $.Parser<$ast.primary> = $.alt(Parens, $.alt(MapLiteral, $.alt(SetLiteral, $.alt(StructInstance, $.alt(IntegerLiteral, $.alt(BoolLiteral, $.alt(InitOf, $.alt(CodeOf, $.alt(Null, $.alt(StringLiteral, Id))))))))));
 export const parens: $.Parser<$ast.parens> = $.right($.str("("), $.left(expression, $.str(")")));
 export const StructInstanceFields: $.Parser<$ast.StructInstanceFields> = $.loc($.field($.pure("StructInstanceFields"), "$", $.right($.str("{"), $.field($.opt(commaList($.lazy(() => StructFieldInitializer))), "fields", $.right($.str("}"), $.eps)))));
+export const mapField: $.Parser<$ast.mapField> = $.field(expression, "key", $.right($.str(":"), $.field(expression, "value", $.eps)));
 export const StructFieldInitializer: $.Parser<$ast.StructFieldInitializer> = $.loc($.field($.pure("StructFieldInitializer"), "$", $.field(Id, "name", $.field($.opt($.right($.str(":"), expression)), "init", $.eps))));
 export const ParameterList = <T,>(T: $.Parser<T>): $.Parser<$ast.ParameterList<T>> => $.loc($.field($.pure("ParameterList"), "$", $.right($.str("("), $.field($.opt(commaList($.lazy(() => T))), "values", $.right($.str(")"), $.eps)))));
 export const IntegerLiteralHex: $.Parser<$ast.IntegerLiteralHex> = $.loc($.field($.pure("IntegerLiteralHex"), "$", $.field($.lex($.right($.str("0"), $.right($.regex<"x" | "X">("xX", [$.ExpString("x"), $.ExpString("X")]), $.lazy(() => underscored($.lazy(() => hexDigit)))))), "digits", $.eps)));
