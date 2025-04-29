@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
-- Enabled format checking across the Cookbook: PR [#TBD](https://github.com/tact-lang/tact/pull/TBD)
+- Enabled format checking across the Cookbook: PR [#2980](https://github.com/tact-lang/tact/pull/2980)
 
 ### Release contributors
 
