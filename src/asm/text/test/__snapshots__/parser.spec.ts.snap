@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`assembly-parser should give an error for malformed assembly 1`] = `"ParseError: Expected 1 argument at test.asm:1"`;
+
+exports[`assembly-parser should not parse assembly with error 1`] = `"ParseError: Expected "-", "0", "[", "\\"", "boc{", "b{", "c", "embed", "exotic", "ref", "s", "x{", "{", digit, or identifier at test.asm:1"`;
+
+exports[`assembly-parser should parse simple assembly 1`] = `
+"PUSHINT 10
+PUSHINT 5
+ADD
+"
+`;

@@ -1,0 +1,58 @@
+vmLine =
+      VmLoc
+    / VmStack
+    / VmExecute
+    / VmLimitChanged
+    / VmGasRemaining
+    / VmException
+    / VmExceptionHandler
+    / VmFinalC5
+    / VmUnknown;
+
+VmStack            = "stack: " stack:$[^\n]+;
+VmLoc              = "code cell hash:" hash:hex "offset:" offset:number;
+VmExecute          = "execute " instr:$[^\n]+;
+VmLimitChanged     = "changing gas limit to " limit:number;
+VmGasRemaining     = "gas remaining: " gas:number;
+VmException        = "handling exception code " errno:number ": " message:$[^\n]*;
+VmExceptionHandler = "default exception handler, terminating vm with exit code" errno:number;
+VmFinalC5          = "final c5:" value:Cell;
+VmUnknown          = !"stack" text:$[^\n]+ "\n";
+
+VmParsedStack = "[" values:VmStackValue* "]";
+
+VmStackValue = value:(
+      Null
+    / Integer
+    / Tuple
+    / TupleParen
+    / Cell
+    / Continuation
+    / Builder
+    / CellSlice
+    / Unknown
+);
+
+Null         = "()" / "(null)";
+Integer      = value:number;
+Tuple        = "[" elements:VmStackValue* "]";
+TupleParen   = "(" elements:VmStackValue* ")";
+Cell         = "C{" value:hex "}";
+Continuation = "Cont{" value:$#([A-Za-z_0-9]*) "}";
+Builder      = "BC{" value:hex "}";
+Unknown      = "???";
+
+CellSlice     = "CS{" body:(CellSliceBody / CellSliceShortBody) "}";
+CellSliceBody = "Cell{" value:hex "}" bits:CellSliceBits ";" refs:CellSliceRefs;
+CellSliceBits = "bits:" start:number ".." end:number;
+CellSliceRefs = "refs:" start:number ".." end:number;
+
+CellSliceShortBody = value:hex;
+
+number   = op:"-"? value:#$(digit+);
+digit    = [0-9];
+
+hexDigit "hexadecimal digit" = [0-9a-fA-F];
+hex      = $#(value:hexDigit*);
+
+space "space" = [ \t\r\n];

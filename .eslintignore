@@ -15,3 +15,4 @@ format.build.ts
 bin/*
 **/.testing/
 src/fmt/cst/cst-parser.ts
+src/asm/dict
