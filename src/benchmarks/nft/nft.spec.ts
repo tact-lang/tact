@@ -5,7 +5,6 @@ import {
     beginCell,
     toNano,
     contractAddress,
-    SendMode,
     Dictionary,
 } from "@ton/core";
 
@@ -18,6 +17,8 @@ import {
     generateCodeSizeResults,
     getUsedGas,
     printBenchmarkTable,
+    type BenchmarkResult,
+    type CodeSizeResult,
 } from "@/benchmarks/utils/gas";
 import { join, resolve } from "path";
 import { readFileSync } from "fs";
@@ -30,7 +31,6 @@ import {
 } from "@/benchmarks/contracts/output/nft-collection_NFTCollection";
 import type {
     DeployNFT,
-    GetRoyaltyParams,
     GetStaticData,
     BatchDeploy,
     RoyaltyParams,
@@ -49,7 +49,7 @@ type dictDeployNFT = {
     amount: bigint;
     initNFTBody: InitNFTBody;
 };
-// for correct work with dictionary
+
 const dictDeployNFTItem = {
     serialize: (src: dictDeployNFT, builder: Builder) => {
         builder
@@ -82,93 +82,27 @@ const loadFunCNFTBoc = () => {
     return { bocCollection, bocItem };
 };
 
-const deployFuncNFTCollection = async (
-    blockchain: Blockchain,
-    via: SandboxContract<TreasuryContract>,
-) => {
-    const nftData = loadFunCNFTBoc();
-    const collectionCode = Cell.fromBoc(nftData.bocCollection)[0]!;
-    const itemCode = Cell.fromBoc(nftData.bocItem)[0]!;
-
-    const royaltyDataCell = beginCell()
-        .storeUint(1, 16) // nominator
-        .storeUint(100, 16) // dominator
-        .storeAddress(via.address) // owner
-        .endCell();
-
-    const initData = beginCell()
-        .storeAddress(via.address) // owner
-        .storeUint(0, 64) // nextItemIndex
-        .storeRef(beginCell().endCell()) // content
-        .storeRef(itemCode) // nftItemCode
-        .storeRef(royaltyDataCell)
-        .endCell();
-
-    const init = { code: collectionCode, data: initData };
-
-    const collectionAddress = contractAddress(0, init);
-    const collectionNFTScope: SandboxContract<NFTCollection> =
-        blockchain.openContract(
-            await NFTCollection.fromAddress(collectionAddress),
-        );
-
-    return {
-        collectionNFTScope,
-        result: await via.send({
-            to: collectionAddress,
-            value: toNano("0.1"),
-            init,
-            body: beginCell().endCell(),
-            sendMode: SendMode.PAY_GAS_SEPARATELY,
-        }),
-    };
-};
-
-const deployFuncNFTItem = async (
-    blockchain: Blockchain,
-    via: SandboxContract<TreasuryContract>,
-) => {
-    const nftData = loadFunCNFTBoc();
-    const itemCode = Cell.fromBoc(nftData.bocItem)[0]!;
-
-    const initData = beginCell()
-        .storeUint(0, 64) // itemIndex
-        .storeAddress(via.address) // collectionAddress
-        .endCell();
-
-    const init = { code: itemCode, data: initData };
-
-    const itemAddress = contractAddress(0, init);
-    const itemNFTScope: SandboxContract<NFTItem> = blockchain.openContract(
-        await NFTItem.fromAddress(itemAddress),
-    );
-
-    return {
-        itemNFTScope,
-        result: await via.send({
-            to: itemAddress,
-            value: toNano("0.1"),
-            init,
-            body: beginCell()
-                .storeAddress(via.address) // owner
-                .storeRef(beginCell().endCell()) // content
-                .endCell(),
-            sendMode: SendMode.PAY_GAS_SEPARATELY,
-        }),
-    };
-};
-
-describe("itemNFT", () => {
+function testNFT(
+    benchmarkResults: BenchmarkResult,
+    codeSizeResults: CodeSizeResult,
+    fromInitCollection: (
+        owner: Address,
+        index: bigint,
+        content: Cell,
+        royaltyParams: RoyaltyParams,
+    ) => Promise<NFTCollection>,
+    fromInitItem: (
+        owner: Address | null,
+        content: Cell | null,
+        collectionAddress: Address,
+        itemIndex: bigint,
+    ) => Promise<NFTItem>,
+) {
     let blockchain: Blockchain;
-
     let owner: SandboxContract<TreasuryContract>;
     let notOwner: SandboxContract<TreasuryContract>;
-
     let itemNFT: SandboxContract<NFTItem>;
-    let funcItemNFT: SandboxContract<NFTItem>;
-
     let collectionNFT: SandboxContract<NFTCollection>;
-    let funcCollectionNFT: SandboxContract<NFTCollection>;
 
     let defaultContent: Cell;
     let defaultCommonContent: Cell;
@@ -177,126 +111,82 @@ describe("itemNFT", () => {
     let royaltyParams: RoyaltyParams;
 
     let step: Step;
-    const results = generateResults(benchmarkResults);
-    const codeSizeResults = generateCodeSizeResults(benchmarkCodeSizeResults);
-    const expectedCodeSize = codeSizeResults.at(-1)!;
-    const funcCodeSize = codeSizeResults.at(0)!;
-
-    const expectedResult = results.at(-1)!;
-    const funcResult = results.at(0)!;
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
         owner = await blockchain.treasury("owner");
         notOwner = await blockchain.treasury("notOwner");
 
-        defaultContent = beginCell().endCell(); // just some content ( doesn't matter )
+        defaultCommonContent = beginCell().storeStringTail("common").endCell();
+        defaultCollectionContent = beginCell()
+            .storeStringTail("collectionContent")
+            .endCell();
+        defaultNFTContent = beginCell().endCell();
+        defaultContent = beginCell()
+            .storeRef(defaultCollectionContent)
+            .storeRef(defaultCommonContent)
+            .endCell();
+
+        royaltyParams = {
+            $$type: "RoyaltyParams",
+            nominator: 1n,
+            dominator: 100n,
+            owner: owner.address,
+        };
 
         step = writeLog({
             path: join(__dirname, "output", "log.yaml"),
             blockchain,
         });
 
-        // ITEM
-        {
-            itemNFT = blockchain.openContract(
-                await NFTItem.fromInit(null, null, owner.address, 0n),
-            );
+        // Deploy Collection
+        collectionNFT = blockchain.openContract(
+            await fromInitCollection(
+                owner.address,
+                0n,
+                defaultContent,
+                royaltyParams,
+            ),
+        );
 
-            const deployItemMsg: InitNFTBody = {
-                $$type: "InitNFTBody",
-                owner: owner.address,
-                content: defaultContent,
-            };
-
-            const deployResult = await itemNFT.send(
-                owner.getSender(),
-                { value: toNano("0.1") },
-                beginCell().store(storeInitNFTBody(deployItemMsg)).asSlice(),
-            );
-
-            expect(deployResult.transactions).toHaveTransaction({
-                from: owner.address,
-                to: itemNFT.address,
-                deploy: true,
-                success: true,
-            });
-
-            // deploy func
-            const { result: deployFuncItem, itemNFTScope } =
-                await deployFuncNFTItem(blockchain, owner);
-            funcItemNFT = itemNFTScope;
-            expect(deployFuncItem.transactions).toHaveTransaction({
-                from: owner.address,
-                to: funcItemNFT.address,
-                success: true,
-                deploy: true,
-            });
-        }
-        // COLLECTION
-        {
-            defaultCommonContent = beginCell()
-                .storeStringTail("common")
-                .endCell();
-            defaultCollectionContent = beginCell()
-                .storeStringTail("collectionContent")
-                .endCell();
-
-            defaultNFTContent = beginCell().storeStringTail("1.json").endCell();
-
-            defaultContent = beginCell()
-                .storeRef(defaultCollectionContent)
-                .storeRef(defaultCommonContent)
-                .endCell();
-
-            royaltyParams = {
-                $$type: "RoyaltyParams",
-                nominator: 1n,
-                dominator: 100n,
-                owner: owner.address,
-            };
-
-            collectionNFT = blockchain.openContract(
-                await NFTCollection.fromInit(
-                    owner.address,
-                    0n,
-                    defaultContent,
-                    royaltyParams,
-                ),
-            );
-            const deployCollectionMsg: GetRoyaltyParams = {
+        const deployResult = await collectionNFT.send(
+            owner.getSender(),
+            { value: toNano("0.1") },
+            {
                 $$type: "GetRoyaltyParams",
                 queryId: 0n,
-            };
+            },
+        );
 
-            const deployResult = await collectionNFT.send(
-                owner.getSender(),
-                { value: toNano("0.1") },
-                deployCollectionMsg,
-            );
-            expect(deployResult.transactions).toHaveTransaction({
-                from: owner.address,
-                to: collectionNFT.address,
-                deploy: true,
-                success: true,
-            });
-            // deploy func
-            const { result: deployFuncCollection, collectionNFTScope } =
-                await deployFuncNFTCollection(blockchain, owner);
-            funcCollectionNFT = collectionNFTScope;
-            expect(deployFuncCollection.transactions).toHaveTransaction({
-                from: owner.address,
-                to: funcCollectionNFT.address,
-                success: true,
-                deploy: true,
-            });
-        }
-    });
+        expect(deployResult.transactions).toHaveTransaction({
+            from: owner.address,
+            to: collectionNFT.address,
+            deploy: true,
+            success: true,
+        });
 
-    afterAll(() => {
-        printBenchmarkTable(results, codeSizeResults, {
-            implementationName: "FunC",
-            printMode: "full",
+        // Deploy Item
+        itemNFT = blockchain.openContract(
+            await fromInitItem(null, null, owner.address, 0n),
+        );
+
+        const deployItemMsg: InitNFTBody = {
+            $$type: "InitNFTBody",
+            owner: owner.address,
+            content: defaultNFTContent,
+        };
+
+        const deployItemResult = await itemNFT.send(
+            owner.getSender(),
+            { value: toNano("0.1") },
+            beginCell().store(storeInitNFTBody(deployItemMsg)).asSlice(),
+        );
+
+        expect(deployItemResult.transactions).toHaveTransaction({
+            from: owner.address,
+            to: itemNFT.address,
+            deploy: true,
+            success: true,
         });
     });
 
@@ -322,32 +212,24 @@ describe("itemNFT", () => {
 
             return await itemNFT.send(from, { value }, msg);
         };
-        const runTransferTest = async (
-            scopeItemNFT: SandboxContract<NFTItem>,
-        ) => {
-            const sendResult = await step("transfer", async () =>
-                sendTransfer(
-                    scopeItemNFT,
-                    owner.getSender(),
-                    toNano(1),
-                    notOwner.address,
-                    owner.address,
-                    0n,
-                ),
-            );
 
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
-            return getUsedGas(sendResult, "internal");
-        };
+        const sendResult = await step("transfer", async () =>
+            sendTransfer(
+                itemNFT,
+                owner.getSender(),
+                toNano(1),
+                notOwner.address,
+                owner.address,
+                0n,
+            ),
+        );
 
-        const transferGasUsedTact = await runTransferTest(itemNFT);
-        const transferGasUsedFunC = await runTransferTest(funcItemNFT);
+        expect(sendResult.transactions).not.toHaveTransaction({
+            success: false,
+        });
 
-        expect(transferGasUsedTact).toEqual(expectedResult.gas["transfer"]);
-
-        expect(transferGasUsedFunC).toEqual(funcResult.gas["transfer"]);
+        const gasUsed = getUsedGas(sendResult, "internal");
+        expect(gasUsed).toEqual(benchmarkResults.gas["transfer"]);
     });
 
     it("get static data", async () => {
@@ -364,46 +246,28 @@ describe("itemNFT", () => {
             return await itemNFT.send(from, { value }, msg);
         };
 
-        const runGetStaticTest = async (
-            scopeItemNFT: SandboxContract<NFTItem>,
-            scopeCollectionNFTAddress: Address,
-        ) => {
-            const sendResult = await step("get static data", async () =>
-                sendGetStaticData(scopeItemNFT, owner.getSender(), toNano(1)),
-            );
-
-            expect(sendResult.transactions).toHaveTransaction({
-                from: scopeItemNFT.address,
-                to: owner.address,
-                body: beginCell()
-                    .storeUint(ReportStaticData, 32) // opCode
-                    .storeUint(0n, 64) // queryId
-                    .storeUint(0n, 256) // itemIndex
-                    .storeAddress(scopeCollectionNFTAddress) // collectionAddress
-                    .endCell(),
-                success: true,
-            });
-
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
-
-            return getUsedGas(sendResult, "internal");
-        };
-
-        const getStaticGasUsedTact = await runGetStaticTest(
-            itemNFT,
-            owner.address,
-        ); // just because we deployed like that
-        const getStaticGasUsedFunC = await runGetStaticTest(
-            funcItemNFT,
-            owner.address,
+        const sendResult = await step("get static data", async () =>
+            sendGetStaticData(itemNFT, owner.getSender(), toNano(1)),
         );
 
-        expect(getStaticGasUsedTact).toEqual(
-            expectedResult.gas["get static data"],
-        );
-        expect(getStaticGasUsedFunC).toEqual(funcResult.gas["get static data"]);
+        expect(sendResult.transactions).toHaveTransaction({
+            from: itemNFT.address,
+            to: owner.address,
+            body: beginCell()
+                .storeUint(ReportStaticData, 32)
+                .storeUint(0n, 64)
+                .storeUint(0n, 256)
+                .storeAddress(owner.address)
+                .endCell(),
+            success: true,
+        });
+
+        expect(sendResult.transactions).not.toHaveTransaction({
+            success: false,
+        });
+
+        const gasUsed = getUsedGas(sendResult, "internal");
+        expect(gasUsed).toEqual(benchmarkResults.gas["get static data"]);
     });
 
     it("deploy nft", async () => {
@@ -431,36 +295,21 @@ describe("itemNFT", () => {
             return await collectionNFT.send(from, { value }, msg);
         };
 
-        const runDeployTest = async (
-            scopeCollectionNFT: SandboxContract<NFTCollection>,
-        ) => {
-            const sendResult = await step("deploy nft", async () =>
-                sendDeployNFT(scopeCollectionNFT, owner.getSender(), toNano(1)),
-            );
+        const sendResult = await step("deploy nft", async () =>
+            sendDeployNFT(collectionNFT, owner.getSender(), toNano(1)),
+        );
 
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
+        expect(sendResult.transactions).not.toHaveTransaction({
+            success: false,
+        });
 
-            // at least 1 deploy
-            expect(sendResult.transactions).not.toHaveTransaction({
-                from: scopeCollectionNFT.address,
-                deploy: false,
-            });
+        expect(sendResult.transactions).toHaveTransaction({
+            from: collectionNFT.address,
+            deploy: true,
+        });
 
-            expect(sendResult.transactions).toHaveTransaction({
-                from: scopeCollectionNFT.address,
-                deploy: true,
-            });
-
-            return getUsedGas(sendResult, "internal");
-        };
-
-        const deployNFTGasUsedTact = await runDeployTest(collectionNFT);
-        const deployNFTGasUsedFunC = await runDeployTest(funcCollectionNFT);
-
-        expect(deployNFTGasUsedTact).toEqual(expectedResult.gas["deploy nft"]);
-        expect(deployNFTGasUsedFunC).toEqual(funcResult.gas["deploy nft"]);
+        const gasUsed = getUsedGas(sendResult, "internal");
+        expect(gasUsed).toEqual(benchmarkResults.gas["deploy nft"]);
     });
 
     it("batch deploy nft", async () => {
@@ -474,7 +323,6 @@ describe("itemNFT", () => {
                 Dictionary.Keys.BigUint(64),
                 dictDeployNFTItem,
             );
-            // we deployed 1 ngt before
             let i: bigint = 1n;
             count += i;
 
@@ -505,96 +353,125 @@ describe("itemNFT", () => {
             );
         };
 
-        const runBatchDeployTest = async (
-            scopeCollectionNFT: SandboxContract<NFTCollection>,
-        ) => {
-            const sendResult = await step("batch deploy nft", async () =>
-                batchMintNFTProcess(
-                    scopeCollectionNFT,
-                    owner,
-                    owner,
-                    100n, // just big test
-                ),
-            );
-
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
-
-            // at least 1 deploy
-            expect(sendResult.transactions).not.toHaveTransaction({
-                from: scopeCollectionNFT.address,
-                deploy: false,
-            });
-
-            expect(sendResult.transactions).toHaveTransaction({
-                from: scopeCollectionNFT.address,
-                deploy: true,
-            });
-
-            return getUsedGas(sendResult, "internal");
-        };
-
-        const batchDeployNFTGasUsedTact =
-            await runBatchDeployTest(collectionNFT);
-        const batchDeployNFTGasUsedFunC =
-            await runBatchDeployTest(funcCollectionNFT);
-
-        expect(batchDeployNFTGasUsedTact).toEqual(
-            expectedResult.gas["batch deploy nft"],
+        const sendResult = await step("batch deploy nft", async () =>
+            batchMintNFTProcess(collectionNFT, owner, owner, 100n),
         );
-        expect(batchDeployNFTGasUsedFunC).toEqual(
-            funcResult.gas["batch deploy nft"],
-        );
+
+        expect(sendResult.transactions).not.toHaveTransaction({
+            success: false,
+        });
+
+        expect(sendResult.transactions).toHaveTransaction({
+            from: collectionNFT.address,
+            deploy: true,
+        });
+
+        const gasUsed = getUsedGas(sendResult, "internal");
+        expect(gasUsed).toEqual(benchmarkResults.gas["batch deploy nft"]);
     });
 
     it("collection cells", async () => {
         expect(
             (await getStateSizeForAccount(blockchain, collectionNFT.address))
                 .cells,
-        ).toEqual(expectedCodeSize.size["collection cells"]);
-        expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    funcCollectionNFT.address,
-                )
-            ).cells,
-        ).toEqual(funcCodeSize.size["collection cells"]);
+        ).toEqual(codeSizeResults.size["collection cells"]);
     });
 
     it("collection bits", async () => {
         expect(
             (await getStateSizeForAccount(blockchain, collectionNFT.address))
                 .bits,
-        ).toEqual(expectedCodeSize.size["collection bits"]);
-        expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    funcCollectionNFT.address,
-                )
-            ).bits,
-        ).toEqual(funcCodeSize.size["collection bits"]);
+        ).toEqual(codeSizeResults.size["collection bits"]);
     });
 
     it("item cells", async () => {
         expect(
             (await getStateSizeForAccount(blockchain, itemNFT.address)).cells,
-        ).toEqual(expectedCodeSize.size["item cells"]);
-        expect(
-            (await getStateSizeForAccount(blockchain, funcItemNFT.address))
-                .cells,
-        ).toEqual(funcCodeSize.size["item cells"]);
+        ).toEqual(codeSizeResults.size["item cells"]);
     });
 
     it("item bits", async () => {
         expect(
             (await getStateSizeForAccount(blockchain, itemNFT.address)).bits,
-        ).toEqual(expectedCodeSize.size["item bits"]);
-        expect(
-            (await getStateSizeForAccount(blockchain, funcItemNFT.address))
-                .bits,
-        ).toEqual(funcCodeSize.size["item bits"]);
+        ).toEqual(codeSizeResults.size["item bits"]);
+    });
+}
+
+describe("NFT Gas Tests", () => {
+    const fullResults = generateResults(benchmarkResults);
+    const fullCodeSizeResults = generateCodeSizeResults(
+        benchmarkCodeSizeResults,
+    );
+
+    describe("func", () => {
+        const funcCodeSize = fullCodeSizeResults.at(0)!;
+        const funcResult = fullResults.at(0)!;
+
+        function fromInitCollection(
+            owner: Address,
+            index: bigint,
+            content: Cell,
+            royaltyParams: RoyaltyParams,
+        ) {
+            const nftData = loadFunCNFTBoc();
+            const __code = Cell.fromBoc(nftData.bocCollection)[0]!;
+
+            const royaltyCell = beginCell()
+                .storeUint(royaltyParams.nominator, 16)
+                .storeUint(royaltyParams.dominator, 16)
+                .storeAddress(royaltyParams.owner)
+                .endCell();
+
+            const __data = beginCell()
+                .storeAddress(owner)
+                .storeUint(index, 64)
+                .storeRef(content)
+                .storeRef(Cell.fromBoc(nftData.bocItem)[0]!)
+                .storeRef(royaltyCell)
+                .endCell();
+
+            const __gen_init = { code: __code, data: __data };
+            const address = contractAddress(0, __gen_init);
+            return Promise.resolve(new NFTCollection(address, __gen_init));
+        }
+
+        function fromInitItem(
+            owner: Address | null,
+            content: Cell | null,
+            collectionAddress: Address,
+            itemIndex: bigint,
+        ) {
+            const nftData = loadFunCNFTBoc();
+            const __code = Cell.fromBoc(nftData.bocItem)[0]!;
+
+            const __data = beginCell()
+                .storeUint(itemIndex, 64)
+                .storeAddress(collectionAddress)
+                .endCell();
+
+            const __gen_init = { code: __code, data: __data };
+            const address = contractAddress(0, __gen_init);
+            return Promise.resolve(new NFTItem(address, __gen_init));
+        }
+
+        testNFT(funcResult, funcCodeSize, fromInitCollection, fromInitItem);
+    });
+
+    describe("tact", () => {
+        const tactCodeSize = fullCodeSizeResults.at(-1)!;
+        const tactResult = fullResults.at(-1)!;
+        testNFT(
+            tactResult,
+            tactCodeSize,
+            NFTCollection.fromInit.bind(NFTCollection),
+            NFTItem.fromInit.bind(NFTItem),
+        );
+    });
+
+    afterAll(() => {
+        printBenchmarkTable(fullResults, fullCodeSizeResults, {
+            implementationName: "FunC",
+            printMode: "full",
+        });
     });
 });
