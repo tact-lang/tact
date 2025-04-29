@@ -1,5 +1,6 @@
-import mainConfig from "./vitest.config";
+/// <reference types="vitest" />
 import { defineConfig } from "vitest/config";
+import mainConfig from "./vitest.config";
 
 export default defineConfig({
     ...mainConfig,
@@ -7,7 +8,7 @@ export default defineConfig({
         ...(mainConfig.test ?? {}),
         exclude: [
             "**/node_modules/**",
-            "dist/**",
+            "**/dist/**",
             "src/test/e2e-slow/**",
             "src/cli/e2e.spec.ts",
             "src/ast/fuzz.spec.ts",

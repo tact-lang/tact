@@ -6,7 +6,7 @@ import {
     compareSliceForTest,
 } from "@ton/test-utils/dist/test/comparisons";
 import coverage from "@tact-lang/coverage";
-import path from "path";
+import path = require("path");
 import fc from "fast-check";
 
 function wrapComparer<T>(
