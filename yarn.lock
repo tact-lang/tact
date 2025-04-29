@@ -1153,74 +1153,74 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@swc/core-darwin-arm64@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-darwin-arm64/-/core-darwin-arm64-1.11.18.tgz#955ba60baf78d43badf6261f3de077ddec7447b0"
-  integrity sha512-K6AntdUlNMQg8aChqjeXwnVhK6d4WRZ9TgtLSTmdU0Ugll4an7QK49s9NrT7XQU91cEsVvzdr++p1bNImx0hJg==
+"@swc/core-darwin-arm64@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-darwin-arm64/-/core-darwin-arm64-1.11.22.tgz#61d07fd1a86d1f5035bc3cc180bf29d8a1f6cabd"
+  integrity sha512-upSiFQfo1TE2QM3+KpBcp5SrOdKKjoc+oUoD1mmBDU2Wv4Bjjv16Z2I5ADvIqMV+b87AhYW+4Qu6iVrQD7j96Q==
 
-"@swc/core-darwin-x64@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-darwin-x64/-/core-darwin-x64-1.11.18.tgz#273d4407a65840d0d0c02e0970bb2f43ec5f5375"
-  integrity sha512-RCRvC6Q9M5BArTvj/IzUAAYGrgxYFbTTnAtf6UX7JFq2DAn+hEwYUjmC1m0gFso9HqFU0m5QZUGfZvVmACGWUw==
+"@swc/core-darwin-x64@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-darwin-x64/-/core-darwin-x64-1.11.22.tgz#e4004c5cc80362d6f2ad482961558d1640878d50"
+  integrity sha512-8PEuF/gxIMJVK21DjuCOtzdqstn2DqnxVhpAYfXEtm3WmMqLIOIZBypF/xafAozyaHws4aB/5xmz8/7rPsjavw==
 
-"@swc/core-linux-arm-gnueabihf@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-linux-arm-gnueabihf/-/core-linux-arm-gnueabihf-1.11.18.tgz#920aedc52ab53b87b564ddd9d1409fa09494f552"
-  integrity sha512-wteAKf8YKb3jOnZFm3EzuIMzzCVXMuQOLHsz1IgEOc44/gdgNXKxaYTWAowZuej7t68tf/w0cRNMc7Le414v/g==
+"@swc/core-linux-arm-gnueabihf@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-linux-arm-gnueabihf/-/core-linux-arm-gnueabihf-1.11.22.tgz#48078c84c71a6edc45884fb9f106f1a8da1b8311"
+  integrity sha512-NIPTXvqtn9e7oQHgdaxM9Z/anHoXC3Fg4ZAgw5rSGa1OlnKKupt5sdfJamNggSi+eAtyoFcyfkgqHnfe2u63HA==
 
-"@swc/core-linux-arm64-gnu@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.11.18.tgz#2683cbe4920464d4fcace286835d5cb7586c50c0"
-  integrity sha512-hY6jJYZ6PKHSBo5OATswfyKsUgsWu9+4nDcN8liYIRRgz3E0G9wk0VUTP4cFPivBFeHWTTAGz687/Nf2aQEIpw==
+"@swc/core-linux-arm64-gnu@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.11.22.tgz#03ce14d829441c37a3b217040196e0fad9bf79a2"
+  integrity sha512-xZ+bgS60c5r8kAeYsLNjJJhhQNkXdidQ277pUabSlu5GjR0CkQUPQ+L9hFeHf8DITEqpPBPRiAiiJsWq5eqMBg==
 
-"@swc/core-linux-arm64-musl@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.11.18.tgz#10b0e29949dfb3c7a29fc2b001ee4ee3ca9f2ead"
-  integrity sha512-slu0mlP2nucvQalttnapfpqpD/LlM9NHx9g3ofgsLzjObyMEBiX4ZysQ3y65U8Mjw71RNqtLd/ZmvxI6OmLdiQ==
+"@swc/core-linux-arm64-musl@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.11.22.tgz#16ff1a87f24d79ac330eb1b243b4e2d0005cce34"
+  integrity sha512-JhrP/q5VqQl2eJR0xKYIkKTPjgf8CRsAmRnjJA2PtZhfQ543YbYvUqxyXSRyBOxdyX8JwzuAxIPEAlKlT7PPuQ==
 
-"@swc/core-linux-x64-gnu@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.11.18.tgz#a3f66b656a9490e5d437b382a2baad00b02031a5"
-  integrity sha512-h9a/8PA25arMCQ9t8CE8rA1s0c77z4kCZZ7dUuUkD88yEXIrARMca1IKR7of+S3slfQrf1Zlq3Ac1Fb1HVJziQ==
+"@swc/core-linux-x64-gnu@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.11.22.tgz#d249e3ae8b48459e0845aa5fc3099d210833390b"
+  integrity sha512-htmAVL+U01gk9GyziVUP0UWYaUQBgrsiP7Ytf6uDffrySyn/FclUS3MDPocNydqYsOpj3OpNKPxkaHK+F+X5fg==
 
-"@swc/core-linux-x64-musl@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.11.18.tgz#a0d0576c4a7ee9329297da30c17537f303437a71"
-  integrity sha512-0sMDJj5qUGK9QEw4lrxLxkTP/4AoKciqNzXvqbk+J9XuXN2aIv4BsR1Y7z3GwAeMFGsba2lbHLOtJlDsaqIsiA==
+"@swc/core-linux-x64-musl@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.11.22.tgz#f65d4a75ef829f9da7cd5425d21ddf1d6da5cd46"
+  integrity sha512-PL0VHbduWPX+ANoyOzr58jBiL2VnD0xGSFwPy7NRZ1Pr6SNWm4jw3x2u6RjLArGhS5EcWp64BSk9ZxqmTV3FEg==
 
-"@swc/core-win32-arm64-msvc@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-win32-arm64-msvc/-/core-win32-arm64-msvc-1.11.18.tgz#dbf21a232143e49efbb0ef0a0354eb6db61da109"
-  integrity sha512-zGv9HnfgBcKyt54MJRWdwRNu9BuYkAFM7bx+tWtKhd37Ef7ZX20QLs9xXl5wWDXCbsOdRxXIZgXs6PEL+Pzmrw==
+"@swc/core-win32-arm64-msvc@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-win32-arm64-msvc/-/core-win32-arm64-msvc-1.11.22.tgz#a67dd652d752bd1e6c2244a267c9f179480296fd"
+  integrity sha512-moJvFhhTVGoMeEThtdF7hQog80Q00CS06v5uB+32VRuv+I31+4WPRyGlTWHO+oY4rReNcXut/mlDHPH7p0LdFg==
 
-"@swc/core-win32-ia32-msvc@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-win32-ia32-msvc/-/core-win32-ia32-msvc-1.11.18.tgz#818ff1300f3bc0f664531a4d246df11ca475bb24"
-  integrity sha512-uBKj0S1lYv/E2ZhxHZOxSiQwoegYmzbPRpjq6eHBZDv97mu7W3K27/lsnPbvAfQ6b6rnv8BI+EsmJ7VLQBAHBQ==
+"@swc/core-win32-ia32-msvc@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-win32-ia32-msvc/-/core-win32-ia32-msvc-1.11.22.tgz#3cd02e4d1b759fa35820a58a45cd55f6ebe43ac3"
+  integrity sha512-/jnsPJJz89F1aKHIb5ScHkwyzBciz2AjEq2m9tDvQdIdVufdJ4SpEDEN9FqsRNRLcBHjtbLs6bnboA+B+pRFXw==
 
-"@swc/core-win32-x64-msvc@1.11.18":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.11.18.tgz#708483370e5ff08e4441ce037c725fd7af948060"
-  integrity sha512-8USTRcdgeFMNBgvVXl8tz6n4+9s9m+zHsfDeBT4jPgwnq2bnLBlTUlwnPwzDxfg9nUJr6RFD4xeKfWyZZRosZg==
+"@swc/core-win32-x64-msvc@1.11.22":
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.11.22.tgz#971610deb596d420042592d76791273e3921628f"
+  integrity sha512-lc93Y8Mku7LCFGqIxJ91coXZp2HeoDcFZSHCL90Wttg5xhk5xVM9uUCP+OdQsSsEixLF34h5DbT9ObzP8rAdRw==
 
 "@swc/core@^1.10.7":
-  version "1.11.18"
-  resolved "https://npm.dev-internal.org/@swc/core/-/core-1.11.18.tgz#8510529d5ac43025573ff7122c99fc254414f41b"
-  integrity sha512-ORZxyCKKiqYt2iHdh1C7pfVR1GBjkuFOdwqZggQzaq0vt22DpGca+2JsUtkUoWQmWcct04v5+ScwgvsHuMObxA==
+  version "1.11.22"
+  resolved "https://npm.dev-internal.org/@swc/core/-/core-1.11.22.tgz#3d77cf84a8cbbe6903f1fe4aa988c50b46b27d82"
+  integrity sha512-mjPYbqq8XjwqSE0hEPT9CzaJDyxql97LgK4iyvYlwVSQhdN1uK0DBG4eP9PxYzCS2MUGAXB34WFLegdUj5HGpg==
   dependencies:
     "@swc/counter" "^0.1.3"
     "@swc/types" "^0.1.21"
   optionalDependencies:
-    "@swc/core-darwin-arm64" "1.11.18"
-    "@swc/core-darwin-x64" "1.11.18"
-    "@swc/core-linux-arm-gnueabihf" "1.11.18"
-    "@swc/core-linux-arm64-gnu" "1.11.18"
-    "@swc/core-linux-arm64-musl" "1.11.18"
-    "@swc/core-linux-x64-gnu" "1.11.18"
-    "@swc/core-linux-x64-musl" "1.11.18"
-    "@swc/core-win32-arm64-msvc" "1.11.18"
-    "@swc/core-win32-ia32-msvc" "1.11.18"
-    "@swc/core-win32-x64-msvc" "1.11.18"
+    "@swc/core-darwin-arm64" "1.11.22"
+    "@swc/core-darwin-x64" "1.11.22"
+    "@swc/core-linux-arm-gnueabihf" "1.11.22"
+    "@swc/core-linux-arm64-gnu" "1.11.22"
+    "@swc/core-linux-arm64-musl" "1.11.22"
+    "@swc/core-linux-x64-gnu" "1.11.22"
+    "@swc/core-linux-x64-musl" "1.11.22"
+    "@swc/core-win32-arm64-msvc" "1.11.22"
+    "@swc/core-win32-ia32-msvc" "1.11.22"
+    "@swc/core-win32-x64-msvc" "1.11.22"
 
 "@swc/counter@^0.1.3":
   version "0.1.3"
