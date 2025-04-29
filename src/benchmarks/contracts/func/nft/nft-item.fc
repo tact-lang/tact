@@ -120,7 +120,7 @@ int min_tons_for_storage() asm "50000000 PUSHINT"; ;; 0.05 TON
     (int init?, int index, slice collection_address, slice owner_address, cell content) = load_data();
     if (~ init?) {
       throw_unless(405, equal_slices_bits(collection_address, sender_address));
-      store_data(index, collection_address, in_msg_body~ (), in_msg_body~load_ref());
+      store_data(index, collection_address, in_msg_body~load_msg_addr(), in_msg_body~load_ref());
       return ();
     }
 
