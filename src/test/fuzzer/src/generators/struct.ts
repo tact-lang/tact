@@ -7,7 +7,7 @@ import { generateAstIdFromName, packArbitraries } from "@/test/fuzzer/src/util";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import type fc from "fast-check";
-import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 /**
  * An object that generates Ast.StructDecl object.
@@ -46,7 +46,7 @@ export class Struct extends NamedGenerativeEntity<Ast.StructDecl> {
             ).generate();
         });
         return packArbitraries(fields).map((f) =>
-            GlobalContext.makeF.makeDummyStructDecl(this.name, f),
+            FuzzContext.instance.makeF.makeDummyStructDecl(this.name, f),
         );
     }
 }
@@ -88,7 +88,11 @@ export class Message extends NamedGenerativeEntity<Ast.MessageDecl> {
             ).generate();
         });
         return packArbitraries(fields).map((f) =>
-            GlobalContext.makeF.makeDummyMessageDecl(this.name, undefined, f),
+            FuzzContext.instance.makeF.makeDummyMessageDecl(
+                this.name,
+                undefined,
+                f,
+            ),
         );
     }
 }

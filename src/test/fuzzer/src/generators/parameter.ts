@@ -6,7 +6,7 @@ import type { Scope } from "@/test/fuzzer/src/scope";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
-import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 /**
  * An object that encapsulates generated Ast.TypedParameter.
@@ -31,7 +31,7 @@ export class Parameter extends NamedGenerativeEntity<Ast.TypedParameter> {
 
     generate(): fc.Arbitrary<Ast.TypedParameter> {
         return fc.constant(
-            GlobalContext.makeF.makeDummyTypedParameter(
+            FuzzContext.instance.makeF.makeDummyTypedParameter(
                 this.name,
                 tyToAstType(this.type, this.isBounced),
             ),

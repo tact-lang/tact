@@ -17,9 +17,9 @@ import { Parameter } from "@/test/fuzzer/src/generators/parameter";
 import { Let, Statement } from "@/test/fuzzer/src/generators/statement";
 
 import fc from "fast-check";
-import { GlobalContext } from "@/test/fuzzer/src/context";
 import { generateString } from "@/test/fuzzer/src/generators/uniform-expr-gen";
 import { FuzzConfig } from "@/test/fuzzer/src/config";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 const RECEIVE_RETURN_TY: Type = { kind: "util", type: UtilType.Unit };
 
@@ -28,29 +28,33 @@ function generateReceiverSimpleSubKind(
 ): fc.Arbitrary<Ast.ReceiverSimple> {
     return param
         .generate()
-        .map((p) => GlobalContext.makeF.makeReceiverSimple(p));
+        .map((p) => FuzzContext.instance.makeF.makeReceiverSimple(p));
 }
 
 function generateReceiverFallbackSubKind(): fc.Arbitrary<Ast.ReceiverFallback> {
-    return fc.constant(GlobalContext.makeF.makeReceiverFallback());
+    return fc.constant(FuzzContext.instance.makeF.makeReceiverFallback());
 }
 
 function generateReceiverCommentSubKind(): fc.Arbitrary<Ast.ReceiverComment> {
     return generateString(/*nonEmpty=*/ true).map((s) =>
-        GlobalContext.makeF.makeReceiverComment(s),
+        FuzzContext.instance.makeF.makeReceiverComment(s),
     );
 }
 
 function generateInternalReceiverKind(
     subKind: fc.Arbitrary<Ast.ReceiverSubKind>,
 ): fc.Arbitrary<Ast.ReceiverInternal> {
-    return subKind.map((k) => GlobalContext.makeF.makeDummyReceiverInternal(k));
+    return subKind.map((k) =>
+        FuzzContext.instance.makeF.makeDummyReceiverInternal(k),
+    );
 }
 
 function generateExternalReceiverKind(
     subKind: fc.Arbitrary<Ast.ReceiverSubKind>,
 ): fc.Arbitrary<Ast.ReceiverExternal> {
-    return subKind.map((k) => GlobalContext.makeF.makeDummyReceiverExternal(k));
+    return subKind.map((k) =>
+        FuzzContext.instance.makeF.makeDummyReceiverExternal(k),
+    );
 }
 
 export interface ReceiveParameters {
@@ -143,7 +147,9 @@ export class Receive extends GenerativeEntity<Ast.Receiver> {
             this.scope.addNamed("parameter", param);
             return param
                 .generate()
-                .map((p) => GlobalContext.makeF.makeDummyReceiverBounce(p));
+                .map((p) =>
+                    FuzzContext.instance.makeF.makeDummyReceiverBounce(p),
+                );
         }
 
         const internalFallback = generateInternalReceiverKind(
@@ -209,7 +215,7 @@ export class Receive extends GenerativeEntity<Ast.Receiver> {
         return fc
             .tuple(this.generateSelector(), this.generateBody())
             .map(([sel, stmt]) =>
-                GlobalContext.makeF.makeDummyReceiver(sel, stmt),
+                FuzzContext.instance.makeF.makeDummyReceiver(sel, stmt),
             );
     }
 }

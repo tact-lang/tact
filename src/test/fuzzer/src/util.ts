@@ -7,7 +7,6 @@ import * as path from "path";
 import fc from "fast-check";
 
 import type { NamedScopeItemKind, Scope } from "@/test/fuzzer/src/scope";
-import { GlobalContext } from "@/test/fuzzer/src/context";
 import type { Type } from "@/test/fuzzer/src/types";
 import type * as Ast from "@/ast/ast";
 import { getSrcInfo } from "@/grammar/src-info";
@@ -39,6 +38,7 @@ import type {
 import type { Blockchain, SandboxContract } from "@ton/sandbox";
 import { compileTact } from "@/pipeline/compile";
 import { enableFeatures, type BuildContext } from "@/pipeline/build";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 export const VALID_ID = /^[a-zA-Z_]+[a-zA-Z_0-9]$/;
 export const VALID_TYPE_ID = /^[A-Z]+[a-zA-Z_0-9]$/;
@@ -48,13 +48,13 @@ export const VALID_TYPE_ID = /^[A-Z]+[a-zA-Z_0-9]$/;
  */
 export async function withNodeFS(f: (vfs: VirtualFileSystem) => Promise<void>) {
     const tempDir = await mkdtemp(
-        path.join(GlobalContext.config.compileDir, "tact-check-"),
+        path.join(FuzzContext.instance.config.compileDir, "tact-check-"),
     );
     const vfs = createNodeFileSystem(tempDir, false);
     try {
         await f(vfs);
     } finally {
-        if (GlobalContext.config.compileDir == os.tmpdir()) {
+        if (FuzzContext.instance.config.compileDir == os.tmpdir()) {
             await fs.promises.rm(tempDir, { recursive: true });
         }
     }
@@ -78,7 +78,7 @@ export function createProperty<Ts extends [unknown, ...unknown[]]>(
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     const enhancedPredicate = (...args: Ts): boolean | void => {
         args.forEach((arg) => {
-            GlobalContext.printSample(arg as Ast.AstNode);
+            FuzzContext.instance.printSample(arg as Ast.AstNode);
         });
         return originalPredicate(...args);
     };
@@ -93,8 +93,8 @@ function makeParams<T>(
     numRuns: number | undefined,
 ): fc.Parameters<T> {
     return {
-        numRuns: numRuns ?? GlobalContext.config.numRuns,
-        seed: GlobalContext.config.seed,
+        numRuns: numRuns ?? FuzzContext.instance.config.numRuns,
+        seed: FuzzContext.instance.config.seed,
         reporter(out) {
             if (out.failed) {
                 let errorSufffix = "";
@@ -114,14 +114,19 @@ function makeAsyncParams<T>(
     numRuns: number | undefined,
 ): fc.Parameters<T> {
     return {
-        numRuns: numRuns ?? GlobalContext.config.numRuns,
-        seed: GlobalContext.config.seed,
+        numRuns: numRuns ?? FuzzContext.instance.config.numRuns,
+        seed: FuzzContext.instance.config.seed,
         reporter: undefined,
+        endOnFailure: true,
         async asyncReporter(out) {
             if (out.failed) {
                 let errorSuffix = "";
                 if (out.counterexample !== null) {
                     errorSuffix = counterexamplePrinter(out.counterexample);
+                    if (out.errorInstance instanceof Error) {
+                        const bugReport = out.errorInstance;
+                        errorSuffix += bugReport.message;
+                    }
                 }
                 throw new Error(
                     (await fc.asyncDefaultReportMessage(out)) + errorSuffix,
@@ -157,7 +162,7 @@ export function astNodeCounterexamplePrinter(
     generated: Ast.AstNode | Ast.AstNode[],
 ) {
     const node = "kind" in generated ? generated : generated[0]!;
-    return `\n-----\nGenerated ${node.kind}:\n${GlobalContext.format(node)}\n-----\n`;
+    return `\n-----\nGenerated ${node.kind}:\n${FuzzContext.instance.format(node)}\n-----\n`;
 }
 
 /**
@@ -167,7 +172,7 @@ export function astNodeCounterexamplePrinter(
  */
 export function createSample<T>(gen: fc.Arbitrary<T>): T {
     const result = fc.sample(gen, {
-        seed: GlobalContext.config.seed,
+        seed: FuzzContext.instance.config.seed,
         numRuns: 1,
     })[0];
     if (typeof result === "undefined") {
@@ -198,7 +203,7 @@ export function createSamplesArray<T>(
  */
 export function generateName(
     scope: Scope,
-    shadowing: boolean = true,
+    shadowing: boolean = false,
     isType: boolean = false,
 ): fc.Arbitrary<string> {
     const availableNames = shadowing
@@ -208,7 +213,7 @@ export function generateName(
     return fc
         .stringMatching(isType ? VALID_TYPE_ID : VALID_ID)
         .filter((generatedName) => {
-            if (availableNames.find(([name, _]) => name == generatedName)) {
+            if (availableNames.find((name) => name === generatedName)) {
                 return false;
             }
             return true;
@@ -219,7 +224,7 @@ export function generateName(
  * Generates Ast.Id from string name and with new id.
  */
 export function generateAstIdFromName(name: string): Ast.Id {
-    return GlobalContext.makeF.makeDummyId(name);
+    return FuzzContext.instance.makeF.makeDummyId(name);
 }
 
 /**
@@ -229,11 +234,11 @@ export function generateAstIdFromName(name: string): Ast.Id {
  */
 export function generateAstId(
     scope: Scope,
-    shadowing: boolean = true,
+    shadowing: boolean = false,
     isType: boolean = false,
 ): fc.Arbitrary<Ast.Id> {
     return generateName(scope, shadowing, isType).map((s) =>
-        GlobalContext.makeF.makeDummyId(s),
+        FuzzContext.instance.makeF.makeDummyId(s),
     );
 }
 
@@ -363,13 +368,13 @@ export function filterStdlib(
     }
 
     const customTactStdlib = mF.makeModule([], result);
-    //const stdlib_fc = fs
-    //    .readFileSync(path.join(__dirname, "minimal-fc-stdlib", "stdlib.fc"))
-    //    .toString("base64");
+    const stdlib_fc = fs
+        .readFileSync(path.join(__dirname, "minimal-fc-stdlib", "stdlib.fc"))
+        .toString("base64");
 
     return {
         modules: [customTactStdlib],
-        stdlib_fc: "",
+        stdlib_fc: stdlib_fc,
         stdlib_ex_fc: "",
     };
 }
@@ -484,11 +489,11 @@ export async function buildModule(
 
         // Compiling contract to TVM
         const stdlibPath = stdlib.resolve("stdlib.fc");
-        //const stdlibCode = stdlib.readFile(stdlibPath).toString();
+        const stdlibCode = stdlib.readFile(stdlibPath).toString();
         const stdlibExPath = stdlib.resolve("stdlib_ex.fc");
-        //const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
+        const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
 
-        process.env.USE_NATIVE = "true";
+        //process.env.USE_NATIVE = "true";
         process.env.FC_STDLIB_PATH = path.join(
             __dirname,
             "/minimal-fc-stdlib/",
@@ -502,17 +507,31 @@ export async function buildModule(
             "/minimal-fc-stdlib/fift-lib/",
         );
 
-        const contractFilePath = path.join(
-            __dirname,
-            "/minimal-fc-stdlib/",
-            codeEntrypoint,
-        );
+        //const contractFilePath = path.join(
+        //    __dirname,
+        //    "/minimal-fc-stdlib/",
+        //    codeEntrypoint,
+        //);
+        const contractFilePath = project.resolve(codeEntrypoint);
 
-        fs.writeFileSync(contractFilePath, res.funcSource.content);
+        //fs.writeFileSync(contractFilePath, res.funcSource.content);
 
         const c = await funcCompile({
             entries: [stdlibPath, stdlibExPath, contractFilePath],
-            sources: [],
+            sources: [
+                {
+                    path: stdlibPath,
+                    content: stdlibCode,
+                },
+                {
+                    path: stdlibExPath,
+                    content: stdlibExCode,
+                },
+                {
+                    path: contractFilePath,
+                    content: res.funcSource.content,
+                },
+            ],
             logger,
         });
 
@@ -564,10 +583,20 @@ export class ProxyContract implements Contract {
         await provider.internal(via, { ...args, body: body });
     }
 
-    async getInt(provider: ContractProvider) {
+    async getInt(provider: ContractProvider, param: bigint) {
         const builder = new TupleBuilder();
+        builder.writeNumber(param);
         const result = (await provider.get("getInt", builder.build())).stack;
         return result.readBigNumber();
+    }
+
+    async getBool(provider: ContractProvider, params: Ast.Expression[]) {
+        const builder = new TupleBuilder();
+        params.forEach((expr) => {
+            this.serializeExpression(expr, builder);
+        });
+        const result = (await provider.get("getBool", builder.build())).stack;
+        return result.readBoolean();
     }
 
     async getIndexed(provider: ContractProvider, index: number) {
@@ -583,5 +612,36 @@ export class ProxyContract implements Contract {
         params: TupleItem[],
     ) {
         return (await provider.get(getterName, params)).stack;
+    }
+
+    private serializeExpression(expr: Ast.Expression, builder: TupleBuilder) {
+        switch (expr.kind) {
+            case "number": {
+                builder.writeNumber(expr.value);
+                break;
+            }
+            case "boolean": {
+                builder.writeBoolean(expr.value);
+                break;
+            }
+            case "cell": {
+                builder.writeCell(expr.value);
+                break;
+            }
+            case "address": {
+                builder.writeAddress(expr.value);
+                break;
+            }
+            case "slice": {
+                builder.writeSlice(expr.value);
+                break;
+            }
+            case "string": {
+                builder.writeString(expr.value);
+                break;
+            }
+            default:
+                throw new Error("Currently not supported");
+        }
     }
 }

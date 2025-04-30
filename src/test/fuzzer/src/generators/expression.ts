@@ -10,19 +10,17 @@ import {
     NamedGenerativeEntity,
 } from "@/test/fuzzer/src/generators/generator";
 import { StdlibType } from "@/test/fuzzer/src/types";
+import { NonTerminal } from "@/test/fuzzer/src/uniform-expr-types";
 import type { Type } from "@/test/fuzzer/src/types";
-import type { Scope } from "@/test/fuzzer/src/scope";
-import {
-    initializeGenerator,
-    NonTerminal,
-} from "@/test/fuzzer/src/generators/uniform-expr-gen";
 import type {
-    GenInitConfig,
     NonTerminalEnum,
     TerminalEnum,
-} from "@/test/fuzzer/src/generators/uniform-expr-gen";
-import { GlobalContext } from "@/test/fuzzer/src/context";
+} from "@/test/fuzzer/src/uniform-expr-types";
+import type { Scope } from "@/test/fuzzer/src/scope";
+import { initializeGenerator } from "@/test/fuzzer/src/generators/uniform-expr-gen";
+import type { GenInitConfig } from "@/test/fuzzer/src/generators/uniform-expr-gen";
 import { FuzzConfig } from "@/test/fuzzer/src/config";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 export type ExpressionParameters = {
     /**
@@ -57,7 +55,7 @@ export type ExpressionParameters = {
 };
 
 export function makeSelfID(): Ast.Id {
-    return GlobalContext.makeF.makeDummyId("self");
+    return FuzzContext.instance.makeF.makeDummyId("self");
 }
 
 /**
@@ -114,7 +112,11 @@ export class MethodCall extends NamedGenerativeEntity<Ast.MethodCall> {
     }
     generate(): fc.Arbitrary<Ast.MethodCall> {
         return packArbitraries(this.args).map((args) =>
-            GlobalContext.makeF.makeDummyMethodCall(this.src, this.name, args),
+            FuzzContext.instance.makeF.makeDummyMethodCall(
+                this.src,
+                this.name,
+                args,
+            ),
         );
     }
 }
@@ -132,7 +134,7 @@ export class StaticCall extends NamedGenerativeEntity<Ast.StaticCall> {
     }
     generate(): fc.Arbitrary<Ast.StaticCall> {
         return packArbitraries(this.args).map((args) =>
-            GlobalContext.makeF.makeDummyStaticCall(this.name, args),
+            FuzzContext.instance.makeF.makeDummyStaticCall(this.name, args),
         );
     }
 }

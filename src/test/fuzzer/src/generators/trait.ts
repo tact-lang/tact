@@ -17,8 +17,8 @@ import { Scope } from "@/test/fuzzer/src/scope";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
-import { GlobalContext } from "@/test/fuzzer/src/context";
 import { FuzzConfig } from "@/test/fuzzer/src/config";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 export interface TraitParameters {
     /**
@@ -137,7 +137,12 @@ export class Trait extends NamedGenerativeEntity<Ast.Trait> {
         return fc
             .tuple(...constants, ...fields, ...methods)
             .map((decl) =>
-                GlobalContext.makeF.makeDummyTrait(this.name, [], [], decl),
+                FuzzContext.instance.makeF.makeDummyTrait(
+                    this.name,
+                    [],
+                    [],
+                    decl,
+                ),
             );
     }
 }

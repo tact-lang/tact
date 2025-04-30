@@ -37,6 +37,8 @@ export class FuzzContext {
      */
     public makeF: MakeAstFactory = getMakeAst(this.astF);
 
+    public static instance = new FuzzContext();
+
     constructor() {
         this.config = new FuzzConfig();
     }
@@ -99,4 +101,4 @@ export class FuzzContext {
  * reflect changes across the AST.
  */
 // eslint-disable-next-line prefer-const
-export let GlobalContext: FuzzContext = new FuzzContext();
+//export const GlobalContext: FuzzContext = new FuzzContext();

@@ -1,7 +1,5 @@
 import type * as Ast from "@/ast/ast";
 import type { MakeAstFactory } from "@/ast/generated/make-factory";
-import { NonTerminal } from "../../src/generators/uniform-expr-gen";
-import { GlobalContext } from "../../src/context";
 import { Interpreter } from "@/optimizer/interpreter";
 import { CompilerContext } from "@/context/context";
 import type { AstUtil } from "@/ast/util";
@@ -17,32 +15,37 @@ import { Blockchain } from "@ton/sandbox";
 import type { Sender } from "@ton/core";
 import { toNano } from "@ton/core";
 import * as fs from "node:fs";
+import { FuzzContext } from "@/test/fuzzer/src/context";
+import { NonTerminal } from "@/test/fuzzer/src/uniform-expr-types";
+import { expect } from "expect";
+import { prettyPrint } from "@/ast/ast-printer";
 
-export function bindingsAndExpressionPrtinter([bindings, expr]: [
-    Ast.StatementLet[],
-    Ast.Expression,
+export function bindingsAndExpressionPrtinter([bindings, exprs]: [
+    [Ast.TypedParameter, Ast.Expression][][],
+    Ast.Expression[],
 ]) {
-    return (
-        `\n-----\nGenerated bindings:\n` +
-        bindings.map((bind) => GlobalContext.format(bind)).join("\n") +
-        `\nGenerated expression:\n` +
-        GlobalContext.format(expr) +
-        `\n-----\n`
-    );
+    return "";
+    //`\n-----\nGenerated bindings:\n` +
+    //bindings.map((bind) => FuzzContext.instance.format(bind)).join("\n")
+    //`\nGenerated parameter values:\n` +
+    //paramValues +
+    //`\nGenerated expressions:\n` +
+    //exprs.map(expr => FuzzContext.instance.format(expr)).join("\n") +
+    //`\n-----\n`
 }
 
 export function makeExpressionGetter(
     makeF: MakeAstFactory,
     getterName: string,
-    bindings: Ast.Statement[],
+    funParameters: Ast.TypedParameter[],
     returnExpr: Ast.Expression,
 ): Ast.FunctionDef {
     return makeF.makeDummyFunctionDef(
         [makeF.makeDummyFunctionAttributeGet(undefined)],
         makeF.makeDummyId(getterName),
-        makeF.makeDummyTypeId("Int"),
-        [],
-        bindings.concat([makeF.makeDummyStatementReturn(returnExpr)]),
+        makeF.makeDummyTypeId("Bool"),
+        funParameters,
+        [makeF.makeDummyStatementReturn(returnExpr)],
     );
 }
 
@@ -50,7 +53,7 @@ export function createModuleWithExpressionGetter(
     makeF: MakeAstFactory,
     contractName: string,
     getterName: string,
-    bindings: Ast.Statement[],
+    funParameters: Ast.TypedParameter[],
     returnExpr: Ast.Expression,
 ): Ast.Module {
     // throw new Error("createContract is not implemented yet"); // TODO: implement, probably should place this function in a different file
@@ -62,7 +65,14 @@ export function createModuleWithExpressionGetter(
                 [],
                 [],
                 [],
-                [makeExpressionGetter(makeF, getterName, bindings, returnExpr)],
+                [
+                    makeExpressionGetter(
+                        makeF,
+                        getterName,
+                        funParameters,
+                        returnExpr,
+                    ),
+                ],
             ),
         ],
     );
@@ -96,8 +106,8 @@ export type ExpressionTestingEnvironment = {
 };
 
 export async function setupEnvironment(): Promise<ExpressionTestingEnvironment> {
-    const astF = GlobalContext.astF;
-    const makeF = GlobalContext.makeF;
+    const astF = FuzzContext.instance.astF;
+    const makeF = FuzzContext.instance.makeF;
     const customStdlib = filterStdlib(
         parseStandardLibrary(astF),
         makeF,
@@ -159,17 +169,30 @@ export async function setupEnvironment(): Promise<ExpressionTestingEnvironment> 
 
 export function interpretExpression(
     { astUtil, emptyCompilerContext }: ExpressionTestingEnvironment,
-    bindings: Ast.StatementLet[],
+    bindings: [Ast.TypedParameter, Ast.Expression][][],
     expr: Ast.Expression,
-): bigint | Error {
+): (boolean | Error)[] | Error {
     try {
         const interpreter = new Interpreter(astUtil, emptyCompilerContext);
-        bindings.forEach((bind) => {
-            interpreter.interpretStatement(bind);
-        });
-        const result = interpreter.interpretExpression(expr);
-        expect(result.kind).toBe("number");
-        return (result as Ast.Number).value;
+        // Interpret the bindings as if they were let statements
+        const makeF = FuzzContext.instance.makeF;
+        const resultValues: (boolean | Error)[] = [];
+        for (const args of bindings) {
+            const lets = args.map(([param, value]) =>
+                makeF.makeDummyStatementLet(param.name, param.type, value),
+            );
+            lets.forEach((letStmt) => {
+                interpreter.interpretStatement(letStmt);
+            });
+            try {
+                const result = interpreter.interpretExpression(expr);
+                expect(result.kind).toBe("boolean");
+                resultValues.push((result as Ast.Boolean).value);
+            } catch (e: any) {
+                resultValues.push(e);
+            }
+        }
+        return resultValues;
     } catch (e: any) {
         return e as Error;
     }
@@ -184,14 +207,14 @@ export async function compileExpression(
         blockchain,
         sender,
     }: ExpressionTestingEnvironment,
-    bindings: Ast.StatementLet[],
+    bindings: [Ast.TypedParameter, Ast.Expression][][],
     expr: Ast.Expression,
-): Promise<bigint | Error> {
+): Promise<(boolean | Error)[] | Error> {
     const contractModule = createModuleWithExpressionGetter(
         makeF,
         contractNameToCompile,
-        "getInt",
-        bindings,
+        "getBool",
+        bindings[0]!.map(([param, _]) => param),
         expr,
     );
 
@@ -206,7 +229,17 @@ export async function compileExpression(
         const contractMap = await contractMapPromise;
         const contract = contractMap.get(contractNameToCompile)!;
         await contract.send(sender, { value: toNano(1) });
-        return await contract.getInt();
+        const result: (boolean | Error)[] = [];
+        for (const args of bindings) {
+            try {
+                result.push(
+                    await contract.getBool(args.map(([_, val]) => val)),
+                );
+            } catch (e: any) {
+                result.push(e);
+            }
+        }
+        return result;
     } catch (e: any) {
         return e;
     }
@@ -255,8 +288,8 @@ export function generateBindings(
 */
 
 export function saveExpressionTest(
-    bindings: Ast.StatementLet[],
-    expr: Ast.Expression,
+    bindings: [Ast.TypedParameter, Ast.Expression][][],
+    expr: Ast.Expression[],
     compilationResult: Error,
     interpretationResult: Error,
     outputStream: fs.WriteStream,

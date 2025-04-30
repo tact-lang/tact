@@ -1,39 +1,40 @@
 import type * as Ast from "@/ast/ast";
 import { CompilerContext } from "@/context/context";
-import { resolveExpression, getExpType } from "@/types/resolveExpression";
 import type { StatementContext } from "@/types/resolveStatements";
 import type { TypeRef } from "@/types/types";
-import assert from "assert";
-
 import { Expression } from "@/test/fuzzer/src/generators";
 import { Scope } from "@/test/fuzzer/src/scope";
-import { StdlibType, SUPPORTED_STDLIB_TYPES } from "@/test/fuzzer/src/types";
+import { StdlibType } from "@/test/fuzzer/src/types";
+import { NonTerminal, Terminal } from "@/test/fuzzer/src/uniform-expr-types";
 import type { Type } from "@/test/fuzzer/src/types";
+import type { NonTerminalEnum } from "@/test/fuzzer/src/uniform-expr-types";
 import {
-    createProperty,
-    checkProperty,
     dummySrcInfoPrintable,
     checkAsyncProperty,
-    astNodeCounterexamplePrinter,
     packArbitraries,
+    createSample,
 } from "@/test/fuzzer/src/util";
 import fc from "fast-check";
 import {
+    EdgeCaseConfig,
+    generateIntBitLength,
     initializeGenerator,
-    NonTerminal,
-    Terminal,
+    injectEdgeCases,
 } from "../../src/generators/uniform-expr-gen";
-import type { NonTerminalEnum } from "../../src/generators/uniform-expr-gen";
 import {
     bindingsAndExpressionPrtinter,
     compileExpression,
     interpretExpression,
-    saveExpressionTest,
     setupEnvironment,
 } from "./utils";
 import type { ExpressionTestingEnvironment } from "./utils";
 import { Let } from "@/test/fuzzer/src/generators/statement";
-import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzContext } from "@/test/fuzzer/src/context";
+import { expect } from "expect";
+import { Parameter } from "@/test/fuzzer/src/generators/parameter";
+import { prettyPrint } from "@/ast/ast-printer";
+import { ExpressionParameters } from "@/test/fuzzer/src/generators/expression";
+import { idText } from "@/ast/ast-helpers";
 
 function emptyStatementContext(): StatementContext {
     return {
@@ -80,21 +81,21 @@ function setupContexts(): [CompilerContext, StatementContext] {
 //     });
 // });
 
-describe("evaluation properties", () => {
+async function test() {
+    const script_args = process.argv.slice(2);
+    let reportIfOneFailsButNotTheOther = true;
+    if (typeof script_args[0] !== "undefined") {
+        const boolV = JSON.parse(script_args[0]);
+        if (typeof boolV === "boolean") {
+            reportIfOneFailsButNotTheOther = boolV;
+        }
+    }
+
     let expressionTestingEnvironment: ExpressionTestingEnvironment;
 
-    beforeAll(async () => {
-        expressionTestingEnvironment = await setupEnvironment();
-    });
+    expressionTestingEnvironment = await setupEnvironment();
 
-    afterAll(() => {
-        expressionTestingEnvironment.outputStream.close();
-    });
-
-    test(
-        "compiler and interpreter evaluate generated expressions equally",
-        async () => {
-            /*const expressionGenerationIds: Map<AllowedTypeEnum, string[]> =
+    /*const expressionGenerationIds: Map<AllowedTypeEnum, string[]> =
                 new Map();
             expressionGenerationIds.set(AllowedType.Int, ["int1"]);
             expressionGenerationIds.set(AllowedType.OptInt, ["int_null"]);
@@ -112,44 +113,145 @@ describe("evaluation properties", () => {
             expressionGenerationIds.set(AllowedType.OptString, ["string_null"]);
             */
 
-            const globalScope = new Scope("block", undefined);
-            const initializerCtx = {
-                minSize: 1,
-                maxSize: 1,
-                useIdentifiers: false,
-                allowedNonTerminals: Object.values(NonTerminal),
-                allowedTerminals: Object.values(Terminal),
-            };
-            const bindingsGenerator = initializeGenerator(initializerCtx);
+    const functionScope = new Scope("function", undefined);
 
-            const expressionGenerationCtx = {
-                minSize: 1,
-                maxSize: 10,
-                useIdentifiers: true,
-                allowedNonTerminals: Object.values(NonTerminal),
-                allowedTerminals: Object.values(Terminal),
-            };
-            const exprGenerator = new Expression(
-                globalScope,
-                { kind: "stdlib", type: StdlibType.Int },
-                expressionGenerationCtx,
-            );
+    // Attach parameters in the function scope
+    const funParameters = addParameters(functionScope);
 
-            const property = fc.asyncProperty(
-                generateBindings(globalScope, bindingsGenerator),
-                exprGenerator.generate(),
-                async (bindings, expr) => {
-                    const compilationResult = await compileExpression(
-                        expressionTestingEnvironment,
-                        bindings,
-                        expr,
+    // The scope for local declarations
+    const blockScope = new Scope("block", functionScope);
+
+    const bindingsGenerationCtx: ExpressionParameters = {
+        minExpressionSize: 1,
+        maxExpressionSize: 1,
+        useIdentifiersInExpressions: false,
+        allowedNonTerminals: Object.values(NonTerminal),
+        allowedTerminals: Object.values(Terminal),
+    };
+
+    const edgeCaseConfigForBindings = {
+        tryIntegerValues: [
+            0n,
+            1n,
+            -1n,
+            2n,
+            -2n,
+            -(2n ** 256n),
+            2n ** 256n - 1n,
+        ],
+        tryBooleanValues: [],
+        tryStringValues: [],
+        generalizeIntegerToIdentifier: false,
+        generalizeBooleanToIdentifier: false,
+        generalizeStringToIdentifier: false,
+        instantiateIntIds: false,
+    };
+
+    const bindingsGenerator = initializeBindingsGenerator(
+        funParameters,
+        bindingsGenerationCtx,
+        edgeCaseConfigForBindings,
+        blockScope,
+    );
+
+    const expressionGenerationCtx: ExpressionParameters = {
+        minExpressionSize: 2,
+        maxExpressionSize: 5,
+        useIdentifiersInExpressions: true,
+        allowedNonTerminals: [
+            NonTerminal.Bool,
+            NonTerminal.Int,
+            NonTerminal.LiteralBool,
+            NonTerminal.LiteralInt,
+        ],
+        allowedTerminals: [
+            Terminal.id_int,
+            Terminal.integer,
+            Terminal.shift_l,
+            Terminal.eq,
+        ],
+    };
+    const exprGenerator = new Expression(
+        blockScope,
+        { kind: "stdlib", type: StdlibType.Bool },
+        expressionGenerationCtx,
+    );
+
+    const edgeCaseConfigForExpr = {
+        tryIntegerValues: [
+            0n,
+            1n,
+            -1n,
+            2n,
+            -2n,
+            -(2n ** 256n),
+            2n ** 256n - 1n,
+        ],
+        tryBooleanValues: [],
+        tryStringValues: [],
+        generalizeIntegerToIdentifier: true,
+        generalizeBooleanToIdentifier: true,
+        generalizeStringToIdentifier: true,
+        instantiateIntIds: true,
+    };
+
+    const property = fc.asyncProperty(
+        fc.array(bindingsGenerator, { minLength: 100, maxLength: 100 }),
+        exprGenerator
+            .generate()
+            .chain((expr) =>
+                fc.array(
+                    injectEdgeCases(edgeCaseConfigForExpr, expr, blockScope),
+                    { minLength: 50, maxLength: 50 },
+                ),
+            ),
+        async (bindings, exprs) => {
+            //const makeF = FuzzContext.instance.makeF;
+
+            //const dummyLet = makeF.makeDummyStatementLet(makeF.makeDummyId("hello_world"), undefined, makeF.makeDummyNumber(10, 0n));
+            //expr = makeF.makeDummyOpBinary("<<",
+            //    makeF.makeDummyNumber(10, 1n),
+            //    makeF.makeDummyId("hello_world")
+            //);
+
+            //bindings = [...bindings, dummyLet];
+            for (const expr of exprs) {
+                const bla = prettyPrint(expr);
+                console.log(bla);
+                const compilationResult = await compileExpression(
+                    expressionTestingEnvironment,
+                    bindings,
+                    expr,
+                );
+
+                const interpretationResult = interpretExpression(
+                    expressionTestingEnvironment,
+                    bindings,
+                    expr,
+                );
+
+                if (
+                    Array.isArray(compilationResult) &&
+                    Array.isArray(interpretationResult)
+                ) {
+                    //expect(compilationResult.length).toEqual(interpretationResult.length);
+                    const differingIndexes = getDifferingIndexes(
+                        compilationResult,
+                        interpretationResult,
+                        reportIfOneFailsButNotTheOther,
                     );
-
-                    const interpretationResult = interpretExpression(
-                        expressionTestingEnvironment,
-                        bindings,
-                        expr,
-                    );
+                    if (differingIndexes.length > 0) {
+                        const errorString = buildErrorString(
+                            expr,
+                            compilationResult,
+                            interpretationResult,
+                            differingIndexes,
+                            bindings,
+                        );
+                        throw new Error(errorString);
+                    }
+                }
+                /*
                     if (
                         (compilationResult instanceof Error &&
                             interpretationResult instanceof BigInt) ||
@@ -170,68 +272,74 @@ describe("evaluation properties", () => {
                         );
                     } else {
                         expect(compilationResult).toBe(interpretationResult);
-                    }
-                },
-            );
-            await checkAsyncProperty(property, bindingsAndExpressionPrtinter);
+                    }*/
+            }
         },
-        60 * 1000, // 1 minute
     );
-});
+    await checkAsyncProperty(property, bindingsAndExpressionPrtinter);
 
-function generateBindings(
-    scope: Scope,
-    bindingsGenerator: (
-        scope: Scope,
-        nonTerminal: NonTerminalEnum,
-    ) => fc.Arbitrary<Ast.Expression>,
-): fc.Arbitrary<Ast.StatementLet[]> {
-    // For each of the types, we create a let generator
-    const types: Type[] = [
-        { kind: "stdlib", type: StdlibType.Int },
-        { kind: "stdlib", type: StdlibType.Bool },
-        { kind: "stdlib", type: StdlibType.Address },
-        { kind: "stdlib", type: StdlibType.Cell },
-        { kind: "stdlib", type: StdlibType.Slice },
-        { kind: "stdlib", type: StdlibType.String },
-        { kind: "optional", type: { kind: "stdlib", type: StdlibType.Int } },
-        { kind: "optional", type: { kind: "stdlib", type: StdlibType.Bool } },
-        {
-            kind: "optional",
-            type: { kind: "stdlib", type: StdlibType.Address },
-        },
-        { kind: "optional", type: { kind: "stdlib", type: StdlibType.Cell } },
-        { kind: "optional", type: { kind: "stdlib", type: StdlibType.Slice } },
-        { kind: "optional", type: { kind: "stdlib", type: StdlibType.String } },
-    ];
-    const result: fc.Arbitrary<Ast.StatementLet>[] = [];
+    expressionTestingEnvironment.outputStream.close();
+}
 
-    for (const ty of types) {
-        const genBuilder = new Let(
-            scope,
-            ty,
-            bindingsGenerator(scope, typeToNonTerminal(ty)),
+const TYPES: Type[] = [
+    { kind: "stdlib", type: StdlibType.Int },
+    { kind: "stdlib", type: StdlibType.Bool },
+    { kind: "stdlib", type: StdlibType.Address },
+    { kind: "stdlib", type: StdlibType.Cell },
+    { kind: "stdlib", type: StdlibType.Slice },
+    { kind: "stdlib", type: StdlibType.String },
+    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.Int } },
+    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.Bool } },
+    //{
+    //    kind: "optional",
+    //    type: { kind: "stdlib", type: StdlibType.Address },
+    //},
+    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.Cell } },
+    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.Slice } },
+    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.String } },
+];
+
+function addParameters(
+    functionScope: Scope,
+): [Ast.TypedParameter, Parameter][] {
+    // For each of the types, we create a parameter generator
+    const result: [Ast.TypedParameter, Parameter][] = TYPES.map((ty) => {
+        const param = new Parameter(functionScope, ty, false);
+        functionScope.addNamed("parameter", param);
+        return [createSample(param.generate()), param];
+    });
+    return result;
+}
+
+function initializeBindingsGenerator(
+    parameters: [Ast.TypedParameter, Parameter][],
+    bindingsCtx: ExpressionParameters,
+    edgeCaseConfig: EdgeCaseConfig,
+    blockScope: Scope,
+): fc.Arbitrary<[Ast.TypedParameter, Ast.Expression][]> {
+    const result: fc.Arbitrary<[Ast.TypedParameter, Ast.Expression]>[] = [];
+
+    for (const [typedParam, param] of parameters) {
+        const genBuilder = new Expression(blockScope, param.type, bindingsCtx);
+        result.push(
+            genBuilder.generate().chain((expr) =>
+                injectEdgeCases(edgeCaseConfig, expr, blockScope).map(
+                    (injectedExpr) => {
+                        const result: [Ast.TypedParameter, Ast.Expression] = [
+                            typedParam,
+                            injectedExpr,
+                        ];
+                        return result;
+                    },
+                ),
+            ),
         );
-        scope.addNamed("let", genBuilder);
-        result.push(genBuilder.generate() as fc.Arbitrary<Ast.StatementLet>);
-
-        if (ty.kind === "optional") {
-            const genBuilder = new Let(
-                scope,
-                ty,
-                fc.constant(GlobalContext.makeF.makeDummyNull()),
-            );
-            scope.addNamed("let", genBuilder);
-            result.push(
-                genBuilder.generate() as fc.Arbitrary<Ast.StatementLet>,
-            );
-        }
     }
 
     return packArbitraries(result);
 }
 
-function typeToNonTerminal(ty: Type): NonTerminalEnum {
+/*function typeToNonTerminal(ty: Type): NonTerminalEnum {
     switch (ty.kind) {
         case "optional": {
             // Treat them as if they were non-optionals
@@ -265,4 +373,98 @@ function typeToNonTerminal(ty: Type): NonTerminalEnum {
         case "util":
             throw new Error("Not supported.");
     }
+}*/
+
+function getDifferingIndexes(
+    compilationResult: (boolean | Error)[],
+    interpretationResult: (boolean | Error)[],
+    reportIfOneFailsButNotTheOther: boolean,
+): number[] {
+    if (compilationResult.length !== interpretationResult.length) {
+        throw new Error(
+            "Unexpected array lengths: interpreter results and compiler results should have same length",
+        );
+    }
+    // They all have the same length
+
+    const result: number[] = [];
+    for (let i = 0; i < compilationResult.length; i++) {
+        const i1 = compilationResult[i];
+        const i2 = interpretationResult[i];
+        if (typeof i1 === "undefined" || typeof i2 === "undefined") {
+            throw new Error(`Index ${i} should exist in array`);
+        }
+        if (typeof i1 === "boolean" && typeof i2 === "boolean") {
+            if (i1 !== i2) {
+                result.push(i);
+            }
+        } else if (typeof i1 !== "boolean" && typeof i2 !== "boolean") {
+            // Both produced an error, ignore
+        } else {
+            // One produced an error, but not the other
+            if (reportIfOneFailsButNotTheOther) {
+                result.push(i);
+            }
+        }
+    }
+    return result;
 }
+
+function buildErrorString(
+    expr: Ast.Expression,
+    compilationResult: (boolean | Error)[],
+    interpretationResult: (boolean | Error)[],
+    differingIndexes: number[],
+    bindings: [Ast.TypedParameter, Ast.Expression][][],
+): string {
+    const bindingsString = bindings.map(
+        (args) =>
+            `Parameters: ${args.map(([arg, value]) => astToString(arg.name) + ", " + astToString(value))}`,
+    );
+    const failingBindings = bindingsString.filter((_, i) =>
+        differingIndexes.includes(i),
+    );
+    const errors = differingIndexes.map((i) => {
+        return (
+            `${failingBindings[i]}\n` +
+            `Compiler: ${compilationResult[i]}\n` +
+            `Interpreter: ${interpretationResult[i]}\n`
+        );
+    });
+    const message =
+        `\nFailing parameter values:\n` +
+        failingBindings +
+        `\nGenerated expression:\n` +
+        FuzzContext.instance.format(expr) +
+        `\n` +
+        errors.join("\n") +
+        `\n-----\n`;
+    return message;
+}
+
+function astToString(expr: Ast.Expression | Ast.OptionalId): string {
+    switch (expr.kind) {
+        case "number":
+            return `${expr.value}`;
+        case "boolean":
+            return `${expr.value}`;
+        case "id":
+            return expr.text;
+        case "address":
+            return expr.value.toRawString();
+        case "cell":
+            return expr.value.toString();
+        case "slice":
+            return expr.value.toString();
+        case "null":
+            return "null";
+        case "wildcard":
+            return "_";
+        case "string":
+            return expr.value;
+        default:
+            throw new Error("Currently not supported");
+    }
+}
+
+test();

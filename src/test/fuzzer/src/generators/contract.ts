@@ -18,7 +18,7 @@ import fc from "fast-check";
 import { Field } from "@/test/fuzzer/src/generators/field";
 import { ConstantDef } from "@/test/fuzzer/src/generators/constant";
 import { FuzzConfig } from "@/test/fuzzer/src/config";
-import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 export interface ContractParameters {
     /**
@@ -228,7 +228,7 @@ export class Contract extends NamedGenerativeEntity<Ast.Contract> {
                 packArbitraries(requestedMethods),
             )
             .map((decls) =>
-                GlobalContext.makeF.makeDummyContract(
+                FuzzContext.instance.makeF.makeDummyContract(
                     this.name,
                     this.trait === undefined ? [] : [this.trait.name],
                     [],

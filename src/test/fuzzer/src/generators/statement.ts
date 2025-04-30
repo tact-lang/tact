@@ -26,8 +26,8 @@ import { StdlibType, UtilType, tyToAstType } from "@/test/fuzzer/src/types";
 import type { Type } from "@/test/fuzzer/src/types";
 import { Scope } from "@/test/fuzzer/src/scope";
 import type { NamedScopeItemKind } from "@/test/fuzzer/src/scope";
-import { GlobalContext } from "@/test/fuzzer/src/context";
 import { FuzzConfig } from "@/test/fuzzer/src/config";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 /** Type all the imperative constructions have. */
 const STMT_TY: Type = { kind: "util", type: UtilType.Unit };
@@ -52,7 +52,7 @@ export class Return extends GenerativeEntity<Ast.Statement> {
                 : new Expression(this.parentScope, this.type).generate();
 
         return gen.map((expr) =>
-            GlobalContext.makeF.makeDummyStatementReturn(expr),
+            FuzzContext.instance.makeF.makeDummyStatementReturn(expr),
         );
     }
 }
@@ -77,7 +77,7 @@ export class Let extends NamedGenerativeEntity<Ast.Statement> {
 
     generate(): fc.Arbitrary<Ast.Statement> {
         return this.expr.map((expr) =>
-            GlobalContext.makeF.makeDummyStatementLet(
+            FuzzContext.instance.makeF.makeDummyStatementLet(
                 this.name,
                 tyToAstType(this.type),
                 expr,
@@ -108,7 +108,10 @@ export class AssignStatement extends GenerativeEntity<Ast.Statement> {
     generate(): fc.Arbitrary<Ast.Statement> {
         const assigns: fc.Arbitrary<Ast.Statement>[] = [
             this.rhs.map((expr) =>
-                GlobalContext.makeF.makeDummyStatementAssign(this.path, expr),
+                FuzzContext.instance.makeF.makeDummyStatementAssign(
+                    this.path,
+                    expr,
+                ),
             ),
         ];
         // Only integer types in augmented assignments are supported.
@@ -128,7 +131,7 @@ export class AssignStatement extends GenerativeEntity<Ast.Statement> {
                             "%=",
                         )
                         .map((op) =>
-                            GlobalContext.makeF.makeDummyStatementAugmentedAssign(
+                            FuzzContext.instance.makeF.makeDummyStatementAugmentedAssign(
                                 op,
                                 this.path,
                                 expr,
@@ -157,12 +160,12 @@ export class WhileUntilStatement extends GenerativeEntity<Ast.Statement> {
         return packArbitraries(this.body).chain((stmts) =>
             this.condition.map((expr) => {
                 if (this.kind === "until") {
-                    return GlobalContext.makeF.makeDummyStatementUntil(
+                    return FuzzContext.instance.makeF.makeDummyStatementUntil(
                         expr,
                         stmts,
                     );
                 } else {
-                    return GlobalContext.makeF.makeDummyStatementWhile(
+                    return FuzzContext.instance.makeF.makeDummyStatementWhile(
                         expr,
                         stmts,
                     );
@@ -190,7 +193,10 @@ export class RepeatStatement extends GenerativeEntity<Ast.Statement> {
         }).generate();
         return iterations.chain((iter) =>
             packArbitraries(this.body).map((stmts) =>
-                GlobalContext.makeF.makeDummyStatementRepeat(iter, stmts),
+                FuzzContext.instance.makeF.makeDummyStatementRepeat(
+                    iter,
+                    stmts,
+                ),
             ),
         );
     }
@@ -212,7 +218,7 @@ export class ForeachStatement extends GenerativeEntity<Ast.Statement> {
     generate(): fc.Arbitrary<Ast.Statement> {
         return this.map.chain((map) =>
             packArbitraries(this.body).map((stmts) =>
-                GlobalContext.makeF.makeDummyStatementForEach(
+                FuzzContext.instance.makeF.makeDummyStatementForEach(
                     generateAstIdFromName(this.keyName),
                     generateAstIdFromName(this.valueName),
                     map,
@@ -247,7 +253,7 @@ export class ConditionStatement extends GenerativeEntity<Ast.StatementCondition>
         return condition.chain((cond) =>
             packArbitraries(this.trueStmts).chain((trueStmts) =>
                 falseArb.map((falseStmts) =>
-                    GlobalContext.makeF.makeDummyStatementCondition(
+                    FuzzContext.instance.makeF.makeDummyStatementCondition(
                         cond,
                         trueStmts,
                         falseStmts,
@@ -271,7 +277,10 @@ export class TryCatch extends GenerativeEntity<Ast.Statement> {
     }
     generate(): fc.Arbitrary<Ast.Statement> {
         return packArbitraries(this.tryStmts).map((stmts) =>
-            GlobalContext.makeF.makeDummyStatementTry(stmts, this.catchBlock),
+            FuzzContext.instance.makeF.makeDummyStatementTry(
+                stmts,
+                this.catchBlock,
+            ),
         );
     }
 }
@@ -289,7 +298,7 @@ export class StatementExpression extends GenerativeEntity<Ast.Statement> {
     }
     generate(): fc.Arbitrary<Ast.Statement> {
         return this.expr.map((expr) =>
-            GlobalContext.makeF.makeDummyStatementExpression(expr),
+            FuzzContext.instance.makeF.makeDummyStatementExpression(expr),
         );
     }
 }
@@ -406,9 +415,9 @@ export class Statement extends GenerativeEntity<Ast.Statement> {
         const arbs = fieldEntries.map(([name, ty]) => {
             const expr = new Expression(this.parentScope, ty).generate();
             return new AssignStatement(
-                GlobalContext.makeF.makeDummyFieldAccess(
+                FuzzContext.instance.makeF.makeDummyFieldAccess(
                     makeSelfID(),
-                    GlobalContext.makeF.makeDummyId(name),
+                    FuzzContext.instance.makeF.makeDummyId(name),
                 ),
                 expr,
                 ty,
@@ -469,9 +478,9 @@ export class Statement extends GenerativeEntity<Ast.Statement> {
             .getNamedEntriesRecursive(...entryKinds)
             .filter(([_, mapTy]: [string, Type]) => mapTy.kind === "map")
             .map(([mapName, _]: [string, Type]) =>
-                GlobalContext.makeF.makeDummyFieldAccess(
+                FuzzContext.instance.makeF.makeDummyFieldAccess(
                     makeSelfID(),
-                    GlobalContext.makeF.makeDummyId(mapName),
+                    FuzzContext.instance.makeF.makeDummyId(mapName),
                 ),
             );
     }
@@ -614,7 +623,7 @@ export class Statement extends GenerativeEntity<Ast.Statement> {
      */
     private makeDummyStmt(): fc.Arbitrary<Ast.Statement> {
         return new WhileUntilStatement(
-            fc.constant(GlobalContext.makeF.makeDummyBoolean(false)),
+            fc.constant(FuzzContext.instance.makeF.makeDummyBoolean(false)),
             [],
             "while",
         ).generate();

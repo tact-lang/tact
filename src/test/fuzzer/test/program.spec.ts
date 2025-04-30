@@ -11,8 +11,8 @@ import {
     checkProperty,
     astNodeCounterexamplePrinter,
 } from "@/test/fuzzer/src/util";
-import { GlobalContext } from "@/test/fuzzer/src/context";
 import { getAstFactory } from "@/ast/ast-helpers";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 describe("properties", () => {
     it("generates well-typed programs", () => {
@@ -23,7 +23,7 @@ describe("properties", () => {
                 let ctx = createContext(program);
                 ctx = enableFeatures(ctx, "external");
                 precompile(ctx, factoryAst);
-                GlobalContext.resetDepth();
+                FuzzContext.instance.resetDepth();
             },
         );
         checkProperty(property, astNodeCounterexamplePrinter);
@@ -31,8 +31,8 @@ describe("properties", () => {
 
     it("generates reproducible AST", () => {
         // Setting a fixed seed for reproducibility
-        const originalSeed = GlobalContext.config.seed;
-        GlobalContext.config.seed = 42;
+        const originalSeed = FuzzContext.instance.config.seed;
+        FuzzContext.instance.config.seed = 42;
 
         let program1: string | undefined;
         let program2: string | undefined;
@@ -40,11 +40,11 @@ describe("properties", () => {
         // Create a single property that generates two programs
         const property = createProperty(new Program().generate(), (program) => {
             if (program1 === undefined) {
-                program1 = GlobalContext.format(program, "ast");
+                program1 = FuzzContext.instance.format(program, "ast");
             } else {
-                program2 = GlobalContext.format(program, "ast");
+                program2 = FuzzContext.instance.format(program, "ast");
             }
-            GlobalContext.resetDepth();
+            FuzzContext.instance.resetDepth();
         });
 
         // Execute property twice
@@ -64,6 +64,6 @@ describe("properties", () => {
         assert.equal(program1, program2, "Both programs should be identical");
 
         // Restore the original seed
-        GlobalContext.config.seed = originalSeed;
+        FuzzContext.instance.config.seed = originalSeed;
     });
 });

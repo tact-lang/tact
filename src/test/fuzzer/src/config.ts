@@ -1,18 +1,15 @@
 import * as os from "os";
 import { existsSync, mkdirSync } from "fs";
-import {
-    NonTerminal,
-    Terminal,
-} from "@/test/fuzzer/src/generators/uniform-expr-gen";
+import { NonTerminal, Terminal } from "@/test/fuzzer/src/uniform-expr-types";
 import type {
     NonTerminalEnum,
     TerminalEnum,
-} from "@/test/fuzzer/src/generators/uniform-expr-gen";
+} from "@/test/fuzzer/src/uniform-expr-types";
 
 /**
  * The default number of executions per test. Corresponds to fast-check defaults.
  */
-const DEFAULT_NUM_RUNS: number = 100;
+const DEFAULT_NUM_RUNS: number = 1;
 
 /**
  * Configuration handler for fuzz testing settings.

@@ -6,7 +6,7 @@ import type { Scope } from "@/test/fuzzer/src/scope";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
-import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 /**
  * An object that encapsulates a generated Ast.FieldDecl.
@@ -39,7 +39,7 @@ export class Field extends NamedGenerativeEntity<Ast.FieldDecl> {
 
     generate(): fc.Arbitrary<Ast.FieldDecl> {
         return (this.init ?? fc.constant(undefined)).map((i) =>
-            GlobalContext.makeF.makeDummyFieldDecl(
+            FuzzContext.instance.makeF.makeDummyFieldDecl(
                 this.name,
                 tyToAstType(this.type),
                 i,

@@ -12,7 +12,7 @@ import type { Scope } from "@/test/fuzzer/src/scope";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
-import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 /**
  * An object that encapsulates a generated Ast.ConstantDecl.
@@ -34,7 +34,7 @@ export class ConstantDecl extends NamedGenerativeEntity<Ast.ConstantDecl> {
         extraAttrs: Ast.ConstantAttribute[],
     ): fc.Arbitrary<Ast.ConstantDecl> {
         return fc.constant(
-            GlobalContext.makeF.makeDummyConstantDecl(
+            FuzzContext.instance.makeF.makeDummyConstantDecl(
                 this.getAttributes(extraAttrs),
                 this.name,
                 tyToAstType(this.type),
@@ -94,7 +94,7 @@ export class ConstantDef extends NamedGenerativeEntity<Ast.ConstantDef> {
     ): fc.Arbitrary<Ast.ConstantDef> {
         const chosenInit = init ?? this.init;
         return chosenInit.map((init) =>
-            GlobalContext.makeF.makeDummyConstantDef(
+            FuzzContext.instance.makeF.makeDummyConstantDef(
                 extraAttrs,
                 this.name,
                 tyToAstType(this.type),

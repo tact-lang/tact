@@ -18,8 +18,8 @@ import {
     createContext,
     enableFeatures,
 } from "@/test/fuzzer/test/testUtils";
-import { GlobalContext } from "@/test/fuzzer/src/context";
 import { getAstFactory } from "@/ast/ast-helpers";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 function getContract(program: Ast.Module): Ast.Contract | undefined {
     for (const entry of program.items) {
@@ -106,7 +106,7 @@ describe("properties", () => {
             //
             // Instead, the original NUM_RUNS option is used to generate the requested number of
             // programs with a different structure.
-            const numRuns = GlobalContext.config.numRuns;
+            const numRuns = FuzzContext.instance.config.numRuns;
 
             const compileAndCheckProperty = async () => {
                 const property = fc.asyncProperty(

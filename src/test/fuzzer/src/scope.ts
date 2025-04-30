@@ -405,6 +405,20 @@ export class Scope {
         );
     }
 
+    public findTypeOfNameRecursive(
+        kind: NamedScopeItemKind,
+        name: string,
+    ): Type | undefined {
+        const elem = this.getNamedEntriesRecursive(kind).find(
+            ([entryName, _]) => entryName === name,
+        );
+        if (typeof elem !== "undefined") {
+            return elem[1];
+        } else {
+            return undefined;
+        }
+    }
+
     /**
      * Checks if the given scope or its parents define an identifier.
      */

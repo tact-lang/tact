@@ -21,9 +21,9 @@ import {
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 
 import fc from "fast-check";
-import { GlobalContext } from "@/test/fuzzer/src/context";
 import { Expression } from "@/test/fuzzer/src/generators/expression";
 import { FuzzConfig } from "@/test/fuzzer/src/config";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 /**
  * Utility type, used inside function definition and declaration classes and in shared functions.
@@ -230,7 +230,7 @@ export class FunctionDef extends NamedGenerativeEntity<Ast.FunctionDef> {
     ): fc.Arbitrary<Ast.FunctionDef> {
         const returnTy = getReturnType(this.type as FunctionType);
         return this.generateBody().map((stmt) =>
-            GlobalContext.makeF.makeDummyFunctionDef(
+            FuzzContext.instance.makeF.makeDummyFunctionDef(
                 getAttributes(extraAttrs, this.kind, false),
                 this.name,
                 isUnit(returnTy) ? undefined : tyToAstType(returnTy),
@@ -274,7 +274,7 @@ export class FunctionDecl extends NamedGenerativeEntity<Ast.FunctionDecl> {
     ): fc.Arbitrary<Ast.FunctionDecl> {
         const returnTy = getReturnType(this.type as FunctionType);
         return fc.constant(
-            GlobalContext.makeF.makeDummyFunctionDecl(
+            FuzzContext.instance.makeF.makeDummyFunctionDecl(
                 getAttributes(extraAttrs, this.kind, true),
                 this.name,
                 isUnit(returnTy) ? undefined : tyToAstType(returnTy),

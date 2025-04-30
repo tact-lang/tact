@@ -15,11 +15,11 @@ import { Scope } from "@/test/fuzzer/src/scope";
 import { NamedGenerativeEntity } from "@/test/fuzzer/src/generators/generator";
 import { getStdlibTraits } from "@/test/fuzzer/src/stdlib";
 import fc from "fast-check";
-import { GlobalContext } from "@/test/fuzzer/src/context";
 import { ConstantDef } from "@/test/fuzzer/src/generators/constant";
 import { Expression } from "@/test/fuzzer/src/generators/expression";
 import { FunctionDef } from "@/test/fuzzer/src/generators/function";
 import { FuzzConfig } from "@/test/fuzzer/src/config";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 export interface ProgramParameters {
     /** Add definitions that mock stdlib ones to the generated program. */
@@ -245,7 +245,7 @@ export class Program extends NamedGenerativeEntity<Ast.Module> {
                 ...traits,
                 ...contracts,
             )
-            .map((decls) => GlobalContext.makeF.makeModule([], decls));
+            .map((decls) => FuzzContext.instance.makeF.makeModule([], decls));
     }
 
     /**

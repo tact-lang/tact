@@ -10,7 +10,7 @@ import {
 import type { Scope } from "@/test/fuzzer/src/scope";
 import type { TypeRef } from "@/types/types";
 import fc from "fast-check";
-import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 
 /**
  * Types from Tact stdlib.
@@ -128,12 +128,12 @@ export const SUPPORTED_STDLIB_TYPES: StdlibType[] = [
 ];
 
 function makePrimitiveType(name: string): Ast.PrimitiveTypeDecl {
-    return GlobalContext.makeF.makeDummyPrimitiveTypeDecl(
+    return FuzzContext.instance.makeF.makeDummyPrimitiveTypeDecl(
         generateAstIdFromName(name),
     );
 }
 function makeASTTypeRef(name: string): Ast.TypeId {
-    return GlobalContext.makeF.makeDummyTypeId(name);
+    return FuzzContext.instance.makeF.makeDummyTypeId(name);
 }
 
 function makeTypeRef(name: string): TypeRef {
@@ -181,7 +181,7 @@ export function tyToAstTypeDecl(ty: Type): Ast.TypeDecl {
 }
 export function tyToAstType(ty: Type, isBounced = false): Ast.Type {
     const generateAstTypeId = (text: string) =>
-        GlobalContext.makeF.makeDummyTypeId(text);
+        FuzzContext.instance.makeF.makeDummyTypeId(text);
 
     switch (ty.kind) {
         case "stdlib": {
@@ -193,20 +193,24 @@ export function tyToAstType(ty: Type, isBounced = false): Ast.Type {
         }
         case "struct":
         case "message": {
-            const simpleType = GlobalContext.makeF.makeDummyTypeId(ty.name);
+            const simpleType = FuzzContext.instance.makeF.makeDummyTypeId(
+                ty.name,
+            );
             return isBounced
-                ? GlobalContext.makeF.makeDummyBouncedMessageType(simpleType)
+                ? FuzzContext.instance.makeF.makeDummyBouncedMessageType(
+                      simpleType,
+                  )
                 : simpleType;
         }
         case "map":
-            return GlobalContext.makeF.makeDummyMapType(
+            return FuzzContext.instance.makeF.makeDummyMapType(
                 generateAstTypeId(tyToString(ty.type.key)),
                 undefined,
                 generateAstTypeId(tyToString(ty.type.value)),
                 undefined,
             );
         case "optional":
-            return GlobalContext.makeF.makeDummyOptionalType(
+            return FuzzContext.instance.makeF.makeDummyOptionalType(
                 tyToAstType(ty.type, isBounced),
             );
         default:

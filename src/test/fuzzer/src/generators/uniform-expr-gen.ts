@@ -3,34 +3,45 @@ import type { FactoryAst } from "@/ast/ast-helpers";
 import { getMakeAst } from "@/ast/generated/make-factory";
 import { getAstUtil } from "@/ast/util";
 import { Interpreter } from "@/optimizer/interpreter";
-import { GlobalContext } from "@/test/fuzzer/src/context";
+import { FuzzContext } from "@/test/fuzzer/src/context";
 import type { Scope } from "@/test/fuzzer/src/scope";
 import { StdlibType } from "@/test/fuzzer/src/types";
+import { NonTerminal, Terminal } from "@/test/fuzzer/src/uniform-expr-types";
 import type { Type } from "@/test/fuzzer/src/types";
-import { stringify } from "@/test/fuzzer/src/util";
+import type {
+    NonTerminalEnum,
+    TerminalEnum,
+} from "@/test/fuzzer/src/uniform-expr-types";
+import { packArbitraries, stringify } from "@/test/fuzzer/src/util";
 import { beginCell } from "@ton/core";
 import type { Address, Cell } from "@ton/core";
 import { sha256_sync } from "@ton/crypto";
 import { TreasuryContract } from "@ton/sandbox";
 import * as fc from "fast-check";
 
-/*export const AllowedType = {
-    Int: "Int",
-    OptInt: "Int?",
-    Bool: "Bool",
-    OptBool: "Bool?",
-    Cell: "Cell",
-    OptCell: "Cell?",
-    Slice: "Slice",
-    OptSlice: "Slice?",
-    Address: "Address",
-    OptAddress: "Address?",
-    String: "String",
-    OptString: "String?",
-} as const;
+export type EdgeCaseConfig = {
+    // On each integer node, try the following integer values, in addition to the existing node
+    tryIntegerValues: bigint[];
 
-export type AllowedTypeEnum = (typeof AllowedType)[keyof typeof AllowedType];
-*/
+    // On each boolean node, try the following boolean values, in addition to the existing node
+    tryBooleanValues: boolean[];
+
+    // On each string node, try the following string values, in addition to the existing node
+    tryStringValues: string[];
+
+    // On each integer node, try to replace it with an identifier in the scope.
+    generalizeIntegerToIdentifier: boolean;
+
+    // On each boolean node, try to replace it with an identifier in the scope.
+    generalizeBooleanToIdentifier: boolean;
+
+    // On each string node, try to replace it with an identifier in the scope.
+    generalizeStringToIdentifier: boolean;
+
+    // On each identifier node, check if the identifier is an integer. If so, instantiate it with any
+    // integer edge case in tryIntegerValues.
+    instantiateIntIds: boolean;
+};
 
 export type GenInitConfig = {
     // The minimum expression size
@@ -50,99 +61,11 @@ export type GenInitConfig = {
     useIdentifiers: boolean;
 };
 
-export const NonTerminal = {
-    Initial: { terminal: false, literal: false, id: 0 },
-    Int: { terminal: false, literal: false, id: 1 },
-    OptInt: { terminal: false, literal: false, id: 2 },
-    LiteralInt: { terminal: false, literal: true, id: 3 },
-    // LiteralOptInt: { terminal: false, literal: true, id: 4 },
-    Bool: { terminal: false, literal: false, id: 4 },
-    OptBool: { terminal: false, literal: false, id: 5 },
-    LiteralBool: { terminal: false, literal: true, id: 6 },
-    // LiteralOptBool: { terminal: false, literal: true, id: 8 },
-    Cell: { terminal: false, literal: false, id: 7 },
-    OptCell: { terminal: false, literal: false, id: 8 },
-    LiteralCell: { terminal: false, literal: true, id: 9 },
-    // LiteralOptCell: { terminal: false, literal: true, id: 12 },
-    Slice: { terminal: false, literal: false, id: 10 },
-    OptSlice: { terminal: false, literal: false, id: 11 },
-    LiteralSlice: { terminal: false, literal: true, id: 12 },
-    // LiteralOptSlice: { terminal: false, literal: true, id: 16 },
-    Address: { terminal: false, literal: false, id: 13 },
-    OptAddress: { terminal: false, literal: false, id: 14 },
-    LiteralAddress: { terminal: false, literal: true, id: 15 },
-    // LiteralOptAddress: { terminal: false, literal: true, id: 20 },
-    String: { terminal: false, literal: false, id: 16 },
-    OptString: { terminal: false, literal: false, id: 17 },
-    LiteralString: { terminal: false, literal: true, id: 18 },
-    // LiteralOptString: { terminal: false, literal: true, id: 24 },
-} as const;
-
-export type NonTerminalEnum = (typeof NonTerminal)[keyof typeof NonTerminal];
-
 type GenericNonTerminal = {
     id: number;
     literal: boolean;
     terminal: false;
 };
-
-export const Terminal = {
-    integer: { terminal: true, id: 1 },
-    add: { terminal: true, id: 2 },
-    minus: { terminal: true, id: 3 },
-    mult: { terminal: true, id: 4 },
-    div: { terminal: true, id: 5 },
-    mod: { terminal: true, id: 6 },
-    shift_r: { terminal: true, id: 7 },
-    shift_l: { terminal: true, id: 8 },
-    bit_and: { terminal: true, id: 9 },
-    bit_or: { terminal: true, id: 10 },
-    bit_xor: { terminal: true, id: 11 },
-    // unary_plus: { terminal: true, id: 12 },
-    unary_minus: { terminal: true, id: 12 },
-    bit_not: { terminal: true, id: 13 },
-
-    bool: { terminal: true, id: 14 },
-    eq: { terminal: true, id: 15 },
-    neq: { terminal: true, id: 16 },
-    lt: { terminal: true, id: 17 },
-    le: { terminal: true, id: 18 },
-    gt: { terminal: true, id: 19 },
-    ge: { terminal: true, id: 20 },
-    and: { terminal: true, id: 21 },
-    or: { terminal: true, id: 22 },
-    not: { terminal: true, id: 23 },
-
-    cell: { terminal: true, id: 24 },
-    //code_of: { terminal: true, id: 25 },
-
-    slice: { terminal: true, id: 25 },
-
-    address: { terminal: true, id: 26 },
-
-    string: { terminal: true, id: 27 },
-
-    // opt_inj: { terminal: true, id: 30 },
-    // null: { terminal: true, id: 30 },
-    non_null_assert: { terminal: true, id: 28 },
-
-    cond: { terminal: true, id: 29 },
-
-    id_int: { terminal: true, id: 30 },
-    id_opt_int: { terminal: true, id: 31 },
-    id_bool: { terminal: true, id: 32 },
-    id_opt_bool: { terminal: true, id: 33 },
-    id_cell: { terminal: true, id: 34 },
-    id_opt_cell: { terminal: true, id: 35 },
-    id_slice: { terminal: true, id: 36 },
-    id_opt_slice: { terminal: true, id: 37 },
-    id_address: { terminal: true, id: 38 },
-    id_opt_address: { terminal: true, id: 39 },
-    id_string: { terminal: true, id: 40 },
-    id_opt_string: { terminal: true, id: 41 },
-} as const;
-
-export type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];
 
 type Token = TerminalEnum | GenericNonTerminal;
 
@@ -1362,7 +1285,11 @@ function makeExpression(
     }
 
     function makeIdentifier(ty: Type): fc.Arbitrary<Ast.Expression> {
-        const names = scope.getNamesRecursive("let", ty);
+        const names = [
+            ...scope.getNamesRecursive("let", ty),
+            ...scope.getNamesRecursive("parameter", ty),
+        ];
+
         if (names.length === 0) {
             throw new Error(
                 `There must exist at least one identifier for type ${stringify(ty, 0)}`,
@@ -1380,7 +1307,7 @@ function makeExpression(
     ): fc.Arbitrary<Ast.Expression> {
         switch (head.id) {
             case Terminal.integer.id: {
-                return _generateIntBitLength(257, true).map((i) =>
+                return generateIntBitLength(257, true).map((i) =>
                     makeF.makeDummyNumber(10, i),
                 );
             }
@@ -1759,7 +1686,7 @@ export function initializeGenerator(
 
         return fc.oneof(...weightedSizes).chain((size) => {
             return makeExpression(
-                GlobalContext.astF,
+                FuzzContext.instance.astF,
                 nonTerminalId,
                 scope,
                 nonTerminalCounts,
@@ -1789,7 +1716,7 @@ function _generateCell(): fc.Arbitrary<Cell> {
     });
 }
 
-function _generateIntBitLength(
+export function generateIntBitLength(
     bitLength: number,
     signed: boolean,
 ): fc.Arbitrary<bigint> {
@@ -1820,6 +1747,373 @@ export function generateString(
     constValue?: string,
 ): fc.Arbitrary<Ast.String> {
     return generateStringValue(nonEmpty, constValue).map((s) =>
-        GlobalContext.makeF.makeDummyString(s),
+        FuzzContext.instance.makeF.makeDummyString(s),
     );
 }
+
+export function injectEdgeCases(
+    edgeCases: EdgeCaseConfig,
+    baseExpr: Ast.Expression,
+    scope: Scope,
+): fc.Arbitrary<Ast.Expression> {
+    const makeF = FuzzContext.instance.makeF;
+    switch (baseExpr.kind) {
+        case "address": {
+            return fc.constant(baseExpr);
+        }
+        case "cell": {
+            return fc.constant(baseExpr);
+        }
+        case "slice": {
+            return fc.constant(baseExpr);
+        }
+        case "null": {
+            return fc.constant(baseExpr);
+        }
+        case "number": {
+            const finalCases: Ast.Expression[] = [
+                baseExpr,
+                ...edgeCases.tryIntegerValues.map((i) =>
+                    makeF.makeDummyNumber(10, i),
+                ),
+            ];
+            if (edgeCases.generalizeIntegerToIdentifier) {
+                const ty: Type = { kind: "stdlib", type: StdlibType.Int };
+                const names = [
+                    ...scope.getNamesRecursive("let", ty),
+                    ...scope.getNamesRecursive("parameter", ty),
+                ];
+                finalCases.push(
+                    ...names.map((name) => makeF.makeDummyId(name)),
+                );
+            }
+            return fc.constantFrom(...finalCases);
+        }
+        case "boolean": {
+            const finalCases: Ast.Expression[] = [
+                baseExpr,
+                ...edgeCases.tryBooleanValues.map((b) =>
+                    makeF.makeDummyBoolean(b),
+                ),
+            ];
+            if (edgeCases.generalizeBooleanToIdentifier) {
+                const ty: Type = { kind: "stdlib", type: StdlibType.Bool };
+                const names = [
+                    ...scope.getNamesRecursive("let", ty),
+                    ...scope.getNamesRecursive("parameter", ty),
+                ];
+                finalCases.push(
+                    ...names.map((name) => makeF.makeDummyId(name)),
+                );
+            }
+            return fc.constantFrom(...finalCases);
+        }
+        case "string": {
+            const finalCases: Ast.Expression[] = [
+                baseExpr,
+                ...edgeCases.tryStringValues.map((s) =>
+                    makeF.makeDummyString(s),
+                ),
+            ];
+            if (edgeCases.generalizeStringToIdentifier) {
+                const ty: Type = { kind: "stdlib", type: StdlibType.String };
+                const names = [
+                    ...scope.getNamesRecursive("let", ty),
+                    ...scope.getNamesRecursive("parameter", ty),
+                ];
+                finalCases.push(
+                    ...names.map((name) => makeF.makeDummyId(name)),
+                );
+            }
+            return fc.constantFrom(...finalCases);
+        }
+        case "id": {
+            const finalCases: fc.WeightedArbitrary<Ast.Expression>[] = [
+                { arbitrary: fc.constant(baseExpr), weight: 5 },
+            ];
+            if (edgeCases.instantiateIntIds) {
+                const ty: Type = { kind: "stdlib", type: StdlibType.Int };
+                const names = [
+                    ...scope.getNamesRecursive("let", ty),
+                    ...scope.getNamesRecursive("parameter", ty),
+                ];
+                if (names.includes(baseExpr.text)) {
+                    const weightedGens = edgeCases.tryIntegerValues.map((i) => {
+                        return {
+                            arbitrary: fc.constant(
+                                makeF.makeDummyNumber(10, i),
+                            ),
+                            weight: 1,
+                        };
+                    });
+                    finalCases.push(...weightedGens);
+                }
+            }
+            return fc.oneof(...finalCases);
+        }
+        case "code_of": {
+            return fc.constant(baseExpr);
+        }
+        case "init_of": {
+            const argsGen = baseExpr.args.map((arg) =>
+                injectEdgeCases(edgeCases, arg, scope),
+            );
+            return fc
+                .tuple(...argsGen)
+                .map((args) => makeF.makeDummyInitOf(baseExpr.contract, args));
+        }
+        case "conditional": {
+            const condGen = injectEdgeCases(
+                edgeCases,
+                baseExpr.condition,
+                scope,
+            );
+            const trueBranchGen = injectEdgeCases(
+                edgeCases,
+                baseExpr.thenBranch,
+                scope,
+            );
+            const falseBranchGen = injectEdgeCases(
+                edgeCases,
+                baseExpr.elseBranch,
+                scope,
+            );
+            return fc
+                .tuple(condGen, trueBranchGen, falseBranchGen)
+                .map(([cond, trueBranch, falseBranch]) =>
+                    makeF.makeDummyConditional(cond, trueBranch, falseBranch),
+                );
+        }
+        case "field_access": {
+            const aggrGen = injectEdgeCases(
+                edgeCases,
+                baseExpr.aggregate,
+                scope,
+            );
+            return aggrGen.map((aggr) =>
+                makeF.makeDummyFieldAccess(aggr, baseExpr.field),
+            );
+        }
+        case "method_call": {
+            const selfGen = injectEdgeCases(edgeCases, baseExpr.self, scope);
+            const argsGen = packArbitraries(
+                baseExpr.args.map((arg) =>
+                    injectEdgeCases(edgeCases, arg, scope),
+                ),
+            );
+
+            return fc.tuple(selfGen, argsGen).map(([self, args]) => {
+                return makeF.makeDummyMethodCall(self, baseExpr.method, args);
+            });
+        }
+        case "static_call": {
+            const argsGen = baseExpr.args.map((arg) =>
+                injectEdgeCases(edgeCases, arg, scope),
+            );
+            return fc
+                .tuple(...argsGen)
+                .map((args) =>
+                    makeF.makeDummyStaticCall(baseExpr.function, args),
+                );
+        }
+        case "op_binary": {
+            const leftGen = injectEdgeCases(edgeCases, baseExpr.left, scope);
+            const rightGen = injectEdgeCases(edgeCases, baseExpr.right, scope);
+            return fc
+                .tuple(leftGen, rightGen)
+                .map(([left, right]) =>
+                    makeF.makeDummyOpBinary(baseExpr.op, left, right),
+                );
+        }
+        case "op_unary": {
+            const operandGen = injectEdgeCases(
+                edgeCases,
+                baseExpr.operand,
+                scope,
+            );
+            return operandGen.map((operand) =>
+                makeF.makeDummyOpUnary(baseExpr.op, operand),
+            );
+        }
+        case "struct_instance": {
+            const argsGen = baseExpr.args.map((arg) =>
+                injectEdgeCases(edgeCases, arg.initializer, scope).map((init) =>
+                    makeF.makeDummyStructFieldInitializer(arg.field, init),
+                ),
+            );
+            return fc
+                .tuple(...argsGen)
+                .map((args) =>
+                    makeF.makeDummyStructInstance(baseExpr.type, args),
+                );
+        }
+        case "struct_value": {
+            // A struct value needs to be transformed into struct instance, because some of its literals may have been transformed into identifiers
+            const argsGen = baseExpr.args.map((arg) =>
+                injectEdgeCases(edgeCases, arg.initializer, scope).map((init) =>
+                    makeF.makeDummyStructFieldInitializer(arg.field, init),
+                ),
+            );
+            return fc
+                .tuple(...argsGen)
+                .map((args) =>
+                    makeF.makeDummyStructInstance(baseExpr.type, args),
+                );
+        }
+    }
+}
+/*
+export function injectEdgeCases(edgeCases: EdgeCaseConfig, baseExpr: Ast.Expression, scope: Scope): Ast.Expression[] {
+    const makeF = FuzzContext.instance.makeF;
+    switch(baseExpr.kind) {
+        case "address": {
+            return [baseExpr];
+        }
+        case "cell": {
+            return [baseExpr];
+        }
+        case "slice": {
+            return [baseExpr];
+        }
+        case "null": {
+            return [baseExpr];
+        }
+        case "number": {
+            const finalCases: Ast.Expression[] = [baseExpr, ...edgeCases.tryIntegerValues.map(i => makeF.makeDummyNumber(10, i))];
+            if (edgeCases.generalizeIntegerToIdentifier) {
+                const ty: Type = {kind: "stdlib", type: StdlibType.Int};
+                const names = [
+                    ...scope.getNamesRecursive("let", ty),
+                    ...scope.getNamesRecursive("parameter", ty)
+                ];
+                finalCases.push(...names.map(name => makeF.makeDummyId(name)));
+            }
+            return finalCases;
+        }
+        case "boolean": {
+            const finalCases: Ast.Expression[] = [baseExpr, ...edgeCases.tryBooleanValues.map(b => makeF.makeDummyBoolean(b))];
+            if (edgeCases.generalizeBooleanToIdentifier) {
+                const ty: Type = {kind: "stdlib", type: StdlibType.Bool};
+                const names = [
+                    ...scope.getNamesRecursive("let", ty),
+                    ...scope.getNamesRecursive("parameter", ty)
+                ];
+                finalCases.push(...names.map(name => makeF.makeDummyId(name)));
+            }
+            return finalCases;
+        }
+        case "string": {
+            const finalCases: Ast.Expression[] = [baseExpr, ...edgeCases.tryStringValues.map(s => makeF.makeDummyString(s))];
+            if (edgeCases.generalizeStringToIdentifier) {
+                const ty: Type = {kind: "stdlib", type: StdlibType.String};
+                const names = [
+                    ...scope.getNamesRecursive("let", ty),
+                    ...scope.getNamesRecursive("parameter", ty)
+                ];
+                finalCases.push(...names.map(name => makeF.makeDummyId(name)));
+            }
+            return finalCases;
+        }
+        case "id": {
+            return [baseExpr];
+        }
+        case "code_of": {
+            return [baseExpr];
+        }
+        case "init_of": {
+            const args = baseExpr.args.map(arg => injectEdgeCases(edgeCases, arg, scope));
+            const firstRow = args[0];
+            if (typeof firstRow === "undefined") {
+                return [baseExpr];
+            }
+            return cartesianProduct(firstRow, args.slice(1)).map(args => makeF.makeDummyInitOf(baseExpr.contract, args));
+        }
+        case "conditional": {
+            const conds = injectEdgeCases(edgeCases, baseExpr.condition, scope);
+            const trueBranches = injectEdgeCases(edgeCases, baseExpr.thenBranch, scope);
+            const falseBranches = injectEdgeCases(edgeCases, baseExpr.elseBranch, scope);
+            return cartesianProduct3(conds, trueBranches, falseBranches).map(([cond, trueBranch, falseBranch]) => 
+                makeF.makeDummyConditional(cond, trueBranch, falseBranch)
+            );
+        }
+        case "field_access": {
+            const aggrs = injectEdgeCases(edgeCases, baseExpr.aggregate, scope);
+            return aggrs.map(aggr => makeF.makeDummyFieldAccess(aggr, baseExpr.field));
+        }
+        case "method_call": {
+            const selfs = injectEdgeCases(edgeCases, baseExpr.self, scope);
+            const args = baseExpr.args.map(arg => injectEdgeCases(edgeCases, arg, scope));
+           
+            return cartesianProduct(selfs, args).map(selfAndArgs => {
+                const selfPart = selfAndArgs[0];
+                if (typeof selfPart === "undefined") {
+                    throw new Error("self part expected");
+                }
+                return makeF.makeDummyMethodCall(selfPart, baseExpr.method, selfAndArgs.slice(1));
+            });
+        }
+        case "static_call": {
+            const args = baseExpr.args.map(arg => injectEdgeCases(edgeCases, arg, scope));
+            const firstRow = args[0];
+            if (typeof firstRow === "undefined") {
+                return [baseExpr];
+            }
+            return cartesianProduct(firstRow, args.slice(1)).map(args => makeF.makeDummyStaticCall(baseExpr.function, args));
+        }
+        case "op_binary": {
+            const lefts = injectEdgeCases(edgeCases, baseExpr.left, scope);
+            const rights = injectEdgeCases(edgeCases, baseExpr.right, scope);
+            return cartesianProduct2(lefts, rights).map(([left, right]) => 
+                makeF.makeDummyOpBinary(baseExpr.op, left, right)
+            );
+        }
+        case "op_unary": {
+            const operands = injectEdgeCases(edgeCases, baseExpr.operand, scope);
+            return operands.map(operand => makeF.makeDummyOpUnary(baseExpr.op, operand));
+        }
+        case "struct_instance": {
+            throw new Error("Not supported");
+        }
+        case "struct_value": {
+            throw new Error("Not supported");
+        }
+    }
+}
+
+function cartesianProduct3(f: Ast.Expression[], s: Ast.Expression[], t: Ast.Expression[]): [Ast.Expression, Ast.Expression, Ast.Expression][] {
+    const result: [Ast.Expression, Ast.Expression, Ast.Expression][] = [];
+    for (const e1 of f) {
+        for (const e2 of s) {
+            for (const e3 of t) {
+                result.push([e1, e2, e3])
+            }
+        }
+    }
+    return result;
+}
+
+function cartesianProduct2(f: Ast.Expression[], s: Ast.Expression[]): [Ast.Expression, Ast.Expression][] {
+    const result: [Ast.Expression, Ast.Expression][] = [];
+    for (const e1 of f) {
+        for (const e2 of s) {
+            result.push([e1, e2])
+        }
+    }
+    return result;
+}
+
+function cartesianProduct(first: Ast.Expression[], rest: Ast.Expression[][]): Ast.Expression[][] {
+    const firstRowOfRest = rest[0];
+    if (typeof firstRowOfRest === "undefined") {
+        return [first];
+    }
+    const productOfRest = cartesianProduct(first, rest.slice(1));
+    const result: Ast.Expression[][] = [];
+    for (const expr of first) {
+        for (const prod of productOfRest) {
+            result.push([expr, ...prod]);
+        }
+    }
+    return result;
+}
+*/
