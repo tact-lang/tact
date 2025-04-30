@@ -68,6 +68,8 @@
     "src/asm/runtime/instr-gen.ts",
     "src/asm/runtime/constructors.ts",
     "src/asm/generator/*",
-    "coverage"
+    "coverage",
+    "coverage.html",
+    "coverage-*.html"
   ]
 }

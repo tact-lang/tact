@@ -37,6 +37,7 @@ import {
 
 import benchmarkResults from "@/benchmarks/jetton/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json";
+import { calculateCoverage } from "@/asm/coverage";
 
 const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
@@ -344,6 +345,10 @@ function testJetton(
                 )
             ).bits,
         ).toEqual(codeSizeResults.size["wallet bits"]);
+    });
+
+    afterAll(async () => {
+        await calculateCoverage(__dirname, jettonMinter);
     });
 }
 

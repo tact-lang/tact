@@ -65,6 +65,7 @@ export const recompileCell = (
     return compileCellWithMapping(parseResult.instructions);
 };
 
-export { generateHtml } from "@/asm/coverage/html";
-export { generateTextReport } from "@/asm/coverage/text";
+export * from "@/asm/coverage/html";
+export * from "@/asm/coverage/text";
+export * from "@/asm/coverage/integrations";
 export * from "@/asm/coverage/data";

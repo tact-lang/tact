@@ -1,5 +1,5 @@
 import "@ton/test-utils";
-import type { Address } from "@ton/core";
+import { Address } from "@ton/core";
 import { Cell, beginCell, toNano, contractAddress } from "@ton/core";
 
 import type { Sender } from "@ton/core";
@@ -28,6 +28,7 @@ import type {
 
 import benchmarkResults from "@/benchmarks/escrow/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/escrow/results_code_size.json";
+import { calculateCoverage } from "@/asm/coverage";
 
 const loadFunCEscrowBoc = () => {
     const bocEscrow = readFileSync(
@@ -319,10 +320,27 @@ describe("Escrow Gas Tests", () => {
         testEscrow(tactResult, tactCodeSize, Escrow.fromInit.bind(Escrow));
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         printBenchmarkTable(fullResults, fullCodeSizeResults, {
             implementationName: "FunC",
             printMode: "full",
         });
+
+        const contract = await Escrow.fromInit(
+            10n,
+            Address.parseRaw(
+                "0:0000000000000000000000000000000000000000000000000000000000000002",
+            ),
+            Address.parseRaw(
+                "0:0000000000000000000000000000000000000000000000000000000000000002",
+            ),
+            null,
+            1n,
+            10n,
+            false,
+            null,
+            null,
+        );
+        await calculateCoverage(__dirname, contract);
     });
 });

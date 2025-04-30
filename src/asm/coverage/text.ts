@@ -1,6 +1,15 @@
 import { CoverageSummary, InstructionStat, Line } from "@/asm/coverage/data";
 import { calculateTotalGas } from "@/asm/coverage/html";
 
+export const generateShortSummary = (summary: CoverageSummary): string => {
+    return [
+        "Coverage Summary:",
+        `Lines: ${summary.coveredLines}/${summary.totalLines} (${summary.coveragePercentage.toFixed(2)}%)`,
+        `Total Gas: ${summary.totalGas}`,
+        `Total Hits: ${summary.totalHits}`,
+    ].join("\n");
+};
+
 export const generateTextReport = (
     lines: readonly Line[],
     summary: CoverageSummary,

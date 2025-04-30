@@ -57,7 +57,11 @@ export function parseLogs(log: string): LogEntry[][] {
             currentGas = vmLine.limit; // reset gas
         }
 
-        if (vmLine.$ === "VmUnknown" && vmLine.text.includes("console.log")) {
+        if (
+            vmLine.$ === "VmUnknown" &&
+            (vmLine.text.includes("console.log") ||
+                vmLine.text.includes("Next transaction"))
+        ) {
             // new transaction
             currentGas = 1_000_000;
             transactions.push([...entries]);
