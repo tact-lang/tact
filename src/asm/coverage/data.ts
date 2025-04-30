@@ -1,4 +1,4 @@
-import { Step, TraceInfo } from "../trace";
+import { Step, TraceInfo } from "@/asm/trace";
 
 export type Line = {
     readonly line: string;

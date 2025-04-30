@@ -1,16 +1,16 @@
 import { Cell } from "@ton/core";
-import { compileCellWithMapping, decompileCell, Mapping } from "../runtime";
-import { print, parse } from "../text";
+import { compileCellWithMapping, decompileCell, Mapping } from "@/asm/runtime";
+import { print, parse } from "@/asm/text";
 import {
     createMappingInfo,
     createTraceInfoPerTransaction,
     loadFuncMapping,
-} from "../trace";
+} from "@/asm/trace";
 import {
     buildFuncLineInfo,
     buildLineInfo,
     generateCoverageSummary,
-} from "./data";
+} from "@/asm/coverage/data";
 import { readFileSync } from "node:fs";
 
 export function collectAsmCoverage(cell: Cell, logs: string) {
@@ -65,6 +65,6 @@ export const recompileCell = (
     return compileCellWithMapping(parseResult.instructions);
 };
 
-export { generateHtml } from "./html";
-export { generateTextReport } from "./text";
-export * from "./data";
+export { generateHtml } from "@/asm/coverage/html";
+export { generateTextReport } from "@/asm/coverage/text";
+export * from "@/asm/coverage/data";

@@ -1,5 +1,5 @@
-import { DictionaryInfo, Mapping } from "../runtime";
-import { Loc as InstrLoc } from "../runtime/util";
+import { DictionaryInfo, Mapping } from "@/asm/runtime";
+import { Loc as InstrLoc } from "@/asm/runtime/util";
 
 /**
  * Represents a location of the single instruction in the code.

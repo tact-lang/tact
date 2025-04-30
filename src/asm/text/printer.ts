@@ -1,7 +1,7 @@
-import { Instr } from "../runtime";
-import { Code, Dict } from "../runtime/util";
+import { Instr } from "@/asm/runtime";
+import { Code, Dict } from "@/asm/runtime/util";
 import { Slice } from "@ton/core";
-import { printInstruction } from "./printer-gen";
+import { printInstruction } from "@/asm/text/printer-gen";
 
 export class Printer {
     public indent: number;

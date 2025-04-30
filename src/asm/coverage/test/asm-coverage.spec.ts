@@ -1,9 +1,9 @@
-import { compileCell } from "../../runtime";
-import { parse } from "../../text/parse";
-import { executeInstructions } from "../../helpers/execute";
-import { collectAsmCoverage } from "../index";
-import { generateTextReport } from "../text";
-import { generateHtml } from "../html";
+import { compileCell } from "@/asm/runtime";
+import { parse } from "@/asm/text/parse";
+import { executeInstructions } from "@/asm/helpers/execute";
+import { collectAsmCoverage } from "@/asm/coverage/index";
+import { generateTextReport } from "@/asm/coverage/text";
+import { generateHtml } from "@/asm/coverage/html";
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 
 describe("asm coverage", () => {

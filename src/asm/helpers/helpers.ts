@@ -1,5 +1,5 @@
-import * as i from "../runtime";
-import * as j from "../runtime/util";
+import * as i from "@/asm/runtime";
+import * as j from "@/asm/runtime/util";
 
 export const call = (what: i.Instr, ...args: i.Instr[]): i.Instr[] => {
     return [...args, what];

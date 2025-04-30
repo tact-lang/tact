@@ -1,8 +1,8 @@
-import { decompileCell } from "../../runtime";
-import { print } from "../printer";
+import { decompileCell } from "@/asm/runtime";
+import { print } from "@/asm/text/printer";
 import { readFileSync } from "node:fs";
-import { parse } from "../parse";
-import { boc } from "../../runtime/util";
+import { parse } from "@/asm/text/parse";
+import { boc } from "@/asm/runtime/util";
 
 describe("assembly-parser", () => {
     it("should parse simple assembly", () => {

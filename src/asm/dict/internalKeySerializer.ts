@@ -8,7 +8,7 @@
 
 import { Address } from "@ton/core";
 import { BitString } from "@ton/core";
-import { paddedBufferToBits } from "./paddedBits";
+import { paddedBufferToBits } from "@/asm/dict/paddedBits";
 
 export function serializeInternalKey(value: any): string {
     if (typeof value === "number") {

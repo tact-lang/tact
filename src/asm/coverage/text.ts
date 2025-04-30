@@ -1,5 +1,5 @@
-import { CoverageSummary, InstructionStat, Line } from "./data";
-import { calculateTotalGas } from "./html";
+import { CoverageSummary, InstructionStat, Line } from "@/asm/coverage/data";
+import { calculateTotalGas } from "@/asm/coverage/html";
 
 export const generateTextReport = (
     lines: readonly Line[],

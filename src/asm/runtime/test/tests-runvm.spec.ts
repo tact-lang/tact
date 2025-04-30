@@ -13,7 +13,7 @@ import {
     SETCP,
     THROW,
     THROWARG,
-} from "../index";
+} from "@/asm/runtime/index";
 import {
     Address,
     Cell,
@@ -25,8 +25,8 @@ import {
     toNano,
 } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { call, measureGas2, when } from "../../helpers/helpers";
-import { dictMap } from "../util";
+import { call, measureGas2, when } from "@/asm/helpers/helpers";
+import { dictMap } from "@/asm/runtime/util";
 
 describe("runvm-helper", () => {
     it(`should correctly execute instructions inside runvm`, async () => {

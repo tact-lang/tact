@@ -1,4 +1,4 @@
-import * as i from "../../index";
+import * as i from "@/asm/runtime/index";
 
 export const instructions = [
     i.ACCEPT(),

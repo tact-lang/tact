@@ -1,6 +1,6 @@
-import * as i from "../../index";
-import * as u from "../../util";
-import { DefaultExoticCell, hex } from "../../util";
+import * as i from "@/asm/runtime/index";
+import * as u from "@/asm/runtime/util";
+import { DefaultExoticCell, hex } from "@/asm/runtime/util";
 
 export const instructions = [
     i.SETCP(0),

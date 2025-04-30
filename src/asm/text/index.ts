@@ -1,6 +1,6 @@
-export * from "./convert";
-export * as ast from "./grammar";
-export * from "./parse";
-export * from "./printer";
-export * from "./printer-gen";
-export * from "./util";
+export * from "@/asm/text/convert";
+export * as ast from "@/asm/text/grammar";
+export * from "@/asm/text/parse";
+export * from "@/asm/text/printer";
+export * from "@/asm/text/printer-gen";
+export * from "@/asm/text/util";

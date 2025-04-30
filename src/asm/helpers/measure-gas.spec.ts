@@ -5,8 +5,8 @@ import {
     CHKDEPTH,
     CALLDICT,
     CALLDICT_LONG,
-} from "../runtime";
-import { measureGas } from "./measure-gas";
+} from "@/asm/runtime";
+import { measureGas } from "@/asm/helpers/measure-gas";
 
 interface TestCase {
     readonly name: string;

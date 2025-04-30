@@ -1,4 +1,4 @@
-import { signatureOf, signatureString } from "../stack-signatures";
+import { signatureOf, signatureString } from "@/asm/runtime/stack-signatures";
 
 describe("instructions signatures", () => {
     it("should find correct signatures", async () => {

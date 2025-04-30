@@ -1,4 +1,4 @@
-import { parse } from "../parse";
+import { parse } from "@/asm/logs/parse";
 
 describe("logs-parse", () => {
     it("should parse NaN", () => {

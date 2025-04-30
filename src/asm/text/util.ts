@@ -12,10 +12,10 @@ import {
     Loc,
     rawCode,
     code,
-} from "../runtime/util";
-import { $ast } from "./grammar";
-import * as i from "../runtime";
-import { convertInstruction } from "./convert";
+} from "@/asm/runtime/util";
+import { $ast } from "@/asm/text/grammar";
+import * as i from "@/asm/runtime";
+import { convertInstruction } from "@/asm/text/convert";
 import { beginCell, Slice } from "@ton/core";
 
 export type Ctx = {

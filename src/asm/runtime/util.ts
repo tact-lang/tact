@@ -1,10 +1,10 @@
 import { Cell, Slice } from "@ton/core";
-import { Instr } from "./instr-gen";
-import * as c from "./constructors";
-import { codeType, compileCellWithMapping } from "./instr";
-import { CodeBuilder, InstructionWithOffset, Mapping } from "./builder";
-import { Dictionary, DictionaryValue } from "../dict/Dictionary";
-import { JMPREF } from "./constructors";
+import { Instr } from "@/asm/runtime/instr-gen";
+import * as c from "@/asm/runtime/constructors";
+import { codeType, compileCellWithMapping } from "@/asm/runtime/instr";
+import { CodeBuilder, InstructionWithOffset, Mapping } from "@/asm/runtime/builder";
+import { Dictionary, DictionaryValue } from "@/asm/dict/Dictionary";
+import { JMPREF } from "@/asm/runtime/constructors";
 
 // TODO: split:
 // 1. like `constructors.ts`

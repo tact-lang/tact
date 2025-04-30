@@ -3,7 +3,7 @@ import {
     Schema,
     StackEntry,
     StackValues,
-} from "./stack-signatures-schema";
+} from "@/asm/runtime/stack-signatures-schema";
 
 let signatures: Schema | undefined = undefined;
 

@@ -1,4 +1,4 @@
-import * as i from "../runtime";
+import * as i from "@/asm/runtime";
 import {
     Address,
     Contract,
@@ -12,7 +12,7 @@ import {
     Cell,
 } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { measureGas2 } from "./helpers";
+import { measureGas2 } from "@/asm/helpers/helpers";
 
 export const measureGas = async (code: i.Instr[]): Promise<number> => {
     class TestContract implements Contract {

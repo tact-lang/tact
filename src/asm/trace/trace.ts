@@ -1,6 +1,6 @@
-import { InstructionInfo, Loc, MappingInfo } from "./mapping";
-import { LogEntry, StackElement, parseLogs } from "./logs";
-import { FuncSourceLoc, FuncMapping } from "./func-mapping";
+import { InstructionInfo, Loc, MappingInfo } from "@/asm/trace/mapping";
+import { LogEntry, StackElement, parseLogs } from "@/asm/trace/logs";
+import { FuncSourceLoc, FuncMapping } from "@/asm/trace/func-mapping";
 
 /**
  * Describes a single step in the trace.

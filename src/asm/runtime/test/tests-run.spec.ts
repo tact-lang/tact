@@ -19,7 +19,7 @@ import {
     decompileCell,
     STREF2CONST,
     SUB,
-} from "../index";
+} from "@/asm/runtime/index";
 import {
     Address,
     beginCell,
@@ -35,11 +35,11 @@ import {
 } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Maybe } from "@ton/core/dist/utils/maybe";
-import * as i from "../index";
-import * as u from "../util";
-import { execute } from "../../helpers/helpers";
-import { code, dictMap } from "../util";
-import { print } from "../../text/printer";
+import * as i from "@/asm/runtime/index";
+import * as u from "@/asm/runtime/util";
+import { execute } from "@/asm/helpers/helpers";
+import { code, dictMap } from "@/asm/runtime/util";
+import { print } from "@/asm/text/printer";
 
 const emptyData = () => beginCell().endCell();
 

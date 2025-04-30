@@ -20,10 +20,10 @@ import {
     ENDC,
     STREF2CONST,
     SUB,
-} from "../index";
-import { call, execute } from "../../helpers/helpers";
-import { code, dictMap, hex } from "../util";
-import { print } from "../../text/printer";
+} from "@/asm/runtime/index";
+import { call, execute } from "@/asm/helpers/helpers";
+import { code, dictMap, hex } from "@/asm/runtime/util";
+import { print } from "@/asm/text/printer";
 
 const someFunction = (): Instr[] => [MUL(), ADD()];
 

@@ -1,8 +1,8 @@
-import * as $ from "./instructions";
+import * as $ from "@/asm/generator/instructions";
 import * as t from "@babel/types";
 import generateTs from "@babel/generator";
 import { writeFileSync } from "node:fs";
-import { instructionList } from "./instructions";
+import { instructionList } from "@/asm/generator/instructions";
 
 type CompiledArgs = [string, t.TSType][];
 

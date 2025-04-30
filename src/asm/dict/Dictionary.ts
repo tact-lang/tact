@@ -10,14 +10,14 @@ import { Address } from "@ton/core";
 import { beginCell } from "@ton/core";
 import { Slice, Cell } from "@ton/core";
 import { BitString } from "@ton/core";
-import { serializeDict } from "./serializeDict";
+import { serializeDict } from "@/asm/dict/serializeDict";
 import { Maybe } from "@ton/core/src/utils/maybe";
-import { CodeBuilder } from "../runtime/builder";
-import { parseDict } from "./parseDict";
+import { CodeBuilder } from "@/asm/runtime/builder";
+import { parseDict } from "@/asm/dict/parseDict";
 import {
     deserializeInternalKey,
     serializeInternalKey,
-} from "./internalKeySerializer";
+} from "@/asm/dict/internalKeySerializer";
 
 export type DictionaryKeyTypes = Address | number | bigint | Buffer | BitString;
 
