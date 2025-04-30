@@ -8,8 +8,8 @@ struct DictGet {
     flag: Int;
 }
 
-struct DictItem { 
-    amount: Int as coins; 
+struct DictItem {
+    amount: Int as coins;
     initNFTBody: Cell;
 }
 
@@ -82,7 +82,7 @@ contract NFTCollection {
             let dictItem: DictItem = DictItem.fromSlice(currNFTItem.item!!);
 
             deployNFTItem(self.commonCode, currNFTItem.itemIndex!!, dictItem.amount, dictItem.initNFTBody, self.commonData);
-            
+
             if (currNFTItem.itemIndex!! == self.nextItemIndex) {
                 self.nextItemIndex += 1;
             }

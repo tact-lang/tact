@@ -17,7 +17,7 @@ inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, paylo
     });
 }
 
-struct NFTItemInit { 
+struct NFTItemInit {
     owner: Address;
     content: Cell;
 }

@@ -43,7 +43,7 @@ struct ContractState {
     extensions: map<Address, Bool>;
 }
 
-struct DeployPlugin { 
+struct DeployPlugin {
     wc: Int as uint8;
     amount: Int as coins;
     stateInit: Cell;
@@ -57,7 +57,7 @@ struct AddPlugin {
     queryId: Int as uint64;
 }
 
-struct RemovePluginStruct { 
+struct RemovePluginStruct {
     wc: Int as uint8;
     addrHash: Int as uint256;
     amount: Int as coins;
@@ -149,7 +149,7 @@ contract WalletV4(
                 sendRawMessage(ref, mode);
             }
             */
-            
+
             while (payload.refs() != 0) {
                 let mode = payload.loadUint(8);
                 sendRawMessage(payload.loadRef(), mode);
@@ -175,7 +175,7 @@ contract WalletV4(
 
             self.state.extensions.set(addr, true);
         } else if (msg.op == 2) {
-            let addPlugin = AddPlugin.fromSlice(msg.payload);            
+            let addPlugin = AddPlugin.fromSlice(msg.payload);
 
             let addr = newAddress(addPlugin.wc, addPlugin.addrHash);
 

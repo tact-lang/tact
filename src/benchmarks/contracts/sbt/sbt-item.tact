@@ -1,7 +1,7 @@
 import "./constants";
 import "./messages-sbt";
 
-struct SBTItemInit { 
+struct SBTItemInit {
     owner: Address;
     content: Cell;
     authorityAddress: Address;
