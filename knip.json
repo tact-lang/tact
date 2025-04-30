@@ -30,7 +30,8 @@
     ".github/workflows/tact*.yml",
     ".github/actions/**/*.yml",
     "src/fmt/cst/cst-parser.ts",
-    "src/pipeline/ast-factory-store.ts"
+    "src/pipeline/ast-factory-store.ts",
+    "src/asm/**"
   ],
   "ignoreDependencies": ["@tact-lang/ton-abi", "husky", "tsconfig-paths"]
 }

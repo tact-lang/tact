@@ -25,7 +25,7 @@ import {
     toNano,
 } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { call, measureGas2, when } from "@/asm/helpers/helpers";
+import { call, measureGas2, when } from "@/asm/helpers";
 import { dictMap } from "@/asm/runtime/util";
 
 describe("runvm-helper", () => {
