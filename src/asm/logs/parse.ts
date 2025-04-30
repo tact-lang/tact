@@ -1,8 +1,7 @@
 import * as $ from "@tonstudio/parser-runtime"
 import * as G from "./grammar"
-import {$ast} from "./grammar"
-import VmParsedStack = $ast.VmParsedStack
 import {Stack, StackElement} from "./stack"
+import VmParsedStack = G.$ast.VmParsedStack
 
 export type VmLine =
     | VmLoc
@@ -69,7 +68,7 @@ export const parse = (log: string): VmLine[] => {
     return vmLines.map(it => processVmLine(it))
 }
 
-const parseLine = (line: string): $ast.vmLine => {
+const parseLine = (line: string): G.$ast.vmLine => {
     const res = $.parse({
         grammar: G.vmLine,
         space: G.space,
@@ -85,7 +84,7 @@ const parseLine = (line: string): $ast.vmLine => {
     }
 }
 
-const processVmLine = (line: $ast.vmLine): VmLine => {
+const processVmLine = (line: G.$ast.vmLine): VmLine => {
     switch (line.$) {
         case "VmLoc":
             return {
@@ -185,7 +184,7 @@ const processStack = (stack: VmParsedStack): StackElement[] => {
     return stack.values.map(it => processStackElement(it))
 }
 
-const parseNumber = (it: $ast.$number) => {
+const parseNumber = (it: G.$ast.$number) => {
     const val = Number.parseInt(it.value)
     if (it.op === "-") {
         return -val
@@ -193,7 +192,7 @@ const parseNumber = (it: $ast.$number) => {
     return val
 }
 
-const parseBigNum = (it: $ast.$number) => {
+const parseBigNum = (it: G.$ast.$number) => {
     const val = BigInt(it.value)
     if (it.op === "-") {
         return -val
@@ -201,10 +200,12 @@ const parseBigNum = (it: $ast.$number) => {
     return val
 }
 
-const processStackElement = (it: $ast.VmStackValue): StackElement => {
+const processStackElement = (it: G.$ast.VmStackValue): StackElement => {
     switch (it.value.$) {
         case "Null":
             return {$: "Null"}
+        case "NaN":
+            return {$: "NaN"}
         case "Integer":
             return {$: "Integer", value: parseBigNum(it.value.value)}
         case "Tuple":

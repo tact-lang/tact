@@ -26,6 +26,11 @@ const main = () => {
     console.log("⌛ Generating coverage reports...")
 
     const cell = Cell.fromBoc(readFileSync(bocFilePath))[0]
+    if (!cell) {
+        console.error("Cannot parse BoC")
+        process.exit(1)
+    }
+
     const logs = readFileSync(logPath, "utf8")
 
     if (funcSources !== undefined && funcMappingPath !== undefined) {

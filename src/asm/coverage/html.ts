@@ -1,20 +1,9 @@
 import {CoverageSummary, generateCoverageSummary, Line} from "./data"
-import fs from "node:fs"
-import path from "node:path"
-
-const loadTemplate = (name: string): string => {
-    const templatePath = path.join(__dirname, "templates", `${name}.html`)
-    try {
-        return fs.readFileSync(templatePath, "utf8")
-    } catch (error) {
-        console.error(`Error loading template ${name}:`, error)
-        return ""
-    }
-}
+import {MAIN_TEMPLATE, SUMMARY_TEMPLATE} from "./templates/templates"
 
 const templates = {
-    main: loadTemplate("main"),
-    summary: loadTemplate("summary"),
+    main: MAIN_TEMPLATE,
+    summary: SUMMARY_TEMPLATE,
 }
 
 const renderTemplate = (template: string, data: Record<string, unknown>): string => {
@@ -26,7 +15,7 @@ const renderTemplate = (template: string, data: Record<string, unknown>): string
 
 const formatGasCosts = (gasCosts: readonly number[]): string => {
     if (gasCosts.length === 0) return ""
-    if (gasCosts.length === 1) return gasCosts[0].toString()
+    if (gasCosts.length === 1) return gasCosts[0]?.toString() ?? "0"
 
     const gasCount: Map<number, number> = new Map()
     for (const gas of gasCosts) {
@@ -34,8 +23,8 @@ const formatGasCosts = (gasCosts: readonly number[]): string => {
     }
 
     if (gasCount.size === 1) {
-        const [[gas]] = gasCount.entries()
-        return gas.toString()
+        const firstEntry = [...gasCount.entries()][0]
+        return firstEntry?.[0]?.toString() ?? ""
     }
 
     return [...gasCount.entries()]
@@ -82,7 +71,7 @@ const generateLineHtml = (
     <div class="line-number">${lineNumber}</div>
     ${gasHtml}
     ${hitsHtml}
-    <pre>${line.line.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;")}</pre>
+    <pre>${line.line.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("'", "&#039;")}</pre>
 </div>`
 }
 

@@ -1,6 +1,6 @@
-import * as i from "../../runtime"
-import * as u from "../../runtime/util"
-import {DefaultExoticCell, hex} from "../../runtime/util"
+import * as i from "../../index"
+import * as u from "../../util"
+import {DefaultExoticCell, hex} from "../../util"
 
 export const instructions = [
     i.SETCP(0),

@@ -41,15 +41,13 @@ const generate = (): string => {
 const generateOpcode = (name: string, instruction: $.Opcode): t.Statement[] => {
     const args = generateArgs(instruction.args)
 
-    args.push([
+    const locArg: [string, t.TSType] = [
         "loc",
-        t.tsUnionType([
-            t.tsTypeReference(t.tsQualifiedName(UTIL_QUALIFIER, t.identifier("Loc"))),
-            t.tsUndefinedKeyword(),
-        ]),
-    ])
+        t.tsTypeReference(t.tsQualifiedName(UTIL_QUALIFIER, t.identifier("Loc"))),
+    ]
+    const argsWithLoc = [...args, locArg]
 
-    const params = args.map(([name, type]) => {
+    const params = argsWithLoc.map(([name, type]) => {
         const nameIdent = t.identifier(name)
         if (name === "loc") {
             nameIdent.optional = true
@@ -60,7 +58,7 @@ const generateOpcode = (name: string, instruction: $.Opcode): t.Statement[] => {
 
     const fields = [
         t.objectProperty(t.identifier("$"), t.stringLiteral(name)),
-        ...args.map(([name]) => {
+        ...argsWithLoc.map(([name]) => {
             return t.objectProperty(t.identifier(name), t.identifier(name), false, true)
         }),
     ]
@@ -84,6 +82,17 @@ const generateOpcode = (name: string, instruction: $.Opcode): t.Statement[] => {
                 ...args.map(([name, type]) => {
                     return t.tsPropertySignature(t.identifier(name), t.tsTypeAnnotation(type))
                 }),
+                t.tsPropertySignature(
+                    t.identifier("loc"),
+                    t.tsTypeAnnotation(
+                        t.tsUnionType([
+                            t.tsTypeReference(
+                                t.tsQualifiedName(UTIL_QUALIFIER, t.identifier("Loc")),
+                            ),
+                            t.tsUndefinedKeyword(),
+                        ]),
+                    ),
+                ),
             ]),
         ),
     )

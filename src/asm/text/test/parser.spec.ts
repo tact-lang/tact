@@ -1,8 +1,8 @@
 import {decompileCell} from "../../runtime"
 import {print} from "../printer"
 import {readFileSync} from "node:fs"
-import {Cell} from "@ton/core"
 import {parse} from "../parse"
+import {boc} from "../../runtime/util"
 
 describe("assembly-parser", () => {
     it("should parse simple assembly", () => {
@@ -19,11 +19,37 @@ describe("assembly-parser", () => {
         expect(print(res.instructions)).toMatchSnapshot()
     })
 
+    it("should parse assembly with raw pushref", () => {
+        const code = `
+            PUSHREF x{71}
+        `
+        const res = parse("test.asm", code)
+        if (res.$ === "ParseFailure") {
+            throw new Error("unexpected parser error")
+        }
+
+        expect(print(res.instructions)).toMatchSnapshot()
+    })
+
+    it("should parse assembly with invalid raw pushref", () => {
+        const code = `
+            PUSHREF x{22221}
+        `
+        const res = parse("test.asm", code)
+        if (res.$ === "ParseFailure") {
+            throw new Error("unexpected parser error")
+        }
+
+        expect(print(res.instructions)).toMatchSnapshot()
+    })
+
     it("should parse and print assembly", () => {
         const instructions = decompileCell(
-            Cell.fromBoc(
-                readFileSync(`${__dirname}/testdata/jetton_minter_discoverable_JettonMinter.boc`),
-            )[0],
+            boc(
+                readFileSync(
+                    `${__dirname}/testdata/jetton_minter_discoverable_JettonMinter.boc`,
+                ).toString("hex"),
+            ).asCell(),
         )
         const assembly = print(instructions)
 

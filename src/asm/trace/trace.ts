@@ -1,6 +1,5 @@
 import {InstructionInfo, Loc, MappingInfo} from "./mapping"
-import {LogEntry, parseLogs} from "./logs"
-import {StackElement} from "../logs/stack"
+import {LogEntry, StackElement, parseLogs} from "./logs"
 import {FuncSourceLoc, FuncMapping} from "./func-mapping"
 
 /**
@@ -42,6 +41,7 @@ export const createTraceInfo = (
 
         const [instructions, index] = res
         const instr = instructions[index]
+        if (!instr) return []
 
         const funcLoc =
             instr.debugSection !== -1 && funcMapping
@@ -92,6 +92,7 @@ export const createTraceInfoPerTransaction = (
 
             const [instructions, index] = res
             const instr = instructions[index + offsetZeroCount]
+            if (!instr) continue
 
             if (stepInfo.offset === 0 && offsetZeroCount === 0) {
                 // if we handled the first instruction with offset 0,

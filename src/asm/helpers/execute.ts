@@ -1,5 +1,4 @@
 import * as i from "../runtime"
-import {Instr} from "../runtime"
 import {
     Address,
     Cell,
@@ -15,7 +14,7 @@ import {
 import {Blockchain, SandboxContract, TreasuryContract} from "@ton/sandbox"
 
 export const executeInstructions = async (
-    code: Instr[],
+    code: i.Instr[],
     id: number = 0,
 ): Promise<[TupleReader, string]> => {
     class TestContract implements Contract {

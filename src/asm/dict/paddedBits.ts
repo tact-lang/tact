@@ -14,6 +14,7 @@ export function paddedBufferToBits(buff: Buffer) {
     for (let i = buff.length - 1; i >= 0; i--) {
         if (buff[i] !== 0) {
             const testByte = buff[i]
+            if (testByte === undefined) break
             // Looking for a rightmost set padding bit
             let bitPos = testByte & -testByte
             if ((bitPos & 1) == 0) {

@@ -13,7 +13,7 @@ import {
     SETCP,
     THROW,
     THROWARG,
-} from "../runtime"
+} from "../index"
 import {
     Address,
     Cell,
@@ -23,15 +23,13 @@ import {
     Sender,
     StateInit,
     toNano,
-    TupleBuilder,
-    TupleReader,
 } from "@ton/core"
 import {Blockchain, SandboxContract, TreasuryContract} from "@ton/sandbox"
-import {call, measureGas2, when} from "../helpers/helpers"
-import {dictMap} from "../runtime/util"
+import {call, measureGas2, when} from "../../helpers/helpers"
+import {dictMap} from "../util"
 
-describe("tests", () => {
-    it(`Test`, async () => {
+describe("runvm-helper", () => {
+    it(`should correctly execute instructions inside runvm`, async () => {
         const blockchain: Blockchain = await Blockchain.create()
         // blockchain.verbosity.vmLogs = "vm_logs"
         const treasure: SandboxContract<TreasuryContract> = await blockchain.treasury("treasure")
@@ -89,25 +87,20 @@ describe("tests", () => {
 })
 
 export class TestContract implements Contract {
-    readonly address: Address
-    readonly init?: StateInit
+    public readonly address: Address
+    public readonly init?: StateInit
 
-    constructor(address: Address, init?: StateInit) {
+    public constructor(address: Address, init?: StateInit) {
         this.address = address
         this.init = init
     }
 
-    async send(
+    public async send(
         provider: ContractProvider,
         via: Sender,
         args: {value: bigint; bounce?: boolean | null | undefined},
         body: Cell,
     ) {
         await provider.internal(via, {...args, body: body})
-    }
-
-    async getAny(provider: ContractProvider, id: number): Promise<TupleReader> {
-        const builder = new TupleBuilder()
-        return (await provider.get(id as any, builder.build())).stack
     }
 }

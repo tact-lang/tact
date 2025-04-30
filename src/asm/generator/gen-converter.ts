@@ -111,7 +111,7 @@ function generateConvertorFunction(instructions: [string, Opcode][]): t.ExportNa
             }),
         ),
 
-        t.throwStatement(errorMsg),
+        t.throwStatement(t.newExpression(t.identifier("Error"), [errorMsg])),
     ])
 
     return t.exportNamedDeclaration(
@@ -138,9 +138,17 @@ function generateBody(name: string, instruction: $.Opcode) {
     )
 
     const argumentsStr = len === 1 ? "argument" : "arguments"
+    const messageLiteral = t.stringLiteral(`Expected ${len} ${argumentsStr}`)
     const lenCheck = t.ifStatement(
         cond,
-        t.blockStatement([t.throwStatement(t.stringLiteral(`Expected ${len} ${argumentsStr}`))]),
+        t.blockStatement([
+            t.throwStatement(
+                t.newExpression(t.memberExpression(UTIL_QUALIFIER, t.identifier("ParseError")), [
+                    t.identifier("loc"),
+                    messageLiteral,
+                ]),
+            ),
+        ]),
     )
 
     const argsStatements = generateArgs(name, instruction.args)
@@ -251,6 +259,10 @@ const generateSimpleArgs = (name: string, args: $.arg[]): t.Statement[] => {
 
     if (args.length === 1) {
         const arg = args[0]
+        if (!arg) {
+            throw new Error(`Unexpected args count, expected 1, got ${args.length}`)
+        }
+
         if (isIntegerArg(arg)) {
             return [parseArgs("singleIntegerArg", false), returnSingleArgInstr(name)]
         }
@@ -283,6 +295,11 @@ const generateSimpleArgs = (name: string, args: $.arg[]): t.Statement[] => {
     if (args.length === 2) {
         const arg = args[0]
         const arg1 = args[1]
+
+        if (!arg || !arg1) {
+            throw new Error(`Unexpected args count, expected 2, got ${args.length}`)
+        }
+
         if (isIntegerArg(arg) && isIntegerArg(arg1)) {
             return [parseArgs("twoIntegerArgs", false), returnTwoArgInstr(name)]
         }
@@ -304,6 +321,10 @@ const generateSimpleArgs = (name: string, args: $.arg[]): t.Statement[] => {
         const arg = args[0]
         const arg1 = args[1]
         const arg2 = args[2]
+
+        if (!arg || !arg1 || !arg2) {
+            throw new Error(`Unexpected args count, expected 3, got ${args.length}`)
+        }
 
         if (isIntegerArg(arg) && isIntegerArg(arg1) && isIntegerArg(arg2)) {
             return [parseArgs("threeIntegerArgs", false), returnThreeArgInstr(name)]

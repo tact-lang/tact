@@ -23,6 +23,7 @@ VmParsedStack = "[" values:VmStackValue* "]";
 
 VmStackValue = value:(
       Null
+    / NaN
     / Integer
     / Tuple
     / TupleParen
@@ -34,6 +35,7 @@ VmStackValue = value:(
 );
 
 Null         = "()" / "(null)";
+NaN          = "NaN";
 Integer      = value:number;
 Tuple        = "[" elements:VmStackValue* "]";
 TupleParen   = "(" elements:VmStackValue* ")";

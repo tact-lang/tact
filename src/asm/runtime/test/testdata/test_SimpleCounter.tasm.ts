@@ -1,5 +1,5 @@
-import * as i from "../../runtime"
-import * as u from "../../runtime/util"
+import * as i from "../../index"
+import * as u from "../../util"
 
 export const instructions = [
     i.SETCP(0),

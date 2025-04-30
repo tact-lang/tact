@@ -1,4 +1,4 @@
-import {Step, TraceInfo} from "../trace/trace"
+import {Step, TraceInfo} from "../trace"
 
 export type Line = {
     readonly line: string
@@ -195,7 +195,7 @@ export const generateCoverageSummary = (lines: readonly Line[]): CoverageSummary
         totalHits += line.info.hits
         const trimmedLine = line.line.trim()
         const instructionName = trimmedLine.split(/\s+/)[0]
-        if (instructionName) {
+        if (instructionName !== undefined) {
             const current = instructionMap.get(instructionName) ?? {totalGas: 0, hits: 0}
             instructionMap.set(instructionName, {
                 totalGas: current.totalGas + lineGas,

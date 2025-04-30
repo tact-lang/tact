@@ -10,10 +10,16 @@ export function findCommonPrefix(src: string[], startPos = 0) {
         return ""
     }
 
-    let r = src[0].slice(startPos)
+    const first = src[0]
+    if (first === undefined) return ""
+
+    let r = first.slice(startPos)
 
     for (let i = 1; i < src.length; i++) {
         const s = src[i]
+        if (s === undefined) {
+            break
+        }
         while (s.indexOf(r, startPos) !== startPos) {
             r = r.substring(0, r.length - 1)
 
@@ -66,7 +72,11 @@ function forkMap<T>(src: Map<string, T>, prefixLen: number) {
 
 function buildNode<T>(src: Map<string, T>, prefixLen: number): Node<T> {
     if (src.size === 1) {
-        return {type: "leaf", value: Array.from(src.values())[0]}
+        const first = [...src.values()][0]
+        if (!first) {
+            throw new Error("impossible")
+        }
+        return {type: "leaf", value: first}
     }
     const {left, right} = forkMap(src, prefixLen)
 

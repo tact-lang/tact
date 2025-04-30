@@ -1,8 +1,6 @@
-import {readFileSync} from "node:fs"
-import {Schema, InstructionSignature, StackEntry, StackValues} from "./stack-signatures-schema"
+import {InstructionSignature, Schema, StackEntry, StackValues} from "./stack-signatures-schema"
 
-const signaturesData = readFileSync(`${__dirname}/stack-signatures-data.json`, "utf8")
-const signatures = JSON.parse(signaturesData) as Schema
+let signatures: Schema | undefined = undefined
 
 export const signatureString = (signature: InstructionSignature): string => {
     return (
@@ -50,6 +48,14 @@ const entryString = (entry: StackEntry): string => {
     return variants
 }
 
-export const signatureOf = (name: string): InstructionSignature | undefined => {
+export const signatureOf = async (name: string): Promise<InstructionSignature | undefined> => {
+    const fs = await import("node:fs")
+
+    if (signatures) {
+        return signatures[name]
+    }
+
+    const signaturesData = fs.readFileSync(`${__dirname}/stack-signatures-data.json`, "utf8")
+    signatures = JSON.parse(signaturesData) as Schema
     return signatures[name]
 }

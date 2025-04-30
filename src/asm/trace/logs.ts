@@ -1,5 +1,4 @@
-import {StackElement} from "../logs/stack"
-import {parse} from "../logs/parse"
+import {parse, StackElement} from "../logs"
 
 /**
  * Represents a single TVM Sandbox log entry.
@@ -71,3 +70,5 @@ export function parseLogs(log: string): LogEntry[][] {
 
     return transactions
 }
+
+export type {StackElement} from "../logs"

@@ -5,4669 +5,4669 @@ import {$ast} from "./grammar"
 export const PUSHNAN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PUSHNAN(loc)
 }
 export const ADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ADD(loc)
 }
 export const SUB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SUB(loc)
 }
 export const SUBR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SUBR(loc)
 }
 export const NEGATE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NEGATE(loc)
 }
 export const INC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.INC(loc)
 }
 export const DEC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DEC(loc)
 }
 export const MUL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MUL(loc)
 }
 export const POW2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.POW2(loc)
 }
 export const AND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.AND(loc)
 }
 export const OR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.OR(loc)
 }
 export const XOR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.XOR(loc)
 }
 export const NOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NOT(loc)
 }
 export const FITSX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.FITSX(loc)
 }
 export const UFITSX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.UFITSX(loc)
 }
 export const BITSIZE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BITSIZE(loc)
 }
 export const UBITSIZE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.UBITSIZE(loc)
 }
 export const MIN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MIN(loc)
 }
 export const MAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MAX(loc)
 }
 export const MINMAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MINMAX(loc)
 }
 export const ABS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ABS(loc)
 }
 export const QADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QADD(loc)
 }
 export const QSUB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QSUB(loc)
 }
 export const QSUBR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QSUBR(loc)
 }
 export const QNEGATE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QNEGATE(loc)
 }
 export const QINC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QINC(loc)
 }
 export const QDEC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QDEC(loc)
 }
 export const QMUL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMUL(loc)
 }
 export const QPOW2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QPOW2(loc)
 }
 export const QAND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QAND(loc)
 }
 export const QOR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QOR(loc)
 }
 export const QXOR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QXOR(loc)
 }
 export const QNOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QNOT(loc)
 }
 export const QFITSX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QFITSX(loc)
 }
 export const QUFITSX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QUFITSX(loc)
 }
 export const QBITSIZE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QBITSIZE(loc)
 }
 export const QUBITSIZE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QUBITSIZE(loc)
 }
 export const QMIN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMIN(loc)
 }
 export const QMAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMAX(loc)
 }
 export const QMINMAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMINMAX(loc)
 }
 export const QABS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QABS(loc)
 }
 export const SGN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SGN(loc)
 }
 export const LESS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LESS(loc)
 }
 export const EQUAL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.EQUAL(loc)
 }
 export const LEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LEQ(loc)
 }
 export const GREATER: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GREATER(loc)
 }
 export const NEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NEQ(loc)
 }
 export const GEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GEQ(loc)
 }
 export const CMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CMP(loc)
 }
 export const ISNAN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ISNAN(loc)
 }
 export const CHKNAN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CHKNAN(loc)
 }
 export const QSGN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QSGN(loc)
 }
 export const QLESS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLESS(loc)
 }
 export const QEQUAL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QEQUAL(loc)
 }
 export const QLEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLEQ(loc)
 }
 export const QGREATER: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QGREATER(loc)
 }
 export const QNEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QNEQ(loc)
 }
 export const QGEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QGEQ(loc)
 }
 export const QCMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QCMP(loc)
 }
 export const SEMPTY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SEMPTY(loc)
 }
 export const SDEMPTY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDEMPTY(loc)
 }
 export const SREMPTY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SREMPTY(loc)
 }
 export const SDFIRST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDFIRST(loc)
 }
 export const SDLEXCMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDLEXCMP(loc)
 }
 export const SDEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDEQ(loc)
 }
 export const SDPFX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDPFX(loc)
 }
 export const SDPFXREV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDPFXREV(loc)
 }
 export const SDPPFX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDPPFX(loc)
 }
 export const SDPPFXREV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDPPFXREV(loc)
 }
 export const SDSFX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDSFX(loc)
 }
 export const SDSFXREV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDSFXREV(loc)
 }
 export const SDPSFX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDPSFX(loc)
 }
 export const SDPSFXREV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDPSFXREV(loc)
 }
 export const SDCNTLEAD0: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDCNTLEAD0(loc)
 }
 export const SDCNTLEAD1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDCNTLEAD1(loc)
 }
 export const SDCNTTRAIL0: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDCNTTRAIL0(loc)
 }
 export const SDCNTTRAIL1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDCNTTRAIL1(loc)
 }
 export const NEWC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NEWC(loc)
 }
 export const ENDC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ENDC(loc)
 }
 export const ENDCST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ENDCST(loc)
 }
 export const STBREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STBREF(loc)
 }
 export const STB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STB(loc)
 }
 export const STREFR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STREFR(loc)
 }
 export const STBREFR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STBREFR(loc)
 }
 export const STSLICER: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STSLICER(loc)
 }
 export const STBR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STBR(loc)
 }
 export const STREFQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STREFQ(loc)
 }
 export const STBREFQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STBREFQ(loc)
 }
 export const STSLICEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STSLICEQ(loc)
 }
 export const STBQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STBQ(loc)
 }
 export const STREFRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STREFRQ(loc)
 }
 export const STBREFRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STBREFRQ(loc)
 }
 export const STSLICERQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STSLICERQ(loc)
 }
 export const STBRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STBRQ(loc)
 }
 export const ENDXC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ENDXC(loc)
 }
 export const BDEPTH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BDEPTH(loc)
 }
 export const BBITS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BBITS(loc)
 }
 export const BREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BREFS(loc)
 }
 export const BBITREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BBITREFS(loc)
 }
 export const BREMBITS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BREMBITS(loc)
 }
 export const BREMREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BREMREFS(loc)
 }
 export const BREMBITREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BREMBITREFS(loc)
 }
 export const BCHKREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BCHKREFS(loc)
 }
 export const BCHKBITREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BCHKBITREFS(loc)
 }
 export const BCHKREFSQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BCHKREFSQ(loc)
 }
 export const BCHKBITREFSQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BCHKBITREFSQ(loc)
 }
 export const STZEROES: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STZEROES(loc)
 }
 export const STONES: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STONES(loc)
 }
 export const STSAME: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STSAME(loc)
 }
 export const CTOS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CTOS(loc)
 }
 export const ENDS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ENDS(loc)
 }
 export const LDREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDREF(loc)
 }
 export const LDREFRTOS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDREFRTOS(loc)
 }
 export const SDCUTFIRST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDCUTFIRST(loc)
 }
 export const SDSKIPFIRST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDSKIPFIRST(loc)
 }
 export const SDCUTLAST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDCUTLAST(loc)
 }
 export const SDSKIPLAST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDSKIPLAST(loc)
 }
 export const SDSUBSTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDSUBSTR(loc)
 }
 export const SCUTFIRST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SCUTFIRST(loc)
 }
 export const SSKIPFIRST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SSKIPFIRST(loc)
 }
 export const SCUTLAST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SCUTLAST(loc)
 }
 export const SSKIPLAST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SSKIPLAST(loc)
 }
 export const SUBSLICE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SUBSLICE(loc)
 }
 export const SPLIT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SPLIT(loc)
 }
 export const SPLITQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SPLITQ(loc)
 }
 export const XCTOS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.XCTOS(loc)
 }
 export const XLOAD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.XLOAD(loc)
 }
 export const XLOADQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.XLOADQ(loc)
 }
 export const SCHKBITS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SCHKBITS(loc)
 }
 export const SCHKREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SCHKREFS(loc)
 }
 export const SCHKBITREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SCHKBITREFS(loc)
 }
 export const SCHKBITSQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SCHKBITSQ(loc)
 }
 export const SCHKREFSQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SCHKREFSQ(loc)
 }
 export const SCHKBITREFSQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SCHKBITREFSQ(loc)
 }
 export const PLDREFVAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDREFVAR(loc)
 }
 export const SBITS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SBITS(loc)
 }
 export const SREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SREFS(loc)
 }
 export const SBITREFS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SBITREFS(loc)
 }
 export const LDZEROES: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDZEROES(loc)
 }
 export const LDONES: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDONES(loc)
 }
 export const LDSAME: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDSAME(loc)
 }
 export const SDEPTH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDEPTH(loc)
 }
 export const CDEPTH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CDEPTH(loc)
 }
 export const CLEVEL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CLEVEL(loc)
 }
 export const CLEVELMASK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CLEVELMASK(loc)
 }
 export const CHASHIX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CHASHIX(loc)
 }
 export const CDEPTHIX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CDEPTHIX(loc)
 }
 export const EXECUTE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.EXECUTE(loc)
 }
 export const JMPX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.JMPX(loc)
 }
 export const RET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RET(loc)
 }
 export const RETALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RETALT(loc)
 }
 export const RETBOOL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RETBOOL(loc)
 }
 export const CALLCC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CALLCC(loc)
 }
 export const JMPXDATA: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.JMPXDATA(loc)
 }
 export const CALLXVARARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CALLXVARARGS(loc)
 }
 export const RETVARARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RETVARARGS(loc)
 }
 export const JMPXVARARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.JMPXVARARGS(loc)
 }
 export const CALLCCVARARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CALLCCVARARGS(loc)
 }
 export const RETDATA: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RETDATA(loc)
 }
 export const RUNVMX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RUNVMX(loc)
 }
 export const IFRET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.IFRET(loc)
 }
 export const IFNOTRET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.IFNOTRET(loc)
 }
 export const IF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.IF(loc)
 }
 export const IFNOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.IFNOT(loc)
 }
 export const IFJMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.IFJMP(loc)
 }
 export const IFNOTJMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.IFNOTJMP(loc)
 }
 export const IFELSE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.IFELSE(loc)
 }
 export const CONDSEL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CONDSEL(loc)
 }
 export const CONDSELCHK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CONDSELCHK(loc)
 }
 export const IFRETALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.IFRETALT(loc)
 }
 export const IFNOTRETALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.IFNOTRETALT(loc)
 }
 export const REPEAT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.REPEAT(loc)
 }
 export const REPEATEND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.REPEATEND(loc)
 }
 export const UNTIL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.UNTIL(loc)
 }
 export const UNTILEND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.UNTILEND(loc)
 }
 export const WHILE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.WHILE(loc)
 }
 export const WHILEEND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.WHILEEND(loc)
 }
 export const AGAIN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.AGAIN(loc)
 }
 export const AGAINEND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.AGAINEND(loc)
 }
 export const REPEATBRK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.REPEATBRK(loc)
 }
 export const REPEATENDBRK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.REPEATENDBRK(loc)
 }
 export const UNTILBRK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.UNTILBRK(loc)
 }
 export const UNTILENDBRK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.UNTILENDBRK(loc)
 }
 export const WHILEBRK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.WHILEBRK(loc)
 }
 export const WHILEENDBRK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.WHILEENDBRK(loc)
 }
 export const AGAINBRK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.AGAINBRK(loc)
 }
 export const AGAINENDBRK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.AGAINENDBRK(loc)
 }
 export const RETURNVARARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RETURNVARARGS(loc)
 }
 export const SETCONTVARARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETCONTVARARGS(loc)
 }
 export const SETNUMVARARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETNUMVARARGS(loc)
 }
 export const BLESS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLESS(loc)
 }
 export const BLESSVARARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLESSVARARGS(loc)
 }
 export const PUSHCTRX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PUSHCTRX(loc)
 }
 export const POPCTRX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.POPCTRX(loc)
 }
 export const SETCONTCTRX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETCONTCTRX(loc)
 }
 export const SETCONTCTRMANYX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETCONTCTRMANYX(loc)
 }
 export const BOOLAND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BOOLAND(loc)
 }
 export const BOOLOR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BOOLOR(loc)
 }
 export const COMPOSBOTH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.COMPOSBOTH(loc)
 }
 export const ATEXIT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ATEXIT(loc)
 }
 export const ATEXITALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ATEXITALT(loc)
 }
 export const SETEXITALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETEXITALT(loc)
 }
 export const THENRET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.THENRET(loc)
 }
 export const THENRETALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.THENRETALT(loc)
 }
 export const INVERT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.INVERT(loc)
 }
 export const BOOLEVAL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BOOLEVAL(loc)
 }
 export const SAMEALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SAMEALT(loc)
 }
 export const SAMEALTSAVE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SAMEALTSAVE(loc)
 }
 export const TRY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.TRY(loc)
 }
 export const SETCPX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETCPX(loc)
 }
 export const STDICT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STDICT(loc)
 }
 export const SKIPDICT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SKIPDICT(loc)
 }
 export const LDDICTS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDDICTS(loc)
 }
 export const PLDDICTS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDDICTS(loc)
 }
 export const LDDICT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDDICT(loc)
 }
 export const PLDDICT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDDICT(loc)
 }
 export const LDDICTQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDDICTQ(loc)
 }
 export const PLDDICTQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDDICTQ(loc)
 }
 export const PFXDICTSET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PFXDICTSET(loc)
 }
 export const PFXDICTREPLACE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PFXDICTREPLACE(loc)
 }
 export const PFXDICTADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PFXDICTADD(loc)
 }
 export const PFXDICTDEL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PFXDICTDEL(loc)
 }
 export const PFXDICTGETQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PFXDICTGETQ(loc)
 }
 export const PFXDICTGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PFXDICTGET(loc)
 }
 export const PFXDICTGETJMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PFXDICTGETJMP(loc)
 }
 export const PFXDICTGETEXEC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PFXDICTGETEXEC(loc)
 }
 export const NOP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NOP(loc)
 }
 export const SWAP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SWAP(loc)
 }
 export const DUP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DUP(loc)
 }
 export const OVER: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.OVER(loc)
 }
 export const DROP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DROP(loc)
 }
 export const NIP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NIP(loc)
 }
 export const ROT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ROT(loc)
 }
 export const ROTREV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ROTREV(loc)
 }
 export const PICK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PICK(loc)
 }
 export const ROLL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ROLL(loc)
 }
 export const ROLLREV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ROLLREV(loc)
 }
 export const BLKSWX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLKSWX(loc)
 }
 export const REVX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.REVX(loc)
 }
 export const DROPX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DROPX(loc)
 }
 export const TUCK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.TUCK(loc)
 }
 export const XCHGX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.XCHGX(loc)
 }
 export const DEPTH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DEPTH(loc)
 }
 export const CHKDEPTH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CHKDEPTH(loc)
 }
 export const ONLYTOPX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ONLYTOPX(loc)
 }
 export const ONLYX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ONLYX(loc)
 }
 export const ACCEPT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ACCEPT(loc)
 }
 export const SETGASLIMIT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETGASLIMIT(loc)
 }
 export const GASCONSUMED: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GASCONSUMED(loc)
 }
 export const COMMIT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.COMMIT(loc)
 }
 export const NOW: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NOW(loc)
 }
 export const BLOCKLT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLOCKLT(loc)
 }
 export const LTIME: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LTIME(loc)
 }
 export const RANDSEED: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RANDSEED(loc)
 }
 export const BALANCE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BALANCE(loc)
 }
 export const MYADDR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MYADDR(loc)
 }
 export const CONFIGROOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CONFIGROOT(loc)
 }
 export const MYCODE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MYCODE(loc)
 }
 export const INCOMINGVALUE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.INCOMINGVALUE(loc)
 }
 export const STORAGEFEES: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STORAGEFEES(loc)
 }
 export const PREVBLOCKSINFOTUPLE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PREVBLOCKSINFOTUPLE(loc)
 }
 export const UNPACKEDCONFIGTUPLE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.UNPACKEDCONFIGTUPLE(loc)
 }
 export const DUEPAYMENT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DUEPAYMENT(loc)
 }
 export const CONFIGDICT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CONFIGDICT(loc)
 }
 export const CONFIGPARAM: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CONFIGPARAM(loc)
 }
 export const CONFIGOPTPARAM: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CONFIGOPTPARAM(loc)
 }
 export const PREVMCBLOCKS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PREVMCBLOCKS(loc)
 }
 export const PREVKEYBLOCK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PREVKEYBLOCK(loc)
 }
 export const PREVMCBLOCKS_100: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PREVMCBLOCKS_100(loc)
 }
 export const GLOBALID: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GLOBALID(loc)
 }
 export const GETGASFEE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GETGASFEE(loc)
 }
 export const GETSTORAGEFEE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GETSTORAGEFEE(loc)
 }
 export const GETFORWARDFEE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GETFORWARDFEE(loc)
 }
 export const GETPRECOMPILEDGAS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GETPRECOMPILEDGAS(loc)
 }
 export const GETORIGINALFWDFEE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GETORIGINALFWDFEE(loc)
 }
 export const GETGASFEESIMPLE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GETGASFEESIMPLE(loc)
 }
 export const GETFORWARDFEESIMPLE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GETFORWARDFEESIMPLE(loc)
 }
 export const GETGLOBVAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.GETGLOBVAR(loc)
 }
 export const SETGLOBVAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETGLOBVAR(loc)
 }
 export const RANDU256: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RANDU256(loc)
 }
 export const RAND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RAND(loc)
 }
 export const SETRAND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETRAND(loc)
 }
 export const ADDRAND: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ADDRAND(loc)
 }
 export const HASHCU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.HASHCU(loc)
 }
 export const HASHSU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.HASHSU(loc)
 }
 export const SHA256U: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SHA256U(loc)
 }
 export const CHKSIGNU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CHKSIGNU(loc)
 }
 export const CHKSIGNS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CHKSIGNS(loc)
 }
 export const ECRECOVER: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ECRECOVER(loc)
 }
 export const SECP256K1_XONLY_PUBKEY_TWEAK_ADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SECP256K1_XONLY_PUBKEY_TWEAK_ADD(loc)
 }
 export const P256_CHKSIGNU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.P256_CHKSIGNU(loc)
 }
 export const P256_CHKSIGNS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.P256_CHKSIGNS(loc)
 }
 export const RIST255_FROMHASH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_FROMHASH(loc)
 }
 export const RIST255_VALIDATE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_VALIDATE(loc)
 }
 export const RIST255_ADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_ADD(loc)
 }
 export const RIST255_SUB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_SUB(loc)
 }
 export const RIST255_MUL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_MUL(loc)
 }
 export const RIST255_MULBASE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_MULBASE(loc)
 }
 export const RIST255_PUSHL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_PUSHL(loc)
 }
 export const RIST255_QVALIDATE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_QVALIDATE(loc)
 }
 export const RIST255_QADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_QADD(loc)
 }
 export const RIST255_QSUB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_QSUB(loc)
 }
 export const RIST255_QMUL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_QMUL(loc)
 }
 export const RIST255_QMULBASE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RIST255_QMULBASE(loc)
 }
 export const BLS_VERIFY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_VERIFY(loc)
 }
 export const BLS_AGGREGATE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_AGGREGATE(loc)
 }
 export const BLS_FASTAGGREGATEVERIFY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_FASTAGGREGATEVERIFY(loc)
 }
 export const BLS_AGGREGATEVERIFY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_AGGREGATEVERIFY(loc)
 }
 export const BLS_G1_ADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G1_ADD(loc)
 }
 export const BLS_G1_SUB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G1_SUB(loc)
 }
 export const BLS_G1_NEG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G1_NEG(loc)
 }
 export const BLS_G1_MUL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G1_MUL(loc)
 }
 export const BLS_G1_MULTIEXP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G1_MULTIEXP(loc)
 }
 export const BLS_G1_ZERO: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G1_ZERO(loc)
 }
 export const BLS_MAP_TO_G1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_MAP_TO_G1(loc)
 }
 export const BLS_G1_INGROUP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G1_INGROUP(loc)
 }
 export const BLS_G1_ISZERO: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G1_ISZERO(loc)
 }
 export const BLS_G2_ADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G2_ADD(loc)
 }
 export const BLS_G2_SUB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G2_SUB(loc)
 }
 export const BLS_G2_NEG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G2_NEG(loc)
 }
 export const BLS_G2_MUL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G2_MUL(loc)
 }
 export const BLS_G2_MULTIEXP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G2_MULTIEXP(loc)
 }
 export const BLS_G2_ZERO: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G2_ZERO(loc)
 }
 export const BLS_MAP_TO_G2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_MAP_TO_G2(loc)
 }
 export const BLS_G2_INGROUP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G2_INGROUP(loc)
 }
 export const BLS_G2_ISZERO: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_G2_ISZERO(loc)
 }
 export const BLS_PAIRING: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_PAIRING(loc)
 }
 export const BLS_PUSHR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BLS_PUSHR(loc)
 }
 export const CDATASIZEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CDATASIZEQ(loc)
 }
 export const CDATASIZE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CDATASIZE(loc)
 }
 export const SDATASIZEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDATASIZEQ(loc)
 }
 export const SDATASIZE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDATASIZE(loc)
 }
 export const LDGRAMS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDGRAMS(loc)
 }
 export const LDVARINT16: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDVARINT16(loc)
 }
 export const STGRAMS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STGRAMS(loc)
 }
 export const STVARINT16: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STVARINT16(loc)
 }
 export const LDVARUINT32: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDVARUINT32(loc)
 }
 export const LDVARINT32: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDVARINT32(loc)
 }
 export const STVARUINT32: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STVARUINT32(loc)
 }
 export const STVARINT32: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STVARINT32(loc)
 }
 export const LDMSGADDR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDMSGADDR(loc)
 }
 export const LDMSGADDRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDMSGADDRQ(loc)
 }
 export const PARSEMSGADDR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PARSEMSGADDR(loc)
 }
 export const PARSEMSGADDRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PARSEMSGADDRQ(loc)
 }
 export const REWRITESTDADDR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.REWRITESTDADDR(loc)
 }
 export const REWRITESTDADDRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.REWRITESTDADDRQ(loc)
 }
 export const REWRITEVARADDR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.REWRITEVARADDR(loc)
 }
 export const REWRITEVARADDRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.REWRITEVARADDRQ(loc)
 }
 export const SENDRAWMSG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SENDRAWMSG(loc)
 }
 export const RAWRESERVE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RAWRESERVE(loc)
 }
 export const RAWRESERVEX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RAWRESERVEX(loc)
 }
 export const SETCODE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETCODE(loc)
 }
 export const SETLIBCODE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETLIBCODE(loc)
 }
 export const CHANGELIB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.CHANGELIB(loc)
 }
 export const SENDMSG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SENDMSG(loc)
 }
 export const PUSHNULL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PUSHNULL(loc)
 }
 export const ISNULL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ISNULL(loc)
 }
 export const TUPLEVAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.TUPLEVAR(loc)
 }
 export const INDEXVAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.INDEXVAR(loc)
 }
 export const UNTUPLEVAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.UNTUPLEVAR(loc)
 }
 export const UNPACKFIRSTVAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.UNPACKFIRSTVAR(loc)
 }
 export const EXPLODEVAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.EXPLODEVAR(loc)
 }
 export const SETINDEXVAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETINDEXVAR(loc)
 }
 export const INDEXVARQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.INDEXVARQ(loc)
 }
 export const SETINDEXVARQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SETINDEXVARQ(loc)
 }
 export const TLEN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.TLEN(loc)
 }
 export const QTLEN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QTLEN(loc)
 }
 export const ISTUPLE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ISTUPLE(loc)
 }
 export const LAST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LAST(loc)
 }
 export const TPUSH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.TPUSH(loc)
 }
 export const TPOP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.TPOP(loc)
 }
 export const NULLSWAPIF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NULLSWAPIF(loc)
 }
 export const NULLSWAPIFNOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NULLSWAPIFNOT(loc)
 }
 export const NULLROTRIF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NULLROTRIF(loc)
 }
 export const NULLROTRIFNOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NULLROTRIFNOT(loc)
 }
 export const NULLSWAPIF2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NULLSWAPIF2(loc)
 }
 export const NULLSWAPIFNOT2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NULLSWAPIFNOT2(loc)
 }
 export const NULLROTRIF2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NULLROTRIF2(loc)
 }
 export const NULLROTRIFNOT2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.NULLROTRIFNOT2(loc)
 }
 export const ADDDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ADDDIVMOD(loc)
 }
 export const ADDDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ADDDIVMODR(loc)
 }
 export const ADDDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ADDDIVMODC(loc)
 }
 export const DIV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DIV(loc)
 }
 export const DIVR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DIVR(loc)
 }
 export const DIVC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DIVC(loc)
 }
 export const MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MOD(loc)
 }
 export const MODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MODR(loc)
 }
 export const MODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MODC(loc)
 }
 export const DIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DIVMOD(loc)
 }
 export const DIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DIVMODR(loc)
 }
 export const DIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DIVMODC(loc)
 }
 export const QADDDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QADDDIVMOD(loc)
 }
 export const QADDDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QADDDIVMODR(loc)
 }
 export const QADDDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QADDDIVMODC(loc)
 }
 export const QDIV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QDIV(loc)
 }
 export const QDIVR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QDIVR(loc)
 }
 export const QDIVC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QDIVC(loc)
 }
 export const QMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMOD(loc)
 }
 export const QMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMODR(loc)
 }
 export const QMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMODC(loc)
 }
 export const QDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QDIVMOD(loc)
 }
 export const QDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QDIVMODR(loc)
 }
 export const QDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QDIVMODC(loc)
 }
 export const ADDRSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ADDRSHIFTMOD(loc)
 }
 export const ADDRSHIFTMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ADDRSHIFTMODR(loc)
 }
 export const ADDRSHIFTMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.ADDRSHIFTMODC(loc)
 }
 export const RSHIFTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RSHIFTR(loc)
 }
 export const RSHIFTC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RSHIFTC(loc)
 }
 export const MODPOW2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MODPOW2(loc)
 }
 export const MODPOW2R: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MODPOW2R(loc)
 }
 export const MODPOW2C: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MODPOW2C(loc)
 }
 export const RSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RSHIFTMOD(loc)
 }
 export const RSHIFTMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RSHIFTMODR(loc)
 }
 export const RSHIFTMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RSHIFTMODC(loc)
 }
 export const QADDRSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QADDRSHIFTMOD(loc)
 }
 export const QADDRSHIFTMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QADDRSHIFTMODR(loc)
 }
 export const QADDRSHIFTMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QADDRSHIFTMODC(loc)
 }
 export const QRSHIFTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QRSHIFTR(loc)
 }
 export const QRSHIFTC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QRSHIFTC(loc)
 }
 export const QMODPOW2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMODPOW2(loc)
 }
 export const QMODPOW2R: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMODPOW2R(loc)
 }
 export const QMODPOW2C: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMODPOW2C(loc)
 }
 export const QRSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QRSHIFTMOD(loc)
 }
 export const QRSHIFTMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QRSHIFTMODR(loc)
 }
 export const QRSHIFTMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QRSHIFTMODC(loc)
 }
 export const MULADDDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULADDDIVMOD(loc)
 }
 export const MULADDDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULADDDIVMODR(loc)
 }
 export const MULADDDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULADDDIVMODC(loc)
 }
 export const MULDIV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULDIV(loc)
 }
 export const MULDIVR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULDIVR(loc)
 }
 export const MULDIVC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULDIVC(loc)
 }
 export const MULMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULMOD(loc)
 }
 export const MULMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULMODR(loc)
 }
 export const MULMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULMODC(loc)
 }
 export const MULDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULDIVMOD(loc)
 }
 export const MULDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULDIVMODR(loc)
 }
 export const MULDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULDIVMODC(loc)
 }
 export const QMULADDDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULADDDIVMOD(loc)
 }
 export const QMULADDDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULADDDIVMODR(loc)
 }
 export const QMULADDDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULADDDIVMODC(loc)
 }
 export const QMULDIV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULDIV(loc)
 }
 export const QMULDIVR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULDIVR(loc)
 }
 export const QMULDIVC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULDIVC(loc)
 }
 export const QMULMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULMOD(loc)
 }
 export const QMULMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULMODR(loc)
 }
 export const QMULMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULMODC(loc)
 }
 export const QMULDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULDIVMOD(loc)
 }
 export const QMULDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULDIVMODR(loc)
 }
 export const QMULDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULDIVMODC(loc)
 }
 export const MULADDRSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULADDRSHIFTMOD(loc)
 }
 export const MULADDRSHIFTRMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULADDRSHIFTRMOD(loc)
 }
 export const MULADDRSHIFTCMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULADDRSHIFTCMOD(loc)
 }
 export const MULRSHIFT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULRSHIFT(loc)
 }
 export const MULRSHIFTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULRSHIFTR(loc)
 }
 export const MULRSHIFTC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULRSHIFTC(loc)
 }
 export const MULMODPOW2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULMODPOW2(loc)
 }
 export const MULMODPOW2R: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULMODPOW2R(loc)
 }
 export const MULMODPOW2C: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULMODPOW2C(loc)
 }
 export const MULRSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULRSHIFTMOD(loc)
 }
 export const MULRSHIFTRMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULRSHIFTRMOD(loc)
 }
 export const MULRSHIFTCMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.MULRSHIFTCMOD(loc)
 }
 export const QMULADDRSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULADDRSHIFTMOD(loc)
 }
 export const QMULADDRSHIFTRMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULADDRSHIFTRMOD(loc)
 }
 export const QMULADDRSHIFTCMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULADDRSHIFTCMOD(loc)
 }
 export const QMULRSHIFT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULRSHIFT(loc)
 }
 export const QMULRSHIFTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULRSHIFTR(loc)
 }
 export const QMULRSHIFTC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULRSHIFTC(loc)
 }
 export const QMULMODPOW2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULMODPOW2(loc)
 }
 export const QMULMODPOW2R: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULMODPOW2R(loc)
 }
 export const QMULMODPOW2C: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULMODPOW2C(loc)
 }
 export const QMULRSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULRSHIFTMOD(loc)
 }
 export const QMULRSHIFTRMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULRSHIFTRMOD(loc)
 }
 export const QMULRSHIFTCMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QMULRSHIFTCMOD(loc)
 }
 export const LSHIFTADDDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTADDDIVMOD(loc)
 }
 export const LSHIFTADDDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTADDDIVMODR(loc)
 }
 export const LSHIFTADDDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTADDDIVMODC(loc)
 }
 export const LSHIFTDIV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTDIV(loc)
 }
 export const LSHIFTDIVR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTDIVR(loc)
 }
 export const LSHIFTDIVC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTDIVC(loc)
 }
 export const LSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTMOD(loc)
 }
 export const LSHIFTMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTMODR(loc)
 }
 export const LSHIFTMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTMODC(loc)
 }
 export const LSHIFTDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTDIVMOD(loc)
 }
 export const LSHIFTDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTDIVMODR(loc)
 }
 export const LSHIFTDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFTDIVMODC(loc)
 }
 export const QLSHIFTADDDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTADDDIVMOD(loc)
 }
 export const QLSHIFTADDDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTADDDIVMODR(loc)
 }
 export const QLSHIFTADDDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTADDDIVMODC(loc)
 }
 export const QLSHIFTDIV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTDIV(loc)
 }
 export const QLSHIFTDIVR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTDIVR(loc)
 }
 export const QLSHIFTDIVC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTDIVC(loc)
 }
 export const QLSHIFTMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTMOD(loc)
 }
 export const QLSHIFTMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTMODR(loc)
 }
 export const QLSHIFTMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTMODC(loc)
 }
 export const QLSHIFTDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTDIVMOD(loc)
 }
 export const QLSHIFTDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTDIVMODR(loc)
 }
 export const QLSHIFTDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFTDIVMODC(loc)
 }
 export const STIX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STIX(loc)
 }
 export const STUX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STUX(loc)
 }
 export const STIXR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STIXR(loc)
 }
 export const STUXR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STUXR(loc)
 }
 export const STIXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STIXQ(loc)
 }
 export const STUXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STUXQ(loc)
 }
 export const STIXRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STIXRQ(loc)
 }
 export const STUXRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STUXRQ(loc)
 }
 export const STILE4: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STILE4(loc)
 }
 export const STULE4: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STULE4(loc)
 }
 export const STILE8: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STILE8(loc)
 }
 export const STULE8: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STULE8(loc)
 }
 export const LDIX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDIX(loc)
 }
 export const LDUX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDUX(loc)
 }
 export const PLDIX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDIX(loc)
 }
 export const PLDUX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDUX(loc)
 }
 export const LDIXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDIXQ(loc)
 }
 export const LDUXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDUXQ(loc)
 }
 export const PLDIXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDIXQ(loc)
 }
 export const PLDUXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDUXQ(loc)
 }
 export const LDSLICEX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDSLICEX(loc)
 }
 export const PLDSLICEX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDSLICEX(loc)
 }
 export const LDSLICEXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDSLICEXQ(loc)
 }
 export const PLDSLICEXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDSLICEXQ(loc)
 }
 export const LDILE4: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDILE4(loc)
 }
 export const LDULE4: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDULE4(loc)
 }
 export const LDILE8: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDILE8(loc)
 }
 export const LDULE8: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDULE8(loc)
 }
 export const PLDILE4: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDILE4(loc)
 }
 export const PLDULE4: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDULE4(loc)
 }
 export const PLDILE8: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDILE8(loc)
 }
 export const PLDULE8: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDULE8(loc)
 }
 export const LDILE4Q: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDILE4Q(loc)
 }
 export const LDULE4Q: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDULE4Q(loc)
 }
 export const LDILE8Q: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDILE8Q(loc)
 }
 export const LDULE8Q: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LDULE8Q(loc)
 }
 export const PLDILE4Q: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDILE4Q(loc)
 }
 export const PLDULE4Q: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDULE4Q(loc)
 }
 export const PLDILE8Q: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDILE8Q(loc)
 }
 export const PLDULE8Q: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.PLDULE8Q(loc)
 }
 export const DICTIGETJMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETJMP(loc)
 }
 export const DICTUGETJMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETJMP(loc)
 }
 export const DICTIGETEXEC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETEXEC(loc)
 }
 export const DICTUGETEXEC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETEXEC(loc)
 }
 export const DICTIGETJMPZ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETJMPZ(loc)
 }
 export const DICTUGETJMPZ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETJMPZ(loc)
 }
 export const DICTIGETEXECZ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETEXECZ(loc)
 }
 export const DICTUGETEXECZ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETEXECZ(loc)
 }
 export const DICTGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTGET(loc)
 }
 export const DICTGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTGETREF(loc)
 }
 export const DICTIGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGET(loc)
 }
 export const DICTIGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETREF(loc)
 }
 export const DICTUGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGET(loc)
 }
 export const DICTUGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETREF(loc)
 }
 export const DICTSET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTSET(loc)
 }
 export const DICTSETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTSETREF(loc)
 }
 export const DICTISET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTISET(loc)
 }
 export const DICTISETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTISETREF(loc)
 }
 export const DICTUSET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUSET(loc)
 }
 export const DICTUSETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUSETREF(loc)
 }
 export const DICTSETGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTSETGET(loc)
 }
 export const DICTSETGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTSETGETREF(loc)
 }
 export const DICTISETGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTISETGET(loc)
 }
 export const DICTISETGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTISETGETREF(loc)
 }
 export const DICTUSETGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUSETGET(loc)
 }
 export const DICTUSETGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUSETGETREF(loc)
 }
 export const DICTREPLACE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREPLACE(loc)
 }
 export const DICTREPLACEREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREPLACEREF(loc)
 }
 export const DICTIREPLACE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREPLACE(loc)
 }
 export const DICTIREPLACEREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREPLACEREF(loc)
 }
 export const DICTUREPLACE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREPLACE(loc)
 }
 export const DICTUREPLACEREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREPLACEREF(loc)
 }
 export const DICTREPLACEGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREPLACEGET(loc)
 }
 export const DICTREPLACEGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREPLACEGETREF(loc)
 }
 export const DICTIREPLACEGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREPLACEGET(loc)
 }
 export const DICTIREPLACEGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREPLACEGETREF(loc)
 }
 export const DICTUREPLACEGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREPLACEGET(loc)
 }
 export const DICTUREPLACEGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREPLACEGETREF(loc)
 }
 export const DICTADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTADD(loc)
 }
 export const DICTADDREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTADDREF(loc)
 }
 export const DICTIADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIADD(loc)
 }
 export const DICTIADDREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIADDREF(loc)
 }
 export const DICTUADD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUADD(loc)
 }
 export const DICTUADDREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUADDREF(loc)
 }
 export const DICTADDGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTADDGET(loc)
 }
 export const DICTADDGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTADDGETREF(loc)
 }
 export const DICTIADDGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIADDGET(loc)
 }
 export const DICTIADDGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIADDGETREF(loc)
 }
 export const DICTUADDGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUADDGET(loc)
 }
 export const DICTUADDGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUADDGETREF(loc)
 }
 export const DICTDELGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTDELGET(loc)
 }
 export const DICTDELGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTDELGETREF(loc)
 }
 export const DICTIDELGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIDELGET(loc)
 }
 export const DICTIDELGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIDELGETREF(loc)
 }
 export const DICTUDELGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUDELGET(loc)
 }
 export const DICTUDELGETREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUDELGETREF(loc)
 }
 export const DICTMIN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTMIN(loc)
 }
 export const DICTMINREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTMINREF(loc)
 }
 export const DICTIMIN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIMIN(loc)
 }
 export const DICTIMINREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIMINREF(loc)
 }
 export const DICTUMIN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUMIN(loc)
 }
 export const DICTUMINREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUMINREF(loc)
 }
 export const DICTMAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTMAX(loc)
 }
 export const DICTMAXREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTMAXREF(loc)
 }
 export const DICTIMAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIMAX(loc)
 }
 export const DICTIMAXREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIMAXREF(loc)
 }
 export const DICTUMAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUMAX(loc)
 }
 export const DICTUMAXREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUMAXREF(loc)
 }
 export const DICTREMMIN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREMMIN(loc)
 }
 export const DICTREMMINREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREMMINREF(loc)
 }
 export const DICTIREMMIN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREMMIN(loc)
 }
 export const DICTIREMMINREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREMMINREF(loc)
 }
 export const DICTUREMMIN: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREMMIN(loc)
 }
 export const DICTUREMMINREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREMMINREF(loc)
 }
 export const DICTREMMAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREMMAX(loc)
 }
 export const DICTREMMAXREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREMMAXREF(loc)
 }
 export const DICTIREMMAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREMMAX(loc)
 }
 export const DICTIREMMAXREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREMMAXREF(loc)
 }
 export const DICTUREMMAX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREMMAX(loc)
 }
 export const DICTUREMMAXREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREMMAXREF(loc)
 }
 export const DICTSETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTSETB(loc)
 }
 export const DICTISETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTISETB(loc)
 }
 export const DICTUSETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUSETB(loc)
 }
 export const DICTSETGETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTSETGETB(loc)
 }
 export const DICTISETGETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTISETGETB(loc)
 }
 export const DICTUSETGETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUSETGETB(loc)
 }
 export const DICTREPLACEB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREPLACEB(loc)
 }
 export const DICTIREPLACEB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREPLACEB(loc)
 }
 export const DICTUREPLACEB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREPLACEB(loc)
 }
 export const DICTREPLACEGETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTREPLACEGETB(loc)
 }
 export const DICTIREPLACEGETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIREPLACEGETB(loc)
 }
 export const DICTUREPLACEGETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUREPLACEGETB(loc)
 }
 export const DICTADDB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTADDB(loc)
 }
 export const DICTIADDB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIADDB(loc)
 }
 export const DICTUADDB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUADDB(loc)
 }
 export const DICTADDGETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTADDGETB(loc)
 }
 export const DICTIADDGETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIADDGETB(loc)
 }
 export const DICTUADDGETB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUADDGETB(loc)
 }
 export const DICTDEL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTDEL(loc)
 }
 export const DICTIDEL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIDEL(loc)
 }
 export const DICTUDEL: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUDEL(loc)
 }
 export const DICTGETOPTREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTGETOPTREF(loc)
 }
 export const DICTIGETOPTREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETOPTREF(loc)
 }
 export const DICTUGETOPTREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETOPTREF(loc)
 }
 export const DICTSETGETOPTREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTSETGETOPTREF(loc)
 }
 export const DICTISETGETOPTREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTISETGETOPTREF(loc)
 }
 export const DICTUSETGETOPTREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUSETGETOPTREF(loc)
 }
 export const SUBDICTGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SUBDICTGET(loc)
 }
 export const SUBDICTIGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SUBDICTIGET(loc)
 }
 export const SUBDICTUGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SUBDICTUGET(loc)
 }
 export const SUBDICTRPGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SUBDICTRPGET(loc)
 }
 export const SUBDICTIRPGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SUBDICTIRPGET(loc)
 }
 export const SUBDICTURPGET: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SUBDICTURPGET(loc)
 }
 export const THROWANY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.THROWANY(loc)
 }
 export const THROWARGANY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.THROWARGANY(loc)
 }
 export const THROWANYIFNOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.THROWANYIFNOT(loc)
 }
 export const THROWARGANYIFNOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.THROWARGANYIFNOT(loc)
 }
 export const DICTGETNEXT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTGETNEXT(loc)
 }
 export const DICTGETNEXTEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTGETNEXTEQ(loc)
 }
 export const DICTGETPREV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTGETPREV(loc)
 }
 export const DICTGETPREVEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTGETPREVEQ(loc)
 }
 export const DICTIGETNEXT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETNEXT(loc)
 }
 export const DICTIGETNEXTEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETNEXTEQ(loc)
 }
 export const DICTIGETPREV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETPREV(loc)
 }
 export const DICTIGETPREVEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTIGETPREVEQ(loc)
 }
 export const DICTUGETNEXT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETNEXT(loc)
 }
 export const DICTUGETNEXTEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETNEXTEQ(loc)
 }
 export const DICTUGETPREV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETPREV(loc)
 }
 export const DICTUGETPREVEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DICTUGETPREVEQ(loc)
 }
 export const ADDINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.ADDINT(args, loc)
@@ -4675,7 +4675,7 @@ export const ADDINT: $.Convert = (ctx, instr, loc) => {
 export const MULINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULINT(args, loc)
@@ -4683,7 +4683,7 @@ export const MULINT: $.Convert = (ctx, instr, loc) => {
 export const QADDINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QADDINT(args, loc)
@@ -4691,7 +4691,7 @@ export const QADDINT: $.Convert = (ctx, instr, loc) => {
 export const QMULINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QMULINT(args, loc)
@@ -4699,7 +4699,7 @@ export const QMULINT: $.Convert = (ctx, instr, loc) => {
 export const EQINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.EQINT(args, loc)
@@ -4707,7 +4707,7 @@ export const EQINT: $.Convert = (ctx, instr, loc) => {
 export const LESSINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LESSINT(args, loc)
@@ -4715,7 +4715,7 @@ export const LESSINT: $.Convert = (ctx, instr, loc) => {
 export const GTINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.GTINT(args, loc)
@@ -4723,7 +4723,7 @@ export const GTINT: $.Convert = (ctx, instr, loc) => {
 export const NEQINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.NEQINT(args, loc)
@@ -4731,7 +4731,7 @@ export const NEQINT: $.Convert = (ctx, instr, loc) => {
 export const QEQINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QEQINT(args, loc)
@@ -4739,7 +4739,7 @@ export const QEQINT: $.Convert = (ctx, instr, loc) => {
 export const QLESSINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QLESSINT(args, loc)
@@ -4747,7 +4747,7 @@ export const QLESSINT: $.Convert = (ctx, instr, loc) => {
 export const QGTINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QGTINT(args, loc)
@@ -4755,7 +4755,7 @@ export const QGTINT: $.Convert = (ctx, instr, loc) => {
 export const QNEQINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QNEQINT(args, loc)
@@ -4763,7 +4763,7 @@ export const QNEQINT: $.Convert = (ctx, instr, loc) => {
 export const PUSHPOW2DEC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PUSHPOW2DEC(args, loc)
@@ -4771,7 +4771,7 @@ export const PUSHPOW2DEC: $.Convert = (ctx, instr, loc) => {
 export const PUSHNEGPOW2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PUSHNEGPOW2(args, loc)
@@ -4779,7 +4779,7 @@ export const PUSHNEGPOW2: $.Convert = (ctx, instr, loc) => {
 export const FITS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.FITS(args, loc)
@@ -4787,7 +4787,7 @@ export const FITS: $.Convert = (ctx, instr, loc) => {
 export const UFITS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.UFITS(args, loc)
@@ -4795,7 +4795,7 @@ export const UFITS: $.Convert = (ctx, instr, loc) => {
 export const QFITS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QFITS(args, loc)
@@ -4803,7 +4803,7 @@ export const QFITS: $.Convert = (ctx, instr, loc) => {
 export const QUFITS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QUFITS(args, loc)
@@ -4811,7 +4811,7 @@ export const QUFITS: $.Convert = (ctx, instr, loc) => {
 export const SETCONTCTRMANY: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.SETCONTCTRMANY(args, loc)
@@ -4819,7 +4819,7 @@ export const SETCONTCTRMANY: $.Convert = (ctx, instr, loc) => {
 export const CALLCCARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.CALLCCARGS(args[0], args[1], loc)
@@ -4827,7 +4827,7 @@ export const CALLCCARGS: $.Convert = (ctx, instr, loc) => {
 export const TRYARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.TRYARGS(args[0], args[1], loc)
@@ -4835,7 +4835,7 @@ export const TRYARGS: $.Convert = (ctx, instr, loc) => {
 export const PLDREFIDX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PLDREFIDX(args, loc)
@@ -4843,7 +4843,7 @@ export const PLDREFIDX: $.Convert = (ctx, instr, loc) => {
 export const CHASHI: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.CHASHI(args, loc)
@@ -4851,7 +4851,7 @@ export const CHASHI: $.Convert = (ctx, instr, loc) => {
 export const CDEPTHI: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.CDEPTHI(args, loc)
@@ -4859,7 +4859,7 @@ export const CDEPTHI: $.Convert = (ctx, instr, loc) => {
 export const JMPDICT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.JMPDICT(args, loc)
@@ -4867,7 +4867,7 @@ export const JMPDICT: $.Convert = (ctx, instr, loc) => {
 export const PREPAREDICT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PREPAREDICT(args, loc)
@@ -4875,7 +4875,7 @@ export const PREPAREDICT: $.Convert = (ctx, instr, loc) => {
 export const THROWARG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.THROWARG(args, loc)
@@ -4883,7 +4883,7 @@ export const THROWARG: $.Convert = (ctx, instr, loc) => {
 export const THROWARGIF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.THROWARGIF(args, loc)
@@ -4891,7 +4891,7 @@ export const THROWARGIF: $.Convert = (ctx, instr, loc) => {
 export const THROWARGIFNOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.THROWARGIFNOT(args, loc)
@@ -4899,7 +4899,7 @@ export const THROWARGIFNOT: $.Convert = (ctx, instr, loc) => {
 export const JMPXARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.JMPXARGS(args, loc)
@@ -4907,7 +4907,7 @@ export const JMPXARGS: $.Convert = (ctx, instr, loc) => {
 export const RETARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RETARGS(args, loc)
@@ -4915,7 +4915,7 @@ export const RETARGS: $.Convert = (ctx, instr, loc) => {
 export const RETURNARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RETURNARGS(args, loc)
@@ -4923,7 +4923,7 @@ export const RETURNARGS: $.Convert = (ctx, instr, loc) => {
 export const BLKDROP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.BLKDROP(args, loc)
@@ -4931,7 +4931,7 @@ export const BLKDROP: $.Convert = (ctx, instr, loc) => {
 export const TUPLE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.TUPLE(args, loc)
@@ -4939,7 +4939,7 @@ export const TUPLE: $.Convert = (ctx, instr, loc) => {
 export const INDEX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.INDEX(args, loc)
@@ -4947,7 +4947,7 @@ export const INDEX: $.Convert = (ctx, instr, loc) => {
 export const UNTUPLE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.UNTUPLE(args, loc)
@@ -4955,7 +4955,7 @@ export const UNTUPLE: $.Convert = (ctx, instr, loc) => {
 export const UNPACKFIRST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.UNPACKFIRST(args, loc)
@@ -4963,7 +4963,7 @@ export const UNPACKFIRST: $.Convert = (ctx, instr, loc) => {
 export const EXPLODE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.EXPLODE(args, loc)
@@ -4971,7 +4971,7 @@ export const EXPLODE: $.Convert = (ctx, instr, loc) => {
 export const SETINDEX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.SETINDEX(args, loc)
@@ -4979,7 +4979,7 @@ export const SETINDEX: $.Convert = (ctx, instr, loc) => {
 export const INDEXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.INDEXQ(args, loc)
@@ -4987,7 +4987,7 @@ export const INDEXQ: $.Convert = (ctx, instr, loc) => {
 export const SETINDEXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.SETINDEXQ(args, loc)
@@ -4995,7 +4995,7 @@ export const SETINDEXQ: $.Convert = (ctx, instr, loc) => {
 export const XC2PU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeStackArgs(instr)
     return c.XC2PU(args[0], args[1], args[2], loc)
@@ -5003,7 +5003,7 @@ export const XC2PU: $.Convert = (ctx, instr, loc) => {
 export const XCPU2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeStackArgs(instr)
     return c.XCPU2(args[0], args[1], args[2], loc)
@@ -5011,7 +5011,7 @@ export const XCPU2: $.Convert = (ctx, instr, loc) => {
 export const PUSH3: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeStackArgs(instr)
     return c.PUSH3(args[0], args[1], args[2], loc)
@@ -5019,7 +5019,7 @@ export const PUSH3: $.Convert = (ctx, instr, loc) => {
 export const XCHG2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoStackArgs(instr)
     return c.XCHG2(args[0], args[1], loc)
@@ -5027,7 +5027,7 @@ export const XCHG2: $.Convert = (ctx, instr, loc) => {
 export const XCPU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoStackArgs(instr)
     return c.XCPU(args[0], args[1], loc)
@@ -5035,7 +5035,7 @@ export const XCPU: $.Convert = (ctx, instr, loc) => {
 export const PUSH2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoStackArgs(instr)
     return c.PUSH2(args[0], args[1], loc)
@@ -5043,7 +5043,7 @@ export const PUSH2: $.Convert = (ctx, instr, loc) => {
 export const PUXC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoStackArgs(instr)
     return c.PUXC(args[0], args[1], loc)
@@ -5051,7 +5051,7 @@ export const PUXC: $.Convert = (ctx, instr, loc) => {
 export const XCPUXC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeStackArgs(instr)
     return c.XCPUXC(args[0], args[1], args[2], loc)
@@ -5059,7 +5059,7 @@ export const XCPUXC: $.Convert = (ctx, instr, loc) => {
 export const PUXC2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeStackArgs(instr)
     return c.PUXC2(args[0], args[1], args[2], loc)
@@ -5067,7 +5067,7 @@ export const PUXC2: $.Convert = (ctx, instr, loc) => {
 export const PUXCPU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeStackArgs(instr)
     return c.PUXCPU(args[0], args[1], args[2], loc)
@@ -5075,7 +5075,7 @@ export const PUXCPU: $.Convert = (ctx, instr, loc) => {
 export const PU2XC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeStackArgs(instr)
     return c.PU2XC(args[0], args[1], args[2], loc)
@@ -5083,7 +5083,7 @@ export const PU2XC: $.Convert = (ctx, instr, loc) => {
 export const BLKSWAP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.BLKSWAP(args[0], args[1], loc)
@@ -5091,7 +5091,7 @@ export const BLKSWAP: $.Convert = (ctx, instr, loc) => {
 export const REVERSE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.REVERSE(args[0], args[1], loc)
@@ -5099,7 +5099,7 @@ export const REVERSE: $.Convert = (ctx, instr, loc) => {
 export const SETCONTARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.SETCONTARGS(args[0], args[1], loc)
@@ -5107,7 +5107,7 @@ export const SETCONTARGS: $.Convert = (ctx, instr, loc) => {
 export const BLESSARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.BLESSARGS(args[0], args[1], loc)
@@ -5115,7 +5115,7 @@ export const BLESSARGS: $.Convert = (ctx, instr, loc) => {
 export const STIR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STIR(args, loc)
@@ -5123,7 +5123,7 @@ export const STIR: $.Convert = (ctx, instr, loc) => {
 export const STUR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STUR(args, loc)
@@ -5131,7 +5131,7 @@ export const STUR: $.Convert = (ctx, instr, loc) => {
 export const STIQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STIQ(args, loc)
@@ -5139,7 +5139,7 @@ export const STIQ: $.Convert = (ctx, instr, loc) => {
 export const STUQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STUQ(args, loc)
@@ -5147,7 +5147,7 @@ export const STUQ: $.Convert = (ctx, instr, loc) => {
 export const STIRQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STIRQ(args, loc)
@@ -5155,7 +5155,7 @@ export const STIRQ: $.Convert = (ctx, instr, loc) => {
 export const STURQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STURQ(args, loc)
@@ -5163,7 +5163,7 @@ export const STURQ: $.Convert = (ctx, instr, loc) => {
 export const PLDI: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PLDI(args, loc)
@@ -5171,7 +5171,7 @@ export const PLDI: $.Convert = (ctx, instr, loc) => {
 export const PLDU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PLDU(args, loc)
@@ -5179,7 +5179,7 @@ export const PLDU: $.Convert = (ctx, instr, loc) => {
 export const LDIQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LDIQ(args, loc)
@@ -5187,7 +5187,7 @@ export const LDIQ: $.Convert = (ctx, instr, loc) => {
 export const LDUQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LDUQ(args, loc)
@@ -5195,7 +5195,7 @@ export const LDUQ: $.Convert = (ctx, instr, loc) => {
 export const PLDIQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PLDIQ(args, loc)
@@ -5203,7 +5203,7 @@ export const PLDIQ: $.Convert = (ctx, instr, loc) => {
 export const PLDUQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PLDUQ(args, loc)
@@ -5211,7 +5211,7 @@ export const PLDUQ: $.Convert = (ctx, instr, loc) => {
 export const PLDUZ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PLDUZ(args, loc)
@@ -5219,7 +5219,7 @@ export const PLDUZ: $.Convert = (ctx, instr, loc) => {
 export const PLDSLICE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PLDSLICE(args, loc)
@@ -5227,7 +5227,7 @@ export const PLDSLICE: $.Convert = (ctx, instr, loc) => {
 export const LDSLICEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LDSLICEQ(args, loc)
@@ -5235,7 +5235,7 @@ export const LDSLICEQ: $.Convert = (ctx, instr, loc) => {
 export const PLDSLICEQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PLDSLICEQ(args, loc)
@@ -5243,7 +5243,7 @@ export const PLDSLICEQ: $.Convert = (ctx, instr, loc) => {
 export const IFBITJMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.IFBITJMP(args, loc)
@@ -5251,7 +5251,7 @@ export const IFBITJMP: $.Convert = (ctx, instr, loc) => {
 export const IFNBITJMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.IFNBITJMP(args, loc)
@@ -5259,7 +5259,7 @@ export const IFNBITJMP: $.Convert = (ctx, instr, loc) => {
 export const INDEX2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.INDEX2(args[0], args[1], loc)
@@ -5267,7 +5267,7 @@ export const INDEX2: $.Convert = (ctx, instr, loc) => {
 export const INDEX3: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeIntegerArgs(instr)
     return c.INDEX3(args[0], args[1], args[2], loc)
@@ -5275,7 +5275,7 @@ export const INDEX3: $.Convert = (ctx, instr, loc) => {
 export const PUSHPOW2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PUSHPOW2(args, loc)
@@ -5283,7 +5283,7 @@ export const PUSHPOW2: $.Convert = (ctx, instr, loc) => {
 export const BLKPUSH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.BLKPUSH(args[0], args[1], loc)
@@ -5291,7 +5291,7 @@ export const BLKPUSH: $.Convert = (ctx, instr, loc) => {
 export const BLKDROP2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.BLKDROP2(args[0], args[1], loc)
@@ -5299,7 +5299,7 @@ export const BLKDROP2: $.Convert = (ctx, instr, loc) => {
 export const GETGLOB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.GETGLOB(args, loc)
@@ -5307,7 +5307,7 @@ export const GETGLOB: $.Convert = (ctx, instr, loc) => {
 export const SETGLOB: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.SETGLOB(args, loc)
@@ -5315,7 +5315,7 @@ export const SETGLOB: $.Convert = (ctx, instr, loc) => {
 export const GETPARAM: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.GETPARAM(args, loc)
@@ -5323,7 +5323,7 @@ export const GETPARAM: $.Convert = (ctx, instr, loc) => {
 export const PUSHREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.PUSHREF(args, loc)
@@ -5331,7 +5331,7 @@ export const PUSHREF: $.Convert = (ctx, instr, loc) => {
 export const PUSHREFSLICE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.PUSHREFSLICE(args, loc)
@@ -5339,7 +5339,7 @@ export const PUSHREFSLICE: $.Convert = (ctx, instr, loc) => {
 export const PUSHREFCONT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.PUSHREFCONT(args, loc)
@@ -5347,7 +5347,7 @@ export const PUSHREFCONT: $.Convert = (ctx, instr, loc) => {
 export const CALLREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.CALLREF(args, loc)
@@ -5355,7 +5355,7 @@ export const CALLREF: $.Convert = (ctx, instr, loc) => {
 export const JMPREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.JMPREF(args, loc)
@@ -5363,7 +5363,7 @@ export const JMPREF: $.Convert = (ctx, instr, loc) => {
 export const JMPREFDATA: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.JMPREFDATA(args, loc)
@@ -5371,7 +5371,7 @@ export const JMPREFDATA: $.Convert = (ctx, instr, loc) => {
 export const IFREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.IFREF(args, loc)
@@ -5379,7 +5379,7 @@ export const IFREF: $.Convert = (ctx, instr, loc) => {
 export const IFNOTREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.IFNOTREF(args, loc)
@@ -5387,7 +5387,7 @@ export const IFNOTREF: $.Convert = (ctx, instr, loc) => {
 export const IFJMPREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.IFJMPREF(args, loc)
@@ -5395,7 +5395,7 @@ export const IFJMPREF: $.Convert = (ctx, instr, loc) => {
 export const IFNOTJMPREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.IFNOTJMPREF(args, loc)
@@ -5403,7 +5403,7 @@ export const IFNOTJMPREF: $.Convert = (ctx, instr, loc) => {
 export const IFREFELSE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.IFREFELSE(args, loc)
@@ -5411,7 +5411,7 @@ export const IFREFELSE: $.Convert = (ctx, instr, loc) => {
 export const IFELSEREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.IFELSEREF(args, loc)
@@ -5419,7 +5419,7 @@ export const IFELSEREF: $.Convert = (ctx, instr, loc) => {
 export const IFREFELSEREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoCodeSliceArgs(ctx, instr)
     return c.IFREFELSEREF(args[0], args[1], loc)
@@ -5427,7 +5427,7 @@ export const IFREFELSEREF: $.Convert = (ctx, instr, loc) => {
 export const IFBITJMPREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.ifBitArgs(ctx, instr)
     return c.IFBITJMPREF(args[0], args[1], loc)
@@ -5435,7 +5435,7 @@ export const IFBITJMPREF: $.Convert = (ctx, instr, loc) => {
 export const IFNBITJMPREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.ifBitArgs(ctx, instr)
     return c.IFNBITJMPREF(args[0], args[1], loc)
@@ -5443,7 +5443,7 @@ export const IFNBITJMPREF: $.Convert = (ctx, instr, loc) => {
 export const DICTPUSHCONST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.dictpushArg(ctx, instr)
     return c.DICTPUSHCONST(args[0], args[1], loc)
@@ -5451,7 +5451,7 @@ export const DICTPUSHCONST: $.Convert = (ctx, instr, loc) => {
 export const PFXDICTSWITCH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.dictpushArg(ctx, instr)
     return c.PFXDICTSWITCH(args[0], args[1], loc)
@@ -5459,21 +5459,21 @@ export const PFXDICTSWITCH: $.Convert = (ctx, instr, loc) => {
 export const SDBEGINSX: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDBEGINSX(loc)
 }
 export const SDBEGINSXQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SDBEGINSXQ(loc)
 }
 export const SDBEGINS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.sliceArg(instr)
     return c.SDBEGINS(args, loc)
@@ -5481,7 +5481,7 @@ export const SDBEGINS: $.Convert = (ctx, instr, loc) => {
 export const SDBEGINSQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.sliceArg(instr)
     return c.SDBEGINSQ(args, loc)
@@ -5489,7 +5489,7 @@ export const SDBEGINSQ: $.Convert = (ctx, instr, loc) => {
 export const STREFCONST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.STREFCONST(args, loc)
@@ -5497,7 +5497,7 @@ export const STREFCONST: $.Convert = (ctx, instr, loc) => {
 export const STREF2CONST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoCodeSliceArgs(ctx, instr)
     return c.STREF2CONST(args[0], args[1], loc)
@@ -5505,21 +5505,21 @@ export const STREF2CONST: $.Convert = (ctx, instr, loc) => {
 export const THROWANYIF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.THROWANYIF(loc)
 }
 export const THROWARGANYIF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.THROWARGANYIF(loc)
 }
 export const DEBUGSTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.debugstrArg(instr)
     return c.DEBUGSTR(args, loc)
@@ -5527,7 +5527,7 @@ export const DEBUGSTR: $.Convert = (ctx, instr, loc) => {
 export const SETCONTCTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleControlArg(instr)
     return c.SETCONTCTR(args, loc)
@@ -5535,7 +5535,7 @@ export const SETCONTCTR: $.Convert = (ctx, instr, loc) => {
 export const SETRETCTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleControlArg(instr)
     return c.SETRETCTR(args, loc)
@@ -5543,7 +5543,7 @@ export const SETRETCTR: $.Convert = (ctx, instr, loc) => {
 export const SETALTCTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleControlArg(instr)
     return c.SETALTCTR(args, loc)
@@ -5551,7 +5551,7 @@ export const SETALTCTR: $.Convert = (ctx, instr, loc) => {
 export const POPSAVE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleControlArg(instr)
     return c.POPSAVE(args, loc)
@@ -5559,7 +5559,7 @@ export const POPSAVE: $.Convert = (ctx, instr, loc) => {
 export const SAVECTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleControlArg(instr)
     return c.SAVECTR(args, loc)
@@ -5567,7 +5567,7 @@ export const SAVECTR: $.Convert = (ctx, instr, loc) => {
 export const SAVEALTCTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleControlArg(instr)
     return c.SAVEALTCTR(args, loc)
@@ -5575,7 +5575,7 @@ export const SAVEALTCTR: $.Convert = (ctx, instr, loc) => {
 export const SAVEBOTHCTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleControlArg(instr)
     return c.SAVEBOTHCTR(args, loc)
@@ -5583,7 +5583,7 @@ export const SAVEBOTHCTR: $.Convert = (ctx, instr, loc) => {
 export const RUNVM: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RUNVM(args, loc)
@@ -5591,35 +5591,35 @@ export const RUNVM: $.Convert = (ctx, instr, loc) => {
 export const SWAP2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.SWAP2(loc)
 }
 export const DROP2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DROP2(loc)
 }
 export const DUP2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DUP2(loc)
 }
 export const OVER2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.OVER2(loc)
 }
 export const ADDRSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.ADDRSHIFT_MOD(args, loc)
@@ -5627,7 +5627,7 @@ export const ADDRSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
 export const ADDRSHIFTR_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.ADDRSHIFTR_MOD(args, loc)
@@ -5635,7 +5635,7 @@ export const ADDRSHIFTR_MOD: $.Convert = (ctx, instr, loc) => {
 export const ADDRSHIFTC_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.ADDRSHIFTC_MOD(args, loc)
@@ -5643,7 +5643,7 @@ export const ADDRSHIFTC_MOD: $.Convert = (ctx, instr, loc) => {
 export const RSHIFT_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RSHIFT_(args, loc)
@@ -5651,7 +5651,7 @@ export const RSHIFT_: $.Convert = (ctx, instr, loc) => {
 export const RSHIFTR_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RSHIFTR_(args, loc)
@@ -5659,7 +5659,7 @@ export const RSHIFTR_: $.Convert = (ctx, instr, loc) => {
 export const RSHIFTC_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RSHIFTC_(args, loc)
@@ -5667,7 +5667,7 @@ export const RSHIFTC_: $.Convert = (ctx, instr, loc) => {
 export const MODPOW2_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MODPOW2_(args, loc)
@@ -5675,7 +5675,7 @@ export const MODPOW2_: $.Convert = (ctx, instr, loc) => {
 export const MODPOW2R_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MODPOW2R_(args, loc)
@@ -5683,7 +5683,7 @@ export const MODPOW2R_: $.Convert = (ctx, instr, loc) => {
 export const MODPOW2C_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MODPOW2C_(args, loc)
@@ -5691,7 +5691,7 @@ export const MODPOW2C_: $.Convert = (ctx, instr, loc) => {
 export const RSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RSHIFT_MOD(args, loc)
@@ -5699,7 +5699,7 @@ export const RSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
 export const RSHIFTR_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RSHIFTR_MOD(args, loc)
@@ -5707,7 +5707,7 @@ export const RSHIFTR_MOD: $.Convert = (ctx, instr, loc) => {
 export const RSHIFTC_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RSHIFTC_MOD(args, loc)
@@ -5715,7 +5715,7 @@ export const RSHIFTC_MOD: $.Convert = (ctx, instr, loc) => {
 export const MULADDRSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULADDRSHIFT_MOD(args, loc)
@@ -5723,7 +5723,7 @@ export const MULADDRSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
 export const MULADDRSHIFTR_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULADDRSHIFTR_MOD(args, loc)
@@ -5731,7 +5731,7 @@ export const MULADDRSHIFTR_MOD: $.Convert = (ctx, instr, loc) => {
 export const MULADDRSHIFTC_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULADDRSHIFTC_MOD(args, loc)
@@ -5739,7 +5739,7 @@ export const MULADDRSHIFTC_MOD: $.Convert = (ctx, instr, loc) => {
 export const MULRSHIFT_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULRSHIFT_(args, loc)
@@ -5747,7 +5747,7 @@ export const MULRSHIFT_: $.Convert = (ctx, instr, loc) => {
 export const MULRSHIFTR_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULRSHIFTR_(args, loc)
@@ -5755,7 +5755,7 @@ export const MULRSHIFTR_: $.Convert = (ctx, instr, loc) => {
 export const MULRSHIFTC_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULRSHIFTC_(args, loc)
@@ -5763,7 +5763,7 @@ export const MULRSHIFTC_: $.Convert = (ctx, instr, loc) => {
 export const MULMODPOW2_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULMODPOW2_(args, loc)
@@ -5771,7 +5771,7 @@ export const MULMODPOW2_: $.Convert = (ctx, instr, loc) => {
 export const MULMODPOW2R_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULMODPOW2R_(args, loc)
@@ -5779,7 +5779,7 @@ export const MULMODPOW2R_: $.Convert = (ctx, instr, loc) => {
 export const MULMODPOW2C_: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULMODPOW2C_(args, loc)
@@ -5787,7 +5787,7 @@ export const MULMODPOW2C_: $.Convert = (ctx, instr, loc) => {
 export const MULRSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULRSHIFT_MOD(args, loc)
@@ -5795,7 +5795,7 @@ export const MULRSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
 export const MULRSHIFTR_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULRSHIFTR_MOD(args, loc)
@@ -5803,7 +5803,7 @@ export const MULRSHIFTR_MOD: $.Convert = (ctx, instr, loc) => {
 export const MULRSHIFTC_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.MULRSHIFTC_MOD(args, loc)
@@ -5811,7 +5811,7 @@ export const MULRSHIFTC_MOD: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_ADDDIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_ADDDIVMOD(args, loc)
@@ -5819,7 +5819,7 @@ export const LSHIFT_ADDDIVMOD: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_ADDDIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_ADDDIVMODR(args, loc)
@@ -5827,7 +5827,7 @@ export const LSHIFT_ADDDIVMODR: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_ADDDIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_ADDDIVMODC(args, loc)
@@ -5835,7 +5835,7 @@ export const LSHIFT_ADDDIVMODC: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_DIV: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_DIV(args, loc)
@@ -5843,7 +5843,7 @@ export const LSHIFT_DIV: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_DIVR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_DIVR(args, loc)
@@ -5851,7 +5851,7 @@ export const LSHIFT_DIVR: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_DIVC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_DIVC(args, loc)
@@ -5859,7 +5859,7 @@ export const LSHIFT_DIVC: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_MOD(args, loc)
@@ -5867,7 +5867,7 @@ export const LSHIFT_MOD: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_MODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_MODR(args, loc)
@@ -5875,7 +5875,7 @@ export const LSHIFT_MODR: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_MODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_MODC(args, loc)
@@ -5883,7 +5883,7 @@ export const LSHIFT_MODC: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_DIVMOD: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_DIVMOD(args, loc)
@@ -5891,7 +5891,7 @@ export const LSHIFT_DIVMOD: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_DIVMODR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_DIVMODR(args, loc)
@@ -5899,7 +5899,7 @@ export const LSHIFT_DIVMODR: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT_DIVMODC: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_DIVMODC(args, loc)
@@ -5907,7 +5907,7 @@ export const LSHIFT_DIVMODC: $.Convert = (ctx, instr, loc) => {
 export const HASHEXT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.HASHEXT(args, loc)
@@ -5915,7 +5915,7 @@ export const HASHEXT: $.Convert = (ctx, instr, loc) => {
 export const HASHEXTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.HASHEXTR(args, loc)
@@ -5923,7 +5923,7 @@ export const HASHEXTR: $.Convert = (ctx, instr, loc) => {
 export const HASHEXTA: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.HASHEXTA(args, loc)
@@ -5931,7 +5931,7 @@ export const HASHEXTA: $.Convert = (ctx, instr, loc) => {
 export const HASHEXTAR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.HASHEXTAR(args, loc)
@@ -5939,35 +5939,35 @@ export const HASHEXTAR: $.Convert = (ctx, instr, loc) => {
 export const STREF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STREF(loc)
 }
 export const STREF_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STREF_ALT(loc)
 }
 export const STSLICE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STSLICE(loc)
 }
 export const STSLICE_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STSLICE_ALT(loc)
 }
 export const XCHG3: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeStackArgs(instr)
     return c.XCHG3(args[0], args[1], args[2], loc)
@@ -5975,7 +5975,7 @@ export const XCHG3: $.Convert = (ctx, instr, loc) => {
 export const XCHG3_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 3) {
-        throw new Error("Expected 3 arguments")
+        throw new $.ParseError(loc, "Expected 3 arguments")
     }
     const args = $.threeStackArgs(instr)
     return c.XCHG3_ALT(args[0], args[1], args[2], loc)
@@ -5983,7 +5983,7 @@ export const XCHG3_ALT: $.Convert = (ctx, instr, loc) => {
 export const STI: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STI(args, loc)
@@ -5991,7 +5991,7 @@ export const STI: $.Convert = (ctx, instr, loc) => {
 export const STI_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STI_ALT(args, loc)
@@ -5999,7 +5999,7 @@ export const STI_ALT: $.Convert = (ctx, instr, loc) => {
 export const STU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STU(args, loc)
@@ -6007,7 +6007,7 @@ export const STU: $.Convert = (ctx, instr, loc) => {
 export const STU_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.STU_ALT(args, loc)
@@ -6015,7 +6015,7 @@ export const STU_ALT: $.Convert = (ctx, instr, loc) => {
 export const LDI: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LDI(args, loc)
@@ -6023,7 +6023,7 @@ export const LDI: $.Convert = (ctx, instr, loc) => {
 export const LDI_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LDI_ALT(args, loc)
@@ -6031,7 +6031,7 @@ export const LDI_ALT: $.Convert = (ctx, instr, loc) => {
 export const LDU: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LDU(args, loc)
@@ -6039,7 +6039,7 @@ export const LDU: $.Convert = (ctx, instr, loc) => {
 export const LDU_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LDU_ALT(args, loc)
@@ -6047,7 +6047,7 @@ export const LDU_ALT: $.Convert = (ctx, instr, loc) => {
 export const LDSLICE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LDSLICE(args, loc)
@@ -6055,7 +6055,7 @@ export const LDSLICE: $.Convert = (ctx, instr, loc) => {
 export const LDSLICE_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LDSLICE_ALT(args, loc)
@@ -6063,14 +6063,14 @@ export const LDSLICE_ALT: $.Convert = (ctx, instr, loc) => {
 export const LSHIFT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.LSHIFT(loc)
 }
 export const LSHIFT_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.LSHIFT_1(args, loc)
@@ -6078,14 +6078,14 @@ export const LSHIFT_1: $.Convert = (ctx, instr, loc) => {
 export const QLSHIFT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QLSHIFT(loc)
 }
 export const QLSHIFT_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QLSHIFT_1(args, loc)
@@ -6093,14 +6093,14 @@ export const QLSHIFT_1: $.Convert = (ctx, instr, loc) => {
 export const BCHKBITS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BCHKBITS(loc)
 }
 export const BCHKBITS_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.BCHKBITS_1(args, loc)
@@ -6108,14 +6108,14 @@ export const BCHKBITS_1: $.Convert = (ctx, instr, loc) => {
 export const BCHKBITSQ: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.BCHKBITSQ(loc)
 }
 export const BCHKBITSQ_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.BCHKBITSQ_1(args, loc)
@@ -6123,14 +6123,14 @@ export const BCHKBITSQ_1: $.Convert = (ctx, instr, loc) => {
 export const RSHIFT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RSHIFT(loc)
 }
 export const RSHIFT_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.RSHIFT_1(args, loc)
@@ -6138,21 +6138,21 @@ export const RSHIFT_1: $.Convert = (ctx, instr, loc) => {
 export const RSHIFT_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.RSHIFT_ALT(loc)
 }
 export const QRSHIFT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QRSHIFT(loc)
 }
 export const QRSHIFT_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.QRSHIFT_1(args, loc)
@@ -6160,14 +6160,14 @@ export const QRSHIFT_1: $.Convert = (ctx, instr, loc) => {
 export const QRSHIFT_ALT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.QRSHIFT_ALT(loc)
 }
 export const CALLDICT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.CALLDICT(args, loc)
@@ -6175,7 +6175,7 @@ export const CALLDICT: $.Convert = (ctx, instr, loc) => {
 export const CALLDICT_LONG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.CALLDICT_LONG(args, loc)
@@ -6183,7 +6183,7 @@ export const CALLDICT_LONG: $.Convert = (ctx, instr, loc) => {
 export const THROW_SHORT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.THROW_SHORT(args, loc)
@@ -6191,7 +6191,7 @@ export const THROW_SHORT: $.Convert = (ctx, instr, loc) => {
 export const THROW: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.THROW(args, loc)
@@ -6199,7 +6199,7 @@ export const THROW: $.Convert = (ctx, instr, loc) => {
 export const THROWIF_SHORT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.THROWIF_SHORT(args, loc)
@@ -6207,7 +6207,7 @@ export const THROWIF_SHORT: $.Convert = (ctx, instr, loc) => {
 export const THROWIF: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.THROWIF(args, loc)
@@ -6215,7 +6215,7 @@ export const THROWIF: $.Convert = (ctx, instr, loc) => {
 export const THROWIFNOT_SHORT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.THROWIFNOT_SHORT(args, loc)
@@ -6223,7 +6223,7 @@ export const THROWIFNOT_SHORT: $.Convert = (ctx, instr, loc) => {
 export const THROWIFNOT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.THROWIFNOT(args, loc)
@@ -6231,7 +6231,7 @@ export const THROWIFNOT: $.Convert = (ctx, instr, loc) => {
 export const PUSHINT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PUSHINT(args, loc)
@@ -6239,7 +6239,7 @@ export const PUSHINT: $.Convert = (ctx, instr, loc) => {
 export const PUSHINT_8: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PUSHINT_8(args, loc)
@@ -6247,7 +6247,7 @@ export const PUSHINT_8: $.Convert = (ctx, instr, loc) => {
 export const PUSHINT_16: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.PUSHINT_16(args, loc)
@@ -6255,7 +6255,7 @@ export const PUSHINT_16: $.Convert = (ctx, instr, loc) => {
 export const PUSHINT_LONG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleBigIntArg(instr)
     return c.PUSHINT_LONG(args, loc)
@@ -6263,7 +6263,7 @@ export const PUSHINT_LONG: $.Convert = (ctx, instr, loc) => {
 export const XCHG_LONG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleStackArg(instr)
     return c.XCHG_LONG(args, loc)
@@ -6271,7 +6271,7 @@ export const XCHG_LONG: $.Convert = (ctx, instr, loc) => {
 export const XCHG_0: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleStackArg(instr)
     return c.XCHG_0(args, loc)
@@ -6279,7 +6279,7 @@ export const XCHG_0: $.Convert = (ctx, instr, loc) => {
 export const XCHG_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoStackArgs(instr)
     return c.XCHG_1(args[0], args[1], loc)
@@ -6287,7 +6287,7 @@ export const XCHG_1: $.Convert = (ctx, instr, loc) => {
 export const XCHG_3: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoStackArgs(instr)
     return c.XCHG_3(args[0], args[1], loc)
@@ -6295,14 +6295,14 @@ export const XCHG_3: $.Convert = (ctx, instr, loc) => {
 export const DUMPSTK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.DUMPSTK(loc)
 }
 export const DEBUG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.DEBUG(args, loc)
@@ -6310,14 +6310,14 @@ export const DEBUG: $.Convert = (ctx, instr, loc) => {
 export const STRDUMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 0) {
-        throw new Error("Expected 0 arguments")
+        throw new $.ParseError(loc, "Expected 0 arguments")
     }
     return c.STRDUMP(loc)
 }
 export const DEBUG_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.DEBUG_1(args, loc)
@@ -6325,7 +6325,7 @@ export const DEBUG_1: $.Convert = (ctx, instr, loc) => {
 export const DUMP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleStackArg(instr)
     return c.DUMP(args, loc)
@@ -6333,7 +6333,7 @@ export const DUMP: $.Convert = (ctx, instr, loc) => {
 export const DEBUG_2: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.DEBUG_2(args, loc)
@@ -6341,7 +6341,7 @@ export const DEBUG_2: $.Convert = (ctx, instr, loc) => {
 export const PUSHCTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleControlArg(instr)
     return c.PUSHCTR(args, loc)
@@ -6349,7 +6349,7 @@ export const PUSHCTR: $.Convert = (ctx, instr, loc) => {
 export const PUSH: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleStackArg(instr)
     return c.PUSH(args, loc)
@@ -6357,7 +6357,7 @@ export const PUSH: $.Convert = (ctx, instr, loc) => {
 export const PUSH_LONG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleStackArg(instr)
     return c.PUSH_LONG(args, loc)
@@ -6365,7 +6365,7 @@ export const PUSH_LONG: $.Convert = (ctx, instr, loc) => {
 export const POPCTR: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleControlArg(instr)
     return c.POPCTR(args, loc)
@@ -6373,7 +6373,7 @@ export const POPCTR: $.Convert = (ctx, instr, loc) => {
 export const POP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleStackArg(instr)
     return c.POP(args, loc)
@@ -6381,7 +6381,7 @@ export const POP: $.Convert = (ctx, instr, loc) => {
 export const POP_LONG: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleStackArg(instr)
     return c.POP_LONG(args, loc)
@@ -6389,7 +6389,7 @@ export const POP_LONG: $.Convert = (ctx, instr, loc) => {
 export const CALLXARGS: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.CALLXARGS(args[0], args[1], loc)
@@ -6397,7 +6397,7 @@ export const CALLXARGS: $.Convert = (ctx, instr, loc) => {
 export const CALLXARGS_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 2) {
-        throw new Error("Expected 2 arguments")
+        throw new $.ParseError(loc, "Expected 2 arguments")
     }
     const args = $.twoIntegerArgs(instr)
     return c.CALLXARGS_1(args[0], args[1], loc)
@@ -6405,7 +6405,7 @@ export const CALLXARGS_1: $.Convert = (ctx, instr, loc) => {
 export const PUSHSLICE: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.sliceArg(instr)
     return c.PUSHSLICE(args, loc)
@@ -6413,7 +6413,7 @@ export const PUSHSLICE: $.Convert = (ctx, instr, loc) => {
 export const PUSHSLICE_REFS_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.sliceArg(instr)
     return c.PUSHSLICE_REFS_1(args, loc)
@@ -6421,7 +6421,7 @@ export const PUSHSLICE_REFS_1: $.Convert = (ctx, instr, loc) => {
 export const PUSHSLICE_LONG_1: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.sliceArg(instr)
     return c.PUSHSLICE_LONG_1(args, loc)
@@ -6429,7 +6429,7 @@ export const PUSHSLICE_LONG_1: $.Convert = (ctx, instr, loc) => {
 export const PUSHCONT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.PUSHCONT(args, loc)
@@ -6437,7 +6437,7 @@ export const PUSHCONT: $.Convert = (ctx, instr, loc) => {
 export const PUSHCONT_SHORT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.codeSliceArg(ctx, instr)
     return c.PUSHCONT_SHORT(args, loc)
@@ -6445,7 +6445,7 @@ export const PUSHCONT_SHORT: $.Convert = (ctx, instr, loc) => {
 export const STSLICECONST: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.sliceArg(instr)
     return c.STSLICECONST(args, loc)
@@ -6453,7 +6453,7 @@ export const STSLICECONST: $.Convert = (ctx, instr, loc) => {
 export const SETCP: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.SETCP(args, loc)
@@ -6461,7 +6461,7 @@ export const SETCP: $.Convert = (ctx, instr, loc) => {
 export const SETCP_SHORT: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.SETCP_SHORT(args, loc)
@@ -6469,7 +6469,7 @@ export const SETCP_SHORT: $.Convert = (ctx, instr, loc) => {
 export const DEBUGMARK: $.Convert = (ctx, instr, loc) => {
     const argsLen = instr.args
     if (argsLen.length !== 1) {
-        throw new Error("Expected 1 argument")
+        throw new $.ParseError(loc, "Expected 1 argument")
     }
     const args = $.singleIntegerArg(instr)
     return c.DEBUGMARK(args, loc)

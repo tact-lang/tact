@@ -1,5 +1,5 @@
-import {DictionaryInfo, Mapping} from "../runtime/builder"
-import {Loc as ParserLoc} from "../runtime/util"
+import {DictionaryInfo, Mapping} from "../runtime"
+import {Loc as InstrLoc} from "../runtime/util"
 
 /**
  * Represents a location of the single instruction in the code.
@@ -18,7 +18,7 @@ export const Loc = (file: string, line: number, otherLines: number[]): Loc => ({
     line,
     otherLines,
 })
-export const fromParserLoc = (loc: ParserLoc): Loc => ({
+export const fromParserLoc = (loc: InstrLoc): Loc => ({
     file: loc.file,
     line: loc.line,
     otherLines: [],

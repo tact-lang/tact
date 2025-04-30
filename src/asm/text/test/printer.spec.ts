@@ -1,7 +1,7 @@
 import {ADD, decompileCell, PUSHINT} from "../../runtime"
 import {print} from "../printer"
 import {readFileSync} from "node:fs"
-import {Cell} from "@ton/core"
+import {boc} from "../../runtime/util"
 
 describe("assembly-printer", () => {
     it("should print simple assembly", () => {
@@ -12,9 +12,11 @@ describe("assembly-printer", () => {
 
     it("should print assembly", () => {
         const instructions = decompileCell(
-            Cell.fromBoc(
-                readFileSync(`${__dirname}/testdata/jetton_minter_discoverable_JettonMinter.boc`),
-            )[0],
+            boc(
+                readFileSync(
+                    `${__dirname}/testdata/jetton_minter_discoverable_JettonMinter.boc`,
+                ).toString("hex"),
+            ).asCell(),
         )
 
         expect(print(instructions)).toMatchSnapshot()

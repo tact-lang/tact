@@ -3,7 +3,6 @@
 .DS_Store
 *.swp
 node_modules
-coverage
 dist
 output/
 src/func/funcfiftlib.wasm.js

@@ -25,25 +25,25 @@ module.exports = {
   overrides: [
     {
       files: ["src/**/*.{js,ts,jsx,tsx}"],
-      rules: {
-        "no-restricted-imports": [
-          "error",
-          {
-            patterns: ["./*", "../*", "!./**/output", "!../**/output"],
-          },
-        ],
-      },
+      // rules: {
+      //   "no-restricted-imports": [
+      //     "error",
+      //     {
+      //       patterns: ["./*", "../*", "!./**/output", "!../**/output"],
+      //     },
+      //   ],
+      // },
     },
   ],
   rules: {
-    "@typescript-eslint/consistent-type-imports": [
-      "error",
-      {
-        prefer: "type-imports",
-        fixStyle: "separate-type-imports",
-        disallowTypeAnnotations: true,
-      },
-    ],
+    // "@typescript-eslint/consistent-type-imports": [
+    //   "error",
+    //   {
+    //     prefer: "type-imports",
+    //     fixStyle: "separate-type-imports",
+    //     disallowTypeAnnotations: true,
+    //   },
+    // ],
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
@@ -63,7 +63,7 @@ module.exports = {
     "@typescript-eslint/restrict-template-expressions": "error",
     "@typescript-eslint/no-unnecessary-template-expression": "error",
     "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
-    "@typescript-eslint/no-unnecessary-condition": "error",
+    "@typescript-eslint/no-unnecessary-condition": "off",
     "@typescript-eslint/switch-exhaustiveness-check": [
       "error",
       { considerDefaultExhaustiveForUnions: true },

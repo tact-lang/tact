@@ -3,7 +3,6 @@ import * as t from "@babel/types"
 import generateTs from "@babel/generator"
 import {instructionList, pseudoInstructions} from "./instructions"
 
-const TON_CORE_QUALIFIER = t.identifier("G")
 const CONSTRUCTORS_QUALIFIER = t.identifier("c")
 const UTIL_QUALIFIER = t.identifier("$")
 const TYPES_QUALIFIER = t.identifier("types")
@@ -26,11 +25,6 @@ const generate = (): string => {
     const importType = t.importDeclaration(
         [t.importNamespaceSpecifier(TYPES_QUALIFIER)],
         t.stringLiteral("./types"),
-    )
-
-    const importTonCore = t.importDeclaration(
-        [t.importNamespaceSpecifier(TON_CORE_QUALIFIER)],
-        t.stringLiteral("@ton/core"),
     )
 
     // export type Instr = c.CALLREF | c.ABS | c.PUSH | c.PUSHCONT | c.IF // all
@@ -129,7 +123,6 @@ const generate = (): string => {
         t.program([
             importUtil,
             importConstructors,
-            importTonCore,
             importType,
             exportType,
             rangeToTypeConst,

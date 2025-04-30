@@ -49,6 +49,25 @@ function generatePrintFunction(instructions: [string, Opcode][]): t.ExportNamedD
 
     const params = [printerParam, instrParam]
 
+    const cases = instructions.flatMap(([name, opcode]) => {
+        if (pseudoInstructions.has(name)) {
+            return []
+        }
+
+        const args = opcode.args
+        const countArgs = argsLen(args)
+
+        const statements: t.Statement[] = []
+
+        if (countArgs !== 0) {
+            statements.push(writeAppend(" "))
+        }
+
+        statements.push(...generateArgs(args), t.returnStatement())
+
+        return [t.switchCase(t.stringLiteral(name), statements)]
+    })
+
     const body = t.blockStatement([
         t.expressionStatement(
             t.callExpression(t.memberExpression(t.identifier("p"), t.identifier("beginLine")), [
@@ -56,27 +75,10 @@ function generatePrintFunction(instructions: [string, Opcode][]): t.ExportNamedD
             ]),
         ),
 
-        t.switchStatement(
-            t.memberExpression(t.identifier("instr"), t.identifier("$")),
-            instructions.flatMap(([name, opcode]) => {
-                if (pseudoInstructions.has(name)) {
-                    return []
-                }
-
-                const args = opcode.args
-                const countArgs = argsLen(args)
-
-                const statements: t.Statement[] = []
-
-                if (countArgs !== 0) {
-                    statements.push(writeAppend(" "))
-                }
-
-                statements.push(...generateArgs(args), t.returnStatement())
-
-                return [t.switchCase(t.stringLiteral(name), statements)]
-            }),
-        ),
+        t.switchStatement(t.memberExpression(t.identifier("instr"), t.identifier("$")), [
+            ...cases,
+            t.switchCase(undefined, []), // default case
+        ]),
     ])
 
     return t.exportNamedDeclaration(

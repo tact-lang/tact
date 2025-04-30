@@ -1,4 +1,4 @@
-<!doctype html>
+export const MAIN_TEMPLATE = `<!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -365,10 +365,10 @@
 
                         const sortedRows = rows.sort((a, b) => {
                             const aValue = a.querySelector(
-                                `td[data-value]:nth-child(${getColumnIndex(column)})`,
+                                \`td[data-value]:nth-child($\{getColumnIndex(column)})\`,
                             ).dataset.value
                             const bValue = b.querySelector(
-                                `td[data-value]:nth-child(${getColumnIndex(column)})`,
+                                \`td[data-value]:nth-child($\{getColumnIndex(column)})\`,
                             ).dataset.value
 
                             // Check if values are numeric
@@ -421,7 +421,7 @@
                     .querySelector(".stat-value")
                     .innerText.replace("%", "")
                 if (progressBar && coveragePercentage) {
-                    progressBar.style.width = `${coveragePercentage}%`
+                    progressBar.style.width = \`$\{coveragePercentage}%\`
                 }
             })
         </script>
@@ -439,3 +439,62 @@
         <div class="code-container">{{CODE_CONTENT}}</div>
     </body>
 </html>
+`
+
+export const SUMMARY_TEMPLATE = `<div class="summary">
+    <h1>Coverage Report</h1>
+    <div class="stats">
+        <div class="stat-item">
+            <span class="stat-label">Coverage:</span>
+            <span class="stat-value">{{coverage_percentage}}%</span>
+            <div class="progress-bar">
+                <div class="progress" id="coverage-progress"></div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Lines:</span>
+            <span class="stat-value">{{covered_lines}}/{{total_lines}}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Total Gas Used:</span>
+            <span class="stat-value">{{total_gas}}</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Instructions Executed:</span>
+            <span class="stat-value">{{total_hits}}</span>
+        </div>
+    </div>
+    <div class="instructions-section">
+        <details>
+            <summary>
+                <h2>Instruction Statistics <span class="toggle-icon">▼</span></h2>
+            </summary>
+            <div class="instructions-content">
+                <table id="instructionsTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-column="name">
+                                Instruction <span class="sort-icon">↕</span>
+                            </th>
+                            <th class="sortable" data-column="gas">
+                                Total Gas <span class="sort-icon">↕</span>
+                            </th>
+                            <th class="sortable" data-column="hits">
+                                Hits <span class="sort-icon">↕</span>
+                            </th>
+                            <th class="sortable" data-column="avgGas">
+                                Avg Gas <span class="sort-icon">↕</span>
+                            </th>
+                            <th class="sortable" data-column="percent">
+                                % of Total Gas <span class="sort-icon">↕</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{instruction_rows}}
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </div>
+</div>`

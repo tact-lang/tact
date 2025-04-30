@@ -1,4 +1,4 @@
-import * as i from "../../runtime"
+import * as i from "../../index"
 
 export const instructions = [
     i.ACCEPT(),

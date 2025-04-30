@@ -2,27 +2,29 @@ import * as $ from "./util"
 import * as G from "@ton/core"
 import * as c from "./constructors"
 import {PSEUDO_EXOTIC} from "./constructors"
-import assert from "node:assert"
 import {Instr, rangeToType, storeMapping} from "./instr-gen"
 import {CodeBuilder, Mapping} from "./builder"
 
 export const instr: $.Type<Instr> = {
     store: (b, t) => {
         if (t.$ === "PSEUDO_PUSHREF") {
-            return $.PSEUDO_PUSHREF.store(b, t)
+            $.PSEUDO_PUSHREF.store(b, t)
+            return
         }
         if (t.$ === "PSEUDO_PUSHSLICE") {
-            return $.PSEUDO_PUSHSLICE.store(b, t)
+            $.PSEUDO_PUSHSLICE.store(b, t)
+            return
         }
         if (t.$ === "PSEUDO_EXOTIC") {
-            return $.PSEUDO_EXOTIC.store(b, t)
+            $.PSEUDO_EXOTIC.store(b, t)
+            return
         }
 
         const store = storeMapping.get(t.$)
         if (!store) {
             throw new Error("unknown instruction")
         }
-        return store(b, t)
+        store(b, t)
     },
     load: getLoadInstr<Instr>(rangeToType),
 }
@@ -119,7 +121,9 @@ function getLoadInstr<T>(instructionList: Range<T>[]) {
         let j = list.length
         while (j - i > 1) {
             const k = (j + i) >> 1
-            if (list[k].min <= opcode) {
+            const kElement = list[k]
+            if (kElement === undefined) break
+            if (kElement.min <= opcode) {
                 i = k
             } else {
                 j = k
@@ -132,6 +136,10 @@ function getLoadInstr<T>(instructionList: Range<T>[]) {
             throw new Error(
                 `invalid opcode, not enough bits, expected at least 8 bits, but got ${bits}`,
             )
+        }
+
+        if (!instr) {
+            throw new Error(`invalid opcode, slice: ${s.asCell().toString()}`)
         }
 
         return instr.load(s)
@@ -160,7 +168,9 @@ export const compileCellWithMapping = (instructions: Instr[]): [G.Cell, Mapping]
 }
 
 export const decompile = (buffer: Buffer): Instr[] => {
-    return decompileCell(G.Cell.fromBoc(buffer)[0])
+    const boc = G.Cell.fromBoc(buffer)[0]
+    if (!boc) return []
+    return decompileCell(boc)
 }
 
 export const decompileCell = (cell: G.Cell): Instr[] => {
@@ -168,4 +178,10 @@ export const decompileCell = (cell: G.Cell): Instr[] => {
         return [parseExotic(cell)]
     }
     return codeType().load(cell.asSlice())
+}
+
+function assert(cond: boolean) {
+    if (!cond) {
+        throw new Error("assertion failed")
+    }
 }

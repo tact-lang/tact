@@ -62,6 +62,7 @@ export namespace $ast {
         readonly $: "VmStackValue"
         readonly value:
             | Null
+            | NaN
             | Integer
             | Tuple
             | TupleParen
@@ -73,6 +74,9 @@ export namespace $ast {
     }>
     export type Null = $.Located<{
         readonly $: "Null"
+    }>
+    export type NaN = $.Located<{
+        readonly $: "NaN"
     }>
     export type Integer = $.Located<{
         readonly $: "Integer"
@@ -308,20 +312,23 @@ export const VmStackValue: $.Parser<$ast.VmStackValue> = $.loc(
             $.alt(
                 $.lazy(() => Null),
                 $.alt(
-                    $.lazy(() => Integer),
+                    $.lazy(() => NaN),
                     $.alt(
-                        $.lazy(() => Tuple),
+                        $.lazy(() => Integer),
                         $.alt(
-                            $.lazy(() => TupleParen),
+                            $.lazy(() => Tuple),
                             $.alt(
-                                $.lazy(() => Cell),
+                                $.lazy(() => TupleParen),
                                 $.alt(
-                                    $.lazy(() => Continuation),
+                                    $.lazy(() => Cell),
                                     $.alt(
-                                        $.lazy(() => Builder),
+                                        $.lazy(() => Continuation),
                                         $.alt(
-                                            $.lazy(() => CellSlice),
-                                            $.lazy(() => Unknown),
+                                            $.lazy(() => Builder),
+                                            $.alt(
+                                                $.lazy(() => CellSlice),
+                                                $.lazy(() => Unknown),
+                                            ),
                                         ),
                                     ),
                                 ),
@@ -337,6 +344,9 @@ export const VmStackValue: $.Parser<$ast.VmStackValue> = $.loc(
 )
 export const Null: $.Parser<$ast.Null> = $.loc(
     $.field($.pure("Null"), "$", $.right($.alt($.str("()"), $.str("(null)")), $.eps)),
+)
+export const NaN: $.Parser<$ast.NaN> = $.loc(
+    $.field($.pure("NaN"), "$", $.right($.str("NaN"), $.eps)),
 )
 export const Integer: $.Parser<$ast.Integer> = $.loc(
     $.field(

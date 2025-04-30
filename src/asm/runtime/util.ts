@@ -450,7 +450,9 @@ export const control: Type<number> = {
 }
 
 export const plduzArg: Type<number> = {
-    store: (b, t) => uint3.store(b, ((t >> 5) - 1) & 7),
+    store: (b, t) => {
+        uint3.store(b, ((t >> 5) - 1) & 7)
+    },
     load: s => ((uint3.load(s) & 7) + 1) << 5,
 }
 
@@ -496,7 +498,9 @@ export const largeInt: Type<bigint> = {
 export type RunVmArg = number
 
 export const runvmArg: Type<RunVmArg> = {
-    store: (b, t) => uint12.store(b, t),
+    store: (b, t) => {
+        uint12.store(b, t)
+    },
     load: s => uint12.load(s),
 }
 
@@ -530,7 +534,9 @@ export const setcpArg: Type<number> = {
 }
 
 export const delta = (n: number, ty: Type<number>): Type<number> => ({
-    store: (b, t) => ty.store(b, t - n),
+    store: (b, t) => {
+        ty.store(b, t - n)
+    },
     load: s => ty.load(s) + n,
 })
 

@@ -2,6 +2,7 @@ export type Stack = StackElement[]
 
 export type StackElement =
     | {readonly $: "Null"}
+    | {readonly $: "NaN"}
     | {readonly $: "Integer"; readonly value: bigint}
     | {readonly $: "Cell"; readonly boc: string}
     | {
@@ -26,6 +27,8 @@ export const serializeStackElement = (element: StackElement): string => {
     switch (element.$) {
         case "Null":
             return "()"
+        case "NaN":
+            return "NaN"
         case "Integer":
             return element.value.toString()
         case "Tuple":

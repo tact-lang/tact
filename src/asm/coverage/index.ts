@@ -1,12 +1,8 @@
 import {Cell} from "@ton/core"
-import {Mapping} from "../runtime/builder"
-import {compileCellWithMapping, decompileCell} from "../runtime"
-import {print} from "../text/printer"
-import {parse} from "../text/parse"
-import {createMappingInfo} from "../trace/mapping"
-import {createTraceInfoPerTransaction} from "../trace/trace"
+import {compileCellWithMapping, decompileCell, Mapping} from "../runtime"
+import {print, parse} from "../text"
+import {createMappingInfo, createTraceInfoPerTransaction, loadFuncMapping} from "../trace"
 import {buildFuncLineInfo, buildLineInfo, generateCoverageSummary} from "./data"
-import {loadFuncMapping} from "../trace/func-mapping"
 import {readFileSync} from "node:fs"
 
 export function collectAsmCoverage(cell: Cell, logs: string) {
@@ -57,3 +53,7 @@ export const recompileCell = (cell: Cell, forFunC: boolean): [Cell, Mapping] => 
 
     return compileCellWithMapping(parseResult.instructions)
 }
+
+export {generateHtml} from "./html"
+export {generateTextReport} from "./text"
+export * from "./data"

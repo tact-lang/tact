@@ -1,4 +1,3 @@
-import {Instr} from "../runtime"
 import * as i from "../runtime"
 import {
     Address,
@@ -14,9 +13,8 @@ import {
 } from "@ton/core"
 import {Blockchain, SandboxContract, TreasuryContract} from "@ton/sandbox"
 import {measureGas2} from "./helpers"
-import {dictMap} from "../runtime/util"
 
-export const measureGas = async (code: Instr[]): Promise<number> => {
+export const measureGas = async (code: i.Instr[]): Promise<number> => {
     class TestContract implements Contract {
         public readonly address: Address
         public readonly init?: StateInit
@@ -50,7 +48,7 @@ export const measureGas = async (code: Instr[]): Promise<number> => {
         i.SETCP(0),
         i.DICTPUSHCONST(
             19,
-            dictMap(
+            i.util.dictMap(
                 new Map([
                     // prettier-ignore
                     [0, [
