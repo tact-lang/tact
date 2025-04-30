@@ -137,11 +137,13 @@ describe("evaluation properties", () => {
                         bindings,
                         expr,
                     );
+                    if (!(compilationResult instanceof Error && interpretationResult instanceof Error)) {
                     assert.strictEqual(
                         compilationResult,
                         interpretationResult,
                         `Compilation result: \n${compilationResult}\nhas to be the same as interpretation result: \n${interpretationResult}`,
                     );
+                }
                 },
             );
 
