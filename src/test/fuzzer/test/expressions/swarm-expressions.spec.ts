@@ -5,12 +5,10 @@ import {
     defaultGenerationIds,
     ExpressionTestingEnvironment,
     generateBindings,
-    initializersMapping,
     interpretExpression,
     setupEnvironment,
 } from "./utils";
 import {
-    AllowedType,
     AllowedTypeEnum,
     ExpressionGenerator,
     GenContext,
@@ -50,7 +48,10 @@ function getRandomSwarmGenerator(
                             isNonTerminalIn[index],
                     );
                     const allowedTerminals = Object.values(Terminal).filter(
-                        (_, index) => isTerminalIn[index],
+                        (terminal, index) =>
+                            terminal.id === Terminal.integer.id ||
+                            terminal.id === Terminal.id_int.id ||
+                            isTerminalIn[index],
                     );
 
                     const expressionGenerationCtx: GenContext = {
