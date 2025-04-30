@@ -8,6 +8,11 @@ struct DictGet {
     flag: Int;
 }
 
+struct DictItem { 
+    amount: Int as coins; 
+    initNFTBody: Cell;
+}
+
 // (int, slice, int) udict_get_min?(cell dict, int key_len) asm (-> 1 0 2) "DICTUMIN" "NULLSWAPIFNOT2";
 asm(-> 1 0 2) fun dictGetMin(dict: Cell, keySize: Int): DictGet { DICTUMIN NULLSWAPIFNOT2 }
 
@@ -74,7 +79,10 @@ contract NFTCollection {
 
             throwUnless(IncorrectIndexes + counter, currNFTItem.itemIndex!! <= self.nextItemIndex);
 
-            deployNFTItem(self.commonCode, currNFTItem.itemIndex!!, currNFTItem.item!!.loadCoins(), currNFTItem.item!!.loadRef(), self.commonData);
+            let dictItem: DictItem = DictItem.fromSlice(currNFTItem.item!!);
+
+            deployNFTItem(self.commonCode, currNFTItem.itemIndex!!, dictItem.amount, dictItem.initNFTBody, self.commonData);
+            
             if (currNFTItem.itemIndex!! == self.nextItemIndex) {
                 self.nextItemIndex += 1;
             }
