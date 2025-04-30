@@ -122,7 +122,7 @@
     },
     {
       "label": "1.6.7 with using .fromSlice instead of self parsing",
-      "pr": "https://github.com/tact-lang/tact/pull/2975",
+      "pr": "https://github.com/tact-lang/tact/pull/2984",
       "gas": {
         "transfer": "7305",
         "get static data": "4697",
