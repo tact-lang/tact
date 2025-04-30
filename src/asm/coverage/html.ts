@@ -1,5 +1,12 @@
-import { CoverageSummary, generateCoverageSummary, Line } from "@/asm/coverage/data";
-import { MAIN_TEMPLATE, SUMMARY_TEMPLATE } from "@/asm/coverage/templates/templates";
+import {
+    CoverageSummary,
+    generateCoverageSummary,
+    Line,
+} from "@/asm/coverage/data";
+import {
+    MAIN_TEMPLATE,
+    SUMMARY_TEMPLATE,
+} from "@/asm/coverage/templates/templates";
 
 const templates = {
     main: MAIN_TEMPLATE,

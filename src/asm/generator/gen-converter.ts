@@ -1,7 +1,11 @@
 import { writeFileSync } from "node:fs";
 import * as t from "@babel/types";
 import * as $ from "@/asm/generator/instructions";
-import { instructionList, Opcode, pseudoInstructions } from "@/asm/generator/instructions";
+import {
+    instructionList,
+    Opcode,
+    pseudoInstructions,
+} from "@/asm/generator/instructions";
 import generateTs from "@babel/generator";
 
 const RUNTIME_QUALIFIER = t.identifier("c");

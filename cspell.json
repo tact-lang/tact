@@ -58,6 +58,15 @@
     "src/benchmarks/contracts/func/notcoin/gas.fc",
     "src/utils/change-case/*",
     "src/fmt/cst/cst-parser.ts",
+    "src/asm/text/convert.ts",
+    "src/asm/text/printer-gen.ts",
+    "src/asm/runtime/types.ts",
+    "src/asm/runtime/test/*",
+    "src/asm/runtime/stack-signatures-data.json",
+    "src/asm/runtime/stack-signatures-schema.ts",
+    "src/asm/runtime/instr-gen.ts",
+    "src/asm/runtime/constructors.ts",
+    "src/asm/generator/*",
     "coverage"
   ]
 }

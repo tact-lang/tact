@@ -47,7 +47,7 @@ export function deserializeInternalKey(value: string): any {
             let charLen = lastDash ? v.length - 1 : v.length;
             const padded = v.substr(0, charLen) + "0"; //Padding
             if (!lastDash && (charLen & 1) !== 0) {
-                // Four bit nibmle without padding
+                // Four bit nimble without padding
                 return new BitString(
                     Buffer.from(padded, "hex"),
                     0,

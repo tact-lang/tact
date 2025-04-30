@@ -1,7 +1,12 @@
 import * as $ from "@tonstudio/parser-runtime";
 import * as G from "@/asm/text/grammar";
 import { Instr } from "@/asm/runtime";
-import { createLoc, Ctx, ParseError, processInstructions } from "@/asm/text/util";
+import {
+    createLoc,
+    Ctx,
+    ParseError,
+    processInstructions,
+} from "@/asm/text/util";
 
 export type ParseResult = ParseSuccess | ParseFailure;
 

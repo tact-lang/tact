@@ -1,7 +1,10 @@
 import { writeFileSync } from "node:fs";
 import * as t from "@babel/types";
 import * as $ from "@/asm/generator/instructions";
-import { instructionList, pseudoInstructions } from "@/asm/generator/instructions";
+import {
+    instructionList,
+    pseudoInstructions,
+} from "@/asm/generator/instructions";
 import generateTs from "@babel/generator";
 
 const CONSTRUCTORS_QUALIFIER = t.identifier("c");
