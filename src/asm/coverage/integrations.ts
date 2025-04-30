@@ -5,10 +5,14 @@ import {
     generateShortSummary,
     generateHtml,
 } from "@/asm/coverage/index";
-import { writeFileSync } from "fs";
+import * as fs from "node:fs";
 import { Contract } from "@ton/core";
 
 export const calculateCoverage = async (dir: string, contract: Contract) => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+
     const logs = join(dir, "output", "log.yaml");
     const parsedLogs = await readLog(logs);
 
@@ -24,7 +28,7 @@ export const calculateCoverage = async (dir: string, contract: Contract) => {
     console.log(shortSummary);
 
     const report = generateHtml(lines);
-    writeFileSync(`${dir}/coverage-${nowTime()}.html`, report);
+    fs.writeFileSync(join(dir, `coverage-${nowTime()}.html`), report);
 };
 
 function nowTime(): string {
