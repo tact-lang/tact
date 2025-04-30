@@ -5,6 +5,7 @@ import {
     ExpressionTestingEnvironment,
     setupEnvironment,
 } from "./utils";
+import { NonTerminal } from "../../src/generators/uniform-expr-gen";
 
 describe("evaluation properties", () => {
     let expressionTestingEnvironment: ExpressionTestingEnvironment;

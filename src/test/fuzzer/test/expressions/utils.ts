@@ -5,6 +5,7 @@ import type {
     AllowedTypeEnum,
     GenContext,
     NonTerminalEnum,
+    TerminalEnum,
 } from "../../src/generators/uniform-expr-gen";
 import {
     AllowedType,
@@ -234,7 +235,7 @@ export function generateBindings(
     generator: (nonTerminalId: NonTerminalEnum) => fc.Arbitrary<Ast.Expression>,
 ): fc.Arbitrary<Ast.StatementLet[]> {
     return fc.tuple(
-        ...expressionGenerationIds
+        ...expressionGenerationIds  
             .entries()
             .flatMap(([type, names]) =>
                 names.map((name) =>
@@ -281,7 +282,7 @@ export function saveExpressionTest(
     );
 }
 
-const defaultGenerationIds: Map<AllowedTypeEnum, string[]> = new Map([
+export const defaultGenerationIds: Map<AllowedTypeEnum, string[]> = new Map([
     [AllowedType.Int, ["int1"]],
     [AllowedType.OptInt, ["int_null"]],
     [AllowedType.Bool, ["bool1"]],
@@ -304,15 +305,17 @@ export function createExpressionComputationEqualityProperty(
         AllowedTypeEnum,
         string[]
     > = defaultGenerationIds,
+    allowedNonTerminals : NonTerminalEnum[] = Object.values(NonTerminal),
+    allowedTerminals : TerminalEnum[] = Object.values(Terminal)
 ) {
     const expressionGenerationCtx: GenContext = {
         identifiers: expressionGenerationIds,
         contractNames: [expressionTestingEnvironment.contractNameToCompile],
-        allowedNonTerminals: Object.values(NonTerminal),
-        allowedTerminals: Object.values(Terminal),
+        allowedNonTerminals,
+        allowedTerminals,
     };
 
-    const generator = initializeGenerator(
+    const { generator } = initializeGenerator(
         minSize,
         maxSize,
         expressionGenerationCtx,

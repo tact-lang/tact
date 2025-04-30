@@ -134,7 +134,7 @@ export const Terminal = {
     id_opt_string: { terminal: true, id: 42 },
 } as const;
 
-type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];
+export type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];
 
 type Token = TerminalEnum | GenericNonTerminal;
 
@@ -1658,12 +1658,19 @@ function makeExpression(
     return genFromNonTerminal(nonTerminalId, size);
 }
 
+export type ExpressionGenerator = (
+    nonTerminal: NonTerminalEnum,
+) => fc.Arbitrary<Ast.Expression>;
+
 export function initializeGenerator(
     minSize: number,
     maxSize: number,
     ctx: GenContext,
     astF: FactoryAst,
-): (nonTerminal: NonTerminalEnum) => fc.Arbitrary<Ast.Expression> {
+): {
+    generator: ExpressionGenerator;
+    availableNonTerminals: number[];
+} {
     const { productions, nonTerminals, reindexMap } = filterProductions(
         ctx.allowedNonTerminals,
         ctx.allowedTerminals,
@@ -1672,42 +1679,47 @@ export function initializeGenerator(
     const { nonTerminalCounts, sizeSplitCounts, totalCounts } =
         computeCountTables(minSize, maxSize, productions, nonTerminals);
 
-    return (nonTerminal: NonTerminalEnum) => {
-        const nonTerminalId = reindexMap.get(nonTerminal.id);
-        if (typeof nonTerminalId === "undefined") {
-            throw new Error(
-                `Non-terminal ${nonTerminal.id} does not have a re-indexing`,
-            );
-        }
+    return {
+        generator: (nonTerminal: NonTerminalEnum) => {
+            const nonTerminalId = reindexMap.get(nonTerminal.id);
+            if (typeof nonTerminalId === "undefined") {
+                throw new Error(
+                    `Non-terminal ${nonTerminal.id} does not have a re-indexing`,
+                );
+            }
 
-        if (nonTerminals.every((n) => n.id !== nonTerminalId)) {
-            throw new Error(
-                `Non-terminal ${nonTerminalId} is not among the allowed non-terminals`,
+            if (nonTerminals.every((n) => n.id !== nonTerminalId)) {
+                throw new Error(
+                    `Non-terminal ${nonTerminalId} is not among the allowed non-terminals`,
+                );
+            }
+            const sizes = lookupTotalCounts(totalCounts, nonTerminalId);
+            if (sizes.every((s) => s === 0)) {
+                console.log(ctx);
+                console.log(reindexMap);
+                throw new Error(
+                    `There are no trees for non-terminal ${nonTerminalId}`,
+                );
+            }
+            const weightedSizes: fc.WeightedArbitrary<number>[] = sizes.map(
+                (w, i) => {
+                    return { arbitrary: fc.constant(i), weight: w };
+                },
             );
-        }
-        const sizes = lookupTotalCounts(totalCounts, nonTerminalId);
-        if (sizes.every((s) => s === 0)) {
-            throw new Error(
-                `There are no trees for non-terminal ${nonTerminalId}`,
-            );
-        }
-        const weightedSizes: fc.WeightedArbitrary<number>[] = sizes.map(
-            (w, i) => {
-                return { arbitrary: fc.constant(i), weight: w };
-            },
-        );
 
-        return fc.oneof(...weightedSizes).chain((size) => {
-            return makeExpression(
-                astF,
-                nonTerminalId,
-                ctx,
-                nonTerminalCounts,
-                sizeSplitCounts,
-                productions,
-                size,
-            );
-        });
+            return fc.oneof(...weightedSizes).chain((size) => {
+                return makeExpression(
+                    astF,
+                    nonTerminalId,
+                    ctx,
+                    nonTerminalCounts,
+                    sizeSplitCounts,
+                    productions,
+                    size,
+                );
+            });
+        },
+        availableNonTerminals: Array.from(reindexMap.keys()),
     };
 }
 
