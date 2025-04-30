@@ -113,17 +113,26 @@ function testSBT(
             const newItemSBT = blockchain.openContract(
                 await fromInitItem(1n, owner.address, null, null, null, 0n),
             );
-            const sendResult = await step("request owner", async () =>
-                newItemSBT.send(
-                    owner.getSender(),
-                    { value: toNano("0.1") },
+
+            const sendRequestOwner = async (
+                itemSBT: SandboxContract<SBTItem>,
+                from: Sender,
+                value: bigint,
+            ) => {
+                return await itemSBT.send(
+                    from,
+                    { value },
                     beginCell()
                         .storeAddress(owner.address)
                         .storeRef(beginCell().endCell())
                         .storeAddress(owner.address)
                         .storeUint(0n, 64)
                         .asSlice(),
-                ),
+                );
+            };
+
+            const sendResult = await step("request owner", async () =>
+                sendRequestOwner(newItemSBT, owner.getSender(), toNano(1)),
             );
 
             expect(sendResult.transactions).toHaveTransaction({
