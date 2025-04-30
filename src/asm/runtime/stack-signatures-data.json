@@ -1,4 +1,5 @@
 {
+  "$schema": "./stack-signatures-schema.json",
   "DEPTH": {
     "outputs": {
       "stack": [

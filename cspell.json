@@ -64,6 +64,7 @@
     "src/asm/runtime/test/*",
     "src/asm/runtime/stack-signatures-data.json",
     "src/asm/runtime/stack-signatures-schema.ts",
+    "src/asm/runtime/stack-signatures-schema.json",
     "src/asm/runtime/instr-gen.ts",
     "src/asm/runtime/constructors.ts",
     "src/asm/generator/*",
