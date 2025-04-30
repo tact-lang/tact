@@ -114,7 +114,7 @@ function testSBT(
                 await fromInitItem(1n, owner.address, null, null, null, 0n),
             );
 
-            const sendRequestOwner = async (
+            const sendDeploy = async (
                 itemSBT: SandboxContract<SBTItem>,
                 from: Sender,
                 value: bigint,
@@ -132,7 +132,7 @@ function testSBT(
             };
 
             const sendResult = await step("request owner", async () =>
-                sendRequestOwner(newItemSBT, owner.getSender(), toNano(1)),
+                sendDeploy(newItemSBT, owner.getSender(), toNano(1)),
             );
 
             expect(sendResult.transactions).toHaveTransaction({
