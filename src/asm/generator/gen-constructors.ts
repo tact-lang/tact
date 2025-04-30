@@ -1,4 +1,4 @@
-import * as $ from "@/asm/generator/instructions";
+import type * as $ from "@/asm/generator/instructions";
 import * as t from "@babel/types";
 import generateTs from "@babel/generator";
 import { writeFileSync } from "node:fs";

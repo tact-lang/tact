@@ -2,8 +2,10 @@ import * as $ from "@/asm/runtime/util";
 import * as G from "@ton/core";
 import * as c from "@/asm/runtime/constructors";
 import { PSEUDO_EXOTIC } from "@/asm/runtime/constructors";
-import { Instr, rangeToType, storeMapping } from "@/asm/runtime/instr-gen";
-import { CodeBuilder, Mapping } from "@/asm/runtime/builder";
+import type { Instr } from "@/asm/runtime/instr-gen";
+import { rangeToType, storeMapping } from "@/asm/runtime/instr-gen";
+import type { Mapping } from "@/asm/runtime/builder";
+import { CodeBuilder } from "@/asm/runtime/builder";
 
 export const instr: $.Type<Instr> = {
     store: (b, t) => {

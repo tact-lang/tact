@@ -14,17 +14,16 @@ import {
     THROW,
     THROWARG,
 } from "@/asm/runtime/index";
-import {
+import type {
     Address,
-    Cell,
     Contract,
-    contractAddress,
     ContractProvider,
     Sender,
     StateInit,
-    toNano,
 } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Cell, contractAddress, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { call, measureGas2, when } from "@/asm/helpers";
 import { dictMap } from "@/asm/runtime/util";
 

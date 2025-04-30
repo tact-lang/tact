@@ -1,17 +1,15 @@
 import * as i from "@/asm/runtime";
-import {
+import type {
     Address,
-    Cell,
     Contract,
-    contractAddress,
     ContractProvider,
     Sender,
     StateInit,
-    toNano,
-    TupleBuilder,
     TupleReader,
 } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Cell, contractAddress, toNano, TupleBuilder } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 
 export const executeInstructions = async (
     code: i.Instr[],

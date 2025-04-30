@@ -1,13 +1,12 @@
-import { Cell, Slice } from "@ton/core";
-import { Instr } from "@/asm/runtime/instr-gen";
+import type { Slice } from "@ton/core";
+import { Cell } from "@ton/core";
+import type { Instr } from "@/asm/runtime/instr-gen";
 import * as c from "@/asm/runtime/constructors";
 import { codeType, compileCellWithMapping } from "@/asm/runtime/instr";
-import {
-    CodeBuilder,
-    InstructionWithOffset,
-    Mapping,
-} from "@/asm/runtime/builder";
-import { Dictionary, DictionaryValue } from "@/asm/dict/Dictionary";
+import type { InstructionWithOffset, Mapping } from "@/asm/runtime/builder";
+import { CodeBuilder } from "@/asm/runtime/builder";
+import type { DictionaryValue } from "@/asm/dict/Dictionary";
+import { Dictionary } from "@/asm/dict/Dictionary";
 import { JMPREF } from "@/asm/runtime/constructors";
 
 // TODO: split:

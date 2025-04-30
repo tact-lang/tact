@@ -1,6 +1,6 @@
 import * as $ from "@tonstudio/parser-runtime";
 import * as G from "@/asm/logs/grammar";
-import { Stack, StackElement } from "@/asm/logs/stack";
+import type { Stack, StackElement } from "@/asm/logs/stack";
 import VmParsedStack = G.$ast.VmParsedStack;
 
 export type VmLine =

@@ -1,4 +1,5 @@
-import { parse, StackElement } from "@/asm/logs";
+import type { StackElement } from "@/asm/logs";
+import { parse } from "@/asm/logs";
 
 /**
  * Represents a single TVM Sandbox log entry.

@@ -1,10 +1,10 @@
+import type { Instr } from "@/asm/runtime/index";
 import {
     ADD,
     compileCell,
     DICTIGETJMPZ,
     DROP,
     IFBITJMPREF,
-    Instr,
     MUL,
     DICTPUSHCONST,
     PUSHINT,
@@ -20,21 +20,24 @@ import {
     STREF2CONST,
     SUB,
 } from "@/asm/runtime/index";
-import {
+import type {
     Address,
-    beginCell,
-    Cell,
     Contract,
-    contractAddress,
     ContractProvider,
     Sender,
     StateInit,
-    toNano,
-    TupleBuilder,
     TupleReader,
 } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Maybe } from "@ton/core/dist/utils/maybe";
+import {
+    beginCell,
+    Cell,
+    contractAddress,
+    toNano,
+    TupleBuilder,
+} from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
+import type { Maybe } from "@ton/core/dist/utils/maybe";
 import * as i from "@/asm/runtime/index";
 import * as u from "@/asm/runtime/util";
 import { execute } from "@/asm/helpers/helpers";

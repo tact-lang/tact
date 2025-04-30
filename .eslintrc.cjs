@@ -25,25 +25,25 @@ module.exports = {
   overrides: [
     {
       files: ["src/**/*.{js,ts,jsx,tsx}"],
-      // rules: {
-      //   "no-restricted-imports": [
-      //     "error",
-      //     {
-      //       patterns: ["./*", "../*", "!./**/output", "!../**/output"],
-      //     },
-      //   ],
-      // },
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: ["./*", "../*", "!./**/output", "!../**/output"],
+          },
+        ],
+      },
     },
   ],
   rules: {
-    // "@typescript-eslint/consistent-type-imports": [
-    //   "error",
-    //   {
-    //     prefer: "type-imports",
-    //     fixStyle: "separate-type-imports",
-    //     disallowTypeAnnotations: true,
-    //   },
-    // ],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        prefer: "type-imports",
+        fixStyle: "separate-type-imports",
+        disallowTypeAnnotations: true,
+      },
+    ],
     "@typescript-eslint/no-unused-vars": [
       "error",
       {

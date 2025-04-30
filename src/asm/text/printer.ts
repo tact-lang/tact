@@ -1,6 +1,6 @@
-import { Instr } from "@/asm/runtime";
-import { Code, Dict } from "@/asm/runtime/util";
-import { Slice } from "@ton/core";
+import type { Instr } from "@/asm/runtime";
+import type { Code, Dict } from "@/asm/runtime/util";
+import type { Slice } from "@ton/core";
 import { printInstruction } from "@/asm/text/printer-gen";
 
 export class Printer {

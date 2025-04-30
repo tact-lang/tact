@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs";
 import * as t from "@babel/types";
-import * as $ from "@/asm/generator/instructions";
+import type * as $ from "@/asm/generator/instructions";
 import {
     instructionList,
     pseudoInstructions,

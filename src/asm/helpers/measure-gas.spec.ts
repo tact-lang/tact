@@ -1,5 +1,5 @@
+import type { Instr } from "@/asm/runtime";
 import {
-    Instr,
     PUSHINT,
     THROWIF,
     CHKDEPTH,

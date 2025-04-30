@@ -1,22 +1,20 @@
-import * as $ from "@tonstudio/parser-runtime";
+import type * as $ from "@tonstudio/parser-runtime";
+import type { Code, DecompiledMethod, Dict, Loc } from "@/asm/runtime/util";
 import {
     boc,
-    Code,
     decompiledCode,
-    DecompiledMethod,
     DefaultExoticCell,
-    Dict,
     hex,
     bin,
     LibraryCell,
-    Loc,
     rawCode,
     code,
 } from "@/asm/runtime/util";
-import { $ast } from "@/asm/text/grammar";
+import type { $ast } from "@/asm/text/grammar";
 import * as i from "@/asm/runtime";
 import { convertInstruction } from "@/asm/text/convert";
-import { beginCell, Slice } from "@ton/core";
+import type { Slice } from "@ton/core";
+import { beginCell } from "@ton/core";
 
 export type Ctx = {
     readonly lines: readonly string[];

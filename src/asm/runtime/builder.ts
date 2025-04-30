@@ -1,6 +1,7 @@
-import { Builder, Cell } from "@ton/core";
-import { Instr } from "@/asm/runtime/instr-gen";
-import { Dictionary, DictionaryKeyTypes } from "@/asm/dict/Dictionary";
+import type { Cell } from "@ton/core";
+import { Builder } from "@ton/core";
+import type { Instr } from "@/asm/runtime/instr-gen";
+import type { Dictionary, DictionaryKeyTypes } from "@/asm/dict/Dictionary";
 
 /**
  * Describes an instruction with its offset in the parent `Cell`.

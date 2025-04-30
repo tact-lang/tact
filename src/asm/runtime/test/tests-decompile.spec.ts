@@ -1,6 +1,6 @@
+import type { Instr } from "@/asm/runtime/index";
 import {
     compileCell,
-    Instr,
     THROWARG,
     SETCP,
     DICTIGETJMPZ,

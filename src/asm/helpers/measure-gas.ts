@@ -1,17 +1,15 @@
 import * as i from "@/asm/runtime";
-import {
+import type {
     Address,
     Contract,
-    contractAddress,
     ContractProvider,
     Sender,
     StateInit,
-    toNano,
-    TupleBuilder,
     TupleReader,
-    Cell,
 } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { contractAddress, toNano, TupleBuilder, Cell } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { measureGas2 } from "@/asm/helpers/helpers";
 
 export const measureGas = async (code: i.Instr[]): Promise<number> => {
