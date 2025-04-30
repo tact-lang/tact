@@ -1,4 +1,4 @@
-import {parse} from "../parse"
+import { parse } from "../parse";
 
 describe("logs-parse", () => {
     it("should parse NaN", () => {
@@ -14,8 +14,8 @@ describe("logs-parse", () => {
             stack: [ 0 NaN ] 
             execute implicit RET
             gas remaining: 9999938
-        `)
+        `);
 
-        expect(res).toMatchSnapshot()
-    })
-})
+        expect(res).toMatchSnapshot();
+    });
+});

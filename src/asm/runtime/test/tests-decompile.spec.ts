@@ -20,21 +20,21 @@ import {
     ENDC,
     STREF2CONST,
     SUB,
-} from "../index"
-import {call, execute} from "../../helpers/helpers"
-import {code, dictMap, hex} from "../util"
-import {print} from "../../text/printer"
+} from "../index";
+import { call, execute } from "../../helpers/helpers";
+import { code, dictMap, hex } from "../util";
+import { print } from "../../text/printer";
 
-const someFunction = (): Instr[] => [MUL(), ADD()]
+const someFunction = (): Instr[] => [MUL(), ADD()];
 
 const test = (instructions: Instr[], expected: string): (() => void) => {
     return () => {
-        const compiled = compileCell(instructions)
-        const disasn = decompileCell(compiled)
-        const disasnRes = print(disasn)
-        expect(disasnRes).toEqual(expected)
-    }
-}
+        const compiled = compileCell(instructions);
+        const disasn = decompileCell(compiled);
+        const disasnRes = print(disasn);
+        expect(disasnRes).toEqual(expected);
+    };
+};
 
 describe("tests with decompiled", () => {
     it(
@@ -45,7 +45,17 @@ describe("tests with decompiled", () => {
                 DICTPUSHCONST(
                     19,
                     dictMap(
-                        new Map([[0, [IFBITJMPREF(2, code([PUSHINT(1), PUSHINT(1), ADD()]))]]]),
+                        new Map([
+                            [
+                                0,
+                                [
+                                    IFBITJMPREF(
+                                        2,
+                                        code([PUSHINT(1), PUSHINT(1), ADD()]),
+                                    ),
+                                ],
+                            ],
+                        ]),
                     ),
                 ),
                 DICTIGETJMPZ(),
@@ -65,7 +75,7 @@ DICTIGETJMPZ
 THROWARG 11
 `,
         ),
-    )
+    );
 
     it(
         "with IFNBITJMPREF",
@@ -75,7 +85,17 @@ THROWARG 11
                 DICTPUSHCONST(
                     19,
                     dictMap(
-                        new Map([[0, [IFNBITJMPREF(2, code([PUSHINT(1), PUSHINT(2), ADD()]))]]]),
+                        new Map([
+                            [
+                                0,
+                                [
+                                    IFNBITJMPREF(
+                                        2,
+                                        code([PUSHINT(1), PUSHINT(2), ADD()]),
+                                    ),
+                                ],
+                            ],
+                        ]),
                     ),
                 ),
                 DICTIGETJMPZ(),
@@ -95,7 +115,7 @@ DICTIGETJMPZ
 THROWARG 11
 `,
         ),
-    )
+    );
 
     it(
         "with call helper",
@@ -104,7 +124,11 @@ THROWARG 11
                 SETCP(0),
                 DICTPUSHCONST(
                     19,
-                    dictMap(new Map([[0, [...call(ADD(), PUSHINT(1), PUSHINT(2))]]])),
+                    dictMap(
+                        new Map([
+                            [0, [...call(ADD(), PUSHINT(1), PUSHINT(2))]],
+                        ]),
+                    ),
                 ),
                 DICTIGETJMPZ(),
                 THROWARG(11),
@@ -121,7 +145,7 @@ DICTIGETJMPZ
 THROWARG 11
 `,
         ),
-    )
+    );
 
     it(
         "with execute helper",
@@ -132,7 +156,17 @@ THROWARG 11
                     19,
                     dictMap(
                         new Map([
-                            [0, [...execute(someFunction, PUSHINT(1), PUSHINT(2), PUSHINT(3))]],
+                            [
+                                0,
+                                [
+                                    ...execute(
+                                        someFunction,
+                                        PUSHINT(1),
+                                        PUSHINT(2),
+                                        PUSHINT(3),
+                                    ),
+                                ],
+                            ],
                         ]),
                     ),
                 ),
@@ -156,14 +190,17 @@ DICTIGETJMPZ
 THROWARG 11
 `,
         ),
-    )
+    );
 
     it(
         "with PUSHSLICE",
         test(
             [
                 SETCP(0),
-                DICTPUSHCONST(19, dictMap(new Map([[0, [PUSHSLICE(hex("6_"))]]]))),
+                DICTPUSHCONST(
+                    19,
+                    dictMap(new Map([[0, [PUSHSLICE(hex("6_"))]]])),
+                ),
                 DICTIGETJMPZ(),
                 THROWARG(11),
             ],
@@ -177,14 +214,17 @@ DICTIGETJMPZ
 THROWARG 11
 `,
         ),
-    )
+    );
 
     it(
         "with PUSHSLICE_LONG_1",
         test(
             [
                 SETCP(0),
-                DICTPUSHCONST(19, dictMap(new Map([[0, [PUSHSLICE_LONG_1(hex("6_"))]]]))),
+                DICTPUSHCONST(
+                    19,
+                    dictMap(new Map([[0, [PUSHSLICE_LONG_1(hex("6_"))]]])),
+                ),
                 DICTIGETJMPZ(),
                 THROWARG(11),
             ],
@@ -198,7 +238,7 @@ DICTIGETJMPZ
 THROWARG 11
 `,
         ),
-    )
+    );
 
     it(
         "with DEBUGSTR",
@@ -212,7 +252,9 @@ THROWARG 11
                             [
                                 0,
                                 [
-                                    DEBUGSTR(hex("016D61696E5F65787465726E616C")),
+                                    DEBUGSTR(
+                                        hex("016D61696E5F65787465726E616C"),
+                                    ),
                                     DEBUGSTR(hex("01636865636B5369676E")),
                                     DEBUGSTR(hex("01636865636B5369676E32")),
                                     DEBUGSTR(hex("01636865636B5369676E33")),
@@ -243,14 +285,17 @@ DICTIGETJMPZ
 THROWARG 11
 `,
         ),
-    )
+    );
 
     it(
         "with PUSHINT_LONG 130",
         test(
             [
                 SETCP(0),
-                DICTPUSHCONST(19, dictMap(new Map([[0, [PUSHINT_LONG(130n)]]]))),
+                DICTPUSHCONST(
+                    19,
+                    dictMap(new Map([[0, [PUSHINT_LONG(130n)]]])),
+                ),
                 DICTIGETJMPZ(),
                 THROWARG(11),
             ],
@@ -264,12 +309,17 @@ DICTIGETJMPZ
 THROWARG 11
 `,
         ),
-    )
+    );
 
     it(
         "with STREFCONST",
         test(
-            [SETCP(0), NEWC(), STREFCONST(code([PUSHINT(5), PUSHINT(6), ADD()])), ENDC()],
+            [
+                SETCP(0),
+                NEWC(),
+                STREFCONST(code([PUSHINT(5), PUSHINT(6), ADD()])),
+                ENDC(),
+            ],
             `SETCP 0
 NEWC
 STREFCONST {
@@ -280,7 +330,7 @@ STREFCONST {
 ENDC
 `,
         ),
-    )
+    );
 
     it(
         "with STREF2CONST",
@@ -308,5 +358,5 @@ STREF2CONST {
 ENDC
 `,
         ),
-    )
-})
+    );
+});

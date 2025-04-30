@@ -1,23 +1,23 @@
-import * as i from "../runtime"
-import * as j from "../runtime/util"
+import * as i from "../runtime";
+import * as j from "../runtime/util";
 
 export const call = (what: i.Instr, ...args: i.Instr[]): i.Instr[] => {
-    return [...args, what]
-}
+    return [...args, what];
+};
 
-export type Func = () => i.Instr[]
+export type Func = () => i.Instr[];
 
 export const execute = (f: Func, ...args: i.Instr[]): i.Instr[] => {
-    return [...args, i.PUSHCONT(j.code(f())), i.EXECUTE()]
-}
+    return [...args, i.PUSHCONT(j.code(f())), i.EXECUTE()];
+};
 
 export const when = (cond: i.Instr[], then: i.Instr[]): i.Instr[] => {
-    return [...cond, i.PUSHCONT(j.code(then)), i.IF()]
-}
+    return [...cond, i.PUSHCONT(j.code(then)), i.IF()];
+};
 
 export const sliceConst = (instructions: i.Instr[]) => {
-    return i.compileCell(instructions).asSlice()
-}
+    return i.compileCell(instructions).asSlice();
+};
 
 export const runVM = (): i.Instr[] => [
     i.DUP(),
@@ -51,8 +51,8 @@ export const runVM = (): i.Instr[] => [
     i.TPOP(),
     i.SWAP(),
     i.POPCTR(7),
-]
+];
 
 export const measureGas2 = (instructions: i.Instr[]): i.Instr[] => {
-    return execute(runVM, i.PUSHSLICE(sliceConst(instructions)), i.PUSHINT(1))
-}
+    return execute(runVM, i.PUSHSLICE(sliceConst(instructions)), i.PUSHINT(1));
+};

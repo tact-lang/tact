@@ -1,5 +1,5 @@
-import * as i from "../../index"
-import * as u from "../../util"
+import * as i from "../../index";
+import * as u from "../../util";
 
 export const instructions = [
     i.SETCP(0),
@@ -94,13 +94,17 @@ export const instructions = [
                                                 i.THROWIFNOT(136),
                                             ]),
                                         ),
-                                        i.PUSHCONT_SHORT(u.code([i.NIP(), i.PUSHNULL()])),
+                                        i.PUSHCONT_SHORT(
+                                            u.code([i.NIP(), i.PUSHNULL()]),
+                                        ),
                                         i.IFELSE(),
                                         i.SWAP(),
                                         i.LDI(1),
                                         i.SWAP(),
                                         i.PUSHCONT_SHORT(u.code([i.LDREF()])),
-                                        i.PUSHCONT_SHORT(u.code([i.PUSHNULL(), i.SWAP()])),
+                                        i.PUSHCONT_SHORT(
+                                            u.code([i.PUSHNULL(), i.SWAP()]),
+                                        ),
                                         i.IFELSE(),
                                         i.BLKSWAP(5, 1),
                                         i.BLKDROP2(1, 5),
@@ -158,13 +162,17 @@ export const instructions = [
                         i.CALLREF(
                             u.code([
                                 i.SWAP(),
-                                i.PUSHCONT_SHORT(u.code([i.DROP(), i.PUSHINT(-1)])),
+                                i.PUSHCONT_SHORT(
+                                    u.code([i.DROP(), i.PUSHINT(-1)]),
+                                ),
                                 i.IFJMP(),
                                 i.PUSHINT(0),
                                 i.OVER(),
                                 i.SBITS(),
                                 i.GTINT(31),
-                                i.PUSHCONT_SHORT(u.code([i.DROP(), i.DUP(), i.PLDU(32)])),
+                                i.PUSHCONT_SHORT(
+                                    u.code([i.DROP(), i.DUP(), i.PLDU(32)]),
+                                ),
                                 i.IF(),
                                 i.DUP(),
                                 i.PUSHINT_LONG(1607220500n),
@@ -220,13 +228,25 @@ export const instructions = [
                                                         i.THROWIFNOT(136),
                                                     ]),
                                                 ),
-                                                i.PUSHCONT_SHORT(u.code([i.NIP(), i.PUSHNULL()])),
+                                                i.PUSHCONT_SHORT(
+                                                    u.code([
+                                                        i.NIP(),
+                                                        i.PUSHNULL(),
+                                                    ]),
+                                                ),
                                                 i.IFELSE(),
                                                 i.SWAP(),
                                                 i.LDI(1),
                                                 i.SWAP(),
-                                                i.PUSHCONT_SHORT(u.code([i.LDREF()])),
-                                                i.PUSHCONT_SHORT(u.code([i.PUSHNULL(), i.SWAP()])),
+                                                i.PUSHCONT_SHORT(
+                                                    u.code([i.LDREF()]),
+                                                ),
+                                                i.PUSHCONT_SHORT(
+                                                    u.code([
+                                                        i.PUSHNULL(),
+                                                        i.SWAP(),
+                                                    ]),
+                                                ),
                                                 i.IFELSE(),
                                                 i.LDGRAMS(),
                                                 i.XCPU(5, 5),
@@ -321,7 +341,11 @@ export const instructions = [
                                                         i.PUSH(3),
                                                         i.ISNULL(),
                                                         i.NOT(),
-                                                        i.PUSHCONT_SHORT(u.code([i.PUSHINT(-1)])),
+                                                        i.PUSHCONT_SHORT(
+                                                            u.code([
+                                                                i.PUSHINT(-1),
+                                                            ]),
+                                                        ),
                                                         i.PUSHCONT_SHORT(
                                                             u.code([
                                                                 i.PUSH(4),
@@ -357,24 +381,43 @@ export const instructions = [
                                                                 i.NOT(),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.PUSHINT(-1),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.XCHG_0(4),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            4,
+                                                                        ),
                                                                         i.DUP(),
                                                                         i.ISNULL(),
-                                                                        i.THROWIF(128),
-                                                                        i.XCHG2(0, 4),
+                                                                        i.THROWIF(
+                                                                            128,
+                                                                        ),
+                                                                        i.XCHG2(
+                                                                            0,
+                                                                            4,
+                                                                        ),
                                                                         i.STREF(),
                                                                     ]),
                                                                 ),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.POP(4),
-                                                                        i.XCHG_0(3),
-                                                                        i.PUSHINT(0),
+                                                                        i.POP(
+                                                                            4,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            3,
+                                                                        ),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                     ]),
                                                                 ),
                                                                 i.IFELSE(),
@@ -383,24 +426,43 @@ export const instructions = [
                                                                 i.NOT(),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.PUSHINT(-1),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.XCHG_0(4),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            4,
+                                                                        ),
                                                                         i.DUP(),
                                                                         i.ISNULL(),
-                                                                        i.THROWIF(128),
-                                                                        i.XCHG2(0, 4),
+                                                                        i.THROWIF(
+                                                                            128,
+                                                                        ),
+                                                                        i.XCHG2(
+                                                                            0,
+                                                                            4,
+                                                                        ),
                                                                         i.STREF(),
                                                                     ]),
                                                                 ),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.POP(4),
-                                                                        i.XCHG_0(3),
-                                                                        i.PUSHINT(0),
+                                                                        i.POP(
+                                                                            4,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            3,
+                                                                        ),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                     ]),
                                                                 ),
                                                                 i.IFELSE(),
@@ -471,7 +533,9 @@ export const instructions = [
                                                         i.XCHG_0(8),
                                                         i.NEWC(),
                                                         i.BLKSWAP(3, 1),
-                                                        i.PUSHINT_LONG(85167505n),
+                                                        i.PUSHINT_LONG(
+                                                            85167505n,
+                                                        ),
                                                         i.XCHG2(0, 4),
                                                         i.STU(32),
                                                         i.XCHG_3(1, 2),
@@ -518,18 +582,26 @@ export const instructions = [
                                                                 i.XCHG2(0, 5),
                                                                 i.DUP(),
                                                                 i.SBITS(),
-                                                                i.PUSHINT_16(267),
+                                                                i.PUSHINT_16(
+                                                                    267,
+                                                                ),
                                                                 i.EQUAL(),
-                                                                i.THROWIFNOT(136),
+                                                                i.THROWIFNOT(
+                                                                    136,
+                                                                ),
                                                                 i.DUP(),
                                                                 i.PLDU(11),
                                                                 i.DUP(),
-                                                                i.PUSHINT_16(1279),
+                                                                i.PUSHINT_16(
+                                                                    1279,
+                                                                ),
                                                                 i.EQUAL(),
                                                                 i.THROWIF(137),
                                                                 i.PUSHPOW2(10),
                                                                 i.EQUAL(),
-                                                                i.THROWIFNOT(136),
+                                                                i.THROWIFNOT(
+                                                                    136,
+                                                                ),
                                                                 i.STSLICER(),
                                                                 i.XCHG2(0, 3),
                                                                 i.STGRAMS(),
@@ -540,11 +612,17 @@ export const instructions = [
                                                                 i.ISNULL(),
                                                                 i.NOT(),
                                                                 i.PUSHCONT_SHORT(
-                                                                    u.code([i.PUSHINT(-1)]),
+                                                                    u.code([
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
+                                                                    ]),
                                                                 ),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.PUSH(4),
+                                                                        i.PUSH(
+                                                                            4,
+                                                                        ),
                                                                         i.ISNULL(),
                                                                         i.NOT(),
                                                                     ]),
@@ -552,86 +630,168 @@ export const instructions = [
                                                                 i.IFELSE(),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.POP(3),
-                                                                        i.POP(3),
+                                                                        i.POP(
+                                                                            3,
+                                                                        ),
+                                                                        i.POP(
+                                                                            3,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.PUSHINT(0),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                     ]),
                                                                 ),
                                                                 i.IFREFELSE(
                                                                     u.code([
-                                                                        i.PUSHINT(-1),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                         i.NEWC(),
-                                                                        i.PUSHINT(0),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.PUSHINT(0),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.PUSH(4),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.PUSH(
+                                                                            4,
+                                                                        ),
                                                                         i.ISNULL(),
                                                                         i.NOT(),
                                                                         i.PUSHCONT_SHORT(
-                                                                            u.code([
-                                                                                i.PUSHINT(-1),
-                                                                                i.SWAP(),
-                                                                                i.STI(1),
-                                                                                i.XCHG_0(4),
-                                                                                i.DUP(),
-                                                                                i.ISNULL(),
-                                                                                i.THROWIF(128),
-                                                                                i.XCHG2(0, 4),
-                                                                                i.STREF(),
-                                                                            ]),
+                                                                            u.code(
+                                                                                [
+                                                                                    i.PUSHINT(
+                                                                                        -1,
+                                                                                    ),
+                                                                                    i.SWAP(),
+                                                                                    i.STI(
+                                                                                        1,
+                                                                                    ),
+                                                                                    i.XCHG_0(
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.DUP(),
+                                                                                    i.ISNULL(),
+                                                                                    i.THROWIF(
+                                                                                        128,
+                                                                                    ),
+                                                                                    i.XCHG2(
+                                                                                        0,
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.STREF(),
+                                                                                ],
+                                                                            ),
                                                                         ),
                                                                         i.PUSHCONT_SHORT(
-                                                                            u.code([
-                                                                                i.POP(4),
-                                                                                i.XCHG_0(3),
-                                                                                i.PUSHINT(0),
-                                                                                i.SWAP(),
-                                                                                i.STI(1),
-                                                                            ]),
+                                                                            u.code(
+                                                                                [
+                                                                                    i.POP(
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.XCHG_0(
+                                                                                        3,
+                                                                                    ),
+                                                                                    i.PUSHINT(
+                                                                                        0,
+                                                                                    ),
+                                                                                    i.SWAP(),
+                                                                                    i.STI(
+                                                                                        1,
+                                                                                    ),
+                                                                                ],
+                                                                            ),
                                                                         ),
                                                                         i.IFELSE(),
-                                                                        i.PUSH(4),
+                                                                        i.PUSH(
+                                                                            4,
+                                                                        ),
                                                                         i.ISNULL(),
                                                                         i.NOT(),
                                                                         i.PUSHCONT_SHORT(
-                                                                            u.code([
-                                                                                i.PUSHINT(-1),
-                                                                                i.SWAP(),
-                                                                                i.STI(1),
-                                                                                i.XCHG_0(4),
-                                                                                i.DUP(),
-                                                                                i.ISNULL(),
-                                                                                i.THROWIF(128),
-                                                                                i.XCHG2(0, 4),
-                                                                                i.STREF(),
-                                                                            ]),
+                                                                            u.code(
+                                                                                [
+                                                                                    i.PUSHINT(
+                                                                                        -1,
+                                                                                    ),
+                                                                                    i.SWAP(),
+                                                                                    i.STI(
+                                                                                        1,
+                                                                                    ),
+                                                                                    i.XCHG_0(
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.DUP(),
+                                                                                    i.ISNULL(),
+                                                                                    i.THROWIF(
+                                                                                        128,
+                                                                                    ),
+                                                                                    i.XCHG2(
+                                                                                        0,
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.STREF(),
+                                                                                ],
+                                                                            ),
                                                                         ),
                                                                         i.PUSHCONT_SHORT(
-                                                                            u.code([
-                                                                                i.POP(4),
-                                                                                i.XCHG_0(3),
-                                                                                i.PUSHINT(0),
-                                                                                i.SWAP(),
-                                                                                i.STI(1),
-                                                                            ]),
+                                                                            u.code(
+                                                                                [
+                                                                                    i.POP(
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.XCHG_0(
+                                                                                        3,
+                                                                                    ),
+                                                                                    i.PUSHINT(
+                                                                                        0,
+                                                                                    ),
+                                                                                    i.SWAP(),
+                                                                                    i.STI(
+                                                                                        1,
+                                                                                    ),
+                                                                                ],
+                                                                            ),
                                                                         ),
                                                                         i.IFELSE(),
-                                                                        i.PUSHINT(0),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.XCHG_0(2),
-                                                                        i.PUSHINT(-1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            2,
+                                                                        ),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.XCHG_0(2),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            2,
+                                                                        ),
                                                                         i.ENDC(),
                                                                         i.ROT(),
                                                                         i.STREF(),
@@ -642,13 +802,19 @@ export const instructions = [
                                                                 i.NOT(),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.PUSHINT(-1),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                         i.SWAP(),
                                                                         i.DUP(),
                                                                         i.ISNULL(),
-                                                                        i.THROWIF(128),
+                                                                        i.THROWIF(
+                                                                            128,
+                                                                        ),
                                                                         i.SWAP(),
                                                                         i.STREF(),
                                                                     ]),
@@ -656,9 +822,13 @@ export const instructions = [
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
                                                                         i.NIP(),
-                                                                        i.PUSHINT(0),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                     ]),
                                                                 ),
                                                                 i.IFELSE(),
@@ -669,7 +839,12 @@ export const instructions = [
                                                         ),
                                                     ]),
                                                 ),
-                                                i.PUSHCONT_SHORT(u.code([i.POP(4), i.POP(7)])),
+                                                i.PUSHCONT_SHORT(
+                                                    u.code([
+                                                        i.POP(4),
+                                                        i.POP(7),
+                                                    ]),
+                                                ),
                                                 i.IFELSE(),
                                                 i.XCHG3(0, 3, 9),
                                                 i.XCHG_3(1, 6),
@@ -709,7 +884,9 @@ export const instructions = [
                                                 i.OVER(),
                                                 i.ISNULL(),
                                                 i.NOT(),
-                                                i.PUSHCONT_SHORT(u.code([i.BLKDROP(4)])),
+                                                i.PUSHCONT_SHORT(
+                                                    u.code([i.BLKDROP(4)]),
+                                                ),
                                                 i.IFREFELSE(
                                                     u.code([
                                                         i.SWAP(),
@@ -723,7 +900,9 @@ export const instructions = [
                                                         i.XCHG_0(4),
                                                         i.NEWC(),
                                                         i.SWAP(),
-                                                        i.PUSHINT_LONG(3576854235n),
+                                                        i.PUSHINT_LONG(
+                                                            3576854235n,
+                                                        ),
                                                         i.ROT(),
                                                         i.STU(32),
                                                         i.STU(64),
@@ -749,18 +928,26 @@ export const instructions = [
                                                                 i.XCHG2(0, 5),
                                                                 i.DUP(),
                                                                 i.SBITS(),
-                                                                i.PUSHINT_16(267),
+                                                                i.PUSHINT_16(
+                                                                    267,
+                                                                ),
                                                                 i.EQUAL(),
-                                                                i.THROWIFNOT(136),
+                                                                i.THROWIFNOT(
+                                                                    136,
+                                                                ),
                                                                 i.DUP(),
                                                                 i.PLDU(11),
                                                                 i.DUP(),
-                                                                i.PUSHINT_16(1279),
+                                                                i.PUSHINT_16(
+                                                                    1279,
+                                                                ),
                                                                 i.EQUAL(),
                                                                 i.THROWIF(137),
                                                                 i.PUSHPOW2(10),
                                                                 i.EQUAL(),
-                                                                i.THROWIFNOT(136),
+                                                                i.THROWIFNOT(
+                                                                    136,
+                                                                ),
                                                                 i.STSLICER(),
                                                                 i.XCHG2(0, 3),
                                                                 i.STGRAMS(),
@@ -771,11 +958,17 @@ export const instructions = [
                                                                 i.ISNULL(),
                                                                 i.NOT(),
                                                                 i.PUSHCONT_SHORT(
-                                                                    u.code([i.PUSHINT(-1)]),
+                                                                    u.code([
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
+                                                                    ]),
                                                                 ),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.PUSH(4),
+                                                                        i.PUSH(
+                                                                            4,
+                                                                        ),
                                                                         i.ISNULL(),
                                                                         i.NOT(),
                                                                     ]),
@@ -783,86 +976,168 @@ export const instructions = [
                                                                 i.IFELSE(),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.POP(3),
-                                                                        i.POP(3),
+                                                                        i.POP(
+                                                                            3,
+                                                                        ),
+                                                                        i.POP(
+                                                                            3,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.PUSHINT(0),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                     ]),
                                                                 ),
                                                                 i.IFREFELSE(
                                                                     u.code([
-                                                                        i.PUSHINT(-1),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                         i.NEWC(),
-                                                                        i.PUSHINT(0),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.PUSHINT(0),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.PUSH(4),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.PUSH(
+                                                                            4,
+                                                                        ),
                                                                         i.ISNULL(),
                                                                         i.NOT(),
                                                                         i.PUSHCONT_SHORT(
-                                                                            u.code([
-                                                                                i.PUSHINT(-1),
-                                                                                i.SWAP(),
-                                                                                i.STI(1),
-                                                                                i.XCHG_0(4),
-                                                                                i.DUP(),
-                                                                                i.ISNULL(),
-                                                                                i.THROWIF(128),
-                                                                                i.XCHG2(0, 4),
-                                                                                i.STREF(),
-                                                                            ]),
+                                                                            u.code(
+                                                                                [
+                                                                                    i.PUSHINT(
+                                                                                        -1,
+                                                                                    ),
+                                                                                    i.SWAP(),
+                                                                                    i.STI(
+                                                                                        1,
+                                                                                    ),
+                                                                                    i.XCHG_0(
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.DUP(),
+                                                                                    i.ISNULL(),
+                                                                                    i.THROWIF(
+                                                                                        128,
+                                                                                    ),
+                                                                                    i.XCHG2(
+                                                                                        0,
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.STREF(),
+                                                                                ],
+                                                                            ),
                                                                         ),
                                                                         i.PUSHCONT_SHORT(
-                                                                            u.code([
-                                                                                i.POP(4),
-                                                                                i.XCHG_0(3),
-                                                                                i.PUSHINT(0),
-                                                                                i.SWAP(),
-                                                                                i.STI(1),
-                                                                            ]),
+                                                                            u.code(
+                                                                                [
+                                                                                    i.POP(
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.XCHG_0(
+                                                                                        3,
+                                                                                    ),
+                                                                                    i.PUSHINT(
+                                                                                        0,
+                                                                                    ),
+                                                                                    i.SWAP(),
+                                                                                    i.STI(
+                                                                                        1,
+                                                                                    ),
+                                                                                ],
+                                                                            ),
                                                                         ),
                                                                         i.IFELSE(),
-                                                                        i.PUSH(4),
+                                                                        i.PUSH(
+                                                                            4,
+                                                                        ),
                                                                         i.ISNULL(),
                                                                         i.NOT(),
                                                                         i.PUSHCONT_SHORT(
-                                                                            u.code([
-                                                                                i.PUSHINT(-1),
-                                                                                i.SWAP(),
-                                                                                i.STI(1),
-                                                                                i.XCHG_0(4),
-                                                                                i.DUP(),
-                                                                                i.ISNULL(),
-                                                                                i.THROWIF(128),
-                                                                                i.XCHG2(0, 4),
-                                                                                i.STREF(),
-                                                                            ]),
+                                                                            u.code(
+                                                                                [
+                                                                                    i.PUSHINT(
+                                                                                        -1,
+                                                                                    ),
+                                                                                    i.SWAP(),
+                                                                                    i.STI(
+                                                                                        1,
+                                                                                    ),
+                                                                                    i.XCHG_0(
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.DUP(),
+                                                                                    i.ISNULL(),
+                                                                                    i.THROWIF(
+                                                                                        128,
+                                                                                    ),
+                                                                                    i.XCHG2(
+                                                                                        0,
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.STREF(),
+                                                                                ],
+                                                                            ),
                                                                         ),
                                                                         i.PUSHCONT_SHORT(
-                                                                            u.code([
-                                                                                i.POP(4),
-                                                                                i.XCHG_0(3),
-                                                                                i.PUSHINT(0),
-                                                                                i.SWAP(),
-                                                                                i.STI(1),
-                                                                            ]),
+                                                                            u.code(
+                                                                                [
+                                                                                    i.POP(
+                                                                                        4,
+                                                                                    ),
+                                                                                    i.XCHG_0(
+                                                                                        3,
+                                                                                    ),
+                                                                                    i.PUSHINT(
+                                                                                        0,
+                                                                                    ),
+                                                                                    i.SWAP(),
+                                                                                    i.STI(
+                                                                                        1,
+                                                                                    ),
+                                                                                ],
+                                                                            ),
                                                                         ),
                                                                         i.IFELSE(),
-                                                                        i.PUSHINT(0),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.XCHG_0(2),
-                                                                        i.PUSHINT(-1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            2,
+                                                                        ),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.XCHG_0(2),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            2,
+                                                                        ),
                                                                         i.ENDC(),
                                                                         i.ROT(),
                                                                         i.STREF(),
@@ -873,13 +1148,19 @@ export const instructions = [
                                                                 i.NOT(),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.PUSHINT(-1),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                         i.SWAP(),
                                                                         i.DUP(),
                                                                         i.ISNULL(),
-                                                                        i.THROWIF(128),
+                                                                        i.THROWIF(
+                                                                            128,
+                                                                        ),
                                                                         i.SWAP(),
                                                                         i.STREF(),
                                                                     ]),
@@ -887,9 +1168,13 @@ export const instructions = [
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
                                                                         i.NIP(),
-                                                                        i.PUSHINT(0),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                     ]),
                                                                 ),
                                                                 i.IFELSE(),
@@ -998,7 +1283,11 @@ export const instructions = [
                                                         i.PUSH(3),
                                                         i.ISNULL(),
                                                         i.NOT(),
-                                                        i.PUSHCONT_SHORT(u.code([i.PUSHINT(-1)])),
+                                                        i.PUSHCONT_SHORT(
+                                                            u.code([
+                                                                i.PUSHINT(-1),
+                                                            ]),
+                                                        ),
                                                         i.PUSHCONT_SHORT(
                                                             u.code([
                                                                 i.PUSH(4),
@@ -1034,24 +1323,43 @@ export const instructions = [
                                                                 i.NOT(),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.PUSHINT(-1),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.XCHG_0(4),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            4,
+                                                                        ),
                                                                         i.DUP(),
                                                                         i.ISNULL(),
-                                                                        i.THROWIF(128),
-                                                                        i.XCHG2(0, 4),
+                                                                        i.THROWIF(
+                                                                            128,
+                                                                        ),
+                                                                        i.XCHG2(
+                                                                            0,
+                                                                            4,
+                                                                        ),
                                                                         i.STREF(),
                                                                     ]),
                                                                 ),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.POP(4),
-                                                                        i.XCHG_0(3),
-                                                                        i.PUSHINT(0),
+                                                                        i.POP(
+                                                                            4,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            3,
+                                                                        ),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                     ]),
                                                                 ),
                                                                 i.IFELSE(),
@@ -1060,24 +1368,43 @@ export const instructions = [
                                                                 i.NOT(),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.PUSHINT(-1),
+                                                                        i.PUSHINT(
+                                                                            -1,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
-                                                                        i.XCHG_0(4),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            4,
+                                                                        ),
                                                                         i.DUP(),
                                                                         i.ISNULL(),
-                                                                        i.THROWIF(128),
-                                                                        i.XCHG2(0, 4),
+                                                                        i.THROWIF(
+                                                                            128,
+                                                                        ),
+                                                                        i.XCHG2(
+                                                                            0,
+                                                                            4,
+                                                                        ),
                                                                         i.STREF(),
                                                                     ]),
                                                                 ),
                                                                 i.PUSHCONT_SHORT(
                                                                     u.code([
-                                                                        i.POP(4),
-                                                                        i.XCHG_0(3),
-                                                                        i.PUSHINT(0),
+                                                                        i.POP(
+                                                                            4,
+                                                                        ),
+                                                                        i.XCHG_0(
+                                                                            3,
+                                                                        ),
+                                                                        i.PUSHINT(
+                                                                            0,
+                                                                        ),
                                                                         i.SWAP(),
-                                                                        i.STI(1),
+                                                                        i.STI(
+                                                                            1,
+                                                                        ),
                                                                     ]),
                                                                 ),
                                                                 i.IFELSE(),
@@ -1169,7 +1496,12 @@ export const instructions = [
                                 i.DUP(),
                                 i.ISNULL(),
                                 i.PUSHCONT_SHORT(
-                                    u.code([i.DROP(), i.PUSHINT(0), i.SWAP(), i.STU(2)]),
+                                    u.code([
+                                        i.DROP(),
+                                        i.PUSHINT(0),
+                                        i.SWAP(),
+                                        i.STU(2),
+                                    ]),
                                 ),
                                 i.PUSHCONT(
                                     u.code([
@@ -1195,9 +1527,16 @@ export const instructions = [
                                 i.ISNULL(),
                                 i.NOT(),
                                 i.PUSHCONT_SHORT(
-                                    u.code([i.PUSHINT(-1), i.SWAP(), i.STI(1), i.STREF()]),
+                                    u.code([
+                                        i.PUSHINT(-1),
+                                        i.SWAP(),
+                                        i.STI(1),
+                                        i.STREF(),
+                                    ]),
                                 ),
-                                i.PUSHCONT_SHORT(u.code([i.PUSHINT(0), i.POP(2), i.STI(1)])),
+                                i.PUSHCONT_SHORT(
+                                    u.code([i.PUSHINT(0), i.POP(2), i.STI(1)]),
+                                ),
                                 i.IFELSE(),
                                 i.ENDC(),
                                 i.POPCTR(4),
@@ -1262,13 +1601,17 @@ export const instructions = [
                                                 i.THROWIFNOT(136),
                                             ]),
                                         ),
-                                        i.PUSHCONT_SHORT(u.code([i.NIP(), i.PUSHNULL()])),
+                                        i.PUSHCONT_SHORT(
+                                            u.code([i.NIP(), i.PUSHNULL()]),
+                                        ),
                                         i.IFELSE(),
                                         i.SWAP(),
                                         i.LDI(1),
                                         i.SWAP(),
                                         i.PUSHCONT_SHORT(u.code([i.LDREF()])),
-                                        i.PUSHCONT_SHORT(u.code([i.PUSHNULL(), i.SWAP()])),
+                                        i.PUSHCONT_SHORT(
+                                            u.code([i.PUSHNULL(), i.SWAP()]),
+                                        ),
                                         i.IFELSE(),
                                         i.BLKSWAP(5, 1),
                                         i.BLKDROP2(1, 5),
@@ -1409,7 +1752,10 @@ export const instructions = [
                                                             ]),
                                                         ),
                                                         i.PUSHCONT_SHORT(
-                                                            u.code([i.PUSHINT(0), i.DUP()]),
+                                                            u.code([
+                                                                i.PUSHINT(0),
+                                                                i.DUP(),
+                                                            ]),
                                                         ),
                                                         i.IFELSE(),
                                                     ]),
@@ -1429,7 +1775,9 @@ export const instructions = [
                                 i.UNTUPLE(2),
                                 i.SWAP(),
                                 i.ENDC(),
-                                i.PUSHCONT_SHORT(u.code([i.OVER(), i.ISNULL(), i.NOT()])),
+                                i.PUSHCONT_SHORT(
+                                    u.code([i.OVER(), i.ISNULL(), i.NOT()]),
+                                ),
                                 i.PUSHCONT_SHORT(
                                     u.code([
                                         i.SWAP(),
@@ -1453,11 +1801,17 @@ export const instructions = [
                 [
                     113617,
                     [
-                        i.PUSHINT_LONG(123515602279859691144772641439386770278n),
-                        i.PUSHINT_LONG(209801025412363888721030803524359905849n),
+                        i.PUSHINT_LONG(
+                            123515602279859691144772641439386770278n,
+                        ),
+                        i.PUSHINT_LONG(
+                            209801025412363888721030803524359905849n,
+                        ),
                         i.PUSHINT_LONG(42980537499636128163026532310500881091n),
                         i.PUSHINT_LONG(36993126140238121407019133875791708966n),
-                        i.PUSHINT_LONG(209474421377847335869795010607481022628n),
+                        i.PUSHINT_LONG(
+                            209474421377847335869795010607481022628n,
+                        ),
                     ],
                 ],
                 [115390, [i.PUSHCTR(4), i.CTOS(), i.LDI(1), i.SWAP()]],
@@ -1476,4 +1830,4 @@ export const instructions = [
     ),
     i.DICTIGETJMPZ(),
     i.THROWARG(11),
-]
+];

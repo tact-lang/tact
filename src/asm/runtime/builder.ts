@@ -1,15 +1,15 @@
-import {Builder, Cell} from "@ton/core"
-import {Instr} from "./instr-gen"
-import {Dictionary, DictionaryKeyTypes} from "../dict/Dictionary"
+import { Builder, Cell } from "@ton/core";
+import { Instr } from "./instr-gen";
+import { Dictionary, DictionaryKeyTypes } from "../dict/Dictionary";
 
 /**
  * Describes an instruction with its offset in the parent `Cell`.
  */
 export type InstructionWithOffset = {
-    instr: Instr
-    offset: number
-    debugSection: number
-}
+    instr: Instr;
+    offset: number;
+    debugSection: number;
+};
 
 /**
  * Describes a mapping of a single `Cell` to its instructions and sub-mappings.
@@ -21,22 +21,22 @@ export type Mapping = {
     /**
      * The hash of the `Cell` that is being mapped.
      */
-    cell: string
+    cell: string;
     /**
      * The instructions that are stored in the `Cell`.
      */
-    instructions: InstructionWithOffset[]
+    instructions: InstructionWithOffset[];
     /**
      * Instructions can store references to other cells.
      * These references are stored in this array.
      */
-    subMappings: Mapping[]
+    subMappings: Mapping[];
     /**
      * When we serialize a `Dictionary`, we store additional information
      * about the position of the cell in the dictionary Cell.
      */
-    dictionaryInfo: DictionaryInfo[]
-}
+    dictionaryInfo: DictionaryInfo[];
+};
 
 /**
  * When we serialize a `Dictionary`, we store actual Cell data after some prefix.
@@ -52,33 +52,41 @@ export type DictionaryInfo = {
     /**
      * The `CodeBuilder` that builds the Dictionary Cell.
      */
-    builder: CodeBuilder
+    builder: CodeBuilder;
     /**
      * The offset of the Cell with instructions in the Dictionary Cell.
      */
-    offset: number
+    offset: number;
     /**
      * The `Cell` that contains the instructions.
      */
-    childCell: Cell
-}
+    childCell: Cell;
+};
 
 /**
  * Extended Builder class that stores additional debug information.
  */
 export class CodeBuilder extends Builder {
-    private readonly instructions: InstructionWithOffset[] = []
-    private readonly subMappings: Mapping[] = []
-    private readonly dictionaryInfo: DictionaryInfo[] = []
-    private debugSectionId: number = -1
+    private readonly instructions: InstructionWithOffset[] = [];
+    private readonly subMappings: Mapping[] = [];
+    private readonly dictionaryInfo: DictionaryInfo[] = [];
+    private debugSectionId: number = -1;
 
-    public storeInstructionPrefix(value: bigint | number, bits: number, instr: Instr): this {
-        this.instructions.push({instr, offset: this.bits, debugSection: this.debugSectionId})
-        return super.storeUint(value, bits)
+    public storeInstructionPrefix(
+        value: bigint | number,
+        bits: number,
+        instr: Instr,
+    ): this {
+        this.instructions.push({
+            instr,
+            offset: this.bits,
+            debugSection: this.debugSectionId,
+        });
+        return super.storeUint(value, bits);
     }
 
     public build(): [Cell, Mapping] {
-        const cell = this.asCell()
+        const cell = this.asCell();
         return [
             cell,
             {
@@ -87,41 +95,43 @@ export class CodeBuilder extends Builder {
                 subMappings: this.subMappings,
                 dictionaryInfo: this.dictionaryInfo,
             },
-        ]
+        ];
     }
 
     public startDebugSection(id: number): this {
-        this.debugSectionId = id
-        return this
+        this.debugSectionId = id;
+        return this;
     }
 
     public pushMappings(...mappings: Mapping[]): this {
-        this.subMappings.push(...mappings)
-        return this
+        this.subMappings.push(...mappings);
+        return this;
     }
 
     public pushInstructions(...instructions: InstructionWithOffset[]): this {
-        this.instructions.push(...instructions)
-        return this
+        this.instructions.push(...instructions);
+        return this;
     }
 
     public getDictionaryInfo(): DictionaryInfo[] {
-        return this.dictionaryInfo
+        return this.dictionaryInfo;
     }
 
     public pushDictionaryInfo(...info: DictionaryInfo[]): this {
-        this.dictionaryInfo.push(...info)
-        return this
+        this.dictionaryInfo.push(...info);
+        return this;
     }
 
     public storeRefWithMapping([cell, mapping]: [Cell, Mapping]): this {
-        this.subMappings.push(mapping)
-        return super.storeRef(cell)
+        this.subMappings.push(mapping);
+        return super.storeRef(cell);
     }
 
     // @ts-expect-error TS2416
-    public override storeDictDirect<K extends DictionaryKeyTypes, V>(dict: Dictionary<K, V>) {
-        dict.storeDirect(this)
-        return this
+    public override storeDictDirect<K extends DictionaryKeyTypes, V>(
+        dict: Dictionary<K, V>,
+    ) {
+        dict.storeDirect(this);
+        return this;
     }
 }

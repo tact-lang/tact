@@ -19,7 +19,7 @@ import {
     decompileCell,
     STREF2CONST,
     SUB,
-} from "../index"
+} from "../index";
 import {
     Address,
     beginCell,
@@ -32,18 +32,18 @@ import {
     toNano,
     TupleBuilder,
     TupleReader,
-} from "@ton/core"
-import {Blockchain, SandboxContract, TreasuryContract} from "@ton/sandbox"
-import {Maybe} from "@ton/core/dist/utils/maybe"
-import * as i from "../index"
-import * as u from "../util"
-import {execute} from "../../helpers/helpers"
-import {code, dictMap} from "../util"
-import {print} from "../../text/printer"
+} from "@ton/core";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Maybe } from "@ton/core/dist/utils/maybe";
+import * as i from "../index";
+import * as u from "../util";
+import { execute } from "../../helpers/helpers";
+import { code, dictMap } from "../util";
+import { print } from "../../text/printer";
 
-const emptyData = () => beginCell().endCell()
+const emptyData = () => beginCell().endCell();
 
-const someFunction = (): Instr[] => [MUL(), ADD()]
+const someFunction = (): Instr[] => [MUL(), ADD()];
 
 const test = (
     methodId: number,
@@ -52,18 +52,19 @@ const test = (
     compareResult: (res: TupleReader) => void,
 ): (() => Promise<void>) => {
     return async () => {
-        const blockchain: Blockchain = await Blockchain.create()
-        const treasury: SandboxContract<TreasuryContract> = await blockchain.treasury("treasury")
+        const blockchain: Blockchain = await Blockchain.create();
+        const treasury: SandboxContract<TreasuryContract> =
+            await blockchain.treasury("treasury");
 
         const init: StateInit = {
             code: compileCell(instructions),
             data: prepareData(),
-        }
+        };
 
-        const address = contractAddress(0, init)
-        const contract = new TestContract(address, init)
+        const address = contractAddress(0, init);
+        const contract = new TestContract(address, init);
 
-        const openContract = blockchain.openContract(contract)
+        const openContract = blockchain.openContract(contract);
 
         // Deploy
         await openContract.send(
@@ -72,12 +73,12 @@ const test = (
                 value: toNano("10"),
             },
             new Cell(),
-        )
+        );
 
-        const data = await openContract.getAny(methodId)
-        compareResult(data)
-    }
-}
+        const data = await openContract.getAny(methodId);
+        compareResult(data);
+    };
+};
 
 describe("instructions-execute", () => {
     it(
@@ -108,11 +109,11 @@ describe("instructions-execute", () => {
             ],
             emptyData,
             (res: TupleReader) => {
-                const num = res.readBigNumber()
-                expect(Number(num)).toEqual(1)
+                const num = res.readBigNumber();
+                expect(Number(num)).toEqual(1);
             },
         ),
-    )
+    );
 
     it(
         "execute IFBITJMPREF false",
@@ -142,11 +143,11 @@ describe("instructions-execute", () => {
             ],
             emptyData,
             (res: TupleReader) => {
-                const num = res.readBigNumber()
-                expect(Number(num)).toEqual(999)
+                const num = res.readBigNumber();
+                expect(Number(num)).toEqual(999);
             },
         ),
-    )
+    );
 
     it(
         "execute function via helper",
@@ -170,11 +171,11 @@ describe("instructions-execute", () => {
             ],
             emptyData,
             (res: TupleReader) => {
-                const num = res.readBigNumber()
-                expect(Number(num)).toEqual(7)
+                const num = res.readBigNumber();
+                expect(Number(num)).toEqual(7);
             },
         ),
-    )
+    );
 
     it(
         "execute simple counter",
@@ -236,7 +237,12 @@ describe("instructions-execute", () => {
                                     i.PUSH(0),
                                     i.GTINT(31),
                                     i.PUSHCONT_SHORT(
-                                        u.code([i.POP(1), i.XCHG_0(2), i.LDU(32), i.XCHG_0(3)]),
+                                        u.code([
+                                            i.POP(1),
+                                            i.XCHG_0(2),
+                                            i.LDU(32),
+                                            i.XCHG_0(3),
+                                        ]),
                                     ),
                                     i.IF(),
                                     i.PUSH(1),
@@ -356,13 +362,18 @@ describe("instructions-execute", () => {
                 i.DICTIGETJMPZ(),
                 i.THROWARG(11),
             ],
-            () => beginCell().storeUint(1, 1).storeInt(123, 32).storeInt(456, 32).endCell(),
+            () =>
+                beginCell()
+                    .storeUint(1, 1)
+                    .storeInt(123, 32)
+                    .storeInt(456, 32)
+                    .endCell(),
             (res: TupleReader) => {
-                const num = res.readBigNumber()
-                expect(Number(num)).toEqual(456)
+                const num = res.readBigNumber();
+                expect(Number(num)).toEqual(456);
             },
         ),
-    )
+    );
 
     it(
         "execute PUSHINT_LONG 130",
@@ -386,27 +397,35 @@ describe("instructions-execute", () => {
             ],
             emptyData,
             (res: TupleReader) => {
-                const num = res.readBigNumber()
-                expect(Number(num)).toEqual(130)
+                const num = res.readBigNumber();
+                expect(Number(num)).toEqual(130);
             },
         ),
-    )
+    );
 
     it(
         "execute STREFCONST",
         test(
             0,
-            [SETCP(0), DROP(), NEWC(), STREFCONST(code([PUSHINT(5), PUSHINT(6), ADD()])), ENDC()],
+            [
+                SETCP(0),
+                DROP(),
+                NEWC(),
+                STREFCONST(code([PUSHINT(5), PUSHINT(6), ADD()])),
+                ENDC(),
+            ],
             emptyData,
             (res: TupleReader) => {
-                const cell = res.readCell()
-                expect(cell.refs.length).toEqual(1)
-                const ref = cell.asSlice().loadRef()
-                const decompiled = decompileCell(ref)
-                expect(print(decompiled)).toEqual(`PUSHINT 5\nPUSHINT 6\nADD\n`)
+                const cell = res.readCell();
+                expect(cell.refs.length).toEqual(1);
+                const ref = cell.asSlice().loadRef();
+                const decompiled = decompileCell(ref);
+                expect(print(decompiled)).toEqual(
+                    `PUSHINT 5\nPUSHINT 6\nADD\n`,
+                );
             },
         ),
-    )
+    );
 
     it(
         "execute STREF2CONST",
@@ -424,43 +443,50 @@ describe("instructions-execute", () => {
             ],
             emptyData,
             (res: TupleReader) => {
-                const cell = res.readCell()
-                expect(cell.refs.length).toEqual(2)
-                const slice = cell.asSlice()
+                const cell = res.readCell();
+                expect(cell.refs.length).toEqual(2);
+                const slice = cell.asSlice();
 
-                const ref = slice.loadRef()
-                const decompiled = decompileCell(ref)
-                expect(print(decompiled)).toEqual(`PUSHINT 5\nPUSHINT 6\nADD\n`)
+                const ref = slice.loadRef();
+                const decompiled = decompileCell(ref);
+                expect(print(decompiled)).toEqual(
+                    `PUSHINT 5\nPUSHINT 6\nADD\n`,
+                );
 
-                const ref2 = slice.loadRef()
-                const decompiled2 = decompileCell(ref2)
-                expect(print(decompiled2)).toEqual(`PUSHINT 6\nPUSHINT 7\nSUB\n`)
+                const ref2 = slice.loadRef();
+                const decompiled2 = decompileCell(ref2);
+                expect(print(decompiled2)).toEqual(
+                    `PUSHINT 6\nPUSHINT 7\nSUB\n`,
+                );
             },
         ),
-    )
-})
+    );
+});
 
 export class TestContract implements Contract {
-    public readonly address: Address
-    public readonly init?: StateInit
+    public readonly address: Address;
+    public readonly init?: StateInit;
 
     public constructor(address: Address, init?: StateInit) {
-        this.address = address
-        this.init = init
+        this.address = address;
+        this.init = init;
     }
 
     public async send(
         provider: ContractProvider,
         via: Sender,
-        args: {value: bigint; bounce?: boolean | null | undefined},
+        args: { value: bigint; bounce?: boolean | null | undefined },
         body: Cell,
     ) {
-        await provider.internal(via, {...args, body: body})
+        await provider.internal(via, { ...args, body: body });
     }
 
-    public async getAny(provider: ContractProvider, id: number): Promise<TupleReader> {
-        const builder = new TupleBuilder()
-        const result = await provider.get(id, builder.build())
-        return result.stack
+    public async getAny(
+        provider: ContractProvider,
+        id: number,
+    ): Promise<TupleReader> {
+        const builder = new TupleBuilder();
+        const result = await provider.get(id, builder.build());
+        return result.stack;
     }
 }

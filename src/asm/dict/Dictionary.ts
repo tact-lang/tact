@@ -6,28 +6,31 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Address} from "@ton/core"
-import {beginCell} from "@ton/core"
-import {Slice, Cell} from "@ton/core"
-import {BitString} from "@ton/core"
-import {serializeDict} from "./serializeDict"
-import {Maybe} from "@ton/core/src/utils/maybe"
-import {CodeBuilder} from "../runtime/builder"
-import {parseDict} from "./parseDict"
-import {deserializeInternalKey, serializeInternalKey} from "./internalKeySerializer"
+import { Address } from "@ton/core";
+import { beginCell } from "@ton/core";
+import { Slice, Cell } from "@ton/core";
+import { BitString } from "@ton/core";
+import { serializeDict } from "./serializeDict";
+import { Maybe } from "@ton/core/src/utils/maybe";
+import { CodeBuilder } from "../runtime/builder";
+import { parseDict } from "./parseDict";
+import {
+    deserializeInternalKey,
+    serializeInternalKey,
+} from "./internalKeySerializer";
 
-export type DictionaryKeyTypes = Address | number | bigint | Buffer | BitString
+export type DictionaryKeyTypes = Address | number | bigint | Buffer | BitString;
 
 export type DictionaryKey<K extends DictionaryKeyTypes> = {
-    bits: number
-    serialize(src: K): bigint
-    parse(src: bigint): K
-}
+    bits: number;
+    serialize(src: K): bigint;
+    parse(src: bigint): K;
+};
 
 export type DictionaryValue<V> = {
-    serialize(src: V, builder: CodeBuilder): void
-    parse(src: Slice): V
-}
+    serialize(src: V, builder: CodeBuilder): void;
+    parse(src: Slice): V;
+};
 
 export class Dictionary<K extends DictionaryKeyTypes, V> {
     static Keys = {
@@ -37,9 +40,9 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
          * @returns DictionaryKey<number>
          */
         Int: (bits: number) => {
-            return createIntKey(bits)
+            return createIntKey(bits);
         },
-    }
+    };
 
     /**
      * Create an empty map
@@ -52,35 +55,35 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
         value?: Maybe<DictionaryValue<V>>,
     ): Dictionary<K, V> {
         if (key && value) {
-            return new Dictionary<K, V>(new Map(), key, value)
+            return new Dictionary<K, V>(new Map(), key, value);
         } else {
-            return new Dictionary<K, V>(new Map(), null, null)
+            return new Dictionary<K, V>(new Map(), null, null);
         }
     }
 
-    private readonly _key: DictionaryKey<K> | null
-    private readonly _value: DictionaryValue<V> | null
-    private readonly _map: Map<string, V>
+    private readonly _key: DictionaryKey<K> | null;
+    private readonly _value: DictionaryValue<V> | null;
+    private readonly _map: Map<string, V>;
 
     private constructor(
         values: Map<string, V>,
         key: DictionaryKey<K> | null,
         value: DictionaryValue<V> | null,
     ) {
-        this._key = key
-        this._value = value
-        this._map = values
+        this._key = key;
+        this._value = value;
+        this._map = values;
     }
 
     set(key: K, value: V): this {
-        this._map.set(serializeInternalKey(key), value)
-        return this
+        this._map.set(serializeInternalKey(key), value);
+        return this;
     }
 
     *[Symbol.iterator](): IterableIterator<[K, V]> {
         for (const [k, v] of this._map) {
-            const key = deserializeInternalKey(k) as K
-            yield [key, v]
+            const key = deserializeInternalKey(k) as K;
+            yield [key, v];
         }
     }
 
@@ -99,53 +102,66 @@ export class Dictionary<K extends DictionaryKeyTypes, V> {
         sc: Slice | Cell | null,
     ): Dictionary<K, V> {
         if (!sc) {
-            return Dictionary.empty<K, V>(key, value)
+            return Dictionary.empty<K, V>(key, value);
         }
-        const slice = sc instanceof Cell ? sc.beginParse() : sc
+        const slice = sc instanceof Cell ? sc.beginParse() : sc;
 
-        const values = parseDict(slice, key.bits, value.parse)
-        const prepare = new Map<string, V>()
+        const values = parseDict(slice, key.bits, value.parse);
+        const prepare = new Map<string, V>();
         for (let [k, v] of values) {
-            prepare.set(serializeInternalKey(key.parse(k)), v)
+            prepare.set(serializeInternalKey(key.parse(k)), v);
         }
 
-        return new Dictionary(prepare, key, value)
+        return new Dictionary(prepare, key, value);
     }
 
     storeDirect(builder: CodeBuilder) {
         if (this._map.size === 0) {
-            throw Error("Cannot store empty dictionary directly")
+            throw Error("Cannot store empty dictionary directly");
         }
 
-        const resolvedKey = this._key
-        const resolvedValue = this._value
+        const resolvedKey = this._key;
+        const resolvedValue = this._value;
         if (!resolvedKey) {
-            throw Error("Key serializer is not defined")
+            throw Error("Key serializer is not defined");
         }
         if (!resolvedValue) {
-            throw Error("Value serializer is not defined")
+            throw Error("Value serializer is not defined");
         }
 
-        let prepared = new Map<bigint, V>()
+        let prepared = new Map<bigint, V>();
         for (const [k, v] of this._map) {
-            prepared.set(resolvedKey.serialize(deserializeInternalKey(k)), v)
+            prepared.set(resolvedKey.serialize(deserializeInternalKey(k)), v);
         }
 
-        serializeDict(prepared, resolvedKey.bits, resolvedValue.serialize, builder)
+        serializeDict(
+            prepared,
+            resolvedKey.bits,
+            resolvedValue.serialize,
+            builder,
+        );
     }
 }
 
 function createIntKey(bits: number): DictionaryKey<number> {
     return {
         bits: bits,
-        serialize: src => {
+        serialize: (src) => {
             if (!Number.isSafeInteger(src)) {
-                throw Error("Key is not a safe integer: " + src)
+                throw Error("Key is not a safe integer: " + src);
             }
-            return beginCell().storeInt(src, bits).endCell().beginParse().loadUintBig(bits)
+            return beginCell()
+                .storeInt(src, bits)
+                .endCell()
+                .beginParse()
+                .loadUintBig(bits);
         },
-        parse: src => {
-            return beginCell().storeUint(src, bits).endCell().beginParse().loadInt(bits)
+        parse: (src) => {
+            return beginCell()
+                .storeUint(src, bits)
+                .endCell()
+                .beginParse()
+                .loadInt(bits);
         },
-    }
+    };
 }

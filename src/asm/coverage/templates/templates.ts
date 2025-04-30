@@ -439,7 +439,7 @@ export const MAIN_TEMPLATE = `<!doctype html>
         <div class="code-container">{{CODE_CONTENT}}</div>
     </body>
 </html>
-`
+`;
 
 export const SUMMARY_TEMPLATE = `<div class="summary">
     <h1>Coverage Report</h1>
@@ -497,4 +497,4 @@ export const SUMMARY_TEMPLATE = `<div class="summary">
             </div>
         </details>
     </div>
-</div>`
+</div>`;

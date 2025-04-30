@@ -1,5 +1,5 @@
-import * as i from "../../index"
-import * as u from "../../util"
+import * as i from "../../index";
+import * as u from "../../util";
 
 export const instructions = [
     i.SETCP(0),
@@ -25,9 +25,18 @@ export const instructions = [
             i.CTOS(),
             i.LDI(1),
             i.SWAP(),
-            i.PUSHCONT_SHORT(u.code([i.LDU(32), i.LDU(32), i.ROTREV(), i.BLKDROP2(1, 2)])),
             i.PUSHCONT_SHORT(
-                u.code([i.PUSHINT_16(257), i.LDIX(), i.SWAP(), i.SWAP(), i.ENDS(), i.PUSHINT(0)]),
+                u.code([i.LDU(32), i.LDU(32), i.ROTREV(), i.BLKDROP2(1, 2)]),
+            ),
+            i.PUSHCONT_SHORT(
+                u.code([
+                    i.PUSHINT_16(257),
+                    i.LDIX(),
+                    i.SWAP(),
+                    i.SWAP(),
+                    i.ENDS(),
+                    i.PUSHINT(0),
+                ]),
             ),
             i.IFELSE(),
             i.XCHG_0(3),
@@ -38,7 +47,9 @@ export const instructions = [
             i.SBITS(),
             i.DUP(),
             i.GTINT(31),
-            i.PUSHCONT_SHORT(u.code([i.NIP(), i.XCHG_0(2), i.LDU(32), i.XCHG_0(3)])),
+            i.PUSHCONT_SHORT(
+                u.code([i.NIP(), i.XCHG_0(2), i.LDU(32), i.XCHG_0(3)]),
+            ),
             i.IF(),
             i.OVER(),
             i.PUSHINT_LONG(2221695272n),
@@ -107,7 +118,12 @@ export const instructions = [
                                 i.LDI(1),
                                 i.SWAP(),
                                 i.PUSHCONT_SHORT(
-                                    u.code([i.LDU(32), i.LDU(32), i.ROTREV(), i.BLKDROP2(1, 2)]),
+                                    u.code([
+                                        i.LDU(32),
+                                        i.LDU(32),
+                                        i.ROTREV(),
+                                        i.BLKDROP2(1, 2),
+                                    ]),
                                 ),
                                 i.PUSHCONT_SHORT(
                                     u.code([
@@ -132,7 +148,12 @@ export const instructions = [
                                 i.LDI(1),
                                 i.SWAP(),
                                 i.PUSHCONT_SHORT(
-                                    u.code([i.LDU(32), i.LDU(32), i.ROTREV(), i.BLKDROP2(1, 2)]),
+                                    u.code([
+                                        i.LDU(32),
+                                        i.LDU(32),
+                                        i.ROTREV(),
+                                        i.BLKDROP2(1, 2),
+                                    ]),
                                 ),
                                 i.PUSHCONT_SHORT(
                                     u.code([
@@ -156,4 +177,4 @@ export const instructions = [
             i.THROWARG(11),
         ]),
     ),
-]
+];

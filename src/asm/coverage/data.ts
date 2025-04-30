@@ -1,63 +1,72 @@
-import {Step, TraceInfo} from "../trace"
+import { Step, TraceInfo } from "../trace";
 
 export type Line = {
-    readonly line: string
-    readonly info: Covered | Uncovered | Skipped
-}
+    readonly line: string;
+    readonly info: Covered | Uncovered | Skipped;
+};
 
 export type Covered = {
-    readonly $: "Covered"
-    readonly hits: number
-    readonly gasCosts: readonly number[]
-}
+    readonly $: "Covered";
+    readonly hits: number;
+    readonly gasCosts: readonly number[];
+};
 
 export type Uncovered = {
-    readonly $: "Uncovered"
-}
+    readonly $: "Uncovered";
+};
 
 export type Skipped = {
-    readonly $: "Skipped"
-}
+    readonly $: "Skipped";
+};
 
 export type InstructionStat = {
-    readonly name: string
-    readonly totalGas: number
-    readonly totalHits: number
-    readonly avgGas: number
-}
+    readonly name: string;
+    readonly totalGas: number;
+    readonly totalHits: number;
+    readonly avgGas: number;
+};
 
 export type CoverageSummary = {
-    readonly totalLines: number
-    readonly coveredLines: number
-    readonly uncoveredLines: number
-    readonly coveragePercentage: number
-    readonly totalGas: number
-    readonly totalHits: number
-    readonly instructionStats: readonly InstructionStat[]
-}
+    readonly totalLines: number;
+    readonly coveredLines: number;
+    readonly uncoveredLines: number;
+    readonly coveragePercentage: number;
+    readonly totalGas: number;
+    readonly totalHits: number;
+    readonly instructionStats: readonly InstructionStat[];
+};
 
-export const buildLineInfo = (trace: TraceInfo, asm: string): readonly Line[] => {
-    const lines = asm.split("\n")
+export const buildLineInfo = (
+    trace: TraceInfo,
+    asm: string,
+): readonly Line[] => {
+    const lines = asm.split("\n");
 
-    const perLineSteps: Map<number, Step[]> = new Map()
+    const perLineSteps: Map<number, Step[]> = new Map();
 
     for (const step of trace.steps) {
-        if (step.loc === undefined) continue
-        const line = step.loc.line
+        if (step.loc === undefined) continue;
+        const line = step.loc.line;
 
-        perLineSteps.set(line + 1, [...(perLineSteps.get(line + 1) ?? []), step])
+        perLineSteps.set(line + 1, [
+            ...(perLineSteps.get(line + 1) ?? []),
+            step,
+        ]);
 
         if (step.loc.otherLines.length > 0) {
             for (const otherLine of step.loc.otherLines) {
-                perLineSteps.set(otherLine + 1, [...(perLineSteps.get(otherLine + 1) ?? []), step])
+                perLineSteps.set(otherLine + 1, [
+                    ...(perLineSteps.get(otherLine + 1) ?? []),
+                    step,
+                ]);
             }
         }
     }
 
     return lines.map((line, idx): Line => {
-        const info = perLineSteps.get(idx + 1)
+        const info = perLineSteps.get(idx + 1);
         if (info) {
-            const gasInfo = info.map(step => normalizeGas(step.gasCost))
+            const gasInfo = info.map((step) => normalizeGas(step.gasCost));
 
             return {
                 line,
@@ -66,7 +75,7 @@ export const buildLineInfo = (trace: TraceInfo, asm: string): readonly Line[] =>
                     hits: gasInfo.length,
                     gasCosts: gasInfo,
                 },
-            }
+            };
         }
 
         if (!isExecutableLine(line)) {
@@ -75,7 +84,7 @@ export const buildLineInfo = (trace: TraceInfo, asm: string): readonly Line[] =>
                 info: {
                     $: "Skipped",
                 },
-            }
+            };
         }
 
         return {
@@ -83,38 +92,43 @@ export const buildLineInfo = (trace: TraceInfo, asm: string): readonly Line[] =>
             info: {
                 $: "Uncovered",
             },
-        }
-    })
-}
+        };
+    });
+};
 
-export const buildFuncLineInfo = (traces: TraceInfo[], funcCode: string): Line[] => {
-    const lines = funcCode.split("\n")
+export const buildFuncLineInfo = (
+    traces: TraceInfo[],
+    funcCode: string,
+): Line[] => {
+    const lines = funcCode.split("\n");
 
-    const perLineStepsArray: Map<number, Step[][]> = new Map()
+    const perLineStepsArray: Map<number, Step[][]> = new Map();
 
     for (const trace of traces) {
-        const perLineSteps: Map<number, Step[]> = new Map()
+        const perLineSteps: Map<number, Step[]> = new Map();
         for (const step of trace.steps) {
-            if (step.funcLoc === undefined) continue
-            const line = step.funcLoc.line
+            if (step.funcLoc === undefined) continue;
+            const line = step.funcLoc.line;
 
-            perLineSteps.set(line, [...(perLineSteps.get(line) ?? []), step])
+            perLineSteps.set(line, [...(perLineSteps.get(line) ?? []), step]);
         }
 
         for (const [line, steps] of perLineSteps.entries()) {
-            const perLineStep = perLineStepsArray.get(line)
+            const perLineStep = perLineStepsArray.get(line);
             if (perLineStep === undefined) {
-                perLineStepsArray.set(line, [steps])
+                perLineStepsArray.set(line, [steps]);
             } else {
-                perLineStep.push(steps)
+                perLineStep.push(steps);
             }
         }
     }
 
     return lines.map((line, idx): Line => {
-        const infos = perLineStepsArray.get(idx + 1)
+        const infos = perLineStepsArray.get(idx + 1);
         if (infos) {
-            const gasInfo = infos.flatMap(it => it.map(step => normalizeGas(step.gasCost)))
+            const gasInfo = infos.flatMap((it) =>
+                it.map((step) => normalizeGas(step.gasCost)),
+            );
 
             return {
                 line,
@@ -123,7 +137,7 @@ export const buildFuncLineInfo = (traces: TraceInfo[], funcCode: string): Line[]
                     hits: infos.length,
                     gasCosts: gasInfo,
                 },
-            }
+            };
         }
 
         if (!isExecutableLine(line)) {
@@ -132,7 +146,7 @@ export const buildFuncLineInfo = (traces: TraceInfo[], funcCode: string): Line[]
                 info: {
                     $: "Skipped",
                 },
-            }
+            };
         }
 
         return {
@@ -140,19 +154,19 @@ export const buildFuncLineInfo = (traces: TraceInfo[], funcCode: string): Line[]
             info: {
                 $: "Uncovered",
             },
-        }
-    })
-}
+        };
+    });
+};
 
 const normalizeGas = (gas: number): number => {
     if (gas > 10000) {
-        return 26
+        return 26;
     }
-    return gas
-}
+    return gas;
+};
 
 export const isExecutableLine = (line: string): boolean => {
-    const trimmed = line.trim()
+    const trimmed = line.trim();
     return (
         !trimmed.includes("=>") && // dictionary
         trimmed !== "}" && // close braces
@@ -169,38 +183,47 @@ export const isExecutableLine = (line: string): boolean => {
         !trimmed.includes('asm "') && // function signature
         !trimmed.includes("asm(") && // function signature
         trimmed.length > 0
-    )
-}
+    );
+};
 
-export const generateCoverageSummary = (lines: readonly Line[]): CoverageSummary => {
-    const totalExecutableLines = lines.filter(line => isExecutableLine(line.line)).length
+export const generateCoverageSummary = (
+    lines: readonly Line[],
+): CoverageSummary => {
+    const totalExecutableLines = lines.filter((line) =>
+        isExecutableLine(line.line),
+    ).length;
 
     const coveredLines = lines.filter(
-        line => isExecutableLine(line.line) && line.info.$ === "Covered",
-    ).length
-    const uncoveredLines = totalExecutableLines - coveredLines
-    const coveragePercentage = (coveredLines / totalExecutableLines) * 100
+        (line) => isExecutableLine(line.line) && line.info.$ === "Covered",
+    ).length;
+    const uncoveredLines = totalExecutableLines - coveredLines;
+    const coveragePercentage = (coveredLines / totalExecutableLines) * 100;
 
-    let totalGas = 0
-    let totalHits = 0
+    let totalGas = 0;
+    let totalHits = 0;
 
-    const instructionMap: Map<string, {readonly totalGas: number; readonly hits: number}> =
-        new Map()
+    const instructionMap: Map<
+        string,
+        { readonly totalGas: number; readonly hits: number }
+    > = new Map();
 
     for (const line of lines) {
-        if (line.info.$ !== "Covered") continue
+        if (line.info.$ !== "Covered") continue;
 
-        const lineGas = line.info.gasCosts.reduce((sum, gas) => sum + gas, 0)
-        totalGas += lineGas
-        totalHits += line.info.hits
-        const trimmedLine = line.line.trim()
-        const instructionName = trimmedLine.split(/\s+/)[0]
+        const lineGas = line.info.gasCosts.reduce((sum, gas) => sum + gas, 0);
+        totalGas += lineGas;
+        totalHits += line.info.hits;
+        const trimmedLine = line.line.trim();
+        const instructionName = trimmedLine.split(/\s+/)[0];
         if (instructionName !== undefined) {
-            const current = instructionMap.get(instructionName) ?? {totalGas: 0, hits: 0}
+            const current = instructionMap.get(instructionName) ?? {
+                totalGas: 0,
+                hits: 0,
+            };
             instructionMap.set(instructionName, {
                 totalGas: current.totalGas + lineGas,
                 hits: current.hits + line.info.hits,
-            })
+            });
         }
     }
 
@@ -211,7 +234,7 @@ export const generateCoverageSummary = (lines: readonly Line[]): CoverageSummary
             totalHits: stats.hits,
             avgGas: Math.round((stats.totalGas / stats.hits) * 100) / 100,
         }))
-        .sort((a, b) => b.totalGas - a.totalGas)
+        .sort((a, b) => b.totalGas - a.totalGas);
 
     return {
         totalLines: totalExecutableLines,
@@ -221,5 +244,5 @@ export const generateCoverageSummary = (lines: readonly Line[]): CoverageSummary
         totalGas,
         totalHits,
         instructionStats,
-    }
-}
+    };
+};

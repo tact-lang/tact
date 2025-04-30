@@ -1,49 +1,55 @@
-export type Stack = StackElement[]
+export type Stack = StackElement[];
 
 export type StackElement =
-    | {readonly $: "Null"}
-    | {readonly $: "NaN"}
-    | {readonly $: "Integer"; readonly value: bigint}
-    | {readonly $: "Cell"; readonly boc: string}
+    | { readonly $: "Null" }
+    | { readonly $: "NaN" }
+    | { readonly $: "Integer"; readonly value: bigint }
+    | { readonly $: "Cell"; readonly boc: string }
     | {
-          readonly $: "Slice"
-          readonly hex: string
-          readonly startBit: number
-          readonly endBit: number
-          readonly startRef: number
-          readonly endRef: number
+          readonly $: "Slice";
+          readonly hex: string;
+          readonly startBit: number;
+          readonly endBit: number;
+          readonly startRef: number;
+          readonly endRef: number;
       }
-    | {readonly $: "Builder"; readonly hex: string}
-    | {readonly $: "Continuation"; readonly name: string}
-    | {readonly $: "Address"; readonly value: string}
-    | {readonly $: "Tuple"; readonly elements: StackElement[]}
-    | {readonly $: "Unknown"; readonly value: string}
+    | { readonly $: "Builder"; readonly hex: string }
+    | { readonly $: "Continuation"; readonly name: string }
+    | { readonly $: "Address"; readonly value: string }
+    | { readonly $: "Tuple"; readonly elements: StackElement[] }
+    | { readonly $: "Unknown"; readonly value: string };
 
 export const serializeStack = (stack: Stack): string => {
-    return "[" + stack.map(it => serializeStackElement(it)).join(" ") + "]"
-}
+    return "[" + stack.map((it) => serializeStackElement(it)).join(" ") + "]";
+};
 
 export const serializeStackElement = (element: StackElement): string => {
     switch (element.$) {
         case "Null":
-            return "()"
+            return "()";
         case "NaN":
-            return "NaN"
+            return "NaN";
         case "Integer":
-            return element.value.toString()
+            return element.value.toString();
         case "Tuple":
-            return "[ " + element.elements.map(it => serializeStackElement(it)).join(" ") + " ]"
+            return (
+                "[ " +
+                element.elements
+                    .map((it) => serializeStackElement(it))
+                    .join(" ") +
+                " ]"
+            );
         case "Unknown":
-            return element.value
+            return element.value;
         case "Cell":
-            return "C{" + element.boc + "}"
+            return "C{" + element.boc + "}";
         case "Continuation":
-            return "Cont{" + element.name + "}"
+            return "Cont{" + element.name + "}";
         case "Builder":
-            return "BC{" + element.hex + "}"
+            return "BC{" + element.hex + "}";
         case "Slice":
             if (element.startBit === 0 && element.endBit === 0) {
-                return "CS{" + element.hex + "}"
+                return "CS{" + element.hex + "}";
             }
             return (
                 "CS{Cell{" +
@@ -58,10 +64,10 @@ export const serializeStackElement = (element: StackElement): string => {
                 ".." +
                 element.endRef +
                 "}"
-            )
+            );
         case "Address":
-            return "CS{" + element.value + "}"
+            return "CS{" + element.value + "}";
         default:
-            return ""
+            return "";
     }
-}
+};

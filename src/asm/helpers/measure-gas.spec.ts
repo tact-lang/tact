@@ -1,10 +1,17 @@
-import {Instr, PUSHINT, THROWIF, CHKDEPTH, CALLDICT, CALLDICT_LONG} from "../runtime"
-import {measureGas} from "./measure-gas"
+import {
+    Instr,
+    PUSHINT,
+    THROWIF,
+    CHKDEPTH,
+    CALLDICT,
+    CALLDICT_LONG,
+} from "../runtime";
+import { measureGas } from "./measure-gas";
 
 interface TestCase {
-    readonly name: string
-    readonly instructions: Instr[]
-    readonly expectedGas: number
+    readonly name: string;
+    readonly instructions: Instr[];
+    readonly expectedGas: number;
 }
 
 const TESTS: TestCase[] = [
@@ -38,14 +45,14 @@ const TESTS: TestCase[] = [
         instructions: [PUSHINT(1), PUSHINT(1), PUSHINT(1), CALLDICT_LONG(1)],
         expectedGas: 18 * 3 + 29,
     },
-]
+];
 
 describe("tests", () => {
     // TODO: rewrite with just `it()`
-    for (const {name, instructions, expectedGas} of TESTS) {
+    for (const { name, instructions, expectedGas } of TESTS) {
         it(`Test ${name}`, async () => {
-            const gasUsed = await measureGas(instructions)
-            expect(gasUsed).toEqual(expectedGas)
-        })
+            const gasUsed = await measureGas(instructions);
+            expect(gasUsed).toEqual(expectedGas);
+        });
     }
-})
+});

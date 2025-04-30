@@ -1,5 +1,5 @@
-import * as i from "../../index"
-import * as u from "../../util"
+import * as i from "../../index";
+import * as u from "../../util";
 
 export const instructions = [
     i.SETCP(0),
@@ -30,7 +30,9 @@ export const instructions = [
             i.PLDU(2),
             i.NEQINT(0),
             i.PUSHCONT_SHORT(u.code([i.LDMSGADDR(), i.SWAP()])),
-            i.PUSHCONT_SHORT(u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()])),
+            i.PUSHCONT_SHORT(
+                u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()]),
+            ),
             i.IFELSE(),
             i.SWAP(),
             i.LDGRAMS(),
@@ -43,7 +45,9 @@ export const instructions = [
             i.PLDU(2),
             i.NEQINT(0),
             i.PUSHCONT_SHORT(u.code([i.LDMSGADDR(), i.SWAP()])),
-            i.PUSHCONT_SHORT(u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()])),
+            i.PUSHCONT_SHORT(
+                u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()]),
+            ),
             i.IFELSE(),
             i.SWAP(),
             i.LDI(1),
@@ -101,7 +105,9 @@ export const instructions = [
                     i.ROT(),
                     i.DUP(),
                     i.ISNULL(),
-                    i.PUSHCONT_SHORT(u.code([i.DROP(), i.PUSHINT(0), i.SWAP(), i.STU(2)])),
+                    i.PUSHCONT_SHORT(
+                        u.code([i.DROP(), i.PUSHINT(0), i.SWAP(), i.STU(2)]),
+                    ),
                     i.PUSHCONT_SHORT(u.code([i.STSLICER()])),
                     i.IFELSE(),
                     i.SWAP(),
@@ -112,16 +118,26 @@ export const instructions = [
                     i.ROT(),
                     i.DUP(),
                     i.ISNULL(),
-                    i.PUSHCONT_SHORT(u.code([i.DROP(), i.PUSHINT(0), i.SWAP(), i.STU(2)])),
+                    i.PUSHCONT_SHORT(
+                        u.code([i.DROP(), i.PUSHINT(0), i.SWAP(), i.STU(2)]),
+                    ),
                     i.PUSHCONT_SHORT(u.code([i.STSLICER()])),
                     i.IFELSE(),
                     i.PUSH(2),
                     i.ISNULL(),
                     i.NOT(),
                     i.PUSHCONT_SHORT(
-                        u.code([i.PUSHINT(-1), i.SWAP(), i.STI(1), i.XCHG_3(1, 2), i.STREF()]),
+                        u.code([
+                            i.PUSHINT(-1),
+                            i.SWAP(),
+                            i.STI(1),
+                            i.XCHG_3(1, 2),
+                            i.STREF(),
+                        ]),
                     ),
-                    i.PUSHCONT_SHORT(u.code([i.POP(2), i.PUSHINT(0), i.ROT(), i.STI(1)])),
+                    i.PUSHCONT_SHORT(
+                        u.code([i.POP(2), i.PUSHINT(0), i.ROT(), i.STI(1)]),
+                    ),
                     i.IFELSE(),
                     i.ENDC(),
                     i.SWAP(),
@@ -168,7 +184,14 @@ export const instructions = [
                             i.ROT(),
                             i.DUP(),
                             i.ISNULL(),
-                            i.PUSHCONT_SHORT(u.code([i.DROP(), i.PUSHINT(0), i.SWAP(), i.STU(2)])),
+                            i.PUSHCONT_SHORT(
+                                u.code([
+                                    i.DROP(),
+                                    i.PUSHINT(0),
+                                    i.SWAP(),
+                                    i.STU(2),
+                                ]),
+                            ),
                             i.PUSHCONT_SHORT(u.code([i.STSLICER()])),
                             i.IFELSE(),
                             i.SWAP(),
@@ -179,7 +202,14 @@ export const instructions = [
                             i.ROT(),
                             i.DUP(),
                             i.ISNULL(),
-                            i.PUSHCONT_SHORT(u.code([i.DROP(), i.PUSHINT(0), i.SWAP(), i.STU(2)])),
+                            i.PUSHCONT_SHORT(
+                                u.code([
+                                    i.DROP(),
+                                    i.PUSHINT(0),
+                                    i.SWAP(),
+                                    i.STU(2),
+                                ]),
+                            ),
                             i.PUSHCONT_SHORT(u.code([i.STSLICER()])),
                             i.IFELSE(),
                             i.PUSH(2),
@@ -194,7 +224,14 @@ export const instructions = [
                                     i.STREF(),
                                 ]),
                             ),
-                            i.PUSHCONT_SHORT(u.code([i.POP(2), i.PUSHINT(0), i.ROT(), i.STI(1)])),
+                            i.PUSHCONT_SHORT(
+                                u.code([
+                                    i.POP(2),
+                                    i.PUSHINT(0),
+                                    i.ROT(),
+                                    i.STI(1),
+                                ]),
+                            ),
                             i.IFELSE(),
                             i.ENDC(),
                             i.SWAP(),
@@ -286,7 +323,12 @@ export const instructions = [
                                     i.DUP(),
                                     i.ISNULL(),
                                     i.PUSHCONT_SHORT(
-                                        u.code([i.DROP(), i.PUSHINT(0), i.SWAP(), i.STU(2)]),
+                                        u.code([
+                                            i.DROP(),
+                                            i.PUSHINT(0),
+                                            i.SWAP(),
+                                            i.STU(2),
+                                        ]),
                                     ),
                                     i.PUSHCONT_SHORT(u.code([i.STSLICER()])),
                                     i.IFELSE(),
@@ -299,7 +341,12 @@ export const instructions = [
                                     i.DUP(),
                                     i.ISNULL(),
                                     i.PUSHCONT_SHORT(
-                                        u.code([i.DROP(), i.PUSHINT(0), i.SWAP(), i.STU(2)]),
+                                        u.code([
+                                            i.DROP(),
+                                            i.PUSHINT(0),
+                                            i.SWAP(),
+                                            i.STU(2),
+                                        ]),
                                     ),
                                     i.PUSHCONT_SHORT(u.code([i.STSLICER()])),
                                     i.IFELSE(),
@@ -316,7 +363,12 @@ export const instructions = [
                                         ]),
                                     ),
                                     i.PUSHCONT_SHORT(
-                                        u.code([i.POP(2), i.PUSHINT(0), i.ROT(), i.STI(1)]),
+                                        u.code([
+                                            i.POP(2),
+                                            i.PUSHINT(0),
+                                            i.ROT(),
+                                            i.STI(1),
+                                        ]),
                                     ),
                                     i.IFELSE(),
                                     i.ENDC(),
@@ -432,7 +484,9 @@ export const instructions = [
                                                         u.code([
                                                             i.NEWC(),
                                                             i.BLKSWAP(7, 1),
-                                                            i.PUSHINT_LONG(260734629n),
+                                                            i.PUSHINT_LONG(
+                                                                260734629n,
+                                                            ),
                                                             i.XCHG2(0, 8),
                                                             i.STU(32),
                                                             i.XCHG_3(1, 6),
@@ -447,13 +501,17 @@ export const instructions = [
                                                             i.PUSHCONT_SHORT(
                                                                 u.code([
                                                                     i.DROP(),
-                                                                    i.PUSHINT(0),
+                                                                    i.PUSHINT(
+                                                                        0,
+                                                                    ),
                                                                     i.SWAP(),
                                                                     i.STU(2),
                                                                 ]),
                                                             ),
                                                             i.PUSHCONT_SHORT(
-                                                                u.code([i.STSLICER()]),
+                                                                u.code([
+                                                                    i.STSLICER(),
+                                                                ]),
                                                             ),
                                                             i.IFELSE(),
                                                             i.OVER(),
@@ -461,7 +519,9 @@ export const instructions = [
                                                             i.NOT(),
                                                             i.PUSHCONT_SHORT(
                                                                 u.code([
-                                                                    i.PUSHINT(-1),
+                                                                    i.PUSHINT(
+                                                                        -1,
+                                                                    ),
                                                                     i.SWAP(),
                                                                     i.STI(1),
                                                                     i.STREF(),
@@ -469,7 +529,9 @@ export const instructions = [
                                                             ),
                                                             i.PUSHCONT_SHORT(
                                                                 u.code([
-                                                                    i.PUSHINT(0),
+                                                                    i.PUSHINT(
+                                                                        0,
+                                                                    ),
                                                                     i.POP(2),
                                                                     i.STI(1),
                                                                 ]),
@@ -484,9 +546,13 @@ export const instructions = [
                                                             i.XCHG2(2, 3),
                                                             i.PUSHINT(-1),
                                                             i.NEWC(),
-                                                            i.STSLICECONST(u.hex("6_")),
+                                                            i.STSLICECONST(
+                                                                u.hex("6_"),
+                                                            ),
                                                             i.STI(1),
-                                                            i.STSLICECONST(u.hex("1_")),
+                                                            i.STSLICECONST(
+                                                                u.hex("1_"),
+                                                            ),
                                                             i.STSLICE(),
                                                             i.SWAP(),
                                                             i.STGRAMS(),
@@ -570,7 +636,9 @@ export const instructions = [
                                                         u.code([
                                                             i.NEWC(),
                                                             i.BLKSWAP(7, 1),
-                                                            i.PUSHINT_LONG(260734629n),
+                                                            i.PUSHINT_LONG(
+                                                                260734629n,
+                                                            ),
                                                             i.XCHG2(0, 8),
                                                             i.STU(32),
                                                             i.XCHG_3(1, 6),
@@ -585,13 +653,17 @@ export const instructions = [
                                                             i.PUSHCONT_SHORT(
                                                                 u.code([
                                                                     i.DROP(),
-                                                                    i.PUSHINT(0),
+                                                                    i.PUSHINT(
+                                                                        0,
+                                                                    ),
                                                                     i.SWAP(),
                                                                     i.STU(2),
                                                                 ]),
                                                             ),
                                                             i.PUSHCONT_SHORT(
-                                                                u.code([i.STSLICER()]),
+                                                                u.code([
+                                                                    i.STSLICER(),
+                                                                ]),
                                                             ),
                                                             i.IFELSE(),
                                                             i.OVER(),
@@ -599,7 +671,9 @@ export const instructions = [
                                                             i.NOT(),
                                                             i.PUSHCONT_SHORT(
                                                                 u.code([
-                                                                    i.PUSHINT(-1),
+                                                                    i.PUSHINT(
+                                                                        -1,
+                                                                    ),
                                                                     i.SWAP(),
                                                                     i.STI(1),
                                                                     i.STREF(),
@@ -607,7 +681,9 @@ export const instructions = [
                                                             ),
                                                             i.PUSHCONT_SHORT(
                                                                 u.code([
-                                                                    i.PUSHINT(0),
+                                                                    i.PUSHINT(
+                                                                        0,
+                                                                    ),
                                                                     i.POP(2),
                                                                     i.STI(1),
                                                                 ]),
@@ -622,9 +698,13 @@ export const instructions = [
                                                             i.XCHG2(2, 3),
                                                             i.PUSHINT(-1),
                                                             i.NEWC(),
-                                                            i.STSLICECONST(u.hex("6_")),
+                                                            i.STSLICECONST(
+                                                                u.hex("6_"),
+                                                            ),
                                                             i.STI(1),
-                                                            i.STSLICECONST(u.hex("1_")),
+                                                            i.STSLICECONST(
+                                                                u.hex("1_"),
+                                                            ),
                                                             i.STSLICE(),
                                                             i.SWAP(),
                                                             i.STGRAMS(),
@@ -771,7 +851,9 @@ export const instructions = [
                                                             i.CDEPTH(),
                                                             i.SWAP(),
                                                             i.CDEPTH(),
-                                                            i.PUSHINT_LONG(131380n),
+                                                            i.PUSHINT_LONG(
+                                                                131380n,
+                                                            ),
                                                             i.NEWC(),
                                                             i.STU(24),
                                                             i.STU(16),
@@ -789,10 +871,16 @@ export const instructions = [
                                                             i.STU(256),
                                                             i.ENDC(),
                                                             i.CTOS(),
-                                                            i.PUSHINT_LONG(50000000n),
+                                                            i.PUSHINT_LONG(
+                                                                50000000n,
+                                                            ),
                                                             i.PUSHINT(0),
-                                                            i.PUSHINT_LONG(10000000n),
-                                                            i.PUSHSLICE(u.hex("")),
+                                                            i.PUSHINT_LONG(
+                                                                10000000n,
+                                                            ),
+                                                            i.PUSHSLICE(
+                                                                u.hex(""),
+                                                            ),
                                                             i.PUSH(7),
                                                             i.XCHG_1(3, 5),
                                                             i.XCHG_1(4, 7),
@@ -803,13 +891,27 @@ export const instructions = [
                                                             i.PSEUDO_PUSHREF(
                                                                 u.code([
                                                                     i.NEWC(),
-                                                                    i.BLKSWAP(7, 1),
-                                                                    i.PUSHINT_LONG(260734629n),
-                                                                    i.XCHG2(0, 8),
+                                                                    i.BLKSWAP(
+                                                                        7,
+                                                                        1,
+                                                                    ),
+                                                                    i.PUSHINT_LONG(
+                                                                        260734629n,
+                                                                    ),
+                                                                    i.XCHG2(
+                                                                        0,
+                                                                        8,
+                                                                    ),
                                                                     i.STU(32),
-                                                                    i.XCHG_3(1, 6),
+                                                                    i.XCHG_3(
+                                                                        1,
+                                                                        6,
+                                                                    ),
                                                                     i.STU(64),
-                                                                    i.XCHG2(0, 4),
+                                                                    i.XCHG2(
+                                                                        0,
+                                                                        4,
+                                                                    ),
                                                                     i.STGRAMS(),
                                                                     i.ROT(),
                                                                     i.STSLICER(),
@@ -819,13 +921,19 @@ export const instructions = [
                                                                     i.PUSHCONT_SHORT(
                                                                         u.code([
                                                                             i.DROP(),
-                                                                            i.PUSHINT(0),
+                                                                            i.PUSHINT(
+                                                                                0,
+                                                                            ),
                                                                             i.SWAP(),
-                                                                            i.STU(2),
+                                                                            i.STU(
+                                                                                2,
+                                                                            ),
                                                                         ]),
                                                                     ),
                                                                     i.PUSHCONT_SHORT(
-                                                                        u.code([i.STSLICER()]),
+                                                                        u.code([
+                                                                            i.STSLICER(),
+                                                                        ]),
                                                                     ),
                                                                     i.IFELSE(),
                                                                     i.OVER(),
@@ -833,17 +941,27 @@ export const instructions = [
                                                                     i.NOT(),
                                                                     i.PUSHCONT_SHORT(
                                                                         u.code([
-                                                                            i.PUSHINT(-1),
+                                                                            i.PUSHINT(
+                                                                                -1,
+                                                                            ),
                                                                             i.SWAP(),
-                                                                            i.STI(1),
+                                                                            i.STI(
+                                                                                1,
+                                                                            ),
                                                                             i.STREF(),
                                                                         ]),
                                                                     ),
                                                                     i.PUSHCONT_SHORT(
                                                                         u.code([
-                                                                            i.PUSHINT(0),
-                                                                            i.POP(2),
-                                                                            i.STI(1),
+                                                                            i.PUSHINT(
+                                                                                0,
+                                                                            ),
+                                                                            i.POP(
+                                                                                2,
+                                                                            ),
+                                                                            i.STI(
+                                                                                1,
+                                                                            ),
                                                                         ]),
                                                                     ),
                                                                     i.IFELSE(),
@@ -853,16 +971,31 @@ export const instructions = [
                                                                     i.STSLICER(),
                                                                     i.ENDC(),
                                                                     i.SWAP(),
-                                                                    i.XCHG2(2, 3),
-                                                                    i.PUSHINT(-1),
+                                                                    i.XCHG2(
+                                                                        2,
+                                                                        3,
+                                                                    ),
+                                                                    i.PUSHINT(
+                                                                        -1,
+                                                                    ),
                                                                     i.NEWC(),
-                                                                    i.STSLICECONST(u.hex("6_")),
+                                                                    i.STSLICECONST(
+                                                                        u.hex(
+                                                                            "6_",
+                                                                        ),
+                                                                    ),
                                                                     i.STI(1),
-                                                                    i.STSLICECONST(u.hex("1_")),
+                                                                    i.STSLICECONST(
+                                                                        u.hex(
+                                                                            "1_",
+                                                                        ),
+                                                                    ),
                                                                     i.STSLICE(),
                                                                     i.SWAP(),
                                                                     i.STGRAMS(),
-                                                                    i.PUSHINT_8(106),
+                                                                    i.PUSHINT_8(
+                                                                        106,
+                                                                    ),
                                                                     i.STZEROES(),
                                                                     i.STDICT(),
                                                                     i.ENDC(),
@@ -919,7 +1052,9 @@ export const instructions = [
                                                     i.STU(2),
                                                 ]),
                                             ),
-                                            i.PUSHCONT_SHORT(u.code([i.STSLICER()])),
+                                            i.PUSHCONT_SHORT(
+                                                u.code([i.STSLICER()]),
+                                            ),
                                             i.IFELSE(),
                                             i.OVER(),
                                             i.ISNULL(),
@@ -933,7 +1068,11 @@ export const instructions = [
                                                 ]),
                                             ),
                                             i.PUSHCONT_SHORT(
-                                                u.code([i.PUSHINT(0), i.POP(2), i.STI(1)]),
+                                                u.code([
+                                                    i.PUSHINT(0),
+                                                    i.POP(2),
+                                                    i.STI(1),
+                                                ]),
                                             ),
                                             i.IFELSE(),
                                             i.NEWC(),
@@ -948,7 +1087,9 @@ export const instructions = [
                                                     i.STU(2),
                                                 ]),
                                             ),
-                                            i.PUSHCONT_SHORT(u.code([i.STSLICER()])),
+                                            i.PUSHCONT_SHORT(
+                                                u.code([i.STSLICER()]),
+                                            ),
                                             i.IFELSE(),
                                             i.ENDC(),
                                             i.SWAP(),
@@ -1001,7 +1142,13 @@ export const instructions = [
                         i.PLDU(2),
                         i.NEQINT(0),
                         i.PUSHCONT_SHORT(u.code([i.LDMSGADDR(), i.SWAP()])),
-                        i.PUSHCONT_SHORT(u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()])),
+                        i.PUSHCONT_SHORT(
+                            u.code([
+                                i.PUSHINT(2),
+                                i.SDSKIPFIRST(),
+                                i.PUSHNULL(),
+                            ]),
+                        ),
                         i.IFELSE(),
                         i.SWAP(),
                         i.LDGRAMS(),
@@ -1014,7 +1161,13 @@ export const instructions = [
                         i.PLDU(2),
                         i.NEQINT(0),
                         i.PUSHCONT_SHORT(u.code([i.LDMSGADDR(), i.SWAP()])),
-                        i.PUSHCONT_SHORT(u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()])),
+                        i.PUSHCONT_SHORT(
+                            u.code([
+                                i.PUSHINT(2),
+                                i.SDSKIPFIRST(),
+                                i.PUSHNULL(),
+                            ]),
+                        ),
                         i.IFELSE(),
                         i.SWAP(),
                         i.LDI(1),
@@ -1051,7 +1204,13 @@ export const instructions = [
                         i.PLDU(2),
                         i.NEQINT(0),
                         i.PUSHCONT_SHORT(u.code([i.LDMSGADDR(), i.SWAP()])),
-                        i.PUSHCONT_SHORT(u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()])),
+                        i.PUSHCONT_SHORT(
+                            u.code([
+                                i.PUSHINT(2),
+                                i.SDSKIPFIRST(),
+                                i.PUSHNULL(),
+                            ]),
+                        ),
                         i.IFELSE(),
                         i.SWAP(),
                         i.LDGRAMS(),
@@ -1064,7 +1223,13 @@ export const instructions = [
                         i.PLDU(2),
                         i.NEQINT(0),
                         i.PUSHCONT_SHORT(u.code([i.LDMSGADDR(), i.SWAP()])),
-                        i.PUSHCONT_SHORT(u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()])),
+                        i.PUSHCONT_SHORT(
+                            u.code([
+                                i.PUSHINT(2),
+                                i.SDSKIPFIRST(),
+                                i.PUSHNULL(),
+                            ]),
+                        ),
                         i.IFELSE(),
                         i.SWAP(),
                         i.LDI(1),
@@ -1098,7 +1263,13 @@ export const instructions = [
                         i.PLDU(2),
                         i.NEQINT(0),
                         i.PUSHCONT_SHORT(u.code([i.LDMSGADDR(), i.SWAP()])),
-                        i.PUSHCONT_SHORT(u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()])),
+                        i.PUSHCONT_SHORT(
+                            u.code([
+                                i.PUSHINT(2),
+                                i.SDSKIPFIRST(),
+                                i.PUSHNULL(),
+                            ]),
+                        ),
                         i.IFELSE(),
                         i.SWAP(),
                         i.LDGRAMS(),
@@ -1111,7 +1282,13 @@ export const instructions = [
                         i.PLDU(2),
                         i.NEQINT(0),
                         i.PUSHCONT_SHORT(u.code([i.LDMSGADDR(), i.SWAP()])),
-                        i.PUSHCONT_SHORT(u.code([i.PUSHINT(2), i.SDSKIPFIRST(), i.PUSHNULL()])),
+                        i.PUSHCONT_SHORT(
+                            u.code([
+                                i.PUSHINT(2),
+                                i.SDSKIPFIRST(),
+                                i.PUSHNULL(),
+                            ]),
+                        ),
                         i.IFELSE(),
                         i.SWAP(),
                         i.LDI(1),
@@ -1182,4 +1359,4 @@ export const instructions = [
     ),
     i.DICTIGETJMPZ(),
     i.THROWARG(11),
-]
+];

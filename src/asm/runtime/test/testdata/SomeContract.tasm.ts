@@ -1,5 +1,5 @@
-import * as i from "../../index"
-import * as u from "../../util"
+import * as i from "../../index";
+import * as u from "../../util";
 
 export const instructions = [
     i.SETCP(0),
@@ -12,7 +12,9 @@ export const instructions = [
                     [
                         i.DUP(),
                         i.SEMPTY(),
-                        i.PUSHCONT_SHORT(u.code([i.BLKDROP(3), i.CALLDICT(18)])),
+                        i.PUSHCONT_SHORT(
+                            u.code([i.BLKDROP(3), i.CALLDICT(18)]),
+                        ),
                         i.IFJMP(),
                         i.SWAP(),
                         i.CTOS(),
@@ -20,7 +22,13 @@ export const instructions = [
                         i.SWAP(),
                         i.PUSHINT(1),
                         i.AND(),
-                        i.PUSHCONT_SHORT(u.code([i.XCHG_3(1, 3), i.BLKDROP(3), i.CALLDICT(19)])),
+                        i.PUSHCONT_SHORT(
+                            u.code([
+                                i.XCHG_3(1, 3),
+                                i.BLKDROP(3),
+                                i.CALLDICT(19),
+                            ]),
+                        ),
                         i.IFJMP(),
                         i.LDMSGADDR(),
                         i.LDMSGADDR(),
@@ -40,30 +48,60 @@ export const instructions = [
                         i.PUSHINT_LONG(260734629n),
                         i.PUXC(2, -1),
                         i.EQUAL(),
-                        i.PUSHCONT_SHORT(u.code([i.NIP(), i.POP(4), i.ROTREV(), i.CALLDICT(14)])),
+                        i.PUSHCONT_SHORT(
+                            u.code([
+                                i.NIP(),
+                                i.POP(4),
+                                i.ROTREV(),
+                                i.CALLDICT(14),
+                            ]),
+                        ),
                         i.IFJMP(),
                         i.PUSHINT_LONG(395134233n),
                         i.PUXC(2, -1),
                         i.EQUAL(),
                         i.PUSHCONT_SHORT(
-                            u.code([i.NIP(), i.XCHG3(4, 4, 4), i.XCHG_0(3), i.CALLDICT(15)]),
+                            u.code([
+                                i.NIP(),
+                                i.XCHG3(4, 4, 4),
+                                i.XCHG_0(3),
+                                i.CALLDICT(15),
+                            ]),
                         ),
                         i.IFJMP(),
                         i.PUSHINT_LONG(1499400124n),
                         i.PUXC(2, -1),
                         i.EQUAL(),
-                        i.PUSHCONT_SHORT(u.code([i.NIP(), i.POP(4), i.ROTREV(), i.CALLDICT(16)])),
+                        i.PUSHCONT_SHORT(
+                            u.code([
+                                i.NIP(),
+                                i.POP(4),
+                                i.ROTREV(),
+                                i.CALLDICT(16),
+                            ]),
+                        ),
                         i.IFJMP(),
                         i.POP(3),
                         i.PUSHINT_LONG(3424294827n),
                         i.EQUAL(),
-                        i.PUSHCONT_SHORT(u.code([i.XCHG3(0, 0, 3), i.CALLDICT(17)])),
+                        i.PUSHCONT_SHORT(
+                            u.code([i.XCHG3(0, 0, 3), i.CALLDICT(17)]),
+                        ),
                         i.IFJMP(),
                         i.BLKDROP(3),
                         i.CALLDICT(18),
                     ],
                 ],
-                [1, [i.REWRITESTDADDR(), i.DROP(), i.PUSHINT(0), i.EQUAL(), i.THROWIFNOT(333)]],
+                [
+                    1,
+                    [
+                        i.REWRITESTDADDR(),
+                        i.DROP(),
+                        i.PUSHINT(0),
+                        i.EQUAL(),
+                        i.THROWIFNOT(333),
+                    ],
+                ],
                 [
                     14,
                     [
@@ -183,7 +221,9 @@ export const instructions = [
                                                 i.LDU(1),
                                                 i.XCHG_0(3),
                                                 i.EQINT(1),
-                                                i.PUSHCONT_SHORT(u.code([i.BLKDROP(4)])),
+                                                i.PUSHCONT_SHORT(
+                                                    u.code([i.BLKDROP(4)]),
+                                                ),
                                                 i.PUSHCONT(
                                                     u.code([
                                                         i.POP_LONG(17),
@@ -209,7 +249,9 @@ export const instructions = [
                                                                 i.XCHG_0(13),
                                                             ]),
                                                         ),
-                                                        i.PUSHCONT_SHORT(u.code([i.DROP()])),
+                                                        i.PUSHCONT_SHORT(
+                                                            u.code([i.DROP()]),
+                                                        ),
                                                         i.IFELSE(),
                                                         i.XCHG_0(13),
                                                         i.ENDC(),
@@ -250,11 +292,23 @@ export const instructions = [
                                                             u.code([
                                                                 i.PUSHINT(10),
                                                                 i.SWAP(),
-                                                                i.PUXC2(5, 5, 4),
+                                                                i.PUXC2(
+                                                                    5,
+                                                                    5,
+                                                                    4,
+                                                                ),
                                                                 i.PUSHINT(0),
-                                                                i.PU2XC(0, -1, 2),
+                                                                i.PU2XC(
+                                                                    0,
+                                                                    -1,
+                                                                    2,
+                                                                ),
                                                                 i.XCHG_3(1, 3),
-                                                                i.XC2PU(5, 0, 5),
+                                                                i.XC2PU(
+                                                                    5,
+                                                                    0,
+                                                                    5,
+                                                                ),
                                                                 i.NEWC(),
                                                                 i.XCHG2(0, 5),
                                                                 i.STGRAMS(),
@@ -287,9 +341,13 @@ export const instructions = [
                                                                 i.CTOS(),
                                                                 i.XCHG2(4, 3),
                                                                 i.MUL(),
-                                                                i.PUSHINT_8(100),
+                                                                i.PUSHINT_8(
+                                                                    100,
+                                                                ),
                                                                 i.DIV(),
-                                                                i.PUSHINT_LONG(3424294827n),
+                                                                i.PUSHINT_LONG(
+                                                                    3424294827n,
+                                                                ),
                                                                 i.NEWC(),
                                                                 i.STU(32),
                                                                 i.XCHG_3(1, 6),
@@ -366,7 +424,9 @@ export const instructions = [
                                                         i.MUL(),
                                                         i.PUSHINT_8(100),
                                                         i.DIV(),
-                                                        i.PUSHINT_LONG(3424294827n),
+                                                        i.PUSHINT_LONG(
+                                                            3424294827n,
+                                                        ),
                                                         i.NEWC(),
                                                         i.STU(32),
                                                         i.XCHG_3(1, 6),
@@ -584,7 +644,12 @@ export const instructions = [
                                 i.XCHG_1(3, 5),
                                 i.XCHG_1(3, 4),
                             ]),
-                            u.code([i.XCHG_1(4, 10), i.XCHG_1(3, 9), i.POP(8), i.BLKDROP(4)]),
+                            u.code([
+                                i.XCHG_1(4, 10),
+                                i.XCHG_1(3, 9),
+                                i.POP(8),
+                                i.BLKDROP(4),
+                            ]),
                         ),
                         i.PUSH(6),
                         i.PLDU(2),
@@ -621,7 +686,9 @@ export const instructions = [
                                         i.XCHG_3(1, 3),
                                     ]),
                                 ),
-                                i.PUSHCONT_SHORT(u.code([i.XCHG_1(2, 6), i.BLKDROP2(3, 2)])),
+                                i.PUSHCONT_SHORT(
+                                    u.code([i.XCHG_1(2, 6), i.BLKDROP2(3, 2)]),
+                                ),
                                 i.IFELSE(),
                                 i.XCHG3(0, 0, 3),
                                 i.XCHG_0(4),
@@ -875,7 +942,9 @@ export const instructions = [
                                                         i.ENDC(),
                                                         i.CTOS(),
                                                         i.PUSHINT(0),
-                                                        i.PUSHINT_LONG(630424929n),
+                                                        i.PUSHINT_LONG(
+                                                            630424929n,
+                                                        ),
                                                         i.NEWC(),
                                                         i.STU(32),
                                                         i.PUSHSLICE_LONG_1(
@@ -890,7 +959,9 @@ export const instructions = [
                                                         i.STSLICER(),
                                                         i.STU(1),
                                                         i.ENDC(),
-                                                        i.PUSHINT_LONG(395134233n),
+                                                        i.PUSHINT_LONG(
+                                                            395134233n,
+                                                        ),
                                                         i.NEWC(),
                                                         i.STU(32),
                                                         i.XCHG_3(1, 7),
@@ -903,7 +974,9 @@ export const instructions = [
                                                             u.code([
                                                                 i.XCHG2(0, 3),
                                                                 i.STSLICER(),
-                                                                i.PUSHINT_LONG(400000000n),
+                                                                i.PUSHINT_LONG(
+                                                                    400000000n,
+                                                                ),
                                                                 i.STGRAMS(),
                                                                 i.XCHG_3(1, 4),
                                                                 i.STDICT(),
@@ -914,7 +987,9 @@ export const instructions = [
                                                                 i.STU(6),
                                                                 i.XCHG2(0, 5),
                                                                 i.STSLICER(),
-                                                                i.PUSHINT_LONG(410000000n),
+                                                                i.PUSHINT_LONG(
+                                                                    410000000n,
+                                                                ),
                                                                 i.STGRAMS(),
                                                                 i.XCHG_3(1, 4),
                                                                 i.STU(108),
@@ -1152,4 +1227,4 @@ export const instructions = [
     ),
     i.DICTIGETJMPZ(),
     i.THROWARG(11),
-]
+];
