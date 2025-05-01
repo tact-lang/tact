@@ -588,9 +588,7 @@ function writeFieldParser(
         case "address": {
             if (op.optional) {
                 ctx.used(`__tact_load_address_opt`);
-                ctx.append(
-                    `${leftHand} = ${slice}~__tact_load_address_opt();`,
-                );
+                ctx.append(`${leftHand} = ${slice}~__tact_load_address_opt();`);
             } else {
                 ctx.append(`${leftHand} = ${slice}~load_msg_addr();`);
             }
@@ -606,9 +604,7 @@ function writeFieldParser(
                 switch (op.format) {
                     case "default":
                         {
-                            ctx.append(
-                                `${leftHand} = ${slice}~load_ref();`,
-                            );
+                            ctx.append(`${leftHand} = ${slice}~load_ref();`);
                         }
                         break;
                     case "remainder": {
@@ -680,9 +676,7 @@ function writeFieldParser(
                     `${leftHand} = ${slice}~load_int(1) ? ${slice}~load_ref().begin_parse() : null();`,
                 );
             } else {
-                ctx.append(
-                    `${leftHand} = ${slice}~load_ref().begin_parse();`,
-                );
+                ctx.append(`${leftHand} = ${slice}~load_ref().begin_parse();`);
             }
             return;
         }
