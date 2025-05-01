@@ -671,7 +671,7 @@ message(4) JettonUpdateContent {
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-jetton-interface#mint
 ///
-message(21) Mint {
+message(0x642b7d07) Mint {
     /// Unique identifier used to trace transactions across multiple contracts.
     /// Setting it to 0 means we don't mark messages to trace requests.
     queryId: Int as uint64;
