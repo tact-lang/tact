@@ -91,12 +91,12 @@
       }
     },
     {
-      "label": "1.6.7 with inlined message loading",
-      "pr": null,
+      "label": "1.6.7 with using .fromSlice instead of self parsing",
+      "pr": "https://github.com/tact-lang/tact/pull/2984",
       "gas": {
         "externalTransfer": "4416",
-        "addPlugin": "7253",
-        "pluginTransfer": "3725"
+        "addPlugin": "7287",
+        "pluginTransfer": "3743"
       }
     }
   ]

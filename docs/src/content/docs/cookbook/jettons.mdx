@@ -36,7 +36,9 @@ The Jetton Wallet Contract represents an individual holder's token wallet and is
 
 ## Examples
 
-Common examples of working with Jettons.
+The following are common examples of working with Jettons.
+
+For larger Jetton recipes that include smart contracts, auxiliary scripts, and testing suites, see the [Tact's DeFi Cookbook on GitHub](https://github.com/tact-lang/defi-cookbook).
 
 ### Accepting Jetton transfer
 
@@ -99,9 +101,8 @@ struct JettonWalletData {
 fun calculateJettonWalletAddress(
     ownerAddress: Address,
     jettonMasterAddress: Address,
-    jettonWalletCode: Cell
+    jettonWalletCode: Cell,
 ): Address {
-
     let initData = JettonWalletData {
         balance: 0,
         ownerAddress,
@@ -183,7 +184,6 @@ fun calculateJettonWalletAddress(
     jettonMasterAddress: Address,
     jettonWalletCode: Cell,
 ): Address {
-
     let initData = JettonWalletData {
         balance: 0,
         ownerAddress,
@@ -220,7 +220,7 @@ contract Example {
     receive(msg: Withdraw) {
         require(
             msg.amount <= self.myJettonAmount,
-            "Not enough funds to withdraw"
+            "Not enough funds to withdraw",
         );
 
         send(SendParameters {
@@ -247,7 +247,7 @@ contract Example {
                 // Compile-time way of expressing:
                 //     beginCell().storeUint(0xF, 4).endCell().beginParse()
                 // For more complicated transfers, adjust accordingly
-                forwardPayload: rawSlice("F")
+                forwardPayload: rawSlice("F"),
             }.toCell(),
         });
     }
@@ -280,7 +280,6 @@ fun calculateJettonWalletAddress(
     jettonMasterAddress: Address,
     jettonWalletCode: Cell,
 ): Address {
-
     let initData = JettonWalletData {
         balance: 0,
         ownerAddress,
@@ -356,9 +355,8 @@ struct JettonWalletData {
 fun calculateJettonWalletAddress(
     ownerAddress: Address,
     jettonMasterAddress: Address,
-    jettonWalletCode: Cell
+    jettonWalletCode: Cell,
 ): Address {
-
     let initData = JettonWalletData {
         status: 0,
         balance: 0,
@@ -378,10 +376,18 @@ fun calculateJettonWalletAddress(
 ```tact
 /// https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-example-offchain
 fun composeJettonMetadata(
-    name: String,        // full name
-    description: String, // text description of the Jetton
-    symbol: String,      // "stock ticker" symbol without the $ prefix, like USDT or SCALE
-    image: String,       // link to the image
+    // Full name
+    name: String,
+
+    // Text description of the Jetton
+    description: String,
+
+    // "Stock ticker" symbol without the $ prefix, like USDT or SCALE
+    symbol: String,
+
+    // Link to the image
+    image: String,
+
     // There could be other data, see:
     // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-attributes
 ): Cell {
@@ -392,7 +398,7 @@ fun composeJettonMetadata(
     dict.set(sha256("image"), image.asMetadataCell());
 
     return beginCell()
-        .storeUint(0, 8)                // a null byte prefix
+        .storeUint(0, 8) //                a null byte prefix
         .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
         .endCell();
 }
@@ -422,6 +428,8 @@ inline extends fun asMetadataCell(self: String): Cell {
 
 :::tip[Hey there!]
 
-Didn't find your favorite example of Jetton usage? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+  Didn't find your favorite example of Jetton usage? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+
+  For complete and exhaustive Jetton recipes that include smart contracts, auxiliary scripts, and testing suites, see the [Tact's DeFi Cookbook on GitHub](https://github.com/tact-lang/defi-cookbook).
 
 :::

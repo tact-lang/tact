@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+
+- Enabled format checking across the Cookbook: PR [#2980](https://github.com/tact-lang/tact/pull/2980)
+- Added references to https://github.com/tact-lang/defi-cookbook: PR [#2985](https://github.com/tact-lang/tact/pull/2985)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+
 ## [1.6.7] - 2025-04-24
 
 ### Language features
