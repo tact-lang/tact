@@ -20,14 +20,14 @@ const main = async () => {
             const result = await reader.read(
                 path.join(__dirname, "example"),
                 // TODO: parseImportString(root, ImportErrors(log)) when there are CLI/config loggers
-                "scope2-a.tact",
+                "scope1-a.tact",
             );
             if (!result) {
                 return;
             }
             // dump(result.sources.length);
             // dump(result);
-            scope(log, result);
+            dump(scope(log, result).functions.keys());
         });
     });
 };

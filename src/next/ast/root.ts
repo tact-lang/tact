@@ -32,6 +32,13 @@ export type ModuleItem =
     | AliasDecl
     | Contract
     | Trait;
+export type TypeDecl =
+    | StructDecl
+    | MessageDecl
+    | UnionDecl
+    | AliasDecl
+    | Contract
+    | Trait;
 export type Import = {
     readonly kind: "import";
     readonly importPath: ImportPath;
@@ -92,7 +99,7 @@ export type ContractAttribute = {
 
 export type Extension = {
     readonly kind: "extension";
-    readonly fun: Method;
+    readonly method: Method;
     readonly selfType: Type;
 };
 

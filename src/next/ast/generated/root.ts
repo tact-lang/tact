@@ -87,9 +87,9 @@ export const Method = (mutates: boolean, virtual: boolean, override: boolean, ge
 });
 export const isMethod = ($value: Method) => $value.kind === "method";
 export type Extension = $.Extension;
-export const Extension = (fun: $.Method, selfType: $t.Type): $.Extension => Object.freeze({
+export const Extension = (method: $.Method, selfType: $t.Type): $.Extension => Object.freeze({
     kind: "extension",
-    fun,
+    method,
     selfType
 });
 export const isExtension = ($value: Extension) => $value.kind === "extension";
@@ -265,6 +265,7 @@ export const Trait = (name: $c.TypeId, traits: readonly $c.TypeId[], attributes:
 });
 export const isTrait = ($value: Trait) => $value.kind === "trait";
 export type ModuleItem = $.ModuleItem;
+export type TypeDecl = $.TypeDecl;
 export type Module = $.Module;
 export const Module = (imports: readonly $.Import[], items: readonly $.ModuleItem[]): $.Module => Object.freeze({
     kind: "module",
