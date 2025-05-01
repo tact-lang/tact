@@ -11,6 +11,9 @@ exports[`codegen should correctly generate FunC code 1`] = `
 ;; NOTE: declarations are sorted for optimal order
 ;;
 
+;; $MainContract$_store
+builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
+
 ;; $MainContract$_load
 (slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline;
 
@@ -31,6 +34,9 @@ exports[`codegen should correctly generate FunC code 1`] = `
 
 ;; $MainContract$_contract_load
 (int, int, slice, cell) $MainContract$_contract_load() impure inline;
+
+;; $MainContract$_contract_store
+() $MainContract$_contract_store((int, int, slice, cell) v) impure inline;
 
 ;; $MainContract$_fun_testAugmentedAssignOperators
 ((int, int, slice, cell), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice, cell) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref;
@@ -81,6 +87,14 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
     ENDC
 """;
 
+int $Slice$_fun_depth(slice $self) impure asm """
+    SDEPTH
+""";
+
+int $Cell$_fun_depth(cell $self) impure asm """
+    CDEPTH
+""";
+
 ;; main_MainContract.storage.fc
 ;;
 ;; Type: A
@@ -129,6 +143,15 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
 ;; TLB: _ field:uint8 value:int256 data:fixed_bytes64 mapping:dict<uint8, int256> = MainContract
 ;;
 
+builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline {
+    var (v'field, v'value, v'data, v'mapping) = v;
+    build_0 = build_0.store_uint(v'field, 8);
+    build_0 = build_0.store_int(v'value, 256);
+    build_0 = build_0.store_slice(v'data);
+    build_0 = build_0.store_dict(v'mapping);
+    return build_0;
+}
+
 (slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline {
     var v'field = sc_0~load_uint(8);
     var v'value = sc_0~load_int(256);
@@ -156,6 +179,13 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
         $sc.end_parse();
         return $MainContract$_contract_init($field, $value, $data, $mapping);
     }
+}
+
+() $MainContract$_contract_store((int, int, slice, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_int(true, 1);
+    b = $MainContract$_store(b, v);
+    set_data(b.end_cell());
 }
 
 ;;
@@ -359,6 +389,39 @@ _ %testIfOptimizationNegative(int $a) method_id(87434) {
     
     ;; Handle bounced messages
     if (msg_bounced) { return (); }
+    var op = in_msg~load_opcode_internal();
+    ;; Receive Message1 message
+    if (op == 3110385022) {
+        var $msg'a = in_msg~load_int(257);
+        throw($msg'a);
+        $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+        return ();
+    }
+    
+    ;; Receive Message2 message
+    if (op == 797349837) {
+        var $msg'value = in_msg~load_ref();
+        var $msg'value2 = in_msg~load_ref().begin_parse();
+        throw(($Cell$_fun_depth($msg'value) + $Slice$_fun_depth($msg'value2)));
+        $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+        return ();
+    }
+    
+    ;; Receive Message3 message
+    if (op == 1120645875) {
+        var $msg'val1 = in_msg~load_int(257);
+        var $msg'val2 = in_msg~load_int(257);
+        var $msg'val3 = in_msg~load_int(257);
+        slice sc_1 = in_msg~load_ref().begin_parse();
+        var $msg'val4 = sc_1~load_int(257);
+        var $msg'val5 = sc_1~load_int(257);
+        var $msg'val6 = sc_1~load_int(257);
+        throw(((((($msg'val1 + $msg'val2) + $msg'val3) + $msg'val4) + $msg'val5) + $msg'val6));
+        $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+        return ();
+    }
+    
+    ;; Throw if not handled
     throw(130);
 }
 
