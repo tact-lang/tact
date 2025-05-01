@@ -398,11 +398,11 @@ export function writeParser(
 
 export function writeBouncedParser(
     type: TypeDescription,
-    forceInline: boolean,
     allocation: StorageAllocation,
     ctx: WriterContext,
 ) {
     const name = type.name;
+    const forceInline = type.kind === "contract";
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     ctx.fun(ops.readerBounced(name, ctx), () => {

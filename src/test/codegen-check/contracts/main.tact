@@ -65,6 +65,13 @@ contract MainContract {
     }
 
     receive(msg: Message2) {
+        let sc_1 = 10;
+        let sc_2 = 20;
+        let in_msg = sc_1 + sc_2;
+        if (in_msg == 0) {
+            throw(in_msg);
+        }
+
         throw(msg.value.depth() + msg.value2.depth());
     }
 

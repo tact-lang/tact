@@ -402,6 +402,12 @@ _ %testIfOptimizationNegative(int $a) method_id(87434) {
     if (op == 797349837) {
         var $msg'value = in_msg~load_ref();
         var $msg'value2 = in_msg~load_ref().begin_parse();
+        int $sc_1 = 10;
+        int $sc_2 = 20;
+        int $in_msg = ($sc_1 + $sc_2);
+        ifnot ($in_msg) {
+            throw($in_msg);
+        }
         throw(($Cell$_fun_depth($msg'value) + $Slice$_fun_depth($msg'value2)));
         $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
         return ();

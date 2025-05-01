@@ -374,12 +374,7 @@ function writeAll(
                 wCtx,
             );
             writeOptionalParser(t.name, t.origin, wCtx);
-            writeBouncedParser(
-                t,
-                t.kind === "contract",
-                allocationBounced,
-                wCtx,
-            );
+            writeBouncedParser(t, allocationBounced, wCtx);
         }
     }
 
