@@ -210,7 +210,7 @@ function writeBinaryReceiver(
         } else {
             // write cell parser in place for much better performance
             const allocation = getAllocation(wCtx.ctx, type.name);
-            writeCellParser(allocation.root, type, 0, wCtx, name, true);
+            writeCellParser(allocation.root, type, 0, wCtx, name, "in_msg");
         }
 
         writeReceiverBody(binaryReceiver, contract, wCtx);

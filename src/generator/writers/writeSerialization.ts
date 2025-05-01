@@ -350,7 +350,14 @@ export function writeParser(
             }
 
             // Write cell parser
-            writeCellParser(allocation.root, type, 0, ctx, undefined, false);
+            writeCellParser(
+                allocation.root,
+                type,
+                0,
+                ctx,
+                undefined,
+                undefined,
+            );
 
             // Compile tuple
             if (allocation.ops.length === 0) {
@@ -420,7 +427,14 @@ export function writeBouncedParser(
             // Opcode already eaten and checked
 
             // Write cell parser
-            writeCellParser(allocation.root, type, 0, ctx, undefined, false);
+            writeCellParser(
+                allocation.root,
+                type,
+                0,
+                ctx,
+                undefined,
+                undefined,
+            );
 
             // Compile tuple
             if (allocation.ops.length === 0) {
@@ -461,28 +475,35 @@ export function writeCellParser(
     gen: number,
     ctx: WriterContext,
     prefix: string | undefined,
-    inline: boolean,
+    sliceName: string | undefined,
 ): number {
     // Write current fields
     for (const f of cell.ops) {
         const field = type?.fields.find((v) => v.name === f.name);
-        writeFieldParser(f, field?.type, gen, ctx, prefix, inline);
+        writeFieldParser(f, field?.type, gen, ctx, prefix, sliceName);
     }
 
     // Handle next cell
     if (cell.next) {
         ctx.append(
-            `slice ${genSliceName(gen + 1, inline)} = ${genSliceName(gen, inline)}~load_ref().begin_parse();`,
+            `slice ${genSliceName(gen + 1, sliceName)} = ${genSliceName(gen, sliceName)}~load_ref().begin_parse();`,
         );
-        return writeCellParser(cell.next, type, gen + 1, ctx, prefix, inline);
+        return writeCellParser(
+            cell.next,
+            type,
+            gen + 1,
+            ctx,
+            prefix,
+            sliceName,
+        );
     } else {
         return gen;
     }
 }
 
-const genSliceName = (gen: number, inline: boolean) => {
-    if (gen === 0 && inline) {
-        return "in_msg";
+const genSliceName = (gen: number, initialSliceName: string | undefined) => {
+    if (gen === 0 && typeof initialSliceName !== "undefined") {
+        return initialSliceName;
     }
     return `sc_${gen}`;
 };
@@ -512,11 +533,13 @@ function writeFieldParser(
     gen: number,
     ctx: WriterContext,
     prefix: string | undefined,
-    inline: boolean,
+    sliceName: string | undefined,
 ) {
+    const inline = typeof sliceName !== "undefined";
+
     const op = f.op;
     const leftHand = fieldParserLeftHand(ctx, f.name, prefix, type, inline);
-    const sliceNane = genSliceName(gen, inline);
+    const sliceNane = genSliceName(gen, sliceName);
 
     switch (op.kind) {
         case "int": {
