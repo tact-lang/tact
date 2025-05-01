@@ -97,6 +97,7 @@ See [Tact in production](https://github.com/tact-lang/awesome-tact#tact-in-produ
 
 - [Awesome Tact](https://github.com/tact-lang/awesome-tact)
 - [Tact By Example](https://tact-by-example.org/00-hello-world)
+- [DeFi Cookbook](https://github.com/tact-lang/defi-cookbook)
 - [Documentation](https://docs.tact-lang.org)
 - [Changelog](./dev-docs/CHANGELOG.md)
 

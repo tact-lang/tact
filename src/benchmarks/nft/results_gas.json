@@ -119,6 +119,16 @@
         "deploy nft": "10629",
         "batch deploy nft": "658306"
       }
+    },
+    {
+      "label": "1.6.7 with using .fromSlice instead of self parsing",
+      "pr": "https://github.com/tact-lang/tact/pull/2984",
+      "gas": {
+        "transfer": "7305",
+        "get static data": "4697",
+        "deploy nft": "10683",
+        "batch deploy nft": "663906"
+      }
     }
   ]
 }
