@@ -1,6 +1,13 @@
 import "./constants";
 import "./messages-sbt";
 
+struct SBTItemInit {
+    owner: Address;
+    content: Cell;
+    authorityAddress: Address;
+    revokedAt: Int as uint64;
+}
+
 contract SBTItem(
     itemIndex: Int as uint64,
     collectionAddress: Address,
@@ -21,10 +28,11 @@ contract SBTItem(
         throwUnless(InvalidData, self.owner == null);
         throwUnless(IncorrectDeployer, sender() == self.collectionAddress);
 
-        self.owner = msg.loadAddress();
-        self.content = msg.loadRef();
-        self.authorityAddress = msg.loadAddress();
-        self.revokedAt = msg.loadUint(64);
+        let itemInit = SBTItemInit.fromSlice(msg);
+        self.owner = itemInit.owner;
+        self.content = itemInit.content;
+        self.authorityAddress = itemInit.authorityAddress;
+        self.revokedAt = itemInit.revokedAt;
     }
 
     receive(msg: RequestOwner) {
