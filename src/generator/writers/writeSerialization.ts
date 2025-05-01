@@ -472,7 +472,7 @@ export function writeCellParser(
     // Handle next cell
     if (cell.next) {
         ctx.append(
-            `slice ${sliceName(gen + 1, inline)} = ${sliceName(gen, inline)}~load_ref().begin_parse();`,
+            `slice ${genSliceName(gen + 1, inline)} = ${genSliceName(gen, inline)}~load_ref().begin_parse();`,
         );
         return writeCellParser(cell.next, type, gen + 1, ctx, prefix, inline);
     } else {
@@ -480,7 +480,7 @@ export function writeCellParser(
     }
 }
 
-const sliceName = (gen: number, inline: boolean) => {
+const genSliceName = (gen: number, inline: boolean) => {
     if (gen === 0 && inline) {
         return "in_msg";
     }
@@ -516,29 +516,26 @@ function writeFieldParser(
 ) {
     const op = f.op;
     const leftHand = fieldParserLeftHand(ctx, f.name, prefix, type, inline);
+    const sliceNane = genSliceName(gen, inline);
 
     switch (op.kind) {
         case "int": {
             if (op.optional) {
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(1) ? ${sliceName(gen, inline)}~load_int(${op.bits}) : null();`,
+                    `${leftHand} = ${sliceNane}~load_int(1) ? ${sliceNane}~load_int(${op.bits}) : null();`,
                 );
             } else {
-                ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(${op.bits});`,
-                );
+                ctx.append(`${leftHand} = ${sliceNane}~load_int(${op.bits});`);
             }
             return;
         }
         case "uint": {
             if (op.optional) {
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(1) ? ${sliceName(gen, inline)}~load_uint(${op.bits}) : null();`,
+                    `${leftHand} = ${sliceNane}~load_int(1) ? ${sliceNane}~load_uint(${op.bits}) : null();`,
                 );
             } else {
-                ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_uint(${op.bits});`,
-                );
+                ctx.append(`${leftHand} = ${sliceNane}~load_uint(${op.bits});`);
             }
             return;
         }
@@ -548,24 +545,20 @@ function writeFieldParser(
         case "varuint32": {
             if (op.optional) {
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(1) ? ${sliceName(gen, inline)}~load_${op.kind}() : null();`,
+                    `${leftHand} = ${sliceNane}~load_int(1) ? ${sliceNane}~load_${op.kind}() : null();`,
                 );
             } else {
-                ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_${op.kind}();`,
-                );
+                ctx.append(`${leftHand} = ${sliceNane}~load_${op.kind}();`);
             }
             return;
         }
         case "boolean": {
             if (op.optional) {
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(1) ? ${sliceName(gen, inline)}~load_int(1) : null();`,
+                    `${leftHand} = ${sliceNane}~load_int(1) ? ${sliceNane}~load_int(1) : null();`,
                 );
             } else {
-                ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(1);`,
-                );
+                ctx.append(`${leftHand} = ${sliceNane}~load_int(1);`);
             }
             return;
         }
@@ -573,12 +566,10 @@ function writeFieldParser(
             if (op.optional) {
                 ctx.used(`__tact_load_address_opt`);
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~__tact_load_address_opt();`,
+                    `${leftHand} = ${sliceNane}~__tact_load_address_opt();`,
                 );
             } else {
-                ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_msg_addr();`,
-                );
+                ctx.append(`${leftHand} = ${sliceNane}~load_msg_addr();`);
             }
             return;
         }
@@ -587,21 +578,19 @@ function writeFieldParser(
                 if (op.format !== "default") {
                     throw new Error(`Impossible`);
                 }
-                ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_maybe_ref();`,
-                );
+                ctx.append(`${leftHand} = ${sliceNane}~load_maybe_ref();`);
             } else {
                 switch (op.format) {
                     case "default":
                         {
                             ctx.append(
-                                `${leftHand} = ${sliceName(gen, inline)}~load_ref();`,
+                                `${leftHand} = ${sliceNane}~load_ref();`,
                             );
                         }
                         break;
                     case "remainder": {
                         ctx.append(
-                            `${leftHand} = begin_cell().store_slice(${sliceName(gen, inline)}).end_cell();`,
+                            `${leftHand} = begin_cell().store_slice(${sliceNane}).end_cell();`,
                         );
                     }
                 }
@@ -614,22 +603,20 @@ function writeFieldParser(
                     throw new Error(`Impossible`);
                 }
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(1) ? ${sliceName(gen, inline)}~load_ref().begin_parse() : null();`,
+                    `${leftHand} = ${sliceNane}~load_int(1) ? ${sliceNane}~load_ref().begin_parse() : null();`,
                 );
             } else {
                 switch (op.format) {
                     case "default":
                         {
                             ctx.append(
-                                `${leftHand} = ${sliceName(gen, inline)}~load_ref().begin_parse();`,
+                                `${leftHand} = ${sliceNane}~load_ref().begin_parse();`,
                             );
                         }
                         break;
                     case "remainder":
                         {
-                            ctx.append(
-                                `${leftHand} = ${sliceName(gen, inline)};`,
-                            );
+                            ctx.append(`${leftHand} = ${sliceNane};`);
                         }
                         break;
                 }
@@ -642,21 +629,21 @@ function writeFieldParser(
                     throw new Error(`Impossible`);
                 }
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(1) ? begin_cell().store_slice(${sliceName(gen, inline)}~load_ref().begin_parse()) : null();`,
+                    `${leftHand} = ${sliceNane}~load_int(1) ? begin_cell().store_slice(${sliceNane}~load_ref().begin_parse()) : null();`,
                 );
             } else {
                 switch (op.format) {
                     case "default":
                         {
                             ctx.append(
-                                `${leftHand} = begin_cell().store_slice(${sliceName(gen, inline)}~load_ref().begin_parse());`,
+                                `${leftHand} = begin_cell().store_slice(${sliceNane}~load_ref().begin_parse());`,
                             );
                         }
                         break;
                     case "remainder":
                         {
                             ctx.append(
-                                `${leftHand} = begin_cell().store_slice(${sliceName(gen, inline)});`,
+                                `${leftHand} = begin_cell().store_slice(${sliceNane});`,
                             );
                         }
                         break;
@@ -667,11 +654,11 @@ function writeFieldParser(
         case "string": {
             if (op.optional) {
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(1) ? ${sliceName(gen, inline)}~load_ref().begin_parse() : null();`,
+                    `${leftHand} = ${sliceNane}~load_int(1) ? ${sliceNane}~load_ref().begin_parse() : null();`,
                 );
             } else {
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_ref().begin_parse();`,
+                    `${leftHand} = ${sliceNane}~load_ref().begin_parse();`,
                 );
             }
             return;
@@ -679,17 +666,17 @@ function writeFieldParser(
         case "fixed-bytes": {
             if (op.optional) {
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_int(1) ? ${sliceName(gen, inline)}~load_bits(${op.bytes * 8}) : null();`,
+                    `${leftHand} = ${sliceNane}~load_int(1) ? ${sliceNane}~load_bits(${op.bytes * 8}) : null();`,
                 );
             } else {
                 ctx.append(
-                    `${leftHand} = ${sliceName(gen, inline)}~load_bits(${op.bytes * 8});`,
+                    `${leftHand} = ${sliceNane}~load_bits(${op.bytes * 8});`,
                 );
             }
             return;
         }
         case "map": {
-            ctx.append(`${leftHand} = ${sliceName(gen, inline)}~load_dict();`);
+            ctx.append(`${leftHand} = ${sliceNane}~load_dict();`);
             return;
         }
         case "struct": {
@@ -698,7 +685,7 @@ function writeFieldParser(
                     throw Error("Not implemented");
                 } else {
                     ctx.append(
-                        `${leftHand} = ${sliceName(gen, inline)}~load_int(1) ? ${ops.typeAsOptional(op.type, ctx)}(${sliceName(gen, inline)}~${ops.reader(op.type, "with-opcode", ctx)}()) : null();`,
+                        `${leftHand} = ${sliceNane}~load_int(1) ? ${ops.typeAsOptional(op.type, ctx)}(${sliceNane}~${ops.reader(op.type, "with-opcode", ctx)}()) : null();`,
                     );
                 }
             } else {
@@ -706,7 +693,7 @@ function writeFieldParser(
                     throw Error("Not implemented");
                 } else {
                     ctx.append(
-                        `${leftHand} = ${sliceName(gen, inline)}~${ops.reader(op.type, "with-opcode", ctx)}();`,
+                        `${leftHand} = ${sliceNane}~${ops.reader(op.type, "with-opcode", ctx)}();`,
                     );
                 }
             }
