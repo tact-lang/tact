@@ -405,9 +405,24 @@ describe("top level declarations comments formatting", () => {
     );
 
     it(
-        "floating comments between import and declaration",
+        "several floating comments between declarations",
         intact(`
-            import "";
+            fun loge(x: Int): Int {}
+
+            // func reference
+
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "several floating comments before declaration",
+        intact(`
+            // func reference
 
             // int math::sqrt(int x) inline {
             //   if (x == 0) { return x; }
