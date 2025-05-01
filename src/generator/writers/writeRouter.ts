@@ -26,6 +26,7 @@ import { getAstFactory, idText } from "@/ast/ast-helpers";
 import { evalConstantExpression } from "@/optimizer/constEval";
 import { getAstUtil } from "@/ast/util";
 import { prettyPrint } from "@/ast/ast-printer";
+import { writeCellParser } from "@/generator/writers/writeSerialization";
 
 type ContractReceivers = {
     readonly internal: Receivers;
@@ -188,26 +189,29 @@ function writeBinaryReceiver(
             binaryReceiver.ast.loc,
         );
 
-    const allocation = getType(wCtx.ctx, selector.type);
-    if (!allocation.header) {
+    const type = getType(wCtx.ctx, selector.type);
+    if (!type.header) {
         throwInternalCompilerError(
             `Invalid allocation: ${selector.type}`,
             binaryReceiver.ast.loc,
         );
     }
     wCtx.append(`;; Receive ${selector.type} message`);
-    wCtx.inBlock(`if (op == ${messageOpcode(allocation.header)})`, () => {
+    wCtx.inBlock(`if (op == ${messageOpcode(type.header)})`, () => {
         if (!msgOpcodeRemoved) {
             wCtx.append("in_msg~skip_bits(32);");
         }
-        const msgFields = resolveFuncTypeUnpack(
-            selector.type,
-            funcIdOf(selector.name),
-            wCtx,
-        );
-        wCtx.append(
-            `var ${msgFields} = in_msg~${ops.reader(selector.type, "no-opcode", wCtx)}();`,
-        );
+
+        const name = funcIdOf(selector.name);
+
+        if (type.fields.length === 0) {
+            // special case for empty messages
+            wCtx.append(`var ${name} = empty_tuple();`);
+        } else {
+            // write cell parser in place for much better performance
+            const allocation = getAllocation(wCtx.ctx, type.name);
+            writeCellParser(allocation.root, type, 0, wCtx, name, true);
+        }
 
         writeReceiverBody(binaryReceiver, contract, wCtx);
     });

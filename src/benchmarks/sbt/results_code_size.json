@@ -47,6 +47,14 @@
         "item cells": "17",
         "item bits": "9865"
       }
+    },
+    {
+      "label": "1.6.7 with inlined message loading",
+      "pr": null,
+      "size": {
+        "item cells": "17",
+        "item bits": "9793"
+      }
     }
   ]
 }

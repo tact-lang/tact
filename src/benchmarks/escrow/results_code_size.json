@@ -79,6 +79,14 @@
         "cells": "20",
         "bits": "11575"
       }
+    },
+    {
+      "label": "1.6.7 with inlined message loading",
+      "pr": null,
+      "size": {
+        "cells": "20",
+        "bits": "11527"
+      }
     }
   ]
 }

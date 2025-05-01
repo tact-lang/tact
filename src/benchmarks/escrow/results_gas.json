@@ -229,6 +229,16 @@
         "approveTon": "6738",
         "cancelTon": "4639"
       }
+    },
+    {
+      "label": "1.6.7 with inlined message loading",
+      "pr": null,
+      "gas": {
+        "fundingTon": "4325",
+        "changeCode": "4398",
+        "approveTon": "6738",
+        "cancelTon": "4639"
+      }
     }
   ]
 }

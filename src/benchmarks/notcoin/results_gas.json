@@ -62,6 +62,15 @@
         "burn": "11919",
         "discovery": "5870"
       }
+    },
+    {
+      "label": "1.6.7 with inlined message loading",
+      "pr": null,
+      "gas": {
+        "transfer": "15603",
+        "burn": "11829",
+        "discovery": "5852"
+      }
     }
   ]
 }
