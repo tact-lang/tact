@@ -122,7 +122,7 @@
     },
     {
       "label": "1.6.7 with inlined message loading",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2993",
       "gas": {
         "externalTransfer": "4969",
         "addExtension": "5632",
