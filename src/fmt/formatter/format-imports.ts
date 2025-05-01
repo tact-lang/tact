@@ -6,7 +6,7 @@ import {
 } from "@/fmt/cst/cst-helpers";
 import { formatExpression } from "@/fmt/formatter/format-expressions";
 import { formatDocComments } from "@/fmt/formatter/format-doc-comments";
-import { formatTrailingComments } from "@/fmt/formatter/format-comments";
+import {formatComment, formatTrailingComments} from "@/fmt/formatter/format-comments";
 import type { FormatRule } from "@/fmt/formatter/formatter";
 
 export const formatImports: FormatRule = (code, importsNode) => {
@@ -21,6 +21,11 @@ export const formatImports: FormatRule = (code, importsNode) => {
         if (needNewLine) {
             code.newLine();
             needNewLine = false;
+        }
+
+        if (item.type === "Comment") {
+            formatComment(code, item);
+            code.newLine();
         }
 
         if (item.type === "Import") {

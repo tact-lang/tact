@@ -12,6 +12,15 @@ describe("top level declarations comments formatting", () => {
     );
 
     it(
+        "comments after lonely import",
+        intact(`
+            import "./filename.tact";
+            // text1
+            // text2
+        `),
+    );
+
+    it(
         "comments in primitive type declarations",
         intact(`
         // before primitive

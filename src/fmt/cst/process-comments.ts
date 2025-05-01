@@ -1,4 +1,4 @@
-import type { Cst, CstLeaf, CstNode } from "@/fmt/cst/cst-parser";
+import type {Cst, CstLeaf, CstNode} from "@/fmt/cst/cst-parser";
 import {
     childByField,
     childByType,
@@ -322,6 +322,39 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
         };
     }
 
+    if (node.type === "Module") {
+        const imports = childByField(node, "imports");
+        const items = childByField(node, "items");
+
+        const children: Cst[] = []
+
+        if (imports) {
+            const newImports = processDocComments(imports, pendingComments);
+            children.push(newImports);
+
+            if (newImports.$ === "node") {
+                const lastImport = newImports.children.findLast(it => it.$ === "node" && it.type === "Import")
+                if (lastImport?.$ === "node") {
+                }
+            }
+
+            if (pendingComments.length > 0) {
+                children.push(...pendingComments);
+                pendingComments = [];
+            }
+        }
+
+        if (items) {
+            const newItems = processDocComments(items, pendingComments);
+            children.push(newItems);
+        }
+
+        return {
+            ...node,
+            children,
+        }
+    }
+
     // items: Contract
     //   "contract"
     //   " "
@@ -565,7 +598,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                 continue;
             }
 
-            const { comments, startIndex, floatingComments } = res;
+            const {comments, startIndex, floatingComments} = res;
 
             const owner = createMutableCstNode(commentOwner[0]);
             owner.children = owner.children.slice(0, startIndex);
@@ -642,8 +675,8 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                             owner.children = owner.children.slice(
                                 0,
                                 owner.children.length -
-                                    1 -
-                                    res.inlineComments.length,
+                                1 -
+                                res.inlineComments.length,
                             );
                         }
 
@@ -793,8 +826,8 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
                             owner.children = owner.children.slice(
                                 0,
                                 owner.children.length -
-                                    1 -
-                                    res.inlineComments.length,
+                                1 -
+                                res.inlineComments.length,
                             );
                         }
 
