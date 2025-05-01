@@ -129,6 +129,16 @@
         "deploy nft": "10683",
         "batch deploy nft": "663906"
       }
+    },
+    {
+      "label": "1.6.7 with inlined message loading",
+      "pr": null,
+      "gas": {
+        "transfer": "7189",
+        "get static data": "4679",
+        "deploy nft": "10649",
+        "batch deploy nft": "663898"
+      }
     }
   ]
 }

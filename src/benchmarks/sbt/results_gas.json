@@ -90,6 +90,19 @@
         "revoke": "3940",
         "take excess": "5689"
       }
+    },
+    {
+      "label": "1.6.7 with inlined message loading",
+      "pr": null,
+      "gas": {
+        "deploy": "4216",
+        "request owner": "5004",
+        "prove ownership": "5174",
+        "get static data": "4834",
+        "destroy": "6307",
+        "revoke": "3940",
+        "take excess": "5671"
+      }
     }
   ]
 }
