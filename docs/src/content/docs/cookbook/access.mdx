@@ -18,7 +18,7 @@ message FooBarMsg {
 // Ownable trait can limit certain actions to the owner only
 contract SenderChecker with Ownable {
     // Persistent state variables
-    owner: Address;     // Ownable trait requires you to add this exact state variable
+    owner: Address; // Ownable trait requires you to add this exact state variable
     val: Int as uint32; // some value
 
     init() {
