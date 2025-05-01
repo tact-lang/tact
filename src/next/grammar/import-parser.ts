@@ -52,7 +52,7 @@ export type ImportErrors<M, R> = ReturnType<typeof ImportErrors<M, R>>;
 export function parseImportString(
     importText: string,
     range: Range,
-    err: ImportErrors<string, void>
+    err: ImportErrors<string, void>,
 ): Ast.ImportPath {
     if (importText.endsWith("/")) {
         err.noFolderImports()(range);
@@ -78,10 +78,7 @@ export function parseImportString(
             type: "stdlib",
             language,
         };
-    } else if (
-        guessedPath.startsWith("./") ||
-        guessedPath.startsWith("../")
-    ) {
+    } else if (guessedPath.startsWith("./") || guessedPath.startsWith("../")) {
         return {
             path: fromString(guessedPath),
             type: "relative",

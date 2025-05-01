@@ -148,3 +148,16 @@ export const entries = Object.entries as <O>(
 ) => { [K in keyof O]: [K, O[K]] }[keyof O][];
 
 export const keys = Object.keys as <O>(o: O) => (keyof O)[];
+
+export const memo = <A, B>(f: (a: A) => B) => {
+    const cache: Map<A, B> = new Map();
+    return (a: A): B => {
+        const mem = cache.get(a);
+        if (typeof mem !== 'undefined') {
+            return mem;
+        }
+        const b = f(a);
+        cache.set(a, b);
+        return b;
+    };
+};

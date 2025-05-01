@@ -888,81 +888,60 @@ const parseStatements =
         return map(nodes, parseStatement)(ctx);
     };
 
-const parseFunctionAttribute =
-    (node: $ast.FunctionAttribute): Handler<Ast.FunctionAttribute> =>
+const parseGetAttribute =
+    (
+        nodes: readonly $ast.FunctionAttribute[],
+    ): Handler<undefined | Ast.GetAttribute> =>
     (ctx) => {
-        if (typeof node.name === "string") {
-            return Ast.FunctionAttributeRest(node.name, toRange(node.loc));
+        const attrs: $ast.GetAttribute[] = [];
+        for (const node of nodes) {
+            if (typeof node.name === "object") {
+                attrs.push(node.name);
+            }
         }
-
-        return Ast.FunctionAttributeGet(
-            node.name.methodId
-                ? parseExpression(node.name.methodId)(ctx)
-                : undefined,
-            toRange(node.loc),
+        const [head, ...tail] = attrs;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!head) {
+            return undefined;
+        }
+        for (const attr of tail) {
+            ctx.err.function.duplicate("get")(toRange(attr.loc));
+        }
+        return Ast.GetAttribute(
+            head.methodId ? parseExpression(head.methodId)(ctx) : undefined,
+            toRange(head.loc),
         );
     };
 
-const checkAttributes =
-    (kind: "constant" | "function") =>
+type NamedAttr =
+    | "mutates"
+    | "extends"
+    | "virtual"
+    | "override"
+    | "inline"
+    | "abstract";
+
+const parseNamedAttr =
+    <K extends NamedAttr>(key: K) =>
     (
-        ctx: Context,
-        isAbstract: boolean,
-        attributes: readonly (
-            | $ast.FunctionAttribute
-            | $ast.ConstantAttribute
-        )[],
-        loc: $.Loc,
-    ) => {
-        const { duplicate, tooAbstract, notAbstract } = ctx.err[kind];
-        const k: Set<string> = new Set();
-        for (const { name, loc } of attributes) {
-            const type = typeof name === "string" ? name : name.$;
-            if (k.has(type)) {
-                duplicate(type)(toRange(loc));
+        nodes: readonly ($ast.FunctionAttribute | $ast.ConstantAttribute)[],
+    ): Handler<undefined | Range> =>
+    (ctx) => {
+        const attrs: Range[] = [];
+        for (const node of nodes) {
+            if (typeof node.name === "string" && node.name === key) {
+                attrs.push(toRange(node.loc));
             }
-            k.add(type);
         }
-        if (isAbstract && !k.has("abstract")) {
-            notAbstract()(toRange(loc));
-        }
-        if (!isAbstract && k.has("abstract")) {
-            tooAbstract()(toRange(loc));
-        }
-    };
-
-const parseFunctionAttributes =
-    (
-        nodes: readonly $ast.FunctionAttribute[],
-        isAbstract: boolean,
-        loc: $.Loc,
-    ): Handler<Ast.FunctionAttribute[]> =>
-    (ctx) => {
-        checkAttributes("function")(ctx, isAbstract, nodes, loc);
-        return map(nodes, parseFunctionAttribute)(ctx);
-    };
-
-const parseConstantAttribute =
-    ({ name, loc }: $ast.ConstantAttribute): Handler<Ast.ConstantAttribute> =>
-    (_ctx) => {
-        return Ast.ConstantAttribute(name, toRange(loc));
-    };
-
-const parseConstantAttributes =
-    (
-        nodes: readonly $ast.ConstantAttribute[],
-        isAbstract: boolean,
-        loc: $.Loc,
-        noAttributes: boolean,
-    ): Handler<Ast.ConstantAttribute[]> =>
-    (ctx) => {
-        const [head] = nodes;
+        const [head, ...tail] = attrs;
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (noAttributes && head) {
-            ctx.err.topLevelConstantWithAttribute()(toRange(head.loc));
+        if (!head) {
+            return undefined;
         }
-        checkAttributes("constant")(ctx, isAbstract, nodes, loc);
-        return map(nodes, parseConstantAttribute)(ctx);
+        for (const range of tail) {
+            ctx.err.function.duplicate(key)(range);
+        }
+        return head;
     };
 
 const parseParameter =
@@ -1408,110 +1387,102 @@ const parseAsmShuffle =
         };
     };
 
-const parseUnsupportedAsmFunction =
-    (node: $ast.AsmFunction): Handler<Ast.AsmFunctionDef> =>
+const parseAsmFunctionRaw =
+    (node: $ast.AsmFunction): Handler<Ast.Function> =>
     (ctx) => {
-        ctx.err.unsupportedAsmFunctionInContracts()(toRange(node.loc));
-        return parseAsmFunction(node)(ctx);
-    };
-
-const parseAsmFunction =
-    (node: $ast.AsmFunction): Handler<Ast.AsmFunctionDef> =>
-    (ctx) => {
-        return Ast.AsmFunctionDef(
-            parseAsmShuffle(node.shuffle)(ctx),
-            parseFunctionAttributes(node.attributes, false, node.loc)(ctx),
+        return Ast.Function(
+            !!parseNamedAttr("inline")(node.attributes)(ctx),
             parseId(node.name)(ctx),
             map(parseList(node.typeParams), parseTypeId)(ctx),
             node.returnType ? parseType(node.returnType)(ctx) : undefined,
             map(parseList(node.parameters), parseParameter)(ctx),
-            [node.instructions.trim()],
+            Ast.AsmBody(parseAsmShuffle(node.shuffle)(ctx), [
+                node.instructions.trim(),
+            ]),
             toRange(node.loc),
         );
     };
 
-const parseContractInit =
-    ({ parameters, body, loc }: $ast.ContractInit): Handler<Ast.ContractInit> =>
-    (ctx) => {
-        return Ast.ContractInit(
-            map(parseList(parameters), parseParameter)(ctx),
-            map(body, parseStatement)(ctx),
-            toRange(loc),
-        );
-    };
+const checkNoGlobalAttrs = (
+    attrs: readonly ($ast.FunctionAttribute | $ast.ConstantAttribute)[],
+    range: Range,
+): Handler<void> => ctx => {
+    const isVirtual = parseNamedAttr("virtual")(attrs)(ctx);
+    const isOverride = parseNamedAttr("override")(attrs)(ctx);
+    const isAbstract = parseNamedAttr("abstract")(attrs)(ctx);
+    if (isVirtual || isOverride || isAbstract) {
+        ctx.err.globalWithAttr()(range);
+    }
+};
 
-const parseConstantDefInModule =
-    (node: $ast.Constant): Handler<Ast.ConstantDef> =>
-    (ctx) => {
-        return parseConstantDef(node, true)(ctx);
-    };
-
-const parseConstantDef =
-    (node: $ast.Constant, noAttributes: boolean): Handler<Ast.ConstantDef> =>
-    (ctx) => {
-        const result = parseConstant(node, noAttributes)(ctx);
-
-        if (result.kind !== "constant_def") {
-            ctx.err.noConstantDecl()(toRange(node.loc));
-            return {
-                ...result,
-                kind: "constant_def",
-                initializer: Ast.Number("10", 0n, toRange(node.loc)),
-            };
+const parseInheritance = (
+    hasBody: boolean,
+    attrs: readonly ($ast.FunctionAttribute | $ast.ConstantAttribute)[],
+    range: Range,
+): Handler<{ override: boolean, virtual: boolean }> => ctx => {
+    const isVirtual = parseNamedAttr("virtual")(attrs)(ctx);
+    const isOverride = parseNamedAttr("override")(attrs)(ctx);
+    const isAbstract = parseNamedAttr("abstract")(attrs)(ctx);
+    if (isAbstract) {
+        if (isVirtual) {
+            ctx.err.abstractVirtual()(isVirtual);
         }
-
-        return result;
+        if (isOverride) {
+            ctx.err.abstractOverride()(isOverride);
+        }
+        if (hasBody) {
+            ctx.err.abstractWithBody()(isAbstract);
+        }
+    } else {
+        if (!hasBody) {
+            ctx.err.noBodyNoAbstract()(range);
+        }
+    }
+    return {
+        override: !!isOverride,
+        virtual: !!isVirtual,
     };
-
-const parseConstantDefLocal = (node: $ast.Constant) =>
-    parseConstantDef(node, false);
+};
 
 const parseConstant =
-    (
-        node: $ast.Constant,
-        noAttributes: boolean,
-    ): Handler<Ast.ConstantDecl | Ast.ConstantDef> =>
+    (node: $ast.Constant): Handler<Ast.Constant> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
-        const type = node.type ? parseType(node.type)(ctx) : undefined;
-
-        if (node.body.$ === "ConstantDeclaration") {
-            const attributes = parseConstantAttributes(
-                node.attributes,
-                true,
-                node.loc,
-                noAttributes,
-            )(ctx);
-            const range = toRange(node.loc);
-            if (!type) {
-                ctx.err.constDeclNoType()(range);
-                return Ast.ConstantDecl(
-                    attributes,
-                    name,
-                    Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
-                    range,
+        const range = toRange(node.loc);
+        const type = (() => {
+            if (node.body.$ === "ConstantDefinition") {
+                return Ast.ConstantDef(
+                    node.type ? parseType(node.type)(ctx) : undefined,
+                    parseExpression(node.body.expression)(ctx)
                 );
+            } else if (node.type) {
+                return Ast.ConstantDecl(parseType(node.type)(ctx));
+            } else {
+                ctx.err.constDeclNoType()(range);
+                return Ast.ConstantDecl(Ast.TypeCons(Ast.TypeId("ERROR", range), [], range));
             }
-            return Ast.ConstantDecl(attributes, name, type, range);
-        } else {
-            const attributes = parseConstantAttributes(
-                node.attributes,
-                false,
-                node.loc,
-                noAttributes,
-            )(ctx);
-            const initializer = parseExpression(node.body.expression)(ctx);
-            return Ast.ConstantDef(
-                attributes,
-                name,
-                type,
-                initializer,
-                toRange(node.loc),
-            );
-        }
+        })();
+        return Ast.Constant(name, type, range);
     };
 
-const parseConstantLocal = (node: $ast.Constant) => parseConstant(node, false);
+const parseConstantGlobal =
+    (node: $ast.Constant): Handler<Ast.Constant> =>
+    (ctx) => {
+        checkNoGlobalAttrs(node.attributes, toRange(node.loc))(ctx);
+        return parseConstant(node)(ctx);
+    };
+
+const parseFieldConstant =
+    (node: $ast.Constant): Handler<Ast.FieldConstant> =>
+    (ctx) => {
+        const body = parseConstant(node)(ctx);
+        const inh = parseInheritance(
+            body.init.kind === 'constant_def',
+            node.attributes,
+            toRange(node.loc),
+        )(ctx);
+        return Ast.FieldConstant(inh.virtual, inh.override, body);
+    };
 
 const parseContract =
     ({
@@ -1535,35 +1506,51 @@ const parseContract =
             },
         );
 
+        const initFns: $ast.ContractInit[] = [];
+        const locals: $ast.traitItemDecl[] = [];
+        for (const decl of declarations) {
+            if (decl.$ === 'ContractInit') {
+                initFns.push(decl);
+            } else {
+                locals.push(decl);
+            }
+        }
+        const [initFn, ...restInitFns] = initFns;
+        for (const fn of restInitFns) {
+            ctx.err.tooMuchInit()(toRange(fn.loc));
+        }
+
+        const init = (() => {
+            if (typeof parameters !== "undefined") {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                if (initFn) {
+                    ctx.err.initFnAndParams()(toRange(initFn.loc));
+                }
+                return Ast.InitParams(params);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            } else if (initFn) {
+                return Ast.InitFunction(
+                    map(parseList(initFn.parameters), parseParameter)(ctx),
+                    map(initFn.body, parseStatement)(ctx),
+                    toRange(loc),
+                );
+            } else {
+                return undefined;
+            }
+        })();
+
         return Ast.Contract(
             parseTypeId(name)(ctx),
             map(parseList(traits), parseTypeId)(ctx),
             map(attributes, parseContractAttribute)(ctx),
-            typeof parameters !== "undefined" ? params : undefined,
-            map(declarations, parseContractItem)(ctx),
+            init,
+            map(locals, parseLocalItem)(ctx),
             toRange(loc),
         );
     };
 
-const parseFunctionDef =
-    (node: $ast.$Function): Handler<Ast.FunctionDef> =>
-    (ctx) => {
-        const result = parseFunction(node)(ctx);
-
-        if (result.kind !== "function_def") {
-            ctx.err.noFunctionDecl()(toRange(node.loc));
-            return {
-                ...parseFunction(node)(ctx),
-                kind: "function_def",
-                statements: [],
-            };
-        }
-
-        return result;
-    };
-
-const parseFunction =
-    (node: $ast.$Function): Handler<Ast.FunctionDef | Ast.FunctionDecl> =>
+const parseFunctionRaw =
+    (node: $ast.$Function): Handler<Ast.Function> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
         const returnType = node.returnType
@@ -1573,36 +1560,102 @@ const parseFunction =
         const parameters = map(parseList(node.parameters), parseParameter)(ctx);
 
         if (node.body.$ === "FunctionDeclaration") {
-            const attributes = parseFunctionAttributes(
-                node.attributes,
-                true,
-                node.loc,
-            )(ctx);
-            return Ast.FunctionDecl(
-                attributes,
+            const inline = !!parseNamedAttr("inline")(node.attributes)(ctx);
+            return Ast.Function(
+                inline,
                 name,
                 typeParams,
                 returnType,
                 parameters,
+                Ast.AbstractBody(),
                 toRange(node.loc),
             );
         } else {
-            const attributes = parseFunctionAttributes(
-                node.attributes,
-                false,
-                node.loc,
-            )(ctx);
+            const inline = !!parseNamedAttr("inline")(node.attributes)(ctx);
             const statements = map(node.body.body, parseStatement)(ctx);
-            return Ast.FunctionDef(
-                attributes,
+            return Ast.Function(
+                inline,
                 name,
                 typeParams,
                 returnType,
                 parameters,
-                statements,
+                Ast.RegularBody(statements),
                 toRange(node.loc),
             );
         }
+    };
+
+const parseExtension =
+    <T extends $ast.$Function | $ast.AsmFunction | $ast.NativeFunctionDecl>(
+        parseFunction: (node: T) => Handler<Ast.Function>,
+    ) =>
+    (node: T): Handler<Ast.Function | Ast.Extension> =>
+    (ctx) => {
+        const fn = parseFunction(node)(ctx);
+        const get = parseGetAttribute(node.attributes)(ctx);
+        if (get) {
+            ctx.err.globalGetter()(get.loc);
+        }
+        checkNoGlobalAttrs(node.attributes, toRange(node.loc))(ctx);
+        const isMutates = parseNamedAttr("mutates")(node.attributes)(ctx);
+        const isExtends = parseNamedAttr("extends")(node.attributes)(ctx);
+        if (!isExtends) {
+            if (isMutates) {
+                ctx.err.mutatesWithoutExtends()(isMutates);
+            }
+            return fn;
+        }
+        const [first, ...rest] = fn.params;
+        const selfType = (() => {
+            if (
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                !first ||
+                first.name.kind !== "id" ||
+                first.name.text !== "self"
+            ) {
+                const range = toRange(node.loc);
+                ctx.err.extendsSelf()(range);
+                return Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+            }
+            return first.type;
+        })();
+        return Ast.Extension(
+            Ast.Method(
+                !!isMutates,
+                false,
+                false,
+                undefined,
+                { ...fn, params: rest }
+            ),
+            selfType,
+        );
+    };
+
+const parseMethod =
+    <T extends $ast.$Function | $ast.AsmFunction>(
+        parseFunction: (node: T) => Handler<Ast.Function>,
+    ) =>
+    (node: T): Handler<Ast.Method> =>
+    (ctx) => {
+        const fn = parseFunction(node)(ctx);
+        const get = parseGetAttribute(node.attributes)(ctx);
+        const inh = parseInheritance(
+            fn.body.kind !== 'abstract_body',
+            node.attributes,
+            toRange(node.loc),
+        )(ctx);
+        const isMutates = parseNamedAttr("mutates")(node.attributes)(ctx);
+        const isExtends = parseNamedAttr("extends")(node.attributes)(ctx);
+        if (isExtends) {
+            ctx.err.localExtends()(toRange(node.loc));
+        }
+        return Ast.Method(
+            !!isMutates,
+            inh.virtual,
+            inh.override,
+            get,
+            fn,
+        );
     };
 
 const parseMessageDecl =
@@ -1630,26 +1683,27 @@ const parseNativeFunctionDecl =
         parameters,
         returnType,
         loc,
-    }: $ast.NativeFunctionDecl): Handler<Ast.NativeFunctionDecl> =>
+    }: $ast.NativeFunctionDecl): Handler<Ast.Function> =>
     (ctx) => {
-        return Ast.NativeFunctionDecl(
-            map(attributes, parseFunctionAttribute)(ctx),
+        return Ast.Function(
+            !!parseNamedAttr("inline")(attributes)(ctx),
             parseId(name)(ctx),
             map(parseList(typeParams), parseTypeId)(ctx),
-            parseFuncId(nativeName)(ctx),
-            map(parseList(parameters), parseParameter)(ctx),
             returnType ? parseType(returnType)(ctx) : undefined,
+            map(parseList(parameters), parseParameter)(ctx),
+            Ast.NativeBody(parseFuncId(nativeName)(ctx)),
             toRange(loc),
         );
     };
 
 const parseAlias =
-    ({ name, typeParams, type }: $ast.AliasDecl): Handler<Ast.AliasDecl> =>
+    ({ name, typeParams, type, loc }: $ast.AliasDecl): Handler<Ast.AliasDecl> =>
     (ctx) => {
         return Ast.AliasDecl(
             parseTypeId(name)(ctx),
             map(parseList(typeParams), parseTypeId)(ctx),
             parseType(type)(ctx),
+            toRange(loc),
         );
     };
 
@@ -1716,39 +1770,28 @@ const parseTrait =
             parseTypeId(name)(ctx),
             traits ? map(parseList(traits), parseTypeId)(ctx) : [],
             map(attributes, parseContractAttribute)(ctx),
-            map(declarations, parseTraitItem)(ctx),
+            map(declarations, parseLocalItem)(ctx),
             toRange(loc),
         );
     };
-
-const parseContractItem: (
-    input: $ast.contractItemDecl,
-) => Handler<Ast.ContractItem> = makeVisitor<$ast.contractItemDecl>()({
-    ContractInit: parseContractInit,
+const parseLocalItem: (
+    input: $ast.traitItemDecl,
+) => Handler<Ast.LocalItem> = makeVisitor<$ast.traitItemDecl>()({
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
-    Function: parseFunctionDef,
-    AsmFunction: parseUnsupportedAsmFunction,
-    Constant: parseConstantDefLocal,
+    Function: parseMethod(parseFunctionRaw),
+    AsmFunction: parseMethod(parseAsmFunctionRaw),
+    Constant: parseFieldConstant,
 });
-
-const parseTraitItem: (input: $ast.traitItemDecl) => Handler<Ast.TraitItem> =
-    makeVisitor<$ast.traitItemDecl>()({
-        FieldDecl: parseFieldDecl,
-        Receiver: parseReceiver,
-        Function: parseFunction,
-        AsmFunction: parseUnsupportedAsmFunction,
-        Constant: parseConstantLocal,
-    });
 
 type ModuleItemAux = Exclude<$ast.moduleItem, $ast.PrimitiveTypeDecl>;
 
 const parseModuleItemAux: (input: ModuleItemAux) => Handler<Ast.ModuleItem> =
     makeVisitor<ModuleItemAux>()({
-        Function: parseFunctionDef,
-        AsmFunction: parseAsmFunction,
-        NativeFunctionDecl: parseNativeFunctionDecl,
-        Constant: parseConstantDefInModule,
+        Function: parseExtension(parseFunctionRaw),
+        AsmFunction: parseExtension(parseAsmFunctionRaw),
+        NativeFunctionDecl: parseExtension(parseNativeFunctionDecl),
+        Constant: parseConstantGlobal,
         StructDecl: parseStructDecl,
         MessageDecl: parseMessageDecl,
         Contract: parseContract,
@@ -1786,12 +1829,6 @@ const parseModule =
             map(items, parseModuleItem)(ctx).flat(),
         );
     };
-
-// const parseJustImports =
-//     ({ imports }: $ast.JustImports): Handler<Ast.Import[]> =>
-//     (ctx) => {
-//         return map(imports, parseImport)(ctx);
-//     };
 
 export const parse = (
     log: SourceLogger<string, void>,

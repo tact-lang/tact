@@ -1,3 +1,11 @@
+export const mapValues = <K, A, B>(map: Map<K, A>, f: (a: A) => B): Map<K, B> => {
+    const result: [K, B][] = [];
+    for (const [k, a] of map) {
+        result.push([k, f(a)]);
+    }
+    return new Map(result);
+};
+
 export const zip = <T, U>(arr1: T[], arr2: U[]): [T, U][] => {
     const length = Math.min(arr1.length, arr2.length);
     return arr1.slice(0, length).flatMap((item1, index) => {

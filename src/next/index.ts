@@ -2,10 +2,13 @@ import path from "path";
 import { TerminalLogger } from "@/cli/logger";
 import { getAnsiMarkup, isColorSupported } from "@/cli/colors";
 import { ProjectReader } from "@/next/imports/reader";
-import { fromString } from "@/imports/path";
-import { inspect } from 'util';
-// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-const dump = (obj: unknown) => console.log(inspect(obj, { colors: false, depth: Infinity }));
+import { inspect } from "util";
+import { scope } from "@/next/scoping/tc2";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const dump = (obj: unknown) =>
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+    console.log(inspect(obj, { colors: false, depth: Infinity }));
 
 const main = async () => {
     const ansi = getAnsiMarkup(isColorSupported());
@@ -15,17 +18,16 @@ const main = async () => {
             const reader = await ProjectReader(log);
             if (!reader) return;
             const result = await reader.read(
-                path.join(__dirname, "example"), 
+                path.join(__dirname, "example"),
                 // TODO: parseImportString(root, ImportErrors(log)) when there are CLI/config loggers
-                {
-                    language: 'tact',
-                    type: 'relative',
-                    path: fromString("mutual1.tact"),
-                },
+                "scope2-a.tact",
             );
-            if (result) {
-                dump(result.sources.length);
+            if (!result) {
+                return;
             }
+            // dump(result.sources.length);
+            // dump(result);
+            scope(log, result);
         });
     });
 };

@@ -212,6 +212,78 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     setArgCount: () => (loc: Range) => {
         return l.at(loc).error(l.text`set<V> takes exactly one type argument`);
     },
+    abstractVirtual: () => (loc: Range) => {
+        return l.at(loc).error(l.text`"abstract" and "virtual" attributes cannot be used at the same time`);
+    },
+    abstractOverride: () => (loc: Range) => {
+        return l.at(loc).error(l.text`"abstract" and "override" attributes cannot be used at the same time`);
+    },
+    globalGetter: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(l.text`"Getters must be defined within a contract"`);
+    },
+    mutatesWithoutExtends: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(l.text`Mutating functions must be extend functions`);
+    },
+    extendsSelf: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(
+                l.text`Extend function must have first parameter named "self"`,
+            );
+    },
+    globalWithAttr: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(
+                l.text`Globally defined functions cannot have "abstract", "virtual", or "override" attributes`,
+            );
+    },
+    globalConstWithAttr: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(
+                l.text`Globally defined constants cannot have "abstract", "virtual", or "override" attributes`,
+            );
+    },
+    localExtends: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(
+                l.text`Only globally defined function can be an extension method`,
+            );
+    },
+    tooMuchInit: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(
+                l.text`Init function was already defined`,
+            );
+    },
+    initFnAndParams: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(
+                l.text`Cannot define init() on a contract that has contract parameters`,
+            );
+    },
+    abstractWithBody: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(
+                l.text`Abstract declaration cannot have a body`,
+            );
+    },
+    noBodyNoAbstract: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(
+                l.text`Declaration without a body must be abstract`,
+            );
+    },
 });
 
 export type SyntaxErrors<M, R> = ReturnType<typeof SyntaxErrors<M, R>>;
