@@ -388,10 +388,7 @@ export type CustomStdlib = {
     stdlib_ex_fc: string;
 };
 
-// If flag useCustomStdlib is false, it will parse the entire stdlib. Otherwise,
-// it will use the provided data in CustomStdlib.
-export async function buildModule(
-    astF: FactoryAst,
+async function buildModuleNonNative(
     module: Ast.Module,
     customStdlib: CustomStdlib,
     blockchain: Blockchain,
@@ -556,6 +553,170 @@ export async function buildModule(
     return contractsToTest;
 }
 
+async function buildModuleNative(
+    module: Ast.Module,
+    customStdlib: CustomStdlib,
+    blockchain: Blockchain,
+): Promise<Map<string, SandboxContract<ProxyContract>>> {
+    // We need an entrypoint for precompile, even if it is empty
+    const fileSystem = {
+        [`contracts/empty.tact`]: "",
+    };
+    const minimalStdlib = {
+        // Needed by precompile, but we set its contents to be empty
+        ["std/stdlib.tact"]: "",
+        // These two func files are needed during tvm compilation
+        ["stdlib_ex.fc"]: customStdlib.stdlib_ex_fc,
+        ["stdlib.fc"]: customStdlib.stdlib_fc,
+    };
+
+    const project = createVirtualFileSystem("/", fileSystem, false);
+    const stdlib = createVirtualFileSystem("@stdlib", minimalStdlib);
+
+    const config = {
+        name: "test",
+        path: "contracts/empty.tact",
+        output: ".",
+        options: {
+            debug: true,
+            external: true,
+            ipfsAbiGetter: false,
+            interfacesGetter: false,
+            safety: {
+                nullChecks: true,
+            },
+        },
+    };
+
+    const contractsToTest: Map<
+        string,
+        SandboxContract<ProxyContract>
+    > = new Map();
+
+    const logger = new Logger();
+
+    let ctx = new CompilerContext();
+    ctx = enableFeatures(ctx, logger, config);
+
+    ctx = precompile(ctx, project, stdlib, config.path, [
+        module,
+        ...customStdlib.modules,
+    ]);
+
+    const built: Record<
+        string,
+        | {
+              codeBoc: Buffer;
+              abi: string;
+          }
+        | undefined
+    > = {};
+
+    const compilerInfo: string = JSON.stringify({
+        entrypoint: posixNormalize(config.path),
+        options: config.options,
+    });
+
+    const bCtx: BuildContext = {
+        config,
+        logger,
+        project,
+        stdlib,
+        compilerInfo,
+        ctx,
+        built: {},
+        errorMessages: [],
+    };
+
+    const allContracts = getAllTypes(ctx).filter((v) => v.kind === "contract");
+
+    // Sort contracts in topological order
+    // If a cycle is found, return undefined
+    const sortedContracts = topSortContracts(allContracts);
+    if (sortedContracts !== undefined) {
+        ctx = featureEnable(ctx, "optimizedChildCode");
+    }
+    for (const contract of sortedContracts ?? allContracts) {
+        const contractName = contract.name;
+
+        // Compiling contract to func
+        const res = await compileTact(bCtx, contractName);
+        if (!res) {
+            throw new Error(
+                "Tact compilation failed. " +
+                    bCtx.errorMessages.map((error) => error.message).join("\n"),
+            );
+        }
+        const codeEntrypoint = res.entrypointPath;
+
+        // Compiling contract to TVM
+        const stdlibPath = stdlib.resolve("stdlib.fc");
+        //const stdlibCode = stdlib.readFile(stdlibPath).toString();
+        const stdlibExPath = stdlib.resolve("stdlib_ex.fc");
+        //const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
+
+        process.env.USE_NATIVE = "true";
+        process.env.FC_STDLIB_PATH = path.join(
+            __dirname,
+            "/minimal-fc-stdlib/",
+        );
+        process.env.FUNC_FIFT_COMPILER_PATH = path.join(
+            __dirname,
+            "/minimal-fc-stdlib/funcplusfift",
+        );
+        process.env.FIFT_LIBS_PATH = path.join(
+            __dirname,
+            "/minimal-fc-stdlib/fift-lib/",
+        );
+
+        const contractFilePath = path.join(
+            __dirname,
+            "/minimal-fc-stdlib/",
+            codeEntrypoint,
+        );
+
+        fs.writeFileSync(contractFilePath, res.funcSource.content);
+
+        const c = await funcCompile({
+            entries: [stdlibPath, stdlibExPath, contractFilePath],
+            sources: [],
+            logger,
+        });
+
+        if (!c.ok) {
+            throw new Error(c.log);
+        }
+
+        // Add to built map
+        built[contractName] = {
+            codeBoc: c.output,
+            abi: "",
+        };
+
+        contractsToTest.set(
+            contractName,
+            blockchain.openContract(
+                new ProxyContract(getContractStateInit(c.output)),
+            ),
+        );
+    }
+
+    return contractsToTest;
+}
+
+export async function buildModule(
+    module: Ast.Module,
+    customStdlib: CustomStdlib,
+    blockchain: Blockchain,
+    useNativeCompiler: boolean,
+): Promise<Map<string, SandboxContract<ProxyContract>>> {
+    if (useNativeCompiler) {
+        return buildModuleNative(module, customStdlib, blockchain);
+    } else {
+        return buildModuleNonNative(module, customStdlib, blockchain);
+    }
+}
+
 function getContractStateInit(contractCode: Buffer): StateInit {
     const data = beginCell().storeUint(0, 1).endCell();
     const code = Cell.fromBoc(contractCode)[0];
@@ -590,10 +751,13 @@ export class ProxyContract implements Contract {
         return result.readBigNumber();
     }
 
-    async getBool(provider: ContractProvider, params: Ast.Expression[]) {
+    async getBool(
+        provider: ContractProvider,
+        params: [Ast.TypedParameter, Ast.Expression][],
+    ) {
         const builder = new TupleBuilder();
-        params.forEach((expr) => {
-            this.serializeExpression(expr, builder);
+        params.forEach((typedExpr) => {
+            this.serializeParameter(typedExpr, builder);
         });
         const result = (await provider.get("getBool", builder.build())).stack;
         return result.readBoolean();
@@ -614,30 +778,108 @@ export class ProxyContract implements Contract {
         return (await provider.get(getterName, params)).stack;
     }
 
-    private serializeExpression(expr: Ast.Expression, builder: TupleBuilder) {
-        switch (expr.kind) {
-            case "number": {
-                builder.writeNumber(expr.value);
+    private serializeParameter(
+        typedExpr: [Ast.TypedParameter, Ast.Expression],
+        builder: TupleBuilder,
+    ) {
+        const ty = typedExpr[0];
+        const expr = typedExpr[1];
+
+        const extractNumber = (opt: boolean) => {
+            if (expr.kind === "number") {
+                return expr.value;
+            }
+            if (opt && expr.kind === "null") {
+                return undefined;
+            }
+            throw new Error("Expecting an integer");
+        };
+
+        const extractBoolean = (opt: boolean) => {
+            if (expr.kind === "boolean") {
+                return expr.value;
+            }
+            if (opt && expr.kind === "null") {
+                return undefined;
+            }
+            throw new Error("Expecting a boolean");
+        };
+
+        const extractCell = (opt: boolean) => {
+            if (expr.kind === "cell") {
+                return expr.value;
+            }
+            if (opt && expr.kind === "null") {
+                return undefined;
+            }
+            throw new Error("Expecting a cell");
+        };
+
+        const extractSlice = (opt: boolean) => {
+            if (expr.kind === "slice") {
+                return expr.value;
+            }
+            if (opt && expr.kind === "null") {
+                return undefined;
+            }
+            throw new Error("Expecting a slice");
+        };
+
+        const extractAddress = (opt: boolean) => {
+            if (expr.kind === "address") {
+                return expr.value;
+            }
+            if (opt && expr.kind === "null") {
+                return undefined;
+            }
+            throw new Error("Expecting an address");
+        };
+
+        const extractString = (opt: boolean) => {
+            if (expr.kind === "string") {
+                return expr.value;
+            }
+            if (opt && expr.kind === "null") {
+                return undefined;
+            }
+            throw new Error("Expecting an string");
+        };
+
+        const serializeParameterHelper = (t: Ast.TypeId, opt: boolean) => {
+            if (t.text === "Int") {
+                const val = extractNumber(opt);
+                builder.writeNumber(val);
+            } else if (t.text === "Bool") {
+                const val = extractBoolean(opt);
+                builder.writeBoolean(val);
+            } else if (t.text === "Cell") {
+                const val = extractCell(opt);
+                builder.writeCell(val);
+            } else if (t.text === "Address") {
+                const val = extractAddress(opt);
+                builder.writeAddress(val);
+            } else if (t.text === "Slice") {
+                const val = extractSlice(opt);
+                builder.writeSlice(val);
+            } else if (t.text === "String") {
+                const val = extractString(opt);
+                builder.writeString(val);
+            } else {
+                throw new Error("Currently not supported");
+            }
+        };
+
+        switch (ty.type.kind) {
+            case "optional_type": {
+                const optTy = ty.type.typeArg;
+                if (optTy.kind !== "type_id") {
+                    throw new Error("Currently not supported");
+                }
+                serializeParameterHelper(optTy, true);
                 break;
             }
-            case "boolean": {
-                builder.writeBoolean(expr.value);
-                break;
-            }
-            case "cell": {
-                builder.writeCell(expr.value);
-                break;
-            }
-            case "address": {
-                builder.writeAddress(expr.value);
-                break;
-            }
-            case "slice": {
-                builder.writeSlice(expr.value);
-                break;
-            }
-            case "string": {
-                builder.writeString(expr.value);
+            case "type_id": {
+                serializeParameterHelper(ty.type, false);
                 break;
             }
             default:

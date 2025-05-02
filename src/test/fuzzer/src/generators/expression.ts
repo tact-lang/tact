@@ -196,22 +196,24 @@ export class Expression extends GenerativeEntity<Ast.Expression> {
     ): NonTerminalEnum {
         switch (type) {
             case StdlibType.Int: {
-                return optional ? NonTerminal.OptInt : NonTerminal.Int;
+                return optional ? NonTerminal.TopOptInt : NonTerminal.Int;
             }
             case StdlibType.Bool: {
-                return optional ? NonTerminal.OptBool : NonTerminal.Bool;
+                return optional ? NonTerminal.TopOptBool : NonTerminal.Bool;
             }
             case StdlibType.Cell: {
-                return optional ? NonTerminal.OptCell : NonTerminal.Cell;
+                return optional ? NonTerminal.TopOptCell : NonTerminal.Cell;
             }
             case StdlibType.Address: {
-                return optional ? NonTerminal.OptAddress : NonTerminal.Address;
+                return optional
+                    ? NonTerminal.TopOptAddress
+                    : NonTerminal.Address;
             }
             case StdlibType.Slice: {
-                return optional ? NonTerminal.OptSlice : NonTerminal.Slice;
+                return optional ? NonTerminal.TopOptSlice : NonTerminal.Slice;
             }
             case StdlibType.String: {
-                return optional ? NonTerminal.OptString : NonTerminal.String;
+                return optional ? NonTerminal.TopOptString : NonTerminal.String;
             }
             case StdlibType.Builder:
             case StdlibType.StringBuilder:

@@ -484,6 +484,96 @@ const allProductions: ExprProduction[][] = [
     //     // { id: 0, tokens: [Terminal.null] },
     //     // { id: 1, tokens: [Terminal.opt_inj, NonTerminal.LiteralString] },
     // ],
+    [
+        // Productions for TopOptInt
+        {
+            id: 0,
+            tokens: [
+                Terminal.cond,
+                NonTerminal.Bool,
+                NonTerminal.TopOptInt,
+                NonTerminal.TopOptInt,
+            ],
+        },
+        { id: 1, tokens: [Terminal.id_opt_int] },
+        { id: 2, tokens: [Terminal.null] },
+        { id: 3, tokens: [NonTerminal.Int] },
+    ],
+    [
+        // Productions for TopOptBool
+        {
+            id: 0,
+            tokens: [
+                Terminal.cond,
+                NonTerminal.Bool,
+                NonTerminal.TopOptBool,
+                NonTerminal.TopOptBool,
+            ],
+        },
+        { id: 1, tokens: [Terminal.id_opt_bool] },
+        { id: 2, tokens: [Terminal.null] },
+        { id: 3, tokens: [NonTerminal.Bool] },
+    ],
+    [
+        // Productions for TopOptCell
+        {
+            id: 0,
+            tokens: [
+                Terminal.cond,
+                NonTerminal.Bool,
+                NonTerminal.TopOptCell,
+                NonTerminal.TopOptCell,
+            ],
+        },
+        { id: 1, tokens: [Terminal.id_opt_cell] },
+        { id: 2, tokens: [Terminal.null] },
+        { id: 3, tokens: [NonTerminal.Cell] },
+    ],
+    [
+        // Productions for TopOptSlice
+        {
+            id: 0,
+            tokens: [
+                Terminal.cond,
+                NonTerminal.Bool,
+                NonTerminal.TopOptSlice,
+                NonTerminal.TopOptSlice,
+            ],
+        },
+        { id: 1, tokens: [Terminal.id_opt_slice] },
+        { id: 2, tokens: [Terminal.null] },
+        { id: 3, tokens: [NonTerminal.Slice] },
+    ],
+    [
+        // Productions for TopOptAddress
+        {
+            id: 0,
+            tokens: [
+                Terminal.cond,
+                NonTerminal.Bool,
+                NonTerminal.TopOptAddress,
+                NonTerminal.TopOptAddress,
+            ],
+        },
+        { id: 1, tokens: [Terminal.id_opt_address] },
+        { id: 2, tokens: [Terminal.null] },
+        { id: 3, tokens: [NonTerminal.Address] },
+    ],
+    [
+        // Productions for TopOptString
+        {
+            id: 0,
+            tokens: [
+                Terminal.cond,
+                NonTerminal.Bool,
+                NonTerminal.TopOptString,
+                NonTerminal.TopOptString,
+            ],
+        },
+        { id: 1, tokens: [Terminal.id_opt_string] },
+        { id: 2, tokens: [Terminal.null] },
+        { id: 3, tokens: [NonTerminal.String] },
+    ],
 ];
 
 function sum(counts: number[]): number {
@@ -1519,9 +1609,9 @@ function makeExpression(
             //     const operandNonTerminal = getNonTerminalAt(rest, 0);
             //     return genFromNonTerminal(operandNonTerminal.id, currSize);
             // }
-            // case Terminal.null.id: {
-            //     return fc.constant(makeF.makeDummyNull());
-            // }
+            case Terminal.null.id: {
+                return fc.constant(makeF.makeDummyNull());
+            }
             case Terminal.non_null_assert.id: {
                 return makeUnaryOperatorTree("!!", rest, size);
             }

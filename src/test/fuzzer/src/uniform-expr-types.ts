@@ -24,6 +24,21 @@ export const NonTerminal = {
     OptString: { terminal: false, literal: false, id: 17 },
     LiteralString: { terminal: false, literal: true, id: 18 },
     // LiteralOptString: { terminal: false, literal: true, id: 24 },
+
+    // The following non-terminals represent optionals that can only be assigned at the top-level in variable
+    // declarations, but not inside expressions where they can be dereferenced with operator !!
+    // For example:
+    // let a: Int? = null
+    // let a: Int? = 5 == 4 ? null : 10
+    //
+    // But not: (because null has an ambigous type):
+    // let a = Int = null!!
+    TopOptInt: { terminal: false, literal: false, id: 19 },
+    TopOptBool: { terminal: false, literal: false, id: 20 },
+    TopOptCell: { terminal: false, literal: false, id: 21 },
+    TopOptSlice: { terminal: false, literal: false, id: 22 },
+    TopOptAddress: { terminal: false, literal: false, id: 23 },
+    TopOptString: { terminal: false, literal: false, id: 24 },
 } as const;
 
 export type NonTerminalEnum = (typeof NonTerminal)[keyof typeof NonTerminal];
@@ -65,23 +80,23 @@ export const Terminal = {
     string: { terminal: true, id: 27 },
 
     // opt_inj: { terminal: true, id: 30 },
-    // null: { terminal: true, id: 30 },
-    non_null_assert: { terminal: true, id: 28 },
+    null: { terminal: true, id: 28 },
+    non_null_assert: { terminal: true, id: 29 },
 
-    cond: { terminal: true, id: 29 },
+    cond: { terminal: true, id: 30 },
 
-    id_int: { terminal: true, id: 30 },
-    id_opt_int: { terminal: true, id: 31 },
-    id_bool: { terminal: true, id: 32 },
-    id_opt_bool: { terminal: true, id: 33 },
-    id_cell: { terminal: true, id: 34 },
-    id_opt_cell: { terminal: true, id: 35 },
-    id_slice: { terminal: true, id: 36 },
-    id_opt_slice: { terminal: true, id: 37 },
-    id_address: { terminal: true, id: 38 },
-    id_opt_address: { terminal: true, id: 39 },
-    id_string: { terminal: true, id: 40 },
-    id_opt_string: { terminal: true, id: 41 },
+    id_int: { terminal: true, id: 31 },
+    id_opt_int: { terminal: true, id: 32 },
+    id_bool: { terminal: true, id: 33 },
+    id_opt_bool: { terminal: true, id: 34 },
+    id_cell: { terminal: true, id: 35 },
+    id_opt_cell: { terminal: true, id: 36 },
+    id_slice: { terminal: true, id: 37 },
+    id_opt_slice: { terminal: true, id: 38 },
+    id_address: { terminal: true, id: 39 },
+    id_opt_address: { terminal: true, id: 40 },
+    id_string: { terminal: true, id: 41 },
+    id_opt_string: { terminal: true, id: 42 },
 } as const;
 
 export type TerminalEnum = (typeof Terminal)[keyof typeof Terminal];

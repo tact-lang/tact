@@ -7,7 +7,6 @@ import { Scope } from "@/test/fuzzer/src/scope";
 import { StdlibType } from "@/test/fuzzer/src/types";
 import { NonTerminal, Terminal } from "@/test/fuzzer/src/uniform-expr-types";
 import type { Type } from "@/test/fuzzer/src/types";
-import type { NonTerminalEnum } from "@/test/fuzzer/src/uniform-expr-types";
 import {
     dummySrcInfoPrintable,
     checkAsyncProperty,
@@ -17,8 +16,6 @@ import {
 import fc from "fast-check";
 import {
     EdgeCaseConfig,
-    generateIntBitLength,
-    initializeGenerator,
     injectEdgeCases,
 } from "../../src/generators/uniform-expr-gen";
 import {
@@ -28,13 +25,10 @@ import {
     setupEnvironment,
 } from "./utils";
 import type { ExpressionTestingEnvironment } from "./utils";
-import { Let } from "@/test/fuzzer/src/generators/statement";
 import { FuzzContext } from "@/test/fuzzer/src/context";
-import { expect } from "expect";
 import { Parameter } from "@/test/fuzzer/src/generators/parameter";
 import { prettyPrint } from "@/ast/ast-printer";
 import { ExpressionParameters } from "@/test/fuzzer/src/generators/expression";
-import { idText } from "@/ast/ast-helpers";
 
 function emptyStatementContext(): StatementContext {
     return {
@@ -156,7 +150,7 @@ async function test() {
 
     const expressionGenerationCtx: ExpressionParameters = {
         minExpressionSize: 2,
-        maxExpressionSize: 5,
+        maxExpressionSize: 10,
         useIdentifiersInExpressions: true,
         allowedNonTerminals: [
             NonTerminal.Bool,
@@ -168,6 +162,7 @@ async function test() {
             Terminal.id_int,
             Terminal.integer,
             Terminal.shift_l,
+            Terminal.shift_r,
             Terminal.eq,
         ],
     };
@@ -216,8 +211,8 @@ async function test() {
 
             //bindings = [...bindings, dummyLet];
             for (const expr of exprs) {
-                const bla = prettyPrint(expr);
-                console.log(bla);
+                const exprStr = prettyPrint(expr);
+                console.log(exprStr);
                 const compilationResult = await compileExpression(
                     expressionTestingEnvironment,
                     bindings,
@@ -288,15 +283,15 @@ const TYPES: Type[] = [
     { kind: "stdlib", type: StdlibType.Cell },
     { kind: "stdlib", type: StdlibType.Slice },
     { kind: "stdlib", type: StdlibType.String },
-    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.Int } },
-    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.Bool } },
-    //{
-    //    kind: "optional",
-    //    type: { kind: "stdlib", type: StdlibType.Address },
-    //},
-    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.Cell } },
-    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.Slice } },
-    //{ kind: "optional", type: { kind: "stdlib", type: StdlibType.String } },
+    { kind: "optional", type: { kind: "stdlib", type: StdlibType.Int } },
+    { kind: "optional", type: { kind: "stdlib", type: StdlibType.Bool } },
+    {
+        kind: "optional",
+        type: { kind: "stdlib", type: StdlibType.Address },
+    },
+    { kind: "optional", type: { kind: "stdlib", type: StdlibType.Cell } },
+    { kind: "optional", type: { kind: "stdlib", type: StdlibType.Slice } },
+    { kind: "optional", type: { kind: "stdlib", type: StdlibType.String } },
 ];
 
 function addParameters(

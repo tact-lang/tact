@@ -18,7 +18,6 @@ import * as fs from "node:fs";
 import { FuzzContext } from "@/test/fuzzer/src/context";
 import { NonTerminal } from "@/test/fuzzer/src/uniform-expr-types";
 import { expect } from "expect";
-import { prettyPrint } from "@/ast/ast-printer";
 
 export function bindingsAndExpressionPrtinter([bindings, exprs]: [
     [Ast.TypedParameter, Ast.Expression][][],
@@ -220,10 +219,10 @@ export async function compileExpression(
 
     try {
         const contractMapPromise = buildModule(
-            astF,
             contractModule,
             customStdlib,
             blockchain,
+            true, // Use native compiler
         );
 
         const contractMap = await contractMapPromise;
@@ -232,9 +231,7 @@ export async function compileExpression(
         const result: (boolean | Error)[] = [];
         for (const args of bindings) {
             try {
-                result.push(
-                    await contract.getBool(args.map(([_, val]) => val)),
-                );
+                result.push(await contract.getBool(args));
             } catch (e: any) {
                 result.push(e);
             }
