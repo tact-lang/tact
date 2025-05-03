@@ -160,10 +160,18 @@ async function test() {
         ],
         allowedTerminals: [
             Terminal.id_int,
+            //Terminal.id_bool,
             Terminal.integer,
-            Terminal.shift_l,
+            //Terminal.bool,
+            //Terminal.shift_l,
             Terminal.shift_r,
-            Terminal.eq,
+            Terminal.mult,
+            //Terminal.eq,
+            //Terminal.neq,
+            Terminal.ge,
+            Terminal.le,
+            Terminal.gt,
+            Terminal.lt,
         ],
     };
     const exprGenerator = new Expression(
@@ -414,24 +422,20 @@ function buildErrorString(
 ): string {
     const bindingsString = bindings.map(
         (args) =>
-            `Parameters: ${args.map(([arg, value]) => astToString(arg.name) + ", " + astToString(value))}`,
-    );
-    const failingBindings = bindingsString.filter((_, i) =>
-        differingIndexes.includes(i),
+            `Parameters: ${args.map(([arg, value]) => astToString(arg.name) + ": " + astToString(value)).join(", ")}`,
     );
     const errors = differingIndexes.map((i) => {
         return (
-            `${failingBindings[i]}\n` +
+            `${bindingsString[i]}\n` +
             `Compiler: ${compilationResult[i]}\n` +
             `Interpreter: ${interpretationResult[i]}\n`
         );
     });
     const message =
-        `\nFailing parameter values:\n` +
-        failingBindings +
-        `\nGenerated expression:\n` +
+        `\n------------\n` + 
+        `Generated expression:\n` +
         FuzzContext.instance.format(expr) +
-        `\n` +
+        `\n\nFailing parameters:\n\n` +
         errors.join("\n") +
         `\n-----\n`;
     return message;
