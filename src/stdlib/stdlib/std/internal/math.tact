@@ -207,6 +207,8 @@ asm fun abs(x: Int): Int { ABS }
 /// * https://docs.tact-lang.org/ref/core-math#log
 /// * https://docs.tact-lang.org/ref/core-math#log2
 ///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
+///
 inline fun log(num: Int, base: Int): Int {
     throwUnless(5, num > 0);
     throwUnless(5, base > 1);
