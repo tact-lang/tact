@@ -75,7 +75,7 @@ export const allInFolder = async (
             return {
                 name: basename(contractPath, extname(contractPath)),
                 path: contractPath,
-                output: join(dirname(contractPath), "output"),
+                output: join(dirname(contractPath), "../output"),
                 options: contractOptions,
                 mode,
             };

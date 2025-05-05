@@ -23,7 +23,7 @@ import {
     storeRequestOwnerOut,
     storeProveOwnershipOut,
     storeExcessOut,
-} from "@/benchmarks/contracts/sbt/output/sbt-item_SBTItem";
+} from "@/benchmarks/sbt/output/item_SBTItem";
 
 import type {
     ReportStaticData,
@@ -36,7 +36,7 @@ import type {
     TakeExcess,
     RequestOwnerOut,
     ExcessOut,
-} from "@/benchmarks/contracts/sbt/output/sbt-item_SBTItem";
+} from "@/benchmarks/sbt/output/item_SBTItem";
 
 import benchmarkResults from "@/benchmarks/sbt/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/sbt/results_code_size.json";
@@ -44,7 +44,7 @@ import benchmarkCodeSizeResults from "@/benchmarks/sbt/results_code_size.json";
 const loadFunCSBTBoc = () => {
     const bocItem = readFileSync(
         posixNormalize(
-            resolve(__dirname, "../contracts/func/output/sbt-item.boc"),
+            resolve(__dirname, "./output/sbt-item.boc"),
         ),
     );
 

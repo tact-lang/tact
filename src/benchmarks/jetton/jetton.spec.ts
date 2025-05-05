@@ -28,12 +28,12 @@ import {
     type JettonUpdateContent,
     type Mint,
     type ProvideWalletAddress,
-} from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonMinter";
+} from "@/benchmarks/jetton/output/minter_JettonMinter";
 import {
     JettonWallet,
     type JettonTransfer,
     type JettonBurn,
-} from "@/benchmarks/contracts/output/jetton-minter-discoverable_JettonWallet";
+} from "@/benchmarks/jetton/output/minter_JettonWallet";
 
 import benchmarkResults from "@/benchmarks/jetton/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json";
@@ -43,14 +43,14 @@ const loadFunCJettonsBoc = () => {
         posixNormalize(
             resolve(
                 __dirname,
-                "../contracts/func/output/jetton-minter-discoverable.boc",
+                "./output/jetton-minter-discoverable.boc",
             ),
         ),
     );
 
     const bocWallet = readFileSync(
         posixNormalize(
-            resolve(__dirname, "../contracts/func/output/jetton-wallet.boc"),
+            resolve(__dirname, "./output/jetton-wallet.boc"),
         ),
     );
 

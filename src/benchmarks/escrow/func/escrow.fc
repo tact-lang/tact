@@ -1,6 +1,6 @@
-#include "../jetton/params.fc";
-#include "../jetton/jetton-utils.fc";
-#include "../jetton/op-codes.fc";
+#include "../../jetton/func/params.fc";
+#include "../../jetton/func/jetton-utils.fc";
+#include "../../jetton/func/op-codes.fc";
 
 ;; Escrow Smart Contract with TON/Jetton payments
 
@@ -23,7 +23,7 @@ seller::deploy -> buyer::send_funds -> guarantor::approve/cancel -> send funds t
 -}
 
 const op::approve = "op::approve"c;
-const op::cancel = "op::cancel"c; 
+const op::cancel = "op::cancel"c;
 const op::buyer_transfer = "op::buyer_transfer"c;
 const op::top_up = "op::top_up"c;
 const op::change_wallet_code = "op::change_wallet_code"c;
@@ -49,7 +49,7 @@ global cell jetton_wallet_code;
   storage#_ ctx_id:uint32 seller_address:MsgAddressInt guarantor_address:MsgAddressInt deal_amount:uint64 asset_address:^Cell
             guarantor_royalty_percent:uint32 buyer_address:(Maybe ^MsgAddressInt)
             state:uint2 jetton_wallet_code:(Maybe ^Cell) = Storage;
-            
+
 -}
 
 () load_data() impure {
@@ -223,7 +223,7 @@ int calculate_guarantor_royalty() inline {
 {-
   In compliance with https://github.com/ton-blockchain/TIPs/issues/74
 
-  transfer_notification#7362d09c query_id:uint64 amount:(VarUInteger 16) 
+  transfer_notification#7362d09c query_id:uint64 amount:(VarUInteger 16)
                                  sender:MsgAddress forward_payload:(Either Cell ^Cell)
                                  = InternalMsgBody;
 -}
@@ -238,7 +238,7 @@ int calculate_guarantor_royalty() inline {
         ;; verify escrow jetton wallet
         throw_unless(402,
             equal_slices_bits(
-                calculate_user_jetton_wallet_address(my_address(), asset_address, jetton_wallet_code), 
+                calculate_user_jetton_wallet_address(my_address(), asset_address, jetton_wallet_code),
                 sender_address
             )
         );

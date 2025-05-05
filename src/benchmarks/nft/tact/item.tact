@@ -1,5 +1,5 @@
 import "./constants";
-import "./messages-nft";
+import "./messages";
 
 inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, payload: Builder, sendMode: Int) {
     let msgBody = beginCell().storeUint(op, 32).storeUint(queryId, 64);

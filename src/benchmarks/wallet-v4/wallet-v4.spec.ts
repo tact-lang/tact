@@ -25,12 +25,12 @@ import { posixNormalize } from "@/utils/filePath";
 import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import type { KeyPair } from "@ton/crypto";
 import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";
-import type { PluginRequestFunds } from "@/benchmarks/contracts/output/wallet-v4_WalletV4";
+import type { PluginRequestFunds } from "@/benchmarks/wallet-v4/output/wallet-v4_WalletV4";
 import {
     storePluginRequestFunds,
     WalletV4,
     type ContractState,
-} from "@/benchmarks/contracts/output/wallet-v4_WalletV4";
+} from "@/benchmarks/wallet-v4/output/wallet-v4_WalletV4";
 import {
     bufferToBigInt,
     createSeqnoCounter,
@@ -319,7 +319,7 @@ describe("WalletV4 Gas Tests", () => {
                 posixNormalize(
                     resolve(
                         __dirname,
-                        "../contracts/func/output/wallet_v4.boc",
+                        "./output/wallet-v4.boc",
                     ),
                 ),
             );

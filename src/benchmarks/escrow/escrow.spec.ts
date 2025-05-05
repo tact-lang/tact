@@ -18,13 +18,13 @@ import { join, resolve } from "path";
 import { readFileSync } from "fs";
 import { posixNormalize } from "@/utils/filePath";
 import { type Step, writeLog } from "@/test/utils/write-vm-log";
-import { Escrow } from "@/benchmarks/contracts/output/escrow_Escrow";
+import { Escrow } from "@/benchmarks/escrow/output/escrow_Escrow";
 import type {
     UpdateJettonWalletCode,
     Funding,
     Approve,
     Cancel,
-} from "@/benchmarks/contracts/output/escrow_Escrow";
+} from "@/benchmarks/escrow/output/escrow_Escrow";
 
 import benchmarkResults from "@/benchmarks/escrow/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/escrow/results_code_size.json";
@@ -32,7 +32,7 @@ import benchmarkCodeSizeResults from "@/benchmarks/escrow/results_code_size.json
 const loadFunCEscrowBoc = () => {
     const bocEscrow = readFileSync(
         posixNormalize(
-            resolve(__dirname, "../contracts/func/output/escrow.boc"),
+            resolve(__dirname, "./output/escrow.boc"),
         ),
     );
 
