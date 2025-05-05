@@ -1,6 +1,6 @@
-#include "../../jetton/func/params.fc";
-#include "../../jetton/func/jetton-utils.fc";
-#include "../../jetton/func/op-codes.fc";
+#include "params.fc";
+#include "jetton-utils.fc";
+#include "op-codes.fc";
 
 ;; Escrow Smart Contract with TON/Jetton payments
 
