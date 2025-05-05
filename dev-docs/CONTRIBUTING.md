@@ -370,8 +370,8 @@ Benchmarks are located inside `src/benchmarks/`, one directory per benchmark:
 
 | Path / file              | Purpose                                                  |
 | ------------------------ | -------------------------------------------------------- |
-| `tact/`                  | Tact source code that is being benchmarked               |
-| `func/`                  | Equivalent FunC code that we compare against             |
+| `tact/`                  | Tact project that is being benchmarked                   |
+| `func/`                  | Equivalent FunC project that we compare against          |
 | `<benchmark>.spec.ts`    | Jest test spec that prepares and runs the benchmark      |
 | `results_gas.json`       | Aggregated gas‑consumption results, updated by the CLI   |
 | `results_code_size.json` | Contract byte‑code size history, also updated by the CLI |
