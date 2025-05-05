@@ -43,6 +43,27 @@ struct ContractState {
     extensions: map<Address, Bool>;
 }
 
+struct DeployPlugin {
+    wc: Int as uint8;
+    amount: Int as coins;
+    stateInit: Cell;
+    body: Cell;
+}
+
+struct AddPlugin {
+    wc: Int as uint8;
+    addrHash: Int as uint256;
+    amount: Int as coins;
+    queryId: Int as uint64;
+}
+
+struct RemovePluginStruct {
+    wc: Int as uint8;
+    addrHash: Int as uint256;
+    amount: Int as coins;
+    queryId: Int as uint64;
+}
+
 // Exit codes
 const LowBalance: Int = 80;
 const Expired: Int = 36;
@@ -128,6 +149,7 @@ contract WalletV4(
                 sendRawMessage(ref, mode);
             }
             */
+
             while (payload.refs() != 0) {
                 let mode = payload.loadUint(8);
                 sendRawMessage(payload.loadRef(), mode);
@@ -137,19 +159,15 @@ contract WalletV4(
 
         // deploy and add plugin
         if (msg.op == 1) {
-            let payload = msg.payload;
-            let wc = payload.loadUint(8);
-            let amount = payload.loadCoins();
-            let stateInit = payload.loadRef();
-            let body = payload.loadRef();
+            let deployPlugin = DeployPlugin.fromSlice(msg.payload);
 
-            let addr = newAddress(wc, stateInit.hash());
+            let addr = newAddress(deployPlugin.wc, deployPlugin.stateInit.hash());
             // cant use deploy here because of only basechain support
             sendRawMessage(
                 RawMsgWithDeploy {
-                    stateInit,
-                    body,
-                    amount,
+                    stateInit: deployPlugin.stateInit,
+                    body: deployPlugin.body,
+                    amount: deployPlugin.amount,
                     receiver: addr,
                 }.toCell(),
                 3,
@@ -157,47 +175,35 @@ contract WalletV4(
 
             self.state.extensions.set(addr, true);
         } else if (msg.op == 2) {
-            // add plugin
-            let payload = msg.payload;
+            let addPlugin = AddPlugin.fromSlice(msg.payload);
 
-            let wc = payload.loadUint(8);
-            let addrHash = payload.loadUint(256);
-            let addr = newAddress(wc, addrHash);
-
-            let amount = payload.loadCoins();
-            let queryId = payload.loadUint(64);
+            let addr = newAddress(addPlugin.wc, addPlugin.addrHash);
 
             self.state.extensions.set(addr, true);
 
             sendRawMessage(
                 RawMsg {
-                    queryId,
+                    queryId: addPlugin.queryId,
                     op: AddPluginAction,
                     extra: null,
-                    amount,
+                    amount: addPlugin.amount,
                     receiver: addr,
                 }.toCell(),
                 64,
             );
         } else if (msg.op == 3) {
             // remove plugin
-            let payload = msg.payload;
+            let removePlugin = RemovePluginStruct.fromSlice(msg.payload);
 
-            let wc = payload.loadUint(8);
-            let addrHash = payload.loadUint(256);
-            let addr = newAddress(wc, addrHash);
-
-            let amount = payload.loadCoins();
-            let queryId = payload.loadUint(64);
-
+            let addr = newAddress(removePlugin.wc, removePlugin.addrHash);
             throwUnless(PluginWasNotDeleted, self.state.extensions.del(addr));
 
             sendRawMessage(
                 RawMsg {
-                    queryId,
+                    queryId: removePlugin.queryId,
                     op: RemovePluginAction,
                     extra: null,
-                    amount,
+                    amount: removePlugin.amount,
                     receiver: addr,
                 }.toCell(),
                 64,

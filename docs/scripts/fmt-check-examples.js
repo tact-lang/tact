@@ -3,19 +3,17 @@
 │  Run this script from the root of the docs, not from the scripts directory!  │
 ╞══════════════════════════════════════════════════════════════════════════════╡
 │  The script:                                                                 │
-│  1. Goes over every file in Cookbook and some additional, selected pages     │
+│  1. Goes over every file in Cookbook                                         │
 │  2. Extracts the Tact code blocks from them                                  │
-│  3. For every code block, it runs the latest version of the Tact compiler    │
-│     from the main branch, performing the syntax and type checking (--check)  │
+│  3. For every code block, it runs the latest version of the Tact formatter   │
+│     from the main branch, performing the necessary checks                    │
 │  4. If there are any errors, outputs them and exits                          │
-│                                                                              │
-│  Checks take ~0.5 seconds per code block, so lets mostly use it for Cookbook │
 ╚─────────────────────────────────────────────────────────────────────────────*/
 
 import { existsSync } from 'node:fs';
 import {
   getFileNames,
-  actionTypecheckTactFile,
+  actionCheckFmtTactFile,
   processMdxFiles,
 } from './common.js';
 
@@ -29,7 +27,4 @@ if (!existsSync(cookbookPath)) {
 
 /** @type string[] */
 const mdxFileNames = getFileNames(cookbookPath, ".mdx");
-
-// Also check some special pages
-mdxFileNames.push('src/content/docs/book/learn-tact-in-y-minutes.mdx');
-processMdxFiles(mdxFileNames, actionTypecheckTactFile);
+processMdxFiles(mdxFileNames, actionCheckFmtTactFile);
