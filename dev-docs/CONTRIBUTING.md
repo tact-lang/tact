@@ -239,10 +239,11 @@ yarn bench:add
 ### Adding a new benchmark
 
 To add a new benchmark:
-1. Create a new folder: `src/benchmarks/<your-benchmark-name>/` 
+
+1. Create a new folder: `src/benchmarks/<your-benchmark-name>/`
 2. Inside it, add the following subfolders as needed:
-4. Run `yarn gen:contracts:benchmarks` to recompile benchmarks.
-5. Add additional benchmark   
+3. Run `yarn gen:contracts:benchmarks` to recompile benchmarks.
+4. Add additional benchmark
 
 ## Project map
 
@@ -367,13 +368,13 @@ Every benchmark now lives in its own directory inside `src/benchmarks/<benchmark
 
 #### File & folder roles
 
-| Path / file                    | Purpose                                                                                   |
-|--------------------------------|-------------------------------------------------------------------------------------------|
-| `tact/*.tact`                  | Tact source code that is being benchmarked                                                |
-| `func/*.fc`                    | Equivalent FunC code that we compare against                                              |
-| `<benchmark>.spec.ts`          | Jest test spec that prepares and runs the benchmark                                       |
-| `results_gas.json`             | Aggregated gas‑consumption results, updated by the CLI                                    |
-| `results_code_size.json`       | Contract byte‑code size history, also updated by the CLI                                  |
+| Path / file              | Purpose                                                  |
+| ------------------------ | -------------------------------------------------------- |
+| `tact/*.tact`            | Tact source code that is being benchmarked               |
+| `func/*.fc`              | Equivalent FunC code that we compare against             |
+| `<benchmark>.spec.ts`    | Jest test spec that prepares and runs the benchmark      |
+| `results_gas.json`       | Aggregated gas‑consumption results, updated by the CLI   |
+| `results_code_size.json` | Contract byte‑code size history, also updated by the CLI |
 
 > **CLI support** – All commands for creating, updating, or comparing benchmarks are documented in the [Updating Benchmarks](#benchmarks) section.
 

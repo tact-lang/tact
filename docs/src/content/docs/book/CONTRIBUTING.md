@@ -371,7 +371,6 @@ Every benchmark now lives in its own directory inside `src/benchmarks/<benchmark
 |--------------------------------|-------------------------------------------------------------------------------------------|
 | `tact/*.tact`                  | Tact source code that is being benchmarked                                                |
 | `func/*.fc`                    | Equivalent FunC code that we compare against                                              |
-| `output/`                      | Temporary build artifacts produced by the CLI (TVM byte‑code, ABI, etc.)                  |
 | `<benchmark>.spec.ts`          | Jest test spec that prepares and runs the benchmark                                       |
 | `results_gas.json`             | Aggregated gas‑consumption results, updated by the CLI                                    |
 | `results_code_size.json`       | Contract byte‑code size history, also updated by the CLI                                  |
