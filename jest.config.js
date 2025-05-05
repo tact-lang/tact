@@ -26,7 +26,6 @@ module.exports = {
     testPathIgnorePatterns: ["/node_modules/", "/dist/"],
     globalSetup: "./jest.globalSetup.js",
     setupFiles: ["./jest.setup.js"],
-    setupFilesAfterEnv: ["./src/test/allure/jest.allure.ts"],
     globalTeardown: "./jest.teardown.js",
     snapshotSerializers: ["@tact-lang/ton-jest/serializers"],
     maxWorkers: "4",
