@@ -75,7 +75,7 @@ export const allInFolder = async (
             return {
                 name: basename(contractPath, extname(contractPath)),
                 path: contractPath,
-                output: join(dirname(contractPath), "../output"),
+                output: join(dirname(contractPath), "output"),
                 options: contractOptions,
                 mode,
             };
@@ -126,7 +126,7 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
             output: posixNormalize(
                 project.resolve(
                     dirname(contractPath),
-                    "../output/",
+                    "output/",
                     `${name}.boc`,
                 ),
             ),

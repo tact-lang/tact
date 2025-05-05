@@ -28,19 +28,19 @@ import {
     NFTCollection,
     ReportStaticData,
     loadInitNFTBody,
-} from "@/benchmarks/nft/output/collection_NFTCollection";
+} from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 import type {
     DeployNFT,
     GetStaticData,
     BatchDeploy,
     RoyaltyParams,
     InitNFTBody,
-} from "@/benchmarks/nft/output/collection_NFTCollection";
+} from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 import {
     NFTItem,
     type Transfer,
     storeInitNFTBody,
-} from "@/benchmarks/nft/output/collection_NFTItem";
+} from "@/benchmarks/nft/tact/output/collection_NFTItem";
 
 import benchmarkResults from "@/benchmarks/nft/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/nft/results_code_size.json";
@@ -68,11 +68,11 @@ const dictDeployNFTItem = {
 
 const loadFunCNFTBoc = () => {
     const bocCollection = readFileSync(
-        posixNormalize(resolve(__dirname, "./output/nft-collection.boc")),
+        posixNormalize(resolve(__dirname, "./func/output/nft-collection.boc")),
     );
 
     const bocItem = readFileSync(
-        posixNormalize(resolve(__dirname, "./output/nft-item.boc")),
+        posixNormalize(resolve(__dirname, "./func/output/nft-item.boc")),
     );
 
     return { bocCollection, bocItem };

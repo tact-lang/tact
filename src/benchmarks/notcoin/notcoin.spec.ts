@@ -28,23 +28,23 @@ import {
     type JettonUpdateContent,
     type Mint,
     type ProvideWalletAddress,
-} from "@/benchmarks/notcoin/output/minter_JettonMinterNotcoin";
+} from "@/benchmarks/notcoin/tact/output/minter_JettonMinterNotcoin";
 import {
     JettonWalletNotcoin,
     type JettonTransfer,
     type JettonBurn,
-} from "@/benchmarks/notcoin/output/wallet_JettonWalletNotcoin";
+} from "@/benchmarks/notcoin/tact/output/wallet_JettonWalletNotcoin";
 
 import benchmarkResults from "@/benchmarks/notcoin/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/notcoin/results_code_size.json";
 
 const loadNotcoinJettonsBoc = () => {
     const bocMinter = readFileSync(
-        posixNormalize(resolve(__dirname, "./output/jetton-minter-not.boc")),
+        posixNormalize(resolve(__dirname, "./func/output/jetton-minter-not.boc")),
     );
 
     const bocWallet = readFileSync(
-        posixNormalize(resolve(__dirname, "./output/jetton-wallet-not.boc")),
+        posixNormalize(resolve(__dirname, "./func/output/jetton-wallet-not.boc")),
     );
 
     return { bocMinter, bocWallet };
