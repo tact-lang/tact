@@ -31,9 +31,7 @@ import benchmarkCodeSizeResults from "@/benchmarks/escrow/results_code_size.json
 
 const loadFunCEscrowBoc = () => {
     const bocEscrow = readFileSync(
-        posixNormalize(
-            resolve(__dirname, "./output/escrow.boc"),
-        ),
+        posixNormalize(resolve(__dirname, "./output/escrow.boc")),
     );
 
     return { bocEscrow };

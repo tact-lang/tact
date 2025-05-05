@@ -43,9 +43,7 @@ import benchmarkCodeSizeResults from "@/benchmarks/sbt/results_code_size.json";
 
 const loadFunCSBTBoc = () => {
     const bocItem = readFileSync(
-        posixNormalize(
-            resolve(__dirname, "./output/sbt-item.boc"),
-        ),
+        posixNormalize(resolve(__dirname, "./output/sbt-item.boc")),
     );
 
     return { bocItem };

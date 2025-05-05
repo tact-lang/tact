@@ -41,17 +41,12 @@ import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json
 const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
         posixNormalize(
-            resolve(
-                __dirname,
-                "./output/jetton-minter-discoverable.boc",
-            ),
+            resolve(__dirname, "./output/jetton-minter-discoverable.boc"),
         ),
     );
 
     const bocWallet = readFileSync(
-        posixNormalize(
-            resolve(__dirname, "./output/jetton-wallet.boc"),
-        ),
+        posixNormalize(resolve(__dirname, "./output/jetton-wallet.boc")),
     );
 
     return { bocMinter, bocWallet };

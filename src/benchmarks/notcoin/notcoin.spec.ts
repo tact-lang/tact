@@ -40,21 +40,11 @@ import benchmarkCodeSizeResults from "@/benchmarks/notcoin/results_code_size.jso
 
 const loadNotcoinJettonsBoc = () => {
     const bocMinter = readFileSync(
-        posixNormalize(
-            resolve(
-                __dirname,
-                "./output/jetton-minter-not.boc",
-            ),
-        ),
+        posixNormalize(resolve(__dirname, "./output/jetton-minter-not.boc")),
     );
 
     const bocWallet = readFileSync(
-        posixNormalize(
-            resolve(
-                __dirname,
-                "./output/jetton-wallet-not.boc",
-            ),
-        ),
+        posixNormalize(resolve(__dirname, "./output/jetton-wallet-not.boc")),
     );
 
     return { bocMinter, bocWallet };

@@ -68,15 +68,11 @@ const dictDeployNFTItem = {
 
 const loadFunCNFTBoc = () => {
     const bocCollection = readFileSync(
-        posixNormalize(
-            resolve(__dirname, "./output/nft-collection.boc"),
-        ),
+        posixNormalize(resolve(__dirname, "./output/nft-collection.boc")),
     );
 
     const bocItem = readFileSync(
-        posixNormalize(
-            resolve(__dirname, "./output/nft-item.boc"),
-        ),
+        posixNormalize(resolve(__dirname, "./output/nft-item.boc")),
     );
 
     return { bocCollection, bocItem };
