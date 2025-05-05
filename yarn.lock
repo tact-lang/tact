@@ -2409,15 +2409,6 @@ dunder-proto@^1.0.0, dunder-proto@^1.0.1:
     es-errors "^1.3.0"
     gopd "^1.2.0"
 
-easy-table@1.2.0:
-  version "1.2.0"
-  resolved "https://npm.dev-internal.org/easy-table/-/easy-table-1.2.0.tgz"
-  integrity sha512-OFzVOv03YpvtcWGe5AayU5G2hgybsg3iqA6drU8UaoZyB9jLGMTrz9+asnLp/E+6qPh88yEI1gvyZFZ41dmgww==
-  dependencies:
-    ansi-regex "^5.0.1"
-  optionalDependencies:
-    wcwidth "^1.0.1"
-
 ejs@^3.1.10:
   version "3.1.10"
   resolved "https://npm.dev-internal.org/ejs/-/ejs-3.1.10.tgz"
@@ -4140,12 +4131,11 @@ kleur@^3.0.3:
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
 knip@^5.24.1:
-  version "5.50.5"
-  resolved "https://npm.dev-internal.org/knip/-/knip-5.50.5.tgz#cd4b6573eafaa63bdeff3cc8f203ed813107d84a"
-  integrity sha512-I3mfebuG5x8i/mJJA41xjnmHMbLw75ymbDxlS7HMP+4CjY+jXEDSJyP3A2xmI5JF5/o47Fr8D7Pq3BVT0/nQPw==
+  version "5.53.0"
+  resolved "https://npm.dev-internal.org/knip/-/knip-5.53.0.tgz#1c2392b8e8c40f7d22c0c49e32eb3a2d0da40c7f"
+  integrity sha512-z8tTV59Rkwd/FRaSikKUIyLx9YY846muUJtmF+nM7e7f63LGyjqnSSsGBfE9RorqNanVqXvTjosGYkfKCmV7Nw==
   dependencies:
     "@nodelib/fs.walk" "^1.2.3"
-    easy-table "1.2.0"
     enhanced-resolve "^5.18.1"
     fast-glob "^3.3.3"
     jiti "^2.4.2"
@@ -4153,7 +4143,6 @@ knip@^5.24.1:
     minimist "^1.2.8"
     picocolors "^1.1.0"
     picomatch "^4.0.1"
-    pretty-ms "^9.0.0"
     smol-toml "^1.3.1"
     strip-json-comments "5.0.1"
     zod "^3.22.4"
@@ -4567,11 +4556,6 @@ parse-json@^5.2.0:
     json-parse-even-better-errors "^2.3.0"
     lines-and-columns "^1.1.6"
 
-parse-ms@^4.0.0:
-  version "4.0.0"
-  resolved "https://npm.dev-internal.org/parse-ms/-/parse-ms-4.0.0.tgz"
-  integrity sha512-TXfryirbmq34y8QBwgqCVLi+8oA3oWx2eAnSn62ITyEhEYaWRlVZ2DvMM9eZbMs/RfxPu/PK/aBLyGj4IrqMHw==
-
 path-exists@^4.0.0:
   version "4.0.0"
   resolved "https://npm.dev-internal.org/path-exists/-/path-exists-4.0.0.tgz#513bdbe2d3b95d7762e8c1137efa195c6c61b5b3"
@@ -4670,13 +4654,6 @@ pretty-format@^29.0.0, pretty-format@^29.7.0:
     "@jest/schemas" "^29.6.3"
     ansi-styles "^5.0.0"
     react-is "^18.0.0"
-
-pretty-ms@^9.0.0:
-  version "9.0.0"
-  resolved "https://npm.dev-internal.org/pretty-ms/-/pretty-ms-9.0.0.tgz"
-  integrity sha512-E9e9HJ9R9NasGOgPaPE8VMeiPKAyWR5jcFpNnwIejslIhWqdqOrb2wShBsncMPUb+BcCd2OPYfh7p2W6oemTng==
-  dependencies:
-    parse-ms "^4.0.0"
 
 prompts@^2.0.1:
   version "2.4.2"
