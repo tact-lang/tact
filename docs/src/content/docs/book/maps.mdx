@@ -142,7 +142,7 @@ let myMap: map<Int as uint8, Int as uint16> = map<Int as uint8, Int as uint16> {
 let mismatch: map<Address, Cell> = map<Address, Int> {}; // COMPILATION ERROR! Type mismatch
 ```
 
-Empty map literals are also supported. They produce the same value as the [`emptyMap(){:tact}`](#emptymap) function but allow omitting type ascriptions.
+Map literals with an empty body are also supported. They produce the same value as the [`emptyMap(){:tact}`](#emptymap) function and also require type ascriptions for the variable definition.
 
 ```tact
 let myMap: map<Int as uint8, Cell> = map<Int as uint8, Cell> {};
