@@ -101,22 +101,6 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
-      - name: Install Allure
-        if: always()
-        shell: bash
-        run: |
-          npm i -g allure-commandline
-      - name: Generate Allure report
-        if: always()
-        shell: bash
-        run: |
-          allure generate allure-results -o allure-${{ matrix.os }}-report --clean --single-file
-      - name: Upload Allure report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-${{ matrix.os }}-report
-          path: allure-${{ matrix.os }}-report
   test-blueprint:
     strategy:
       fail-fast: false
