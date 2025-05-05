@@ -9,12 +9,12 @@ The following statements can appear anywhere in a [function](/book/functions) bo
 
 ## `let` statement {#let}
 
-The `let{:tact}` statement allows local and [block](#block)-scoped variable declaration.
+The `let{:tact}` statement allows local and [block](#block)-scoped variable definitions. In Tact, variables are mutable, but **require** to be initialized with an expression.
 
-In Tact, declaring a local variable always **requires** an initial value. However, the type ascription can be omitted, and Tact will try to infer it from the initial value:
+However, type ascriptions can be omitted, and Tact will infer the type of the new variable from the computed value of the expression:
 
 ```tact
-let value: Int = 123; // full declaration with type and value
+let value: Int = 123; // full definition with type and value
 let vInferred = 123;  // inferred type Int from the mandatory value
 
 let vExplicitCtx: Context = context(); // explicit type Context, a built-in Struct

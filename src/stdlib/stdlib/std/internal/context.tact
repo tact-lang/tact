@@ -45,7 +45,7 @@ struct Context {
 @name(__tact_context_get)
 native context(): Context;
 
-/// Global function. Available since Tact 1.7.0.
+/// Global function. Available since Tact 1.6.7.
 ///
 /// Returns the `Slice` with the original, raw body of the received message.
 ///
