@@ -350,7 +350,9 @@ describe("WalletV5 Gas Tests", () => {
 
         async function fromFuncInit(isActive: boolean, publicKey: bigint) {
             const bocWallet = readFileSync(
-                posixNormalize(resolve(__dirname, "./func/output/wallet-v5.boc")),
+                posixNormalize(
+                    resolve(__dirname, "./func/output/wallet-v5.boc"),
+                ),
             );
 
             const walletCell = Cell.fromBoc(bocWallet)[0]!;
