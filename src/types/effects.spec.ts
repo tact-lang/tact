@@ -8,10 +8,8 @@ import { getParser } from "@/grammar";
 import { getAstFactory } from "@/ast/ast-helpers";
 import { computeReceiversEffects } from "@/types/effects";
 import type { Source } from "@/imports/source";
-import * as allure from "allure-js-commons";
 
 describe("effects", () => {
-    allure.tags("Effects");
     for (const testContract of loadCases(__dirname + "/effects/")) {
         it(`should correctly compute effects: ${testContract.name}`, () => {
             const Ast = getAstFactory();
