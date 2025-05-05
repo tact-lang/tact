@@ -19,10 +19,9 @@ import {
     type BenchmarkResult,
     type CodeSizeResult,
 } from "@/benchmarks/utils/gas";
-import { join, resolve } from "path";
+import { resolve } from "path";
 import { readFileSync } from "fs";
 import { posixNormalize } from "@/utils/filePath";
-import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     JettonMinter,
     type JettonUpdateContent,
@@ -37,6 +36,7 @@ import {
 
 import benchmarkResults from "@/benchmarks/jetton/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json";
+import {step, parameter} from "@/test/allure/allure";
 
 const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
@@ -70,7 +70,6 @@ function testJetton(
     let deployer: SandboxContract<TreasuryContract>;
     let notDeployer: SandboxContract<TreasuryContract>;
     const defaultContent: Cell = beginCell().endCell();
-    let step: Step;
     let jettonMinter: SandboxContract<JettonMinter>;
     let deployerJettonWallet: SandboxContract<JettonWallet>;
 
@@ -79,10 +78,8 @@ function testJetton(
         deployer = await blockchain.treasury("deployer");
         notDeployer = await blockchain.treasury("notDeployer");
 
-        step = writeLog({
-            path: join(__dirname, "output", "log.yaml"),
-            blockchain,
-        });
+        await parameter('deployer', deployer.address.toString())
+        await parameter('notDeployer', notDeployer.address.toString())
 
         const msg: JettonUpdateContent = {
             $$type: "JettonUpdateContent",
