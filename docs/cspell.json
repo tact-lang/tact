@@ -35,6 +35,7 @@
     "*.boc",
     "*.fif",
     "*.func",
+    "*.fc",
     "node_modules",
     "dist",
     "out",
