@@ -241,7 +241,7 @@ yarn bench:add
 To add a new benchmark:
 
 1. Create a new folder: `src/benchmarks/<your-benchmark-name>/`
-2. Inside it, add the following subfolders as needed:
+2. Inside it, add `tact/` and `func/` subfolders as needed.
 3. Run `yarn gen:contracts:benchmarks` to recompile benchmarks.
 4. Add additional benchmark
 
