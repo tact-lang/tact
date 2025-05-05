@@ -364,7 +364,7 @@ Some other codegen tests are as follows:
 
 ### Benchmarks
 
-Every benchmark now lives in its own directory inside `src/benchmarks/<benchmark‑name>/`.
+Benchmarks are located inside `src/benchmarks/`, one directory per benchmark:
 
 #### File & folder roles
 
