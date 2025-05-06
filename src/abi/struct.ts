@@ -265,4 +265,63 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
             },
         },
     ],
+    [
+        "loadFromSlice",
+        {
+            name: "loadFromSlice",
+            resolve: (ctx, args, ref) => {
+                if (args.length !== 2) {
+                    throwCompilationError(
+                        "loadFromSlice() expects one argument",
+                        ref,
+                    );
+                }
+                const arg0 = args[0]!;
+                const arg1 = args[1]!;
+                if (arg0.kind !== "ref") {
+                    throwCompilationError(
+                        "loadFromSlice() is implemented only for struct types",
+                        ref,
+                    );
+                }
+                const tp = getType(ctx, arg0.name);
+                if (tp.kind !== "struct") {
+                    throwCompilationError(
+                        "loadFromSlice() is implemented only for struct types",
+                        ref,
+                    );
+                }
+                if (arg1.kind !== "ref" || arg1.name !== "Slice") {
+                    throwCompilationError(
+                        "loadFromSlice() expects a Slice as an argument",
+                        ref,
+                    );
+                }
+                return { kind: "ref", name: arg0.name, optional: false };
+            },
+            generate: (ctx, args, resolved, ref) => {
+                if (resolved.length !== 2) {
+                    throwCompilationError(
+                        "loadFromSlice() expects one argument",
+                        ref,
+                    );
+                }
+                const arg0 = args[0]!;
+                const arg1 = args[1]!;
+                if (arg0.kind !== "ref") {
+                    throwCompilationError(
+                        "loadFromSlice() is implemented only for struct types",
+                        ref,
+                    );
+                }
+                if (arg1.kind !== "ref" || arg1.name !== "Slice") {
+                    throwCompilationError(
+                        "loadFromSlice() expects a Slice as an argument",
+                        ref,
+                    );
+                }
+                return `${writeExpression(resolved[1]!, ctx)}~${ops.readerModifying(arg0.name, ctx)}()`;
+            },
+        },
+    ],
 ]);
