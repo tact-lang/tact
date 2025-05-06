@@ -28,6 +28,8 @@
   "ignorePaths": [
     "*.boc",
     "*.fif",
+    "*.fc",
+    "_/",
     "**/*/output",
     "*.spec.ts.snap",
     "node_modules",
@@ -54,8 +56,6 @@
     "src/test/e2e-slow/map-property-tests/map-properties-key-value-types.ts",
     "src/test/e2e-slow/map-property-tests/build",
     "/docs",
-    "src/benchmarks/contracts/func/notcoin/stdlib-custom.fc",
-    "src/benchmarks/contracts/func/notcoin/gas.fc",
     "src/utils/change-case/*",
     "src/fmt/cst/cst-parser.ts",
     "coverage"
