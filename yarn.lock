@@ -2465,15 +2465,6 @@ eastasianwidth@^0.2.0:
   resolved "https://npm.dev-internal.org/eastasianwidth/-/eastasianwidth-0.2.0.tgz#696ce2ec0aa0e6ea93a397ffcf24aa7840c827cb"
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
-easy-table@1.2.0:
-  version "1.2.0"
-  resolved "https://npm.dev-internal.org/easy-table/-/easy-table-1.2.0.tgz"
-  integrity sha512-OFzVOv03YpvtcWGe5AayU5G2hgybsg3iqA6drU8UaoZyB9jLGMTrz9+asnLp/E+6qPh88yEI1gvyZFZ41dmgww==
-  dependencies:
-    ansi-regex "^5.0.1"
-  optionalDependencies:
-    wcwidth "^1.0.1"
-
 ejs@^3.1.10:
   version "3.1.10"
   resolved "https://npm.dev-internal.org/ejs/-/ejs-3.1.10.tgz"
