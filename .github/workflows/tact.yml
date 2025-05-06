@@ -78,29 +78,54 @@ jobs:
           yarn gen:func-js
           # Clean-up
           yarn cleanall
+
   test:
     strategy:
       fail-fast: false
       matrix:
         node-version: [22]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test
       - name: Test compatibility with tact-template
-        shell: bash
         run: |
+          # !!!!!!! Don't forget to update test-windows below !!!!!!!
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
-
+          # Hijack the dependency on Tact to avoid redundant npm downloads
           jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
           mv temp.json package.json
-
           yarn install
           yarn link @tact-lang/compiler
           yarn build
           yarn test
+
+  test-windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22]
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/test
+      - name: Test compatibility with tact-template
+        run: |
+          # !!!!!!! Don't forget to update test above !!!!!!!
+          $ErrorActionPreference = 'Stop'
+          git clone https://github.com/tact-lang/tact-template.git
+          cd tact-template
+          # Hijack the dependency on Tact to avoid redundant npm downloads
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
+          Move-Item temp.json package.json -Force
+          yarn install
+          yarn link @tact-lang/compiler
+          yarn build
+          yarn test
+
   test-blueprint:
     strategy:
       fail-fast: false
