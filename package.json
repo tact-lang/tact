@@ -120,7 +120,7 @@
     "chalk": "4.1.2",
     "cli-table3": "^0.6.5",
     "cross-env": "^7.0.3",
-    "cspell": "^8.8.3",
+    "cspell": "^9.0.0",
     "diff": "^7.0.0",
     "eslint": "^8.57.0",
     "eslint-import-resolver-alias": "^1.1.2",
