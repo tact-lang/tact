@@ -36,7 +36,7 @@ import {
 
 import benchmarkResults from "@/benchmarks/jetton/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json";
-import {step, parameter} from "@/test/allure/allure";
+import { step, parameter } from "@/test/allure/allure";
 
 const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
@@ -73,8 +73,8 @@ function testJetton(
         deployer = await blockchain.treasury("deployer");
         notDeployer = await blockchain.treasury("notDeployer");
 
-        await parameter('deployer', deployer.address.toString())
-        await parameter('notDeployer', notDeployer.address.toString())
+        await parameter("deployer", deployer.address.toString());
+        await parameter("notDeployer", notDeployer.address.toString());
 
         const msg: JettonUpdateContent = {
             $$type: "JettonUpdateContent",
