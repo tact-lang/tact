@@ -394,6 +394,42 @@ fun AnyMessage_fromCell(cell: Cell): M;
 ///
 fun AnyMessage_fromSlice(slice: Slice): M;
 
+/// Extension function for any Message type.
+///
+/// Converts a `Slice` into the specified `Message` and returns that `Message` modifying `Slice`.
+///
+/// ```tact
+/// message(0x777) TripleAxe {
+///     prize: Int as uint32;
+/// }
+///
+/// fun directParse(payload: Slice): TripleAxe {
+///     return TripleAxe.fromSlice(payload);
+/// }
+///
+/// fun cautiousParse(payload1: Slice): TripleAxe? {
+///     let coin: TripleAxe? = null;
+///     try {
+///         coin = TripleAxe.loadFromSlice(payload);
+///         throwUnless(1111, payload.bits() == 0);
+///     } catch (e) {
+///         dump("Slice payload doesn't match TripleAxe Message!");
+///     }
+///     return coin;
+/// }
+/// ```
+///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when attempting to pass a `Slice` with a layout different
+/// from the specified `Message` or to load more data than `Slice` contains.
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#messagefromslice
+///
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+///
+fun AnyMessage_loadFromSlice(slice: Slice): M;
+
 /// Extension function for any Message type. Available since Tact 1.6.7.
 ///
 /// Returns the message opcode.
