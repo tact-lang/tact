@@ -250,6 +250,7 @@ To add a new benchmark:
 We use [Allure](https://allurereport.org/) to generate reports for our tests.
 
 To run the tests and generate the Allure report:
+
 ```shell
 yarn test:allure
 ```
