@@ -1,5 +1,5 @@
 import "./constants";
-import "./messages-sbt";
+import "./messages";
 
 struct SBTItemInit {
     owner: Address;
@@ -16,7 +16,7 @@ contract SBTItem(
     authorityAddress: Address?,
     revokedAt: Int as uint64,
 ) {
-    receive() {} //to ignore empty messages 
+    receive() {} //to ignore empty messages
 
     receive(msg: Slice) {
         // Check if owner == null, which means the contract hasn't been initialized yet

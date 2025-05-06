@@ -33,7 +33,7 @@ import {
 } from "@/benchmarks/wallet-v5/utils";
 
 import benchmarkResults from "@/benchmarks/wallet-v5/results_gas.json";
-import { WalletV5 } from "@/benchmarks/contracts/output/wallet-v5_WalletV5";
+import { WalletV5 } from "@/benchmarks/wallet-v5/tact/output/wallet-v5_WalletV5";
 
 export function packAddress(address: Address) {
     return bufferToBigInt(address.hash);
@@ -351,10 +351,7 @@ describe("WalletV5 Gas Tests", () => {
         async function fromFuncInit(isActive: boolean, publicKey: bigint) {
             const bocWallet = readFileSync(
                 posixNormalize(
-                    resolve(
-                        __dirname,
-                        "../contracts/func/output/wallet_v5.boc",
-                    ),
+                    resolve(__dirname, "./func/output/wallet-v5.boc"),
                 ),
             );
 

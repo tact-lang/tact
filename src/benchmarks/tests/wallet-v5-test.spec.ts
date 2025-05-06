@@ -19,7 +19,7 @@ import {
     sendInternalMessageFromExtension,
     validUntil,
 } from "@/benchmarks/wallet-v5/utils";
-import { WalletV5 } from "@/benchmarks/contracts/output/wallet-v5_WalletV5";
+import { WalletV5 } from "@/benchmarks/wallet-v5/tact/output/wallet-v5_WalletV5";
 
 export function packAddress(address: Address) {
     return bufferToBigInt(address.hash);

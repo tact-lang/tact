@@ -1,6 +1,6 @@
 import "./constants";
-import "./messages-nft";
-import "./nft-item";
+import "./messages";
+import "./item";
 
 struct DictGet {
     itemIndex: Int? as uint64; // IndexSizeBits = 64
