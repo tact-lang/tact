@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Enabled format checking across the Cookbook: PR [#2980](https://github.com/tact-lang/tact/pull/2980)
 - Added references to https://github.com/tact-lang/defi-cookbook: PR [#2985](https://github.com/tact-lang/tact/pull/2985)
+- Fixed description of the unary plus `+` operator: PR [#3016](https://github.com/tact-lang/tact/pull/3016)
 
 ### Release contributors
 
