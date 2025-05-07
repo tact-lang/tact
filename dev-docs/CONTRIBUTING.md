@@ -122,6 +122,28 @@ npx ts-node src/cli/unboc/index.ts
 node bin/unboc.js
 ```
 
+## Profiling CLIs
+
+Use the [`0x`](https://npmjs.com/package/0x) tool to profile and visualize stack traces of the Tact compiler or [other CLIs](#running-clis). `0x` generates interactive flamegraphs to help identify performance bottlenecks in the code.
+
+For example, let's profile the Tact compiler on compiling a certain contract from our [benchmarks suite](#benchmarks):
+
+```shell
+# Requires Tact compiler to be built beforehand
+npx 0x ./bin/tact.js ./src/benchmarks/jetton/minter.tact
+```
+
+After the compilation, a folder containing the profiling results will be created. It will include the self-contained interactive `.html` page with flamegraph visualization — open it in your browser of choice to see and filter the results.
+
+The X-axis represents the profile population (not time), and the Y-axis represents the stack depth. Colors can help differentiate between functions, and the width of each block corresponds to the CPU time it took: the wider the block, the longer it took to compute that function call.
+
+Using the search input on the top right, you can highlight certain functions on the flamegraph.
+
+See `npx 0x --help` for more options, including:
+
+- `-D/--output-dir`, which is used to specify the artifact output directory.
+- `-o/--open`, which automatically opens the flamegraph after finishing the run.
+
 ## Testing Tact implementation
 
 We use [Jest](https://jestjs.io) as our testing framework. Jest supports a combination of snapshot and expectation tests.
@@ -155,6 +177,21 @@ yarn test -u spec-name-pattern1 spec-name-pattern2
 
 Beware that updating snapshots from Javascript Debug Terminal in VSCode might lead to unexpected results. E2E CLI tests check `stderr` of child `tact` processes, but JS Debug Terminal adds "Debugger attached" messages into it.
 
+## Coverage
+
+To compute coverage, run
+
+```shell
+yarn istanbul
+```
+
+The log will be generated into `/coverage` folder. For better UX, serve its contents locally with
+
+```shell
+cd coverage
+npx http-server . -p 3000
+```
+
 ## Benchmarks
 
 The benchmark system tracks gas consumption changes after making changes to the compiler.
@@ -185,7 +222,7 @@ Print modes:
 
 Default print mode is `full`.
 
-## Updating benchmarks
+### Updating benchmarks
 
 To update historical benchmarks with `results.json`:
 
@@ -203,10 +240,10 @@ yarn bench:add
 
 To add a new benchmark:
 
-1. Add `*.tact` file to `src/benchmarks/contracts`
-2. Add `*.fc` file which you want to compare against to `src/benchmarks/contracts/func`
-3. Recompile the benchmarks with `yarn gen:contracts:benchmarks`
-4. Add additional benchmark with it results as json to `src/benchmarks/new-bench-folder`
+1. Create a new folder: `src/benchmarks/<your-benchmark-name>/`
+2. Inside it, add `tact/` and `func/` subfolders as needed.
+3. Run `yarn gen:contracts:benchmarks` to recompile benchmarks.
+4. Add additional benchmark
 
 ## Project map
 
@@ -254,7 +291,7 @@ For more info, refer to the package's GitHub repository: [`tact-lang/ton-opcode`
 
 ### Parser
 
-The [`src/grammar/grammar.gg`](../src/grammar/grammar.gg) file contains the Tact grammar expressed in the PEG language of the [pgen](https://github.com/tact-lang/syntax-tools/tree/main/packages/pgen) parser generator.
+The [`src/grammar/grammar.peggy`](../src/grammar/grammar.peggy) file contains the Tact grammar expressed in the PEG language of the [pgen](https://github.com/tact-lang/syntax-tools/tree/main/packages/pgen) parser generator.
 
 The helper file [`src/grammar/index.ts`](../src/grammar/index.ts) contains the logic that transforms concrete syntax trees produced with the help of parser into abstract syntax trees (ASTs) defined in [src/ast/ast.ts](../src/ast/ast.ts). The index.ts file also does grammar validation, like checking that function or constant attributes are not duplicated or that user identifiers do not start with specific reserved prefixes.
 
@@ -327,13 +364,19 @@ Some other codegen tests are as follows:
 
 ### Benchmarks
 
-The benchmarks are organized into the following structure:
+Benchmarks are located inside `src/benchmarks/`, one directory per benchmark:
 
-- [src/benchmarks/contracts/\*.tact](../src/benchmarks/contracts): Contains the Tact contract source files used for benchmarking.
-- [src/benchmarks/\*/results.json](../src/benchmarks/jetton/results_gas.json): Stores the historical benchmark results that further are transformed into comparison tables
-- [src/benchmarks/contracts/func](../src/benchmarks/contracts/func/): Stores FunC implementations that we are benchmarking our contracts against
+#### File & folder roles
 
-Benchmarks have CLI commands support for updating and managing them, check [Updating Benchmarks](#benchmarks) section for them
+| Path / file              | Purpose                                                  |
+| ------------------------ | -------------------------------------------------------- |
+| `tact/`                  | Tact project that is being benchmarked                   |
+| `func/`                  | Equivalent FunC project that we compare against          |
+| `<benchmark>.spec.ts`    | Jest test spec that prepares and runs the benchmark      |
+| `results_gas.json`       | Aggregated gas‑consumption results, updated by the CLI   |
+| `results_code_size.json` | Contract byte‑code size history, also updated by the CLI |
+
+> **CLI support** – All commands for creating, updating, or comparing benchmarks are documented in the [Updating Benchmarks](#benchmarks) section.
 
 ### Pretty-printer and AST comparators
 

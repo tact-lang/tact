@@ -52,6 +52,8 @@ Epva
 errno
 Esorat
 extracurrency
+flamegraph
+flamegraphs
 forall
 formedness
 frontmatter
@@ -95,9 +97,11 @@ Lagus
 Laika
 langle
 langtools
-letrec
 learnXinYminutes
+letrec
 Liskov
+llm
+llms
 logomark
 lparen
 lvalue
@@ -112,6 +116,7 @@ memecoin
 Merkle
 minmax
 mintable
+miscompilation
 misparse
 misparsed
 mktemp
@@ -218,4 +223,5 @@ xffff
 XMODEM
 xpyctumo
 xtwitter
+yeehaw
 привет

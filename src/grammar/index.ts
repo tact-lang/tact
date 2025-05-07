@@ -302,13 +302,46 @@ const parseStructFieldInitializer =
     };
 
 const parseStructInstance =
-    ({ type, fields, loc }: $ast.StructInstance): Handler<Ast.StructInstance> =>
+    ({ type, body, loc }: $ast.StructInstance): Handler<Ast.StructInstance> =>
     (ctx) => {
         return ctx.ast.StructInstance(
             parseId(type)(ctx),
-            map(parseList(fields), parseStructFieldInitializer)(ctx),
+            map(parseList(body.fields), parseStructFieldInitializer)(ctx),
             loc,
         );
+    };
+
+const parseMapField =
+    ({ key, value }: $ast.mapField): Handler<Ast.MapField> =>
+    (ctx) => {
+        return {
+            key: parseExpression(key)(ctx),
+            value: parseExpression(value)(ctx),
+        };
+    };
+
+const parseMapLiteral =
+    ({
+        typeArgs,
+        fields,
+        loc,
+    }: $ast.MapLiteral): Handler<Ast.MapLiteral | Ast.Id> =>
+    (ctx) => {
+        const type = parseMapType(typeArgs, loc)(ctx);
+        if (type.kind === "type_id") {
+            return ctx.ast.Id("ERROR", loc);
+        }
+        return ctx.ast.MapLiteral(
+            type,
+            map(parseList(fields), parseMapField)(ctx),
+            loc,
+        );
+    };
+const parseSetLiteral =
+    ({ loc }: $ast.SetLiteral): Handler<Ast.Id> =>
+    (ctx) => {
+        ctx.err.noSetLiterals()(loc);
+        return ctx.ast.Id("ERROR", loc);
     };
 
 const parseInitOf =
@@ -316,7 +349,7 @@ const parseInitOf =
     (ctx) => {
         return ctx.ast.InitOf(
             parseId(name)(ctx),
-            map(parseList(params), parseExpression)(ctx),
+            map(parseList(params.values), parseExpression)(ctx),
             loc,
         );
     };
@@ -395,7 +428,7 @@ const parseSuffixCall =
     ({ params }: $ast.SuffixCall): SuffixHandler =>
     (ctx) =>
     (child, loc) => {
-        const paramsAst = map(parseList(params), parseExpression)(ctx);
+        const paramsAst = map(parseList(params.values), parseExpression)(ctx);
         if (child.kind === "id") {
             return ctx.ast.StaticCall(child, paramsAst, loc);
         } else if (child.kind === "field_access") {
@@ -459,6 +492,8 @@ type Expression =
     | $ast.Suffix
     | $ast.Parens
     | $ast.StructInstance
+    | $ast.MapLiteral
+    | $ast.SetLiteral
     | $ast.IntegerLiteral
     | $ast.BoolLiteral
     | $ast.InitOf
@@ -475,6 +510,8 @@ const parseExpression: (input: Expression) => Handler<Ast.Expression> =
         Suffix: parseSuffix,
         Parens: parseParens,
         StructInstance: parseStructInstance,
+        MapLiteral: parseMapLiteral,
+        SetLiteral: parseSetLiteral,
         IntegerLiteral: parseIntegerLiteral,
         BoolLiteral: parseBoolLiteral,
         InitOf: parseInitOf,
@@ -813,6 +850,24 @@ const parseParameter =
         return ctx.ast.TypedParameter(
             parseOptionalId(name)(ctx),
             parseType(type)(ctx),
+            undefined,
+            loc,
+        );
+    };
+
+const parseInitParameter =
+    ({ name, type, loc }: $ast.Parameter): Handler<Ast.TypedParameter> =>
+    (ctx) => {
+        const t = parseTypeOptional(type)(ctx);
+        const [as, ...restAs] = type.as;
+        if (restAs.length > 0) {
+            ctx.err.parameterOnlyOneAs()(loc);
+        }
+        return ctx.ast.TypedParameter(
+            parseOptionalId(name)(ctx),
+            t,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+            as ? ctx.ast.Id(as.name, as.loc) : undefined,
             loc,
         );
     };
@@ -821,6 +876,54 @@ const parseTypeId =
     ({ name, loc }: $ast.TypeId): Handler<Ast.TypeId> =>
     (ctx) => {
         return ctx.ast.TypeId(name, loc);
+    };
+
+const parseMapType =
+    (
+        args: $ast.commaList<$ast.TypeAs> | undefined,
+        loc: $.Loc,
+    ): Handler<Ast.MapType | Ast.TypeId> =>
+    (ctx) => {
+        const parsedArgs = parseList(args);
+        const [key, value, ...rest] = parsedArgs;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+        if (!key || !value || rest.length > 0) {
+            ctx.err.genericArgCount("map", 2, parsedArgs.length)(loc);
+            return ctx.ast.TypeId("ERROR", loc);
+        }
+        const [keyAs, ...restKeyAs] = key.as;
+        if (restKeyAs.length > 0) {
+            ctx.err.mapOnlyOneAs("key")(loc);
+        }
+        if (key.type.optionals.length > 0) {
+            ctx.err.cannotBeOptional("map key types")(key.loc);
+        }
+        if (key.type.type.$ !== "TypeRegular") {
+            ctx.err.onlyTypeId("key")(loc);
+            return ctx.ast.TypeId("ERROR", loc);
+        }
+        const [valueAs, ...restValueAs] = value.as;
+        if (restValueAs.length > 0) {
+            ctx.err.mapOnlyOneAs("value")(loc);
+        }
+        if (value.type.optionals.length > 0) {
+            ctx.err.cannotBeOptional("map value types")(value.loc);
+        }
+        if (value.type.type.$ !== "TypeRegular") {
+            ctx.err.onlyTypeId("value")(loc);
+            return ctx.ast.TypeId("ERROR", loc);
+        }
+        const keyType = key.type.type.child;
+        const valueType = value.type.type.child;
+        return ctx.ast.MapType(
+            ctx.ast.TypeId(keyType.name, keyType.loc),
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+            keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : undefined,
+            ctx.ast.TypeId(valueType.name, valueType.loc),
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+            valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : undefined,
+            loc,
+        );
     };
 
 const parseTypeOptional =
@@ -855,50 +958,7 @@ const parseTypeOptional =
         }
         const { name, args, loc: genericLoc } = innerType;
         if (name.$ === "MapKeyword") {
-            const parsedArgs = parseList(args);
-            const [key, value, ...rest] = parsedArgs;
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-            if (!key || !value || rest.length > 0) {
-                ctx.err.genericArgCount(
-                    "map",
-                    2,
-                    parsedArgs.length,
-                )(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const [keyAs, ...restKeyAs] = key.as;
-            if (restKeyAs.length > 0) {
-                ctx.err.mapOnlyOneAs("key")(genericLoc);
-            }
-            if (key.type.optionals.length > 0) {
-                ctx.err.cannotBeOptional("key")(genericLoc);
-            }
-            if (key.type.type.$ !== "TypeRegular") {
-                ctx.err.onlyTypeId("key")(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const [valueAs, ...restValueAs] = value.as;
-            if (restValueAs.length > 0) {
-                ctx.err.mapOnlyOneAs("value")(genericLoc);
-            }
-            if (value.type.optionals.length > 0) {
-                ctx.err.cannotBeOptional("value")(genericLoc);
-            }
-            if (value.type.type.$ !== "TypeRegular") {
-                ctx.err.onlyTypeId("value")(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const keyType = key.type.type.child;
-            const valueType = value.type.type.child;
-            return ctx.ast.MapType(
-                ctx.ast.TypeId(keyType.name, keyType.loc),
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-                keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : undefined,
-                ctx.ast.TypeId(valueType.name, valueType.loc),
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-                valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : undefined,
-                genericLoc,
-            );
+            return parseMapType(args, genericLoc)(ctx);
         }
         if (name.$ === "Bounced") {
             const parsedArgs = parseList(args);
@@ -1085,7 +1145,7 @@ const parseAsmFunction =
             parseFunctionAttributes(node.attributes, false, node.loc)(ctx),
             parseId(node.name)(ctx),
             node.returnType ? parseType(node.returnType)(ctx) : undefined,
-            map(parseList(node.parameters), parseParameter)(ctx),
+            map(parseList(node.parameters.values), parseParameter)(ctx),
             [node.instructions.trim()],
             node.loc,
         );
@@ -1095,7 +1155,7 @@ const parseContractInit =
     ({ parameters, body, loc }: $ast.ContractInit): Handler<Ast.ContractInit> =>
     (ctx) => {
         return ctx.ast.ContractInit(
-            map(parseList(parameters), parseParameter)(ctx),
+            map(parseList(parameters.values), parseInitParameter)(ctx),
             map(body, parseStatement)(ctx),
             loc,
         );
@@ -1220,7 +1280,10 @@ const parseFunction =
         const returnType = node.returnType
             ? parseType(node.returnType)(ctx)
             : undefined;
-        const parameters = map(parseList(node.parameters), parseParameter)(ctx);
+        const parameters = map(
+            parseList(node.parameters.values),
+            parseParameter,
+        )(ctx);
 
         if (node.body.$ === "FunctionDeclaration") {
             const attributes = parseFunctionAttributes(
@@ -1283,7 +1346,7 @@ const parseNativeFunctionDecl =
             map(attributes, parseFunctionAttribute)(ctx),
             parseId(name)(ctx),
             parseFuncId(nativeName)(ctx),
-            map(parseList(parameters), parseParameter)(ctx),
+            map(parseList(parameters.values), parseParameter)(ctx),
             returnType ? parseType(returnType)(ctx) : undefined,
             loc,
         );

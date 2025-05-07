@@ -8,14 +8,15 @@ import {
 } from "@/generator/writers/writeConstant";
 import { writeExpression } from "@/generator/writers/writeExpression";
 import { idTextErr, throwCompilationError } from "@/error/errors";
-import { getErrorId } from "@/types/resolveErrors";
+import { evaluateRequireErrorString, getErrorId } from "@/types/resolveErrors";
 import type { AbiFunction } from "@/abi/AbiFunction";
 import path from "path";
 import { cwd } from "process";
 import { posixNormalize } from "@/utils/filePath";
 import { ensureString } from "@/optimizer/interpreter";
-import { isLiteral } from "@/ast/ast-helpers";
+import { getAstFactory, isLiteral } from "@/ast/ast-helpers";
 import { sha256 } from "@/utils/sha256";
+import { getAstUtil } from "@/ast/util";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -104,7 +105,12 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const resolved1 = resolved[1]!;
-                const str = ensureString(resolved1).value;
+                const evaluated = evaluateRequireErrorString(
+                    resolved1,
+                    ctx.ctx,
+                    getAstUtil(getAstFactory()),
+                );
+                const str = ensureString(evaluated).value;
                 return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
         },
@@ -387,13 +393,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                     // Otherwise, revert back to runtime hash through HASHEXT_SHA256
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `__tact_sha256(${exp})`;
+                    return `${ctx.used("__tact_sha256")}(${exp})`;
                 }
 
                 // Slice case
                 if (arg0.name === "Slice") {
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `__tact_sha256(${exp})`;
+                    return `${ctx.used("__tact_sha256")}(${exp})`;
                 }
 
                 throwCompilationError(

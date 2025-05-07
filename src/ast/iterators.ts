@@ -1,4 +1,5 @@
 import type { AstNode } from "@/ast/ast";
+import { throwInternalCompilerError } from "@/error/errors";
 
 /**
  * Recursively iterates over each node in an AstNode and applies a callback to each AST element.
@@ -329,10 +330,20 @@ export function traverseAndCheck(
         case "address":
         case "cell":
         case "slice":
+        case "map_value":
             break;
         case "typed_parameter":
             traverseAndCheck(node.name, callback);
             traverseAndCheck(node.type, callback);
+            break;
+        case "set_literal":
+            throwInternalCompilerError("Set literals are not supported");
+            break;
+        case "map_literal":
+            node.fields.forEach((e) => {
+                traverseAndCheck(e.key, callback);
+                traverseAndCheck(e.value, callback);
+            });
             break;
     }
 }

@@ -288,7 +288,7 @@ From the [Cells, Builders and Slices page](/book/cells#cells) of the Book:
 
 To construct a [`Cell{:tact}`][cell], a [`Builder{:tact}`][builder] is used. If you try to store more than 1023 bits of data or more than 4 references to other cells, an error with exit code $8$ is thrown: `Cell overflow`.
 
-This error can be triggered by [manual construction](/book/cells#cnp-manually) of the cells via [relevant `.loadSomething()` methods](/ref/core-cells) or when [using Structs and Messages and their convenience methods](/book/cells#cnp-structs).
+This error can be triggered by [manual construction](/book/cells#cnp-manually) of the cells via [relevant `.storeSomething()` methods](/ref/core-cells#builder) or when [using Structs and Messages and their convenience methods](/book/cells#cnp-structs).
 
 ```tact
 // Too many bits
@@ -326,7 +326,7 @@ From the [Cells, Builders and Slices page](/book/cells#cells) of the Book:
 
 To parse a [`Cell{:tact}`][cell], a [`Slice{:tact}`][slice] is used. If you try to load more data or references than a `Slice{:tact}` contains, an error with exit code 9 is thrown: `Cell underflow`.
 
-The most common cause of this error is a mismatch between the expected and actual memory layouts of the cells, so it's recommended to [use Structs and Messages for parsing](/book/cells#cnp-structs) the cells instead of [manual parsing](/book/cells#cnp-manually) via [relevant `.loadSomething()` methods](/ref/core-cells).
+The most common cause of this error is a mismatch between the expected and actual memory layouts of the cells, so it's recommended to [use Structs and Messages for parsing](/book/cells#cnp-structs) the cells instead of [manual parsing](/book/cells#cnp-manually) via [relevant `.loadSomething()` methods](/ref/core-cells#slice).
 
 ```tact
 // Too few bits
@@ -378,9 +378,9 @@ Described in the [TVM][tvm] docs as "Unknown error, may be thrown by user progra
 
 ```tact
 try {
-    // Unlike nativeSendMessage which uses SENDRAWMSG, this one uses SENDMSG,
+    // Unlike sendRawMessage which uses SENDRAWMSG, this one uses SENDMSG,
     // and therefore fails in Compute phase when the message is ill-formed
-    nativeSendMessageReturnForwardFee(emptyCell(), 0);
+    sendRawMessageReturnForwardFee(emptyCell(), 0);
 } catch (exitCode) {
     // exitCode is 11
 }
@@ -448,7 +448,7 @@ There are only four supported actions at the moment: changing the contract code,
 
 ```tact
 // For example, let's try to send an ill-formed message:
-nativeSendMessage(emptyCell(), 0); // won't fail in the compute phase,
+sendRawMessage(emptyCell(), 0); // won't fail in the compute phase,
                                    // but will result in exit code 34 in the Action phase
 ```
 

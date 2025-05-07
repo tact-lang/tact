@@ -6,25 +6,25 @@ import "@ton/test-utils";
 
 describe("receiver-early-return", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<Test>;
     const amount = toNano("0.5");
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await Test.fromInit(42n));
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: amount },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -35,7 +35,7 @@ describe("receiver-early-return", () => {
 
     it("early return should result in a contract state change", async () => {
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: amount },
             {
                 $$type: "Msg1",
@@ -47,7 +47,7 @@ describe("receiver-early-return", () => {
 
     it("no early return should result in a different contract state change", async () => {
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: amount },
             {
                 $$type: "Msg1",
@@ -59,7 +59,7 @@ describe("receiver-early-return", () => {
 
     it("if-else with early returns in both branches: then branch", async () => {
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: amount },
             {
                 $$type: "Msg2",
@@ -71,7 +71,7 @@ describe("receiver-early-return", () => {
 
     it("if-else with early returns in both branches: else branch", async () => {
         await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: amount },
             {
                 $$type: "Msg2",

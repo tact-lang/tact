@@ -34,7 +34,7 @@ self.reply("Hello, World!".asComment()); // asComment converts a String to a Cel
 事实上，前面使用 [`.reply(){:tact}`](#send-simple-reply) 的示例可以通过调用下面的 `send(){:tact}` 函数来实现：
 
 ```tact
-send(SendParameters{
+send(SendParameters {
     // bounce is set to true by default
     to: sender(), // sending message back to the sender
     value: 0, // don't add Toncoins to the message...
@@ -48,7 +48,7 @@ send(SendParameters{
 ```tact
 let recipient: Address = address("...");
 let value: Int = ton("1");
-send(SendParameters{
+send(SendParameters {
     // bounce is set to true by default
     to: recipient,
     value: value,
@@ -66,7 +66,7 @@ send(SendParameters{
 ```tact
 let recipient: Address = address("...");
 let value: Int = ton("1");
-send(SendParameters{
+send(SendParameters {
     // bounce is set to true by default
     to: recipient,
     value: value,
@@ -83,7 +83,7 @@ send(SendParameters{
 let init: StateInit = initOf SecondContract(arg1, arg2);
 let address: Address = contractAddress(init);
 let value: Int = ton("1");
-send(SendParameters{
+send(SendParameters {
     // bounce is set to true by default
     to: address,
     value: value,
@@ -108,14 +108,14 @@ contract FailureIsNothingButAnotherStep {
     // And all the funds it gets are obtained from inbound internal messages
     receive() {
         // 1st outbound message evaluated and queued (but not sent yet)
-        send(SendParameters{
+        send(SendParameters {
             to: sender(),
             value: ton("0.042"), // plus forward fee due to SendPayFwdFeesSeparately
             mode: SendIgnoreErrors | SendPayFwdFeesSeparately,
         });
 
         // 2nd outbound message evaluated and queued (but not sent yet, and never will be!)
-        send(SendParameters{
+        send(SendParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
@@ -141,7 +141,7 @@ contract FailureIsNothingButAnotherStep {
 - [`self.notify(){:tact}`](/zh-cn/ref/core-base#self-notify)
 - [`self.reply(){:tact}`](/zh-cn/ref/core-base#self-reply)
 - [`self.forward(){:tact}`](/zh-cn/ref/core-base#self-forward)
-- [`nativeSendMessage(){:tact}`](/zh-cn/ref/core-send#nativesendmessage)
+- [`sendRawMessage(){:tact}`](/zh-cn/ref/core-send#sendrawmessage)
 
 :::
 

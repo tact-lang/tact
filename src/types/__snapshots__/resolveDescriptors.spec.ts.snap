@@ -446,6 +446,24 @@ exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for init-with-invalid-bytes128-as-type 1`] = `
+"<unknown>:6:10: Unsupported format "bytes128"
+  5 | contract Foo {
+> 6 |     init(val: Slice as bytes128) {}
+               ^~~~~~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for init-with-invalid-int260-as-type 1`] = `
+"<unknown>:6:10: Unsupported format "int260"
+  5 | contract Foo {
+> 6 |     init(val: Int as int260) {}
+               ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for message-decl-remainder-in-the-middle 1`] = `
 "<unknown>:8:5: The "as remaining" field can only be the last field of the message
   7 |     a: Int;
@@ -586,6 +604,87 @@ exports[`resolveDescriptors should fail descriptors for method-first-param-not-s
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-abstract-methods 1`] = `
+"<unknown>:15:10: Both "TraitB" and "TraitA" define method "f"
+  14 | 
+> 15 | contract TestContract with TraitA, TraitB {}
+                ^~~~~~~~~~~~
+  16 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods 1`] = `
+"<unknown>:17:10: Both "TraitB" and "TraitA" define method "f"
+  16 | 
+> 17 | contract TestContract with TraitA, TraitB {}
+                ^~~~~~~~~~~~
+  18 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-abstract-method 1`] = `
+"<unknown>:13:10: Both "TraitB" and "TraitA" define method "f"
+  12 | 
+> 13 | contract TestContract with TraitA, TraitB {
+                ^~~~~~~~~~~~
+  14 |     fun f(): Int {}
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-abstract-and-virtual-method 1`] = `
+"<unknown>:15:10: Both "TraitB" and "TraitA" define method "f"
+  14 | 
+> 15 | contract TestContract with TraitA, TraitB {
+                ^~~~~~~~~~~~
+  16 |     fun f(): Int {}
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-complex-hierarchy 1`] = `
+"<unknown>:24:5: Function "f" is already defined in trait "TraitA"
+  23 | contract TestContract with TraitC {
+> 24 |     fun f(): Int {
+           ^~~~~~~~~~~~~~
+  25 |         return 4;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-deep 1`] = `
+"<unknown>:19:10: Both "TraitB" and "TraitA" define method "f"
+  18 | 
+> 19 | contract TestContract with TraitA, TraitC {}
+                ^~~~~~~~~~~~
+  20 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-for-trait 1`] = `
+"<unknown>:17:7: Both "TraitB" and "TraitA" define method "f"
+  16 | 
+> 17 | trait Test with TraitA, TraitB {}
+             ^~~~
+  18 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-three-traits 1`] = `
+"<unknown>:23:10: Both "TraitB" and "TraitA" define method "f"
+  22 | 
+> 23 | contract TestContract with TraitA, TraitB, TraitC {}
+                ^~~~~~~~~~~~
+  24 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for multi-inheritance-with-duplicate-methods-virtual-and-virtual-method 1`] = `
+"<unknown>:17:10: Both "TraitB" and "TraitA" define method "f"
+  16 | 
+> 17 | contract TestContract with TraitA, TraitB {
+                ^~~~~~~~~~~~
+  18 |     override fun f(): Int {}
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for native-fun-getter 1`] = `
 "<unknown>:9:1: Native functions cannot be getters
   8 | @name(hello_world)
@@ -609,6 +708,33 @@ exports[`resolveDescriptors should fail descriptors for not-extend-function-self
 > 4 | extends fun foo(self: Int, self: String) { }
                                  ^~~~~~~~~~~~
   5 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for opcode-method-on-instance-int 1`] = `
+"<unknown>:7:16: Type "Int" does not have a function named "opcode"
+  6 |     get fun foo(): Int {
+> 7 |         return 10.opcode();
+                     ^~~~~~~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for opcode-method-on-struct 1`] = `
+"<unknown>:11:16: opcode() method can be used only for messages
+  10 |     get fun foo(): Int {
+> 11 |         return Bar.opcode();
+                      ^~~~~~~~~~~~
+  12 |     }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for opcode-method-on-trait 1`] = `
+"<unknown>:8:16: Cannot find 'Ownable'
+  7 |     get fun foo(): Int {
+> 8 |         return Ownable.opcode();
+                     ^~~~~~~
+  9 |     }
 "
 `;
 
@@ -957,6 +1083,24 @@ exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-rec
 > 4 | struct A1 {
              ^~
   5 |   a: Int;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-recursive-2 1`] = `
+"<unknown>:8:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
+  7 | 
+> 8 | struct A1 {
+             ^~
+  9 |   a: Int;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-recursive-with-optional 1`] = `
+"<unknown>:8:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
+  7 | 
+> 8 | struct A1 {
+             ^~
+  9 |   a: Int;
 "
 `;
 
@@ -1321,6 +1465,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
           },
           "params": [
             {
+              "as": undefined,
               "id": 11,
               "kind": "typed_parameter",
               "loc": self: Slice,
@@ -1386,6 +1531,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -1415,6 +1561,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -1451,6 +1598,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -1486,6 +1634,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
       },
       "params": [
         {
+          "as": undefined,
           "id": 8,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -1575,6 +1724,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -1614,6 +1764,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
       },
       "params": [
         {
+          "as": undefined,
           "id": 8,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -1631,6 +1782,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
           },
         },
         {
+          "as": undefined,
           "id": 11,
           "kind": "typed_parameter",
           "loc": y: Int,
@@ -1732,6 +1884,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -1769,6 +1922,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 2`
       },
       "params": [
         {
+          "as": undefined,
           "id": 6,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -1843,6 +1997,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -1993,6 +2148,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2030,6 +2186,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
       },
       "params": [
         {
+          "as": undefined,
           "id": 17,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -2047,6 +2204,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
           },
         },
         {
+          "as": undefined,
           "id": 20,
           "kind": "typed_parameter",
           "loc": y: Int,
@@ -2157,6 +2315,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2189,6 +2348,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2292,6 +2452,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2328,6 +2489,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2360,6 +2522,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2461,6 +2624,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2497,6 +2661,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2526,6 +2691,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2560,6 +2726,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2664,6 +2831,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": {
       "base": 10,
       "id": 0,
@@ -2708,6 +2876,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
               "id": 18,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 17,
                 "kind": "typed_parameter",
                 "loc": src: A,
@@ -2739,6 +2908,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 23,
               "kind": "typed_parameter",
               "loc": src: Slice,
@@ -2784,6 +2954,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -2817,6 +2988,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
               "id": 18,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 17,
                 "kind": "typed_parameter",
                 "loc": src: A,
@@ -2861,6 +3033,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 23,
               "kind": "typed_parameter",
               "loc": src: Slice,
@@ -2916,6 +3089,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -2955,6 +3129,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -2984,6 +3159,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -3018,6 +3194,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -3251,6 +3428,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": {
       "base": 10,
       "id": 0,
@@ -3295,6 +3473,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
               "id": 25,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 24,
                 "kind": "typed_parameter",
                 "loc": src: A,
@@ -3326,6 +3505,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 31,
               "kind": "typed_parameter",
               "loc": src: bounced<A>,
@@ -3411,6 +3591,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -3444,6 +3625,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
               "id": 25,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 24,
                 "kind": "typed_parameter",
                 "loc": src: A,
@@ -3488,6 +3670,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 31,
               "kind": "typed_parameter",
               "loc": src: bounced<A>,
@@ -3585,6 +3768,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -3624,6 +3808,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -3656,6 +3841,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -3748,6 +3934,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -3862,6 +4049,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -3904,6 +4092,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -3996,6 +4185,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -4035,6 +4225,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -4067,6 +4258,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -4173,6 +4365,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -4287,6 +4480,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -4329,6 +4523,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -4435,6 +4630,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -4477,6 +4673,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -4506,6 +4703,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -4535,6 +4733,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -4634,17 +4833,18 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
     },
           "params": [
             {
+              "as": undefined,
               "id": 22,
               "kind": "typed_parameter",
               "loc": cell: Cell,
               "name": {
-                "id": 20,
+                "id": 21,
                 "kind": "id",
                 "loc": cell,
                 "text": "cell",
               },
               "type": {
-                "id": 21,
+                "id": 20,
                 "kind": "type_id",
                 "loc": Cell,
                 "text": "Cell",
@@ -4845,6 +5045,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -4855,17 +5056,18 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
     },
         "params": [
           {
+            "as": undefined,
             "id": 22,
             "kind": "typed_parameter",
             "loc": cell: Cell,
             "name": {
-              "id": 20,
+              "id": 21,
               "kind": "id",
               "loc": cell,
               "text": "cell",
             },
             "type": {
-              "id": 21,
+              "id": 20,
               "kind": "type_id",
               "loc": Cell,
               "text": "Cell",
@@ -4906,10 +5108,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
       "kind": "init-function",
       "params": [
         {
-          "as": null,
+          "as": undefined,
           "loc": cell: Cell,
           "name": {
-            "id": 20,
+            "id": 21,
             "kind": "id",
             "loc": cell,
             "text": "cell",
@@ -4950,6 +5152,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -4989,6 +5192,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -5023,6 +5227,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -5127,6 +5332,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": {
       "base": 10,
       "id": 0,
@@ -5164,6 +5370,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
               "id": 15,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 14,
                 "kind": "typed_parameter",
                 "loc": msg: A,
@@ -5252,6 +5459,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -5293,6 +5501,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
               "id": 15,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 14,
                 "kind": "typed_parameter",
                 "loc": msg: A,
@@ -5399,6 +5608,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -5438,6 +5648,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -5470,6 +5681,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -5590,6 +5802,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -5746,6 +5959,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -5788,6 +6002,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -5908,6 +6123,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -5947,6 +6163,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -5979,6 +6196,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -6127,6 +6345,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -6283,6 +6502,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -6325,6 +6545,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -6473,6 +6694,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -6512,6 +6734,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -6544,6 +6767,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -6649,6 +6873,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -6762,6 +6987,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -6804,6 +7030,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -6909,6 +7136,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
           },
         ],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -6971,6 +7199,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
           },
           "params": [
             {
+              "as": undefined,
               "id": 18,
               "kind": "typed_parameter",
               "loc": self: Builder,
@@ -7021,6 +7250,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -7073,6 +7303,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
           },
           "params": [
             {
+              "as": undefined,
               "id": 24,
               "kind": "typed_parameter",
               "loc": self: Cell,
@@ -7123,6 +7354,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -7152,6 +7384,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -7181,6 +7414,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -7213,6 +7447,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -8170,6 +8405,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -8228,6 +8464,7 @@ exports[`resolveDescriptors should resolve descriptors for dump 1`] = `
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -8421,6 +8658,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 19,
               "kind": "typed_parameter",
               "loc": self: Int,
@@ -8438,6 +8676,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 23,
               "kind": "typed_parameter",
               "loc": y: Int?,
@@ -8539,6 +8778,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 32,
               "kind": "typed_parameter",
               "loc": self: Int?,
@@ -8561,6 +8801,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 35,
               "kind": "typed_parameter",
               "loc": y: Int,
@@ -8662,6 +8903,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 43,
               "kind": "typed_parameter",
               "loc": self: Int,
@@ -8679,6 +8921,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 47,
               "kind": "typed_parameter",
               "loc": y: Int?,
@@ -8785,6 +9028,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 56,
               "kind": "typed_parameter",
               "loc": self: Int?,
@@ -8807,6 +9051,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 59,
               "kind": "typed_parameter",
               "loc": y: Int,
@@ -8908,6 +9153,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "params": [
             {
+              "as": undefined,
               "id": 69,
               "kind": "typed_parameter",
               "loc": self: Int?,
@@ -8930,6 +9176,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
+              "as": undefined,
               "id": 72,
               "kind": "typed_parameter",
               "loc": y: Int,
@@ -9008,6 +9255,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -9042,6 +9290,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
       },
       "params": [
         {
+          "as": undefined,
           "id": 7,
           "kind": "typed_parameter",
           "loc": x: Int,
@@ -9059,6 +9308,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
         },
         {
+          "as": undefined,
           "id": 11,
           "kind": "typed_parameter",
           "loc": y: Int?,
@@ -9169,6 +9419,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -9198,6 +9449,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -9232,6 +9484,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -9517,6 +9770,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -9561,6 +9815,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -9600,6 +9855,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -9629,6 +9885,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -9663,6 +9920,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -9796,6 +10054,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       },
       "params": [
         {
+          "as": undefined,
           "id": 19,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -9813,6 +10072,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           },
         },
         {
+          "as": undefined,
           "id": 22,
           "kind": "typed_parameter",
           "loc": b: Bool,
@@ -9911,6 +10171,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -9940,6 +10201,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -9974,6 +10236,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -10067,6 +10330,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -10111,17 +10375,18 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     },
           "params": [
             {
+              "as": undefined,
               "id": 18,
               "kind": "typed_parameter",
               "loc": a: Int,
               "name": {
-                "id": 16,
+                "id": 17,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               "type": {
-                "id": 17,
+                "id": 16,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -10442,6 +10707,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -10452,17 +10718,18 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     },
         "params": [
           {
+            "as": undefined,
             "id": 18,
             "kind": "typed_parameter",
             "loc": a: Int,
             "name": {
-              "id": 16,
+              "id": 17,
               "kind": "id",
               "loc": a,
               "text": "a",
             },
             "type": {
-              "id": 17,
+              "id": 16,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -10503,10 +10770,10 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "kind": "init-function",
       "params": [
         {
-          "as": null,
+          "as": undefined,
           "loc": a: Int,
           "name": {
-            "id": 16,
+            "id": 17,
             "kind": "id",
             "loc": a,
             "text": "a",
@@ -10549,6 +10816,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -10610,6 +10878,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
           },
           "params": [
             {
+              "as": undefined,
               "id": 11,
               "kind": "typed_parameter",
               "loc": self: Int,
@@ -10682,6 +10951,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -10711,6 +10981,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -10745,6 +11016,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -10781,6 +11053,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -10810,6 +11083,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -10844,6 +11118,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -10883,6 +11158,7 @@ native sample(a: Int): Int;,
       },
       "params": [
         {
+          "as": undefined,
           "id": 11,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -10992,6 +11268,7 @@ mutates extends native inc(self: Int): Int;,
           },
           "params": [
             {
+              "as": undefined,
               "id": 11,
               "kind": "typed_parameter",
               "loc": self: Int,
@@ -11038,6 +11315,7 @@ mutates extends native inc(self: Int): Int;,
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -11067,6 +11345,7 @@ mutates extends native inc(self: Int): Int;,
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -11101,6 +11380,7 @@ mutates extends native inc(self: Int): Int;,
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -11137,6 +11417,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -11171,6 +11452,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -11818,6 +12100,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -11869,6 +12152,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -11908,6 +12192,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -11942,6 +12227,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -13199,6 +13485,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -13258,6 +13545,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -13297,6 +13585,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -13331,6 +13620,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -14588,6 +14878,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -14647,6 +14938,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -14689,6 +14981,7 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -14718,6 +15011,7 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -14747,6 +15041,7 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -14971,6 +15266,7 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": {
       "base": 10,
       "id": 0,
@@ -15013,6 +15309,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -15045,6 +15342,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -15193,6 +15491,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": {
       "base": 10,
       "id": 0,
@@ -15228,6 +15527,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
               "id": 22,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 21,
                 "kind": "typed_parameter",
                 "loc": msg: MsgWithExprOpcode,
@@ -15267,6 +15567,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -15300,6 +15601,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
               "id": 22,
               "kind": "simple",
               "param": {
+                "as": undefined,
                 "id": 21,
                 "kind": "typed_parameter",
                 "loc": msg: MsgWithExprOpcode,
@@ -15355,6 +15657,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -15376,7 +15679,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
 
 exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for override-for-abstract-constant 1`] = `
+exports[`resolveDescriptors should resolve descriptors for multi-inheritance-with-duplicate-methods-via-diamond 1`] = `
 [
   {
     "ast": {
@@ -15394,6 +15697,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -15426,6 +15730,1408 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [],
+          "id": 10,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 8,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 9,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+      ],
+      "id": 11,
+      "kind": "trait",
+      "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": TraitA,
+        "text": "TraitA",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "f" => {
+        "ast": {
+          "attributes": [],
+          "id": 10,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 8,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 9,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "f",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "TraitA",
+          "optional": false,
+        },
+      },
+    },
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "TraitA",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 39380,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 14,
+      "kind": "trait",
+      "loc": trait TraitB with TraitA {},
+      "name": {
+        "id": 12,
+        "kind": "id",
+        "loc": TraitB,
+        "text": "TraitB",
+      },
+      "traits": [
+        {
+          "id": 13,
+          "kind": "id",
+          "loc": TraitA,
+          "text": "TraitA",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "f" => {
+        "ast": {
+          "attributes": [],
+          "id": 31,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 28,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 29,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 30,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "f",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "TraitB",
+          "optional": false,
+        },
+      },
+    },
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "TraitB",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+          ],
+          "id": 11,
+          "kind": "trait",
+          "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": TraitA,
+            "text": "TraitA",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitA",
+              "optional": false,
+            },
+          },
+        },
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitA",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 39380,
+      },
+    ],
+    "uid": 43447,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 17,
+      "kind": "trait",
+      "loc": trait TraitC with TraitA {},
+      "name": {
+        "id": 15,
+        "kind": "id",
+        "loc": TraitC,
+        "text": "TraitC",
+      },
+      "traits": [
+        {
+          "id": 16,
+          "kind": "id",
+          "loc": TraitA,
+          "text": "TraitA",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "f" => {
+        "ast": {
+          "attributes": [],
+          "id": 35,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 32,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 33,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 34,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "f",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "TraitC",
+          "optional": false,
+        },
+      },
+    },
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "TraitC",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+          ],
+          "id": 11,
+          "kind": "trait",
+          "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": TraitA,
+            "text": "TraitA",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitA",
+              "optional": false,
+            },
+          },
+        },
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitA",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 39380,
+      },
+    ],
+    "uid": 47510,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 21,
+      "kind": "contract",
+      "loc": contract TestContract with TraitB, TraitC {},
+      "name": {
+        "id": 18,
+        "kind": "id",
+        "loc": TestContract,
+        "text": "TestContract",
+      },
+      "params": undefined,
+      "traits": [
+        {
+          "id": 19,
+          "kind": "id",
+          "loc": TraitB,
+          "text": "TraitB",
+        },
+        {
+          "id": 20,
+          "kind": "id",
+          "loc": TraitC,
+          "text": "TraitC",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "f" => {
+        "ast": {
+          "attributes": [],
+          "id": 27,
+          "kind": "function_def",
+          "loc": fun f(): Int {
+        return 1;
+    },
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "params": [],
+          "return": {
+            "id": 24,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 25,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              "id": 26,
+              "kind": "statement_return",
+              "loc": return 1;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "f",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "TestContract",
+          "optional": false,
+        },
+      },
+    },
+    "globalVariables": Set {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 23,
+        "kind": "contract_init",
+        "loc": contract TestContract with TraitB, TraitC {},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "TestContract",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 14,
+          "kind": "trait",
+          "loc": trait TraitB with TraitA {},
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": TraitB,
+            "text": "TraitB",
+          },
+          "traits": [
+            {
+              "id": 13,
+              "kind": "id",
+              "loc": TraitA,
+              "text": "TraitA",
+            },
+          ],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 31,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 28,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 29,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 30,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitB",
+              "optional": false,
+            },
+          },
+        },
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitB",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [
+                {
+                  "attributes": [],
+                  "id": 10,
+                  "kind": "function_def",
+                  "loc": fun f(): Int {
+        return 1;
+    },
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f,
+                    "text": "f",
+                  },
+                  "params": [],
+                  "return": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                  "statements": [
+                    {
+                      "expression": {
+                        "base": 10,
+                        "id": 8,
+                        "kind": "number",
+                        "loc": 1,
+                        "value": 1n,
+                      },
+                      "id": 9,
+                      "kind": "statement_return",
+                      "loc": return 1;,
+                    },
+                  ],
+                },
+              ],
+              "id": 11,
+              "kind": "trait",
+              "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+              "name": {
+                "id": 5,
+                "kind": "id",
+                "loc": TraitA,
+                "text": "TraitA",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {
+              "f" => {
+                "ast": {
+                  "attributes": [],
+                  "id": 10,
+                  "kind": "function_def",
+                  "loc": fun f(): Int {
+        return 1;
+    },
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f,
+                    "text": "f",
+                  },
+                  "params": [],
+                  "return": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                  "statements": [
+                    {
+                      "expression": {
+                        "base": 10,
+                        "id": 8,
+                        "kind": "number",
+                        "loc": 1,
+                        "value": 1n,
+                      },
+                      "id": 9,
+                      "kind": "statement_return",
+                      "loc": return 1;,
+                    },
+                  ],
+                },
+                "isAbstract": false,
+                "isGetter": false,
+                "isInline": false,
+                "isMutating": true,
+                "isOverride": false,
+                "isVirtual": false,
+                "methodId": null,
+                "name": "f",
+                "origin": "user",
+                "params": [],
+                "returns": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+                "self": {
+                  "kind": "ref",
+                  "name": "TraitA",
+                  "optional": false,
+                },
+              },
+            },
+            "globalVariables": Set {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "TraitA",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 39380,
+          },
+        ],
+        "uid": 43447,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+          ],
+          "id": 11,
+          "kind": "trait",
+          "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": TraitA,
+            "text": "TraitA",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 10,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 8,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 9,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitA",
+              "optional": false,
+            },
+          },
+        },
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitA",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 39380,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 17,
+          "kind": "trait",
+          "loc": trait TraitC with TraitA {},
+          "name": {
+            "id": 15,
+            "kind": "id",
+            "loc": TraitC,
+            "text": "TraitC",
+          },
+          "traits": [
+            {
+              "id": 16,
+              "kind": "id",
+              "loc": TraitA,
+              "text": "TraitA",
+            },
+          ],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "f" => {
+            "ast": {
+              "attributes": [],
+              "id": 35,
+              "kind": "function_def",
+              "loc": fun f(): Int {
+        return 1;
+    },
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "params": [],
+              "return": {
+                "id": 32,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "base": 10,
+                    "id": 33,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  "id": 34,
+                  "kind": "statement_return",
+                  "loc": return 1;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "f",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "TraitC",
+              "optional": false,
+            },
+          },
+        },
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "TraitC",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [
+                {
+                  "attributes": [],
+                  "id": 10,
+                  "kind": "function_def",
+                  "loc": fun f(): Int {
+        return 1;
+    },
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f,
+                    "text": "f",
+                  },
+                  "params": [],
+                  "return": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                  "statements": [
+                    {
+                      "expression": {
+                        "base": 10,
+                        "id": 8,
+                        "kind": "number",
+                        "loc": 1,
+                        "value": 1n,
+                      },
+                      "id": 9,
+                      "kind": "statement_return",
+                      "loc": return 1;,
+                    },
+                  ],
+                },
+              ],
+              "id": 11,
+              "kind": "trait",
+              "loc": trait TraitA {
+    fun f(): Int {
+        return 1;
+    }
+},
+              "name": {
+                "id": 5,
+                "kind": "id",
+                "loc": TraitA,
+                "text": "TraitA",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {
+              "f" => {
+                "ast": {
+                  "attributes": [],
+                  "id": 10,
+                  "kind": "function_def",
+                  "loc": fun f(): Int {
+        return 1;
+    },
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f,
+                    "text": "f",
+                  },
+                  "params": [],
+                  "return": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                  "statements": [
+                    {
+                      "expression": {
+                        "base": 10,
+                        "id": 8,
+                        "kind": "number",
+                        "loc": 1,
+                        "value": 1n,
+                      },
+                      "id": 9,
+                      "kind": "statement_return",
+                      "loc": return 1;,
+                    },
+                  ],
+                },
+                "isAbstract": false,
+                "isGetter": false,
+                "isInline": false,
+                "isMutating": true,
+                "isOverride": false,
+                "isVirtual": false,
+                "methodId": null,
+                "name": "f",
+                "origin": "user",
+                "params": [],
+                "returns": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+                "self": {
+                  "kind": "ref",
+                  "name": "TraitA",
+                  "optional": false,
+                },
+              },
+            },
+            "globalVariables": Set {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "TraitA",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 39380,
+          },
+        ],
+        "uid": 47510,
+      },
+    ],
+    "uid": 63070,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for multi-inheritance-with-duplicate-methods-via-diamond 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for override-for-abstract-constant 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -15518,6 +17224,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -15632,6 +17339,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -15674,6 +17382,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -15766,6 +17475,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -15808,6 +17518,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -15904,6 +17615,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -16009,6 +17721,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -16103,6 +17816,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-abstract
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -16142,6 +17856,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -16174,6 +17889,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -16280,6 +17996,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -16394,6 +18111,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -16436,6 +18154,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -16542,6 +18261,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -16581,6 +18301,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -16613,6 +18334,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -16719,6 +18441,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -16833,6 +18556,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -16875,6 +18599,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -16981,6 +18706,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -17020,6 +18746,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -17126,6 +18853,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -17240,6 +18968,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -17356,6 +19085,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -17395,6 +19125,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -17427,6 +19158,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -17459,6 +19191,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -17565,6 +19298,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -17685,6 +19419,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -17727,6 +19462,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -17759,6 +19495,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -17865,6 +19602,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -17904,6 +19642,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -18010,6 +19749,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -18106,6 +19846,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -18202,6 +19943,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -18392,6 +20134,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -18508,6 +20251,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -18604,6 +20348,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -18700,6 +20445,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -18739,6 +20485,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -18771,6 +20518,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -18877,6 +20625,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -18990,6 +20739,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -19094,6 +20844,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -19133,6 +20884,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -19239,6 +20991,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -19352,6 +21105,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -19456,6 +21210,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -19495,6 +21250,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -19527,6 +21283,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -19559,6 +21316,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -19670,6 +21428,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -19700,6 +21459,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -19783,6 +21543,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -19892,6 +21653,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -19922,6 +21684,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -19957,6 +21720,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -20073,6 +21837,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -20151,6 +21916,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -20260,6 +22026,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -20290,6 +22057,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 "dependsOn": [],
                 "fields": [],
                 "functions": Map {},
+                "globalVariables": Set {},
                 "header": null,
                 "init": null,
                 "interfaces": [],
@@ -20325,6 +22093,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -20439,6 +22208,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -20469,6 +22239,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -20504,6 +22275,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -20543,6 +22315,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -20575,6 +22348,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -20681,6 +22455,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -20834,6 +22609,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -20938,6 +22714,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -21054,6 +22831,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -21158,6 +22936,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -21320,6 +23099,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -21471,6 +23251,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -21575,6 +23356,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -21684,6 +23466,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -21797,6 +23580,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -21901,6 +23685,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -21943,6 +23728,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -21975,6 +23761,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -22007,6 +23794,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -22113,6 +23901,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -22232,6 +24021,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -22262,6 +24052,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -22368,6 +24159,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -22407,6 +24199,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -22513,6 +24306,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -22656,6 +24450,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -22760,6 +24555,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -22859,6 +24655,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -23048,6 +24845,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -23189,6 +24987,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -23293,6 +25092,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -23402,6 +25202,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -23498,6 +25299,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -23540,6 +25342,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -23638,6 +25441,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -23743,6 +25547,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -23839,6 +25644,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -23947,6 +25753,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -24052,6 +25859,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -24148,6 +25956,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -24190,6 +25999,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -24222,6 +26032,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -24320,6 +26131,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -24432,6 +26244,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -24474,6 +26287,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -24506,6 +26320,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -24604,6 +26419,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -24712,6 +26528,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -24798,6 +26615,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -24884,6 +26702,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -25066,6 +26885,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -25174,6 +26994,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -25260,6 +27081,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -25346,6 +27168,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -25388,6 +27211,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -25486,6 +27310,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -25592,6 +27417,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -25634,6 +27460,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -25732,6 +27559,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -25840,6 +27668,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -25939,6 +27768,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -26047,6 +27877,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -26089,6 +27920,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -26185,6 +28017,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -26266,6 +28099,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -26360,6 +28194,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -26444,6 +28279,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -26523,6 +28359,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -26617,6 +28454,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 },
               },
             },
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -26716,6 +28554,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -26825,6 +28664,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -26867,6 +28707,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -26948,6 +28789,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -27027,6 +28869,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 },
               },
             },
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -27121,6 +28964,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                     },
                   },
                 },
+                "globalVariables": Set {},
                 "header": null,
                 "init": null,
                 "interfaces": [],
@@ -27220,6 +29064,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 },
               },
             },
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -27304,6 +29149,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -27398,6 +29244,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 },
               },
             },
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -27497,6 +29344,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -27539,6 +29387,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -27571,6 +29420,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -27674,6 +29524,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -27704,6 +29555,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -27788,6 +29640,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -27889,6 +29742,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -27919,6 +29773,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -27954,6 +29809,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -28063,6 +29919,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -28105,6 +29962,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -28186,6 +30044,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -28287,6 +30146,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 },
               },
             },
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -28317,6 +30177,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 "dependsOn": [],
                 "fields": [],
                 "functions": Map {},
+                "globalVariables": Set {},
                 "header": null,
                 "init": null,
                 "interfaces": [],
@@ -28352,6 +30213,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -28458,6 +30320,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -28488,6 +30351,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             "dependsOn": [],
             "fields": [],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -28523,6 +30387,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -28565,6 +30430,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -28663,6 +30529,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -28797,6 +30664,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -28893,6 +30761,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -29030,6 +30899,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -29126,6 +30996,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -29310,6 +31181,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -29442,6 +31314,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -29538,6 +31411,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 },
               },
             },
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -29639,6 +31513,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -29773,6 +31648,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -29869,6 +31745,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 },
               },
             },
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -29914,6 +31791,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -29946,6 +31824,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -30044,6 +31923,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -30155,6 +32035,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -30185,6 +32066,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -30283,6 +32165,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -30391,6 +32274,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -30525,6 +32409,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -30621,6 +32506,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -30710,6 +32596,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -30891,6 +32778,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -31023,6 +32911,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -31119,6 +33008,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
                 },
               },
             },
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -31220,6 +33110,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -31306,6 +33197,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -31348,6 +33240,7 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -31405,6 +33298,7 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -31476,6 +33370,7 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -31920,6 +33815,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -31949,6 +33845,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -31981,6 +33878,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -32145,6 +34043,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": {
       "base": 10,
       "id": 0,
@@ -32244,6 +34143,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": {
       "base": 10,
       "id": 0,
@@ -32278,6 +34178,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 25,
               "kind": "typed_parameter",
               "loc": msg: bounced<Add>,
@@ -32313,6 +34214,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 31,
               "kind": "typed_parameter",
               "loc": msg: bounced<Is>,
@@ -32362,6 +34264,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -32400,6 +34303,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 25,
               "kind": "typed_parameter",
               "loc": msg: bounced<Add>,
@@ -32449,6 +34353,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
             "kind": "bounce",
             "loc": bounced,
             "param": {
+              "as": undefined,
               "id": 31,
               "kind": "typed_parameter",
               "loc": msg: bounced<Is>,
@@ -32509,6 +34414,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -32548,6 +34454,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -32580,6 +34487,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -32683,6 +34591,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -32719,6 +34628,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -32748,6 +34658,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -32782,6 +34693,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -32934,6 +34846,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33026,6 +34939,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33062,6 +34976,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33094,6 +35009,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33257,6 +35173,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": {
       "base": 10,
       "id": 0,
@@ -33354,6 +35271,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33393,6 +35311,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33422,6 +35341,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33451,6 +35371,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33674,6 +35595,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33710,6 +35632,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33739,6 +35662,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33773,6 +35697,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33809,6 +35734,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -33841,6 +35767,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -34086,6 +36013,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -34288,6 +36216,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -34330,6 +36259,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -34575,6 +36505,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -34614,6 +36545,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -34646,6 +36578,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -34741,6 +36674,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -34853,6 +36787,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -34946,6 +36881,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
           },
         ],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -34985,6 +36921,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -35017,6 +36954,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -35122,6 +37060,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -35234,6 +37173,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -35337,6 +37277,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
           },
         ],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -35376,6 +37317,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -35408,6 +37350,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -35513,6 +37456,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -35695,6 +37639,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -35798,6 +37743,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
           },
         ],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -35983,6 +37929,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -36086,6 +38033,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
           },
         ],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -36347,6 +38295,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -36527,6 +38476,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
           },
         ],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -36630,6 +38580,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
               },
             ],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -36738,6 +38689,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
           },
         ],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -36920,6 +38872,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
           },
         ],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -37023,6 +38976,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
               },
             ],
             "functions": Map {},
+            "globalVariables": Set {},
             "header": null,
             "init": null,
             "interfaces": [],
@@ -37065,6 +39019,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37097,6 +39052,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37202,6 +39158,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37304,6 +39261,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
       },
     ],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37407,6 +39365,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
           },
         ],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -37446,6 +39405,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37475,6 +39435,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37504,6 +39465,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37538,6 +39500,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
       },
       "params": [
         {
+          "as": undefined,
           "id": 11,
           "kind": "typed_parameter",
           "loc": a: Int,
@@ -37555,6 +39518,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
         },
         {
+          "as": undefined,
           "id": 14,
           "kind": "typed_parameter",
           "loc": _: String,
@@ -37571,6 +39535,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
         },
         {
+          "as": undefined,
           "id": 17,
           "kind": "typed_parameter",
           "loc": _: Int,
@@ -37587,6 +39552,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
         },
         {
+          "as": undefined,
           "id": 20,
           "kind": "typed_parameter",
           "loc": _: Cell,
@@ -37728,6 +39694,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37757,6 +39724,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37789,6 +39757,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
     "dependsOn": [],
     "fields": [],
     "functions": Map {},
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -37827,6 +39796,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
           "params": [
             {
+              "as": undefined,
               "id": 12,
               "kind": "typed_parameter",
               "loc": _: Int,
@@ -37843,6 +39813,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
             },
             {
+              "as": undefined,
               "id": 15,
               "kind": "typed_parameter",
               "loc": _: Int,
@@ -37921,6 +39892,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
           "params": [
             {
+              "as": undefined,
               "id": 12,
               "kind": "typed_parameter",
               "loc": _: Int,
@@ -37937,6 +39909,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
             },
             {
+              "as": undefined,
               "id": 15,
               "kind": "typed_parameter",
               "loc": _: Int,
@@ -38022,6 +39995,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": null,
     "interfaces": [],
@@ -38060,6 +40034,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
           "params": [
             {
+              "as": undefined,
               "id": 26,
               "kind": "typed_parameter",
               "loc": a: Int,
@@ -38077,6 +40052,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
             },
             {
+              "as": undefined,
               "id": 29,
               "kind": "typed_parameter",
               "loc": b: Int,
@@ -38200,6 +40176,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
           },
           "params": [
             {
+              "as": undefined,
               "id": 26,
               "kind": "typed_parameter",
               "loc": a: Int,
@@ -38217,6 +40194,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
             },
             {
+              "as": undefined,
               "id": 29,
               "kind": "typed_parameter",
               "loc": b: Int,
@@ -38341,6 +40319,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
         },
       },
     },
+    "globalVariables": Set {},
     "header": null,
     "init": {
       "ast": {
@@ -38385,6 +40364,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
         "dependsOn": [],
         "fields": [],
         "functions": Map {},
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],
@@ -38423,6 +40403,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
               "params": [
                 {
+                  "as": undefined,
                   "id": 12,
                   "kind": "typed_parameter",
                   "loc": _: Int,
@@ -38439,6 +40420,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                   },
                 },
                 {
+                  "as": undefined,
                   "id": 15,
                   "kind": "typed_parameter",
                   "loc": _: Int,
@@ -38517,6 +40499,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
               },
               "params": [
                 {
+                  "as": undefined,
                   "id": 12,
                   "kind": "typed_parameter",
                   "loc": _: Int,
@@ -38533,6 +40516,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
                   },
                 },
                 {
+                  "as": undefined,
                   "id": 15,
                   "kind": "typed_parameter",
                   "loc": _: Int,
@@ -38618,6 +40602,7 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
             },
           },
         },
+        "globalVariables": Set {},
         "header": null,
         "init": null,
         "interfaces": [],

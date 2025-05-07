@@ -214,6 +214,7 @@ exports[`resolveAllocation should write program 1`] = `
         },
       ],
       "functions": Map {},
+      "globalVariables": Set {},
       "header": null,
       "init": null,
       "interfaces": [],
@@ -360,6 +361,7 @@ exports[`resolveAllocation should write program 1`] = `
         },
       ],
       "functions": Map {},
+      "globalVariables": Set {},
       "header": null,
       "init": null,
       "interfaces": [],
@@ -608,6 +610,7 @@ exports[`resolveAllocation should write program 1`] = `
         },
       ],
       "functions": Map {},
+      "globalVariables": Set {},
       "header": null,
       "init": null,
       "interfaces": [],
@@ -1641,6 +1644,7 @@ exports[`resolveAllocation should write program 1`] = `
         },
       ],
       "functions": Map {},
+      "globalVariables": Set {},
       "header": null,
       "init": null,
       "interfaces": [],
@@ -1991,6 +1995,7 @@ exports[`resolveAllocation should write program 1`] = `
         },
       ],
       "functions": Map {},
+      "globalVariables": Set {},
       "header": null,
       "init": null,
       "interfaces": [],
@@ -2101,6 +2106,7 @@ exports[`resolveAllocation should write program 1`] = `
             },
             "params": [
               {
+                "as": undefined,
                 "id": 96,
                 "kind": "typed_parameter",
                 "loc": {},
@@ -2118,6 +2124,7 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
               {
+                "as": undefined,
                 "id": 99,
                 "kind": "typed_parameter",
                 "loc": {},
@@ -2216,6 +2223,7 @@ exports[`resolveAllocation should write program 1`] = `
             },
             "params": [
               {
+                "as": undefined,
                 "id": 96,
                 "kind": "typed_parameter",
                 "loc": {},
@@ -2233,6 +2241,7 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
               {
+                "as": undefined,
                 "id": 99,
                 "kind": "typed_parameter",
                 "loc": {},
@@ -2302,6 +2311,7 @@ exports[`resolveAllocation should write program 1`] = `
           },
         },
       },
+      "globalVariables": Set {},
       "header": null,
       "init": {
         "ast": {
@@ -2342,6 +2352,7 @@ exports[`resolveAllocation should write program 1`] = `
           "dependsOn": [],
           "fields": [],
           "functions": Map {},
+          "globalVariables": Set {},
           "header": null,
           "init": null,
           "interfaces": [],

@@ -11,7 +11,7 @@ import "@ton/test-utils";
 
 describe("upgrade", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let owner: SandboxContract<TreasuryContract>;
     let nonOwner: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<SampleUpgradeContract>;
@@ -21,13 +21,13 @@ describe("upgrade", () => {
         owner = await blockchain.treasury("owner");
         nonOwner = await blockchain.treasury("non-owner");
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
         contract = blockchain.openContract(
             await SampleUpgradeContract.fromInit(owner.address),
         );
 
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             {
                 value: toNano("10"),
             },
@@ -35,7 +35,7 @@ describe("upgrade", () => {
         );
 
         expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,

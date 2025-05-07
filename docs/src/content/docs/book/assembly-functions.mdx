@@ -135,20 +135,20 @@ asm fun mulOfSums(n: Nested): Int { ADD -ROT ADD MUL }
 
 // Action!
 fun showcase() {
-    sum(AB{ a: 27, b: 50 }); // 77
-    //      ↑      ↑
-    //      |      Pushed last, sits on top of the stack
-    //      Pushed first, sits at the bottom of the stack
+    sum(AB { a: 27, b: 50 }); // 77
+    //       ↑      ↑
+    //       |      Pushed last, sits on top of the stack
+    //       Pushed first, sits at the bottom of the stack
 
-    mulOfSums(Nested{ ab1: AB{ a: 1, b: 2 }, ab2: AB{ a: 3, b: 4 } }); // 21
-    //                         ↑     ↑                ↑     ↑
-    //                         |     |                |     Pushed last,
-    //                         |     |                |     sits on top of the stack
-    //                         |     |                Pushed second-to-last,
-    //                         |     |                sits below the top of the stack
-    //                         |     Pushed second,
-    //                         |     sits just above the bottom of the stack
-    //                         Pushed first, sits at the bottom of the stack
+    mulOfSums(Nested { ab1: AB { a: 1, b: 2 }, ab2: AB { a: 3, b: 4 } }); // 21
+    //                           ↑     ↑                 ↑     ↑
+    //                           |     |                 |     Pushed last,
+    //                           |     |                 |     sits on top of the stack
+    //                           |     |                 Pushed second-to-last,
+    //                           |     |                 sits below the top of the stack
+    //                           |     Pushed second,
+    //                           |     sits just above the bottom of the stack
+    //                           Pushed first, sits at the bottom of the stack
 }
 ```
 
@@ -552,7 +552,8 @@ To work around this, you can recursively load all the refs from the given [`Slic
 
   [`HASHEXT_KECCAK256`](https://docs.ton.org/v3/documentation/tvm/instructions#F90403)\
   [`HASHEXT_KECCAK512`](https://docs.ton.org/v3/documentation/tvm/instructions#F90404)\
-  [Reference Keccak-256 implementation](https://keccak.team/index.html)
+  [Reference Keccak-256 implementation](https://keccak.team/index.html)\
+  [`keccak256(){:tact}` in the Core library](/ref/core-crypto#keccak256)
 
 :::
 

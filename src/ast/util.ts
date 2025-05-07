@@ -120,6 +120,20 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         return result as Ast.StructValue;
     }
 
+    function makeMapValue(
+        bocHex: string | undefined,
+        type: Ast.MapType,
+        loc: SrcInfo,
+    ): Ast.MapValue {
+        const result = createNode({
+            kind: "map_value",
+            bocHex,
+            type,
+            loc,
+        });
+        return result as Ast.MapValue;
+    }
+
     return {
         makeUnaryExpression,
         makeBinaryExpression,
@@ -131,6 +145,7 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         makeAddressLiteral,
         makeStructFieldValue,
         makeStructValue,
+        makeMapValue,
     };
 };
 

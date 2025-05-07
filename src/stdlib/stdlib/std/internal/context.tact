@@ -45,6 +45,59 @@ struct Context {
 @name(__tact_context_get)
 native context(): Context;
 
+/// Global function. Available since Tact 1.6.7.
+///
+/// Returns the `Slice` with the original, raw body of the received message.
+///
+/// That `Slice` can:
+///
+/// * be empty, which means the contract has received an empty message body that is handled in the empty receiver `receive()` or the catch-all slice receiver `receive(msg: Slice)`;
+/// * start with 4 zero bytes, which means the contract has received a text message that is handled in the relevant receiver:
+///   * the exact text receiver `receive("message")`,
+///   * the catch-all string receiver `receive(msg: String)`,
+///   * or the catch-all slice receiver `receive(msg: Slice)`;
+/// * start with 4 bytes of a non-zero message opcode that the corresponding binary receiver `receive(msg: MessageStruct)` or the catch-all slice receiver `receive(msg: Slice)` would handle.
+///
+/// ```tact
+/// // This contract defines various kinds of receivers in their
+/// // order of handling the corresponding incoming messages.
+/// contract OrderOfReceivers() {
+///     receive() {
+///         let body = inMsg();
+///         body.bits(); // 0
+///     }
+///
+///     receive("yeehaw!") {
+///         let body = inMsg();
+///         body.loadUint(32); // 0
+///         body.hash() == "yeehaw!".asSlice().hash(); // true
+///     }
+///
+///     receive(str: String) {
+///         let body = inMsg();
+///         body.loadUint(32); // 0
+///         body == str.asSlice(); // true
+///     }
+///
+///     receive(msg: Emergency) {
+///         let body = inMsg();
+///         body.preloadUint(32); // 911
+///     }
+///
+///     receive(rawMsg: Slice) {
+///         let body = inMsg();
+///         body == rawMsg; // true
+///     }
+/// }
+///
+/// message(911) Emergency {}
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-contextstate#inmsg
+///
+@name(__tact_in_msg_get)
+native inMsg(): Slice;
+
 /// Returns the `Address` of the sender of the current message.
 ///
 /// ```tact

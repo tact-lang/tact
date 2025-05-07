@@ -7,6 +7,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Tooling
+
+- [fix] Formatter now correctly handles floating comments: PR [#2995](https://github.com/tact-lang/tact/pull/2995)
+
+### Docs
+
+- Enabled format checking across the Cookbook: PR [#2980](https://github.com/tact-lang/tact/pull/2980)
+- Added references to https://github.com/tact-lang/defi-cookbook: PR [#2985](https://github.com/tact-lang/tact/pull/2985)
+- Added description of the "unreachable code" errors and enhanced the descriptions of the `return` statement: PR [#2750](https://github.com/tact-lang/tact/pull/2750)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+- [Petr Makhnev](https://github.com/i582)
+
+## [1.6.7] - 2025-04-24
+
+### Language features
+
+- Fixed incorrect error message for bounced messages: PR [#2932](https://github.com/tact-lang/tact/pull/2932)
+- Added compile-time map literals: PR [#2881](https://github.com/tact-lang/tact/pull/2881)
+- Added the `inMsg()` built-in function as an optimized version of `msg.toSlice()`: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
+- Compiler now generates more efficient code for structure fields serialization: PR [#2836](https://github.com/tact-lang/tact/pull/2836)
+- Compiler now generates more efficient code for `Address?` fields deserialization: PR [#2834](https://github.com/tact-lang/tact/pull/2834)
+- Optimized `self.notify`, `self.reply`, and `self.forward` in `BaseTrait` by using the `message` function directly where possible and avoiding unnecessary use of alias: PR [#2515](https://github.com/tact-lang/tact/pull/2515)
+- Compiler now generates more efficient code for `if` statements: PR [#2844](https://github.com/tact-lang/tact/pull/2844)
+- Any message now has an `opcode()` method to obtain its opcode: PR [#2886](https://github.com/tact-lang/tact/pull/2886)
+- Contract `init` function now can have parameters with `as` annotations: PR [#2890](https://github.com/tact-lang/tact/pull/2890)
+- [fix] Compiler now correctly handles get functions with an empty message parameter: PR [#2892](https://github.com/tact-lang/tact/pull/2892)
+
+### Standard Library
+
+- Improved gas consumption of the `cashback` function: PR [#2882](https://github.com/tact-lang/tact/pull/2882)
+- Improved gas efficiency for the `BaseTrait` functions: PR [#2913](https://github.com/tact-lang/tact/pull/2913)
+
+### Tooling
+
+- Formatter now shortens `Foo { value: value }` to `Foo { value }`: PR [#2884](https://github.com/tact-lang/tact/pull/2884)
+- Formatter now supports formatting several files and directories: PR [#2906](https://github.com/tact-lang/tact/pull/2906)
+- [fix] Formatter now correctly formats trailing comments after the last field: PR [#2912](https://github.com/tact-lang/tact/pull/2912)
+
+### Docs
+
+- Added `inMsg()` function to the gas best practices page: PR [#2850](https://github.com/tact-lang/tact/pull/2850)
+- Fixed the description of `StateInit.hasSameBasechainAddress()` function: PR [#2848](https://github.com/tact-lang/tact/pull/2848)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+- [Novus Nota](https://github.com/novusnota)
+- [skywardboundd](https://github.com/skywardboundd)
+- [verytactical](https://github.com/verytactical)
+- [Anton Trunov](https://github.com/anton-trunov)
+
+## [1.6.6] - 2025-04-16
+
 ### Language features
 
 - Optimized message deserialization with native loading of `Maybe Cell` fields: PR [#2661](https://github.com/tact-lang/tact/pull/2661)
@@ -23,13 +79,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now shows a more informative error message for fields with unsupported trait types: PR [#2695](https://github.com/tact-lang/tact/pull/2695)
 - [fix] Compiler now correctly generates code for functions with several wildcard parameters: PR [#2703](https://github.com/tact-lang/tact/pull/2703)
 - [fix] Compiler now checks that "override" functions and constants have a virtual or abstract modifier in the parent trait: PR [#2700](https://github.com/tact-lang/tact/pull/2700)
+- [fix] Compiler now throws an error if a non-optional method is called on an optional type: PR [#2770](https://github.com/tact-lang/tact/pull/2770)
+- [fix] Compiler now throws an error when inheriting from two traits that have methods with the same name: PR [#2773](https://github.com/tact-lang/tact/pull/2773)
+- [fix] Compiler now correctly generates code for the unary plus operator: PR [#2807](https://github.com/tact-lang/tact/pull/2807)
+- [fix] Compiler now shows a full error message for maps with optional value: PR [#2810](https://github.com/tact-lang/tact/pull/2810)
+- [fix] Compiler now correctly detects mutually recursive types: PR [#2814](https://github.com/tact-lang/tact/pull/2814)
 - [fix] Generated TypeScript wrappers now export all functions for serialization/deserialization: PR [#2706](https://github.com/tact-lang/tact/pull/2706)
 - [fix] Processing of `null` values of optional types in the `dump` builtin: PR [#2730](https://github.com/tact-lang/tact/pull/2730)
+- [fix] Support constants as the second parameter of the `require()` function: PR [#2808](https://github.com/tact-lang/tact/pull/2808)
 
 ### Standard Library
 
 - Added compute phase exit code constants reserved by the Tact compiler: `TactExitCodeNullReferenceException`, `TactExitCodeInvalidSerializationPrefix`, `TactExitCodeInvalidIncomingMessage`, `TactExitCodeConstraintsError`, `TactExitCodeAccessDenied`, `TactExitCodeContractStopped`, `TactExitCodeInvalidArgument`, `TactExitCodeContractCodeNotFound`, `TactExitCodeInvalidStandardAddress`, `TactExitCodeNotBasechainAddress`: PR [#2527](https://github.com/tact-lang/tact/pull/2527)
 - Added the `SignedBundle` struct and the corresponding `verifySignature` method: PR [#2627](https://github.com/tact-lang/tact/pull/2627)
+- Added the `sendRawMessage` and `sendRawMessageReturnForwardFee` functions instead of the deprecated `nativeSendMessage` and `nativeSendMessageReturnForwardFee` functions correspondingly: PR [#2755](https://github.com/tact-lang/tact/pull/2755)
+- Optimized the `sha256()` function to about ~270 less gas used per call and added the `keccak256()` function: PR [#2775](https://github.com/tact-lang/tact/pull/2775)
+
+### Tooling
+
+- Added source code formatter: PR [#2768](https://github.com/tact-lang/tact/pull/2768)
+  - Show a better error if a file cannot be parsed by the formatter: PR [#2796](https://github.com/tact-lang/tact/pull/2796)
+  - Added `--check` flag to formatter: PR [#2788](https://github.com/tact-lang/tact/pull/2788)
+  - Support directory formatting: PR [#2787](https://github.com/tact-lang/tact/pull/2787)
 
 ### TypeScript third-party API
 
@@ -41,7 +112,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the description of the Tact-reserved exit code 129 and expanded descriptions of functions that can throw it, such as `Message.fromCell()` and `Message.fromSlice()`: PR [#2604](https://github.com/tact-lang/tact/pull/2604)
 - Added "Learn Tact in Y minutes" page to the Book: PR [#2375](https://github.com/tact-lang/tact/pull/2375)
 - Ensured that variables are always shown declared with immediate initialization, and made it clear in the descriptions of the `let` statement: PR [#2742](https://github.com/tact-lang/tact/pull/2742)
-- Added description of the "unreachable code" errors and enhanced the descriptions of the `return` statement: PR [#2750](https://github.com/tact-lang/tact/pull/2750)
+- Fixed the description of the Unicode escape upper bound (U+10FFFF): PR [#2752](https://github.com/tact-lang/tact/pull/2752)
+- Added generation of `llms.txt`, `llms-full.txt` (full version), and `llms-small.txt` (compact version, with non-essential content removed): PR [#2763](https://github.com/tact-lang/tact/pull/2763)
+- Added description of the specialized math functions, such as `pow2()` and `log2()`, to the gas best practices page: PR [#2771](https://github.com/tact-lang/tact/pull/2771)
+- Added `BasechainAddress` to the gas best practices page: PR [#2802](https://github.com/tact-lang/tact/pull/2802)
+- Applied suggestions from the gas best practices page to the security best practices page: PR [#2811](https://github.com/tact-lang/tact/pull/2811)
 
 ### Release contributors
 
@@ -115,10 +190,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Compilation report
 
 - [fix] TL-B for `Address?` is not `Maybe Address`, but plain `Address`: PR [#2386](https://github.com/tact-lang/tact/pull/2386)
-
-### Internal infrastructure
-
-- Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
 
 ### Internal infrastructure
 

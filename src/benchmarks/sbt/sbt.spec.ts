@@ -1,6 +1,6 @@
 import "@ton/test-utils";
-import { Cell, beginCell, toNano, contractAddress, SendMode } from "@ton/core";
-
+import { Cell, beginCell, toNano, contractAddress } from "@ton/core";
+import type { Address } from "@ton/core";
 import type { Sender } from "@ton/core";
 import { Blockchain, type BlockchainSnapshot } from "@ton/sandbox";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
@@ -10,6 +10,8 @@ import {
     generateCodeSizeResults,
     getUsedGas,
     printBenchmarkTable,
+    type CodeSizeResult,
+    type BenchmarkResult,
 } from "@/benchmarks/utils/gas";
 import { join, resolve } from "path";
 import { readFileSync } from "fs";
@@ -21,7 +23,7 @@ import {
     storeRequestOwnerOut,
     storeProveOwnershipOut,
     storeExcessOut,
-} from "@/benchmarks/contracts/sbt/output/sbt-item_SBTItem";
+} from "@/benchmarks/sbt/tact/output/item_SBTItem";
 
 import type {
     ReportStaticData,
@@ -34,83 +36,37 @@ import type {
     TakeExcess,
     RequestOwnerOut,
     ExcessOut,
-} from "@/benchmarks/contracts/sbt/output/sbt-item_SBTItem";
+} from "@/benchmarks/sbt/tact/output/item_SBTItem";
 
 import benchmarkResults from "@/benchmarks/sbt/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/sbt/results_code_size.json";
 
 const loadFunCSBTBoc = () => {
     const bocItem = readFileSync(
-        posixNormalize(
-            resolve(__dirname, "../contracts/func/output/sbt-item.boc"),
-        ),
+        posixNormalize(resolve(__dirname, "./func/output/sbt-item.boc")),
     );
 
     return { bocItem };
 };
 
-describe("itemSBT", () => {
+function testSBT(
+    benchmarkResults: BenchmarkResult,
+    codeSizeResults: CodeSizeResult,
+    fromInitItem: (
+        itemIndex: bigint,
+        collectionAddress: Address,
+        owner: Address | null,
+        content: Cell | null,
+        authorityAddress: Address | null,
+        revokedAt: bigint,
+    ) => Promise<SBTItem>,
+) {
     let blockchain: Blockchain;
-
     let owner: SandboxContract<TreasuryContract>;
+    let itemSBT: SandboxContract<SBTItem>;
 
     let snapshot: BlockchainSnapshot;
-
-    let itemSBT: SandboxContract<SBTItem>;
-    let funcItemSBT: SandboxContract<SBTItem>;
-
     let step: Step;
-    const results = generateResults(benchmarkResults);
-    const codeSizeResults = generateCodeSizeResults(benchmarkCodeSizeResults);
-    const expectedCodeSize = codeSizeResults.at(-1)!;
-    const funcCodeSize = codeSizeResults.at(0)!;
-
-    const expectedResult = results.at(-1)!;
-    const funcResult = results.at(0)!;
-
-    let funcInit: { code: Cell; data: Cell };
-
-    const sendDeploy = async (
-        via: SandboxContract<TreasuryContract>,
-        itemSBT: SandboxContract<SBTItem>,
-        init: { code: Cell; data: Cell } | null,
-    ) => {
-        return await via.send({
-            to: itemSBT.address,
-            value: toNano("1"),
-            init,
-            body: beginCell()
-                .storeAddress(via.address) // owner
-                .storeRef(beginCell().endCell()) // content
-                .storeAddress(via.address) // authority
-                .storeUint(0, 64) // revoke
-                .endCell(),
-            sendMode: SendMode.PAY_GAS_SEPARATELY,
-        });
-    };
-
-    const deployFuncSBTItem = async (
-        blockchain: Blockchain,
-        via: SandboxContract<TreasuryContract>,
-        index: bigint = 0n,
-    ) => {
-        const sbtData = loadFunCSBTBoc();
-        const itemCode = Cell.fromBoc(sbtData.bocItem)[0]!;
-
-        const initData = beginCell()
-            .storeUint(index, 64) // itemIndex
-            .storeAddress(via.address) // collectionAddress
-            .endCell();
-
-        const init = { code: itemCode, data: initData };
-
-        const itemAddress = contractAddress(0, init);
-        const itemSBTScope: SandboxContract<SBTItem> = blockchain.openContract(
-            await SBTItem.fromAddress(itemAddress),
-        );
-
-        return { itemSBTScope, init };
-    };
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
@@ -121,53 +77,28 @@ describe("itemSBT", () => {
             blockchain,
         });
 
-        // ITEM
-        {
-            itemSBT = blockchain.openContract(
-                await SBTItem.fromInit({
-                    $$type: "InitNFTData",
-                    itemIndex: 0n,
-                    collectionAddress: owner.address,
-                }),
-            );
+        itemSBT = blockchain.openContract(
+            await fromInitItem(0n, owner.address, null, null, null, 0n),
+        );
 
-            const deployResult = await sendDeploy(
-                owner,
-                itemSBT,
-                itemSBT.init!,
-            );
+        const deployItemResult = await itemSBT.send(
+            owner.getSender(),
+            { value: toNano("0.1") },
+            beginCell()
+                .storeAddress(owner.address)
+                .storeRef(beginCell().endCell())
+                .storeAddress(owner.address)
+                .storeUint(0n, 64)
+                .asSlice(),
+        );
 
-            expect(deployResult.transactions).toHaveTransaction({
-                from: owner.address,
-                to: itemSBT.address,
-                deploy: true,
-                success: true,
-            });
+        expect(deployItemResult.transactions).toHaveTransaction({
+            from: owner.address,
+            to: itemSBT.address,
+            deploy: true,
+            success: true,
+        });
 
-            expect((await itemSBT.getGetNftData()).owner).toEqualAddress(
-                owner.address,
-            );
-            // deploy func
-            const funcResult = await deployFuncSBTItem(blockchain, owner);
-            funcItemSBT = funcResult.itemSBTScope;
-            funcInit = funcResult.init;
-
-            const deployFuncItem = await sendDeploy(
-                owner,
-                funcItemSBT,
-                funcInit,
-            );
-            expect(deployFuncItem.transactions).toHaveTransaction({
-                from: owner.address,
-                to: funcItemSBT.address,
-                success: true,
-                deploy: true,
-            });
-
-            expect(await funcItemSBT.getGetAuthorityAddress()).toEqualAddress(
-                owner.address,
-            );
-        }
         snapshot = blockchain.snapshot();
     });
 
@@ -175,24 +106,31 @@ describe("itemSBT", () => {
         await blockchain.loadFrom(snapshot);
     });
 
-    afterAll(() => {
-        printBenchmarkTable(results, codeSizeResults, {
-            implementationName: "FunC",
-            printMode: "full",
-        });
-    });
-
     it("deploy", async () => {
-        const runDeployTactTest = async () => {
+        const runDeployTest = async () => {
             const newItemSBT = blockchain.openContract(
-                await SBTItem.fromInit({
-                    $$type: "InitNFTData",
-                    itemIndex: 1n,
-                    collectionAddress: owner.address,
-                }),
+                await fromInitItem(1n, owner.address, null, null, null, 0n),
             );
+
+            const sendDeploy = async (
+                itemSBT: SandboxContract<SBTItem>,
+                from: Sender,
+                value: bigint,
+            ) => {
+                return await itemSBT.send(
+                    from,
+                    { value },
+                    beginCell()
+                        .storeAddress(owner.address)
+                        .storeRef(beginCell().endCell())
+                        .storeAddress(owner.address)
+                        .storeUint(0n, 64)
+                        .asSlice(),
+                );
+            };
+
             const sendResult = await step("request owner", async () =>
-                sendDeploy(owner, newItemSBT, newItemSBT.init!),
+                sendDeploy(newItemSBT, owner.getSender(), toNano(1)),
             );
 
             expect(sendResult.transactions).toHaveTransaction({
@@ -204,32 +142,9 @@ describe("itemSBT", () => {
             return getUsedGas(sendResult, "internal");
         };
 
-        const runDeployFuncTest = async () => {
-            const funcResult = await deployFuncSBTItem(blockchain, owner, 1n);
-            const newFuncItemSBT = funcResult.itemSBTScope;
-            const newFuncInit = funcResult.init;
-
-            const sendResult = await step("deploy", async () =>
-                sendDeploy(owner, newFuncItemSBT, newFuncInit),
-            );
-
-            expect(sendResult.transactions).toHaveTransaction({
-                deploy: true,
-            });
-
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
-            });
-            return getUsedGas(sendResult, "internal");
-        };
-
-        const deployGasUsedTact = await runDeployTactTest();
-        const deployGasUsedFunC = await runDeployFuncTest();
-
-        expect(deployGasUsedTact).toEqual(expectedResult.gas["deploy"]);
-        expect(deployGasUsedFunC).toEqual(funcResult.gas["deploy"]);
+        const deployGasUsed = await runDeployTest();
+        expect(deployGasUsed).toEqual(benchmarkResults.gas["deploy"]);
     });
-
     it("request owner", async () => {
         const sendRequestOwner = async (
             itemSBT: SandboxContract<SBTItem>,
@@ -282,13 +197,9 @@ describe("itemSBT", () => {
         };
 
         const requestOwnerGasUsedTact = await runRequestOwnerTest(itemSBT);
-        const requestOwnerGasUsedFunC = await runRequestOwnerTest(funcItemSBT);
 
         expect(requestOwnerGasUsedTact).toEqual(
-            expectedResult.gas["request owner"],
-        );
-        expect(requestOwnerGasUsedFunC).toEqual(
-            funcResult.gas["request owner"],
+            benchmarkResults.gas["request owner"],
         );
     });
 
@@ -342,14 +253,9 @@ describe("itemSBT", () => {
         };
 
         const proveOwnershipGasUsedTact = await runProveOwnershipTest(itemSBT);
-        const proveOwnershipGasUsedFunC =
-            await runProveOwnershipTest(funcItemSBT);
 
         expect(proveOwnershipGasUsedTact).toEqual(
-            expectedResult.gas["prove ownership"],
-        );
-        expect(proveOwnershipGasUsedFunC).toEqual(
-            funcResult.gas["prove ownership"],
+            benchmarkResults.gas["prove ownership"],
         );
     });
 
@@ -398,12 +304,10 @@ describe("itemSBT", () => {
         };
 
         const getStaticGasUsedTact = await runGetStaticTest(itemSBT);
-        const getStaticGasUsedFunC = await runGetStaticTest(funcItemSBT);
 
         expect(getStaticGasUsedTact).toEqual(
-            expectedResult.gas["get static data"],
+            benchmarkResults.gas["get static data"],
         );
-        expect(getStaticGasUsedFunC).toEqual(funcResult.gas["get static data"]);
     });
 
     it("take excess", async () => {
@@ -446,12 +350,10 @@ describe("itemSBT", () => {
         };
 
         const takeExcessGasUsedTact = await runTakeExcessTest(itemSBT);
-        const takeExcessGasUsedFunC = await runTakeExcessTest(funcItemSBT);
 
         expect(takeExcessGasUsedTact).toEqual(
-            expectedResult.gas["take excess"],
+            benchmarkResults.gas["take excess"],
         );
-        expect(takeExcessGasUsedFunC).toEqual(funcResult.gas["take excess"]);
     });
 
     it("destroy", async () => {
@@ -494,10 +396,8 @@ describe("itemSBT", () => {
         };
 
         const destroyGasUsedTact = await runDestroyTest(itemSBT);
-        const destroyGasUsedFunC = await runDestroyTest(funcItemSBT);
 
-        expect(destroyGasUsedTact).toEqual(expectedResult.gas["destroy"]);
-        expect(destroyGasUsedFunC).toEqual(funcResult.gas["destroy"]);
+        expect(destroyGasUsedTact).toEqual(benchmarkResults.gas["destroy"]);
     });
 
     it("revoke", async () => {
@@ -533,29 +433,67 @@ describe("itemSBT", () => {
         };
 
         const revokeGasUsedTact = await runRevokeTest(itemSBT);
-        const revokeGasUsedFunC = await runRevokeTest(funcItemSBT);
 
-        expect(revokeGasUsedTact).toEqual(expectedResult.gas["revoke"]);
-        expect(revokeGasUsedFunC).toEqual(funcResult.gas["revoke"]);
+        expect(revokeGasUsedTact).toEqual(benchmarkResults.gas["revoke"]);
     });
 
     it("item cells", async () => {
         expect(
             (await getStateSizeForAccount(blockchain, itemSBT.address)).cells,
-        ).toEqual(expectedCodeSize.size["item cells"]);
-        expect(
-            (await getStateSizeForAccount(blockchain, funcItemSBT.address))
-                .cells,
-        ).toEqual(funcCodeSize.size["item cells"]);
+        ).toEqual(codeSizeResults.size["item cells"]);
     });
 
     it("item bits", async () => {
         expect(
             (await getStateSizeForAccount(blockchain, itemSBT.address)).bits,
-        ).toEqual(expectedCodeSize.size["item bits"]);
-        expect(
-            (await getStateSizeForAccount(blockchain, funcItemSBT.address))
-                .bits,
-        ).toEqual(funcCodeSize.size["item bits"]);
+        ).toEqual(codeSizeResults.size["item bits"]);
+    });
+}
+
+describe("SBT Gas Tests", () => {
+    const fullResults = generateResults(benchmarkResults);
+    const fullCodeSizeResults = generateCodeSizeResults(
+        benchmarkCodeSizeResults,
+    );
+
+    describe("func", () => {
+        const funcCodeSize = fullCodeSizeResults.at(0)!;
+        const funcResult = fullResults.at(0)!;
+
+        function fromInitItem(
+            itemIndex: bigint,
+            collectionAddress: Address,
+            _owner: Address | null,
+            _content: Cell | null,
+            _authorityAddress: Address | null,
+            _revokedAt: bigint,
+        ) {
+            const sbtData = loadFunCSBTBoc();
+            const __code = Cell.fromBoc(sbtData.bocItem)[0]!;
+
+            const __data = beginCell()
+                .storeUint(itemIndex, 64)
+                .storeAddress(collectionAddress)
+                .endCell();
+
+            const __gen_init = { code: __code, data: __data };
+            const address = contractAddress(0, __gen_init);
+            return Promise.resolve(new SBTItem(address, __gen_init));
+        }
+
+        testSBT(funcResult, funcCodeSize, fromInitItem);
+    });
+
+    describe("tact", () => {
+        const tactCodeSize = fullCodeSizeResults.at(-1)!;
+        const tactResult = fullResults.at(-1)!;
+        testSBT(tactResult, tactCodeSize, SBTItem.fromInit.bind(SBTItem));
+    });
+
+    afterAll(() => {
+        printBenchmarkTable(fullResults, fullCodeSizeResults, {
+            implementationName: "FunC",
+            printMode: "full",
+        });
     });
 });

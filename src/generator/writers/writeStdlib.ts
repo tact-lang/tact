@@ -9,10 +9,29 @@ export function writeStdlib(ctx: WriterContext): void {
     // stdlib extension functions
     //
 
-    ctx.skip("__tact_set");
-    ctx.skip("__tact_nop");
-    ctx.skip("__tact_str_to_slice");
-    ctx.skip("__tact_slice_to_str");
+    ctx.fun("__tact_nop", () => {
+        ctx.signature(`() __tact_nop()`);
+        ctx.context("stdlib");
+        ctx.asm("", "NOP");
+    });
+
+    ctx.fun("__tact_sha256", () => {
+        ctx.signature(`int __tact_sha256(slice data)`);
+        ctx.context("stdlib");
+        ctx.asm(
+            "",
+            `
+            <{
+                <{ DUP SREFS }> PUSHCONT
+                <{ LDREFRTOS }> PUSHCONT
+                WHILE
+                DEPTH
+                HASHEXT_SHA256
+            }> PUSHCONT
+            1 1 CALLXARGS
+        `,
+        );
+    });
 
     //
     // Addresses
@@ -35,6 +54,12 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
+    ctx.fun("__tact_store_addr_none", () => {
+        ctx.signature(`builder __tact_store_addr_none(builder b)`);
+        ctx.context("stdlib");
+        ctx.asm("", "b{00} STSLICECONST", true);
+    });
+
     ctx.fun("__tact_store_address_opt", () => {
         ctx.signature(
             `builder __tact_store_address_opt(builder b, slice address)`,
@@ -44,8 +69,7 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.body(() => {
             ctx.write(`
                 if (null?(address)) {
-                    b = b.store_uint(0, 2);
-                    return b;
+                    return ${ctx.used("__tact_store_addr_none")}(b);
                 } else {
                     return b.store_slice(address);
                 }
@@ -319,12 +343,12 @@ export function writeStdlib(ctx: WriterContext): void {
             ctx.write(`
                 slice chars = "4142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392D5F"s;
                 builder res = begin_cell();
-            
+
                 while (data.slice_bits() >= 24) {
                     (int bs1, int bs2, int bs3) = (data~load_uint(8), data~load_uint(8), data~load_uint(8));
-            
+
                     int n = (bs1 << 16) | (bs2 << 8) | bs3;
-            
+
                     res = res
                         .store_slice(${ctx.used(
                             "__tact_preload_offset",
@@ -339,7 +363,7 @@ export function writeStdlib(ctx: WriterContext): void {
                             "__tact_preload_offset",
                         )}(chars, ((n      ) & 63) * 8, 8));
                 }
-                
+
                 return res.end_cell().begin_parse();
             `);
         });
@@ -357,7 +381,7 @@ export function writeStdlib(ctx: WriterContext): void {
                     .store_uint((wc + 0x100) % 0x100, 8)
                     .store_uint(hash, 256)
                 .end_cell().begin_parse();
-            
+
                 slice checksum = ${ctx.used(
                     "__tact_crc16",
                 )}(user_friendly_address);
@@ -365,7 +389,7 @@ export function writeStdlib(ctx: WriterContext): void {
                     .store_slice(user_friendly_address)
                     .store_slice(checksum)
                 .end_cell().begin_parse();
-            
+
                 return ${ctx.used(
                     "__tact_base64_encode",
                 )}(user_friendly_address_with_checksum);
@@ -407,6 +431,15 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`return __tact_context;`);
+        });
+    });
+
+    ctx.fun("__tact_in_msg_get", () => {
+        ctx.signature(`slice __tact_in_msg_get()`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`return __tact_in_msg;`);
         });
     });
 
@@ -911,27 +944,6 @@ export function writeStdlib(ctx: WriterContext): void {
             ctx.write(`
                 builders~${ctx.used("__tact_string_builder_append")}(sc);
                 return builders;
-            `);
-        });
-    });
-
-    ctx.fun(`__tact_log`, () => {
-        ctx.signature(`int __tact_log(int num, int base)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                throw_unless(5, num > 0);
-                throw_unless(5, base > 1);
-                if (num < base) {
-                    return 0;
-                }
-                int result = 0;
-                while (num >= base) {
-                    num /= base;
-                    result += 1;
-                }
-                return result;
             `);
         });
     });

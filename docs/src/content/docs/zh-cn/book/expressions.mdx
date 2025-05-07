@@ -104,7 +104,7 @@ Tact 字符串支持一系列从反斜杠字符开始的[转义序列](https://e
 - `\f{:tact}` — 换页符 (form feed)。
 - `\x00{:tact}`至`\xFF{:tact}` - [代码点](https://en.wikipedia.org/wiki/Code_point)，长度必须正好是两个十六进制数字
 - `\u0000{:tact}`至`\uFFFF{:tact}` - [Unicode 代码点][unicode]，长度必须正好是四个十六进制数字
-- `\u{0}{:tact}` 到 `\u{FFFFFF}{:tact}` - [Unicode 代码点][unicode]，长度可以是 $1$ 到 $6$ 的十六进制数
+- `\u{0}{:tact}` 到 `\u{10FFFF}{:tact}` - [Unicode 代码点][unicode]，长度可以是 $1$ 到 $6$ 的十六进制数
 
 [unicode]: https://en.wikipedia.org/wiki/Unicode#Codespace_and_code_points
 
@@ -139,7 +139,7 @@ Tact 字符串支持一系列从反斜杠字符开始的[转义序列](https://e
 // \u0000 - \uFFFF
 "danger, \u26A1 high voltage \u26A1"; // \u26A1 represents the ⚡ emoji
 
-// \u{0} - \u{FFFFFF}
+// \u{0} - \u{10FFFF}
 "\u{1F602} LOL \u{1F602}"; // \u{1F602} represents the 😂 emoji
 ```
 
@@ -235,7 +235,7 @@ fun example(): Int {
 contract ExampleContract {
     receive() {
         now(); // now() is a static function of stdlib
-        let expiration: Int = now() + 1000; // operation and variable declaration
+        let expiration: Int = now() + 1000; // operation and variable definition
         expiration = self.answerQuestion(); // internal function
     }
     fun answerQuestion(): Int {
