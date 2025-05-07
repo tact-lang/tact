@@ -94,23 +94,18 @@ fun retWhenNot(flag: Bool): Int {
 //  ~~~~~~~~~~~
 }
 
-// COMPILATION ERROR! Function does not always return a result
-fun checkTimeWith(offset: Int): Int {
-//  ~~~~~~~~~~~~~
-    let t = now();
-    if (t < 1000) {
-        if (offset < 1000) {
-            return 998;
-        } else {
-            return 999;
-        }
-    } else if (t == 1000) {
-        return 1000;
-    }
+fun throwWrapped(code: Int) {
+    throw(code);
+}
 
-    if (offset < 1000) {
-        return 42;
-    }
+// The following function always throws, but this cannot be
+// determined without a thorough inter-procedural analysis
+// and, as such, compiler won't allow it.
+//
+// COMPILATION ERROR! Function does not always return a result
+fun triggerCompiler(): Int {
+//  ~~~~~~~~~~~~~~~
+    throwWrapped(42);
 }
 ```
 
