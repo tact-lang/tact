@@ -65,6 +65,14 @@ Allowed value types:
 * [Struct][struct]
 * [Message][message]
 
+Neither key nor value types can be made [optional](/book/optionals).
+
+```tact
+// COMPILATION ERROR! Map key types cannot be optional
+let myMap: map<Int?, Int> = emptyMap();
+//             ~~~~
+```
+
 ## Serialization
 
 It is possible to perform [integer serialization](/book/integers#common-serialization-types) of map keys, values, or both to [preserve space and reduce storage costs](/book/integers#serialization):
