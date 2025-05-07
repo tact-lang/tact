@@ -40,7 +40,7 @@ import { Badge } from '@astrojs/starlight/components';
 ```tact
 let to: Address = address("...");
 let value: Int = ton("1");
-send(SendParameters{
+send(SendParameters {
     to: to,
     value: value,
     mode: SendRemainingBalance | SendDestroyIfZero,

@@ -70,12 +70,12 @@ struct NFTItemInitData {
 }
 
 inline fun calculateNFTAddress(index: Int, collectionAddress: Address, nftCode: Cell): Address {
-    let initData = NFTItemInitData{
+    let initData = NFTItemInitData {
         index,
         collectionAddress,
     };
 
-    return contractAddress(StateInit{code: nftCode, data: initData.toCell()});
+    return contractAddress(StateInit { code: nftCode, data: initData.toCell() });
 }
 
 contract NftInCollection {
@@ -132,10 +132,10 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("transfer") {
-        send(SendParameters{
+        send(SendParameters {
             to: self.nftItemAddress,
             value: ton("0.1"),
-            body: NFTTransfer{
+            body: NFTTransfer {
                 queryId: 42,
                 // FIXME: Change this according to your needs.
                 newOwner: sender(),
@@ -170,12 +170,12 @@ struct NFTItemInitData {
 }
 
 inline fun calculateNFTAddress(index: Int, collectionAddress: Address, nftCode: Cell): Address {
-    let initData = NFTItemInitData{
+    let initData = NFTItemInitData {
         index,
         collectionAddress,
     };
 
-    return contractAddress(StateInit{code: nftCode, data: initData.toCell()});
+    return contractAddress(StateInit { code: nftCode, data: initData.toCell() });
 }
 
 contract Example {
@@ -198,10 +198,10 @@ contract Example {
     receive("get static data") {
         // FIXME: Put proper address("[NFT_ADDRESS]") here
         let nftAddress = sender();
-        send(SendParameters{
+        send(SendParameters {
             to: nftAddress,
             value: ton("0.1"),
-            body: NFTGetStaticData{
+            body: NFTGetStaticData {
                 queryId: 42,
             }.toCell(),
         });
@@ -246,10 +246,10 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("get royalty params") {
-        send(SendParameters{
+        send(SendParameters {
             to: self.nftCollectionAddress,
             value: ton("0.1"),
-            body: NFTGetRoyaltyParams{
+            body: NFTGetRoyaltyParams {
                 queryId: 42,
             }.toCell(),
         });
@@ -298,14 +298,14 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("deploy") {
-        send(SendParameters{
+        send(SendParameters {
             to: self.nftCollectionAddress,
             value: ton("0.14"),
-            body: NFTDeploy{
+            body: NFTDeploy {
                 queryId: 42,
                 itemIndex: 42,
                 amount: ton("0.1"),
-                nftContent: beginCell().endCell() // FIXME: Replace with your content, usually generated off-chain
+                nftContent: beginCell().endCell(), // FIXME: Replace with your content, usually generated off-chain
             }.toCell(),
         });
     }
@@ -334,10 +334,10 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("change owner") {
-        send(SendParameters{
+        send(SendParameters {
             to: self.nftCollectionAddress,
             value: ton("0.05"),
-            body: NFTChangeOwner{
+            body: NFTChangeOwner {
                 queryId: 42,
                 // FIXME: Replace with the appropriate address("NEW_OWNER_ADDRESS")
                 newOwner: sender(),
@@ -354,9 +354,15 @@ contract Example {
 ```tact
 /// https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 fun composeCollectionMetadata(
-    name: String,        // full name
-    description: String, // text description of the NFT
-    image: String,       // link to the image
+    // Full name
+    name: String,
+
+    // Text description of the collection
+    description: String,
+
+    // Link to the image
+    image: String,
+
     // There could be other data, see:
     // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 ): Cell {
@@ -366,7 +372,7 @@ fun composeCollectionMetadata(
     dict.set(sha256("image"), image.asMetadataCell());
 
     return beginCell()
-        .storeUint(0, 8)                // a null byte prefix
+        .storeUint(0, 8) //                a null byte prefix
         .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
         .endCell();
 }
@@ -399,9 +405,15 @@ inline extends fun asMetadataCell(self: String): Cell {
 ```tact
 /// https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 fun composeItemMetadata(
-    name: String,        // full name
-    description: String, // text description of the NFT
-    image: String,       // link to the image
+    // Full name
+    name: String,
+
+    // Text description of the NFT
+    description: String,
+
+    // Link to the image
+    image: String,
+
     // There could be other data, see:
     // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 ): Cell {
@@ -411,7 +423,7 @@ fun composeItemMetadata(
     dict.set(sha256("image"), image.asMetadataCell());
 
     return beginCell()
-        .storeUint(0, 8)                // a null byte prefix
+        .storeUint(0, 8) //                a null byte prefix
         .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
         .endCell();
 }

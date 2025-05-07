@@ -1,4 +1,14 @@
-import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
+import {
+    Address,
+    beginCell,
+    BitString,
+    Cell,
+    Dictionary,
+    type DictionaryKey,
+    type DictionaryKeyTypes,
+    type DictionaryValue,
+    toNano,
+} from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import { crc32 } from "@/utils/crc32";
 import type * as Ast from "@/ast/ast";
@@ -24,7 +34,6 @@ import {
 } from "@/types/resolveDescriptors";
 import { getExpType } from "@/types/resolveExpression";
 import type { TypeRef } from "@/types/types";
-import { showValue } from "@/types/types";
 import { getParser, type Parser, type SrcInfo } from "@/grammar";
 import { dummySrcInfo } from "@/grammar";
 import type { FactoryAst } from "@/ast/ast-helpers";
@@ -37,6 +46,13 @@ import {
 } from "@/ast/ast-helpers";
 import { divFloor, modFloor } from "@/optimizer/util";
 import { sha256 } from "@/utils/sha256";
+import { prettyPrint } from "@/ast/ast-printer";
+import {
+    type MapSerializerDescrKey,
+    type MapSerializerDescrValue,
+    mapSerializers,
+} from "@/bindings/typescript/serializers";
+import { getMapAbi } from "@/types/resolveABITypeRef";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -89,7 +105,7 @@ export function ensureInt(val: Ast.Expression): Ast.Number {
         return val;
     } else {
         throwErrorConstEval(
-            `integer '${showValue(val)}' does not fit into TVM Int type`,
+            `integer '${prettyPrint(val)}' does not fit into TVM Int type`,
             val.loc,
         );
     }
@@ -105,14 +121,14 @@ function ensureArgumentForEquality(val: Ast.Literal): Ast.Literal {
         case "string":
         case "slice":
             return val;
-        case "struct_value":
+        case "map_value":
+        case "struct_value": {
             throwErrorConstEval(
-                `struct ${showValue(val)} cannot be an argument to == operator`,
+                `struct ${prettyPrint(val)} cannot be an argument to == operator`,
                 val.loc,
             );
             break;
-        default:
-            throwInternalCompilerError("Unrecognized ast literal kind");
+        }
     }
 }
 
@@ -127,7 +143,7 @@ function ensureRepeatInt(val: Ast.Expression): Ast.Number {
         return val;
     } else {
         throwErrorConstEval(
-            `repeat argument '${showValue(val)}' must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)`,
+            `repeat argument '${prettyPrint(val)}' must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)`,
             val.loc,
         );
     }
@@ -625,6 +641,48 @@ const defaultInterpreterConfig: InterpreterConfig = {
     maxLoopIterations: maxRepeatStatement,
 };
 
+type KeyExist = <R>(
+    cb: <K extends DictionaryKeyTypes>(
+        type: DictionaryKey<K>,
+        parse: (value: Ast.Literal, keyExprLoc: SrcInfo) => K,
+    ) => R,
+) => R;
+
+type ValueExist = <R>(
+    cb: <V>(
+        type: DictionaryValue<V>,
+        parse: (value: Ast.Literal, valueExprLoc: SrcInfo) => V,
+    ) => R,
+) => R;
+
+const expectNumber = (node: Ast.Literal, loc: SrcInfo): bigint => {
+    if (node.kind !== "number") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
+const expectAddress = (node: Ast.Literal, loc: SrcInfo): Address => {
+    if (node.kind !== "address") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
+const expectCell = (node: Ast.Literal, loc: SrcInfo): Cell => {
+    if (node.kind !== "cell") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
+const expectBool = (node: Ast.Literal, loc: SrcInfo): boolean => {
+    if (node.kind !== "boolean") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
 /*
 Interprets Tact AST trees.
 The constructor receives an optional CompilerContext which includes
@@ -851,8 +909,14 @@ export class Interpreter {
                 return this.interpretFieldAccess(ast);
             case "static_call":
                 return this.interpretStaticCall(ast);
-            default:
-                throwInternalCompilerError("Unrecognized expression kind");
+            case "map_value":
+                return this.interpretMapValue(ast);
+            case "map_literal":
+                return this.interpretMapLiteral(ast);
+            case "set_literal":
+                return throwInternalCompilerError(
+                    "Set literals are not supported",
+                );
         }
     }
 
@@ -1078,6 +1142,116 @@ export class Interpreter {
         // Struct values are already simplified to their simplest form
         return ast;
     }
+    private interpretMapValue(ast: Ast.MapValue): Ast.MapValue {
+        return ast;
+    }
+
+    private interpretMapLiteral(ast: Ast.MapLiteral): Ast.MapValue {
+        const keyTy = getType(this.context, ast.type.keyType);
+        const valTy = getType(this.context, ast.type.valueType);
+        const res = mapSerializers.abiMatcher(
+            getMapAbi(
+                {
+                    kind: "map",
+                    key: keyTy.name,
+                    keyAs:
+                        ast.type.keyStorageType !== undefined
+                            ? idText(ast.type.keyStorageType)
+                            : null,
+                    value: valTy.name,
+                    valueAs:
+                        ast.type.valueStorageType !== undefined
+                            ? idText(ast.type.valueStorageType)
+                            : null,
+                },
+                ast.loc,
+            ),
+        );
+        if (res === null) {
+            throwInternalCompilerError("Wrong map ABI");
+        }
+        const keyExist = this.getKeyParser(res.key);
+        const valueExist = this.getValueParser(res.value);
+        const bocHex = keyExist((keyType, parseKey) => {
+            return valueExist((valueType, parseValue) => {
+                if (ast.fields.length === 0) {
+                    return undefined;
+                }
+                let dict = Dictionary.empty(keyType, valueType);
+                for (const { key: keyExpr, value: valueExpr } of ast.fields) {
+                    const keyValue = parseKey(
+                        this.interpretExpressionInternal(keyExpr),
+                        keyExpr.loc,
+                    );
+                    const valValue = parseValue(
+                        this.interpretExpressionInternal(valueExpr),
+                        valueExpr.loc,
+                    );
+                    dict = dict.set(keyValue, valValue);
+                }
+                return beginCell()
+                    .storeDictDirect(dict)
+                    .endCell()
+                    .toBoc()
+                    .toString("hex");
+            });
+        });
+        return this.util.makeMapValue(bocHex, ast.type, ast.loc);
+    }
+
+    getKeyParser(src: MapSerializerDescrKey): KeyExist {
+        switch (src.kind) {
+            case "int": {
+                return (cb) =>
+                    cb(Dictionary.Keys.BigInt(src.bits), expectNumber);
+            }
+            case "uint": {
+                return (cb) =>
+                    cb(Dictionary.Keys.BigUint(src.bits), expectNumber);
+            }
+            case "address": {
+                return (cb) => cb(Dictionary.Keys.Address(), expectAddress);
+            }
+        }
+    }
+    getValueParser(src: MapSerializerDescrValue): ValueExist {
+        switch (src.kind) {
+            case "int": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigInt(src.bits), expectNumber);
+            }
+            case "uint": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigUint(src.bits), expectNumber);
+            }
+            case "varint": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigVarInt(src.length), expectNumber);
+            }
+            case "varuint": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigVarUint(src.length), expectNumber);
+            }
+            case "address": {
+                return (cb) => cb(Dictionary.Values.Address(), expectAddress);
+            }
+            case "cell": {
+                return (cb) => cb(Dictionary.Values.Cell(), expectCell);
+            }
+            case "boolean": {
+                return (cb) => cb(Dictionary.Values.Bool(), expectBool);
+            }
+            case "struct": {
+                return (cb) =>
+                    cb(Dictionary.Values.Cell(), (_, loc) => {
+                        throwNonFatalErrorConstEval(
+                            "Cannot evaluate map with struct values",
+                            loc,
+                        );
+                    });
+            }
+        }
+    }
 
     private interpretFieldAccess(ast: Ast.FieldAccess): Ast.Literal {
         // special case for contract/trait constant accesses via `self.constant`
@@ -1140,7 +1314,7 @@ export class Interpreter {
         const valStruct = this.interpretExpressionInternal(ast.aggregate);
         if (valStruct.kind !== "struct_value") {
             throwErrorConstEval(
-                `constant struct expected, but got ${showValue(valStruct)}`,
+                `constant struct expected, but got ${prettyPrint(valStruct)}`,
                 ast.aggregate.loc,
             );
         }
@@ -1210,7 +1384,7 @@ export class Interpreter {
                 );
                 if (valExp.value < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(ast.function)} builtin called with negative exponent ${showValue(valExp)}`,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${prettyPrint(valExp)}`,
                         ast.loc,
                     );
                 }
@@ -1237,7 +1411,7 @@ export class Interpreter {
                 );
                 if (valExponent.value < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(ast.function)} builtin called with negative exponent ${showValue(valExponent)}`,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${prettyPrint(valExponent)}`,
                         ast.loc,
                     );
                 }
@@ -1289,7 +1463,7 @@ export class Interpreter {
                         );
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid base64 encoding for a cell: ${showValue(str)}`,
+                            `invalid base64 encoding for a cell: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1308,7 +1482,7 @@ export class Interpreter {
                         );
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid base64 encoding for a cell: ${showValue(str)}`,
+                            `invalid base64 encoding for a cell: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1323,7 +1497,7 @@ export class Interpreter {
 
                     if (!/^[0-9a-fA-F]*_?$/.test(str.value)) {
                         throwErrorConstEval(
-                            `invalid hex string: ${showValue(str)}`,
+                            `invalid hex string: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1421,14 +1595,14 @@ export class Interpreter {
                             address.workChain !== -1
                         ) {
                             throwErrorConstEval(
-                                `${showValue(str)} is invalid address`,
+                                `${prettyPrint(str)} is invalid address`,
                                 ast.loc,
                             );
                         }
                         return this.util.makeAddressLiteral(address, ast.loc);
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid address encoding: ${showValue(str)}`,
+                            `invalid address encoding: ${prettyPrint(str)}`,
                             ast.loc,
                         );
                     }
@@ -1662,7 +1836,7 @@ export class Interpreter {
         const val = this.interpretExpressionInternal(ast.expression);
         if (val.kind !== "struct_value") {
             throwErrorConstEval(
-                `destructuring assignment expected a struct, but got ${showValue(
+                `destructuring assignment expected a struct, but got ${prettyPrint(
                     val,
                 )}`,
                 ast.expression.loc,

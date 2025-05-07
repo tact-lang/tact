@@ -106,7 +106,7 @@ Tact strings support a range of [escape sequences](https://en.wikipedia.org/wiki
 * `\f{:tact}` — form feed
 * `\x00{:tact}` through `\xFF{:tact}` — [code point](https://en.wikipedia.org/wiki/Code_point), must be exactly two hex digits long
 * `\u0000{:tact}` through `\uFFFF{:tact}` — [Unicode code point][unicode], must be exactly four hex digits long
-* `\u{0}{:tact}` through `\u{FFFFFF}{:tact}` — [Unicode code point][unicode], can be from 1 to 6 hex digits long
+* `\u{0}{:tact}` through `\u{10FFFF}{:tact}` — [Unicode code point][unicode], can be from 1 to 6 hex digits long
 
 [unicode]: https://en.wikipedia.org/wiki/Unicode#Codespace_and_code_points
 
@@ -141,8 +141,11 @@ Tact strings support a range of [escape sequences](https://en.wikipedia.org/wiki
 // \u0000 - \uFFFF
 "danger, \u26A1 high voltage \u26A1"; // \u26A1 represents the ⚡ emoji
 
-// \u{0} - \u{FFFFFF}
+// \u{0} - \u{10FFFF}
 "\u{1F602} LOL \u{1F602}"; // \u{1F602} represents the 😂 emoji
+
+// This Unicode code point is outside of valid range 000000–10FFFF
+"\u{FFFFFF}"; // COMPILATION ERROR!
 ```
 
 :::note
@@ -166,6 +169,31 @@ if (var != null) {
 ```
 
 Read more about working with `null{:tact}` on the dedicated page: [Optionals](/book/optionals).
+
+### Map literals
+
+<Badge text="Available since Tact 1.6.7" variant="tip" size="medium"/><p/>
+
+Map literals create maps by enclosing a comma-delimited list of zero or more predefined key-value pairs in curly braces.
+
+```tact
+// A compile-time map literal
+let myMap: map<Int as uint8, Int as int13> = map<Int as uint8, Int as int13> {
+    // Key expression: Value expression
+    1 + 2: 10 * pow2(3), // key 3, value 80
+    1 + 3: 20 * pow2(4), // key 4, value 320
+};
+myMap.get(3)!!; // 80
+myMap.get(4)!!; // 320
+```
+
+Read more: [Initialize a map with a literal](/book/maps#initialize).
+
+:::note
+
+  Support for runtime initialization values that are not resolved at [compile-time](/ref/core-comptime) is planned for future Tact releases.
+
+:::
 
 ## Identifiers
 
@@ -196,10 +224,10 @@ struct StExample {
 
 fun example() {
     // Instance with default value of fieldInit
-    StExample{ fieldUninit: 2 };
+    StExample { fieldUninit: 2 };
 
     // Instance with both fields set
-    StExample{
+    StExample {
         fieldInit: 0,
         fieldUninit: 2, // trailing comma is allowed
     };
@@ -220,7 +248,7 @@ struct StExample {
 }
 
 fun example(): Int {
-    let struct: StExample = StExample{ fieldUninit: 2 }; // instantiation
+    let struct: StExample = StExample { fieldUninit: 2 }; // instantiation
 
     struct.fieldInit;          // access a field
     return struct.fieldUninit; // return field value from the function
@@ -243,7 +271,7 @@ A global [static function](/book/functions#global-static-functions) or an intern
 contract ExampleContract {
     receive() {
         now(); // now() is a static function of stdlib
-        let expiration: Int = now() + 1000; // operation and variable declaration
+        let expiration: Int = now() + 1000; // operation and variable definition
         expiration = self.answerQuestion(); // internal function
     }
     fun answerQuestion(): Int {

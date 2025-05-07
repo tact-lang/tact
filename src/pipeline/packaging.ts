@@ -126,7 +126,12 @@ function packageContract(
             ? init.params.map((v) => ({
                   // FIXME: wildcards in ABI?
                   name: v.name.kind === "id" ? v.name.text : "_",
-                  type: createABITypeRefFromTypeRef(bCtx.ctx, v.type, v.loc),
+                  type: createABITypeRefFromTypeRef(
+                      bCtx.ctx,
+                      v.type,
+                      v.loc,
+                      v.as,
+                  ),
               }))
             : (init.contract.params ?? []).map((v) => ({
                   name: idText(v.name),

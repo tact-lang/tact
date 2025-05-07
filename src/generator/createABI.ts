@@ -126,11 +126,21 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                 arguments: f.params.map((v) => ({
                     // FIXME: wildcards in ABI?
                     name: v.name.kind === "id" ? v.name.text : "_",
-                    type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
+                    type: createABITypeRefFromTypeRef(
+                        ctx,
+                        v.type,
+                        v.loc,
+                        undefined,
+                    ),
                 })),
                 returnType:
                     f.returns.kind !== "void"
-                        ? createABITypeRefFromTypeRef(ctx, f.returns, f.ast.loc)
+                        ? createABITypeRefFromTypeRef(
+                              ctx,
+                              f.returns,
+                              f.ast.loc,
+                              undefined,
+                          )
                         : null,
             });
         }

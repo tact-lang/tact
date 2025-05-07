@@ -28,26 +28,26 @@ const TactExitCodes: Map<ExitCodeKey, ExitCodeValue> = new Map([
 
 describe("Tact-reserved contract errors", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<TestContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure", {
+        treasury = await blockchain.treasury("treasury", {
             resetBalanceIfZero: true,
         });
 
         contract = blockchain.openContract(await TestContract.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("100000") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -59,7 +59,7 @@ describe("Tact-reserved contract errors", () => {
         await testReservedExitCode(
             "TactExitCodeNullReferenceException",
             contract,
-            treasure,
+            treasury,
         );
     });
 
@@ -68,7 +68,7 @@ describe("Tact-reserved contract errors", () => {
         await testReservedExitCode(
             "TactExitCodeInvalidSerializationPrefix",
             contract,
-            treasure,
+            treasury,
         );
     });
 
@@ -77,7 +77,7 @@ describe("Tact-reserved contract errors", () => {
         await testReservedExitCode(
             "TactExitCodeInvalidIncomingMessage",
             contract,
-            treasure,
+            treasury,
         );
     });
 
@@ -89,7 +89,7 @@ describe("Tact-reserved contract errors", () => {
         await testReservedExitCode(
             "TactExitCodeAccessDenied",
             contract,
-            treasure,
+            treasury,
         );
     });
 
@@ -98,7 +98,7 @@ describe("Tact-reserved contract errors", () => {
         await testReservedExitCode(
             "TactExitCodeContractStopped",
             contract,
-            treasure,
+            treasury,
         );
     });
 
@@ -107,7 +107,7 @@ describe("Tact-reserved contract errors", () => {
         await testReservedExitCode(
             "TactExitCodeInvalidArgument",
             contract,
-            treasure,
+            treasury,
         );
     });
 
@@ -121,7 +121,7 @@ describe("Tact-reserved contract errors", () => {
         await testReservedExitCode(
             "TactExitCodeInvalidStandardAddress",
             contract,
-            treasure,
+            treasury,
         );
     });
 
@@ -130,7 +130,7 @@ describe("Tact-reserved contract errors", () => {
         await testReservedExitCode(
             "TactExitCodeNotBasechainAddress",
             contract,
-            treasure,
+            treasury,
         );
     });
 });
@@ -138,7 +138,7 @@ describe("Tact-reserved contract errors", () => {
 async function testReservedExitCode(
     codeName: ExitCodeKey,
     contract: SandboxContract<TestContract>,
-    treasure: SandboxContract<TreasuryContract>,
+    treasury: SandboxContract<TreasuryContract>,
 ) {
     const code = TactExitCodes.get(codeName);
     if (!code) {
@@ -146,7 +146,7 @@ async function testReservedExitCode(
     }
 
     const sendResult = await contract.send(
-        treasure.getSender(),
+        treasury.getSender(),
         { value: toNano("10") },
         codeName,
     );
@@ -162,7 +162,7 @@ async function testReservedExitCode(
     }
 
     expect(sendResult.transactions).toHaveTransaction({
-        from: treasure.address,
+        from: treasury.address,
         to: contract.address,
         success: true,
     });

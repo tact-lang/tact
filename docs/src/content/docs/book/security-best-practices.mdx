@@ -32,16 +32,16 @@ message Login {
     data: Slice;
 }
 
-contract Test {
-    // Empty receiver for the deployment,
-    // which forwards the remaining value back to the sender
-    receive() { cashback(sender()) }
-
+contract Test() {
     receive(msg: Login) {
         let publicKey = getPublicKey(msg.privateKey);
 
         require(checkDataSignature(msg.data, msg.signature, publicKey), "Invalid signature!");
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 
@@ -60,18 +60,22 @@ The following is an example of the incorrect use of a signed integer. In the `Vo
 ```tact
 message Vote { votes: Int as int32 }
 
-contract Sample {
-    votes: Int as uint32 = 0;
-
+contract VoteCounter(
+    votes: Int as uint32,
+) {
     receive(msg: Vote) {
         self.votes += msg.votes;
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 
 ## Invalid throw values
 
-[Exit codes](/book/exit-codes) $0$ and $1$ indicate normal execution of the compute phase of the transaction. Execution can be unexpectedly aborted by calling a [`throw(){:tact}`](/ref/core-debug#throw) or [similar functions](/ref/core-debug) directly with exit codes $0$ and $1$. This can make debugging very difficult since such aborted execution would be indistinguishable from a normal one.
+[Exit codes](/book/exit-codes) 0 and 1 indicate normal execution of the compute phase of the transaction. Execution can be unexpectedly aborted by calling a [`throw(){:tact}`](/ref/core-debug#throw) or [similar functions](/ref/core-debug) directly with exit codes 0 and 1. This can make debugging very difficult since such aborted execution would be indistinguishable from a normal one.
 
 ##### Do's ✅
 
@@ -83,7 +87,7 @@ require(isDataValid(msg.data), "Invalid data!");
 
 ##### Don'ts ❌
 
-Don't throw $0$ or $1$ directly.
+Don't throw 0 or 1 directly.
 
 ```tact
 throw(0);
@@ -101,9 +105,9 @@ Generating truly secure random numbers in TON is challenging. The [`random()`](/
 * Use [`random(){:tact}`](/ref/core-random#random) with randomized logical time to enhance security by making predictions harder for attackers without access to a validator node. Note, however, that it is still **not entirely foolproof**.
 
 * Consider using the **commit-and-disclose scheme**:
-  1. Participants generate random numbers off-chain and send their hashes to the contract.
-  2. Once all hashes are received, participants disclose their original numbers.
-  3. Combine the disclosed numbers (e.g., summing them) to produce a secure random value.
+1. Participants generate random numbers off-chain and send their hashes to the contract.
+2. Once all hashes are received, participants disclose their original numbers.
+3. Combine the disclosed numbers (e.g., summing them) to produce a secure random value.
 
 For more details, refer to the [Secure Random Number Generation page in TON Docs](https://docs.ton.org/v3/guidelines/smart-contracts/security/random-number-generation).
 
@@ -113,11 +117,11 @@ Don't rely on the [`random(){:tact}`](/ref/core-random#random) function.
 
 ```tact
 if (random(1, 10) == 7) {
-  ... send reward ...
+    // ...subsequent logic...
 }
 ```
 
-Don't use randomization in `external_message` receivers, as it remains vulnerable even with randomized logical time.
+Don't use randomization in [`external(){:tact}`](/book/external) message receivers, as it remains vulnerable even with randomized logical time.
 
 ## Optimized message handling
 
@@ -128,14 +132,16 @@ String parsing from human-friendly formats into machine-readable binary structur
 Perform string parsing from human-readable formats into machine-readable binary structures **off-chain** to keep the contract efficient.
 
 ```tact
-message Sample {
-    parsedField: Slice;
-}
+message Sample { parsedField: Slice }
 
-contract Example {
+contract Example() {
     receive(msg: Sample) {
         // Process msg.parsedField directly
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 
@@ -151,6 +157,10 @@ contract Example {
         // Parsing occurs on-chain, which is inefficient
         let parsed = field.fromBase64();
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 
@@ -163,12 +173,17 @@ Be careful with the `Out of gas error`. It cannot be handled, so try to pre-calc
 ```tact
 message Vote { votes: Int as int32 }
 
-contract Example {
+contract VoteCounter() {
     const voteGasUsage = 10000; // precompute with tests
 
     receive(msg: Vote) {
         require(context().value > getComputeFee(self.voteGasUsage, false), "Not enough gas!");
+        // ...subsequent logic...
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 
@@ -183,19 +198,25 @@ Use the [`Ownable{:tact}`](/ref/stdlib-ownable) trait.
 ```tact
 import "@stdlib/ownable";
 
+message Inc { amount: Int as uint32 }
+
 contract Counter with Ownable {
     owner: Address;
     val: Int as uint32;
 
     init() {
-        self.owner = address("OWNER_ADDRESS");
+        self.owner = address("...SOME ADDRESS...");
         self.val = 0;
     }
 
-    receive("admin-double") {
+    receive(msg: Inc) {
         self.requireOwner();
-        self.val = self.val * 2;
+        self.val += msg.amount;
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 
@@ -204,7 +225,7 @@ contract Counter with Ownable {
 Do not execute a message without validating the sender's identity!
 
 ```tact
-contract Example {
+contract Jetton {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -216,13 +237,14 @@ contract Example {
         );
     }
 
+    receive(msg: JettonTransferNotification) {
+        // There's no check of the ownership here!
+        self.myJettonAmount += msg.amount;
+    }
+
     // Empty receiver for the deployment,
     // which forwards the remaining value back to the sender
     receive() { cashback(sender()) }
-
-    receive(msg: JettonTransferNotification) {
-        self.myJettonAmount += msg.amount;
-    }
 }
 ```
 
@@ -237,34 +259,26 @@ To differentiate messages, always include and validate a unique identifier, such
 Alternatively, you can implement replay protection similar to the one in the [highload v3 wallet](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/main/contracts/highload-wallet-v3.func#L60), which is not based on `seqno`.
 
 ```tact
-message Msg {
-    newMessage: Cell;
-    signature: Slice;
+message MsgWithSignedData {
+    bundle: SignedBundle;
+    seqno: Int as uint64;
+    rawMsg: Cell;
 }
 
-struct DataToVerify {
-    seqno: Int as uint64;
-    message: Cell;
-}
-
-contract Sample {
-    publicKey: Int as uint256;
-    seqno: Int as uint64;
-
-    init(publicKey: Int, seqno: Int) {
-        self.publicKey = publicKey;
-        self.seqno = seqno;
-    }
-
-    external(msg: Msg) {
-        require(checkDataSignature(DataToVerify{
-            seqno: self.seqno,
-            message: msg.newMessage
-        }.toSlice(), msg.signature, self.publicKey), "Invalid signature");
+contract Sample(
+    publicKey: Int as uint256,
+    seqno: Int as uint64,
+) {
+    external(msg: MsgWithSignedData) {
+        require(msg.bundle.verifySignature(self.publicKey), "Invalid signature");
         acceptMessage();
         self.seqno += 1;
-        nativeSendMessage(msg.newMessage, 0);
+        sendRawMessage(msg.rawMsg, 0);
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 
@@ -278,20 +292,118 @@ message Msg {
     signature: Slice;
 }
 
-contract Sample {
-    publicKey: Int as uint256;
-
-    init(publicKey: Int, seqno: Int) {
-        self.publicKey = publicKey;
-    }
-
+contract Sample(
+    publicKey: Int as uint256,
+) {
     external(msg: Msg) {
-        require(checkDataSignature(msg.toSlice(), msg.signature, self.publicKey), "Invalid signature");
+        require(
+            checkDataSignature(msg.toSlice(), msg.signature, self.publicKey),
+            "Invalid signature",
+        );
         acceptMessage();
-        nativeSendMessage(msg.newMessage, 0);
+        sendRawMessage(msg.newMessage, 0);
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
+
+## Preventing front-running with signature verification
+
+In TON blockchain, all pending messages are publicly visible in the mempool.
+Front-running can occur when an attacker observes a pending transaction containing a valid signature and quickly submits their own transaction using the same signature before the original transaction is processed.
+
+##### Do's ✅
+
+Include critical parameters like the recipient address (`to`) within the data that is signed. This ensures that the signature is valid only for the intended operation and recipient, preventing attackers from reusing the signature for their benefit. Also, implement replay protection to prevent the same signed message from being used multiple times.
+
+```tact
+struct RequestBody {
+    to: Address;
+    seqno: Int as uint64;
+}
+
+message(0x988d4037) Request {
+    signature: Slice as bytes64;
+    requestBody: RequestBody;
+}
+
+contract SecureChecker(
+    publicKey: Int as uint256,
+    seqno: Int as uint64, // Add seqno for replay protection
+) {
+    receive(request: Request) {
+        // Verify the signature against the reconstructed data hash
+        require(checkSignature(request.requestBody.toCell().hash(), request.signature, self.publicKey), "Invalid signature!");
+
+        // Check replay protection
+        require(request.requestBody.seqno == self.seqno, "Invalid seqno"); // Assuming external message with seqno
+        self.seqno += 1; // Increment seqno after successful processing
+
+        // Ensure the message is sent to the address specified in the signed data
+        message(MessageParameters {
+            to: request.requestBody.to, // Use the 'to' from the signed request
+            value: 0,
+            mode: SendRemainingBalance, // Caution: sending the whole balance!
+            bounce: false,
+            body: "Your action payload here".asComment(), // Example body
+        });
+    }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+
+    get fun seqno(): Int {
+        return self.seqno;
+    }
+}
+
+```
+
+Remember to also implement [replay protection](#replay-protection) to prevent reusing the same signature even if it's correctly targeted.
+
+##### Don'ts ❌
+
+Do not sign data without including essential context like the recipient address. An attacker could intercept the message, copy the signature, and replace the recipient address in their own transaction, effectively redirecting the intended action or funds.
+
+```tact
+message(0x988d4037) Request {
+    signature: Slice as bytes64;
+    data: Slice as remaining; // 'to' address is not part of the signed data
+}
+
+contract InsecureChecker(
+    publicKey: Int as uint256,
+) {
+    receive(request: Request) {
+        // The signature only verifies 'request.data', not the intended recipient.
+        if (checkDataSignature(request.data.hash(), request.signature, self.publicKey)) {
+            // Attacker can see this message, copy the signature, and send their own
+            // message to a different 'to' address before this one confirms.
+            // The 'sender()' here is the original sender, but the attacker can initiate
+            // a similar transaction targeting themselves or another address.
+            message(MessageParameters {
+                to: sender(), // Vulnerable: recipient isn't verified by the signature
+                value: 0,
+                mode: SendRemainingBalance, // Caution: sending the whole balance!
+                bounce: false,
+            });
+        }
+    }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+}
+```
+:::caution[Sandbox Limitations]
+This specific front-running scenario is not reproducible in the `@ton/sandbox` environment due to differences in transaction processing and the absence of a mempool compared to the real network. Always be mindful that local testing environments like the sandbox may not fully capture all real-world network conditions and potential attack vectors.
+:::
+
+Furthermore, once a signature is used in a transaction, it becomes publicly visible on the blockchain. Without proper replay protection, anyone can potentially reuse this signature and the associated data in a new transaction if the contract logic doesn't prevent it.
 
 ## Race condition of messages
 
@@ -299,26 +411,20 @@ A message cascade can be processed over many blocks. Assume that while one messa
 
 ## Handle/Send bounced messages
 
-Send messages with the bounce flag set to `true{:tact}`, which is the default for the [`send(){:tact}`](/ref/core-send#send) function. Messages bounce when the execution of a contract fails. You may want to handle this by rolling back the state of the contract using [`try...catch{:tact}`](/book/statements#try-catch) statements and performing additional processing depending on your logic.
+Send messages with the bounce flag set to `true{:tact}`, which is the default for the [`send(){:tact}`](/ref/core-send#send), [`message(){:tact}`](/ref/core-send#message), and [`deploy(){:tact}`](/ref/core-send#deploy) functions. Messages bounce when the execution of a contract fails. You may want to handle this by rolling back the state of the contract using [`try...catch{:tact}`](/book/statements#try-catch) statements and performing additional processing depending on your logic.
 
 ##### Do's ✅
 
 Handle bounced messages via a [bounced message receiver](/book/bounced/#bounced-message-receiver) to correctly react to failed messages.
 
 ```tact
-contract JettonDefaultWallet {
+contract JettonWalletSample(
+    owner: Address,
+    master: Address,
+    balance: Int,
+) {
     const minTonsForStorage: Int = ton("0.01");
     const gasConsumption: Int = ton("0.01");
-
-    balance: Int;
-    owner: Address;
-    master: Address;
-
-    init(master: Address, owner: Address) {
-        self.balance = 0;
-        self.owner = owner;
-        self.master = master;
-    }
 
     receive(msg: TokenBurn) {
         let ctx: Context = context();
@@ -328,25 +434,33 @@ contract JettonDefaultWallet {
         require(self.balance >= 0, "Invalid balance");
 
         let fwdFee: Int = ctx.readForwardFee();
-        require(ctx.value > fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value - Burn");
+        require(
+            ctx.value >
+            fwdFee + 2 * self.gasConsumption + self.minTonsForStorage,
+            "Invalid value - Burn",
+        );
 
-        send(SendParameters{
+        message(MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: TokenBurnNotification{
+            body: TokenBurnNotification {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 owner: self.owner,
-                response_destination: self.owner
-            }.toCell()
+                response_destination: self.owner,
+            }.toCell(),
         });
     }
 
     bounced(src: bounced<TokenBurnNotification>) {
         self.balance = self.balance + src.amount;
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 
@@ -370,36 +484,23 @@ Return excesses using a [Message][message] with the `0xd53276db` opcode.
 message(0xd53276db) Excesses {}
 message Vote { votes: Int as int32 }
 
-contract Sample {
-    votes: Int as uint32 = 0;
-
+contract Sample(
+    votes: Int as uint32,
+) {
     receive(msg: Vote) {
         self.votes += msg.votes;
 
-        send(SendParameters{
+        message(MessageParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: Excesses{}.toCell(),
+            body: Excesses {}.toCell(),
         });
     }
-}
-```
 
-Alternatively, you can leverage the standard [`notify(){:tact}`](/ref/core-base/#self-notify) or [`forward(){:tact}`](/ref/core-base/#self-forward) functions.
-
-```tact
-message(0xd53276db) Excesses {}
-message Vote { votes: Int as int32 }
-
-contract Sample {
-    votes: Int as uint32 = 0;
-
-    receive(msg: Vote) {
-        self.votes += msg.votes;
-
-        self.notify(Excesses{}.toCell());
-    }
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 
@@ -414,36 +515,48 @@ Thus, any on-chain communication is asynchronous and done by sending and receivi
 Exchange messages to pull data from another contract.
 
 ```tact
+message GetMoney {}
 message ProvideMoney {}
 message TakeMoney { money: Int as coins }
 
-contract OneContract {
-    money: Int as coins;
-
-    init(money: Int) {
-        self.money = money;
-    }
-
+contract OneContract(
+    money: Int as coins,
+) {
     receive(msg: ProvideMoney) {
-        self.reply(TakeMoney{money: self.money}.toCell());
+        message(MessageParameters {
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors,
+            body: TakeMoney { money: self.money }.toCell(),
+        });
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 
-contract AnotherContract {
-    oneContractAddress: Address;
-
-    init(oneContractAddress: Address) {
-        self.oneContractAddress = oneContractAddress;
-    }
-
-    receive("get money") {
-        self.forward(self.oneContractAddress, ProvideMoney{}.toCell(), false, null);
+contract AnotherContract(
+    oneContractAddress: Address,
+) {
+    receive(_: GetMoney) {
+        message(MessageParameters {
+            to: self.oneContractAddress,
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors,
+            bounce: false,
+            body: ProvideMoney {}.toCell(),
+        });
     }
 
     receive(msg: TakeMoney) {
         require(sender() == self.oneContractAddress, "Invalid money provider!");
-        // Money processing
+        // ...further processing...
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 }
 ```
 

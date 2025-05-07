@@ -97,6 +97,7 @@ See [Tact in production](https://github.com/tact-lang/awesome-tact#tact-in-produ
 
 - [Awesome Tact](https://github.com/tact-lang/awesome-tact)
 - [Tact By Example](https://tact-by-example.org/00-hello-world)
+- [DeFi Cookbook](https://github.com/tact-lang/defi-cookbook)
 - [Documentation](https://docs.tact-lang.org)
 - [Changelog](./dev-docs/CHANGELOG.md)
 
@@ -130,7 +131,10 @@ Alternatively, you can install it globally as such:
 npm i -g @tact-lang/compiler
 ```
 
-It will make the `tact` compiler available on your PATH, as well as a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
+It will make the `tact` compiler available on your PATH, as well as:
+
+- a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
+- a formatter `tact-fmt`, which can format or check the formatting of individual Tact files and directories.
 
 ### Tooling
 
@@ -149,6 +153,11 @@ It will make the `tact` compiler available on your PATH, as well as a convenient
 
 - [Misti](https://github.com/nowarp/misti) - Static smart contract analyzer.
 - [TON Symbolic Analyzer (TSA)](https://github.com/espritoxyz/tsa) - Static smart contract analysis tool based on symbolic execution.
+
+###### Utility
+
+- Formatter (`tact-fmt`) — The official formatter. It ships with the Tact Language Server, VS Code extension, and as a standalone binary with the compiler. You can invoke it by running `npx tact-fmt` in your Tact projects.
+- BoC Disassembler (`unboc`) — Disassembler for [`.boc`](https://docs.tact-lang.org/book/cells/#cells-boc) files. Ships as a standalone binary with the compiler. You can invoke it by running `npx unboc` in your Tact projects.
 
 ### Getting started
 

@@ -98,17 +98,17 @@ message(0xea06185d) NativeSwap {
 
 // Let's say `swapAmount` is `ton("0.1")`, which is 10000000 nanoToncoins
 fun swapToncoinForUSDT(swapAmount: Int) {
-    send(SendParameters{
+    send(SendParameters {
         // Address of the TON vault to send the message to
         to: address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_"),
         // Amount to swap plus a trade fee
         value: swapAmount + ton("0.2"),
-        body: NativeSwap{
+        body: NativeSwap {
             amount: swapAmount,
             // Address of the swap pool, which is the TON/USDT pair in this case
             poolAddress: address("EQA-X_yo3fzzbDbJ_0bzFWKqtRuZFIRa1sJsveZJ1YpViO3r"),
             // Set of parameters relevant for the whole swap
-            swapParams: SwapParams{}, // use defaults
+            swapParams: SwapParams {}, // use defaults
         }.toCell(),
     });
 }
@@ -151,10 +151,10 @@ message(0xe3a0d482) JettonSwapPayload {
 /// NOTE: To calculate and provide the Jetton wallet address for the target user,
 ///       make sure to check the links after this code snippet.
 fun swapJetton(targetJettonWalletAddress: Address) {
-    send(SendParameters{
+    send(SendParameters {
         to: targetJettonWalletAddress,
         value: ton("0.3"),
-        body: JettonTransfer{
+        body: JettonTransfer {
             // Unique identifier used to trace transactions across multiple contracts.
             // Set to 0, which means we don't mark messages to trace their chains.
             queryId: 0,
@@ -165,11 +165,11 @@ fun swapJetton(targetJettonWalletAddress: Address) {
             // Address to return any exceeding funds.
             responseDestination: myAddress(),
             forwardTonAmount: ton("0.25"),
-            forwardPayload: JettonSwapPayload{
+            forwardPayload: JettonSwapPayload {
                 // Address of the swap pool, which is the TON/USDT pair in this case.
                 poolAddress: address("EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs"),
                 // Set of parameters relevant for the entire swap.
-                swapParams: SwapParams{}, // use defaults
+                swapParams: SwapParams {}, // use defaults
             }.toCell(),
         }.toCell(),
     });
@@ -223,8 +223,6 @@ To provide liquidity to a particular DeDust pool, you must provide both assets. 
 Read more about liquidity provisioning in the [DeDust documentation](https://docs.dedust.io/docs/liquidity-provisioning).
 
 ```tact
-import "@stdlib/deploy";
-
 /// https://docs.dedust.io/reference/tlb-schemes#message-deposit_liquidity-1
 message(0x40e108d6) JettonDepositLiquidity {
     // Pool type: 0 for volatile, 1 for stable
@@ -284,7 +282,7 @@ struct Asset {
     type: Int as uint4;
 
     workchain: Int as uint8 = 0; // Both these zeros will be removed during the .build() function. Only type will remain.
-    address: Int as uint256 = 0; 
+    address: Int as uint256 = 0;
 }
 
 const PoolTypeVolatile: Int = 0;
@@ -301,37 +299,37 @@ const TonProvideLpGas: Int = ton("0.15");
 // In real-world scenarios, it's more reliable to calculate this address on-chain or save it during initialization to prevent any issues.
 fun provideLiquidity(myJettonWalletAddress: Address) {
     let jettonMasterRaw = parseStdAddress(
-        address("EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs")
-        .asSlice()
+        address("EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs").asSlice(),
     );
 
     // Step 1. Prepare input
     let jettonAmount = ton("1");
     let tonAmount = ton("1");
 
-    let asset0 = Asset{
+    let asset0 = Asset {
         type: AssetTypeNative,
     };
-    let asset1 = Asset{
+    let asset1 = Asset {
         type: AssetTypeJetton,
         workchain: jettonMasterRaw.workchain,
         address: jettonMasterRaw.address,
     };
 
     // Step 2. Deposit Jetton to Vault
-    let jettonDepositBody = JettonDepositLiquidity{
+    let jettonDepositBody = JettonDepositLiquidity {
         poolType: PoolTypeVolatile,
         asset0,
         asset1,
         targetBalances0: tonAmount,
         targetBalances1: jettonAmount,
-    }.build(); // Notice .build() instead of .toCell(),
-               // since we want some custom serialization logic.
+    }.build();
+    // Notice .build() instead of .toCell(),
+    // since we want some custom serialization logic.
 
-    send(SendParameters{
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: JettonProvideLpGas,
-        body: JettonTransfer{
+        body: JettonTransfer {
             queryId: 42,
             amount: jettonAmount,
             // Jetton Vault
@@ -339,11 +337,11 @@ fun provideLiquidity(myJettonWalletAddress: Address) {
             responseDestination: myAddress(),
             forwardTonAmount: JettonProvideLpGasFwd,
             forwardPayload: jettonDepositBody,
-        }.toCell()
+        }.toCell(),
     });
 
     // Step 3. Deposit TON to Vault
-    let nativeDepositBody = NativeDepositLiquidity{
+    let nativeDepositBody = NativeDepositLiquidity {
         queryId: 42,
         amount: tonAmount,
         poolType: PoolTypeVolatile,
@@ -351,10 +349,11 @@ fun provideLiquidity(myJettonWalletAddress: Address) {
         asset1,
         targetBalances0: tonAmount,
         targetBalances1: jettonAmount,
-    }.build(); // Notice .build() instead of .toCell(),
-               // since we want some custom serialization logic.
+    }.build();
+    // Notice .build() instead of .toCell(),
+    // since we want some custom serialization logic.
 
-    send(SendParameters{
+    send(SendParameters {
         to: address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_"),
         value: tonAmount + TonProvideLpGas,
         body: nativeDepositBody,
@@ -366,8 +365,7 @@ fun provideLiquidity(myJettonWalletAddress: Address) {
 //
 
 extends fun build(self: Asset): Cell {
-    let assetBuilder = beginCell()
-        .storeUint(self.type, 4);
+    let assetBuilder = beginCell().storeUint(self.type, 4);
 
     if (self.type == AssetTypeNative) {
         return assetBuilder.endCell();
@@ -411,7 +409,7 @@ extends fun build(self: NativeDepositLiquidity): Cell {
                 .storeCoins(self.minimalLpAmount)
                 .storeCoins(self.targetBalances0)
                 .storeCoins(self.targetBalances1)
-                .endCell()
+                .endCell(),
         )
         .storeMaybeRef(self.fulfillPayload)
         .storeMaybeRef(self.rejectPayload)

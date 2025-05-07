@@ -23,6 +23,9 @@ import rehypeInlineCodeHighlighting from './inline-code-highlighting';
 // Add validation of internal links during production builds
 import starlightLinksValidator from 'starlight-links-validator';
 
+// Add generation of llms.txt, llms-full.txt and llms-small.txt
+import starlightLllmsTxt from 'starlight-llms-txt';
+
 // https://astro.build/config
 // https://starlight.astro.build/reference/configuration/
 export default defineConfig({
@@ -97,10 +100,28 @@ export default defineConfig({
 				'./src/fonts/katex.fontfaces.css',
 				'./src/katex.min.css',
 			],
-			plugins: [starlightLinksValidator({
-				errorOnFallbackPages: false,
-				// errorOnInvalidHashes: false,
-			})],
+			plugins: [
+				starlightLinksValidator({
+					errorOnFallbackPages: false,
+					// errorOnInvalidHashes: false,
+				}),
+				starlightLllmsTxt({
+					description: 'Tact is a powerful programming language for TON Blockchain focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts.',
+					pageSeparator: '\n\n---\n\n',
+					exclude: [
+						// Excluding /ecosystem from llms-small.txt as it brings little value
+						// for LLMs and humans (as of now)
+						'ecosystem',
+						'ecosystem/**',
+					],
+					minify: {
+						note: false, // keep note asides
+						customSelectors: [
+							"a.web-ide-link" // "Open in Web IDE" links
+						],
+					},
+				}),
+			],
 			credits: false,
 			lastUpdated: true,
 			disable404Route: false,
