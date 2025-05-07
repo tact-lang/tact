@@ -27,6 +27,8 @@ export const ops = {
     },
     readerNonModifying: (type: string, ctx: WriterContext) =>
         used(`$${type}$_load_not_mut`, ctx),
+    readerModifying: (type: string, ctx: WriterContext) =>
+        used(`$${type}$_load`, ctx),
     readerBounced: (type: string, ctx: WriterContext) =>
         used(`$${type}$_load_bounced`, ctx),
     readerOpt: (type: string, ctx: WriterContext) =>
