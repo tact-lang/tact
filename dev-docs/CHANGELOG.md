@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added references to https://github.com/tact-lang/defi-cookbook: PR [#2985](https://github.com/tact-lang/tact/pull/2985)
 - Added description of the "unreachable code" errors and enhanced the descriptions of the `return` statement: PR [#2750](https://github.com/tact-lang/tact/pull/2750)
 - Fixed description of the unary plus `+` operator: PR [#3016](https://github.com/tact-lang/tact/pull/3016)
+- Documented that map key-value types and the inner message type of the `bounced<M>` type constructor cannot be nullable: PR [#3017](https://github.com/tact-lang/tact/pull/3017)
 
 ### Release contributors
 
