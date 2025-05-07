@@ -83,7 +83,18 @@ extends mutates fun equalize(self: Int, num: Int) {
 //  ~~~~~~~~~
 }
 
-// COMPILATION ERROR! Function does not always return a result.
+fun retWhenNot(flag: Bool): Int {
+    if (flag) {
+        throw(200);
+    } else {
+        return 42;
+    }
+
+    return 1000; // COMPILATION ERROR! Unreachable statement
+//  ~~~~~~~~~~~
+}
+
+// COMPILATION ERROR! Function does not always return a result
 fun checkTimeWith(offset: Int): Int {
 //  ~~~~~~~~~~~~~
     let t = now();
