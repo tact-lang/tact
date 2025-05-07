@@ -53,6 +53,62 @@ fun getTimeFromNow(offset: Int): Int {
 }
 ```
 
+If the function does not have an explicit return type, it has an implicit return type of `void`. As such, the `return{:tact}` statement must be empty.
+
+```tact
+extends mutates fun equalize(self: Int, num: Int) {
+    if (self == num) {
+        return;
+    } else {
+        self = num;
+        return;
+    }
+}
+```
+
+All statements after the `return{:tact}` statement are unreachable and will not be executed. Such statements are detected by the Tact compiler, producing an "Unreachable code" error.
+
+This is done to help avoid potential logical errors in the code, although `return{:tact}`-reachability analysis is not almighty and might reject valid examples.
+
+```tact
+extends mutates fun equalize(self: Int, num: Int) {
+    if (self == num) {
+        return;
+    } else {
+        self = num;
+        return;
+    }
+
+    throw(42); // COMPILATION ERROR! Unreachable statement
+//  ~~~~~~~~~
+}
+
+fun retWhenNot(flag: Bool): Int {
+    if (flag) {
+        throw(200);
+    } else {
+        return 42;
+    }
+
+    return 1000; // COMPILATION ERROR! Unreachable statement
+//  ~~~~~~~~~~~
+}
+
+fun throwWrapped(code: Int) {
+    throw(code);
+}
+
+// The following function always throws, but this cannot be
+// determined without a thorough inter-procedural analysis
+// and, as such, compiler won't allow it.
+//
+// COMPILATION ERROR! Function does not always return a result
+fun triggerCompiler(): Int {
+//  ~~~~~~~~~~~~~~~
+    throwWrapped(42);
+}
+```
+
 ## Block
 
 A block statement is used to group zero or more statements. The block is delimited by a pair of braces ("curly braces", `{}{:tact}`) and contains a list of zero or more statements and declarations.
