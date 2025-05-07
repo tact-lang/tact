@@ -58,6 +58,7 @@
     "/docs",
     "src/utils/change-case/*",
     "src/fmt/cst/cst-parser.ts",
-    "coverage"
+    "coverage",
+    "allure-results/*"
   ]
 }
