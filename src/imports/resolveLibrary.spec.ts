@@ -7,6 +7,7 @@ const project = createVirtualFileSystem("/project", {
     ["main.tact"]: "",
     ["import.tact"]: "",
     ["main.fc"]: "",
+    ["node_modules/@name/j.tact"]: "",
 });
 
 const mainSource: Source = {
@@ -25,6 +26,26 @@ const stdlibSource: Source = {
     path: "@stdlib/libs/import.tact",
     code: "",
 };
+
+it("project file, node_modules package import", () => {
+    const resolved = resolveLibrary({
+        sourceFrom: mainSource,
+        importPath: {
+            path: fromString("@name/j.tact"),
+            language: "tact",
+            type: "package",
+        },
+        project,
+        stdlib,
+    });
+
+    expect(resolved).toMatchObject({
+        ok: true,
+        path: "/project/node_modules/@name/j.tact",
+        origin: "user",
+        language: "tact",
+    });
+});
 
 it("project file, stdlib import", () => {
     const resolved = resolveLibrary({
