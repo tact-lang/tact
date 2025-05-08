@@ -1,42 +1,142 @@
 ---
 title: Optionals
+description: "Data types that can contain the null value in addition to values of their encapsulated primitive or struct types."
 ---
 
-As mentioned in the [type system overview](/book/types#optionals), all [primitive types](/book/types#primitive-types), [structs](/book/structs-and-messages#structs), and [Messages](/book/structs-and-messages#messages) can be nullable. That is, they don't necessarily hold any value aside from `null{:tact}` — a special value that represents the intentional absence of any other value.
+As mentioned in the [type system overview](/book/types#optionals), all [primitive types](/book/types#primitive-types), [structs][struct], and [message structs][message] can be made nullable. That is, [variables](/book/statements#let), [function parameters](/book/functions), [contract parameters](/book/contracts#parameters) and [structure fields][structure] of primitive or struct types can hold the special `null{:tact}` value that represents the intentional absence of any other value.
 
-[Variables](/book/statements#let) or fields of structs and Messages that can hold `null{:tact}` are called "optionals". They're useful for reducing state size when the variable isn't necessarily used.
+Such data types that may or may not contain the `null{:tact}` value are called _optionals_.
 
-You can make any variable or field optional by adding a question mark (`?{:tact}`) after its type name. The only exceptions are [`map<K, V>{:tact}`](/book/maps) and [`bounced<Msg>{:tact}`](/book/bounced), in which you cannot make the inner key/value type (in the case of a map) or the inner [Message](/book/structs-and-messages#messages) (in the case of a bounced) optional.
-
-Optional variables or optional fields that are not defined hold the `null{:tact}` value by default. You cannot access them without checking for `null{:tact}` first. However, if you're certain they are not `null{:tact}` at a given moment, use the [non-null assertion operator `!!{:tact}`](/book/operators#unary-non-null-assert) to access their value.
-
-Attempts to access the value of an optional variable or an optional field without using [`!!{:tact}`](/book/operators#unary-non-null-assert) or without checking for `null{:tact}` beforehand will result in a compilation error if the compiler can track it, or, if it cannot, in an exception with [exit code 128](/book/exit-codes#128): `Null reference exception`.
-
-Example of optionals:
+You can make a primitive or struct type into an optional by adding a question mark `?{:tact}` after its type declaration.
 
 ```tact
 struct StOpt {
+    // Optionals as struct fields
     opt: Int?; // Int or null
 }
 
 message MsOpt {
-    opt: StOpt?; // Notice how the struct StOpt is used in this definition
+    // Optionals as message fields
+    opt: StOpt?; // notice how the struct StOpt is used in this definition
 }
 
-contract Optionals {
-    opt: Int?;
-    address: Address?;
-
-    init(opt: Int?) { // optionals as parameters
+contract Optionals(
+    // Optionals as contract parameters
+    opt: Int?,
+    address: Address?,
+) {
+    // Optionals as function parameters
+    fun reset(opt: Int?) {
         self.opt = opt;
         self.address = null; // explicit null value
     }
 
     receive(msg: MsOpt) {
-        let opt: Int? = 12; // defining a new variable
-        if (self.opt != null) { // explicit check
-            self.opt = opt!!; // using !! as we know that opt value isn't null
+        // Optionals as local variables
+        let opt: Int? = 12;
+
+        // Explicit check of the message struct field
+        if (msg.opt != null) {
+            // Non-null assertion to work with its inner value
+            self.reset(msg.opt!!.opt);
         }
     }
 }
 ```
+
+Since [`map<K, V>{:tact}`](/book/maps) and [`bounced<Msg>{:tact}`](/book/bounced) are not primitive or struct types, they cannot be made optional. Furthermore, their inner key-value types (in the case of a map) and the inner [message struct][message] (in the case of a bounced constructor) cannot be optional too.
+
+```tact
+// COMPILATION ERROR! Map key types cannot be optional
+let myMap: map<Int?, Int> = emptyMap();
+//             ~~~~
+```
+
+Creating a nested optional type by adding multiple question marks `?{:tact}` is not allowed, as optionals are neither a primitive nor a struct type.
+
+```tact
+// COMPILATION ERROR! Nested optional types are not allowed
+fun invalidNestedOptional(a: Int??) {}
+//                           ~~~~~
+```
+
+Optional fields of [structures][structure] that are not defined implicitly hold the `null{:tact}` value by default. That said, optionals as local variables as optionals require initialization.
+
+```tact
+struct StOpt {
+    // Defaults to null
+    nullDef: Int?;
+}
+
+fun locVar() {
+    // Requires an initial value: either null or a value of the Int type
+    let mayBeeBayBee: Int? = null;
+}
+```
+
+When initializing a new local variable to `null{:tact}` in the [`let{:tact}` statement](/book/statements#let), you must explicitly provide the type ascription as it cannot be inferred.
+
+```tact
+let opt: Int? = null;
+let myMap: map<Int, Int> = emptyMap(); // = null, since empty maps are nulls
+```
+
+You can assign the current value of one optional to another if their types match. However, to access the non-`null{:tact}` value of an optional in an expression, you must use the [non-null assertion operator `!!{:tact}`](/book/operators#unary-non-null-assert).
+
+Attempts to assign or directly access an optional value in an expression will result in a compilation error.
+
+```tact
+let opt1: Int? = 42;
+let opt2: Int? = 378;
+opt1 = opt2; // 378
+
+let notOpt: Int = 42;
+notOpt = opt2!!; // opt2 isn't null, so notOpt is 378
+notOpt = opt2;   // COMPILATION ERROR! Type mismatch
+```
+
+To access the non-`null{:tact}` value of an optional in an expression, you must use the [non-null assertion operator `!!{:tact}`](/book/operators#unary-non-null-assert) to unwrap the value. If you are sure the value is not `null{:tact}` at the time of the assertion, use the `!!{:tact}` operator directly, without prior [`if...else{:tact}`](/book/statements#if-else) checks.
+
+In the general case it is better to explicitly check for `null{:tact}` before asserting its absence. Otherwise, when the value is `null{:tact}`, assertions with `!!{:tact}` operator will result in a compilation error if the compiler can track it at compile-time, or, if it cannot, in an exception with [exit code 128](/book/exit-codes#128): `Null reference exception`.
+
+```tact
+fun misplacedCourage(opt: Int?) {
+    // `opt` could be null, and the following assertion could throw an exit code 128:
+    dump(opt!!);
+}
+```
+
+## Serialization
+
+When serialized to a [`Cell{:tact}`][cell] or to [contract's persistent state](/book/contracts#variables), optionals occupy no less than one bit and, at most, one bit on top of the size of the wrapped type.
+
+That is, if their value is `null{:tact}`, only a single 0 bit is stored in a [`Builder{:tact}`][builder]. Otherwise, a single 1 bit is stored, followed by the non-`null{:tact}` value.
+
+Deserialization works inversely. First, a single bit is loaded from a [`Slice{:tact}`][slice]. If it is 0, the value is read as `null{:tact}`. If it is 1, then the value is loaded from the following data bits.
+
+```tact
+struct Wasp {
+    hasSting: Bool?, // 2 bits max: 1 for the optional, 0 or 1 for the boolean
+    stingLength: Int?, // 258 bits max: 1 for the optional, 0 or 257 for the integer
+}
+```
+
+Optionals can have serialization annotations provided after the `as{:tact}` keyword and have all the same serialization options as their encapsulated primitive or struct types. As such, the optional [`Int?{:tact}`](/book/integers) type has the most serialization formats available.
+
+```tact
+contract IntResting(
+    // Persistent state variables (contract parameters)
+    maybeOneByte: Int? as int8, // takes either 1 (when null) or 9 (when not null) bits
+    maybeTwoBytes: Int? as int16, // takes either 1 or 17 bits
+    maybeCoins: Int? as coins,  // takes either 1 or up to 125 bits, depending on the value
+) {
+    // ...
+}
+```
+
+[cell]: /book/cells#cells
+[builder]: /book/cells#builders
+[slice]: /book/cells#slices
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
+[structure]: /book/structs-and-messages
