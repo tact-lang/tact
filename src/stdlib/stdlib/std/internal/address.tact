@@ -146,7 +146,7 @@ struct VarAddress {
 
 /// Global function. Available since Tact 1.5.0.
 ///
-/// Converts a `slice` containing an address into the `StdAddress` Struct and returns it.
+/// Converts a `slice` containing an address into the `StdAddress` struct and returns it.
 ///
 /// ```tact
 /// fun example() {
@@ -170,7 +170,7 @@ asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 
 /// Global function. Available since Tact 1.5.0.
 ///
-/// Converts a `slice` containing an address of variable length into the `VarAddress` Struct and returns it.
+/// Converts a `slice` containing an address of variable length into the `VarAddress` struct and returns it.
 ///
 /// ```tact
 /// fun example() {

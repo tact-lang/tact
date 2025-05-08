@@ -7,7 +7,7 @@ import { Badge } from '@astrojs/starlight/components';
 
 TON Blockchain is message-based — to communicate with other contracts and to deploy new ones, you need to send messages.
 
-Messages in Tact are commonly composed using a built-in [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`, which consists of the following fields:
+Messages in Tact are commonly composed using a built-in [struct][struct] `SendParameters{:tact}`, which consists of the following fields:
 
 Field    | Type                   | Description
 :------- | :--------------------- | :----------
@@ -31,7 +31,7 @@ self.reply("Hello, World!".asComment()); // asComment converts a String to a Cel
 
 ## Send message
 
-If you need more advanced logic, you can use the `send(){:tact}` function and the `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs) directly.
+If you need more advanced logic, you can use the `send(){:tact}` function and the `SendParameters{:tact}` [struct][struct] directly.
 
 In fact, the previous example with [`.reply(){:tact}`](#send-simple-reply) can be made using the following call to the `send(){:tact}` function:
 
@@ -267,6 +267,7 @@ Read more about all message-sending functions in the Reference:
 [p]: /book/types#primitive-types
 [int]: /book/integers
 [cell]: /book/cells#cells
+[struct]: /book/structs-and-messages#structs
 [opt]: /book/optionals
 [nano]: /book/integers#nanotoncoin
 
