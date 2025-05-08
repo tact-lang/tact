@@ -1,0 +1,3 @@
+contract OptionalString {
+    f: String?;
+}

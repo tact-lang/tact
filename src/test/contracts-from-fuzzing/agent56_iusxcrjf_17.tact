@@ -1,0 +1,1 @@
+fun f(): Int { return 1; } fun g(): Int { return 2; } contract C {receive() {}}

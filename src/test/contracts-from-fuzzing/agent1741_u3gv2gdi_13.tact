@@ -1,0 +1,65 @@
+contract TestContract {
+    f0: Int as int8;
+    f1: Int as int8;
+    f2: Int as int8;
+    f3: Int as int8;
+    f4: Int as int8;
+    f5: Int as int8;
+    f6: Int as int8;
+    f7: Int as int8;
+    f8: Int as int8;
+    f9: Int as int8;
+    f10: Int as int8;
+    f11: Int as int8;
+    f12: Int as int8;
+    f13: Int as int8;
+    f14: Int as int8;
+    f15: Int as int8;
+    f16: Int as int8;
+    f17: Int as int8;
+    f18: Int as int8;
+    f19: Int as int8;
+    f20: Int as int8;
+    f21: Int as int8;
+    f22: Int as int8;
+    f23: Int as int8;
+    f24: Int as int8;
+    f25: Int as int8;
+    f26: Int as int8;
+    f27: Int as int8;
+    f28: Int as int8;
+    f29: Int as int8;
+
+    init() {
+        self.f0 = 0;
+        self.f1 = 1;
+        self.f2 = 2;
+        self.f3 = 3;
+        self.f4 = 4;
+        self.f5 = 5;
+        self.f6 = 6;
+        self.f7 = 7;
+        self.f8 = 8;
+        self.f9 = 9;
+        self.f10 = 10;
+        self.f11 = 11;
+        self.f12 = 12;
+        self.f13 = 13;
+        self.f14 = 14;
+        self.f15 = 15;
+        self.f16 = 16;
+        self.f17 = 17;
+        self.f18 = 18;
+        self.f19 = 19;
+        self.f20 = 20;
+        self.f21 = 21;
+        self.f22 = 22;
+        self.f23 = 23;
+        self.f24 = 24;
+        self.f25 = 25;
+        self.f26 = 26;
+        self.f27 = 27;
+        self.f28 = 28;
+        self.f29 = 29;
+    }
+}

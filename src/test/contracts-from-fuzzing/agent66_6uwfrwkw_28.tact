@@ -1,0 +1,3 @@
+contract EmptyOptional {
+    foo: Int?;
+}

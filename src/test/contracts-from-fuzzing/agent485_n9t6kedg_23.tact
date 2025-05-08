@@ -1,0 +1,1 @@
+fun get(): Int { return 1; } contract Test { }

@@ -1,0 +1,3 @@
+contract InlineComments {
+  receive( /* comment */ ) { }
+}

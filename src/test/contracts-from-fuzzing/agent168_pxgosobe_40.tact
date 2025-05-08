@@ -1,0 +1,3 @@
+contract OptMissingInit {
+  f: Int?;
+}

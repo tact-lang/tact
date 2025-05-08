@@ -1,0 +1,11 @@
+struct Inner {
+  a: Int;
+  b: Bool;
+}
+
+contract Test {
+  s: Inner;
+  init() {
+    self.s = Inner{a: 1, b: true};
+  }
+}

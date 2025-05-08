@@ -1,0 +1,16 @@
+struct OptionalMany {
+    a: Int? = null;
+    b: Bool? = null;
+    c: String? = null;
+    d: Cell? = null;
+    e: Slice? = null;
+    f: Address? = null;
+}
+
+contract TestContract {
+    many: OptionalMany = OptionalMany{};
+
+    init() {
+        self.many = OptionalMany{};
+    }
+}

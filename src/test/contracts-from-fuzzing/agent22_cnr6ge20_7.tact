@@ -1,0 +1,1 @@
+asm fun underflowTest(): Int { DROP DROP }

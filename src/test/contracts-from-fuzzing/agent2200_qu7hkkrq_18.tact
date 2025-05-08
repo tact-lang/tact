@@ -1,0 +1,3 @@
+contract EmptyStrInit {
+    name: String = "";
+}

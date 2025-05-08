@@ -1,0 +1,1 @@
+asm fun quoted(): Cell { "MYCODE" }

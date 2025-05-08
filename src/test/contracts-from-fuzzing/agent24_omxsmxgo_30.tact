@@ -1,0 +1,1 @@
+contract Test { fun f(abc: Int, def: Int,): Int { return abc + def; } receive() { self.f(1,2); } }

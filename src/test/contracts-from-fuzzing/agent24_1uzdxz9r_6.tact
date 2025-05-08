@@ -1,0 +1,3 @@
+contract X {
+    fun broken(a: Int, ) {}
+}

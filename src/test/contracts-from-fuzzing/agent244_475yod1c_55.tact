@@ -1,0 +1,1 @@
+@name(get_data) native getData(): Cell; contract C { receive() { getData(); } }

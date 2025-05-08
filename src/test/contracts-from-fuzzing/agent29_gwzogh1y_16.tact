@@ -1,0 +1,1 @@
+primitive MyInt; contract X {}

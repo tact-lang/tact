@@ -1,0 +1,1 @@
+message M { field: Int }

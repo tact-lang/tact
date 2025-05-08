@@ -1,0 +1,1 @@
+contract BoolInit { flag: Bool = false; }

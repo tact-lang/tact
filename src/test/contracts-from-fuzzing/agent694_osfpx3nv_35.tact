@@ -1,0 +1,3 @@
+contract Bar {
+    init() {}
+}

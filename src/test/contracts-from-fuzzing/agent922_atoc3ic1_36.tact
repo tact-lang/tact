@@ -1,0 +1,7 @@
+contract Combo(
+  a: Int,
+  b: Bool,
+  c: String?,
+  d: Int?,
+) {
+}

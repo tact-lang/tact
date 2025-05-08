@@ -1,0 +1,14 @@
+contract MixParams(
+    a: Int,
+    b: Int?,
+    c: Bool,
+    d: Bool?,
+    e: String,
+    f: String?,
+    g: Address,
+    h: Address?,
+    i: Cell,
+    j: Cell?,
+    k: Slice,
+    l: Slice?,
+) {}

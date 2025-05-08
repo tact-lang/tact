@@ -1,0 +1,1 @@
+contract TestStringEscape { receive() { let escaped: String = "This is a tab:\t and a newline:\n"; } }

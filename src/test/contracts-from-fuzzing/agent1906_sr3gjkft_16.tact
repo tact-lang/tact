@@ -1,0 +1,17 @@
+contract ManyPrimitiveFields {
+    a: Int;
+    b: Int;
+    c: Int;
+    d: Bool;
+    e: Bool;
+    f: Bool;
+    g: String;
+    h: String;
+    i: String;
+
+    init() {
+        self.a=1; self.b=2; self.c=3;
+        self.d=true; self.e=false; self.f=true;
+        self.g="x"; self.h="y"; self.i="z";
+    }
+}
