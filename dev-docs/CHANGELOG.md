@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Language features
+
+- Compiler now generates message loading in place for better performance: PR [#2993](https://github.com/tact-lang/tact/pull/2993)
+
 ### Tooling
 
 - [fix] Formatter now correctly handles floating comments: PR [#2995](https://github.com/tact-lang/tact/pull/2995)
