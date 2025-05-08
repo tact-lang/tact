@@ -26,9 +26,9 @@ interface NonExhaustiveBug<L> {
 type End<I extends any[], O> = [I] extends [never]
     ? EndInternal<I, O>
     : {
-          otherwise: <const DO>(handle: (...input: I) => DO) => O | DO;
-          end: NonExhaustiveBug<I>;
-      };
+        otherwise: <const DO>(handle: (...input: I) => DO) => O | DO;
+        end: NonExhaustiveBug<I>;
+    };
 type MV<I extends any[], O> = End<I, O> & On<I, O>;
 
 type OnInternal<I extends any[], O> = {
@@ -75,14 +75,14 @@ export const match = <const I extends any[]>(
         otherwise: (handler) => handler(...(args as unknown as I)),
         on:
             <const DI extends any[]>(...match: DI) =>
-            <const DO>(handler: (...args: Extract<I, Flat<DI>>) => DO) =>
-                rec<Exclude<I, Flat<DI>>, O | DO>(() =>
-                    deepMatch(args, match)
-                        ? handler(
-                              ...(args as unknown as Extract<I, Flat<DI, []>>),
-                          )
-                        : end(),
-                ),
+                <const DO>(handler: (...args: Extract<I, Flat<DI>>) => DO) =>
+                    rec<Exclude<I, Flat<DI>>, O | DO>(() =>
+                        deepMatch(args, match)
+                            ? handler(
+                                ...(args as unknown as Extract<I, Flat<DI, []>>),
+                            )
+                            : end(),
+                    ),
     });
     return rec<Flat<I>, never>(() => {
         throw new Error("Not exhaustive");
@@ -108,8 +108,8 @@ export type Unwrap<T> = T extends infer R ? { [K in keyof R]: R[K] } : never;
 
 type Inputs<I, T extends string> = I extends { [Z in T]: infer K }
     ? K extends string
-        ? Record<K, (input: I) => unknown>
-        : never
+    ? Record<K, (input: I) => unknown>
+    : never
     : never;
 type Outputs<O> = { [K in keyof O]: (input: never) => O[K] };
 type Handlers<I, O, T extends string> = Unwrap<Intersect<Inputs<I, T>>> &
@@ -117,22 +117,22 @@ type Handlers<I, O, T extends string> = Unwrap<Intersect<Inputs<I, T>>> &
 
 export const makeMakeVisitor =
     <T extends string>(tag: T) =>
-    <I>() =>
-    <O>(handlers: Handlers<I, O, T>) =>
-    (input: Extract<I, { [K in T]: string }>): O[keyof O] => {
-        const handler = (handlers as Record<string, (input: I) => O[keyof O]>)[
-            input[tag]
-        ];
+        <I>() =>
+            <O>(handlers: Handlers<I, O, T>) =>
+                (input: Extract<I, { [K in T]: string }>): O[keyof O] => {
+                    const handler = (handlers as Record<string, (input: I) => O[keyof O]>)[
+                        input[tag]
+                    ];
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (handler) {
-            return handler(input);
-        } else {
-            throwInternalCompilerError(
-                `Reached impossible case: ${input[tag]}`,
-            );
-        }
-    };
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                    if (handler) {
+                        return handler(input);
+                    } else {
+                        throwInternalCompilerError(
+                            `Reached impossible case: ${input[tag]}`,
+                        );
+                    }
+                };
 
 /**
  * Make visitor for disjoint union (tagged union, discriminated union)
@@ -160,4 +160,13 @@ export const memo = <A, B>(f: (a: A) => B) => {
         cache.set(a, b);
         return b;
     };
+};
+
+export const includes = <const K extends string>(
+    keys: readonly K[],
+    key: string,
+): key is K => {
+    // we have to do this, otherwise, the next line will complain that `key` isn't `K`
+    const keys1: readonly string[] = keys;
+    return keys1.includes(key);
 };

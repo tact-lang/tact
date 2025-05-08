@@ -1,11 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import type * as $ from "@/next/ast/common";
 export type Range = $.Range;
-export const Range = (start: number, end: number): $.Range =>
-    Object.freeze({
+export const Range = (
+    start: number,
+    end: number,
+    path: string,
+    code: string,
+): Range => {
+    const result: Range = {
+        kind: "range",
         start,
         end,
+        path,
+        code,
+    };
+    Object.defineProperty(result, 'code', {
+        value: code,
+        writable: true,
+        configurable: true,
+        enumerable: false,
     });
+    return Object.freeze(result);
+};
 export type Id = $.Id;
 export const Id = (text: string, loc: $.Range): $.Id =>
     Object.freeze({

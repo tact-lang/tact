@@ -11,23 +11,19 @@ import { parseImportString } from "@/next/grammar/import-parser";
 
 const makeVisitor = makeMakeVisitor("$");
 
-const toRange = (loc: $.Loc): Ast.Range => {
-    if (loc.$ === "empty") {
-        return throwInternal("Lookahead at top level");
-    }
-    const { start, end } = loc;
-    return { start, end };
-};
-
 const mergeRange = (left: Ast.Range, right: Ast.Range): Ast.Range => {
     if (left.start > right.end) {
         return throwInternal("Invalid range merge");
     }
-    return { start: left.start, end: right.end };
+    if (left.path !== right.path) {
+        return throwInternal("Merging ranges from different sources");
+    }
+    return Ast.Range(left.start, right.end, left.path, left.code);
 };
 
 type Context = {
-    err: SyntaxErrors<string, void>;
+    readonly err: SyntaxErrors<string, void>;
+    readonly toRange: (loc: $.Loc) => Ast.Range;
 };
 
 type Handler<T> = (ctx: Context) => T;
@@ -50,45 +46,45 @@ const parseId =
     ({ name, loc }: $ast.Id | $ast.TypeId): Handler<Ast.Id> =>
     (ctx) => {
         if (name.startsWith("__gen")) {
-            ctx.err.reservedVarPrefix("__gen")(toRange(loc));
+            ctx.err.reservedVarPrefix("__gen")(ctx.toRange(loc));
         }
         if (name.startsWith("__tact")) {
-            ctx.err.reservedVarPrefix("__tact")(toRange(loc));
+            ctx.err.reservedVarPrefix("__tact")(ctx.toRange(loc));
         }
         if (name === "_") {
-            ctx.err.noWildcard()(toRange(loc));
+            ctx.err.noWildcard()(ctx.toRange(loc));
         }
-        return Ast.Id(name, toRange(loc));
+        return Ast.Id(name, ctx.toRange(loc));
     };
 
 const parseOptionalId =
     ({ name, loc }: $ast.Id | $ast.TypeId): Handler<Ast.OptionalId> =>
     (ctx) => {
         if (name.startsWith("__gen")) {
-            ctx.err.reservedVarPrefix("__gen")(toRange(loc));
+            ctx.err.reservedVarPrefix("__gen")(ctx.toRange(loc));
         }
         if (name.startsWith("__tact")) {
-            ctx.err.reservedVarPrefix("__tact")(toRange(loc));
+            ctx.err.reservedVarPrefix("__tact")(ctx.toRange(loc));
         }
         if (name === "_") {
-            return Ast.Wildcard(toRange(loc));
+            return Ast.Wildcard(ctx.toRange(loc));
         }
-        return Ast.Id(name, toRange(loc));
+        return Ast.Id(name, ctx.toRange(loc));
     };
 
 const parseVar =
     ({ name, loc }: $ast.Id): Handler<Ast.Var> =>
     (ctx) => {
         if (name.startsWith("__gen")) {
-            ctx.err.reservedVarPrefix("__gen")(toRange(loc));
+            ctx.err.reservedVarPrefix("__gen")(ctx.toRange(loc));
         }
         if (name.startsWith("__tact")) {
-            ctx.err.reservedVarPrefix("__tact")(toRange(loc));
+            ctx.err.reservedVarPrefix("__tact")(ctx.toRange(loc));
         }
         if (name === "_") {
-            ctx.err.noWildcard()(toRange(loc));
+            ctx.err.noWildcard()(ctx.toRange(loc));
         }
-        return Ast.Var(name, toRange(loc));
+        return Ast.Var(name, ctx.toRange(loc));
     };
 
 /*
@@ -194,15 +190,15 @@ const parseFuncId =
     ({ accessor, id, loc }: $ast.FuncId): Handler<Ast.FuncId> =>
     (ctx) => {
         if (reservedFuncIds.has(id)) {
-            ctx.err.reservedFuncId()(toRange(loc));
+            ctx.err.reservedFuncId()(ctx.toRange(loc));
         }
         if (id.match(/^-?([0-9]+|0x[0-9a-fA-F]+)$/)) {
-            ctx.err.numericFuncId()(toRange(loc));
+            ctx.err.numericFuncId()(ctx.toRange(loc));
         }
         if (id.startsWith('"') || id.startsWith("{-")) {
-            ctx.err.invalidFuncId()(toRange(loc));
+            ctx.err.invalidFuncId()(ctx.toRange(loc));
         }
-        return Ast.FuncId((accessor ?? "") + id, toRange(loc));
+        return Ast.FuncId((accessor ?? "") + id, ctx.toRange(loc));
     };
 
 const baseMap = {
@@ -227,10 +223,10 @@ const parseIntegerLiteralValue =
             digits.startsWith("0") &&
             digits.includes("_")
         ) {
-            ctx.err.leadingZeroUnderscore()(toRange(loc));
+            ctx.err.leadingZeroUnderscore()(ctx.toRange(loc));
         }
         const value = BigInt(prefixMap[$] + digits.replaceAll("_", ""));
-        return Ast.Number(baseMap[$], value, toRange(loc));
+        return Ast.Number(baseMap[$], value, ctx.toRange(loc));
     };
 
 const parseIntegerLiteral =
@@ -243,7 +239,7 @@ const parseStringLiteral =
     ({ value, loc }: $ast.StringLiteral): Handler<Ast.String> =>
     (ctx) => {
         const simplifiedValue = replaceEscapeSequences(value, loc, ctx);
-        return Ast.String(simplifiedValue, toRange(loc));
+        return Ast.String(simplifiedValue, ctx.toRange(loc));
     };
 
 export function replaceEscapeSequences(
@@ -276,7 +272,7 @@ export function replaceEscapeSequences(
                     if (unicodeCodePoint) {
                         const codePoint = parseInt(unicodeCodePoint, 16);
                         if (codePoint > 0x10ffff) {
-                            ctx.err.undefinedUnicodeCodepoint()(toRange(loc));
+                            ctx.err.undefinedUnicodeCodepoint()(ctx.toRange(loc));
                             return match;
                         }
                         return String.fromCodePoint(codePoint);
@@ -299,14 +295,14 @@ export function replaceEscapeSequences(
 
 const parseBoolLiteral =
     ({ value, loc }: $ast.BoolLiteral): Handler<Ast.Boolean> =>
-    (_ctx) => {
-        return Ast.Boolean(value === "true", toRange(loc));
+    (ctx) => {
+        return Ast.Boolean(value === "true", ctx.toRange(loc));
     };
 
 const parseNull =
     ({ loc }: $ast.Null): Handler<Ast.Null> =>
-    (_ctx) => {
-        return Ast.Null(toRange(loc));
+    (ctx) => {
+        return Ast.Null(ctx.toRange(loc));
     };
 
 const parseStructFieldInitializer =
@@ -322,7 +318,7 @@ const parseStructFieldInitializer =
         return Ast.StructFieldInitializer(
             fieldId,
             init ? parseExpression(init)(ctx) : parseVar(name)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -338,7 +334,7 @@ const parseStructInstance =
             parseTypeId(type)(ctx),
             map(parseList(typeArgs), parseType)(ctx),
             map(parseList(fields), parseStructFieldInitializer)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -366,7 +362,7 @@ const parseMapArgs =
 const parseMapLiteral =
     ({ typeArgs, fields, loc }: $ast.MapLiteral): Handler<Ast.MapLiteral> =>
     (ctx) => {
-        const range = toRange(loc);
+        const range = ctx.toRange(loc);
         return Ast.MapLiteral(
             parseMapArgs(typeArgs, range)(ctx),
             map(parseList(fields), parseMapField)(ctx),
@@ -407,7 +403,7 @@ const parseSetArgs =
 const parseSetLiteral =
     ({ typeArgs, fields, loc }: $ast.SetLiteral): Handler<Ast.SetLiteral> =>
     (ctx) => {
-        const range = toRange(loc);
+        const range = ctx.toRange(loc);
         return Ast.SetLiteral(
             parseSetArgs(typeArgs, range)(ctx),
             map(parseList(fields), parseExpression)(ctx),
@@ -421,14 +417,14 @@ const parseInitOf =
         return Ast.InitOf(
             parseTypeId(name)(ctx),
             map(parseList(params), parseExpression)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
 const parseCodeOf =
     ({ name, loc }: $ast.CodeOf): Handler<Ast.CodeOf> =>
     (ctx) => {
-        return Ast.CodeOf(parseTypeId(name)(ctx), toRange(loc));
+        return Ast.CodeOf(parseTypeId(name)(ctx), ctx.toRange(loc));
     };
 
 const parseConditional =
@@ -443,7 +439,7 @@ const parseConditional =
             condition,
             parseExpression(thenBranch)(ctx),
             parseExpression(elseBranch)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -456,7 +452,7 @@ const parseBinary =
             ({ child, range }, { op, right }) => {
                 const merged = mergeRange(
                     range,
-                    mergeRange(toRange(op.loc), toRange(right.loc)),
+                    mergeRange(ctx.toRange(op.loc), ctx.toRange(right.loc)),
                 );
                 return {
                     child: Ast.OpBinary(
@@ -468,7 +464,7 @@ const parseBinary =
                     range: merged,
                 };
             },
-            { child: parseExpression(head)(ctx), range: toRange(head.loc) },
+            { child: parseExpression(head)(ctx), range: ctx.toRange(head.loc) },
         ).child;
     };
 
@@ -477,7 +473,7 @@ const parseUnary =
     (ctx) => {
         return prefixes.reduceRight(
             ({ child, range }, { name, loc }) => {
-                const merged = mergeRange(toRange(loc), range);
+                const merged = mergeRange(ctx.toRange(loc), range);
                 return {
                     child: Ast.OpUnary(name, child, merged),
                     range: merged,
@@ -485,7 +481,7 @@ const parseUnary =
             },
             {
                 child: parseExpression(expression)(ctx),
-                range: toRange(expression.loc),
+                range: ctx.toRange(expression.loc),
             },
         ).child;
     };
@@ -551,7 +547,7 @@ const parseSuffix =
     (ctx) => {
         return suffixes.reduce(
             ({ child, range }, suffix) => {
-                const merged = mergeRange(range, toRange(suffix.loc));
+                const merged = mergeRange(range, ctx.toRange(suffix.loc));
                 return {
                     child: suffixVisitor(suffix)(ctx)(child, merged),
                     range: merged,
@@ -559,15 +555,15 @@ const parseSuffix =
             },
             {
                 child: parseExpression(expression)(ctx),
-                range: toRange(expression.loc),
+                range: ctx.toRange(expression.loc),
             },
         ).child;
     };
 
 const parseUnit =
     ({ loc }: $ast.Unit): Handler<Ast.Unit> =>
-    (_ctx) => {
-        return Ast.Unit(toRange(loc));
+    (ctx) => {
+        return Ast.Unit(ctx.toRange(loc));
     };
 
 const parseTensor =
@@ -575,7 +571,7 @@ const parseTensor =
     (ctx) => {
         return Ast.Tensor(
             map([head, ...tail], parseExpression)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -584,7 +580,7 @@ const parseTuple =
     (ctx) => {
         return Ast.Tuple(
             map(parseList(types), parseExpression)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -645,7 +641,7 @@ const parseStatementLet =
             parseOptionalId(name)(ctx),
             type ? parseType(type)(ctx) : undefined,
             parseExpression(init)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -686,7 +682,7 @@ const parseStatementDestruct =
             const [field] = pair;
             const name = field.text;
             if (ids.has(name)) {
-                ctx.err.duplicateField(name)(toRange(param.loc));
+                ctx.err.duplicateField(name)(ctx.toRange(param.loc));
             }
             ids.set(name, pair);
         }
@@ -696,14 +692,14 @@ const parseStatementDestruct =
             ids,
             rest.$ === "RestArgument",
             parseExpression(init)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
 const parseStatementBlock =
     ({ body, loc }: $ast.StatementBlock): Handler<Ast.StatementBlock> =>
     (ctx) => {
-        return Ast.StatementBlock(parseStatements(body)(ctx), toRange(loc));
+        return Ast.StatementBlock(parseStatements(body)(ctx), ctx.toRange(loc));
     };
 
 const parseStatementReturn =
@@ -711,7 +707,7 @@ const parseStatementReturn =
     (ctx) => {
         return Ast.StatementReturn(
             expression ? parseExpression(expression)(ctx) : undefined,
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -728,21 +724,21 @@ const parseStatementCondition =
                 parseExpression(condition)(ctx),
                 parseStatements(trueBranch)(ctx),
                 undefined,
-                toRange(loc),
+                ctx.toRange(loc),
             );
         } else if (falseBranch.$ === "FalseBranch") {
             return Ast.StatementCondition(
                 parseExpression(condition)(ctx),
                 parseStatements(trueBranch)(ctx),
                 parseStatements(falseBranch.body)(ctx),
-                toRange(loc),
+                ctx.toRange(loc),
             );
         } else {
             return Ast.StatementCondition(
                 parseExpression(condition)(ctx),
                 parseStatements(trueBranch)(ctx),
                 [parseStatementCondition(falseBranch)(ctx)],
-                toRange(loc),
+                ctx.toRange(loc),
             );
         }
     };
@@ -757,7 +753,7 @@ const parseStatementWhile =
         return Ast.StatementWhile(
             parseExpression(condition)(ctx),
             parseStatements(body)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -771,7 +767,7 @@ const parseStatementRepeat =
         return Ast.StatementRepeat(
             parseExpression(condition)(ctx),
             parseStatements(body)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -785,7 +781,7 @@ const parseStatementUntil =
         return Ast.StatementUntil(
             parseExpression(condition)(ctx),
             parseStatements(body)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -799,13 +795,13 @@ const parseStatementTry =
                     catchName: parseOptionalId(handler.name)(ctx),
                     catchStatements: parseStatements(handler.body)(ctx),
                 },
-                toRange(loc),
+                ctx.toRange(loc),
             );
         } else {
             return Ast.StatementTry(
                 parseStatements(body)(ctx),
                 undefined,
-                toRange(loc),
+                ctx.toRange(loc),
             );
         }
     };
@@ -824,7 +820,7 @@ const parseStatementForEach =
             parseOptionalId(value)(ctx),
             parseExpression(expression)(ctx),
             parseStatements(body)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -836,7 +832,7 @@ const parseStatementExpression =
     (ctx) => {
         return Ast.StatementExpression(
             parseExpression(expression)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -854,14 +850,14 @@ const parseStatementAssign =
             return Ast.StatementAssign(
                 parseExpression(left)(ctx),
                 parseExpression(right)(ctx),
-                toRange(loc),
+                ctx.toRange(loc),
             );
         } else {
             return Ast.StatementAugmentedAssign(
                 operator,
                 parseExpression(left)(ctx),
                 parseExpression(right)(ctx),
-                toRange(loc),
+                ctx.toRange(loc),
             );
         }
     };
@@ -905,11 +901,11 @@ const parseGetAttribute =
             return undefined;
         }
         for (const attr of tail) {
-            ctx.err.function.duplicate("get")(toRange(attr.loc));
+            ctx.err.function.duplicate("get")(ctx.toRange(attr.loc));
         }
         return Ast.GetAttribute(
             head.methodId ? parseExpression(head.methodId)(ctx) : undefined,
-            toRange(head.loc),
+            ctx.toRange(head.loc),
         );
     };
 
@@ -930,7 +926,7 @@ const parseNamedAttr =
         const attrs: Range[] = [];
         for (const node of nodes) {
             if (typeof node.name === "string" && node.name === key) {
-                attrs.push(toRange(node.loc));
+                attrs.push(ctx.toRange(node.loc));
             }
         }
         const [head, ...tail] = attrs;
@@ -950,24 +946,24 @@ const parseParameter =
         return Ast.TypedParameter(
             parseOptionalId(name)(ctx),
             parseType(type)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
 const parseTypeId =
     ({ name, loc }: $ast.TypeId): Handler<Ast.TypeId> =>
-    (_ctx) => {
-        return Ast.TypeId(name, toRange(loc));
+    (ctx) => {
+        return Ast.TypeId(name, ctx.toRange(loc));
     };
 
 const parseTypeStorage =
     ({ child: storage, loc }: $ast.TypeStorage): Handler<Ast.Type> =>
     (ctx) => {
-        const range = toRange(loc);
+        const range = ctx.toRange(loc);
         const fallback = Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
         if (storage.$ === "CoinsStorage") {
             return Ast.TypeInt(
-                Ast.IFVarInt("unsigned", "16", toRange(storage.loc)),
+                Ast.IFVarInt("unsigned", "16", ctx.toRange(storage.loc)),
                 range,
             );
         } else if (storage.$ === "IntStorage") {
@@ -980,7 +976,7 @@ const parseTypeStorage =
                                 ? "signed"
                                 : "unsigned",
                             "16",
-                            toRange(storage.loc),
+                            ctx.toRange(storage.loc),
                         ),
                         range,
                     );
@@ -991,7 +987,7 @@ const parseTypeStorage =
                                 ? "signed"
                                 : "unsigned",
                             "32",
-                            toRange(storage.loc),
+                            ctx.toRange(storage.loc),
                         ),
                         range,
                     );
@@ -1045,7 +1041,7 @@ const applyFormat =
         if (type.kind === "TyInt") {
             if (storage.$ === "CoinsStorage") {
                 return Ast.TypeInt(
-                    Ast.IFVarInt("unsigned", "16", toRange(storage.loc)),
+                    Ast.IFVarInt("unsigned", "16", ctx.toRange(storage.loc)),
                     type.loc,
                 );
             } else if (storage.$ === "IntStorage") {
@@ -1058,7 +1054,7 @@ const applyFormat =
                                     ? "signed"
                                     : "unsigned",
                                 "16",
-                                toRange(storage.loc),
+                                ctx.toRange(storage.loc),
                             ),
                             type.loc,
                         );
@@ -1069,7 +1065,7 @@ const applyFormat =
                                     ? "signed"
                                     : "unsigned",
                                 "32",
-                                toRange(storage.loc),
+                                ctx.toRange(storage.loc),
                             ),
                             type.loc,
                         );
@@ -1154,14 +1150,14 @@ const parseTypeAs =
             return parseType(type)(ctx);
         }
         if (as.length > 1) {
-            ctx.err.duplicateAs()(toRange(loc));
+            ctx.err.duplicateAs()(ctx.toRange(loc));
             return Ast.TypeCons(
-                Ast.TypeId("ERROR", toRange(loc)),
+                Ast.TypeId("ERROR", ctx.toRange(loc)),
                 [],
-                toRange(loc),
+                ctx.toRange(loc),
             );
         }
-        const asLoc = toRange(loc);
+        const asLoc = ctx.toRange(loc);
         const result = parseType(type)(ctx);
         return applyFormat(result, onlyAs, asLoc)(ctx);
     };
@@ -1180,9 +1176,9 @@ const parseTypeGeneric =
     ({ name, args, loc }: $ast.TypeGeneric): Handler<Ast.Type> =>
     (ctx) => {
         return Ast.TypeCons(
-            Ast.TypeId(flattenName(name), toRange(name.loc)),
+            Ast.TypeId(flattenName(name), ctx.toRange(name.loc)),
             map(parseList(args), parseTypeAs)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1191,9 +1187,9 @@ const parseTypeOptional =
     (ctx) => {
         return optionals.reduce((acc, optional) => {
             return Ast.TypeCons(
-                Ast.TypeId("Maybe", toRange(optional.loc)),
+                Ast.TypeId("Maybe", ctx.toRange(optional.loc)),
                 [acc],
-                toRange(optional.loc),
+                ctx.toRange(optional.loc),
             );
         }, parseType(type)(ctx));
     };
@@ -1201,7 +1197,7 @@ const parseTypeOptional =
 const parseTypeRegular =
     ({ child }: $ast.TypeRegular): Handler<Ast.Type> =>
     (ctx) => {
-        const range = toRange(child.loc);
+        const range = ctx.toRange(child.loc);
         if (child.name === "Int") {
             return Ast.TypeInt(Ast.IFInt("signed", 257, range), range);
         } else if (child.name === "Slice") {
@@ -1219,7 +1215,7 @@ const parseTypeTensor =
     (ctx) => {
         return Ast.TypeTensor(
             map([head, ...tail], parseType)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1228,14 +1224,14 @@ const parseTypeTuple =
     (ctx) => {
         return Ast.TypeTuple(
             map(parseList(types), parseType)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
 const parseTypeUnit =
     ({ loc }: $ast.TypeUnit): Handler<Ast.Type> =>
-    (_ctx) => {
-        return Ast.TypeUnit(toRange(loc));
+    (ctx) => {
+        return Ast.TypeUnit(ctx.toRange(loc));
     };
 
 type RawType =
@@ -1266,7 +1262,7 @@ const parseFieldDecl =
             parseId(name)(ctx),
             parseType(type)(ctx),
             expression ? parseExpression(expression)(ctx) : undefined,
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1280,16 +1276,16 @@ const parseReceiverParam =
               : Ast.ReceiverComment(parseStringLiteral(param)(ctx));
     };
 
-const parseReceiverReceive =
+const parseReceiverInternal =
     ({ type, param, body, loc }: $ast.Receiver): Handler<Ast.Receiver> =>
     (ctx) => {
         return Ast.Receiver(
             Ast.ReceiverInternal(
                 parseReceiverParam(param)(ctx),
-                toRange(type.loc),
+                ctx.toRange(type.loc),
             ),
             map(body, parseStatement)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1299,10 +1295,10 @@ const parseReceiverExternal =
         return Ast.Receiver(
             Ast.ReceiverExternal(
                 parseReceiverParam(param)(ctx),
-                toRange(type.loc),
+                ctx.toRange(type.loc),
             ),
             map(body, parseStatement)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1340,19 +1336,19 @@ const parseReceiverBounced =
     ({ type, param, body, loc }: $ast.Receiver): Handler<Ast.Receiver> =>
     (ctx) => {
         if (typeof param === "undefined") {
-            ctx.err.noBouncedWithoutArg()(toRange(loc));
+            ctx.err.noBouncedWithoutArg()(ctx.toRange(loc));
             param = repairParam;
         }
 
         if (param.$ === "StringLiteral") {
-            ctx.err.noBouncedWithString()(toRange(loc));
+            ctx.err.noBouncedWithString()(ctx.toRange(loc));
             param = repairParam;
         }
 
         return Ast.Receiver(
-            Ast.ReceiverBounce(parseParameter(param)(ctx), toRange(type.loc)),
+            Ast.ReceiverBounce(parseParameter(param)(ctx), ctx.toRange(type.loc)),
             map(body, parseStatement)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1361,7 +1357,7 @@ const parserByReceiverType: Record<
     (node: $ast.Receiver) => Handler<Ast.Receiver>
 > = {
     bounced: parseReceiverBounced,
-    receive: parseReceiverReceive,
+    receive: parseReceiverInternal,
     external: parseReceiverExternal,
 };
 
@@ -1399,7 +1395,7 @@ const parseAsmFunctionRaw =
             Ast.AsmBody(parseAsmShuffle(node.shuffle)(ctx), [
                 node.instructions.trim(),
             ]),
-            toRange(node.loc),
+            ctx.toRange(node.loc),
         );
     };
 
@@ -1448,7 +1444,7 @@ const parseConstant =
     (node: $ast.Constant): Handler<Ast.Constant> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
-        const range = toRange(node.loc);
+        const range = ctx.toRange(node.loc);
         const type = (() => {
             if (node.body.$ === "ConstantDefinition") {
                 return Ast.ConstantDef(
@@ -1468,7 +1464,7 @@ const parseConstant =
 const parseConstantGlobal =
     (node: $ast.Constant): Handler<Ast.Constant> =>
     (ctx) => {
-        checkNoGlobalAttrs(node.attributes, toRange(node.loc))(ctx);
+        checkNoGlobalAttrs(node.attributes, ctx.toRange(node.loc))(ctx);
         return parseConstant(node)(ctx);
     };
 
@@ -1479,7 +1475,7 @@ const parseFieldConstant =
         const inh = parseInheritance(
             body.init.kind === 'constant_def',
             node.attributes,
-            toRange(node.loc),
+            ctx.toRange(node.loc),
         )(ctx);
         return Ast.FieldConstant(inh.virtual, inh.override, body);
     };
@@ -1517,14 +1513,14 @@ const parseContract =
         }
         const [initFn, ...restInitFns] = initFns;
         for (const fn of restInitFns) {
-            ctx.err.tooMuchInit()(toRange(fn.loc));
+            ctx.err.tooMuchInit()(ctx.toRange(fn.loc));
         }
 
         const init = (() => {
             if (typeof parameters !== "undefined") {
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 if (initFn) {
-                    ctx.err.initFnAndParams()(toRange(initFn.loc));
+                    ctx.err.initFnAndParams()(ctx.toRange(initFn.loc));
                 }
                 return Ast.InitParams(params);
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1532,7 +1528,7 @@ const parseContract =
                 return Ast.InitFunction(
                     map(parseList(initFn.parameters), parseParameter)(ctx),
                     map(initFn.body, parseStatement)(ctx),
-                    toRange(loc),
+                    ctx.toRange(loc),
                 );
             } else {
                 return undefined;
@@ -1545,44 +1541,26 @@ const parseContract =
             map(attributes, parseContractAttribute)(ctx),
             init,
             map(locals, parseLocalItem)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
 const parseFunctionRaw =
     (node: $ast.$Function): Handler<Ast.Function> =>
     (ctx) => {
-        const name = parseId(node.name)(ctx);
-        const returnType = node.returnType
-            ? parseType(node.returnType)(ctx)
-            : undefined;
-        const typeParams = map(parseList(node.typeParams), parseTypeId)(ctx);
-        const parameters = map(parseList(node.parameters), parseParameter)(ctx);
-
-        if (node.body.$ === "FunctionDeclaration") {
-            const inline = !!parseNamedAttr("inline")(node.attributes)(ctx);
-            return Ast.Function(
-                inline,
-                name,
-                typeParams,
-                returnType,
-                parameters,
-                Ast.AbstractBody(),
-                toRange(node.loc),
-            );
-        } else {
-            const inline = !!parseNamedAttr("inline")(node.attributes)(ctx);
-            const statements = map(node.body.body, parseStatement)(ctx);
-            return Ast.Function(
-                inline,
-                name,
-                typeParams,
-                returnType,
-                parameters,
-                Ast.RegularBody(statements),
-                toRange(node.loc),
-            );
-        }
+        return Ast.Function(
+            !!parseNamedAttr("inline")(node.attributes)(ctx),
+            parseId(node.name)(ctx),
+            map(parseList(node.typeParams), parseTypeId)(ctx),
+            node.returnType
+                ? parseType(node.returnType)(ctx)
+                : undefined,
+            map(parseList(node.parameters), parseParameter)(ctx),
+            node.body.$ === "FunctionDeclaration"
+                ? Ast.AbstractBody()
+                : Ast.RegularBody(map(node.body.body, parseStatement)(ctx)),
+            ctx.toRange(node.loc),
+        );
     };
 
 const parseExtension =
@@ -1596,7 +1574,7 @@ const parseExtension =
         if (get) {
             ctx.err.globalGetter()(get.loc);
         }
-        checkNoGlobalAttrs(node.attributes, toRange(node.loc))(ctx);
+        checkNoGlobalAttrs(node.attributes, ctx.toRange(node.loc))(ctx);
         const isMutates = parseNamedAttr("mutates")(node.attributes)(ctx);
         const isExtends = parseNamedAttr("extends")(node.attributes)(ctx);
         if (!isExtends) {
@@ -1613,7 +1591,7 @@ const parseExtension =
                 first.name.kind !== "id" ||
                 first.name.text !== "self"
             ) {
-                const range = toRange(node.loc);
+                const range = ctx.toRange(node.loc);
                 ctx.err.extendsSelf()(range);
                 return Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
             }
@@ -1642,12 +1620,12 @@ const parseMethod =
         const inh = parseInheritance(
             fn.body.kind !== 'abstract_body',
             node.attributes,
-            toRange(node.loc),
+            ctx.toRange(node.loc),
         )(ctx);
         const isMutates = parseNamedAttr("mutates")(node.attributes)(ctx);
         const isExtends = parseNamedAttr("extends")(node.attributes)(ctx);
         if (isExtends) {
-            ctx.err.localExtends()(toRange(node.loc));
+            ctx.err.localExtends()(ctx.toRange(node.loc));
         }
         return Ast.Method(
             !!isMutates,
@@ -1670,7 +1648,7 @@ const parseMessageDecl =
             parseTypeId(name)(ctx),
             opcode ? parseExpression(opcode)(ctx) : undefined,
             map(parseList(fields), parseFieldDecl)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1692,7 +1670,7 @@ const parseNativeFunctionDecl =
             returnType ? parseType(returnType)(ctx) : undefined,
             map(parseList(parameters), parseParameter)(ctx),
             Ast.NativeBody(parseFuncId(nativeName)(ctx)),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1703,7 +1681,7 @@ const parseAlias =
             parseTypeId(name)(ctx),
             map(parseList(typeParams), parseTypeId)(ctx),
             parseType(type)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1719,7 +1697,7 @@ const parseUnion =
             parseTypeId(name)(ctx),
             map(parseList(typeParams), parseTypeId)(ctx),
             map(cases, parseUnionCase)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1744,7 +1722,7 @@ const parseStructDecl =
             parseTypeId(name)(ctx),
             map(parseList(typeParams), parseTypeId)(ctx),
             map(parseList(fields), parseFieldDecl)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1753,7 +1731,7 @@ const parseContractAttribute =
     (ctx) => {
         return Ast.ContractAttribute(
             parseStringLiteral(name)(ctx).value,
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 
@@ -1771,7 +1749,7 @@ const parseTrait =
             traits ? map(parseList(traits), parseTypeId)(ctx) : [],
             map(attributes, parseContractAttribute)(ctx),
             map(declarations, parseLocalItem)(ctx),
-            toRange(loc),
+            ctx.toRange(loc),
         );
     };
 const parseLocalItem: (
@@ -1804,7 +1782,7 @@ const parseModuleItem =
     (node: $ast.moduleItem): Handler<Ast.ModuleItem[]> =>
     (ctx) => {
         if (node.$ === "PrimitiveTypeDecl") {
-            ctx.err.deprecatedPrimitiveDecl()(toRange(node.loc));
+            ctx.err.deprecatedPrimitiveDecl()(ctx.toRange(node.loc));
             return [];
         }
         return [parseModuleItemAux(node)(ctx)];
@@ -1816,8 +1794,8 @@ const parseImport =
         const stringLiteral = parseStringLiteral(path)(ctx);
         const parsedString: string = JSON.parse(`"${stringLiteral.value}"`);
         return Ast.Import(
-            parseImportString(parsedString, toRange(loc), ctx.err.imports),
-            toRange(loc),
+            parseImportString(parsedString, ctx.toRange(loc), ctx.err.imports),
+            ctx.toRange(loc),
         );
     };
 
@@ -1832,14 +1810,15 @@ const parseModule =
 
 export const parse = (
     log: SourceLogger<string, void>,
-    text: string,
+    code: string,
+    path: string,
 ): Ast.Module => {
     const err = SyntaxErrors(log);
 
     const result = $.parse({
         grammar: G.Module,
         space: G.space,
-        text,
+        text: code,
     });
 
     if (result.$ === "error") {
@@ -1851,7 +1830,16 @@ export const parse = (
         return Ast.Module([], []);
     }
 
+    const toRange = (loc: $.Loc): Ast.Range => {
+        if (loc.$ === "empty") {
+            return throwInternal("Lookahead at top level");
+        }
+        const { start, end } = loc;
+        return Ast.Range(start, end, path, code);
+    };
+
     return parseModule(result.value)({
         err,
+        toRange,
     });
 };

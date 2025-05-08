@@ -1,6 +1,9 @@
 export type Range = {
+    readonly kind: "range";
     readonly start: number;
     readonly end: number;
+    readonly path: string;
+    readonly code: string;
 };
 
 export type OptionalId = Id | Wildcard;

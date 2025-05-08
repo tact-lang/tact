@@ -42,7 +42,7 @@ const readSource = async ({
         file: Cursor,
         code: string,
     ): Promise<TactSource> => {
-        const { imports: rawImports, items } = parse(log, code);
+        const { imports: rawImports, items } = parse(log, code, path);
         const imports: ResolvedImport[] = [...implicits];
         for (const { importPath, loc } of rawImports) {
             const { language, path, type } = importPath;
@@ -129,7 +129,9 @@ export const ProjectReader = async (log: Logger<string, void>) => {
             {
                 kind: "tact",
                 source: stdStd,
-                loc: { start: 0, end: 0 },
+                loc: {
+                    kind: 'implicit',
+                },
             },
         ];
         return await readSource({

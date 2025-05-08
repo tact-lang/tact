@@ -12,10 +12,14 @@ export type ResolvedImport = TactImport | FuncImport;
 export type TactImport = {
     readonly kind: "tact";
     readonly source: TactSource;
-    readonly loc: Range;
+    readonly loc: Range | Implicit;
 };
 export type FuncImport = {
     readonly kind: "func";
     readonly code: string;
     readonly loc: Range;
 };
+
+export type Implicit = {
+    readonly kind: "implicit";
+}

@@ -6,7 +6,7 @@ export const mapValues = <K, A, B>(map: Map<K, A>, f: (a: A) => B): Map<K, B> =>
     return new Map(result);
 };
 
-export const zip = <T, U>(arr1: T[], arr2: U[]): [T, U][] => {
+export const zip = <T, U>(arr1: readonly T[], arr2: readonly U[]): [T, U][] => {
     const length = Math.min(arr1.length, arr2.length);
     return arr1.slice(0, length).flatMap((item1, index) => {
         const item2 = arr2[index];
