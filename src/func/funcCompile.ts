@@ -42,6 +42,7 @@ export type FuncCompilationResult =
           log: string;
           fift: string;
           output: Buffer;
+          sourceMap: undefined | FuncMapping;
       };
 
 type CompileResult =
@@ -54,19 +55,48 @@ type CompileResult =
           codeBoc: string;
           fiftCode: string;
           warnings: string;
+          debugInfo: undefined | FuncMapping;
       };
+
+export type FuncConfig = {
+    sources: string[];
+    optLevel: number;
+    debugInfo: boolean;
+};
+
+export type FuncSourceLoc = {
+    file: string;
+    line: number;
+    pos: number;
+    vars: undefined | string[];
+    func: string;
+    first_stmt: undefined | boolean;
+    ret: undefined | boolean;
+};
+
+export type FuncGlobalVar = {
+    name: string;
+};
+
+export type FuncMapping = {
+    globals: FuncGlobalVar[];
+    locations: FuncSourceLoc[];
+};
 
 export async function funcCompile(args: {
     entries: string[];
     sources: { path: string; content: string }[];
     logger: ILogger;
+    debugInfo: boolean;
 }): Promise<FuncCompilationResult> {
     // Parameters
     const files: string[] = args.entries;
-    const configStr = JSON.stringify({
+    const config: FuncConfig = {
         sources: files,
         optLevel: 2, // compileConfig.optLevel || 2
-    });
+        debugInfo: args.debugInfo,
+    };
+    const configStr = JSON.stringify(config);
 
     // Pointer tracking
     const allocatedPointers: Pointer[] = [];
@@ -176,6 +206,7 @@ export async function funcCompile(args: {
                               : "",
                     fift: cutFirstLine(result.fiftCode.replaceAll("\\n", "\n")),
                     output: Buffer.from(result.codeBoc, "base64"),
+                    sourceMap: result.debugInfo,
                 };
             }
         }

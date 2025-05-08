@@ -23,6 +23,7 @@ describe("funcCompile", () => {
                 { path: "/small.fc", content: source },
             ],
             logger: new Logger(),
+            debugInfo: false,
         });
         expect(res.ok).toBe(true);
     });
