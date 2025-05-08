@@ -30,6 +30,7 @@ Compilables
 comptime
 Comptime
 CSBT
+chksgn
 Daniil
 Danil
 decompilation
@@ -46,10 +47,12 @@ divmod
 dnsresolve
 Domínguez
 dstr
+dictpush
 elseifnot
 Eltociear
 Epva
 errno
+Excno
 Esorat
 extracurrency
 flamegraph
