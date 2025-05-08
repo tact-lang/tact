@@ -17,7 +17,7 @@ However, type ascriptions can be omitted, and Tact will infer the type of the ne
 let value: Int = 123; // full definition with type and value
 let vInferred = 123;  // inferred type Int from the mandatory value
 
-let vExplicitCtx: Context = context(); // explicit type Context, a built-in Struct
+let vExplicitCtx: Context = context(); // explicit type Context, a built-in struct
 let vCtx = context();                  // inferred type Context
 ```
 
@@ -159,7 +159,7 @@ value += 5;         // augmented assignment (one of many)
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
-The destructuring assignment is a concise way to unpack [Structs][s] and [Messages][m] into distinct variables. It mirrors the [instantiation syntax](/book/expressions#instantiation), but instead of creating a new [Struct][s] or [Message][m], it binds every field or some of the fields to their respective variables.
+The destructuring assignment is a concise way to unpack [structs][struct] and [Messages][message] into distinct variables. It mirrors the [instantiation syntax](/book/expressions#instantiation), but instead of creating a new structure it binds every field or some of the fields to their respective variables.
 
 The syntax is derived from the [`let` statement](#let), and instead of specifying the variable name directly, it involves specifying the structure type on the left side of the [assignment operator `={:tact}`](/book/operators#assignment), which corresponds to the structure type of the value on the right side.
 
@@ -175,9 +175,9 @@ fun basic() {
     let Example { number } = get42();
     //  -------   ------     -------
     //  ↑         ↑          ↑
-    //  |         |          gives the Example Struct
+    //  |         |          gives the Example struct
     //  |         definition of "number" variable, derived
-    //  |         from the field "number" in Example Struct
+    //  |         from the field "number" in Example struct
     //  target structure type "Example"
     //  to destructure fields from
 
@@ -186,7 +186,7 @@ fun basic() {
     let Example { number } = Example { number: 42 };
     //                       ----------------------
     //                       ↑
-    //                       instantiation of Example Struct
+    //                       instantiation of Example struct
 
     // Above examples of syntax are roughly equivalent
     // to the following series of statements:
@@ -236,14 +236,14 @@ fun naming(s: Example) {
     let Example { field: varFromField } = s;
     //                   ------------     ↑
     //                   ↑                |
-    //                   |                instance of Example Struct, received
+    //                   |                instance of Example struct, received
     //                   |                as a parameter of the function "naming"
     //                   definition of "varFromField" variable, derived
-    //                   from the field "field" in Example Struct
+    //                   from the field "field" in Example struct
 }
 ```
 
-Note that the order of bindings doesn't matter — all fields retain their values and types under their names regardless of the order in which they appear in their definition in the respective [Struct][s] or [Message][m].
+Note that the order of bindings doesn't matter — all fields retain their values and types under their names regardless of the order in which they appear in their definition in the respective [struct][struct] or [Message][message].
 
 ```tact
 // "first" goes first, then goes "second"
@@ -254,9 +254,9 @@ fun order(s: Two) {
     //        ------  -----
     //        ↑       ↑
     //        |       this variable will be of type Int,
-    //        |       same as the "first" field in Struct Two
+    //        |       same as the "first" field in struct Two
     //        this variable will be of type String,
-    //        same as the "second" field in Struct Two
+    //        same as the "second" field in struct Two
 }
 ```
 
@@ -290,7 +290,7 @@ fun ignore(s: Many) {
 
 :::caution
 
-  At the moment, destructuring of nested [Structs][s] or [Messages][m] isn't allowed. That is, the following won't work:
+  At the moment, destructuring of nested [structs][struct] or [Messages][message] isn't allowed. That is, the following won't work:
 
   ```tact
   struct First { nested: Second }
@@ -527,7 +527,7 @@ foreach (key, value in cells) { // or just k, v
 dump(sum); // 1000
 ```
 
-It's also possible to iterate over a map in contract storage, and over maps as members of instances of [Struct](/book/structs-and-messages#structs) or [Message](/book/structs-and-messages#messages) types:
+It's also possible to iterate over a map in contract storage, and over maps as members of instances of [structure](/book/structs-and-messages) types:
 
 ```tact
 import "@stdlib/deploy";
@@ -552,7 +552,7 @@ contract Iterated {
             // ...
         }
 
-        // Iterating over map member of a Struct Fizz instance
+        // Iterating over map member of a struct Fizz instance
         foreach (key, value in fizz.oh_my) {
             // ...
         }
@@ -605,7 +605,7 @@ foreach (_, _ in quartiles) {
   }
   ```
 
-  Trying to iterate over a map member of a [Struct](/book/structs-and-messages#structs) returned from a function also won't work, because the function call is an expression and neither an identifier nor a nested identifier access:
+  Trying to iterate over a map member of a [struct][struct] returned from a function also won't work, because the function call is an expression and neither an identifier nor a nested identifier access:
 
   ```tact
   foreach (k, v in genCoolStruct().map) {
@@ -625,5 +625,5 @@ foreach (_, _ in quartiles) {
 :::
 
 [int]: /book/integers
-[s]: /book/structs-and-messages#structs
-[m]: /book/structs-and-messages#messages
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages

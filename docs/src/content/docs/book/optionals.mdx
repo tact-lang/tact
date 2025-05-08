@@ -2,9 +2,9 @@
 title: Optionals
 ---
 
-As mentioned in the [type system overview](/book/types#optionals), all [primitive types](/book/types#primitive-types), [Structs](/book/structs-and-messages#structs), and [Messages](/book/structs-and-messages#messages) can be nullable. That is, they don't necessarily hold any value aside from `null{:tact}` — a special value that represents the intentional absence of any other value.
+As mentioned in the [type system overview](/book/types#optionals), all [primitive types](/book/types#primitive-types), [structs](/book/structs-and-messages#structs), and [Messages](/book/structs-and-messages#messages) can be nullable. That is, they don't necessarily hold any value aside from `null{:tact}` — a special value that represents the intentional absence of any other value.
 
-[Variables](/book/statements#let) or fields of [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages) that can hold `null{:tact}` are called "optionals". They're useful for reducing state size when the variable isn't necessarily used.
+[Variables](/book/statements#let) or fields of structs and Messages that can hold `null{:tact}` are called "optionals". They're useful for reducing state size when the variable isn't necessarily used.
 
 You can make any variable or field optional by adding a question mark (`?{:tact}`) after its type name. The only exceptions are [`map<K, V>{:tact}`](/book/maps) and [`bounced<Msg>{:tact}`](/book/bounced), in which you cannot make the inner key/value type (in the case of a map) or the inner [Message](/book/structs-and-messages#messages) (in the case of a bounced) optional.
 
