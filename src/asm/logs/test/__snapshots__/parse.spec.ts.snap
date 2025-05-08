@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`logs-parse should parse NaN 1`] = `
+[
+  {
+    "$": "VmUnknown",
+    "text": "",
+  },
+  {
+    "$": "VmStack",
+    "stack": [
+      {
+        "$": "Integer",
+        "value": 0n,
+      },
+    ],
+  },
+  {
+    "$": "VmLoc",
+    "hash": "C4252597808DE321E4DBEDFCF683B8D9A53BB1E5A77FDD44091B1163114468FA",
+    "offset": 0,
+  },
+  {
+    "$": "VmExecute",
+    "instr": "PUSHINT 200",
+  },
+  {
+    "$": "VmGasRemaining",
+    "gas": 9999977,
+  },
+  {
+    "$": "VmStack",
+    "stack": [
+      {
+        "$": "Integer",
+        "value": 0n,
+      },
+      {
+        "$": "Integer",
+        "value": 200n,
+      },
+    ],
+  },
+  {
+    "$": "VmLoc",
+    "hash": "C4252597808DE321E4DBEDFCF683B8D9A53BB1E5A77FDD44091B1163114468FA",
+    "offset": 32,
+  },
+  {
+    "$": "VmExecute",
+    "instr": "FITS 1",
+  },
+  {
+    "$": "VmGasRemaining",
+    "gas": 9999943,
+  },
+  {
+    "$": "VmStack",
+    "stack": [
+      {
+        "$": "Integer",
+        "value": 0n,
+      },
+      {
+        "$": "NaN",
+      },
+    ],
+  },
+  {
+    "$": "VmExecute",
+    "instr": "implicit RET",
+  },
+  {
+    "$": "VmGasRemaining",
+    "gas": 9999938,
+  },
+  {
+    "$": "VmUnknown",
+    "text": "",
+  },
+]
+`;

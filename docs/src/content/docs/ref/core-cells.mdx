@@ -15,7 +15,7 @@ import { Badge } from '@astrojs/starlight/components';
 
   To do so, advanced users are recommended to use [Type Language - Binary (TL-B) schemas][tlb].
 
-  Additionally, every user is recommended to use [Structs][struct] and their [methods](/book/functions#extension-function), such as [`Struct.toCell(){:tact}`](#structtocell) and [`Struct.fromCell(){:tact}`](#structfromcell), instead of manually constructing and parsing cells, because [Structs][struct] and [Messages][message] are closest to being the [living TL-B schemas of your contracts](/book/cells#cnp-structs).
+  Additionally, every user is recommended to use [structs][struct] and their [methods](/book/functions#extension-function), such as [`Struct.toCell(){:tact}`](#structtocell) and [`Struct.fromCell(){:tact}`](#structfromcell), instead of manually constructing and parsing cells, because structs and [Messages][message] are closest to being the [living TL-B schemas of your contracts](/book/cells#cnp-structs).
 
 :::
 
@@ -120,7 +120,7 @@ Extension function for the [`Cell{:tact}`][cell] type.
 
 Computes and returns the number of distinct cells, bits, and refs in the [`Cell{:tact}`][cell] by using a [depth-first search (DFS)][dfs] algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of [gas][gas]. If `self{:tact}` is [`null{:tact}`][null], returns a `DataSize{:tact}` with all fields set to $0$.
 
-The results are packed into a `DataSize{:tact}` [Struct][struct] consisting of:
+The results are packed into a `DataSize{:tact}` [struct][struct] consisting of:
 
 Field   | Type                | Description
 :------ | :------------------ | :----------
@@ -1481,7 +1481,7 @@ Extension function for the [`Slice{:tact}`][slice] type.
 
 Similar to [`Cell.computeDataSize(){:tact}`](#cellcomputedatasize), but does not take into account the cell that contains the [`Slice{:tact}`][slice] itself. However, it accounts for its bits and refs.
 
-The results are packed into a `DataSize{:tact}` [Struct][struct] consisting of:
+The results are packed into a `DataSize{:tact}` [struct][struct] consisting of:
 
 Field   | Type                | Description
 :------ | :------------------ | :----------
@@ -1781,9 +1781,9 @@ a == a2; // true
 extends fun toCell(self: Struct): Cell;
 ```
 
-Extension function for any [Struct][struct] type.
+Extension function for any [struct][struct] type.
 
-Converts the [Struct][struct] to a [`Cell{:tact}`][cell] and returns it.
+Converts the struct to a [`Cell{:tact}`][cell] and returns it.
 
 Usage example:
 
@@ -1809,9 +1809,9 @@ fun coinCell(): Cell {
 extends fun toSlice(self: Struct): Slice;
 ```
 
-Extension function for any [Struct][struct] type.
+Extension function for any [struct][struct] type.
 
-Converts the [Struct][struct] to a [`Slice{:tact}`][slice] and returns it. An alias to `self.toCell().asSlice(){:tact}`.
+Converts the struct to a [`Slice{:tact}`][slice] and returns it. An alias to `self.toCell().asSlice(){:tact}`.
 
 Usage example:
 
@@ -1835,11 +1835,11 @@ fun coinSlice(): Slice {
 fun Struct.fromCell(cell: Cell): Struct;
 ```
 
-Extension function for any [Struct][struct] type.
+Extension function for any [struct][struct] type.
 
-Converts a [`Cell{:tact}`][cell] into the specified [Struct][struct] and returns that [Struct][struct].
+Converts a [`Cell{:tact}`][cell] into the specified struct and returns that struct.
 
-Attempts to pass a [`Cell{:tact}`][cell] with a layout different from the specified [Struct][struct] or to load more data than the [`Cell{:tact}`][cell] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+Attempts to pass a [`Cell{:tact}`][cell] with a layout different from the specified struct or to load more data than the [`Cell{:tact}`][cell] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage examples:
 
@@ -1858,7 +1858,7 @@ fun cautiousParse(payload: Cell): GuessCoin? {
     try {
         coin = GuessCoin.fromCell(payload);
     } catch (e) {
-        dump("Cell payload doesn't match GuessCoin Struct!");
+        dump("Cell payload doesn't match GuessCoin struct!");
     }
     return coin;
 }
@@ -1872,9 +1872,9 @@ fun Struct.fromSlice(slice: Slice): Struct;
 
 Extension function for any [Struct][struct] type.
 
-Converts a [`Slice{:tact}`][slice] into the specified [Struct][struct] and returns that [Struct][struct].
+Converts a [`Slice{:tact}`][slice] into the specified struct and returns that struct.
 
-Attempts to pass a [`Slice{:tact}`][slice] with a layout different from the specified [Struct][struct] or to load more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+Attempts to pass a [`Slice{:tact}`][slice] with a layout different from the specified struct or to load more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage examples:
 
@@ -1893,7 +1893,7 @@ fun cautiousParse(payload: Slice): GuessCoin? {
     try {
         coin = GuessCoin.fromSlice(payload);
     } catch (e) {
-        dump("Slice payload doesn't match GuessCoin Struct!");
+        dump("Slice payload doesn't match GuessCoin struct!");
     }
     return coin;
 }

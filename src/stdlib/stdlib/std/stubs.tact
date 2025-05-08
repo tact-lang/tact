@@ -246,15 +246,15 @@ fun crc32(str: String): Int;
 ///
 fun ton(value: String): Int;
 
-/// Pseudo-type that represents any Struct.
+/// Pseudo-type that represents any struct type.
 primitive AnyStruct;
 
 /// Pseudo-type that represents any Message.
 primitive AnyMessage;
 
-/// Extension function for any Struct type.
+/// Extension function for any struct type.
 ///
-/// Converts a `Cell` into the specified `Struct` and returns that `Struct`.
+/// Converts a `Cell` into the specified struct and returns that struct.
 ///
 /// ```tact
 /// struct GuessCoin {
@@ -271,7 +271,7 @@ primitive AnyMessage;
 ///     try {
 ///         coin = GuessCoin.fromCell(payload);
 ///     } catch (e) {
-///         dump("Cell payload doesn't match GuessCoin Struct!");
+///         dump("Cell payload doesn't match GuessCoin struct!");
 ///     }
 ///     return coin;
 /// }
@@ -280,7 +280,7 @@ primitive AnyMessage;
 /// #### Exit codes
 ///
 /// * 9: [Cell underflow] — Thrown when attempting to pass a `Cell` with a layout different
-///   from the specified `Struct` or to load more data than `Cell` contains.
+///   from the specified struct or to load more data than `Cell` contains.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells/#structfromcell
 ///
@@ -288,9 +288,9 @@ primitive AnyMessage;
 ///
 fun AnyStruct_fromCell(cell: Cell): S;
 
-/// Extension function for any Struct type.
+/// Extension function for any struct type.
 ///
-/// Converts a `Slice` into the specified `Struct` and returns that `Struct`.
+/// Converts a `Slice` into the specified struct and returns that struct.
 ///
 /// ```tact
 /// struct GuessCoin {
@@ -307,7 +307,7 @@ fun AnyStruct_fromCell(cell: Cell): S;
 ///     try {
 ///         coin = GuessCoin.fromSlice(payload);
 ///     } catch (e) {
-///         dump("Slice payload doesn't match GuessCoin Struct!");
+///         dump("Slice payload doesn't match GuessCoin struct!");
 ///     }
 ///     return coin;
 /// }
@@ -316,7 +316,7 @@ fun AnyStruct_fromCell(cell: Cell): S;
 /// #### Exit codes
 ///
 /// * 9: [Cell underflow] — Thrown when attempting to pass a `Slice` with a layout different
-///   from the specified `Struct` or to load more data than `Slice` contains.
+///   from the specified struct or to load more data than `Slice` contains.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells/#structfromslice
 ///
@@ -414,9 +414,9 @@ fun AnyMessage_fromSlice(slice: Slice): M;
 ///
 fun AnyMessage_opcode(): Int;
 
-/// Extension function for any Struct.
+/// Extension function for any struct type.
 ///
-/// Converts the Struct to a `Cell` and returns it.
+/// Converts the struct to a `Cell` and returns it.
 ///
 /// ```tact
 /// struct GuessCoin {
@@ -436,9 +436,9 @@ fun AnyMessage_opcode(): Int;
 ///
 extends fun toCell(self: AnyStruct): Cell;
 
-/// Extension function for any Struct. Available since Tact 1.5.0.
+/// Extension function for any struct type. Available since Tact 1.5.0.
 ///
-/// Converts the Struct to a `Slice` and returns it. Alias to `self.toCell().asSlice()`.
+/// Converts the struct to a `Slice` and returns it. Alias to `self.toCell().asSlice()`.
 ///
 /// ```tact
 /// struct GuessCoin {

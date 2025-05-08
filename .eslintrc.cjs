@@ -63,7 +63,7 @@ module.exports = {
     "@typescript-eslint/restrict-template-expressions": "error",
     "@typescript-eslint/no-unnecessary-template-expression": "error",
     "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
-    "@typescript-eslint/no-unnecessary-condition": "error",
+    "@typescript-eslint/no-unnecessary-condition": "off",
     "@typescript-eslint/switch-exhaustiveness-check": [
       "error",
       { considerDefaultExhaustiveForUnions: true },

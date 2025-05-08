@@ -27,7 +27,7 @@ Before going further, familiarize yourself with the following:
 
 Read more about swaps in the [STON.fi documentation](https://docs.ston.fi/docs/developer-section/api-reference-v2/example_swap).
 
-Swaps use the `StonfiSwap{:tact}` [Message][message] and the `SwapAdditionalData{:tact}` [Struct][struct]:
+Swaps use the `StonfiSwap{:tact}` [Message][message] and the `SwapAdditionalData{:tact}` [struct][struct]:
 
 ```tact
 /// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#swap-0x6664de2a
@@ -157,7 +157,7 @@ fun jettonToJetton(myJettonWalletAddress: Address) {
 }
 
 //
-// Helper Messages, Structs and constants described earlier on this page
+// Helper structures and constants described earlier on this page
 //
 
 message(0x6664de2a) StonfiSwap {
@@ -373,7 +373,7 @@ fun toncoinToJetton() {
 }
 
 //
-// Helper Messages, Structs, and constants described earlier on this page
+// Helper structures and constants described earlier on this page
 //
 
 message(0x01f3835d) ProxyToncoinTransfer {
@@ -417,7 +417,7 @@ Read more about liquidity provision in the [STON.fi documentation](https://docs.
 
 STON.fi allows you to deposit liquidity by specifying only one type of token. The pool will automatically perform the swap and mint liquidity provider (LP) tokens. To do this, you need to set the `bothPositive` field of the `ProvideLiquidity{:tact}` [Message][message] to `false{:tact}`.
 
-Liquidity deposits use the `ProvideLiquidity{:tact}` [Message][message] and `ProvideLiquidityAdditionalData{:tact}` [Struct][struct]:
+Liquidity deposits use the `ProvideLiquidity{:tact}` [Message][message] and `ProvideLiquidityAdditionalData{:tact}` [struct][struct]:
 
 ```tact
 /// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#provide_lp-0x37c096df
@@ -540,7 +540,7 @@ fun jettonDeposit(myJettonWalletAddress: Address) {
 }
 
 //
-// Helper Messages, Structs, and constants described earlier on this page
+// Helper structures and constants described earlier on this page
 //
 
 message(0x37c096df) ProvideLiquidity {
