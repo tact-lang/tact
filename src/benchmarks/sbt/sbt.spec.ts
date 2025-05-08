@@ -38,7 +38,6 @@ import type {
 
 import benchmarkResults from "@/benchmarks/sbt/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/sbt/results_code_size.json";
-import { calculateCoverage } from "@/asm/coverage/integrations";
 
 const loadFunCSBTBoc = () => {
     const bocItem = readFileSync(
@@ -177,8 +176,6 @@ describe("itemSBT", () => {
             implementationName: "FunC",
             printMode: "full",
         });
-
-        await calculateCoverage(__dirname, itemSBT);
     });
 
     it("deploy", async () => {
