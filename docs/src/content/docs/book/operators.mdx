@@ -138,7 +138,15 @@ The unary double-exclamation mark (_non-null assertion_) operator `!!{:tact}` is
 
 ### Plus, `+` {#unary-plus}
 
-Although the unary plus sign operator `+{:tact}` is specified in the grammar of the Tact compiler, it only exists as a [binary operator](#binary-add).
+The unary plus sign operator `+{:tact}` is a prefix operator that does not alter the value it is applied to. Essentially, it works similar to an [identity function](https://en.wikipedia.org/wiki/Identity_function), but it can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = +2;
++ two;     // 2
++(+(+2));  // any number of applications gives back the original value, which is 2
+- + - two; // 2
++ - + two; // -2
+```
 
 ### Negate, `-` {#unary-negate}
 

@@ -358,4 +358,77 @@ describe("top level declarations comments formatting", () => {
         }
     `),
     );
+
+    it(
+        "floating comments",
+        intact(`
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+        `),
+    );
+
+    it(
+        "floating comments before declaration",
+        intact(`
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "floating comments between declarations",
+        intact(`
+            fun loge(x: Int): Int {}
+
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "floating comments between declarations without leading newline",
+        intact(`
+            fun loge(x: Int): Int {}
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "several floating comments between declarations",
+        intact(`
+            fun loge(x: Int): Int {}
+
+            // func reference
+
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "several floating comments before declaration",
+        intact(`
+            // func reference
+
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
 });

@@ -1,5 +1,5 @@
 import "./constants";
-import "./messages-nft";
+import "./messages";
 
 inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, payload: Builder, sendMode: Int) {
     let msgBody = beginCell().storeUint(op, 32).storeUint(queryId, 64);
@@ -15,6 +15,11 @@ inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, paylo
         body: msgBody.endCell(),
         mode: sendMode,
     });
+}
+
+struct NFTItemInit {
+    owner: Address;
+    content: Cell;
 }
 
 contract NFTItem(
@@ -33,13 +38,12 @@ contract NFTItem(
         // We use similar checks in other methods (e.g., Transfer, GetStaticData) with throwUnless(NotInit, self.owner != null)
         // to ensure the contract is properly initialized before executing any operations
         throwUnless(InvalidData, self.owner == null);
-
-        let owner: Address = msg.loadAddress();
-        let content: Cell = msg.loadRef();
-
         throwUnless(IncorrectDeployer, sender() == self.collectionAddress);
-        self.owner = owner;
-        self.content = content;
+
+        let nftItemInit = NFTItemInit.fromSlice(msg);
+
+        self.owner = nftItemInit.owner;
+        self.content = nftItemInit.content;
     }
 
     receive(msg: Transfer) {

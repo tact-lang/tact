@@ -9,12 +9,12 @@ The following statements can appear anywhere in a [function](/book/functions) bo
 
 ## `let` statement {#let}
 
-The `let{:tact}` statement allows local and [block](#block)-scoped variable declaration.
+The `let{:tact}` statement allows local and [block](#block)-scoped variable definitions. In Tact, variables are mutable, but **require** to be initialized with an expression.
 
-In Tact, declaring a local variable always **requires** an initial value. However, the type ascription can be omitted, and Tact will try to infer it from the initial value:
+However, type ascriptions can be omitted, and Tact will infer the type of the new variable from the computed value of the expression:
 
 ```tact
-let value: Int = 123; // full declaration with type and value
+let value: Int = 123; // full definition with type and value
 let vInferred = 123;  // inferred type Int from the mandatory value
 
 let vExplicitCtx: Context = context(); // explicit type Context, a built-in Struct
@@ -50,6 +50,62 @@ The `return{:tact}` statement ends [function](/book/functions) execution and spe
 // Simple wrapper over stdlib function now()
 fun getTimeFromNow(offset: Int): Int {
     return now() + offset;
+}
+```
+
+If the function does not have an explicit return type, it has an implicit return type of `void`. As such, the `return{:tact}` statement must be empty.
+
+```tact
+extends mutates fun equalize(self: Int, num: Int) {
+    if (self == num) {
+        return;
+    } else {
+        self = num;
+        return;
+    }
+}
+```
+
+All statements after the `return{:tact}` statement are unreachable and will not be executed. Such statements are detected by the Tact compiler, producing an "Unreachable code" error.
+
+This is done to help avoid potential logical errors in the code, although `return{:tact}`-reachability analysis is not almighty and might reject valid examples.
+
+```tact
+extends mutates fun equalize(self: Int, num: Int) {
+    if (self == num) {
+        return;
+    } else {
+        self = num;
+        return;
+    }
+
+    throw(42); // COMPILATION ERROR! Unreachable statement
+//  ~~~~~~~~~
+}
+
+fun retWhenNot(flag: Bool): Int {
+    if (flag) {
+        throw(200);
+    } else {
+        return 42;
+    }
+
+    return 1000; // COMPILATION ERROR! Unreachable statement
+//  ~~~~~~~~~~~
+}
+
+fun throwWrapped(code: Int) {
+    throw(code);
+}
+
+// The following function always throws, but this cannot be
+// determined without a thorough inter-procedural analysis
+// and, as such, compiler won't allow it.
+//
+// COMPILATION ERROR! Function does not always return a result
+fun triggerCompiler(): Int {
+//  ~~~~~~~~~~~~~~~
+    throwWrapped(42);
 }
 ```
 

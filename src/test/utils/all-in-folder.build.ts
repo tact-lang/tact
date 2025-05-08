@@ -126,7 +126,7 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
             output: posixNormalize(
                 project.resolve(
                     dirname(contractPath),
-                    "../output/",
+                    "output/",
                     `${name}.boc`,
                 ),
             ),

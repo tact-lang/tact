@@ -9,7 +9,36 @@ When a contract sends a message with the flag `bounce` set to `true{:tact}`, and
 
 Currently, bounced messages in TON can have at most 256 bits of payload and no references, but the amount of useful data bits when handling messages in `bounced` receivers is at most 224, since the first 32 bits are occupied by the message opcode. This means that you can't recover much of the data from the bounced message, for instance you cannot fit an address into a bounced message, since regular internal addresses need 267 bits to be represented.
 
-Tact helps you to check if your message fits the limit, and if it doesn't, suggests using a special type constructor `bounced<M>{:tact}` for the bounced message receiver, which constructs a partial representation of the message that fits within the required limits. Only the first message fields that fit into the 224 bits will be available to use in bounced message receivers. Sometimes you need to rearrange the order of the fields in your message so the relevant ones would fit into the limit.
+Tact helps you to check if your message fits the limit, and if it doesn't, suggests using a special type constructor `bounced<M>{:tact}` for the bounced message receiver, which constructs a partial representation of the message that fits within the required limits.
+
+Note that the inner [message struct][message] of the `bounced<M>{:tact}` type constructor cannot be [optional](/book/optionals).
+
+```tact
+contract Bounce() {
+    // COMPILATION ERROR! Only named type can be bounced<>
+    bounced(msg: bounced<BB?>) {}
+    //           ~~~~~~~~~~~~
+}
+
+message BB {}
+```
+
+Only the first message fields that fit into the 224 bits will be available to use in bounced message receivers. Sometimes you need to rearrange the order of the fields in your message so the relevant ones would fit into the limit.
+
+```tact
+contract Bounce() {
+    bounced(msg: bounced<TwoFields>) {
+        // COMPILATION ERROR! Maximum size of the bounced message is 224 bits...
+        msg.f2;
+        //  ~~
+    }
+}
+
+message TwoFields {
+    f1: Int as uint224; // only this field will fit in a bounced message body
+    f2: Int;
+}
+```
 
 ## Bounced message receiver
 
@@ -38,3 +67,5 @@ contract MyContract {
     }
 }
 ```
+
+[message]: /book/structs-and-messages#messages

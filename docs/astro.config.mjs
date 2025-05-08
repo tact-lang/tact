@@ -55,7 +55,7 @@ export default defineConfig({
 				'zh-CN': '⚡ Tact 语言文档',
 			},
 			titleDelimiter: undefined,
-			favicon: '/favicon.png',
+			favicon: '/favicon.ico',
 			logo: {
 				dark: '/public/logo-dark.svg',
 				light: '/public/logo-light.svg',

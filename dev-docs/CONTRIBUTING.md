@@ -130,7 +130,7 @@ For example, let's profile the Tact compiler on compiling a certain contract fro
 
 ```shell
 # Requires Tact compiler to be built beforehand
-npx 0x ./bin/tact.js ./src/benchmarks/contracts/jetton-minter-discoverable.tact
+npx 0x ./bin/tact.js ./src/benchmarks/jetton/minter.tact
 ```
 
 After the compilation, a folder containing the profiling results will be created. It will include the self-contained interactive `.html` page with flamegraph visualization — open it in your browser of choice to see and filter the results.
@@ -240,10 +240,10 @@ yarn bench:add
 
 To add a new benchmark:
 
-1. Add `*.tact` file to `src/benchmarks/contracts`
-2. Add `*.fc` file which you want to compare against to `src/benchmarks/contracts/func`
-3. Recompile the benchmarks with `yarn gen:contracts:benchmarks`
-4. Add additional benchmark with it results as json to `src/benchmarks/new-bench-folder`
+1. Create a new folder: `src/benchmarks/<your-benchmark-name>/`
+2. Inside it, add `tact/` and `func/` subfolders as needed.
+3. Run `yarn gen:contracts:benchmarks` to recompile benchmarks.
+4. Add additional benchmark
 
 ## Project map
 
@@ -364,13 +364,19 @@ Some other codegen tests are as follows:
 
 ### Benchmarks
 
-The benchmarks are organized into the following structure:
+Benchmarks are located inside `src/benchmarks/`, one directory per benchmark:
 
-- [src/benchmarks/contracts/\*.tact](../src/benchmarks/contracts): Contains the Tact contract source files used for benchmarking.
-- [src/benchmarks/\*/results.json](../src/benchmarks/jetton/results_gas.json): Stores the historical benchmark results that further are transformed into comparison tables
-- [src/benchmarks/contracts/func](../src/benchmarks/contracts/func/): Stores FunC implementations that we are benchmarking our contracts against
+#### File & folder roles
 
-Benchmarks have CLI commands support for updating and managing them, check [Updating Benchmarks](#benchmarks) section for them
+| Path / file              | Purpose                                                  |
+| ------------------------ | -------------------------------------------------------- |
+| `tact/`                  | Tact project that is being benchmarked                   |
+| `func/`                  | Equivalent FunC project that we compare against          |
+| `<benchmark>.spec.ts`    | Jest test spec that prepares and runs the benchmark      |
+| `results_gas.json`       | Aggregated gas‑consumption results, updated by the CLI   |
+| `results_code_size.json` | Contract byte‑code size history, also updated by the CLI |
+
+> **CLI support** – All commands for creating, updating, or comparing benchmarks are documented in the [Updating Benchmarks](#benchmarks) section.
 
 ### Pretty-printer and AST comparators
 

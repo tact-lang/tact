@@ -65,6 +65,14 @@ Allowed value types:
 * [Struct][struct]
 * [Message][message]
 
+Neither key nor value types can be made [optional](/book/optionals).
+
+```tact
+// COMPILATION ERROR! Map key types cannot be optional
+let myMap: map<Int?, Int> = emptyMap();
+//             ~~~~
+```
+
 ## Serialization
 
 It is possible to perform [integer serialization](/book/integers#common-serialization-types) of map keys, values, or both to [preserve space and reduce storage costs](/book/integers#serialization):
@@ -142,7 +150,7 @@ let myMap: map<Int as uint8, Int as uint16> = map<Int as uint8, Int as uint16> {
 let mismatch: map<Address, Cell> = map<Address, Int> {}; // COMPILATION ERROR! Type mismatch
 ```
 
-Empty map literals are also supported. They produce the same value as the [`emptyMap(){:tact}`](#emptymap) function but allow omitting type ascriptions.
+Map literals with an empty body are also supported. They produce the same value as the [`emptyMap(){:tact}`](#emptymap) function and also require type ascriptions for the variable definition.
 
 ```tact
 let myMap: map<Int as uint8, Cell> = map<Int as uint8, Cell> {};
@@ -629,8 +637,6 @@ It's often useful to set an upper-bound restriction on such maps, so that you [d
 :::
 
 :::note
-
-  This example was adapted from [howardpen9/while-example-tact](https://github.com/howardpen9/while-example-tact/blob/de5807fcd20dba5f6a3748d112511477fb22bfcc/contracts/awesome.tact#L19C10-L19C10).
 
   See other examples of map usage in the Cookbook:\
   [How to emulate a stack using a map wrapped in a Struct](/cookbook/data-structures#stack)\

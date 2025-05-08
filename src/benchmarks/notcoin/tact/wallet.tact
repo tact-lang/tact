@@ -1,4 +1,4 @@
-import "./messages-not";
+import "./messages";
 
 // gas
 const SEND_TRANSFER_GAS_CONSUMPTION: Int = 10065;
