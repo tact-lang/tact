@@ -80,6 +80,7 @@ infixr
 initof
 injectivity
 Ints
+Intelli
 ipfs
 IPFS
 ipld
