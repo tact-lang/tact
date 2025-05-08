@@ -124,6 +124,7 @@ miscompilation
 misparse
 misparsed
 mktemp
+mult
 multiformats
 nanoton
 nanotons
@@ -148,6 +149,7 @@ pinst
 POSIX
 postpack
 prando
+preorder
 quadtree
 quadtrees
 RANDU

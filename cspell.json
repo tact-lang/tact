@@ -55,6 +55,7 @@
     "src/test/exit-codes/contracts/compute-phase-errors.tact",
     "src/test/e2e-slow/map-property-tests/map-properties-key-value-types.ts",
     "src/test/e2e-slow/map-property-tests/build",
+    "src/test/fuzzer/src/minimal-fc-stdlib/stdlib.fc",
     "/docs",
     "src/utils/change-case/*",
     "src/fmt/cst/cst-parser.ts",
