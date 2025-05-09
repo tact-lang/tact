@@ -1,21 +1,17 @@
 import type * as Ast from "@/ast/ast";
-import { CompilerContext } from "@/context/context";
-import type { StatementContext } from "@/types/resolveStatements";
-import type { TypeRef } from "@/types/types";
 import { Expression } from "@/test/fuzzer/src/generators";
 import { Scope } from "@/test/fuzzer/src/scope";
 import { StdlibType } from "@/test/fuzzer/src/types";
 import { NonTerminal, Terminal } from "@/test/fuzzer/src/uniform-expr-types";
 import type { Type } from "@/test/fuzzer/src/types";
 import {
-    dummySrcInfoPrintable,
     checkAsyncProperty,
     packArbitraries,
     createSample,
 } from "@/test/fuzzer/src/util";
 import fc from "fast-check";
+import type {EdgeCaseConfig} from "../../src/generators/uniform-expr-gen";
 import {
-    EdgeCaseConfig,
     injectEdgeCases,
 } from "../../src/generators/uniform-expr-gen";
 import {
@@ -24,12 +20,12 @@ import {
     interpretExpression,
     setupEnvironment,
 } from "./utils";
-import type { ExpressionTestingEnvironment } from "./utils";
 import { FuzzContext } from "@/test/fuzzer/src/context";
 import { Parameter } from "@/test/fuzzer/src/generators/parameter";
 import { prettyPrint } from "@/ast/ast-printer";
-import { ExpressionParameters } from "@/test/fuzzer/src/generators/expression";
+import type { ExpressionParameters } from "@/test/fuzzer/src/generators/expression";
 
+/*
 function emptyStatementContext(): StatementContext {
     return {
         root: dummySrcInfoPrintable,
@@ -44,7 +40,7 @@ function setupContexts(): [CompilerContext, StatementContext] {
     const ctx: CompilerContext = new CompilerContext();
     const sctx = emptyStatementContext();
     return [ctx, sctx];
-}
+}*/
 
 // describe("generation properties", () => {
 //     it("generates well-typed expressions", () => {
@@ -76,18 +72,16 @@ function setupContexts(): [CompilerContext, StatementContext] {
 // });
 
 async function test() {
-    const script_args = process.argv.slice(2);
-    let reportIfOneFailsButNotTheOther = true;
-    if (typeof script_args[0] !== "undefined") {
-        const boolV = JSON.parse(script_args[0]);
-        if (typeof boolV === "boolean") {
-            reportIfOneFailsButNotTheOther = boolV;
-        }
-    }
+    //const script_args = process.argv.slice(2);
+    //let reportIfOneFailsButNotTheOther = true;
+    //if (typeof script_args[0] !== "undefined") {
+    //    const boolV = JSON.parse(script_args[0]);
+    //    if (typeof boolV === "boolean") {
+    //        reportIfOneFailsButNotTheOther = boolV;
+    //    }
+    //}
 
-    let expressionTestingEnvironment: ExpressionTestingEnvironment;
-
-    expressionTestingEnvironment = await setupEnvironment();
+    const expressionTestingEnvironment = await setupEnvironment();
 
     /*const expressionGenerationIds: Map<AllowedTypeEnum, string[]> =
                 new Map();
@@ -123,22 +117,35 @@ async function test() {
         allowedTerminals: Object.values(Terminal),
     };
 
+    const integerValuesToTry = [
+        0n,
+        1n,
+        -1n,
+        2n,
+        -2n,
+        -(2n ** 256n),
+        -(2n ** 256n) + 1n,
+        2n ** 256n - 1n,
+        2n ** 256n - 2n,
+        256n,
+        255n,
+        257n,
+        -256n,
+        -255n,
+        -257n,
+    ];
+
+    const booleanValuesToTry = [true, false];
+
     const edgeCaseConfigForBindings = {
-        tryIntegerValues: [
-            0n,
-            1n,
-            -1n,
-            2n,
-            -2n,
-            -(2n ** 256n),
-            2n ** 256n - 1n,
-        ],
-        tryBooleanValues: [],
+        tryIntegerValues: integerValuesToTry,
+        tryBooleanValues: booleanValuesToTry,
         tryStringValues: [],
         generalizeIntegerToIdentifier: false,
         generalizeBooleanToIdentifier: false,
         generalizeStringToIdentifier: false,
         instantiateIntIds: false,
+        instantiateBoolIds: false,
     };
 
     const bindingsGenerator = initializeBindingsGenerator(
@@ -149,29 +156,42 @@ async function test() {
     );
 
     const expressionGenerationCtx: ExpressionParameters = {
-        minExpressionSize: 2,
-        maxExpressionSize: 10,
+        minExpressionSize: 4,
+        maxExpressionSize: 15,
         useIdentifiersInExpressions: true,
         allowedNonTerminals: [
             NonTerminal.Bool,
-            NonTerminal.Int,
+            //NonTerminal.Int,
             NonTerminal.LiteralBool,
-            NonTerminal.LiteralInt,
+            //NonTerminal.LiteralInt,
         ],
         allowedTerminals: [
-            Terminal.id_int,
-            //Terminal.id_bool,
-            Terminal.integer,
-            //Terminal.bool,
+            //Terminal.id_int,
+            Terminal.id_bool,
+            //Terminal.integer,
+            Terminal.bool,
             //Terminal.shift_l,
-            Terminal.shift_r,
-            Terminal.mult,
-            //Terminal.eq,
-            //Terminal.neq,
-            Terminal.ge,
-            Terminal.le,
-            Terminal.gt,
-            Terminal.lt,
+            //Terminal.shift_r,
+            //Terminal.mult,
+            //Terminal.add,
+            //Terminal.minus,
+            //Terminal.unary_minus,
+            //Terminal.div,
+            //Terminal.mod,
+            //Terminal.bit_xor,
+            //Terminal.bit_and,
+            //Terminal.bit_or,
+            //Terminal.bit_not,
+            Terminal.eq,
+            Terminal.neq,
+            Terminal.and,
+            Terminal.or,
+            Terminal.not,
+            Terminal.cond,
+            //Terminal.ge,
+            //Terminal.le,
+            //Terminal.gt,
+            //Terminal.lt,
         ],
     };
     const exprGenerator = new Expression(
@@ -181,22 +201,86 @@ async function test() {
     );
 
     const edgeCaseConfigForExpr = {
-        tryIntegerValues: [
-            0n,
-            1n,
-            -1n,
-            2n,
-            -2n,
-            -(2n ** 256n),
-            2n ** 256n - 1n,
-        ],
-        tryBooleanValues: [],
+        tryIntegerValues: integerValuesToTry,
+        tryBooleanValues: booleanValuesToTry,
         tryStringValues: [],
         generalizeIntegerToIdentifier: true,
         generalizeBooleanToIdentifier: true,
         generalizeStringToIdentifier: true,
         instantiateIntIds: true,
+        instantiateBoolIds: true,
     };
+
+    const errorPatternsToIgnore: PatternToIgnore[] = [
+        {
+            compilationPattern: {
+                kind: "error",
+                regExp: new RegExp(
+                    "^Unable to execute get method. Got exit_code: 5$",
+                ),
+            },
+            interpretationPattern: {
+                kind: "error",
+                regExp: new RegExp(
+                    "^Cannot evaluate expression to a constant: the number of bits shifted \\('-?[0-9]+'\\) must be within \\[0\\.\\.256\\] range",
+                ),
+            },
+        },
+        {
+            compilationPattern: {
+                kind: "error",
+                regExp: new RegExp(
+                    "^Unable to execute get method. Got exit_code: 4$",
+                ),
+            },
+            interpretationPattern: {
+                kind: "error",
+                regExp: new RegExp(
+                    "^Cannot evaluate expression to a constant: integer '-?[0-9]+' does not fit into TVM Int type",
+                ),
+            },
+        },
+        {
+            compilationPattern: {
+                kind: "error",
+                regExp: new RegExp(
+                    "^Unable to execute get method. Got exit_code: 4$",
+                ),
+            },
+            interpretationPattern: {
+                kind: "error",
+                regExp: new RegExp(
+                    "^Cannot evaluate expression to a constant: divisor expression must be non-zero",
+                ),
+            },
+        },
+        //{
+        //    compilationPattern: {kind: "no_error"},
+        //    interpretationPattern: {kind: "error", regExp: new RegExp("^Cannot evaluate expression to a constant: divisor expression must be non-zero")}
+        //},
+        //{
+        //    compilationPattern: {kind: "no_error"},
+        //    interpretationPattern: {kind: "error", regExp: new RegExp("^Cannot evaluate expression to a constant: the number of bits shifted \\('-?[0-9]+'\\) must be within \\[0\\.\\.256\\] range")}
+        //},
+        {
+            compilationPattern: {
+                kind: "error",
+                regExp: new RegExp(
+                    "^Unable to execute get method. Got exit_code: 4$",
+                ),
+            },
+            interpretationPattern: {
+                kind: "error",
+                regExp: new RegExp(
+                    "^Cannot evaluate expression to a constant: the number of bits shifted \\('-?[0-9]+'\\) must be within \\[0\\.\\.256\\] range",
+                ),
+            },
+        },
+        //{
+        //    compilationPattern: {kind: "no_error"},
+        //    interpretationPattern: {kind: "error", regExp: new RegExp("^Cannot evaluate expression to a constant: integer '-?[0-9]+' does not fit into TVM Int type")}
+        //},
+    ];
 
     const property = fc.asyncProperty(
         fc.array(bindingsGenerator, { minLength: 100, maxLength: 100 }),
@@ -241,7 +325,7 @@ async function test() {
                     const differingIndexes = getDifferingIndexes(
                         compilationResult,
                         interpretationResult,
-                        reportIfOneFailsButNotTheOther,
+                        errorPatternsToIgnore,
                     );
                     if (differingIndexes.length > 0) {
                         const errorString = buildErrorString(
@@ -287,7 +371,7 @@ async function test() {
 const TYPES: Type[] = [
     { kind: "stdlib", type: StdlibType.Int },
     { kind: "stdlib", type: StdlibType.Bool },
-    { kind: "stdlib", type: StdlibType.Address },
+    /*{ kind: "stdlib", type: StdlibType.Address },
     { kind: "stdlib", type: StdlibType.Cell },
     { kind: "stdlib", type: StdlibType.Slice },
     { kind: "stdlib", type: StdlibType.String },
@@ -299,7 +383,7 @@ const TYPES: Type[] = [
     },
     { kind: "optional", type: { kind: "stdlib", type: StdlibType.Cell } },
     { kind: "optional", type: { kind: "stdlib", type: StdlibType.Slice } },
-    { kind: "optional", type: { kind: "stdlib", type: StdlibType.String } },
+    { kind: "optional", type: { kind: "stdlib", type: StdlibType.String } },*/
 ];
 
 function addParameters(
@@ -378,11 +462,56 @@ function initializeBindingsGenerator(
     }
 }*/
 
+type ErrorPattern =
+    | {
+          kind: "no_error";
+      }
+    | {
+          kind: "error";
+          regExp: RegExp;
+      };
+
+type PatternToIgnore = {
+    compilationPattern: ErrorPattern;
+    interpretationPattern: ErrorPattern;
+};
+
 function getDifferingIndexes(
     compilationResult: (boolean | Error)[],
     interpretationResult: (boolean | Error)[],
-    reportIfOneFailsButNotTheOther: boolean,
+    errorPatternsToIgnore: PatternToIgnore[],
 ): number[] {
+    function ignoreErrors(cE: string | boolean, iE: string | boolean): boolean {
+        return errorPatternsToIgnore.some(
+            ({ compilationPattern: cP, interpretationPattern: iP }) => {
+                if (cP.kind === "no_error" && iP.kind === "no_error") {
+                    return typeof cE === "boolean" && typeof iE === "boolean";
+                } else if (cP.kind === "no_error" && iP.kind === "error") {
+                    if (typeof iE === "boolean") {
+                        return false;
+                    }
+                    return typeof cE === "boolean" && iP.regExp.test(iE);
+                } else if (cP.kind === "error" && iP.kind === "no_error") {
+                    if (typeof cE === "boolean") {
+                        return false;
+                    }
+                    return cP.regExp.test(cE) && typeof iE === "boolean";
+                } else if (cP.kind === "error" && iP.kind === "error") {
+                    if (typeof cE === "boolean") {
+                        return false;
+                    }
+                    if (typeof iE === "boolean") {
+                        return false;
+                    }
+                    return cP.regExp.test(cE) && iP.regExp.test(iE);
+                } else {
+                    // Impossible case
+                    throw new Error("Impossible case");
+                }
+            },
+        );
+    }
+
     if (compilationResult.length !== interpretationResult.length) {
         throw new Error(
             "Unexpected array lengths: interpreter results and compiler results should have same length",
@@ -392,20 +521,28 @@ function getDifferingIndexes(
 
     const result: number[] = [];
     for (let i = 0; i < compilationResult.length; i++) {
-        const i1 = compilationResult[i];
-        const i2 = interpretationResult[i];
-        if (typeof i1 === "undefined" || typeof i2 === "undefined") {
+        const cR = compilationResult[i];
+        const iR = interpretationResult[i];
+        if (typeof cR === "undefined" || typeof iR === "undefined") {
             throw new Error(`Index ${i} should exist in array`);
         }
-        if (typeof i1 === "boolean" && typeof i2 === "boolean") {
-            if (i1 !== i2) {
+        if (typeof cR === "boolean" && typeof iR === "boolean") {
+            if (cR !== iR) {
                 result.push(i);
             }
-        } else if (typeof i1 !== "boolean" && typeof i2 !== "boolean") {
-            // Both produced an error, ignore
-        } else {
-            // One produced an error, but not the other
-            if (reportIfOneFailsButNotTheOther) {
+        } else if (typeof cR !== "boolean" && typeof iR !== "boolean") {
+            // Both produced an error
+            if (!ignoreErrors(cR.message, iR.message)) {
+                result.push(i);
+            }
+        } else if (typeof cR !== "boolean" && typeof iR === "boolean") {
+            // Compilation produced an error, but not interpretation
+            if (!ignoreErrors(cR.message, iR)) {
+                result.push(i);
+            }
+        } else if (typeof cR === "boolean" && typeof iR !== "boolean") {
+            // Compilation did not produce an error, but interpretation did
+            if (!ignoreErrors(cR, iR.message)) {
                 result.push(i);
             }
         }
@@ -432,7 +569,7 @@ function buildErrorString(
         );
     });
     const message =
-        `\n------------\n` + 
+        `\n------------\n` +
         `Generated expression:\n` +
         FuzzContext.instance.format(expr) +
         `\n\nFailing parameters:\n\n` +
@@ -466,4 +603,4 @@ function astToString(expr: Ast.Expression | Ast.OptionalId): string {
     }
 }
 
-test();
+void test();

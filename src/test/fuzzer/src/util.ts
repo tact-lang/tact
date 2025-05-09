@@ -120,16 +120,17 @@ function makeAsyncParams<T>(
         endOnFailure: true,
         async asyncReporter(out) {
             if (out.failed) {
-                let errorSuffix = "";
+                let errorSuffix = "Seed: " + out.seed;
                 if (out.counterexample !== null) {
-                    errorSuffix = counterexamplePrinter(out.counterexample);
+                    //errorSuffix = counterexamplePrinter(out.counterexample);
                     if (out.errorInstance instanceof Error) {
                         const bugReport = out.errorInstance;
                         errorSuffix += bugReport.message;
                     }
                 }
                 throw new Error(
-                    (await fc.asyncDefaultReportMessage(out)) + errorSuffix,
+                    //(await fc.asyncDefaultReportMessage(out)) +
+                    errorSuffix,
                 );
             }
         },

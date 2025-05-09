@@ -41,6 +41,10 @@ export type EdgeCaseConfig = {
     // On each identifier node, check if the identifier is an integer. If so, instantiate it with any
     // integer edge case in tryIntegerValues.
     instantiateIntIds: boolean;
+
+    // On each identifier node, check if the identifier is a boolean. If so, instantiate it with any
+    // boolean edge case in tryBooleanValues.
+    instantiateBoolIds: boolean;
 };
 
 export type GenInitConfig = {
@@ -1919,7 +1923,7 @@ export function injectEdgeCases(
         }
         case "id": {
             const finalCases: fc.WeightedArbitrary<Ast.Expression>[] = [
-                { arbitrary: fc.constant(baseExpr), weight: 5 },
+                { arbitrary: fc.constant(baseExpr), weight: 10 },
             ];
             if (edgeCases.instantiateIntIds) {
                 const ty: Type = { kind: "stdlib", type: StdlibType.Int };
@@ -1937,6 +1941,36 @@ export function injectEdgeCases(
                         };
                     });
                     finalCases.push(...weightedGens);
+                    // Add a random value as well
+                    finalCases.push({
+                        arbitrary: generateIntBitLength(257, true).map((i) =>
+                            makeF.makeDummyNumber(10, i),
+                        ),
+                        weight: 1,
+                    });
+                }
+            }
+            if (edgeCases.instantiateBoolIds) {
+                const ty: Type = { kind: "stdlib", type: StdlibType.Bool };
+                const names = [
+                    ...scope.getNamesRecursive("let", ty),
+                    ...scope.getNamesRecursive("parameter", ty),
+                ];
+                if (names.includes(baseExpr.text)) {
+                    const weightedGens = edgeCases.tryBooleanValues.map((i) => {
+                        return {
+                            arbitrary: fc.constant(makeF.makeDummyBoolean(i)),
+                            weight: 1,
+                        };
+                    });
+                    finalCases.push(...weightedGens);
+                    // Add a random value as well
+                    finalCases.push({
+                        arbitrary: fc
+                            .boolean()
+                            .map((i) => makeF.makeDummyBoolean(i)),
+                        weight: 1,
+                    });
                 }
             }
             return fc.oneof(...finalCases);
