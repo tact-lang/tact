@@ -56,6 +56,12 @@ export type Log = {
     readonly transactions: readonly Transaction[];
 };
 
+export async function readLog(path: string): Promise<string[]> {
+    const code = await readFile(path, "utf-8");
+    const reports = packageSchema.parse(parseYaml(code));
+    return reports.map(({ messages }) => messages.join("\n"));
+}
+
 export const parseLog = async (path: string): Promise<Log[]> => {
     const code = await readFile(path, "utf-8");
     const reports = packageSchema.parse(parseYaml(code));

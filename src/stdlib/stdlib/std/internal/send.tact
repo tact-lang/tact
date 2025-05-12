@@ -167,7 +167,7 @@ asm fun message(params: MessageParameters) {
     SENDRAWMSG
 }
 
-/// Global function. Queues the message to be sent using a `SendParameters` Struct.
+/// Global function. Queues the message to be sent using a `SendParameters` struct.
 ///
 /// ```tact
 /// fun example() {
@@ -309,9 +309,9 @@ struct DeployParameters {
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Queues the contract deployment message to be sent using the `DeployParameters` Struct. Allows for cheaper on-chain deployments compared to the `send()` function.
+/// Queues the contract deployment message to be sent using the `DeployParameters` struct. Allows for cheaper on-chain deployments compared to the `send()` function.
 ///
-/// The `DeployParameters` Struct consists of the following fields:
+/// The `DeployParameters` struct consists of the following fields:
 /// * `mode: Int`, an 8-bit value that configures how to send a message, defaults to 0.
 /// * `body: Cell?`, optional message body as a `Cell`.
 /// * `value: Int`, the amount of nanoToncoins you want to send with the message.

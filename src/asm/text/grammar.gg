@@ -1,0 +1,65 @@
+File = instructions:instructions;
+
+instructions = (Instruction / ExplicitRef / EmbedSlice / Exotic)*;
+
+Instruction = name:Id args:Argument*;
+
+Argument = expression:(
+      IntegerLiteral
+    / DataLiteral
+    / Code
+    / Dictionary
+    / StackElement
+    / ControlRegister
+);
+
+StackElement = value:$#("s" "-"? IntegerLiteralDec);
+ControlRegister = value:$#("c" IntegerLiteralDec);
+
+Code = "{" instructions:instructions "}";
+
+Dictionary = "[" entries:DictionaryEntry* "]";
+
+DictionaryEntry = id:IntegerLiteral "=>" code:Code;
+
+ExplicitRef = keyword<"ref"> code:Code;
+EmbedSlice  = keyword<"embed"> data:DataLiteral;
+Exotic      = keyword<"exotic"> lib:(ExoticLibrary / DefaultExotic);
+
+ExoticLibrary = keyword<"library"> data:DataLiteral;
+DefaultExotic = data:DataLiteral;
+
+idPart "identifier character" = [a-zA-Z0-9_];
+Id "identifier" = name:#$(!reservedWord [a-zA-Z_] idPart*);
+
+DataLiteral = value:(HexLiteral / BinLiteral / BocLiteral / StringLiteral);
+
+HexLiteral = "x{" content:$(hexDigit* "_"?) "}";
+BinLiteral = "b{" content:$(binDigit*) "}";
+BocLiteral = "boc{" content:$(hexDigit*) "}";
+
+// Literals
+IntegerLiteral = op:"-"? value:(IntegerLiteralHex / IntegerLiteralBin / IntegerLiteralOct / IntegerLiteralDec);
+
+IntegerLiteralDec = digits:#underscored<digit>;
+IntegerLiteralHex = digits:#("0" [xX] @underscored<hexDigit>);
+IntegerLiteralBin = digits:#("0" [bB] @underscored<binDigit>);
+IntegerLiteralOct = digits:#("0" [oO] @underscored<[0-7]>);
+
+underscored<T> = $(T ("_"? T)*);
+
+hexDigit "hexadecimal digit" = [0-9a-fA-F];
+binDigit "binary digit" = [01];
+digit "digit" = [0-9];
+
+StringLiteral = value:#("\"" @$([^"\\])* "\"");
+
+keyword<T> = #(@T !idPart);
+
+reservedWord "reserved word" = keyword<(
+    "ref" / "embed" / "exotic" / "library"
+)>;
+
+space "space" = [ \t\r\n] / comment;
+comment = singleLineComment;
+singleLineComment = "//" @$[^\r\n]*;

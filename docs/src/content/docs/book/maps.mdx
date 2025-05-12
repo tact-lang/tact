@@ -28,11 +28,11 @@ contract NestedMaps {
 
     get fun test(): Int {
         // An outer map `map<Address, AllowanceMap>`,
-        // with `AllowanceMap` Structs as values,
+        // with `AllowanceMap` structs as values,
         // each containing maps of type `map<Address, Int>`
         let allowances: map<Address, AllowanceMap> = emptyMap();
 
-        // An inner map in the `unbox` field of the `AllowanceMap` Struct
+        // An inner map in the `unbox` field of the `AllowanceMap` struct
         let allowance = AllowanceMap { unbox: emptyMap() };
 
         // Setting the inner map entry
@@ -62,8 +62,16 @@ Allowed value types:
 * [`Bool{:tact}`](/book/types#booleans)
 * [`Cell{:tact}`][cell]
 * [`Address{:tact}`][p]
-* [Struct][struct]
-* [Message][message]
+* any [struct][struct] type
+* any [Message][message] type
+
+Neither key nor value types can be made [optional](/book/optionals).
+
+```tact
+// COMPILATION ERROR! Map key types cannot be optional
+let myMap: map<Int?, Int> = emptyMap();
+//             ~~~~
+```
 
 ## Serialization
 
@@ -624,17 +632,15 @@ It's often useful to set an upper-bound restriction on such maps, so that you [d
 
 :::caution
 
-  Note that manually keeping track of the number of items or checking the length of such maps is very error-prone and generally discouraged. Instead, try to wrap your map into a [Struct][struct] and define [extension functions](/book/functions#extension-function) on it. See an example in the Cookbook: [How to emulate an array using a map wrapped in a Struct](/cookbook/data-structures#array).
+  Note that manually keeping track of the number of items or checking the length of such maps is very error-prone and generally discouraged. Instead, try to wrap your map into a [struct][struct] and define [extension functions](/book/functions#extension-function) on it. See an example in the Cookbook: [How to emulate an array using a map wrapped in a struct](/cookbook/data-structures#array).
 
 :::
 
 :::note
 
-  This example was adapted from [howardpen9/while-example-tact](https://github.com/howardpen9/while-example-tact/blob/de5807fcd20dba5f6a3748d112511477fb22bfcc/contracts/awesome.tact#L19C10-L19C10).
-
   See other examples of map usage in the Cookbook:\
-  [How to emulate a stack using a map wrapped in a Struct](/cookbook/data-structures#stack)\
-  [How to emulate a circular buffer using a map wrapped in a Struct](/cookbook/data-structures#circular-buffer)
+  [How to emulate a stack using a map wrapped in a struct](/cookbook/data-structures#stack)\
+  [How to emulate a circular buffer using a map wrapped in a struct](/cookbook/data-structures#circular-buffer)
 
 :::
 
