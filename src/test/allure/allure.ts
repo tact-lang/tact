@@ -1,18 +1,18 @@
 import * as allure from "allure-js-commons";
 
 /**
- * Executes a step with a given name and body, tracking its execution within Allure reporting.
+ * Executes a step in an asynchronous sequence with a given name, using the provided function body.
  *
- * @param {string} name - The name of the step to be recorded in Allure.
- * @param {() => Promise<T>} body - A function that contains the logic to be executed as part of the step.
- * @return {Promise<T>} The result of the step's execution wrapped in a promise.
+ * @param {string} name - The name of the step to be executed.
+ * @param {() => T | Promise<T>} body - A function representing the body of the step, which can return a value or a promise.
+ * @return {Promise<T>} A promise that resolves to the result of the executed step.
  */
 export async function step<T>(
     name: string,
-    body: () => Promise<T>,
+    body: () => T | Promise<T>,
 ): Promise<T> {
     return await allure.step(name, async () => {
-        return await body();
+        return body();
     });
 }
 
