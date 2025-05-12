@@ -2826,6 +2826,13 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
+fd-package-json@^1.2.0:
+  version "1.2.0"
+  resolved "https://npm.dev-internal.org/fd-package-json/-/fd-package-json-1.2.0.tgz#4f218bb8ff65c21011d1f4f17cb3d0c9e72f8da7"
+  integrity sha512-45LSPmWf+gC5tdCQMNH4s9Sr00bIkiD9aN7dc5hqkrEw1geRYyDQS1v1oMHAW3ysfxfndqGsrDREHHjNNbKUfA==
+  dependencies:
+    walk-up-path "^3.0.1"
+
 fdir@^6.4.4:
   version "6.4.4"
   resolved "https://npm.dev-internal.org/fdir/-/fdir-6.4.4.tgz#1cfcf86f875a883e19a8fab53622cfe992e8d2f9"
@@ -2910,6 +2917,13 @@ for-each@^0.3.3, for-each@^0.3.5:
   integrity sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==
   dependencies:
     is-callable "^1.2.7"
+
+formatly@^0.2.3:
+  version "0.2.3"
+  resolved "https://npm.dev-internal.org/formatly/-/formatly-0.2.3.tgz#30c4d3605c4f66d97a97a7dafbd9bb4a2467b26f"
+  integrity sha512-WH01vbXEjh9L3bqn5V620xUAWs32CmK4IzWRRY6ep5zpa/mrisL4d9+pRVuETORVDTQw8OycSO1WC68PL51RaA==
+  dependencies:
+    fd-package-json "^1.2.0"
 
 fs-extra@^11.1.1:
   version "11.3.0"
@@ -4131,13 +4145,14 @@ kleur@^3.0.3:
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
 knip@^5.24.1:
-  version "5.53.0"
-  resolved "https://npm.dev-internal.org/knip/-/knip-5.53.0.tgz#1c2392b8e8c40f7d22c0c49e32eb3a2d0da40c7f"
-  integrity sha512-z8tTV59Rkwd/FRaSikKUIyLx9YY846muUJtmF+nM7e7f63LGyjqnSSsGBfE9RorqNanVqXvTjosGYkfKCmV7Nw==
+  version "5.55.1"
+  resolved "https://npm.dev-internal.org/knip/-/knip-5.55.1.tgz#8eb293935623274ea62962041a921ba6ac06b3d6"
+  integrity sha512-NYXjgGrXgMdabUKCP2TlBH/e83m9KnLc1VLyWHUtoRrCEJ/C15YtbafrpTvm3td+jE4VdDPgudvXT1IMtCx8lw==
   dependencies:
     "@nodelib/fs.walk" "^1.2.3"
     enhanced-resolve "^5.18.1"
     fast-glob "^3.3.3"
+    formatly "^0.2.3"
     jiti "^2.4.2"
     js-yaml "^4.1.0"
     minimist "^1.2.8"
@@ -5469,6 +5484,11 @@ vscode-uri@^3.1.0:
   version "3.1.0"
   resolved "https://npm.dev-internal.org/vscode-uri/-/vscode-uri-3.1.0.tgz#dd09ec5a66a38b5c3fffc774015713496d14e09c"
   integrity sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==
+
+walk-up-path@^3.0.1:
+  version "3.0.1"
+  resolved "https://npm.dev-internal.org/walk-up-path/-/walk-up-path-3.0.1.tgz#c8d78d5375b4966c717eb17ada73dbd41490e886"
+  integrity sha512-9YlCL/ynK3CTlrSRrDxZvUauLzAswPCrsaCgilqFevUYpeEW0/3ScEjaa3kbW/T0ghhkEr7mv+fpjqn1Y1YuTA==
 
 walker@^1.0.8:
   version "1.0.8"
