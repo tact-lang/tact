@@ -6,18 +6,17 @@ permissions: read-all
 
 jobs:
   build:
-    name: Telegram
+    name: Slack
     runs-on: ubuntu-latest
     steps:
-      - name: Send telegram message on push
-        uses: appleboy/telegram-action@v1.0.0
+      - name: Slack Notify
         continue-on-error: true
-        with:
-          to: ${{ secrets.TELEGRAM_ISSUE_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_ISSUE_TOKEN }}
-          format: Markdown
-          # this might go wrong, because `title` can have arbitrary markdown
-          message: |
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACKIFY_MARKDOWN: true
+          SLACK_MESSAGE: |
             🍰 [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
             🌲 ${{ github.repository }}
             👤 ${{ github.actor }}
