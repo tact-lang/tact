@@ -100,6 +100,12 @@ export const TcErrors = <M, R>(l: SourceLogger<M, R>) => ({
         }
         return l.at(loc).error(l.text`Type is not a struct or message`);
     },
+    staticMethodNotDefined: () => (loc: Ty.Loc) => {
+        if (loc.kind !== 'range') {
+            return l.internal(l.text`${loc.kind} mismatch`);
+        }
+        return l.at(loc).error(l.text`Only fromCell and fromSlice static methods are supported`);
+    },
     noInit: () => (loc: Ty.Loc) => {
         if (loc.kind !== 'range') {
             return l.internal(l.text`${loc.kind} mismatch`);

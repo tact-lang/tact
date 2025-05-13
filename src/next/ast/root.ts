@@ -56,10 +56,11 @@ export type ImportType = "stdlib" | "relative";
 
 export type Contract = {
     readonly kind: "contract";
+    readonly init: undefined | Init;
+
     readonly name: TypeId;
     readonly traits: readonly TypeId[];
     readonly attributes: readonly ContractAttribute[];
-    readonly init: undefined | Init;
     readonly declarations: readonly LocalItem[];
     readonly loc: Range;
 };
@@ -78,6 +79,7 @@ export type InitParams = {
 
 export type Trait = {
     readonly kind: "trait";
+
     readonly name: TypeId;
     readonly traits: readonly TypeId[];
     readonly attributes: readonly ContractAttribute[];
@@ -106,7 +108,7 @@ export type Extension = {
 export type Method = {
     readonly kind: "method";
     readonly mutates: boolean;
-    readonly virtual: boolean;
+    readonly overridable: boolean;
     readonly override: boolean;
     readonly get: undefined | GetAttribute;
     readonly fun: Function;
@@ -160,7 +162,7 @@ export type TypedParameter = {
 
 export type FieldConstant = {
     readonly kind: "field_const";
-    readonly virtual: boolean;
+    readonly overridable: boolean;
     readonly override: boolean;
     readonly body: Constant;
 }

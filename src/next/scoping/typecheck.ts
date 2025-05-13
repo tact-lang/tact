@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import { makeVisitor, memo } from "@/utils/tricks";
 import type { Logger } from "@/error/logger-util";
@@ -41,11 +42,13 @@ type Result = {
     readonly types: ReadonlyMap<string, readonly [Ast.TypeDecl, TactSource]>;
 };
 
-type DeclMap<T> = Map<string, {
+type DeclRecord<T> = {
     readonly source: TactSource;
     readonly entry: T;
     readonly loc: Range | Implicit;
-}>;
+}
+
+type DeclMap<T> = Map<string, DeclRecord<T>>;
 
 type Registry<T> = {
     readonly get: (key: string) => T | undefined;
@@ -56,6 +59,23 @@ type Registry<T> = {
         loc: Range | Implicit,
     ) => void;
 }
+
+type TypeExtensionRecord = {
+    readonly source: TactSource;
+    readonly self: Ty.LocType;
+
+    readonly mutates: boolean;
+    readonly fun: Ast.Function;
+    readonly loc: Range | Implicit;
+}
+
+// type ContractExtensionRecord = {
+//     readonly source: TactSource;
+//     readonly self: Ast.Trait | Ast.Contract;
+
+//     readonly fun: Ast.Method;
+//     readonly loc: Range | Implicit;
+// }
 
 const scopeIds = (log: Logger<string, void>) =>
     (children: [Result, TactImport][], source: TactSource): Result => {
@@ -78,8 +98,30 @@ const scopeIds = (log: Logger<string, void>) =>
             };
         };
 
+        // method name -> (type -> method)
+        const typeExt: Map<string, TypeExtensionRecord[]> = new Map();
+        const findTypeMethod = (
+            methodName: string,
+            selfType: Ty.LocType,
+        ): undefined | TypeExtensionRecord => {
+            const methodReg = typeExt.get(methodName);
+            if (typeof methodReg === 'undefined') {
+                return undefined;
+            }
+            for (const reg of methodReg) {
+                resolveOverload(reg.self, selfType)
+            }
+        };
+
+        // extends fun foo<T>(self: T);
+        // extends fun foo<K, V>(self: Either<K, V>);
+        // let x: Either<A, B>;
+        // x.foo();
+        // findTypeMethod("foo", Either<A, B>);
+
+        // const contractExt: Map<string, ContractExtensionRecord[]> = new Map();
+
         const functions = makeRegistry<Ast.Function>(new Set());
-        const extensions = makeRegistry<Ast.Extension>(new Set());
         const constants = makeRegistry<Ast.Constant>(new Set());
         const types = makeRegistry<Ast.TypeDecl>(new Set([
             "void",
@@ -122,8 +164,7 @@ const scopeIds = (log: Logger<string, void>) =>
                     continue;
                 }
                 case "extension": {
-                    const id = item.method.fun.name;
-                    extensions.add(id.text, item, source, id.loc);
+                    // handled below
                     continue;
                 }
                 case "struct_decl":
@@ -139,16 +180,85 @@ const scopeIds = (log: Logger<string, void>) =>
         }
 
         for (const item of source.items) {
+            switch (item.kind) {
+                case "extension": {
+                    const id = item.method.fun.name;
+                    extensions.add(id.text, item, source, id.loc);
+                    continue;
+                }
+                case "contract":
+                case "trait": {
+                    continue;
+                }
+                case "function":
+                case "constant":
+                case "struct_decl":
+                case "message_decl":
+                case "union_decl":
+                case "alias_decl": {
+                    continue;
+                }
+            }
+        }
+
+        for (const item of source.items) {
             checkItem(types.get, err, item);
         }
 
         return {
             functions: functions.get(),
-            constants: constants.get(),        
+            constants: constants.get(),
             types: types.get(),
             extensions: extensions.get(),
         };
     };
+
+type Spine = SpineCons | SpineVar
+type SpineCons = {
+    readonly kind: 'cons';
+    readonly name: string;
+    readonly children: readonly Spine[];
+}
+const SpineCons = (name: string, children: readonly Spine[]): SpineCons => ({ kind: 'cons', name, children });
+type SpineVar = {
+    readonly kind: 'var';
+    readonly id: number;
+}
+const SpineVar = (id: number): SpineVar => ({ kind: 'var', id });
+
+const getSpine = (type: Ty.Type): undefined | Spine => {
+    switch (type.kind) {
+        case "map_type": {
+            const key = getSpine(type.key);
+            const value = getSpine(type.value);
+            if (!key || !value) return undefined;
+            return SpineCons("map", [key, value]);
+        }
+        case "cons_type": {
+            const children: Spine[] = [];
+            for (const arg of type.typeArgs) {
+                const spine = getSpine(arg);
+                if (spine) {
+                    children.push(spine);
+                } else {
+                    return undefined;
+                }
+            }
+            return SpineCons(type.name.text, children);
+        }
+        case "TyInt": return SpineCons("Int", []);
+        case "TySlice": return SpineCons("Slice", []);
+        case "TyCell": return SpineCons("Cell", []);
+        case "TyBuilder": return SpineCons("Builder", []);
+        case "type_var": return SpineVar(type.id);
+        case "tuple_type":
+        case "unit_type":
+        case "tensor_type":
+        case "ERROR": {
+            return undefined;
+        }
+    }
+};
 
 const noTypeParams = () => false;
 
@@ -159,6 +269,7 @@ const checkItem = (
 ) => {
     // TODO: check kinds
     // TODO: Check if self is initialized
+    // TODO: map key should be serializable without refs
     switch (node.kind) {
         case "constant": {
             const { init } = node;
@@ -179,6 +290,8 @@ const checkItem = (
             }
         }
         case "function": {
+            // TODO: check return value 
+            // foo(x: Int): Int { if (x == 42) return 43; }
             return;
         }
         case "extension": {
@@ -197,6 +310,7 @@ const checkItem = (
             return;
         }
         case "contract": {
+            // check all contract fields are initialized
             return;
         }
         case "trait": {
@@ -209,6 +323,7 @@ const Int257 = (loc: Ty.Loc) => Ty.TypeInt(Ty.IFInt("signed", 257, loc), loc);
 const String = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("String", loc), [], loc);
 const Bool = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Bool", loc), [], loc);
 const Cell = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Cell", loc), [], loc);
+const Slice = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Slice", loc), [], loc);
 const StateInit = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("StateInit", loc), [], loc);
 const Maybe = (param: Ty.Type, loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Maybe", loc), [param], loc);
 const Null = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Null", loc), [], loc);
@@ -351,22 +466,32 @@ const getExprChecker = (
         }
     };
 
-    const mgu = (left: Ty.Type, right: Ty.Type): Ty.Type => {
+    const mgu = (left: Ty.Type, right: Ty.Type, loc: Ty.Loc): Ty.Type => {
+        left = simplifyHead(left);
+        right = simplifyHead(right);
         if (left.kind === 'ERROR' || right.kind === 'ERROR') {
             return Ty.TypeErrorRecovered();
         }
         if (left.kind === 'type_var' || right.kind === 'type_var') {
             return throwInternal("Trying to unify type variable");
         }
-        const children1: MismatchTree[] = [];
-        const children2: MismatchTree[] = [];
-        if (assignToAux1(left, right, children1)) {
+        const children: MismatchTree[] = [];
+        if (assignToAux1(left, right, children)) {
             return left;
         }
-        if (assignToAux1(right, left, children2)) {
+        if (assignToAux1(right, left, children)) {
             return right;
         }
-        // TODO
+        if (isNull(right)) {
+            return Maybe(left, loc);
+        }
+        if (isNull(left)) {
+            return Maybe(right, loc);
+        }
+        for (const tree of children) {
+            err.typeMismatch(tree)(loc);
+        }
+        return Ty.TypeErrorRecovered();
     };
 
     let nextId = 0;
@@ -446,7 +571,7 @@ const getExprChecker = (
         const rightLoc = Ty.Builtin(`right parameter of "${node.op}" operator`);
         const leftType = checkExpr(node.left);
         const rightType = checkExpr(node.right);
-        
+
         switch (node.op) {
             case "+":
             case "-":
@@ -480,18 +605,14 @@ const getExprChecker = (
             }
             case "!=":
             case "==": {
-                // TODO:
-                // Maybe<T> ? Null
-                // Null ? Maybe<T>
-                // map<> ? Null
-                // Null ? map<>
-                // "Int"
-                // "Bool"
-                // "Address"
-                // "Cell"
-                // "Slice"
-                // "String"
-                return Bool(resultLoc);
+                const common = mgu(leftType, rightType, resultLoc);
+                if (common.kind === 'ERROR') {
+                    return common;
+                }
+                if (supportsEquality(common)) {
+                    return Bool(resultLoc);
+                }
+                return Ty.TypeErrorRecovered();
             }
             case "&&":
             case "||": {
@@ -509,15 +630,13 @@ const getExprChecker = (
     const checkTernary = (node: Ast.Conditional): Ty.Type => {
         const resultLoc = Ty.Inferred(node.loc, `result of ternary operator`);
         const condLoc = Ty.Builtin(`condition of ternary operator`);
-        const thenLoc = Ty.Builtin(`"then" of ternary operator`);
-        const elseLoc = Ty.Builtin(`"else" of ternary operator`);
-        const condType = checkExpr(node.condition);
         const commonType = mgu(
             checkExpr(node.thenBranch),
             checkExpr(node.elseBranch),
+            resultLoc,
         );
         if (
-            !assignTo(Bool(condLoc), condType)
+            !assignTo(Bool(condLoc), checkExpr(node.condition))
             || commonType.kind === 'ERROR'
         ) {
             return Ty.TypeErrorRecovered();
@@ -559,12 +678,11 @@ const getExprChecker = (
     };
 
     const checkInitOf = (node: Ast.InitOf): Ty.Type => {
-        // resolveInitOf
         const contract = getContract(node.contract);
         if (!contract) {
             return Ty.TypeErrorRecovered();
         }
-        
+
         const { init } = contract;
         if (!init) {
             err.noInit()(node.loc)
@@ -579,8 +697,6 @@ const getExprChecker = (
 
         for (const [index, param] of init.params.entries()) {
             const arg = node.args[index];
-            // const paramName = param.name.kind === 'id' ? param.name.text : `number ${index + 1}`;
-            // const argType = arg ?  : Null(Ty.Inferred(node.loc, `omitted parameter ${paramName}`));
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (arg) {
                 const children: MismatchTree[] = [];
@@ -602,9 +718,20 @@ const getExprChecker = (
         readonly subst: (type: Ty.Type) => Ty.Type;
         readonly getArgs: () => readonly Ty.Type[];
     }
+
+    const fillUpTypeArgs = (args: readonly Ty.Type[], params: readonly Ty.TypeId[]): readonly Ty.Type[] => [
+        // cut extraneous arguments
+        ...args.slice(0, params.length),
+        // pad with missing arguments
+        ...new Array(Math.max(0, params.length - args.length))
+            .fill(0).map(() => Ty.TypeErrorRecovered())
+    ];
     const substTypeParams = (
         struct: Ast.StructDecl | Ast.MessageDecl,
-        node: Ast.StructInstance,
+        node: {
+            readonly typeArgs: readonly Ty.Type[],
+            readonly loc: Ty.Loc,
+        },
     ): Substitutor => {
         if (struct.kind === 'message_decl') {
             if (node.typeArgs.length > 0) {
@@ -656,15 +783,7 @@ const getExprChecker = (
                     node.typeArgs,
                 );
             },
-            getArgs: () => {
-                return [
-                    // cut extraneous arguments
-                    ...node.typeArgs.slice(0, struct.typeParams.length),
-                    // pad with missing arguments
-                    ...new Array(Math.max(0, struct.typeParams.length - node.typeArgs.length))
-                        .fill(0).map(() => Ty.TypeErrorRecovered())
-                ];
-            },
+            getArgs: () => fillUpTypeArgs(node.typeArgs, struct.typeParams),
         };
     };
     const checkStructInstance = (node: Ast.StructInstance): Ty.Type => {
@@ -698,6 +817,40 @@ const getExprChecker = (
         );
     };
 
+    const checkStaticMethodCall = (node: Ast.StaticMethodCall): Ty.Type => {
+        const struct = getStruct(node.self);
+        if (!struct) {
+            return Ty.TypeErrorRecovered();
+        }
+        const name = node.function.text;
+        if (name !== "fromSlice" && name !== "fromCell") {
+            err.staticMethodNotDefined()(node.function.loc);
+            return Ty.TypeErrorRecovered();
+        }
+        const paramLoc = Ty.Builtin(`parameter of .${name}()`);
+        const [arg] = node.args;
+        if (node.args.length !== 1 || !arg) {
+            err.fnArity(name, node.args.length, 1)(node.loc);
+        } else if (name === 'fromSlice') {
+            // fromSlice: Struct.(Slice) -> struct
+            assignTo(Slice(paramLoc), checkExpr(arg));
+        } else if (name === 'fromCell') {
+            // fromCell: Struct.(Cell) -> struct
+            assignTo(Cell(paramLoc), checkExpr(arg));
+        }
+        if (struct.kind === 'struct_decl' && struct.typeParams.length !== node.typeArgs.length) {
+            err.typeArity(struct.name.text, node.typeArgs.length, 0)(node.loc);
+        }
+        const resultLoc = Ty.Inferred(node.loc, `result of .${name}()`);
+        return Ty.TypeCons(
+            Ty.TypeId(node.self.text, resultLoc),
+            struct.kind === 'struct_decl'
+                ? fillUpTypeArgs(node.typeArgs, struct.typeParams)
+                : [],
+            resultLoc,
+        );
+    };
+
     const checkFunctionCall = (node: Ast.StaticCall): Ty.Type => {
         // dump: checkDump, // (ref | void | null | map | Cell | Slice | Builder | Address | String | Bool | Int) -> void
 
@@ -727,22 +880,42 @@ const getExprChecker = (
     };
 
     const checkMethodCall = (node: Ast.MethodCall): Ty.Type => {
-        // toCell : struct.() -> Cell
-        // toSlice: struct.() -> Slice
+        const self = checkExpr(node.self);
+        switch (self.kind) {
+            case "cons_type": {
+                // struct
+                // toCell : struct.() -> Cell
+                // toSlice: struct.() -> Slice
 
-        // K = Int|Address
-        // set: map<K, V>.(key: K, value: V) -> void
-        // get: map<K, V>.(key: K) -> Maybe<V>
-        // del: map<K, V>.(key: K) -> Bool
-        // asCell: map<K, V>.() -> Maybe<Cell>
-        // isEmpty: map<K, V>.() -> Bool
-        // exists: map<K, V>.(key: K) -> Bool
-        // deepEquals: map<K, V>.(other: map<K, W extends V>) -> Bool // mgu
-        // replace: map<K, V>.(key: K, value: V) -> Bool
-        // replaceGet: map<K, V>.(key: K, value: V) -> map<K, V>
+                // bounced<> не переносит методы
 
-        // bounced<> не переносит методы
-        // null -- Maybe<>, map<>, Null; может быть >1 кандидата
+                // null
+                // Maybe<>, map<>, Null; может быть >1 кандидата
+                return;
+            }
+            case "map_type": {
+                // set: map<K, V>.(key: K, value: V) -> void
+                // get: map<K, V>.(key: K) -> Maybe<V>
+                // del: map<K, V>.(key: K) -> Bool
+                // asCell: map<K, V>.() -> Maybe<Cell>
+                // isEmpty: map<K, V>.() -> Bool
+                // exists: map<K, V>.(key: K) -> Bool
+                // deepEquals: map<K, V>.(other: map<K, W extends V>) -> Bool // mgu
+                // replace: map<K, V>.(key: K, value: V) -> Bool
+                // replaceGet: map<K, V>.(key: K, value: V) -> map<K, V>
+            }
+            case "ERROR":
+            case "type_var": {
+                return;
+            }
+            case "TyInt":
+            case "TySlice":
+            case "TyCell":
+            case "TyBuilder":
+            case "tuple_type":
+            case "unit_type":
+            case "tensor_type":
+        }
     };
 
     const checkField = (node: Ast.FieldAccess): Ty.Type => {
@@ -754,26 +927,22 @@ const getExprChecker = (
 
     const checkVariable = (node: Ast.Var): Ty.Type => {
         // 1. константы
-        // 2. Type.foo()
-        //    fromCell: Struct.(Cell) -> struct
-        //    fromSlice: Struct.(Slice) -> struct
-        //    FIXME!!!
         // 3. переменные
         // 4. кастомная ошибка, когда foo, но нужен self.foo
     };
-    
+
     const checkTuple = (node: Ast.Tuple): Ty.Type => {
         //
     };
-    
+
     const checkTensor = (node: Ast.Tensor): Ty.Type => {
         //
     };
-    
+
     const checkMapLiteral = (node: Ast.MapLiteral): Ty.Type => {
         //
     };
-    
+
     const checkSetLiteral = (node: Ast.SetLiteral): Ty.Type => {
         //
     };
@@ -798,6 +967,7 @@ const getExprChecker = (
         tensor: checkTensor,
         map_literal: checkMapLiteral,
         set_literal: checkSetLiteral,
+        static_method_call: checkStaticMethodCall,
     });
 
     return {
@@ -805,6 +975,14 @@ const getExprChecker = (
         freshTVar,
         checkExpr,
     };
+};
+
+const supportsEquality = (common: Ty.Type): boolean => {
+    return common.kind === 'cons_type' && common.name.text === 'Maybe' && common.typeArgs.every(arg => supportsEquality(arg))
+        || common.kind === 'map_type'
+        || common.kind === 'cons_type' && [
+            "Int", "Bool", "Address", "Cell", "Slice", "String"
+        ].includes(common.name.text)
 };
 
 const substParams = (into: Ty.Type, params: readonly Ty.TypeId[], args: readonly Ty.Type[]) => {

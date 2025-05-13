@@ -584,6 +584,16 @@ const parseTuple =
         );
     };
 
+const parseStaticCall = ({ type, name, typeArgs, args, loc }: $ast.StaticCall): Handler<Ast.StaticMethodCall> => ctx => {
+    return Ast.StaticMethodCall(
+        parseTypeId(type)(ctx),
+        map(parseList(typeArgs), parseType)(ctx),
+        parseId(name)(ctx),
+        map(parseList(args), parseExpression)(ctx),
+        ctx.toRange(loc),
+    );
+};
+
 const parseParens = ({ child }: $ast.Parens): Handler<Ast.Expression> => {
     return parseExpression(child);
 };
@@ -610,7 +620,8 @@ type Expression =
     | $ast.Tensor
     | $ast.Tuple
     | $ast.MapLiteral
-    | $ast.SetLiteral;
+    | $ast.SetLiteral
+    | $ast.StaticCall;
 
 const parseExpression: (input: Expression) => Handler<Ast.Expression> =
     makeVisitor<Expression>()({
@@ -632,6 +643,7 @@ const parseExpression: (input: Expression) => Handler<Ast.Expression> =
         Tuple: parseTuple,
         MapLiteral: parseMapLiteral,
         SetLiteral: parseSetLiteral,
+        StaticCall: parseStaticCall,
     });
 
 const parseStatementLet =
@@ -1415,7 +1427,7 @@ const parseInheritance = (
     hasBody: boolean,
     attrs: readonly ($ast.FunctionAttribute | $ast.ConstantAttribute)[],
     range: Range,
-): Handler<{ override: boolean, virtual: boolean }> => ctx => {
+): Handler<{ override: boolean, overridable: boolean }> => ctx => {
     const isVirtual = parseNamedAttr("virtual")(attrs)(ctx);
     const isOverride = parseNamedAttr("override")(attrs)(ctx);
     const isAbstract = parseNamedAttr("abstract")(attrs)(ctx);
@@ -1436,7 +1448,7 @@ const parseInheritance = (
     }
     return {
         override: !!isOverride,
-        virtual: !!isVirtual,
+        overridable: !!isVirtual || !!isAbstract,
     };
 };
 
@@ -1477,7 +1489,7 @@ const parseFieldConstant =
             node.attributes,
             ctx.toRange(node.loc),
         )(ctx);
-        return Ast.FieldConstant(inh.virtual, inh.override, body);
+        return Ast.FieldConstant(inh.overridable, inh.override, body);
     };
 
 const parseContract =
@@ -1629,7 +1641,7 @@ const parseMethod =
         }
         return Ast.Method(
             !!isMutates,
-            inh.virtual,
+            inh.overridable,
             inh.override,
             get,
             fn,

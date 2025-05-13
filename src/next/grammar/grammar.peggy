@@ -325,6 +325,7 @@ primary
     / MapLiteral
     / SetLiteral
     / StructInstance
+    / StaticCall
     / IntegerLiteral
     / BoolLiteral
     / InitOf
@@ -341,6 +342,13 @@ Parens = child:parens;
 Unit = "(" ")";
 Tensor = "(" head:expression tail:("," @expression)+ ","? ")";
 Tuple = "[" types:commaList<expression>? "]";
+
+StaticCall =
+    type:TypeId
+    typeArgs:typeArgs?
+    "."
+    name:Id
+    args:parameterList<expression>;
 
 StructInstance =
     type:TypeId

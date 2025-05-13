@@ -285,3 +285,13 @@ export const SetLiteral = (
     });
 export const isSetLiteral = ($value: SetLiteral) =>
     $value.kind === "set_literal";
+export type StaticMethodCall = $.StaticMethodCall;
+export const StaticMethodCall = (self: $c.TypeId, typeArgs: readonly $t.Type[], function_: $c.Id, args: readonly $.Expression[], loc: $c.Range): $.StaticMethodCall => Object.freeze({
+    kind: "static_method_call",
+    self,
+    typeArgs,
+    function: function_,
+    args,
+    loc
+});
+export const isStaticMethodCall = ($value: StaticMethodCall) => $value.kind === "static_method_call";

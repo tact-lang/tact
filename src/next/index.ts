@@ -3,7 +3,7 @@ import { TerminalLogger } from "@/cli/logger";
 import { getAnsiMarkup, isColorSupported } from "@/cli/colors";
 import { ProjectReader } from "@/next/imports/reader";
 import { inspect } from "util";
-import { scope } from "@/next/scoping/tc2";
+import { scope } from "@/next/scoping/typecheck";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const dump = (obj: unknown) =>

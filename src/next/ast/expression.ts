@@ -6,8 +6,9 @@ export type Expression =
     | OpUnary
     | Conditional
     | MethodCall
-    | FieldAccess
     | StaticCall
+    | StaticMethodCall
+    | FieldAccess
     | StructInstance
     | InitOf
     | CodeOf
@@ -116,6 +117,15 @@ export type StaticCall = {
     readonly kind: "static_call";
     readonly function: Id;
     readonly typeArgs: readonly Type[];
+    readonly args: readonly Expression[];
+    readonly loc: Range;
+};
+
+export type StaticMethodCall = {
+    readonly kind: "static_method_call";
+    readonly self: TypeId;
+    readonly typeArgs: readonly Type[];
+    readonly function: Id;
     readonly args: readonly Expression[];
     readonly loc: Range;
 };

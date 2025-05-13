@@ -77,10 +77,10 @@ export const GetAttribute = (methodId: $e.Expression | undefined, loc: $c.Range)
     loc
 });
 export type Method = $.Method;
-export const Method = (mutates: boolean, virtual: boolean, override: boolean, get: $.GetAttribute | undefined, fun: $.Function): $.Method => Object.freeze({
+export const Method = (mutates: boolean, overridable: boolean, override: boolean, get: $.GetAttribute | undefined, fun: $.Function): $.Method => Object.freeze({
     kind: "method",
     mutates,
-    virtual,
+    overridable,
     override,
     get,
     fun
@@ -235,9 +235,9 @@ export const Receiver = (selector: $.ReceiverKind, statements: readonly $s.State
 });
 export const isReceiver = ($value: Receiver) => $value.kind === "receiver";
 export type FieldConstant = $.FieldConstant;
-export const FieldConstant = (virtual: boolean, override: boolean, body: $.Constant): $.FieldConstant => Object.freeze({
+export const FieldConstant = (overridable: boolean, override: boolean, body: $.Constant): $.FieldConstant => Object.freeze({
     kind: "field_const",
-    virtual,
+    overridable,
     override,
     body
 });
