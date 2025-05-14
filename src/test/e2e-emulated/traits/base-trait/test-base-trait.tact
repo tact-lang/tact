@@ -51,12 +51,12 @@ trait TestBaseTrait with BaseTrait{
     }
 
     receive(msg: MessageAndForward) {
-        message(MessageParameters {
+        MessageParameters {
             mode: msg.mode,
             to: msg.to,
             body: msg.body,
             value: msg.value,
-        });
+        }.send();
 
         self.forward(msg.to, msg.body, msg.bounce, msg.init);
     }

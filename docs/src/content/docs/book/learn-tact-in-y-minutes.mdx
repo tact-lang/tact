@@ -50,12 +50,12 @@ contract HelloWorld {
 // A helper inlined function to send binary messages.
 // See the "Primitive types" section below for more info about cells.
 inline fun reply(msgBody: Cell) {
-    message(MessageParameters {
+    MessageParameters {
         to: sender(),
         value: 0,
         mode: SendRemainingValue | SendIgnoreErrors,
         body: msgBody,
-    });
+    }.send();
 }
 
 // Empty message structs with specified 32-bit integer prefix.
@@ -702,12 +702,12 @@ fun add(a: Int, b: Int): Int {
 // function inlined in all places where this function is called,
 // increasing the total code size and possibly reducing computational fees.
 inline fun reply(str: String) {
-    message(MessageParameters {
+    MessageParameters {
         to: sender(),
         value: 0,
         mode: SendRemainingValue | SendIgnoreErrors,
         body: str.asComment(),
-    });
+    }.send();
 }
 
 // The extends attribute allows to implement extension functions for any type.
@@ -806,7 +806,7 @@ fun examples() {
     // See the links given right after this code block.
     //
     // This is most general and simple function to send an internal message:
-    message(MessageParameters {
+    MessageParameters {
         // Recipient address.
         to: address("UQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p9dz"),
 
@@ -826,7 +826,7 @@ fun examples() {
         bounce: true, // to handle messages that bounced back, a special bounced
                       // receiver function is used. See the "Contracts and traits"
                       // section below for more info.
-    });
+    }.send();
 
     // To do refunds and forward excess values from the incoming message
     // back to the original sender, use the cashback message-sending function:
@@ -926,11 +926,11 @@ contract MyContract(
         self.accumulator += msg.someVal;
 
         // Send a message back to the sender() with MyMsg
-        message(MessageParameters {
+        MessageParameters {
             to: sender(),
             value: ton("0.04"),
             body: MyMsg{ someVal: self.accumulator }.toCell(),
-        });
+        }.send();
     }
 
     // For deployments, it is common to use the following receiver
@@ -1148,14 +1148,14 @@ fun showcase() {
     // one must send the new contract's initial state, i.e.,
     // its initial code and initial data, to its Address,
     // which is deterministically obtained from the initial state.
-    deploy(DeployParameters {
+    DeployParameters {
         // Use initOf expression to provide initial code and data
         init: initOf MyContract(),
         // Attaching 1 Toncoin, which will be used to pay various fees
         value: ton("1"),
         // Notice that we do not need to explicitly specify the Address.
         // That's because it will be computed on the fly from the initial package.
-    });
+    }.send();
 }
 
 // However, before your contracts can start deploying other contracts on-chain,
@@ -1277,7 +1277,7 @@ contract JettonWallet(
 
         // Transfer Jetton from the current owner to the target user's JettonWallet.
         // If that wallet does not exist, it is deployed on-chain in the same transfer.
-        deploy(DeployParameters {
+        DeployParameters {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
@@ -1292,7 +1292,7 @@ contract JettonWallet(
             // Notice that we do not need to explicitly specify the Address,
             // because it will be computed on the fly from the initial package.
             init: initOf JettonWallet(0, msg.destination, self.master),
-        });
+        }.send();
     }
 
     /// Registers a binary receiver of messages with JettonTransferInternal opcode.
@@ -1317,7 +1317,7 @@ contract JettonWallet(
         if (msg.forwardTonAmount > 0) {
             let fwdFee: Int = ctx.readForwardFee();
             msgValue -= msg.forwardTonAmount + fwdFee;
-            message(MessageParameters {
+            MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayGasSeparately,
@@ -1328,7 +1328,7 @@ contract JettonWallet(
                     sender: msg.sender,
                     forwardPayload: msg.forwardPayload,
                 }.toCell(),
-            });
+            }.send();
         }
 
         // In general, let's try to reserve minimal amount of Toncoin
@@ -1337,13 +1337,13 @@ contract JettonWallet(
 
         // And forward excesses (cashback) to the original sender.
         if (msg.responseDestination != null && msgValue > 0) {
-            message(MessageParameters {
+            MessageParameters {
                 to: msg.responseDestination!!,
                 value: msgValue,
                 mode: SendRemainingBalance + SendIgnoreErrors,
                 bounce: false,
                 body: JettonExcesses{ queryId: msg.queryId }.toCell(),
-            });
+            }.send();
         }
     }
 
@@ -1367,7 +1367,7 @@ contract JettonWallet(
 
         // Send a message to the JettonMinter to reduce the total supply
         // of the Jettons. That is, to burn some.
-        message(MessageParameters {
+        MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
@@ -1378,7 +1378,7 @@ contract JettonWallet(
                 sender: self.owner,
                 responseDestination: msg.responseDestination,
             }.toCell(),
-        });
+        }.send();
     }
 
     /// Registers a bounced binary receiver of messages

@@ -292,12 +292,12 @@ contract HelloWorld {
         self.counter += 1;
 
         // sending the message back to the sender
-        send(SendParameters {
+        SendParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body: CanBounce{counter: self.counter}.toCell(),
-        });
+        }.send();
     }
 
     // bounced message receiver, which is called when the message bounces back to this contract

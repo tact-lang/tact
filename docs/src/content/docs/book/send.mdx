@@ -36,13 +36,13 @@ If you need more advanced logic, you can use the `send(){:tact}` function and th
 In fact, the previous example with [`.reply(){:tact}`](#send-simple-reply) can be made using the following call to the `send(){:tact}` function:
 
 ```tact
-send(SendParameters {
+SendParameters {
     // bounce is set to true by default
     to: sender(), // sending message back to the sender
     value: 0, // don't add Toncoin to the message...
     mode: SendRemainingValue | SendIgnoreErrors, // ...except for the ones received from the sender due to SendRemainingValue
     body: "Hello, World".asComment(), // asComment converts a String to a Cell with a comment
-});
+}.send();
 ```
 
 Another example sends a message to the specified [`Address{:tact}`][p] with a `value` of 1 TON and the `body` as a comment containing the [`String{:tact}`][p] `"Hello, World!"{:tact}`:
@@ -50,13 +50,13 @@ Another example sends a message to the specified [`Address{:tact}`][p] with a `v
 ```tact
 let recipient: Address = address("...");
 let value: Int = ton("1");
-send(SendParameters {
+SendParameters {
     // bounce is set to true by default
     to: recipient,
     value: value,
     mode: SendIgnoreErrors, // skip the message in case of errors
     body: "Hello, World!".asComment(),
-});
+}.send();
 ```
 
 The [optional flag](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}` means that if an error occurs during [message sending](#outbound-message-processing), it will be ignored, and the given message will be skipped. Message-related [action phase][phases] [exit codes](/book/exit-codes) that might be thrown without the `SendIgnoreErrors{:tact}` set are:
@@ -73,13 +73,13 @@ To send a typed message, you can use the following code:
 ```tact
 let recipient: Address = address("...");
 let value: Int = ton("1");
-send(SendParameters {
+SendParameters {
     // bounce is set to true by default
     to: recipient,
     value: value,
     mode: SendIgnoreErrors, // skip the message in case of errors
     body: SomeMessage { arg1: 123, arg2: 1234 }.toCell(),
-});
+}.send();
 ```
 
 ## Deploy contract
@@ -90,7 +90,7 @@ To deploy a contract, you need to calculate its address and initial state with [
 let init: StateInit = initOf SecondContract(arg1, arg2);
 let address: Address = contractAddress(init);
 let value: Int = ton("1");
-send(SendParameters {
+SendParameters {
     // bounce is set to true by default
     to: address,
     value: value,
@@ -98,7 +98,7 @@ send(SendParameters {
     code: init.code,
     data: init.data,
     body: "Hello, World!".asComment(), // not necessary, can be omitted
-});
+}.send();
 ```
 
 <p/><Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -106,13 +106,13 @@ send(SendParameters {
 For cheaper on-chain deployments, prefer using the [`deploy(){:tact}`](/ref/core-send#deploy) function instead. It computes the address of the contract based on its initial code and data and efficiently composes the resulting message:
 
 ```tact
-deploy(DeployParameters {
+DeployParameters {
     // bounce is set to true by default
     init: initOf SecondContract(arg1, arg2), // initial code and data
     mode: SendIgnoreErrors, // skip the message in case of errors
     value: ton("1"), // a whole Toncoin
     body: "Hello, World!".asComment(), // not necessary, can be omitted
-});
+}.send();
 ```
 
 ## Outbound message processing
@@ -131,21 +131,21 @@ contract FailureIsNothingButAnotherStep {
     // All the funds it obtains are from inbound internal messages
     receive() {
         // 1st outbound message evaluated and queued (but not yet sent)
-        send(SendParameters {
+        SendParameters {
             to: sender(),
             value: ton("0.042"), // plus forward fee due to SendPayFwdFeesSeparately
             mode: SendIgnoreErrors | SendPayFwdFeesSeparately,
             // body is null by default
-        });
+        }.send();
 
         // 2nd outbound message evaluated and queued,
         // but not yet sent, and never will be!
-        send(SendParameters {
+        SendParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             // body is null by default
-        });
+        }.send();
     } // exit code 37 during action phase!
 }
 ```
@@ -177,13 +177,13 @@ contract IfItDiesItDies {
 
         // 2nd outbound message evaluated and queued,
         // but not yet sent, and never will be!
-        send(SendParameters {
+        SendParameters {
             to: sender(),
             value: 0,
             bounce: false, // brave and bold
             mode: SendRemainingValue,
             body: "Not this again!".asComment(),
-        });
+        }.send();
     } // exit code 37 during action phase!
 }
 ```
@@ -223,14 +223,14 @@ contract MyPrecious {
 
         // 2nd outbound message evaluated and queued
         // with SendRemainingBalance mode
-        send(SendParameters {
+        SendParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingBalance, // because of the prior nativeReserve(),
                                         // using this mode is safe and will keep
                                         // the original balance plus a little more
             body: "I give you my all! Well, all that's not mine!".asComment(),
-        });
+        }.send();
     }
 }
 ```

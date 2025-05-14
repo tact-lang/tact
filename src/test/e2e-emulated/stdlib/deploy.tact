@@ -30,13 +30,13 @@ contract DeployContract {
 
     }
     receive(msg: DeployParamsMsg) {
-        deploy(DeployParameters{
+        DeployParameters{
             mode: msg.mode,
             body: msg.body.asCell(),
             value: 0,
             bounce: msg.bounce,
             init: initOf DeployContract(msg.contractNum)
-        });
+        }.send();
     }
 
     // In this test we do not care if the contracts are already deployed,
@@ -44,14 +44,14 @@ contract DeployContract {
     // produce indistinguishable messages.
     receive(msg: DeployComparisonMsg) {
         let initInfo = initOf DeployContract(msg.contractNum);
-        deploy(DeployParameters{
+        DeployParameters{
             mode: msg.mode,
             body: msg.body.asCell(),
             value: msg.value,
             bounce: msg.bounce,
             init: initInfo
-        });
-        send(SendParameters{
+        }.send();
+        SendParameters{
             mode: msg.mode,
             body: msg.body.asCell(),
             code: initInfo.code,
@@ -59,26 +59,26 @@ contract DeployContract {
             value: msg.value,
             bounce: msg.bounce,
             to: contractAddress(initInfo)
-        });
+        }.send();
     }
 
     // Do the same, but with no body, since it is the only 
     // optional parameter common to both functions.
     receive(msg: DeployComparisonNoBodyMsg) {
         let initInfo = initOf DeployContract(msg.contractNum);
-        deploy(DeployParameters{
+        DeployParameters{
             mode: msg.mode,
             value: msg.value,
             bounce: msg.bounce,
             init: initInfo
-        });
-        send(SendParameters{
+        }.send();
+        SendParameters{
             mode: msg.mode,
             code: initInfo.code,
             data: initInfo.data,
             value: msg.value,
             bounce: msg.bounce,
             to: contractAddress(initInfo)
-        });
+        }.send();
     }
 }

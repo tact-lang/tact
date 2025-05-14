@@ -205,11 +205,11 @@ fun send(params: SendParameters);
 示例用法：
 
 ```tact
-send(SendParameters {
+SendParameters {
     to: sender(),    // back to the sender,
     value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
                      // and no message body
-});
+}.send();
 ```
 
 :::note[Useful links:]

@@ -43,7 +43,7 @@ contract NFTCollection {
     receive() {} // ignore empty messages
 
     receive(msg: GetRoyaltyParams) {
-        message(MessageParameters {
+        MessageParameters {
             bounce: false,
             to: sender(),
             value: 0,
@@ -52,7 +52,7 @@ contract NFTCollection {
                 params: self.royaltyParams,
             }.toCell(),
             mode: SendRemainingValue,
-        });
+        }.send();
     }
 
     receive(msg: DeployNFT) {
@@ -129,10 +129,10 @@ contract NFTCollection {
 inline fun deployNFTItem(commonCode: Cell, itemIndex: Int, amount: Int, initNFTBody: Cell, commonData: Builder) {
     let data: Cell = commonData.storeUint(itemIndex, 64).endCell(); // IndexSizeBits = 64
 
-    deploy(DeployParameters {
+    DeployParameters {
         value: amount,
         body: initNFTBody,
         init: StateInit { code: commonCode, data },
         mode: SendPayFwdFeesSeparately,
-    });
+    }.send();
 }

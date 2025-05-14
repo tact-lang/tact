@@ -52,24 +52,24 @@ contract SampleContract {
 
     receive(msg: EntryFirst) {
         self.a = self.a - msg.amountToAdd;
-        message(MessageParameters{
+        MessageParameters{
             to: msg.toAddress,
             value: ton("1"), 
             mode: SendIgnoreErrors, 
             bounce: true, 
             body: First{amount: msg.amountToAdd, myCoins: 3, myBool3: false, anAddress: sender()}.toCell()
-        });
+        }.send();
     }
     
     receive(msg: EntrySecond) {
         self.a = self.a - msg.amountToAdd;
-        message(MessageParameters{
+        MessageParameters{
             to: msg.toAddress,
             value: ton("1"), 
             mode: SendIgnoreErrors, 
             bounce: true, 
             body: Second{amount_bigger: msg.amountToAdd, myBool: false, thisDoesNotFit: 1, myAddress: sender(), myBool2: false, myStruct: MyStruct{amount: 1}, myStruct2: MyStruct{amount: 2}}.toCell()
-        });
+        }.send();
     }
     
     receive(msg: First) {

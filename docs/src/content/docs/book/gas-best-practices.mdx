@@ -240,10 +240,10 @@ When you receive an internal message, you can obtain the address of the contract
 If you only need the sender's address and no additional context on the incoming message that is contained in the `Context{:tact}` struct, then use the [`sender()`](/ref/core-contextstate#sender) function as it is less gas-consuming.
 
 ```tact /sender\\(\\)/
-message(MessageParameters {
+MessageParameters {
     to: sender(),
     value: ton("0.05"),
-});
+}.send();
 ```
 
 ### Use `throwUnless()` over `require()`
@@ -307,7 +307,7 @@ self.forward(sender(), null, false, initOf SomeContract());
 
 // could be replaced with this
 let initState = initOf SomeContract();
-send(SendParameters {
+SendParameters {
     to: sender(),
     mode: SendRemainingValue | SendIgnoreErrors,
     bounce: false,
@@ -315,19 +315,19 @@ send(SendParameters {
     code: initState.code,
     data: initState.data,
     body: null,
-})
+}.send()
 
 // This
 self.reply(null);
 
 // should be replaced with this
-message(MessageParameters {
+MessageParameters {
     body: null,
     to: sender(),
     mode: SendRemainingValue | SendIgnoreErrors,
     bounce: true,
     value: 0,
-});
+}.send();
 
 // And this
 self.notify(null);
@@ -341,12 +341,12 @@ cashback(sender());
 There are many [message-sending functions](/book/send#message-sending-functions), and the [`deploy(){:tact}`](/ref/core-send#deploy) function is optimized for cheaper on-chain deployments compared to the [`send(){:tact}`](/ref/core-send#send) function.
 
 ```tact
-deploy(DeployParameters {
+DeployParameters {
     init: initOf SomeContract(), // with initial code and data of SomeContract
                                  // and with an empty message body
     mode: SendIgnoreErrors,      // skip the message in case of errors
     value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
-});
+}.send();
 ```
 
 ### Use `message()` function for non-deployment messages
@@ -354,11 +354,11 @@ deploy(DeployParameters {
 There are many [message-sending functions](/book/send#message-sending-functions), and the [`message(){:tact}`](/ref/core-send#message) function is optimized for cheaper non-deployment regular messages compared to the [`send(){:tact}`](/ref/core-send#send) function.
 
 ```tact
-message(MessageParameters {
+MessageParameters {
     to: addrOfSomeInitializedContract,
     value: ton("1"), // sending 1 Toncoin (1_000_000_000 nanoToncoin),
                      // with an empty message body
-});
+}.send();
 ```
 
 ## Applied examples of best gas practices

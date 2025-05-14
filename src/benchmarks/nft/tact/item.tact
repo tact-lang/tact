@@ -8,13 +8,13 @@ inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, paylo
         msgBody = msgBody.storeBuilder(payload);
     }
 
-    message(MessageParameters {
+    MessageParameters {
         bounce: false,
         to: toAddress,
         value: amount,
         body: msgBody.endCell(),
         mode: sendMode,
-    });
+    }.send();
 }
 
 struct NFTItemInit {
