@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Language features
+
+- [fix] Compiler now correctly handles optional slices, builders, and strings when generating serialization logic: PR [#3053](https://github.com/tact-lang/tact/pull/3053)
+
 ### Tooling
 
 - [fix] Formatter now correctly handles floating comments: PR [#2995](https://github.com/tact-lang/tact/pull/2995)
