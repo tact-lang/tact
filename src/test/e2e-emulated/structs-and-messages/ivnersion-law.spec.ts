@@ -1,36 +1,42 @@
 import { beginCell, toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { storeFoo, Test } from "./output/inversion-law_Test";
+import { cached } from "@/test/utils/cache-state";
 import "@ton/test-utils";
 
-describe("inversion-law", () => {
-    let blockchain: Blockchain;
-    let treasury: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<Test>;
+const deployValue = toNano("1");
 
-    beforeEach(async () => {
-        blockchain = await Blockchain.create();
-        blockchain.verbosity.print = false;
-        treasury = await blockchain.treasury("treasury");
+const setup = async () => {
+    const blockchain = await Blockchain.create();
+    blockchain.verbosity.print = false;
+    const treasury = await blockchain.treasury("treasury");
 
-        contract = blockchain.openContract(await Test.fromInit());
+    const contract = blockchain.openContract(await Test.fromInit());
 
-        const deployResult = await contract.send(
-            treasury.getSender(),
-            { value: toNano("10") },
-            null,
-        );
-
-        expect(deployResult.transactions).toHaveTransaction({
-            from: treasury.address,
-            to: contract.address,
-            success: true,
-            deploy: true,
-        });
+    const deployResult = await contract.send(
+        treasury.getSender(),
+        { value: deployValue },
+        null,
+    );
+    expect(deployResult.transactions).toHaveTransaction({
+        from: treasury.address,
+        to: contract.address,
+        success: true,
+        deploy: true,
     });
 
+    return {
+        blockchain,
+        treasury,
+        contract,
+    };
+};
+
+describe("inversion-law", () => {
+    const state = cached(setup);
+
     it("should return true for fromCell -> toCell -> fromCell", async () => {
+        const { contract } = await state.get();
         const b = beginCell();
         b.store(storeFoo({ $$type: "Foo", slice: beginCell().asSlice() }));
         const res = await contract.getFromCell(b.endCell());
@@ -38,6 +44,7 @@ describe("inversion-law", () => {
     });
 
     it("should return true for toCell -> fromCell -> toCell", async () => {
+        const { contract } = await state.get();
         const res = await contract.getToCell({
             $$type: "Foo",
             slice: beginCell().asSlice(),
