@@ -245,6 +245,18 @@ To add a new benchmark:
 3. Run `yarn gen:contracts:benchmarks` to recompile benchmarks.
 4. Add additional benchmark
 
+### Generate Allure report
+
+We use [Allure](https://allurereport.org/) to generate reports for our tests.
+
+To run the tests and generate the Allure report:
+
+```shell
+yarn test:allure
+```
+
+Developers can use `step()`, `parameter()` and `attachment()` (and other) from `src/test/allure/allure.ts` to increase the readability of the test report
+
 ## Project map
 
 ### Compiler driver
