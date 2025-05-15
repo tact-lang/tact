@@ -1430,11 +1430,12 @@ describe("should format", () => {
                     foo.bar;
                     foo()
                         .bar
-                        .baz(foo.bar(
-                            1,
-                            2,
-                            3,
-                        ))
+                        .baz(foo
+                            .bar(
+                                1,
+                                2,
+                                3,
+                            ))
                         .boo
                         .baz
                         .bar;

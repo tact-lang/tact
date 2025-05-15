@@ -373,6 +373,8 @@ const formatStructInstance: FormatRule = (code, node) => {
         throw new Error("Invalid struct instance");
     }
 
+    const endIndex = childLeafIdxWithText(fields, "}");
+
     code.apply(formatType, type).space();
 
     formatSeparatedList(
@@ -405,7 +407,7 @@ const formatStructInstance: FormatRule = (code, node) => {
         },
         {
             startIndex: 1,
-            endIndex: -1,
+            endIndex,
             wrapperLeft: "{",
             wrapperRight: "}",
             extraWrapperSpace: " ",
@@ -423,7 +425,6 @@ const formatStructInstance: FormatRule = (code, node) => {
         },
     );
 
-    const endIndex = childLeafIdxWithText(fields, "}");
     formatTrailingComments(code, fields, endIndex, true);
 };
 
@@ -449,12 +450,14 @@ const formatSuffix: FormatRule = (code, node) => {
     // foo.bar()
     // ^^^
     const firstExpression = node.children.at(0);
+    if (!firstExpression) return;
+
     // foo.bar()
     //        ^^
     const firstSuffix = suffixesList.at(0);
     const secondSuffix = suffixesList.at(1);
 
-    // first call suffix attached to first expression
+    // first call suffix attached to the first expression
     const firstSuffixIsCallOrNotNull =
         firstSuffix &&
         firstSuffix.$ === "node" &&
@@ -464,8 +467,8 @@ const formatSuffix: FormatRule = (code, node) => {
         suffixesList = suffixesList.slice(1);
     }
 
-    suffixesList.forEach((suffix) => {
-        if (suffix.$ !== "node") return;
+    for (const suffix of suffixesList) {
+        if (suffix.$ !== "node") continue;
 
         if (suffix.type === "SuffixFieldAccess") {
             const name = childByField(suffix, "name");
@@ -500,15 +503,13 @@ const formatSuffix: FormatRule = (code, node) => {
                 lastInfo.nodes.push(suffix);
             }
         }
-    });
+    }
 
     const indent = infos.slice(0, -1).some((call) => call.hasLeadingNewline)
         ? 4
         : 0;
 
-    if (firstExpression) {
-        formatExpression(code, firstExpression);
-    }
+    formatExpression(code, firstExpression);
 
     if (firstSuffixIsCallOrNotNull) {
         formatExpression(code, firstSuffix);
@@ -530,16 +531,17 @@ const formatSuffix: FormatRule = (code, node) => {
                 (call) =>
                     call.leadingComments.length > 0 ||
                     call.trailingComments.length > 0,
-            );
+            ) ||
+        visit(firstExpression).includes("\n");
 
     if (shouldBeMultiline) {
         code.indent();
         code.newLine();
 
         infos.forEach((info, index) => {
-            info.nodes.forEach((child) => {
+            for (const child of info.nodes) {
                 code.apply(formatExpression, child);
-            });
+            }
 
             if (index !== infos.length - 1) {
                 code.newLine();
@@ -548,11 +550,11 @@ const formatSuffix: FormatRule = (code, node) => {
 
         code.dedent();
     } else {
-        infos.forEach((info) => {
-            info.nodes.forEach((child) => {
+        for (const info of infos) {
+            for (const child of info.nodes) {
                 code.apply(formatExpression, child);
-            });
-        });
+            }
+        }
     }
 
     return;
