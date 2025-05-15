@@ -730,10 +730,10 @@ exports[`resolveDescriptors should fail descriptors for opcode-method-on-struct 
 `;
 
 exports[`resolveDescriptors should fail descriptors for opcode-method-on-trait 1`] = `
-"<unknown>:8:16: Cannot find 'Ownable'
+"<unknown>:8:16: Type "Ownable" does not have a function named "opcode"
   7 |     get fun foo(): Int {
 > 8 |         return Ownable.opcode();
-                     ^~~~~~~
+                     ^~~~~~~~~~~~~~~~
   9 |     }
 "
 `;

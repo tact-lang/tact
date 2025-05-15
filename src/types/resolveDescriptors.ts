@@ -2342,6 +2342,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     return ctx;
 }
 
+export function getTypeOrUndefined(
+    ctx: CompilerContext,
+    ident: Ast.Id | Ast.TypeId | string,
+): TypeDescription | undefined {
+    try {
+        return getType(ctx, ident);
+    } catch {
+        return undefined;
+    }
+}
+
 export function getType(
     ctx: CompilerContext,
     ident: Ast.Id | Ast.TypeId | string,
