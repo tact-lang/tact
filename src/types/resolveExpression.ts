@@ -2,7 +2,6 @@ import type * as Ast from "@/ast/ast";
 import { eqNames, idText } from "@/ast/ast-helpers";
 import {
     idTextErr,
-    TactCompilationError,
     throwCompilationError,
     throwInternalCompilerError,
 } from "@/error/errors";
@@ -16,6 +15,7 @@ import {
     hasStaticConstant,
     hasStaticFunction,
     resolveTypeRef,
+    getTypeOrUndefined,
     verifyMapType,
 } from "@/types/resolveDescriptors";
 import type { FunctionParameter, TypeRef } from "@/types/types";
@@ -945,8 +945,8 @@ export function resolveExpression(
             if (!v) {
                 if (!hasStaticConstant(ctx, exp.text)) {
                     // Handle static struct method calls
-                    try {
-                        const t = getType(ctx, exp.text);
+                    const t = getTypeOrUndefined(ctx, exp.text);
+                    if (typeof t !== "undefined") {
                         if (allowTypeAsValue) {
                             return registerExpType(ctx, exp, {
                                 kind: "ref",
@@ -955,7 +955,7 @@ export function resolveExpression(
                             });
                         }
 
-                        if (t.kind === "struct") {
+                        if (t?.kind === "struct") {
                             throwCompilationError(
                                 `Add {} after "${exp.text}" to create an instance of the struct`,
                                 exp.loc,
@@ -966,11 +966,6 @@ export function resolveExpression(
                             `Cannot use type "${exp.text}" as value`,
                             exp.loc,
                         );
-                    } catch (e: unknown) {
-                        if (e instanceof TactCompilationError) {
-                            throw e;
-                        }
-                        // Ignore
                     }
 
                     // Handle possible field access and suggest to use self.field instead
