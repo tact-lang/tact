@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking changes
+
+- Compiler now reports an error if `VarAddress` or `parseVarAddress()` is used, since starting
+  from [TVM 10](https://github.com/ton-blockchain/ton/blob/master/doc/GlobalVersions.md#version-10) they are mostly not supported: PR [#3067](https://github.com/tact-lang/tact/pull/3067).
+
 ### Language features
 
 - [fix] Compiler now correctly handles optional slices, builders, and strings when generating serialization logic: PR [#3053](https://github.com/tact-lang/tact/pull/3053)

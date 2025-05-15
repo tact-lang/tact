@@ -26,6 +26,7 @@ import { GlobalFunctions } from "@/abi/global";
 import { isAssignable, moreGeneralType } from "@/types/subtyping";
 import { StructFunctions } from "@/abi/struct";
 import { prettyPrint } from "@/ast/ast-printer";
+import type { SrcInfo } from "@/grammar";
 
 const store = createContextStore<{
     ast: Ast.Expression;
@@ -567,6 +568,13 @@ function checkParameterType(
     }
 }
 
+export function throwVarAddrHardDeprecateError(loc: SrcInfo) {
+    throwCompilationError(
+        `Using VarAddress since TVM 10 is mostly useless as it throws exit code 9 in many cases. Tact does not support VarAddress since 1.6.8 and it will be removed completely in future versions`,
+        loc,
+    );
+}
+
 function resolveStaticCall(
     exp: Ast.StaticCall,
     sctx: StatementContext,
@@ -590,6 +598,10 @@ function resolveStaticCall(
 
         // Register return type
         return registerExpType(ctx, exp, resolved);
+    }
+
+    if (exp.function.text === "parseVarAddress") {
+        throwVarAddrHardDeprecateError(exp.loc);
     }
 
     // Check if function exists
