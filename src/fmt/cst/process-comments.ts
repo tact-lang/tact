@@ -575,7 +575,7 @@ const processDocComments = (n: Cst, pendingComments: MutableCst[]): Cst => {
 
             if (floatingComments.length > 0) {
                 items.splice(i + 1, 0, ...floatingComments);
-                i += floatingComments.length - 1;
+                i += floatingComments.length;
             }
 
             pendingComments.push(...comments);
