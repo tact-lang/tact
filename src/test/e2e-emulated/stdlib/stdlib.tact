@@ -28,7 +28,7 @@ contract StdlibTest {
     get fun sliceRefs(sc: Slice): Int {
         return sc.refs();
     }
-    
+
     get fun storeBool(bl: Builder, b: Bool): Builder {
         return bl.storeBool(b);
     }
@@ -45,7 +45,7 @@ contract StdlibTest {
         return sc.loadBit();
     }
 
-    
+
     get fun tvm_2023_07_upgrade(): Int {
         return gasConsumed();
     }
@@ -70,15 +70,11 @@ contract StdlibTest {
         return parseStdAddress(slice);
     }
 
-    get fun parseVarAddress(slice: Slice): VarAddress {
-        return parseVarAddress(slice);
-    }
-
     get fun forceBasechain(addr: Address): Bool {
         forceBasechain(addr);
         return true;
     }
-    
+
     get fun forceWorkchain(addr: Address, workchain: Int, exitCode: Int): Bool {
         forceWorkchain(addr, workchain, exitCode);
         return true;

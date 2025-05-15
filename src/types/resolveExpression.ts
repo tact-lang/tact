@@ -15,6 +15,7 @@ import {
     hasStaticConstant,
     hasStaticFunction,
     resolveTypeRef,
+    getTypeOrUndefined,
     verifyMapType,
 } from "@/types/resolveDescriptors";
 import type { FunctionParameter, TypeRef } from "@/types/types";
@@ -25,6 +26,7 @@ import { GlobalFunctions } from "@/abi/global";
 import { isAssignable, moreGeneralType } from "@/types/subtyping";
 import { StructFunctions } from "@/abi/struct";
 import { prettyPrint } from "@/ast/ast-printer";
+import type { SrcInfo } from "@/grammar";
 
 const store = createContextStore<{
     ast: Ast.Expression;
@@ -464,7 +466,7 @@ function resolveFieldAccess(
     ctx: CompilerContext,
 ): CompilerContext {
     // Resolve expression
-    ctx = resolveExpression(exp.aggregate, sctx, ctx);
+    ctx = resolveExpression(exp.aggregate, sctx, ctx, true);
 
     // Find target type and check for type
     const src = getExpType(ctx, exp.aggregate);
@@ -566,6 +568,13 @@ function checkParameterType(
     }
 }
 
+export function throwVarAddrHardDeprecateError(loc: SrcInfo) {
+    throwCompilationError(
+        `Using VarAddress since TVM 10 is mostly useless as it throws exit code 9 in many cases. Tact does not support VarAddress since 1.6.8 and it will be removed completely in future versions`,
+        loc,
+    );
+}
+
 function resolveStaticCall(
     exp: Ast.StaticCall,
     sctx: StatementContext,
@@ -589,6 +598,10 @@ function resolveStaticCall(
 
         // Register return type
         return registerExpType(ctx, exp, resolved);
+    }
+
+    if (exp.function.text === "parseVarAddress") {
+        throwVarAddrHardDeprecateError(exp.loc);
     }
 
     // Check if function exists
@@ -640,7 +653,7 @@ function resolveCall(
     ctx: CompilerContext,
 ): CompilerContext {
     // Resolve expression
-    ctx = resolveExpression(exp.self, sctx, ctx);
+    ctx = resolveExpression(exp.self, sctx, ctx, true);
 
     // Check if self is initialized
     if (
@@ -890,6 +903,7 @@ export function resolveExpression(
     exp: Ast.Expression,
     sctx: StatementContext,
     ctx: CompilerContext,
+    allowTypeAsValue: boolean = false, // to allow Foo in Foo.bar() and disallow just Foo
 ) {
     switch (exp.kind) {
         case "boolean": {
@@ -943,17 +957,27 @@ export function resolveExpression(
             if (!v) {
                 if (!hasStaticConstant(ctx, exp.text)) {
                     // Handle static struct method calls
-                    try {
-                        const t = getType(ctx, exp.text);
-                        if (t.kind === "struct") {
+                    const t = getTypeOrUndefined(ctx, exp.text);
+                    if (typeof t !== "undefined") {
+                        if (allowTypeAsValue) {
                             return registerExpType(ctx, exp, {
                                 kind: "ref",
                                 name: t.name,
                                 optional: false,
                             });
                         }
-                    } catch {
-                        // Ignore
+
+                        if (t?.kind === "struct") {
+                            throwCompilationError(
+                                `Add {} after "${exp.text}" to create an instance of the struct`,
+                                exp.loc,
+                            );
+                        }
+
+                        throwCompilationError(
+                            `Cannot use type "${exp.text}" as value`,
+                            exp.loc,
+                        );
                     }
 
                     // Handle possible field access and suggest to use self.field instead

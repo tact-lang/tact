@@ -40,3 +40,10 @@ export * from "@/imports/path";
 export * from "@/grammar";
 export * from "@/grammar/src-info";
 export * from "@/optimizer/interpreter";
+
+export * from "@/asm/coverage";
+export * from "@/asm/helpers";
+export * from "@/asm/logs";
+export * from "@/asm/runtime";
+export * as asmText from "@/asm/text";
+export * from "@/asm/trace";

@@ -801,6 +801,15 @@ exports[`resolveStatements should fail statements for init-vars-analysis-with-if
 "
 `;
 
+exports[`resolveStatements should fail statements for int-as-value 1`] = `
+"<unknown>:6:17: Cannot use type "Int" as value
+  5 |     fun bar() {
+> 6 |         let a = Int;
+                      ^~~
+  7 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch 1`] = `
 "<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Address, Int>" to parameter of type "map<Int, Int>"
   11 |         let m2: map<Address, Int> = emptyMap();
@@ -1320,6 +1329,24 @@ exports[`resolveStatements should fail statements for stmt-while-int 1`] = `
 >  9 |     while(x) {
            ^~~~~~~~~~
   10 |         x = x + 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for struct-without-braces 1`] = `
+"<unknown>:11:17: Add {} after "MissMe" to create an instance of the struct
+  10 |     fun bar() {
+> 11 |         let a = MissMe;
+                       ^~~~~~
+  12 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for trait-as-value 1`] = `
+"<unknown>:10:17: Cannot use type "MissMe" as value
+   9 |     fun bar() {
+> 10 |         let a = MissMe;
+                       ^~~~~~
+  11 |     }
 "
 `;
 

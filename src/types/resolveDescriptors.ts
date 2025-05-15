@@ -37,7 +37,11 @@ import {
 import { enabledExternals } from "@/config/features";
 import { isRuntimeType } from "@/types/isRuntimeType";
 import { GlobalFunctions } from "@/abi/global";
-import { getExpType, resolveExpression } from "@/types/resolveExpression";
+import {
+    getExpType,
+    resolveExpression,
+    throwVarAddrHardDeprecateError,
+} from "@/types/resolveExpression";
 import { addVariable, emptyContext } from "@/types/resolveStatements";
 import { isAssignable } from "@/types/subtyping";
 import type { ItemOrigin } from "@/imports/source";
@@ -2342,14 +2346,25 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     return ctx;
 }
 
+export function getTypeOrUndefined(
+    ctx: CompilerContext,
+    ident: Ast.Id | Ast.TypeId | string,
+): TypeDescription | undefined {
+    try {
+        return getType(ctx, ident);
+    } catch {
+        return undefined;
+    }
+}
+
 export function getType(
     ctx: CompilerContext,
     ident: Ast.Id | Ast.TypeId | string,
 ): TypeDescription {
+    const errorLoc = typeof ident === "string" ? undefined : ident.loc;
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
-        const errorLoc = typeof ident === "string" ? undefined : ident.loc;
         if (errorLoc) {
             throwCompilationError(
                 `Type ${idTextErr(name)} not found`,
@@ -2358,6 +2373,11 @@ export function getType(
         }
         throwInternalCompilerError(`Type ${idTextErr(name)} not found`);
     }
+
+    if (r.name === "VarAddress" && errorLoc) {
+        throwVarAddrHardDeprecateError(errorLoc);
+    }
+
     return r;
 }
 
