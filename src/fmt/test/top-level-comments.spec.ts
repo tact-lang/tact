@@ -497,4 +497,16 @@ describe("top level declarations comments formatting", () => {
             `,
         ),
     );
+
+    it(
+        "trailing comments for last constant without newline",
+        intact(`const FOO: Int = 0; // comment`),
+    );
+
+    it(
+        "trailing comments for last function with newline",
+        intact(`
+            fun bar(); // comment
+        `),
+    );
 });

@@ -81,11 +81,13 @@ function extractComments([commentPoint, anchor]: [MutableCstNode, Anchor]):
     }
 
     // find index where we break on the next line
+    const nextNewlineIndex = followingLeafs.findIndex(
+        (it) => it.$ === "leaf" && it.text.includes("\n"),
+    );
     let inlineCommentsIndex =
-        actualAnchorIndex +
-        followingLeafs.findIndex(
-            (it) => it.$ === "leaf" && it.text.includes("\n"),
-        );
+        nextNewlineIndex === -1
+            ? commentPoint.children.length
+            : actualAnchorIndex + nextNewlineIndex;
 
     // all before, inline comments that we don't touch
     const inlineLeafs = followingLeafs.slice(
