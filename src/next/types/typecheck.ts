@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { ResolvedImport, TactImport, TactSource } from "@/next/imports/source";
 import { memo } from "@/utils/tricks";
 import type * as Ast from "@/next/ast";
 import * as W from "@/next/types/writer";
 import * as V from "@/next/types/via";
 import { throwInternal } from "@/error/errors";
+import { logDeep } from "@/utils/log-deep.build";
 
 export const typecheck = (root: TactSource): WithLog<Scope> => {
     const errors: TcError[] = [];
@@ -24,7 +26,7 @@ export const typecheck = (root: TactSource): WithLog<Scope> => {
         return result.value
     };
     const memoedRec = memo(recur);
-    return { errors, value: memoedRec(root) };
+    return W.makeLog(memoedRec(root), errors);
 };
 const onlyTactImports = (imports: readonly ResolvedImport[]): readonly TactImport[] => {
     // typescript narrowing doesn't properly apply to filter,
@@ -61,22 +63,18 @@ const tcSource = (
     });
     return W.flatMapLog(
         // append local definitions to the end of the list
-        tcBody(currSource),
-        // reduce list of sets of definitions into single set
-        local => concatScopes([...importGlobals, local])
-    );
-};
-
-// convert source to a list of its definitions
-const tcBody = (source: TactSource): WithLog<Scope> => {
-    return W.flatMapLog(
-        // for every item, extract globals
         W.traverseLog(
-            source.items,
-            item => scopeItem(item, source),
+            currSource.items,
+            item => scopeItem(item, currSource),
         ),
-        // then concat them
-        concatScopes,
+        // reduce list of sets of definitions into single set
+        local => {
+            const allScopes = [...importGlobals, ...local];
+            // if (currSource.path.includes("5")) {
+            //     logDeep(allScopes);
+            // }
+            return concatScopes(allScopes);
+        }
     );
 };
 
@@ -198,24 +196,27 @@ const mapViaFunctions = (fns: Functions, cb: (via: V.ViaUser) => V.ViaUser): Fun
     }));
 };
 const appendFunctions = (prev: Functions, next: Functions): WithLog<Functions> => {
-    // console.log({ prev, next });
     if (!prev || !next) return W.pureLog(next);
     const value = new Map(prev.entries());
     const errors: TcError[] = [];
     for (const [name, nextItem] of next) {
         const prevItem = value.get(name);
+        // defined in compiler
         if (builtinFunctions.has(name)) {
-            // defined in compiler
             errors.push(ERedefineFn(name, V.ViaBuiltin(), nextItem.via));
-        } else if (typeof prevItem === 'undefined') {
-            // not defined yet; define it now
+            continue;
+        }
+        // not defined yet; define it now
+        if (typeof prevItem === 'undefined') {
             value.set(name, nextItem);
-        } else if (prevItem.via.source !== nextItem.via.source) {
-            // already defined, and it's not a diamond-situation
+            continue;
+        }
+        // already defined, and it's not a diamond situation
+        if (prevItem.via.source !== nextItem.via.source) {
             errors.push(ERedefineFn(name, prevItem.via, nextItem.via));
         }
     }
-    return { value, errors };
+    return W.makeLog(value, errors);
 };
 
 

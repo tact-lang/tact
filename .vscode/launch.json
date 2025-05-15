@@ -5,11 +5,11 @@
             "name": "Run _cli.build.ts",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/src/next/test/_cli.build.ts",
+            "runtimeExecutable": "bash",
             "args": [
-                "${file}"
+                "-lc",
+                "clear; ts-node ${workspaceFolder}/src/next/test/_cli.build.ts ${file}"
             ],
-            "runtimeExecutable": "ts-node",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
