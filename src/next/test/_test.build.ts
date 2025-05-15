@@ -11,7 +11,8 @@ export const runTest = async (path: string): Promise<string> => {
     let types: unknown;
     const result = await runServer(async (log) => {
         await log.recover(async (log) => {
-            const result = await buildNoStdlib(log, path);
+            // const result = await buildNoStdlib(log, path);
+            const result = await buildE2E(log, path);
 
             if (!result) {
                 return;

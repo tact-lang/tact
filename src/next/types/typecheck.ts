@@ -4,11 +4,14 @@ import { memo } from "@/utils/tricks";
 import type * as Ast from "@/next/ast";
 import * as W from "@/next/types/writer";
 import * as V from "@/next/types/via";
+import type * as E from "@/next/types/errors";
 import { throwInternal } from "@/error/errors";
 import { logDeep } from "@/utils/log-deep.build";
+import { Functions } from "@/next/types/functions";
+import { TypeDecls } from "@/next/types/type-decls";
 
-export const typecheck = (root: TactSource): WithLog<Scope> => {
-    const errors: TcError[] = [];
+export const typecheck = (root: TactSource): E.WithLog<Scope> => {
+    const errors: E.TcError[] = [];
     const recur = (source: TactSource): Scope => {
         const result = tcSource(
             // leave only imports of .tact
@@ -51,8 +54,8 @@ const tcSource = (
     // list of import+source pairs for every of file's imports
     imported: readonly SourceCheckResult[],
     // source for current file
-    currSource: TactSource,
-): WithLog<Scope> => {
+    source: TactSource,
+): E.WithLog<Scope> => {
     // for each of the imports
     const importGlobals = imported.map(({ globals, importedBy }) => {
         // in each of its definitions
@@ -61,24 +64,28 @@ const tcSource = (
             return V.ViaImport(via, importedBy);
         });
     });
-    return W.flatMapLog(
-        // append local definitions to the end of the list
+
+    // get local definitions
+    const locals = W.flatMapLog(
         W.traverseLog(
-            currSource.items,
-            item => scopeItem(item, currSource),
+            source.items,
+            item => scopeItem(item, source),
         ),
-        // reduce list of sets of definitions into single set
-        local => {
-            const allScopes = [...importGlobals, ...local];
-            // if (currSource.path.includes("5")) {
-            //     logDeep(allScopes);
-            // }
-            return concatScopes(allScopes);
-        }
+        concatScopes,
     );
+
+    // reduce list of sets of definitions into single set
+    const all = W.flatMapLog(
+        locals,
+        locals => concatScopes([...importGlobals, locals]),
+    );
+
+    const typeErr = W.flatMapLog(all, checkTypes);
+
+    return typeErr;
 };
 
-type Stmt<T> = (item: T, source: TactSource) => WithLog<Scope>;
+type Stmt<T> = (item: T, source: TactSource) => E.WithLog<Scope>;
 
 const scopeItem: Stmt<Ast.ModuleItem> = (item, source) => {
     switch (item.kind) {
@@ -113,150 +120,59 @@ const scopeConstant: Stmt<Ast.Constant> = (item, source) => {
 };
 
 const scopeType: Stmt<Ast.TypeDecl> = (item, source) => {
-    // TODO
-    return W.pureLog(emptyScope());
+    return W.pureLog(defineType(
+        item.name.text,
+        item,
+        V.ViaOrigin(item.loc, source),
+    ));
 };
 
 // set of definitions (transitively) from a source file
 type Scope = {
     // global function definitions
-    functions: Functions;
+    readonly functions: Functions;
+    // global type definitons
+    readonly types: TypeDecls;
 }
+
 const emptyScope = (): Scope => ({
-    functions: emptyFunctions()
+    functions: Functions.empty(),
+    types: TypeDecls.empty(),
 });
+
 // sequence multiple definition sets
-const concatScopes = (globals: readonly Scope[]): WithLog<Scope> => {
+const concatScopes = (globals: readonly Scope[]): E.WithLog<Scope> => {
     return W.reduceLog(globals, appendScopes, emptyScope());
 };
+
 // define global function
 const defineFunction = (name: string, value: Ast.Function, via: V.ViaUser): Scope => {
     return {
         ...emptyScope(),
-        functions: pureFunctions(name, value, via),
+        functions: Functions.create(name, value, via),
     };
 };
+
+// define type
+const defineType = (name: string, value: Ast.TypeDecl, via: V.ViaUser): Scope => {
+    return {
+        ...emptyScope(),
+        types: TypeDecls.create(name, value, via),
+    };
+};
+
 // sequence two definition sets: define all the `right` after `left`
-const appendScopes = (left: Scope, right: Scope): WithLog<Scope> => {
+const appendScopes = (left: Scope, right: Scope): E.WithLog<Scope> => {
     return W.combineLog({
-        functions: appendFunctions(left.functions, right.functions),
+        functions: Functions.append(left.functions, right.functions),
+        types: TypeDecls.append(left.types, right.types),
     });
 };
+
 // update all the `via` fields with information about new import
 const updateVias = (globals: Scope, cb: (via: V.ViaUser) => V.ViaUser): Scope => {
     return {
-        functions: mapViaFunctions(globals.functions, cb),
+        functions: Functions.mapVia(globals.functions, cb),
+        types: TypeDecls.mapVia(globals.types, cb),
     };
-};
-
-
-const Fn = (xs: 1[], x: 1) => 1;
-const TVar = (x: string) => 1 as const;
-const String = 1;
-const Void = 1;
-const Int = 1;
-const Bool = 1;
-const Address = 1;
-const Cell = 1;
-const Null = 1;
-const Slice = 1;
-
-const builtinFunctions = new Map([
-    ["dump", Fn([TVar("T")], Void)],
-    ["ton", Fn([String], Int)],
-    ["require", Fn([Bool, String], Void)],
-    ["address", Fn([String], Address)],
-    ["cell", Fn([String], Cell)],
-    ["dumpStack", Fn([], Void)],
-    ["emptyMap", Fn([], Null)],
-    // ["sha256", Overload([
-    //     Fn([String], Int),
-    //     Fn([Slice], Int),
-    // ])],
-    ["slice", Fn([String], Slice)],
-    ["rawSlice", Fn([String], Slice)],
-    ["ascii", Fn([String], Int)],
-    ["crc32", Fn([String], Int)],
-]);
-type Functions = undefined | ReadonlyMap<string, {
-    // the definition
-    readonly value: Ast.Function;
-    // where it was defined
-    readonly via: V.ViaUser;
-}>;
-const emptyFunctions = (): Functions => undefined;
-const pureFunctions = (name: string, value: Ast.Function, via: V.ViaUser): Functions => {
-    // if (name === 'foo') debugger;
-    return new Map([[name, { value, via }]]);
-};
-const mapViaFunctions = (fns: Functions, cb: (via: V.ViaUser) => V.ViaUser): Functions => {
-    if (!fns) return;
-    return new Map(fns.entries().map(([k, v]) => {
-        return [k, { value: v.value, via: cb(v.via) }];
-    }));
-};
-const appendFunctions = (prev: Functions, next: Functions): WithLog<Functions> => {
-    if (!prev || !next) return W.pureLog(next);
-    const value = new Map(prev.entries());
-    const errors: TcError[] = [];
-    for (const [name, nextItem] of next) {
-        const prevItem = value.get(name);
-        // defined in compiler
-        if (builtinFunctions.has(name)) {
-            errors.push(ERedefineFn(name, V.ViaBuiltin(), nextItem.via));
-            continue;
-        }
-        // not defined yet; define it now
-        if (typeof prevItem === 'undefined') {
-            value.set(name, nextItem);
-            continue;
-        }
-        // already defined, and it's not a diamond situation
-        if (prevItem.via.source !== nextItem.via.source) {
-            errors.push(ERedefineFn(name, prevItem.via, nextItem.via));
-        }
-    }
-    return W.makeLog(value, errors);
-};
-
-
-// typechecking errors
-type WithLog<T> = W.Writer<TcError, T>;
-export const ERedefineFn = (name: string, prev: V.Via, next: V.ViaUser): TcError => ({
-    loc: viaToRange(next),
-    descr: [
-        TEText(`There already is a function "${name}" from`),
-        TEVia(prev),
-    ],
-});
-
-
-// error DSL
-type TcError = {
-    // location where IDE should show this error
-    readonly loc: Ast.Range;
-    // text description
-    readonly descr: readonly TELine[];
-}
-type TELine = TEText | TEVia;
-type TEText = {
-    readonly kind: 'text';
-    readonly text: string;
-}
-const TEText = (text: string): TEText => ({ kind: 'text', text });
-type TEVia = {
-    readonly kind: 'via';
-    readonly via: V.Via;
-}
-const TEVia = (via: V.Via): TEVia => ({ kind: 'via', via });
-const viaToRange = ({ imports, defLoc: definedAt }: V.ViaUser): Ast.Range => {
-    const [head] = imports;
-    if (typeof head === 'undefined') {
-        return definedAt;
-    }
-    const { loc } = head;
-    if (loc.kind === 'range') {
-        return loc;
-    }
-    return throwInternal("Implicit import shadows something. Duplicates in stdlib?");
 };
