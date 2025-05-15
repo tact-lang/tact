@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Tooling
 
 - [fix] Formatter now correctly handles floating comments: PR [#2995](https://github.com/tact-lang/tact/pull/2995)
+- [fix] Formatter now correctly handles inline comments after the last declaration: PR [#3064](https://github.com/tact-lang/tact/pull/3064)
 
 ### Docs
 
