@@ -1312,10 +1312,10 @@
     jssha "3.2.0"
     tweetnacl "1.0.3"
 
-"@ton/sandbox@^0.28.0":
-  version "0.28.0"
-  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.28.0.tgz#41d4740e3c496c061693dfa1fd308a01881434ce"
-  integrity sha512-i8QaC3NPb3fD56fFkBromTr7wYn4gDyUII3rdVBIy2/XDoVAvni++sRfzjJUag72sUAlFO1omtb2rlcTVhKsQQ==
+"@ton/sandbox@^0.30.0":
+  version "0.30.0"
+  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.30.0.tgz#8af17d60bee83d8b9a7050516b4b3286e12e5445"
+  integrity sha512-fFqwZrMT0KVdWmc/GieBbV0xrs58bx+JUbcHTq/fGLP8dNAKqbnX9ddIT1jA0N8WFOIIAF9MDw0CeIc6h0C8tA==
 
 "@ton/test-utils@^0.5.0":
   version "0.5.0"
