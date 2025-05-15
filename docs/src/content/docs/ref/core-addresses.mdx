@@ -226,11 +226,14 @@ addr2 == addr; // true
 ## parseVarAddress
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
-<Badge text="Deprecated since Tact 1.6.8 (not released yet)" variant="tip" size="medium"/><p/>
+<Badge text="Deprecated since Tact 1.6.8" variant="tip" size="medium"/><p/>
 
 ```tact
 fun parseVarAddress(slice: Slice): VarAddress;
 ```
+
+This function has been deprecated since Tact 1.6.8. Any usages of this function will be reported as an error.
+`VarAddress` since [TVM 10](https://github.com/ton-blockchain/ton/blob/master/doc/GlobalVersions.md#version-10) is mostly useless as it throws exit code 9 in many cases.
 
 Converts a `slice` containing an address of variable length into the `VarAddress{:tact}` [struct][struct] and returns it.
 
