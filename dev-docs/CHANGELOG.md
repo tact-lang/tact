@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Language features
 
 - [fix] Compiler now correctly handles optional slices, builders, and strings when generating serialization logic: PR [#3053](https://github.com/tact-lang/tact/pull/3053)
+- [fix] Compiler now disallows type usages as value (e.g. `let x = Int` or `let x = MyStruct`): PR [#3065](https://github.com/tact-lang/tact/pull/3065)
 
 ### Tooling
 
