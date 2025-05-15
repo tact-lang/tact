@@ -947,25 +947,25 @@ export function resolveExpression(
                     // Handle static struct method calls
                     try {
                         const t = getType(ctx, exp.text);
+                        if (allowTypeAsValue) {
+                            return registerExpType(ctx, exp, {
+                                kind: "ref",
+                                name: t.name,
+                                optional: false,
+                            });
+                        }
+
                         if (t.kind === "struct") {
-                            if (!allowTypeAsValue) {
-                                throwCompilationError(
-                                    `Add {} after "${exp.text}" to create an instance of the struct`,
-                                    exp.loc,
-                                );
-                            }
-                        } else if (!allowTypeAsValue) {
                             throwCompilationError(
-                                `Cannot use type "${exp.text}" as value`,
+                                `Add {} after "${exp.text}" to create an instance of the struct`,
                                 exp.loc,
                             );
                         }
 
-                        return registerExpType(ctx, exp, {
-                            kind: "ref",
-                            name: t.name,
-                            optional: false,
-                        });
+                        throwCompilationError(
+                            `Cannot use type "${exp.text}" as value`,
+                            exp.loc,
+                        );
                     } catch (e: unknown) {
                         if (e instanceof TactCompilationError) {
                             throw e;
