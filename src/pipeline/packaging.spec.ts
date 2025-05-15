@@ -5,6 +5,7 @@ import * as Stdlib from "@/stdlib/stdlib";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 import path from "path";
 import * as fs from "fs";
+import { step } from "@/test/allure/allure";
 
 it(`should correctly generate .pkg file: Windows uses Unix-like paths`, async () => {
     const output = "./output/";
@@ -31,5 +32,7 @@ it(`should correctly generate .pkg file: Windows uses Unix-like paths`, async ()
     const pathAbiFile = project.resolve(output, "packaging_Echo.pkg");
     const content = fs.readFileSync(pathAbiFile).toString();
 
-    expect(content).toMatchSnapshot();
+    await step("Generated package content should match snapshot", () => {
+        expect(content).toMatchSnapshot();
+    });
 });

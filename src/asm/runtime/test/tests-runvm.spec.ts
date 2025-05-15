@@ -26,6 +26,7 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { call, measureGas2, when } from "@/asm/helpers";
 import { dictMap } from "@/asm/runtime/util";
+import { step } from "@/test/allure/allure";
 
 describe("runvm-helper", () => {
     it(`should correctly execute instructions inside runvm`, async () => {
@@ -76,13 +77,15 @@ describe("runvm-helper", () => {
         const openContract = blockchain.openContract(contract);
 
         // Deploy
-        await openContract.send(
-            treasure.getSender(),
-            {
-                value: toNano("10"),
-            },
-            new Cell(),
-        );
+        await step("Send contract", async () => {
+            await openContract.send(
+                treasure.getSender(),
+                {
+                    value: toNano("10"),
+                },
+                new Cell(),
+            );
+        });
     });
 });
 

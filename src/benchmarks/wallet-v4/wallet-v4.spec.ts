@@ -22,7 +22,6 @@ import {
 import { resolve } from "path";
 import { readFileSync } from "fs";
 import { posixNormalize } from "@/utils/filePath";
-import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import type { KeyPair } from "@ton/crypto";
 import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";
 import type { PluginRequestFunds } from "@/benchmarks/wallet-v4/tact/output/wallet-v4_WalletV4";
@@ -38,6 +37,7 @@ import {
 } from "@/benchmarks/wallet-v5/utils";
 
 import benchmarkResults from "@/benchmarks/wallet-v4/results_gas.json";
+import { parameter, step } from "@/test/allure/allure";
 
 function createSimpleTransferBody(testReceiver: Address, forwardValue: bigint) {
     const msg = beginCell().storeUint(0, 8);
@@ -80,7 +80,6 @@ function testWalletV4(
     let wallet: SandboxContract<WalletV4>;
     let seqno: () => bigint;
     let keypair: KeyPair;
-    let step: Step;
 
     const SUBWALLET_ID = 0n;
 
@@ -122,10 +121,8 @@ function testWalletV4(
         deployer = await blockchain.treasury("deployer");
         receiver = await blockchain.treasury("receiver");
 
-        step = writeLog({
-            path: resolve(__dirname, "output", "log.yaml"),
-            blockchain,
-        });
+        await parameter("Deployer", deployer.address.toString());
+        await parameter("Receiver", receiver.address.toString());
 
         seqno = createSeqnoCounter();
 
@@ -140,37 +137,47 @@ function testWalletV4(
         );
 
         // Deploy wallet
-        const deployResult = await wallet.send(
-            deployer.getSender(),
-            {
-                value: toNano("0.05"),
-            },
-            beginCell().endCell().asSlice(),
+        const deployResult = await step("Deploy wallet", async () =>
+            wallet.send(
+                deployer.getSender(),
+                {
+                    value: toNano("0.05"),
+                },
+                beginCell().endCell().asSlice(),
+            ),
         );
 
-        expect(deployResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: wallet.address,
-            deploy: true,
-            success: true,
+        await step("Should deploy wallet", () => {
+            expect(deployResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: wallet.address,
+                deploy: true,
+                success: true,
+            });
         });
 
         // Top up wallet balance
-        await deployer.send({
-            to: wallet.address,
-            value: toNano("10"),
-            sendMode: SendMode.PAY_GAS_SEPARATELY,
-        });
+        await step("Top up wallet balance", async () =>
+            deployer.send({
+                to: wallet.address,
+                value: toNano("10"),
+                sendMode: SendMode.PAY_GAS_SEPARATELY,
+            }),
+        );
     });
 
     it("check correctness of deploy", async () => {
         const walletSeqno = await wallet.getSeqno();
 
-        expect(walletSeqno).toBe(0n);
+        await step("Seqno should be zero", () => {
+            expect(walletSeqno).toBe(0n);
+        });
 
         const walletPublicKey = await wallet.getGetPublicKey();
 
-        expect(walletPublicKey).toBe(bufferToBigInt(keypair.publicKey));
+        await step("Public key should match", () => {
+            expect(walletPublicKey).toBe(bufferToBigInt(keypair.publicKey));
+        });
     });
 
     it("externalTransfer", async () => {
@@ -190,18 +197,24 @@ function testWalletV4(
             sendSignedActionBody(wallet, sendTxActionsList),
         );
 
-        expect(externalTransferSendResult.transactions).toHaveTransaction({
-            to: wallet.address,
-            success: true,
-            exitCode: 0,
+        await step("Should have wallet transaction", () => {
+            expect(externalTransferSendResult.transactions).toHaveTransaction({
+                to: wallet.address,
+                success: true,
+                exitCode: 0,
+            });
         });
 
-        expect(externalTransferSendResult.transactions.length).toEqual(2);
+        await step("Should have 2 transactions", () => {
+            expect(externalTransferSendResult.transactions.length).toEqual(2);
+        });
 
-        expect(externalTransferSendResult.transactions).toHaveTransaction({
-            from: wallet.address,
-            to: testReceiver,
-            value: forwardValue,
+        await step("Should transfer to testReceiver", () => {
+            expect(externalTransferSendResult.transactions).toHaveTransaction({
+                from: wallet.address,
+                to: testReceiver,
+                value: forwardValue,
+            });
         });
 
         const fee = externalTransferSendResult.transactions[1]!.totalFees.coins;
@@ -209,17 +222,20 @@ function testWalletV4(
             await blockchain.getContract(testReceiver)
         ).balance;
 
-        expect(receiverBalanceAfter).toEqual(
-            receiverBalanceBefore + forwardValue - fee,
-        );
+        await step("Receiver balance should be correct", () => {
+            expect(receiverBalanceAfter).toEqual(
+                receiverBalanceBefore + forwardValue - fee,
+            );
+        });
 
-        const externalTransferGasUsed = getUsedGas(
-            externalTransferSendResult,
-            "external",
+        const externalTransferGasUsed = await step("Get gas used", () =>
+            getUsedGas(externalTransferSendResult, "external"),
         );
-        expect(externalTransferGasUsed).toEqual(
-            benchmarkResult.gas["externalTransfer"],
-        );
+        await step("Gas usage should match benchmark", () => {
+            expect(externalTransferGasUsed).toEqual(
+                benchmarkResult.gas["externalTransfer"],
+            );
+        });
     });
 
     it("addPlugin", async () => {
@@ -230,15 +246,16 @@ function testWalletV4(
                 testPlugin,
                 10000000n,
             );
-            const addPluginSendResult = await sendSignedActionBody(
-                wallet,
-                addExtActionsList,
+            const addPluginSendResult = await step("Send addPlugin", async () =>
+                sendSignedActionBody(wallet, addExtActionsList),
             );
 
-            expect(addPluginSendResult.transactions).toHaveTransaction({
-                to: wallet.address,
-                success: true,
-                exitCode: 0,
+            await step("Should have wallet addPlugin transaction", () => {
+                expect(addPluginSendResult.transactions).toHaveTransaction({
+                    to: wallet.address,
+                    success: true,
+                    exitCode: 0,
+                });
             });
 
             const isPluginInstalled = await wallet.getIsPluginInstalled(
@@ -246,13 +263,21 @@ function testWalletV4(
                 bufferToBigInt(testPlugin.hash),
             );
 
-            expect(isPluginInstalled).toBeTruthy();
-            return getUsedGas(addPluginSendResult, "external");
+            await step("Plugin should be installed", () => {
+                expect(isPluginInstalled).toBeTruthy();
+            });
+            return await step("Get gas used", () =>
+                getUsedGas(addPluginSendResult, "external"),
+            );
         };
 
         const addPluginGasUsedTact = await runAddPluginTest(wallet);
 
-        expect(addPluginGasUsedTact).toEqual(benchmarkResult.gas["addPlugin"]);
+        await step("Gas usage should match benchmark", () => {
+            expect(addPluginGasUsedTact).toEqual(
+                benchmarkResult.gas["addPlugin"],
+            );
+        });
     });
     it("pluginTransfer", async () => {
         // add deployer as plugin
@@ -262,7 +287,9 @@ function testWalletV4(
             deployerAsPlugin,
             10000000n,
         );
-        await sendSignedActionBody(wallet, addExtActionsList);
+        await step("Add deployer as plugin", async () =>
+            sendSignedActionBody(wallet, addExtActionsList),
+        );
 
         const walletTest = blockchain.openContract(
             WalletV4.fromAddress(wallet.address),
@@ -272,7 +299,9 @@ function testWalletV4(
             bufferToBigInt(deployerAsPlugin.hash),
         );
 
-        expect(isPluginInstalled).toBeTruthy();
+        await step("Plugin should be installed", () => {
+            expect(isPluginInstalled).toBeTruthy();
+        });
 
         const forwardValue = toNano(1);
 
@@ -283,7 +312,7 @@ function testWalletV4(
             extra: null,
         };
 
-        const pluginTransferResult = await step("pluginTransfer", () =>
+        const pluginTransferResult = await step("Send plugin transfer", () =>
             deployer.send({
                 to: wallet.address,
                 value: toNano("0.1"),
@@ -292,19 +321,22 @@ function testWalletV4(
             }),
         );
 
-        expect(pluginTransferResult.transactions).toHaveTransaction({
-            from: wallet.address,
-            to: deployer.address,
-            value: (v) => v! >= forwardValue, // we care about received amount being greater or equal to requested
+        await step("Should send funds to deployer", () => {
+            expect(pluginTransferResult.transactions).toHaveTransaction({
+                from: wallet.address,
+                to: deployer.address,
+                value: (v) => v! >= forwardValue, // we care about received amount being greater or equal to requested
+            });
         });
 
-        const pluginTransferGasUsed = getUsedGas(
-            pluginTransferResult,
-            "internal",
+        const pluginTransferGasUsed = await step("Get gas used", () =>
+            getUsedGas(pluginTransferResult, "internal"),
         );
-        expect(pluginTransferGasUsed).toEqual(
-            benchmarkResult.gas["pluginTransfer"],
-        );
+        await step("Gas usage should match benchmark", () => {
+            expect(pluginTransferGasUsed).toEqual(
+                benchmarkResult.gas["pluginTransfer"],
+            );
+        });
     });
 }
 

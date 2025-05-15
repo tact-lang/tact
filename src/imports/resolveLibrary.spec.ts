@@ -2,6 +2,7 @@ import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import { fromString } from "@/imports/path";
 import { resolveLibrary } from "@/imports/resolveLibrary";
 import type { Source } from "@/imports/source";
+import { step } from "@/test/allure/allure";
 
 const project = createVirtualFileSystem("/project", {
     ["main.tact"]: "",
@@ -26,7 +27,7 @@ const stdlibSource: Source = {
     code: "",
 };
 
-it("project file, stdlib import", () => {
+it("project file, stdlib import", async () => {
     const resolved = resolveLibrary({
         sourceFrom: mainSource,
         importPath: {
@@ -37,15 +38,17 @@ it("project file, stdlib import", () => {
         project,
         stdlib,
     });
-    expect(resolved).toMatchObject({
-        ok: true,
-        path: "@stdlib/libs/config.tact",
-        origin: "stdlib",
-        language: "tact",
+    await step("Resolved library should match expected object", () => {
+        expect(resolved).toMatchObject({
+            ok: true,
+            path: "@stdlib/libs/config.tact",
+            origin: "stdlib",
+            language: "tact",
+        });
     });
 });
 
-it("project file, relative import, func", () => {
+it("project file, relative import, func", async () => {
     const resolved = resolveLibrary({
         sourceFrom: mainSource,
         importPath: {
@@ -56,15 +59,17 @@ it("project file, relative import, func", () => {
         project,
         stdlib,
     });
-    expect(resolved).toMatchObject({
-        ok: true,
-        path: "/project/main.fc",
-        origin: "user",
-        language: "func",
+    await step("Resolved library should match expected object", () => {
+        expect(resolved).toMatchObject({
+            ok: true,
+            path: "/project/main.fc",
+            origin: "user",
+            language: "func",
+        });
     });
 });
 
-it("project file, relative import, tact", () => {
+it("project file, relative import, tact", async () => {
     const resolved = resolveLibrary({
         sourceFrom: mainSource,
         importPath: {
@@ -75,15 +80,17 @@ it("project file, relative import, tact", () => {
         project,
         stdlib,
     });
-    expect(resolved).toMatchObject({
-        ok: true,
-        path: "/project/import.tact",
-        origin: "user",
-        language: "tact",
+    await step("Resolved library should match expected object", () => {
+        expect(resolved).toMatchObject({
+            ok: true,
+            path: "/project/import.tact",
+            origin: "user",
+            language: "tact",
+        });
     });
 });
 
-it("stdlib file, relative import, tact", () => {
+it("stdlib file, relative import, tact", async () => {
     const resolved = resolveLibrary({
         sourceFrom: stdlibSource,
         importPath: {
@@ -95,10 +102,12 @@ it("stdlib file, relative import, tact", () => {
         stdlib,
     });
 
-    expect(resolved).toMatchObject({
-        ok: true,
-        path: "@stdlib/libs/import.tact",
-        origin: "stdlib",
-        language: "tact",
+    await step("Resolved library should match expected object", () => {
+        expect(resolved).toMatchObject({
+            ok: true,
+            path: "@stdlib/libs/import.tact",
+            origin: "stdlib",
+            language: "tact",
+        });
     });
 });

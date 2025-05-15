@@ -6,6 +6,7 @@ import {
     handleTopLevelErrors,
     rethrowWithPath,
 } from "@/error/logger-util";
+import { step } from "@/test/allure/allure";
 
 describe("handleTopLevelErrors", () => {
     const mockLogger = {
@@ -21,16 +22,20 @@ describe("handleTopLevelErrors", () => {
         jest.clearAllMocks();
     });
 
-    it("should return result when no error is thrown", () => {
+    it("should return result when no error is thrown", async () => {
         const cb = jest.fn(() => "result");
 
         const result = handleTopLevelErrors(mockLogger, cb, exit);
 
-        expect(result).toBe("result");
-        expect(cb).toHaveBeenCalledTimes(1);
+        await step("Result should equal 'result'", () => {
+            expect(result).toBe("result");
+        });
+        await step("Callback should be called once", () => {
+            expect(cb).toHaveBeenCalledTimes(1);
+        });
     });
 
-    it("should handle _ExitError and call process.exit(30)", () => {
+    it("should handle _ExitError and call process.exit(30)", async () => {
         const cb = jest.fn(() => {
             throw new _ExitError();
         });
@@ -50,17 +55,22 @@ describe("handleTopLevelErrors", () => {
             caughtError = error;
         }
 
-        // Now we check the caught error at the top level of the test
-        expect(caughtError).not.toBeNull();
-        expect(caughtError).toMatchObject({
-            message: "process.exit called with code 30",
+        await step("Error should be caught", () => {
+            expect(caughtError).not.toBeNull();
         });
-        expect(cb).toHaveBeenCalledTimes(1);
+        await step("Caught error message should include exit code 30", () => {
+            expect(caughtError).toMatchObject({
+                message: "process.exit called with code 30",
+            });
+        });
+        await step("Callback should be called once", () => {
+            expect(cb).toHaveBeenCalledTimes(1);
+        });
 
         exitSpy.mockRestore();
     });
 
-    it("should handle TactInternalError and call process.exit(30)", () => {
+    it("should handle TactInternalError and call process.exit(30)", async () => {
         const internalError = new TactInternalError("Internal error");
         const cb = jest.fn(() => {
             throw internalError;
@@ -80,16 +90,22 @@ describe("handleTopLevelErrors", () => {
             caughtError = error;
         }
 
-        expect(caughtError).not.toBeNull();
-        expect(caughtError).toMatchObject({
-            message: "process.exit called with code 30",
+        await step("Error should be caught", () => {
+            expect(caughtError).not.toBeNull();
         });
-        expect(cb).toHaveBeenCalledTimes(1);
+        await step("Caught error message should include exit code 30", () => {
+            expect(caughtError).toMatchObject({
+                message: "process.exit called with code 30",
+            });
+        });
+        await step("Callback should be called once", () => {
+            expect(cb).toHaveBeenCalledTimes(1);
+        });
 
         exitSpy.mockRestore();
     });
 
-    it("should handle general error and call process.exit(30)", () => {
+    it("should handle general error and call process.exit(30)", async () => {
         const generalError = new Error("General error");
         const cb = jest.fn(() => {
             throw generalError;
@@ -109,11 +125,17 @@ describe("handleTopLevelErrors", () => {
             caughtError = error;
         }
 
-        expect(caughtError).not.toBeNull();
-        expect(caughtError).toMatchObject({
-            message: "process.exit called with code 30",
+        await step("Error should be caught", () => {
+            expect(caughtError).not.toBeNull();
         });
-        expect(cb).toHaveBeenCalledTimes(1);
+        await step("Caught error message should include exit code 30", () => {
+            expect(caughtError).toMatchObject({
+                message: "process.exit called with code 30",
+            });
+        });
+        await step("Callback should be called once", () => {
+            expect(cb).toHaveBeenCalledTimes(1);
+        });
 
         exitSpy.mockRestore();
     });
@@ -123,9 +145,15 @@ describe("handleTopLevelErrors", () => {
 
         const result = await handleTopLevelErrors(mockLogger, cb, exit);
 
-        expect(result).toBe("resolved value");
-        expect(cb).toHaveBeenCalledTimes(1);
-        expect(mockLogger.internal).not.toHaveBeenCalled();
+        await step("Promise result should equal 'resolved value'", () => {
+            expect(result).toBe("resolved value");
+        });
+        await step("Callback should be called once", () => {
+            expect(cb).toHaveBeenCalledTimes(1);
+        });
+        await step("Logger.internal should not be called", () => {
+            expect(mockLogger.internal).not.toHaveBeenCalled();
+        });
     });
 
     it("should handle Promise rejecting with _ExitError", async () => {
@@ -146,12 +174,17 @@ describe("handleTopLevelErrors", () => {
             caughtError = error;
         }
 
-        // Now we check the caught error at the top level of the test
-        expect(caughtError).not.toBeNull();
-        expect(caughtError).toMatchObject({
-            message: "process.exit called with code 30",
+        await step("Error should be caught", () => {
+            expect(caughtError).not.toBeNull();
         });
-        expect(cb).toHaveBeenCalledTimes(1);
+        await step("Caught error message should include exit code 30", () => {
+            expect(caughtError).toMatchObject({
+                message: "process.exit called with code 30",
+            });
+        });
+        await step("Callback should be called once", () => {
+            expect(cb).toHaveBeenCalledTimes(1);
+        });
 
         exitSpy.mockRestore();
     });
@@ -174,11 +207,17 @@ describe("handleTopLevelErrors", () => {
             caughtError = error;
         }
 
-        expect(caughtError).not.toBeNull();
-        expect(caughtError).toMatchObject({
-            message: "process.exit called with code 30",
+        await step("Error should be caught", () => {
+            expect(caughtError).not.toBeNull();
         });
-        expect(cb).toHaveBeenCalledTimes(1);
+        await step("Caught error message should include exit code 30", () => {
+            expect(caughtError).toMatchObject({
+                message: "process.exit called with code 30",
+            });
+        });
+        await step("Callback should be called once", () => {
+            expect(cb).toHaveBeenCalledTimes(1);
+        });
 
         exitSpy.mockRestore();
     });
@@ -201,41 +240,55 @@ describe("handleTopLevelErrors", () => {
             caughtError = error;
         }
 
-        expect(caughtError).not.toBeNull();
-        expect(caughtError).toMatchObject({
-            message: "process.exit called with code 30",
+        await step("Error should be caught", () => {
+            expect(caughtError).not.toBeNull();
         });
-        expect(cb).toHaveBeenCalledTimes(1);
+        await step("Caught error message should include exit code 30", () => {
+            expect(caughtError).toMatchObject({
+                message: "process.exit called with code 30",
+            });
+        });
+        await step("Callback should be called once", () => {
+            expect(cb).toHaveBeenCalledTimes(1);
+        });
 
         exitSpy.mockRestore();
     });
 });
 
 describe("rethrowWithPath", () => {
-    it("should append path to TactInternalError message", () => {
+    it("should append path to TactInternalError message", async () => {
         const error = new TactInternalError("Internal error");
         const path = "/some/path";
 
-        expect(() => rethrowWithPath(error, path)).toThrow(
-            new TactInternalError("Internal error\nwhile compiling /some/path"),
-        );
+        await step("Throws TactInternalError with appended path", () => {
+            expect(() => rethrowWithPath(error, path)).toThrow(
+                new TactInternalError(
+                    "Internal error\nwhile compiling /some/path",
+                ),
+            );
+        });
     });
 
-    it("should append path to general Error message", () => {
+    it("should append path to general Error message", async () => {
         const error = new Error("General error");
         const path = "/some/path";
 
-        expect(() => rethrowWithPath(error, path)).toThrow(
-            new Error("General error\nwhile compiling /some/path"),
-        );
+        await step("Throws Error with appended path", () => {
+            expect(() => rethrowWithPath(error, path)).toThrow(
+                new Error("General error\nwhile compiling /some/path"),
+            );
+        });
     });
 
-    it("should not modify the error message for non-Error instances", () => {
+    it("should not modify the error message for non-Error instances", async () => {
         const error = "Some non-error string";
         const path = "/some/path";
 
-        expect(() => rethrowWithPath(error, path)).toThrow(
-            "Some non-error string",
-        );
+        await step("Throws original non-error value", () => {
+            expect(() => rethrowWithPath(error, path)).toThrow(
+                "Some non-error string",
+            );
+        });
     });
 });

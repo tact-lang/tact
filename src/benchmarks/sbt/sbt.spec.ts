@@ -13,10 +13,9 @@ import {
     type CodeSizeResult,
     type BenchmarkResult,
 } from "@/benchmarks/utils/gas";
-import { join, resolve } from "path";
+import { resolve } from "path";
 import { readFileSync } from "fs";
 import { posixNormalize } from "@/utils/filePath";
-import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     SBTItem,
     storeReportStaticData,
@@ -40,6 +39,7 @@ import type {
 
 import benchmarkResults from "@/benchmarks/sbt/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/sbt/results_code_size.json";
+import { parameter, step } from "@/test/allure/allure";
 
 const loadFunCSBTBoc = () => {
     const bocItem = readFileSync(
@@ -66,37 +66,39 @@ function testSBT(
     let itemSBT: SandboxContract<SBTItem>;
 
     let snapshot: BlockchainSnapshot;
-    let step: Step;
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
         owner = await blockchain.treasury("owner");
 
-        step = writeLog({
-            path: join(__dirname, "output", "log.yaml"),
-            blockchain,
-        });
+        await parameter("owner", owner.address.toString());
 
         itemSBT = blockchain.openContract(
-            await fromInitItem(0n, owner.address, null, null, null, 0n),
+            await step("Initialize SBT item contract", async () =>
+                fromInitItem(0n, owner.address, null, null, null, 0n),
+            ),
         );
 
-        const deployItemResult = await itemSBT.send(
-            owner.getSender(),
-            { value: toNano("0.1") },
-            beginCell()
-                .storeAddress(owner.address)
-                .storeRef(beginCell().endCell())
-                .storeAddress(owner.address)
-                .storeUint(0n, 64)
-                .asSlice(),
+        const deployItemResult = await step("Deploy SBT item", async () =>
+            itemSBT.send(
+                owner.getSender(),
+                { value: toNano("0.1") },
+                beginCell()
+                    .storeAddress(owner.address)
+                    .storeRef(beginCell().endCell())
+                    .storeAddress(owner.address)
+                    .storeUint(0n, 64)
+                    .asSlice(),
+            ),
         );
 
-        expect(deployItemResult.transactions).toHaveTransaction({
-            from: owner.address,
-            to: itemSBT.address,
-            deploy: true,
-            success: true,
+        await step("Should deploy SBT item", () => {
+            expect(deployItemResult.transactions).toHaveTransaction({
+                from: owner.address,
+                to: itemSBT.address,
+                deploy: true,
+                success: true,
+            });
         });
 
         snapshot = blockchain.snapshot();
@@ -109,7 +111,9 @@ function testSBT(
     it("deploy", async () => {
         const runDeployTest = async () => {
             const newItemSBT = blockchain.openContract(
-                await fromInitItem(1n, owner.address, null, null, null, 0n),
+                await step("Initialize new SBT item contract", async () =>
+                    fromInitItem(1n, owner.address, null, null, null, 0n),
+                ),
             );
 
             const sendDeploy = async (
@@ -129,21 +133,31 @@ function testSBT(
                 );
             };
 
-            const sendResult = await step("request owner", async () =>
-                sendDeploy(newItemSBT, owner.getSender(), toNano(1)),
+            const sendResult = await step(
+                "Send deploy for new SBT item",
+                async () =>
+                    sendDeploy(newItemSBT, owner.getSender(), toNano(1)),
             );
 
-            expect(sendResult.transactions).toHaveTransaction({
-                deploy: true,
+            await step("Should return expected deploy transaction", () => {
+                expect(sendResult.transactions).toHaveTransaction({
+                    deploy: true,
+                });
             });
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
+            await step("Should not fail transaction", () => {
+                expect(sendResult.transactions).not.toHaveTransaction({
+                    success: false,
+                });
             });
-            return getUsedGas(sendResult, "internal");
+            return await step("Get used gas", () =>
+                getUsedGas(sendResult, "internal"),
+            );
         };
 
         const deployGasUsed = await runDeployTest();
-        expect(deployGasUsed).toEqual(benchmarkResults.gas["deploy"]);
+        await step("Should match deploy gas benchmark", () => {
+            expect(deployGasUsed).toEqual(benchmarkResults.gas["deploy"]);
+        });
     });
     it("request owner", async () => {
         const sendRequestOwner = async (
@@ -165,7 +179,7 @@ function testSBT(
         const runRequestOwnerTest = async (
             scopeItemSBT: SandboxContract<SBTItem>,
         ) => {
-            const sendResult = await step("request owner", async () =>
+            const sendResult = await step("Send request owner", async () =>
                 sendRequestOwner(scopeItemSBT, owner.getSender(), toNano(1)),
             );
 
@@ -180,27 +194,35 @@ function testSBT(
                 content: beginCell().endCell(),
             };
 
-            expect(sendResult.transactions).toHaveTransaction({
-                from: scopeItemSBT.address,
-                to: owner.address,
-                body: beginCell()
-                    .store(storeRequestOwnerOut(expectedBody))
-                    .endCell(),
-                inMessageBounceable: true,
+            await step("Should return expected RequestOwnerOut", () => {
+                expect(sendResult.transactions).toHaveTransaction({
+                    from: scopeItemSBT.address,
+                    to: owner.address,
+                    body: beginCell()
+                        .store(storeRequestOwnerOut(expectedBody))
+                        .endCell(),
+                    inMessageBounceable: true,
+                });
             });
 
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
+            await step("Should not fail transaction", () => {
+                expect(sendResult.transactions).not.toHaveTransaction({
+                    success: false,
+                });
             });
 
-            return getUsedGas(sendResult, "internal");
+            return await step("Get used gas", () =>
+                getUsedGas(sendResult, "internal"),
+            );
         };
 
         const requestOwnerGasUsedTact = await runRequestOwnerTest(itemSBT);
 
-        expect(requestOwnerGasUsedTact).toEqual(
-            benchmarkResults.gas["request owner"],
-        );
+        await step("Should match request owner gas benchmark", () => {
+            expect(requestOwnerGasUsedTact).toEqual(
+                benchmarkResults.gas["request owner"],
+            );
+        });
     });
 
     it("prove ownership", async () => {
@@ -223,7 +245,7 @@ function testSBT(
         const runProveOwnershipTest = async (
             scopeItemSBT: SandboxContract<SBTItem>,
         ) => {
-            const sendResult = await step("prove ownership", async () =>
+            const sendResult = await step("Send prove ownership", async () =>
                 sendProveOwnership(scopeItemSBT, owner.getSender(), toNano(1)),
             );
 
@@ -237,26 +259,34 @@ function testSBT(
                 content: beginCell().endCell(),
             };
 
-            expect(sendResult.transactions).toHaveTransaction({
-                from: scopeItemSBT.address,
-                to: owner.address,
-                body: beginCell()
-                    .store(storeProveOwnershipOut(expectedBody))
-                    .endCell(),
-                inMessageBounceable: true,
+            await step("Should return expected ProveOwnershipOut", () => {
+                expect(sendResult.transactions).toHaveTransaction({
+                    from: scopeItemSBT.address,
+                    to: owner.address,
+                    body: beginCell()
+                        .store(storeProveOwnershipOut(expectedBody))
+                        .endCell(),
+                    inMessageBounceable: true,
+                });
             });
 
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
+            await step("Should not fail transaction", () => {
+                expect(sendResult.transactions).not.toHaveTransaction({
+                    success: false,
+                });
             });
-            return getUsedGas(sendResult, "internal");
+            return await step("Get used gas", () =>
+                getUsedGas(sendResult, "internal"),
+            );
         };
 
         const proveOwnershipGasUsedTact = await runProveOwnershipTest(itemSBT);
 
-        expect(proveOwnershipGasUsedTact).toEqual(
-            benchmarkResults.gas["prove ownership"],
-        );
+        await step("Should match prove ownership gas benchmark", () => {
+            expect(proveOwnershipGasUsedTact).toEqual(
+                benchmarkResults.gas["prove ownership"],
+            );
+        });
     });
 
     it("get static data", async () => {
@@ -276,7 +306,7 @@ function testSBT(
         const runGetStaticTest = async (
             scopeItemSBT: SandboxContract<SBTItem>,
         ) => {
-            const sendResult = await step("get static data", async () =>
+            const sendResult = await step("Send get static data", async () =>
                 sendGetStaticData(scopeItemSBT, owner.getSender(), toNano(1)),
             );
 
@@ -287,27 +317,35 @@ function testSBT(
                 collectionAddress: owner.address,
             };
 
-            expect(sendResult.transactions).toHaveTransaction({
-                from: scopeItemSBT.address,
-                to: owner.address,
-                body: beginCell()
-                    .store(storeReportStaticData(expectedBody))
-                    .endCell(),
-                inMessageBounceable: false,
+            await step("Should return expected ReportStaticData", () => {
+                expect(sendResult.transactions).toHaveTransaction({
+                    from: scopeItemSBT.address,
+                    to: owner.address,
+                    body: beginCell()
+                        .store(storeReportStaticData(expectedBody))
+                        .endCell(),
+                    inMessageBounceable: false,
+                });
             });
 
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
+            await step("Should not fail transaction", () => {
+                expect(sendResult.transactions).not.toHaveTransaction({
+                    success: false,
+                });
             });
 
-            return getUsedGas(sendResult, "internal");
+            return await step("Get used gas", () =>
+                getUsedGas(sendResult, "internal"),
+            );
         };
 
         const getStaticGasUsedTact = await runGetStaticTest(itemSBT);
 
-        expect(getStaticGasUsedTact).toEqual(
-            benchmarkResults.gas["get static data"],
-        );
+        await step("Should match get static data gas benchmark", () => {
+            expect(getStaticGasUsedTact).toEqual(
+                benchmarkResults.gas["get static data"],
+            );
+        });
     });
 
     it("take excess", async () => {
@@ -327,7 +365,7 @@ function testSBT(
         const runTakeExcessTest = async (
             scopeItemSBT: SandboxContract<SBTItem>,
         ) => {
-            const sendResult = await step("take excess", async () =>
+            const sendResult = await step("Send take excess", async () =>
                 sendTakeExcess(scopeItemSBT, owner.getSender(), toNano(1)),
             );
 
@@ -336,24 +374,34 @@ function testSBT(
                 queryId: 0n,
             };
 
-            expect(sendResult.transactions).toHaveTransaction({
-                from: scopeItemSBT.address,
-                to: owner.address,
-                body: beginCell().store(storeExcessOut(expectedBody)).endCell(),
-                inMessageBounceable: false,
+            await step("Should return expected ExcessOut", () => {
+                expect(sendResult.transactions).toHaveTransaction({
+                    from: scopeItemSBT.address,
+                    to: owner.address,
+                    body: beginCell()
+                        .store(storeExcessOut(expectedBody))
+                        .endCell(),
+                    inMessageBounceable: false,
+                });
             });
 
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
+            await step("Should not fail transaction", () => {
+                expect(sendResult.transactions).not.toHaveTransaction({
+                    success: false,
+                });
             });
-            return getUsedGas(sendResult, "internal");
+            return await step("Get used gas", () =>
+                getUsedGas(sendResult, "internal"),
+            );
         };
 
         const takeExcessGasUsedTact = await runTakeExcessTest(itemSBT);
 
-        expect(takeExcessGasUsedTact).toEqual(
-            benchmarkResults.gas["take excess"],
-        );
+        await step("Should match take excess gas benchmark", () => {
+            expect(takeExcessGasUsedTact).toEqual(
+                benchmarkResults.gas["take excess"],
+            );
+        });
     });
 
     it("destroy", async () => {
@@ -373,7 +421,7 @@ function testSBT(
         const runDestroyTest = async (
             scopeItemSBT: SandboxContract<SBTItem>,
         ) => {
-            const sendResult = await step("destroy", async () =>
+            const sendResult = await step("Send destroy", async () =>
                 sendDestroy(scopeItemSBT, owner.getSender(), toNano(1)),
             );
 
@@ -382,22 +430,32 @@ function testSBT(
                 queryId: 0n,
             };
 
-            expect(sendResult.transactions).toHaveTransaction({
-                from: scopeItemSBT.address,
-                to: owner.address,
-                body: beginCell().store(storeExcessOut(expectedBody)).endCell(),
-                inMessageBounceable: false,
+            await step("Should return expected ExcessOut", () => {
+                expect(sendResult.transactions).toHaveTransaction({
+                    from: scopeItemSBT.address,
+                    to: owner.address,
+                    body: beginCell()
+                        .store(storeExcessOut(expectedBody))
+                        .endCell(),
+                    inMessageBounceable: false,
+                });
             });
 
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
+            await step("Should not fail transaction", () => {
+                expect(sendResult.transactions).not.toHaveTransaction({
+                    success: false,
+                });
             });
-            return getUsedGas(sendResult, "internal");
+            return await step("Get used gas", () =>
+                getUsedGas(sendResult, "internal"),
+            );
         };
 
         const destroyGasUsedTact = await runDestroyTest(itemSBT);
 
-        expect(destroyGasUsedTact).toEqual(benchmarkResults.gas["destroy"]);
+        await step("Should match destroy gas benchmark", () => {
+            expect(destroyGasUsedTact).toEqual(benchmarkResults.gas["destroy"]);
+        });
     });
 
     it("revoke", async () => {
@@ -417,36 +475,50 @@ function testSBT(
         const runRevokeTest = async (
             scopeItemSBT: SandboxContract<SBTItem>,
         ) => {
-            const sendResult = await step("revoke", async () =>
+            const sendResult = await step("Send revoke", async () =>
                 sendRevoke(scopeItemSBT, owner.getSender(), toNano(1)),
             );
 
-            expect(sendResult.transactions).not.toHaveTransaction({
-                from: scopeItemSBT.address,
+            await step("Should not send transaction from SBT item", () => {
+                expect(sendResult.transactions).not.toHaveTransaction({
+                    from: scopeItemSBT.address,
+                });
             });
 
-            expect(sendResult.transactions).not.toHaveTransaction({
-                success: false,
+            await step("Should not fail transaction", () => {
+                expect(sendResult.transactions).not.toHaveTransaction({
+                    success: false,
+                });
             });
 
-            return getUsedGas(sendResult, "internal");
+            return await step("Get used gas", () =>
+                getUsedGas(sendResult, "internal"),
+            );
         };
 
         const revokeGasUsedTact = await runRevokeTest(itemSBT);
 
-        expect(revokeGasUsedTact).toEqual(benchmarkResults.gas["revoke"]);
+        await step("Should match revoke gas benchmark", () => {
+            expect(revokeGasUsedTact).toEqual(benchmarkResults.gas["revoke"]);
+        });
     });
 
     it("item cells", async () => {
-        expect(
-            (await getStateSizeForAccount(blockchain, itemSBT.address)).cells,
-        ).toEqual(codeSizeResults.size["item cells"]);
+        await step("Item cells should match benchmark", async () => {
+            expect(
+                (await getStateSizeForAccount(blockchain, itemSBT.address))
+                    .cells,
+            ).toEqual(codeSizeResults.size["item cells"]);
+        });
     });
 
     it("item bits", async () => {
-        expect(
-            (await getStateSizeForAccount(blockchain, itemSBT.address)).bits,
-        ).toEqual(codeSizeResults.size["item bits"]);
+        await step("Item bits should match benchmark", async () => {
+            expect(
+                (await getStateSizeForAccount(blockchain, itemSBT.address))
+                    .bits,
+            ).toEqual(codeSizeResults.size["item bits"]);
+        });
     });
 }
 
