@@ -1820,8 +1820,8 @@ const parseModule =
         );
     };
 
-export const parse = (
-    log: SourceLogger<string, void>,
+export const parse = <M>(
+    log: SourceLogger<M, void>,
     code: string,
     path: string,
 ): Ast.Module => {

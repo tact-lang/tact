@@ -170,3 +170,13 @@ export const includes = <const K extends string>(
     const keys1: readonly string[] = keys;
     return keys1.includes(key);
 };
+
+export const hideProperty = <T, K extends keyof T>(o: T, k: K): T => {
+    Object.defineProperty(o, k, {
+        value: o[k],
+        writable: true,
+        configurable: true,
+        enumerable: false,
+    });
+    return o;
+};

@@ -99,7 +99,9 @@ const scopeIds = (log: Logger<string, void>) =>
         };
 
         // method name -> (type -> method)
-        const typeExt: Map<string, TypeExtensionRecord[]> = new Map();
+        const typeExt: Map<string, {
+            ground: TypeExtensionRecord[],
+        }> = new Map();
         const findTypeMethod = (
             methodName: string,
             selfType: Ty.LocType,
@@ -112,6 +114,18 @@ const scopeIds = (log: Logger<string, void>) =>
                 resolveOverload(reg.self, selfType)
             }
         };
+
+        // left: Either<T, U>
+        // left: Int
+        // left: Maybe<Cell>
+        // left: Slice
+
+        // isGround = нет типовых переменных: Either<Cell, Cell>
+        // isSimple = Cons<a, b, c, d>      : Either<T, U>
+        // isGround || isSimple
+        // extends fun foo(self: Either<Cell, Cell>) {}
+        // extends fun foo<T, U>(self: Either<T, U>) {}
+        // fun bar() { let e: Either<Cell, Cell> = ...; e.foo() }
 
         // extends fun foo<T>(self: T);
         // extends fun foo<K, V>(self: Either<K, V>);
@@ -838,6 +852,7 @@ const getExprChecker = (
             // fromCell: Struct.(Cell) -> struct
             assignTo(Cell(paramLoc), checkExpr(arg));
         }
+        // Message.opcode()
         if (struct.kind === 'struct_decl' && struct.typeParams.length !== node.typeArgs.length) {
             err.typeArity(struct.name.text, node.typeArgs.length, 0)(node.loc);
         }
@@ -852,7 +867,7 @@ const getExprChecker = (
     };
 
     const checkFunctionCall = (node: Ast.StaticCall): Ty.Type => {
-        // dump: checkDump, // (ref | void | null | map | Cell | Slice | Builder | Address | String | Bool | Int) -> void
+        // dump: checkDump, // <T>(T) -> void
 
         // ton: checkTon, // (String) -> Int, строка должна быть конст
         // require: checkRequire, // (Bool, String) -> void
@@ -860,7 +875,8 @@ const getExprChecker = (
         // cell: checkCell, // (String) -> Cell
         // dumpStack: checkDumpStack, // () -> void
         // emptyMap: checkEmptyMap, // () -> Null
-        // sha256: checkSha256, // (String | Slice) -> Int
+        // sha256: checkSha256, // (String) -> Int
+        // sha256: checkSha256, // (Slice) -> Int
         // slice: checkSlice, // (String) -> Slice
         // rawSlice: checkRawSlice, // (String) -> Slice
         // ascii: checkAscii, // (String) -> Int
@@ -884,8 +900,8 @@ const getExprChecker = (
         switch (self.kind) {
             case "cons_type": {
                 // struct
-                // toCell : struct.() -> Cell
-                // toSlice: struct.() -> Slice
+                // extends fun toCell(self: Struct): Cell
+                // extends fun toSlice(self: Struct): Slice
 
                 // bounced<> не переносит методы
 
@@ -894,15 +910,15 @@ const getExprChecker = (
                 return;
             }
             case "map_type": {
-                // set: map<K, V>.(key: K, value: V) -> void
-                // get: map<K, V>.(key: K) -> Maybe<V>
-                // del: map<K, V>.(key: K) -> Bool
-                // asCell: map<K, V>.() -> Maybe<Cell>
-                // isEmpty: map<K, V>.() -> Bool
-                // exists: map<K, V>.(key: K) -> Bool
-                // deepEquals: map<K, V>.(other: map<K, W extends V>) -> Bool // mgu
-                // replace: map<K, V>.(key: K, value: V) -> Bool
-                // replaceGet: map<K, V>.(key: K, value: V) -> map<K, V>
+                // extends fun set(self: map<K, V>, key: K, value: V) -> void
+                // extends fun get(self: map<K, V>, key: K) -> Maybe<V>
+                // extends fun del(self: map<K, V>, key: K) -> Bool
+                // extends fun asCell(self: map<K, V>, ) -> Maybe<Cell>
+                // extends fun isEmpty(self: map<K, V>, ) -> Bool
+                // extends fun exists(self: map<K, V>, key: K) -> Bool
+                // extends fun deepEquals(self: map<K, V>, other: map<K, V>) -> Bool // mgu
+                // extends fun replace(self: map<K, V>, key: K, value: V) -> Bool
+                // extends fun replaceGet(self: map<K, V>, key: K, value: V) -> map<K, V>
             }
             case "ERROR":
             case "type_var": {

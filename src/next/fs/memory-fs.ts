@@ -5,9 +5,9 @@ import type { RelativePath } from "@/next/fs/path";
 import type { Cursor } from "@/next/fs/cursor";
 import type { Logger } from "@/error/logger-util";
 
-type Options = {
+type Options<M> = {
     // FIXME: should we pass log here, or into functions?
-    readonly log: Logger<string, void>;
+    readonly log: Logger<M, void>;
 
     /**
      * Files present in memory file system at creation time
@@ -33,12 +33,12 @@ export const emptyFiles: Map<string, Blob> = new Map();
 /**
  * Create in-memory file system
  */
-export function createMemoryFs({
+export function createMemoryFs<M>({
     log,
     files,
     root,
     isReadonly,
-}: Options): Cursor {
+}: Options<M>): Cursor {
     const errors = FsErrors(log);
 
     function builder(currPath: RelativePath): Cursor {

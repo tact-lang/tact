@@ -4,10 +4,12 @@ import { parentPath, createMemoryFs, createProxyFs } from "@/next/fs";
 import { getFiles } from "@/next/stdlib";
 import type { Cursor } from "@/next/fs";
 import type { AnyLogger, Logger, SourceLogger } from "@/error/logger-util";
-import type { ResolvedImport, TactSource } from "@/next/imports/source";
+import type { FuncImport, Implicit, ResolvedImport, TactImport, TactSource } from "@/next/imports/source";
+import type { ModuleItem, Range } from "@/next/ast";
+import { hideProperty } from "@/utils/tricks";
 
-type Options = {
-    readonly log: Logger<string, void>;
+type Options<M> = {
+    readonly log: Logger<M, void>;
     /**
      * Cursor to root of file system with project files
      */
@@ -27,18 +29,18 @@ type Options = {
     readonly root: string;
 };
 
-const readSource = async ({
+export const readSource = async <M>({
     log,
     project,
     stdlib,
     implicits,
     root,
-}: Options): Promise<TactSource | undefined> => {
+}: Options<M>): Promise<TactSource | undefined> => {
     const status: Map<string, "pending" | TactSource> = new Map();
 
     const resolveImports = async (
         path: string,
-        log: SourceLogger<string, void>,
+        log: SourceLogger<M, void>,
         file: Cursor,
         code: string,
     ): Promise<TactSource> => {
@@ -53,10 +55,10 @@ const readSource = async ({
             if (language === "tact") {
                 const source = await resolveSource(importedFile, log);
                 if (source) {
-                    imports.push({ kind: "tact", source, loc });
+                    imports.push(TactImport(source, loc));
                 }
             } else {
-                imports.push({ kind: "func", code, loc });
+                imports.push(FuncImport(code, loc));
             }
         }
         return { kind: 'tact', path, code, imports, items };
@@ -64,7 +66,7 @@ const readSource = async ({
 
     const resolveSource = async (
         file: Cursor,
-        parentLog: AnyLogger<string, void>,
+        parentLog: AnyLogger<M, void>,
     ): Promise<TactSource | undefined> => {
         const path = file.getAbsolutePathForLog();
         const res = status.get(path);
@@ -95,7 +97,7 @@ const readSource = async ({
 /**
  * Read standard library and prepare for reading projects
  */
-export const ProjectReader = async (log: Logger<string, void>) => {
+export const ProjectReader = async <M>(log: Logger<M, void>) => {
     const stdRoot = createMemoryFs({
         log,
         files: getFiles(),
@@ -144,4 +146,22 @@ export const ProjectReader = async (log: Logger<string, void>) => {
     };
 
     return { read };
+};
+
+const TactImport = (source: TactSource, loc: Range | Implicit) => {
+    const result: TactImport = { kind: "tact", source, loc };
+    hideProperty(result, 'source');
+    return result;
+};
+
+const FuncImport = (code: string, loc: Range) => {
+    const result: FuncImport = { kind: "func", code, loc };
+    hideProperty(result, 'code');
+    return result;
+};
+
+const TactSource = (path: string, code: string, imports: readonly ResolvedImport[], items: readonly ModuleItem[]) => {
+    const result: TactSource = { kind: 'tact', path, code, imports, items };
+    hideProperty(result, 'code');
+    return result;
 };

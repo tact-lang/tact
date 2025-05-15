@@ -10,8 +10,8 @@ import type { Logger } from "@/error/logger-util";
 
 const asRecord = <T>(t: Record<string, T>) => t;
 
-type Options = {
-    readonly log: Logger<string, void>;
+type Options<M> = {
+    readonly log: Logger<M, void>;
     readonly root: string;
     readonly isReadonly: boolean;
 };
@@ -19,7 +19,7 @@ type Options = {
 /**
  * Create file system that proxies requests to real file system
  */
-export function createProxyFs({ log, root, isReadonly }: Options): Cursor {
+export function createProxyFs<M>({ log, root, isReadonly }: Options<M>): Cursor {
     const errors = FsErrors(log);
 
     function builder(currPath: RelativePath): Cursor {

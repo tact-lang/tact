@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import type * as $ from "@/next/ast/common";
+import { hideProperty } from "@/utils/tricks";
 export type Range = $.Range;
 export const Range = (
     start: number,
@@ -14,12 +15,8 @@ export const Range = (
         path,
         code,
     };
-    Object.defineProperty(result, 'code', {
-        value: code,
-        writable: true,
-        configurable: true,
-        enumerable: false,
-    });
+    hideProperty(result, 'code');
+    hideProperty(result, 'path');
     return Object.freeze(result);
 };
 export type Id = $.Id;
