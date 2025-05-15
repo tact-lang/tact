@@ -26,11 +26,11 @@ Attempts to queue more than 255 messages throw an exception with [exit code 33](
 Usage example:
 
 ```tact
-SendParameters {
+send(SendParameters {
     to: sender(),    // back to the sender,
     value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
                      // and no message body
-}.send();
+});
 ```
 
 :::note[Useful links:]
@@ -60,11 +60,11 @@ Attempts to queue more than 255 messages throw an exception with an [exit code 3
 Usage example:
 
 ```tact
-MessageParameters {
+message(MessageParameters {
     to: sender(),    // back to the sender,
     value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
                      // and no message body
-}.send();
+});
 ```
 
 :::note[Useful links:]
@@ -101,12 +101,12 @@ Attempts to queue more than 255 messages throw an exception with an [exit code 3
 Usage example:
 
 ```tact
-DeployParameters {
+deploy(DeployParameters {
     init: initOf SomeContract(), // with initial code and data of SomeContract
                                  // and no additional message body
     mode: SendIgnoreErrors,      // skip the message in case of errors
     value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
-}.send();
+});
 ```
 
 :::note[Useful links:]
