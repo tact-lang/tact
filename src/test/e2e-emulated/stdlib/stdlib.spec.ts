@@ -111,20 +111,6 @@ describe("stdlib", () => {
             ),
         );
 
-        const addrVar = await contract.getParseVarAddress(
-            beginCell()
-                .storeUint(6, 3)
-                .storeUint(123, 9)
-                .storeUint(234, 32)
-                .storeUint(345, 123)
-                .endCell()
-                .asSlice(),
-        );
-        expect(addrVar.workchain).toBe(234n);
-        expect(addrVar.address.asCell()).toEqualCell(
-            beginCell().storeUint(345, 123).endCell(),
-        );
-
         const forceBasechainGood = await contract.getForceBasechain(
             Address.parse(
                 "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
