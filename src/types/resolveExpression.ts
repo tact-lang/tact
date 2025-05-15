@@ -2,6 +2,7 @@ import type * as Ast from "@/ast/ast";
 import { eqNames, idText } from "@/ast/ast-helpers";
 import {
     idTextErr,
+    TactCompilationError,
     throwCompilationError,
     throwInternalCompilerError,
 } from "@/error/errors";
@@ -464,7 +465,7 @@ function resolveFieldAccess(
     ctx: CompilerContext,
 ): CompilerContext {
     // Resolve expression
-    ctx = resolveExpression(exp.aggregate, sctx, ctx);
+    ctx = resolveExpression(exp.aggregate, sctx, ctx, true);
 
     // Find target type and check for type
     const src = getExpType(ctx, exp.aggregate);
@@ -640,7 +641,7 @@ function resolveCall(
     ctx: CompilerContext,
 ): CompilerContext {
     // Resolve expression
-    ctx = resolveExpression(exp.self, sctx, ctx);
+    ctx = resolveExpression(exp.self, sctx, ctx, true);
 
     // Check if self is initialized
     if (
@@ -890,6 +891,7 @@ export function resolveExpression(
     exp: Ast.Expression,
     sctx: StatementContext,
     ctx: CompilerContext,
+    allowTypeAsValue: boolean = false, // to allow Foo in Foo.bar() and disallow just Foo
 ) {
     switch (exp.kind) {
         case "boolean": {
@@ -946,13 +948,28 @@ export function resolveExpression(
                     try {
                         const t = getType(ctx, exp.text);
                         if (t.kind === "struct") {
-                            return registerExpType(ctx, exp, {
-                                kind: "ref",
-                                name: t.name,
-                                optional: false,
-                            });
+                            if (!allowTypeAsValue) {
+                                throwCompilationError(
+                                    `Add {} after "${exp.text}" to create an instance of the struct`,
+                                    exp.loc,
+                                );
+                            }
+                        } else if (!allowTypeAsValue) {
+                            throwCompilationError(
+                                `Cannot use type "${exp.text}" as value`,
+                                exp.loc,
+                            );
                         }
-                    } catch {
+
+                        return registerExpType(ctx, exp, {
+                            kind: "ref",
+                            name: t.name,
+                            optional: false,
+                        });
+                    } catch (e: unknown) {
+                        if (e instanceof TactCompilationError) {
+                            throw e;
+                        }
                         // Ignore
                     }
 
