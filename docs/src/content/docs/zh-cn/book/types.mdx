@@ -153,7 +153,7 @@ trait Ownable {
     // Persistent state variable, which cannot be initialized in the trait
     owner: Address;
 
-    // Member function
+    // Internal function
     fun requireOwner() {
         throwUnless(TactExitCodeAccessDenied, context().sender == self.owner);
     }

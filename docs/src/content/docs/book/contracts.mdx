@@ -9,7 +9,7 @@ Contracts in Tact are similar to classes in popular object-oriented languages, e
 
 ## Self-references {#self}
 
-Contracts and [traits][trait] have a built-in [identifier](/book/expressions#identifiers) `self{:tact}`, which is used to refer to their fields (persistent state [variables](#variables) and [constants](#variables)) and methods ([member functions](#internal-functions)):
+Contracts and [traits][trait] have a built-in [identifier](/book/expressions#identifiers) `self{:tact}`, which is used to refer to their fields (persistent state [variables](#variables) and [constants](#variables)) and methods ([internal functions](#internal-functions)):
 
 ```tact
 contract Example {
@@ -43,7 +43,7 @@ Each contract can be defined with or contain:
 * [Contract constants](#constants)
 * [Getter functions](#getter-functions)
 * [Receiver functions](#receiver-functions)
-* [Member functions](#internal-functions)
+* [Internal functions](#internal-functions)
 
 ### Inherited traits, `with` {#traits}
 
@@ -83,7 +83,7 @@ contract Vot(
 ) with Supe {}
 ```
 
-If declared or defined in a trait, member functions and constants can be marked as [virtual or abstract](/book/functions#virtual-and-abstract-functions) and overridden in contracts inheriting from the trait.
+If declared or defined in a trait, internal functions and constants can be marked as [virtual or abstract](/book/functions#virtual-and-abstract-functions) and overridden in contracts inheriting from the trait.
 
 ### Supported interfaces, `@interface(…)` {#interfaces}
 
@@ -204,7 +204,7 @@ contract LazyInit {
 
 :::note
 
-  To obtain the initial state of the target contract in [member functions](#internal-functions), [receivers](#receiver-functions), or [getters](#getter-functions), use the [`initOf{:tact}`](/book/expressions#initof) expression.
+  To obtain the initial state of the target contract in [internal functions](#internal-functions), [receivers](#receiver-functions), or [getters](#getter-functions), use the [`initOf{:tact}`](/book/expressions#initof) expression.
 
   To obtain only the contract's code, use the [`codeOf{:tact}`](/book/expressions#codeof) expression.
 
@@ -423,7 +423,7 @@ contract LazyInit {
 
 :::note
 
-  To obtain the initial state of the target contract in [member functions](#internal-functions), [receivers](#receiver-functions), or [getters](#getter-functions), use the [`initOf{:tact}`](/book/expressions#initof) expression.
+  To obtain the initial state of the target contract in [internal functions](#internal-functions), [receivers](#receiver-functions), or [getters](#getter-functions), use the [`initOf{:tact}`](/book/expressions#initof) expression.
 
   To obtain only the contract's code, use the [`codeOf{:tact}`](/book/expressions#codeof) expression.
 
@@ -514,13 +514,13 @@ contract Example {
 }
 ```
 
-### Member functions {#internal-functions}
+### Internal functions {#internal-functions}
 
-These functions behave similarly to private methods in popular object-oriented languages — they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](#self). That's why member functions are sometimes referred to as "contract methods."
+These functions behave similarly to private methods in popular object-oriented languages — they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](#self). That's why internal functions are sometimes referred to as "contract methods."
 
-Member functions can access the contract's [persistent state variables](#variables) and [constants](#constants).
+Internal functions can access the contract's [persistent state variables](#variables) and [constants](#constants).
 
-They can only be called from [receivers](#receiver-functions), [getters](#getter-functions), and other member functions, but not from other contracts or [`init(){:tact}`](#init-function).
+They can only be called from [receivers](#receiver-functions), [getters](#getter-functions), and other internal functions, but not from other contracts or [`init(){:tact}`](#init-function).
 
 ```tact
 contract Functions {
@@ -531,14 +531,14 @@ contract Functions {
         require(self.val == 0, "Only zeros are permitted!");
     }
 
-    // receiver function, which calls the member function onlyZeros
+    // receiver function, which calls the internal function onlyZeros
     receive("only zeros") {
         self.onlyZeros();
     }
 }
 ```
 
-Read more about them in their dedicated section: [Member functions](/book/functions#fun-member).
+Read more about them in their dedicated section: [Internal functions](/book/functions#fun-member).
 
 :::note
 

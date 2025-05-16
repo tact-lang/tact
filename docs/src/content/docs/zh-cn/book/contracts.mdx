@@ -342,7 +342,7 @@ contract Functions {
         require(self.val == 0, "Only zeros are permitted!");
     }
 
-    // receiver function, which calls the member function onlyZeros
+    // receiver function, which calls the internal function onlyZeros
     receive("only zeros") {
         self.onlyZeros();
     }

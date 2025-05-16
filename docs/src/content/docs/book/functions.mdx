@@ -1,6 +1,6 @@
 ---
 title: Functions
-description: "Global, asm, native functions, as well as receivers, getters, and member functions, plus the many attributes that allow for great flexibility and expressivity in the Tact language"
+description: "Global, asm, native functions, as well as receivers, getters, and internal functions, plus the many attributes that allow for great flexibility and expressivity in the Tact language"
 ---
 
 import { Badge } from '@astrojs/starlight/components';
@@ -56,11 +56,14 @@ Receiver functions are special functions responsible for receiving messages in c
 
 ```tact
 contract Counter(counter: Int) {
-    // This means that this contract can receive the comment "Increment", and this function would be called for such messages
-    receive("Increment") {
+    // This means that this contract can receive the Increment message body,
+    // and this function would be called to handle such messages.
+    receive(msg: Increment) {
         self.counter += 1;
     }
 }
+
+message Increment {}
 ```
 
 The basic receiver `receive(){:tact}` handles incoming messages from other contracts.
@@ -138,10 +141,18 @@ Read more about them on their dedicated page: [Bounced messages](/book/bounced).
 The `external(){:tact}` is a special kind of receivers which handle external messages — they are sent from the off-chain world and do not have a sender address on the blockchain. Such messages are often sent to wallet contracts to process specific messages or simply to send funds to another wallet contract.
 
 ```tact
-contract E() {
-    external("hello, it's me") {
+contract FeaturelessWallet(publicKey: Int as uint256) {
+    external(msg: MessageWithSignedData) {
         // Can't be replied to as there's no sender!
+        // Thus, many checks are required.
+        throwUnless(35, msg.bundle.verifySignature(self.publicKey));
     }
+}
+
+message MessageWithSignedData {
+    bundle: SignedBundle;
+    walletId: Int as int32;
+    seqno: Int as uint32;
 }
 ```
 
@@ -199,7 +210,7 @@ contract ManualMethodId {
 }
 ```
 
-Unlike getters, method IDs for [member functions](/book/contracts#internal-functions) and some special functions are obtained sequentially: integers in the inclusive range from -4 to 0 are given to [certain message handlers](https://docs.ton.org/v3/documentation/smart-contracts/func/docs/functions#special-function-names), while member functions are numbered with method IDs starting at $1$ and going up to $2^{14} - 1$ inclusive.
+Unlike getters, method IDs for [internal functions](#fun-internal) and some special functions are obtained sequentially: integers in the inclusive range from -4 to 0 are given to [certain message handlers](https://docs.ton.org/v3/documentation/smart-contracts/func/docs/functions#special-function-names), while internal functions are numbered with method IDs starting at $1$ and going up to $2^{14} - 1$ inclusive.
 
 Since method IDs are 19-bit signed integers and some of them are reserved, only the inclusive ranges from $-2^{18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$ are free to be used by users. To avoid collisions, it is recommended to specify method IDs only in these ranges, avoiding the method IDs of Tact-specific getters mentioned above.
 
@@ -240,15 +251,15 @@ fun customPow(a: Int, c: Int): Int {
 }
 ```
 
-#### Member functions {#fun-member}
+#### Internal functions {#fun-internal}
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-These functions behave similarly to private methods in popular object-oriented languages — they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](/book/contracts#self). That's why member functions are sometimes referred to as "contract methods".
+These functions behave similarly to private methods in popular object-oriented languages — they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](/book/contracts#self). That's why internal (or member) functions are sometimes referred to as "contract methods".
 
-Member functions can access the contract's [persistent state variables](/book/contracts#variables) and [constants](/book/contracts#constants).
+Internal functions can access the contract's [persistent state variables](/book/contracts#variables) and [constants](/book/contracts#constants).
 
-They can only be called from [receivers](#receive), [getters](#get), and other member functions, but not from other contracts.
+They can only be called from [receivers](#receive), [getters](#get), and other internal functions, but not from other contracts.
 
 ### `init` — constructor function {#init}
 
@@ -309,11 +320,11 @@ Attribute         | Scope    | Can be applied to
 ----------------- | -------- | -----------------
 `extends{:tact}`  | global   | All global functions
 `mutates{:tact}`  | global   | Functions with `extends{:tact}` attribute
-`virtual{:tact}`  | contract | Member functions
-`abstract{:tact}` | contract | Member functions
-`override{:tact}` | contract | Member functions that were previously marked with `virtual{:tact}` or `abstract{:tact}`
+`virtual{:tact}`  | contract | Internal functions
+`abstract{:tact}` | contract | Internal functions
+`override{:tact}` | contract | Internal functions that were previously marked with `virtual{:tact}` or `abstract{:tact}`
 `inline{:tact}`   | any      | All [secondary](#secondary) functions
-`get{:tact}`      | contract | Member functions — turns them into [getters](#get)
+`get{:tact}`      | contract | Internal functions — turns them into [getters](#get)
 
 Notice that the "contract" scope also includes the [traits][trait].
 
@@ -380,7 +391,7 @@ There is no such attribute yet, so the special static extension functions in the
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-You can allow a contract inheriting a [trait][trait] to modify a [member function](#fun-member) marked with the `virtual{:tact}` keyword by using `override{:tact}`. A function can also be marked as `abstract{:tact}`, in which case the inheriting contract must define its implementation.
+You can allow a contract inheriting a [trait][trait] to modify a [internal function](#fun-internal) marked with the `virtual{:tact}` keyword by using `override{:tact}`. A function can also be marked as `abstract{:tact}`, in which case the inheriting contract must define its implementation.
 
 ```tact
 trait FilterTrait with Ownable {
@@ -413,7 +424,7 @@ contract Filter() with FilterTrait {
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-The `abstract{:tact}` attribute allows declaring a [member function][TODO] with no body given at declaration. Functions with this attribute are meant to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
+The `abstract{:tact}` attribute allows declaring a [internal function](#fun-internal) with no body given at declaration. Functions with this attribute are meant to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
 
 ```tact
 // TODO: example
@@ -423,7 +434,7 @@ The `abstract{:tact}` attribute allows declaring a [member function][TODO] with 
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-The `virtual{:tact}` attribute allows a [member function][TODO] to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
+The `virtual{:tact}` attribute allows a [internal function](#fun-internal) to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
 
 This attribute is similar to the [`abstract{:tact}`](#attributes-abstract) attribute, except that
 
@@ -433,7 +444,7 @@ TODO: ...
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-The `override{:tact}` attribute is used to override an inherited [member function][TODO] that has either a `virtual{:tact}` or `abstract{:tact}` attribute specified in the declaration of that function in one of the parent traits.
+The `override{:tact}` attribute is used to override an inherited [internal function](#fun-internal) that has either a `virtual{:tact}` or `abstract{:tact}` attribute specified in the declaration of that function in one of the parent traits.
 
 ```tact
 // TODO:...
@@ -468,13 +479,13 @@ inline fun add(a: Int, b: Int) {
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-The `get{:tact}` attribute is a special attribute that cannot be combined with any other attribute. It is applied to [member functions], transforming them into [getter functions](#get).
+The `get{:tact}` attribute is a special attribute that cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into [getter functions](#get).
 
 ## Low-level representation
 
 On [TVM][tvm] level, contracts and their functions are often represented as a dictionary (map) of methods, from their numeric method IDs to their respective bodies composed of TVM instructions. Each function then is a method that transforms the stack and TVM registers.
 
-A function call is really a call into that dictionary under that functions ID, after which:
+A function call is, essentially, a call into the dictionary using the function's ID, after which:
 1. Function arguments are pushed onto the stack
 2. The function executes, manipulating the stack
 3. Return values are left on top of the stack, provoking another dictionary call or resulting in the end of the transaction

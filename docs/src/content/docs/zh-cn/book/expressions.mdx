@@ -236,7 +236,7 @@ contract ExampleContract {
     receive() {
         now(); // now() is a static function of stdlib
         let expiration: Int = now() + 1000; // operation and variable definition
-        expiration = self.answerQuestion(); // member function
+        expiration = self.answerQuestion(); // internal function
     }
     fun answerQuestion(): Int {
         return 42;

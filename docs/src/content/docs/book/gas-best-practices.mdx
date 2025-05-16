@@ -225,9 +225,9 @@ contract Example() {
 }
 ```
 
-### Avoid contract member functions
+### Avoid contract internal functions
 
-The [member functions](/book/contracts#internal-functions) of a contract (often called contract methods) are similar to global functions, except that they can access the contract's [storage variables](/book/contracts#variables) and [constants](/book/contracts#constants).
+The [internal functions](/book/contracts#internal-functions) of a contract (often called contract methods) are similar to global functions, except that they can access the contract's [storage variables](/book/contracts#variables) and [constants](/book/contracts#constants).
 
 However, they push the contract's variables on the stack at the start of their execution and pop them off afterward. This creates lots of unnecessary stack-manipulation instructions and consumes gas.
 
@@ -295,7 +295,7 @@ message SomeWalletOperation {
 
 ### Prefer `message()` and `cashback()` to `self.forward()`, `self.reply()`, and `self.notify()`
 
-Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of [member functions](/book/contracts#internal-functions) for any contract. Those member functions are gas-expensive for the same reasons as stated earlier.
+Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of [internal functions](/book/contracts#internal-functions) for any contract. Those internal functions are gas-expensive for the same reasons as stated earlier.
 
 Calls to `self.forward(){:tact}`, `self.reply(){:tact}` and `self.notify(){:tact}` can be replaced with respective calls to the [`send(){:tact}`](/ref/core-send#send) or [`message(){:tact}`](/ref/core-send#message) functions with suitable values.
 

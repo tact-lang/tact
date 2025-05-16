@@ -265,14 +265,14 @@ fun example(): Int {
 
 ## Static function call
 
-A [global function](/book/functions#fun-global) or a [member function](/book/functions#fun-member) of a [contract](/book/contracts) can be called from anywhere in the function body:
+A [global function](/book/functions#fun-global) or a [internal function](/book/functions#fun-member) of a [contract](/book/contracts) can be called from anywhere in the function body:
 
 ```tact
 contract ExampleContract {
     receive() {
         now(); // now() is a static function of stdlib
         let expiration: Int = now() + 1000; // operation and variable definition
-        expiration = self.answerQuestion(); // member function
+        expiration = self.answerQuestion(); // internal function
     }
     fun answerQuestion(): Int {
         return 42;
