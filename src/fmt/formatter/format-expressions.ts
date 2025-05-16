@@ -435,6 +435,44 @@ interface ChainCall {
     hasLeadingNewline: boolean;
 }
 
+const findTrailingComments = (node: Cst): Cst[] => {
+    if (node.$ === "leaf") return [];
+    if (node.children.some((it) => isComment(it))) {
+        // backtrace from the end to find only comments that are not part of the expression
+        // for example,
+        // 100 // comment
+        //     ^^^^^^^^^^ needed comment
+        //
+        // 100 + /* foo */ 200
+        //       ^^^^^^^^^ inside expression
+        let lastIndex = node.children.length - 1;
+        for (let i = lastIndex; i >= 0; i--) {
+            const child = node.children[i];
+            if (!child) continue;
+            if (child.$ === "leaf" && child.text.includes("\n")) continue;
+            if (child.$ === "node" && child.type === "Comment") continue;
+            lastIndex = i;
+            break;
+        }
+        // return only trailing comments
+        return node.children.slice(lastIndex);
+    }
+
+    const lastChildren = node.children.at(-1);
+    if (!lastChildren) return [];
+    return findTrailingComments(lastChildren);
+};
+
+const hasTrailingCommentOnNextLine = (node: Cst): boolean => {
+    if (node.$ === "leaf") return false;
+    const trailingComments = findTrailingComments(node);
+    const multiline = trailingComments.some(
+        (it) => it.$ === "leaf" && it.text.includes("\n"),
+    );
+    const hasComments = trailingComments.some((it) => isComment(it));
+    return multiline && hasComments;
+};
+
 const formatSuffix: FormatRule = (code, node) => {
     const suffixes = childByField(node, "suffixes");
     if (!suffixes) return;
@@ -532,7 +570,7 @@ const formatSuffix: FormatRule = (code, node) => {
                     call.leadingComments.length > 0 ||
                     call.trailingComments.length > 0,
             ) ||
-        visit(firstExpression).includes("\n");
+        hasTrailingCommentOnNextLine(firstExpression);
 
     if (shouldBeMultiline) {
         code.indent();
