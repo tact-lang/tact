@@ -1,0 +1,2 @@
+trait SomeTrait with SomeTrait {
+}
