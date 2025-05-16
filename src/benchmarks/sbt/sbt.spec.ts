@@ -79,7 +79,7 @@ function testSBT(
             ),
         );
 
-        const deployItemResult = await step("Deploy SBT item", async () =>
+        const deployItemResult = await step("Deploy SBT item", () =>
             itemSBT.send(
                 owner.getSender(),
                 { value: toNano("0.1") },

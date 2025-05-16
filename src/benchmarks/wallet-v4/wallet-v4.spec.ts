@@ -157,7 +157,7 @@ function testWalletV4(
         });
 
         // Top up wallet balance
-        await step("Top up wallet balance", async () =>
+        await step("Top up wallet balance", () =>
             deployer.send({
                 to: wallet.address,
                 value: toNano("10"),
