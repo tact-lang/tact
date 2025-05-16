@@ -94,7 +94,8 @@
     "blockstore-core": "1.0.5",
     "ipfs-unixfs-importer": "9.0.10",
     "path-normalize": "^6.0.13",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "yaml": "^2.7.1"
   },
   "devDependencies": {
     "@babel/generator": "^7.26.5",
