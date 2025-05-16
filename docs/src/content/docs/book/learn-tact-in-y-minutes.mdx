@@ -886,7 +886,7 @@ trait MyTrait with Ownable {
 
     // Within traits and contracts, you can define scoped functions
     // and only accessible from them or their successors. Those functions
-    // are often called internal functions.
+    // are often called member functions.
     //
     // If you won't be using any contract fields, it's better to define
     // such functions as global, i.e., on the top-level.
@@ -895,12 +895,12 @@ trait MyTrait with Ownable {
         return a + b;
     }
 
-    // Adding an abstract attribute to the internal function requires us
+    // Adding an abstract attribute to the member function requires us
     // to omit their body definitions and demand that from contracts that
     // will inherit the trait.
     abstract fun trust(msg: MyMsg);
 
-    // Adding a virtual attribute to the internal function allows their
+    // Adding a virtual attribute to the member function allows their
     // body definitions to be be overridden in the contracts that will
     // inherit the trait.
     virtual fun verify(msg: MyMsg) {
@@ -982,7 +982,7 @@ contract MyContract(
     }
 
     // Finally, for each inherited trait contract may override its virtual internal
-    // functions and it MUST override its abstract internal functions as to provide
+    // functions and it MUST override its abstract member functions as to provide
     // their defined bodies.
     override fun trust(msg: MyMsg) {
         require(msg.someVal == 42, "Always bring your towel with you");

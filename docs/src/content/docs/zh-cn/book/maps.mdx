@@ -466,7 +466,7 @@ contract Example {
     arr: map<Int, Int>; // "array" of Int values as a map
     arrLength: Int = 0; // length of the "array", defaults to 0
 
-    // Internal function for pushing an item to the end of the "array"
+    // Member function for pushing an item to the end of the "array"
     fun arrPush(item: Int) {
         if (self.arrLength >= self.MaxMapSize) {
             // Do something, stop the operation, for example
