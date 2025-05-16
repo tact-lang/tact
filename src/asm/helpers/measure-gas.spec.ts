@@ -7,6 +7,7 @@ import {
     CALLDICT_LONG,
 } from "@/asm/runtime";
 import { measureGas } from "@/asm/helpers/measure-gas";
+import { parameter, step } from "@/test/allure/allure";
 
 interface TestCase {
     readonly name: string;
@@ -48,11 +49,11 @@ const TESTS: TestCase[] = [
 ];
 
 describe("tests", () => {
-    // TODO: rewrite with just `it()`
-    for (const { name, instructions, expectedGas } of TESTS) {
-        it(`Test ${name}`, async () => {
-            const gasUsed = await measureGas(instructions);
+    it.each(TESTS)("Test $name", async ({ instructions, expectedGas }) => {
+        const gasUsed = await measureGas(instructions);
+        await parameter("Gas used", gasUsed.toString());
+        await step("Used gas should be same", () => {
             expect(gasUsed).toEqual(expectedGas);
         });
-    }
+    });
 });

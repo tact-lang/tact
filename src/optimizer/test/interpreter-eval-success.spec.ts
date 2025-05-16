@@ -9,14 +9,17 @@ import { getAllExpressionTypes } from "@/types/resolveExpression";
 import { resolveSignatures } from "@/types/resolveSignatures";
 import { resolveStatements } from "@/types/resolveStatements";
 import { loadCases } from "@/utils/loadCases";
+import { step, attachment } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
 
 describe("interpreter-evaluation", () => {
     for (const r of loadCases(__dirname + "/success/")) {
-        it(`${r.name} should pass compilation`, () => {
+        it(`${r.name} should pass compilation`, async () => {
             const Ast = getAstFactory();
             const sources: Source[] = [
                 { code: r.code, path: "<unknown>", origin: "user" },
             ];
+            await attachment("Code", r.code, ContentType.TEXT);
             let ctx = openContext(
                 new CompilerContext(),
                 sources,
@@ -27,7 +30,9 @@ describe("interpreter-evaluation", () => {
             ctx = resolveStatements(ctx);
             ctx = resolveSignatures(ctx, Ast);
             evalComptimeExpressions(ctx, Ast);
-            expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
+            await step("Expression types should match snapshot", () => {
+                expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
+            });
         });
     }
 });

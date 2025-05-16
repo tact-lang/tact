@@ -1,5 +1,7 @@
 import { parseCode } from "@/fmt/cst/cst-helpers";
 import { format } from "@/fmt/formatter/formatter";
+import { attachment, step } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
 
 function normalizeIndentation(input: string): string {
     const lines = input.split("\n");
@@ -27,19 +29,27 @@ function normalizeIndentation(input: string): string {
 }
 
 export const test = (input: string, output: string) => {
-    return (): void => {
+    return async (): Promise<void> => {
         const normalizedInput = normalizeIndentation(input).trim();
         const normalizedOutput = normalizeIndentation(output).trim();
+        await attachment("normalizedInput", normalizedInput, ContentType.TEXT);
+        await attachment(
+            "normalizedOutput",
+            normalizedOutput,
+            ContentType.TEXT,
+        );
         const root = parseCode(normalizedInput);
         if (root === undefined) {
             throw new Error("cannot parse code");
         }
 
         const formatted = format(root);
-        expect(formatted.trim()).toBe(normalizedOutput);
+        await step("Formatted code should match output", () => {
+            expect(formatted.trim()).toBe(normalizedOutput);
+        });
     };
 };
 
-export const intact = (input: string): (() => void) => {
+export const intact = (input: string): (() => Promise<void>) => {
     return test(input, input);
 };

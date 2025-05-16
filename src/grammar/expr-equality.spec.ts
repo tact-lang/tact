@@ -1,5 +1,6 @@
 import { eqExpressions, getAstFactory } from "@/ast/ast-helpers";
 import { getParser } from "@/grammar/index";
+import { step } from "@/test/allure/allure";
 
 type Test = { expr1: string; expr2: string; equality: boolean };
 
@@ -365,53 +366,55 @@ const initOfExpressions: Test[] = [
     { expr1: "initOf a(b,c,d)", expr2: "s.a(b,c,d)", equality: false },
 ];
 
-function testEquality(expr1: string, expr2: string, equal: boolean) {
+async function testEquality(expr1: string, expr2: string, equal: boolean) {
     const ast = getAstFactory();
     const { parseExpression } = getParser(ast);
-    expect(eqExpressions(parseExpression(expr1), parseExpression(expr2))).toBe(
-        equal,
-    );
+    await step(`"${expr1}" vs "${expr2}" should be ${equal}`, () => {
+        expect(
+            eqExpressions(parseExpression(expr1), parseExpression(expr2)),
+        ).toBe(equal);
+    });
 }
 
 describe("expression-equality", () => {
-    it("should correctly determine if two expressions involving values are equal or not.", () => {
-        valueExpressions.forEach((test) => {
-            testEquality(test.expr1, test.expr2, test.equality);
-        });
+    it("should correctly determine if two expressions involving values are equal or not.", async () => {
+        for (const t of valueExpressions) {
+            await testEquality(t.expr1, t.expr2, t.equality);
+        }
     });
-    it("should correctly determine if two expressions involving function calls are equal or not.", () => {
-        functionCallExpressions.forEach((test) => {
-            testEquality(test.expr1, test.expr2, test.equality);
-        });
+    it("should correctly determine if two expressions involving function calls are equal or not.", async () => {
+        for (const t of functionCallExpressions) {
+            await testEquality(t.expr1, t.expr2, t.equality);
+        }
     });
-    it("should correctly determine if two expressions involving unary operators are equal or not.", () => {
-        unaryOpExpressions.forEach((test) => {
-            testEquality(test.expr1, test.expr2, test.equality);
-        });
+    it("should correctly determine if two expressions involving unary operators are equal or not.", async () => {
+        for (const t of unaryOpExpressions) {
+            await testEquality(t.expr1, t.expr2, t.equality);
+        }
     });
-    it("should correctly determine if two expressions involving binary operators are equal or not.", () => {
-        binaryOpExpressions.forEach((test) => {
-            testEquality(test.expr1, test.expr2, test.equality);
-        });
+    it("should correctly determine if two expressions involving binary operators are equal or not.", async () => {
+        for (const t of binaryOpExpressions) {
+            await testEquality(t.expr1, t.expr2, t.equality);
+        }
     });
-    it("should correctly determine if two expressions involving conditionals are equal or not.", () => {
-        conditionalExpressions.forEach((test) => {
-            testEquality(test.expr1, test.expr2, test.equality);
-        });
+    it("should correctly determine if two expressions involving conditionals are equal or not.", async () => {
+        for (const t of conditionalExpressions) {
+            await testEquality(t.expr1, t.expr2, t.equality);
+        }
     });
-    it("should correctly determine if two expressions involving structs are equal or not.", () => {
-        structExpressions.forEach((test) => {
-            testEquality(test.expr1, test.expr2, test.equality);
-        });
+    it("should correctly determine if two expressions involving structs are equal or not.", async () => {
+        for (const t of structExpressions) {
+            await testEquality(t.expr1, t.expr2, t.equality);
+        }
     });
-    it("should correctly determine if two expressions involving field accesses are equal or not.", () => {
-        fieldAccessExpressions.forEach((test) => {
-            testEquality(test.expr1, test.expr2, test.equality);
-        });
+    it("should correctly determine if two expressions involving field accesses are equal or not.", async () => {
+        for (const t of fieldAccessExpressions) {
+            await testEquality(t.expr1, t.expr2, t.equality);
+        }
     });
-    it("should correctly determine if two expressions involving initOf are equal or not.", () => {
-        initOfExpressions.forEach((test) => {
-            testEquality(test.expr1, test.expr2, test.equality);
-        });
+    it("should correctly determine if two expressions involving initOf are equal or not.", async () => {
+        for (const t of initOfExpressions) {
+            await testEquality(t.expr1, t.expr2, t.equality);
+        }
     });
 });

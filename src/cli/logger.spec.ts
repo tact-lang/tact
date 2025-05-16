@@ -6,6 +6,7 @@ import { getAnsiMarkup } from "@/cli/colors";
 import { TerminalLogger } from "@/cli/logger";
 import pathWindows from "path/win32";
 import pathPosix from "path/posix";
+import { step } from "@/test/allure/allure";
 
 const catchProcessExit = <T>(fn: () => T): T | string => {
     const exitSpy = jest.spyOn(process, "exit").mockImplementation((code) => {
@@ -40,7 +41,7 @@ const os = [
 describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     const ansi = getAnsiMarkup(false);
 
-    test("only first error without error recovery", () => {
+    test("only first error without error recovery", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
@@ -48,12 +49,16 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 log.error(log.text`Error 2`);
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         logSpy.mockRestore();
     });
 
-    test("all info logs are logged", () => {
+    test("all info logs are logged", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
@@ -61,12 +66,16 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 log.info(log.text`Info 2`);
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         logSpy.mockRestore();
     });
 
-    test("warn verbosity does not show info", () => {
+    test("warn verbosity does not show info", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "warn", ansi, (log) => {
@@ -74,12 +83,16 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 log.info(log.text`Info`);
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         logSpy.mockRestore();
     });
 
-    test("path is resolved relative to cwd", () => {
+    test("path is resolved relative to cwd", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
@@ -87,37 +100,49 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 log.error(log.text`See ${log.path("/foo/bar")}.`);
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         cwdSpy.mockRestore();
         logSpy.mockRestore();
     });
 
-    test("raw internal error", () => {
+    test("raw internal error", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (_log) => {
                 throwInternal(`OMG`);
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         logSpy.mockRestore();
     });
 
-    test("logger internal error", () => {
+    test("logger internal error", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
                 log.internal(log.text`OMG`);
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         logSpy.mockRestore();
     });
 
-    test("raw internal error in source", () => {
+    test("raw internal error in source", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
@@ -127,13 +152,17 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 });
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         cwdSpy.mockRestore();
         logSpy.mockRestore();
     });
 
-    test("logger internal error in source", () => {
+    test("logger internal error in source", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
@@ -144,13 +173,17 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 });
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         cwdSpy.mockRestore();
         logSpy.mockRestore();
     });
 
-    test("internal error in source at range", () => {
+    test("internal error in source at range", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
@@ -161,25 +194,33 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 });
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         cwdSpy.mockRestore();
         logSpy.mockRestore();
     });
 
-    test("uncaught error", () => {
+    test("uncaught error", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, () => {
                 throw new Error("Uncaught!");
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         logSpy.mockRestore();
     });
 
-    test("uncaught error in source", () => {
+    test("uncaught error in source", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
@@ -189,13 +230,17 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 });
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         cwdSpy.mockRestore();
         logSpy.mockRestore();
     });
 
-    test("multiple errors", () => {
+    test("multiple errors", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
@@ -205,12 +250,16 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 });
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         logSpy.mockRestore();
     });
 
-    test("exit on error", () => {
+    test("exit on error", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
             return TerminalLogger(pathApi, "info", ansi, (log) => {
@@ -222,12 +271,16 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 log.error(log.text`impossible`);
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         logSpy.mockRestore();
     });
 
-    test("multiple errors inside source", () => {
+    test("multiple errors inside source", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
@@ -242,13 +295,17 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 });
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         cwdSpy.mockRestore();
         logSpy.mockRestore();
     });
 
-    test("source inside multiple errors", () => {
+    test("source inside multiple errors", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
@@ -263,13 +320,17 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 });
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         cwdSpy.mockRestore();
         logSpy.mockRestore();
     });
 
-    test("typed errors", () => {
+    test("typed errors", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const fooBarSchema = <M, R>(l: Logger<M, R>) => ({
@@ -285,13 +346,17 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 });
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         cwdSpy.mockRestore();
         logSpy.mockRestore();
     });
 
-    test("typed errors for source", () => {
+    test("typed errors for source", async () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const fooBarSchemaSrc = <M, R>(l: SourceLogger<M, R>) => ({
@@ -309,8 +374,12 @@ describe.each(os)("TerminalLogger %s", (_, pathApi) => {
                 });
             });
         });
-        expect(result).toMatchSnapshot();
-        expect(logSpy.mock.calls).toMatchSnapshot();
+        await step("Result should match snapshot", () => {
+            expect(result).toMatchSnapshot();
+        });
+        await step("Console log calls should match snapshot", () => {
+            expect(logSpy.mock.calls).toMatchSnapshot();
+        });
         cwdSpy.mockRestore();
         logSpy.mockRestore();
     });

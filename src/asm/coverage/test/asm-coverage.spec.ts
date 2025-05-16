@@ -5,6 +5,7 @@ import { collectAsmCoverage } from "@/asm/coverage/index";
 import { generateTextReport } from "@/asm/coverage/text";
 import { generateHtml } from "@/asm/coverage/html";
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { step } from "@/test/allure/allure";
 
 describe("asm coverage", () => {
     const test =
@@ -19,16 +20,23 @@ describe("asm coverage", () => {
             const [_, logs] = await executeInstructions(res.instructions, id);
             const { lines, summary } = collectAsmCoverage(cell, logs);
 
-            const report = generateTextReport(lines, summary);
-            expect(report).toMatchSnapshot();
-
+            const report = await step("Generating text report", () => {
+                return generateTextReport(lines, summary);
+            });
+            await step("Report should match snapshot", () => {
+                expect(report).toMatchSnapshot();
+            });
             const outDirname = `${__dirname}/output`;
             if (!existsSync(outDirname)) {
                 mkdirSync(outDirname);
             }
 
-            const htmlReport = generateHtml(lines);
-            writeFileSync(`${__dirname}/output/${name}.html`, htmlReport);
+            const htmlReport = await step("Generating HTML report", () => {
+                return generateHtml(lines);
+            });
+            await step("Write html report", () => {
+                writeFileSync(`${__dirname}/output/${name}.html`, htmlReport);
+            });
         };
 
     it(
@@ -55,9 +63,9 @@ describe("asm coverage", () => {
             `
                 DROP
                 PUSHINT -1 // cond
-                
+
                 IFRET
-                
+
                 PUSHINT 1
                 PUSHINT 2
                 ADD
@@ -89,14 +97,14 @@ describe("asm coverage", () => {
             "while loop with break",
             `
                 PUSHINT 10 // a = 10
-                
+
                 PUSHCONT { DUP GTINT 0 } // a > 0
                 PUSHCONT {
                     // if (a < 5) { break }
                     DUP
                     LESSINT 5
                     IFRETALT
-                
+
                     // a -= 1;
                     DEC
                 }

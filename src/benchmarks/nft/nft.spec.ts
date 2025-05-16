@@ -20,10 +20,9 @@ import {
     type BenchmarkResult,
     type CodeSizeResult,
 } from "@/benchmarks/utils/gas";
-import { join, resolve } from "path";
+import { resolve } from "path";
 import { readFileSync } from "fs";
 import { posixNormalize } from "@/utils/filePath";
-import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
     NFTCollection,
     ReportStaticData,
@@ -44,6 +43,7 @@ import {
 
 import benchmarkResults from "@/benchmarks/nft/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/nft/results_code_size.json";
+import { parameter, step } from "@/test/allure/allure";
 
 type dictDeployNFT = {
     amount: bigint;
@@ -106,12 +106,13 @@ function testNFT(
     let defaultNFTContent: Cell;
     let royaltyParams: RoyaltyParams;
 
-    let step: Step;
-
     beforeAll(async () => {
         blockchain = await Blockchain.create();
         owner = await blockchain.treasury("owner");
         notOwner = await blockchain.treasury("notOwner");
+
+        await parameter("owner", owner.address.toString());
+        await parameter("notOwner", notOwner.address.toString());
 
         defaultCommonContent = beginCell().storeStringTail("common").endCell();
         defaultCollectionContent = beginCell()
@@ -130,41 +131,44 @@ function testNFT(
             owner: owner.address,
         };
 
-        step = writeLog({
-            path: join(__dirname, "output", "log.yaml"),
-            blockchain,
+        // Deploy Collection
+        collectionNFT = await step("Open contract", async () => {
+            return blockchain.openContract(
+                await fromInitCollection(
+                    owner.address,
+                    0n,
+                    defaultContent,
+                    royaltyParams,
+                ),
+            );
         });
 
-        // Deploy Collection
-        collectionNFT = blockchain.openContract(
-            await fromInitCollection(
-                owner.address,
-                0n,
-                defaultContent,
-                royaltyParams,
-            ),
-        );
+        const deployResult = await step("Send 'GetRoyaltyParams'", async () => {
+            return await collectionNFT.send(
+                owner.getSender(),
+                { value: toNano("0.1") },
+                {
+                    $$type: "GetRoyaltyParams",
+                    queryId: 0n,
+                },
+            );
+        });
 
-        const deployResult = await collectionNFT.send(
-            owner.getSender(),
-            { value: toNano("0.1") },
-            {
-                $$type: "GetRoyaltyParams",
-                queryId: 0n,
-            },
-        );
-
-        expect(deployResult.transactions).toHaveTransaction({
-            from: owner.address,
-            to: collectionNFT.address,
-            deploy: true,
-            success: true,
+        await step("Should have deploy transaction", () => {
+            expect(deployResult.transactions).toHaveTransaction({
+                from: owner.address,
+                to: collectionNFT.address,
+                deploy: true,
+                success: true,
+            });
         });
 
         // Deploy Item
-        itemNFT = blockchain.openContract(
-            await fromInitItem(null, null, owner.address, 0n),
-        );
+        itemNFT = await step("ItemNFT: Open contract", async () => {
+            return blockchain.openContract(
+                await fromInitItem(null, null, owner.address, 0n),
+            );
+        });
 
         const deployItemMsg: InitNFTBody = {
             $$type: "InitNFTBody",
@@ -172,17 +176,26 @@ function testNFT(
             content: defaultNFTContent,
         };
 
-        const deployItemResult = await itemNFT.send(
-            owner.getSender(),
-            { value: toNano("0.1") },
-            beginCell().store(storeInitNFTBody(deployItemMsg)).asSlice(),
+        const deployItemResult = await step(
+            "ItemNFT: send 'InitNFTBody'",
+            async () => {
+                return await itemNFT.send(
+                    owner.getSender(),
+                    { value: toNano("0.1") },
+                    beginCell()
+                        .store(storeInitNFTBody(deployItemMsg))
+                        .asSlice(),
+                );
+            },
         );
 
-        expect(deployItemResult.transactions).toHaveTransaction({
-            from: owner.address,
-            to: itemNFT.address,
-            deploy: true,
-            success: true,
+        await step("Should have deploy transaction", () => {
+            expect(deployItemResult.transactions).toHaveTransaction({
+                from: owner.address,
+                to: itemNFT.address,
+                deploy: true,
+                success: true,
+            });
         });
     });
 
@@ -220,12 +233,16 @@ function testNFT(
             ),
         );
 
-        expect(sendResult.transactions).not.toHaveTransaction({
-            success: false,
+        await step("Should not fail transfer", () => {
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
         });
 
         const gasUsed = getUsedGas(sendResult, "internal");
-        expect(gasUsed).toEqual(benchmarkResults.gas["transfer"]);
+        await step("Transfer gas used should match benchmark", () => {
+            expect(gasUsed).toEqual(benchmarkResults.gas["transfer"]);
+        });
     });
 
     it("get static data", async () => {
@@ -246,24 +263,30 @@ function testNFT(
             sendGetStaticData(itemNFT, owner.getSender(), toNano(1)),
         );
 
-        expect(sendResult.transactions).toHaveTransaction({
-            from: itemNFT.address,
-            to: owner.address,
-            body: beginCell()
-                .storeUint(ReportStaticData, 32)
-                .storeUint(0n, 64)
-                .storeUint(0n, 256)
-                .storeAddress(owner.address)
-                .endCell(),
-            success: true,
+        await step("Should have response transaction with correct body", () => {
+            expect(sendResult.transactions).toHaveTransaction({
+                from: itemNFT.address,
+                to: owner.address,
+                body: beginCell()
+                    .storeUint(ReportStaticData, 32)
+                    .storeUint(0n, 64)
+                    .storeUint(0n, 256)
+                    .storeAddress(owner.address)
+                    .endCell(),
+                success: true,
+            });
         });
 
-        expect(sendResult.transactions).not.toHaveTransaction({
-            success: false,
+        await step("Should not fail get static data", () => {
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
         });
 
         const gasUsed = getUsedGas(sendResult, "internal");
-        expect(gasUsed).toEqual(benchmarkResults.gas["get static data"]);
+        await step("Get static data gas used should match benchmark", () => {
+            expect(gasUsed).toEqual(benchmarkResults.gas["get static data"]);
+        });
     });
 
     it("deploy nft", async () => {
@@ -295,17 +318,23 @@ function testNFT(
             sendDeployNFT(collectionNFT, owner.getSender(), toNano(1)),
         );
 
-        expect(sendResult.transactions).not.toHaveTransaction({
-            success: false,
+        await step("Should not fail deploy nft", () => {
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
         });
 
-        expect(sendResult.transactions).toHaveTransaction({
-            from: collectionNFT.address,
-            deploy: true,
+        await step("Should have deploy transaction from collectionNFT", () => {
+            expect(sendResult.transactions).toHaveTransaction({
+                from: collectionNFT.address,
+                deploy: true,
+            });
         });
 
         const gasUsed = getUsedGas(sendResult, "internal");
-        expect(gasUsed).toEqual(benchmarkResults.gas["deploy nft"]);
+        await step("Deploy nft gas used should match benchmark", () => {
+            expect(gasUsed).toEqual(benchmarkResults.gas["deploy nft"]);
+        });
     });
 
     it("batch deploy nft", async () => {
@@ -342,54 +371,80 @@ function testNFT(
                 deployList: beginCell().storeDictDirect(dct).endCell(),
             };
 
-            return await collectionNFT.send(
-                sender.getSender(),
-                { value: toNano("100") * (count + 10n) },
-                batchMintNFT,
-            );
+            return await step(`Send collection`, async () => {
+                return await collectionNFT.send(
+                    sender.getSender(),
+                    { value: toNano("100") * (count + 10n) },
+                    batchMintNFT,
+                );
+            });
         };
 
         const sendResult = await step("batch deploy nft", async () =>
             batchMintNFTProcess(collectionNFT, owner, owner, 100n),
         );
 
-        expect(sendResult.transactions).not.toHaveTransaction({
-            success: false,
+        await step("Should not fail batch deploy nft", () => {
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
         });
 
-        expect(sendResult.transactions).toHaveTransaction({
-            from: collectionNFT.address,
-            deploy: true,
+        await step("Should have deploy transaction from collectionNFT", () => {
+            expect(sendResult.transactions).toHaveTransaction({
+                from: collectionNFT.address,
+                deploy: true,
+            });
         });
 
         const gasUsed = getUsedGas(sendResult, "internal");
-        expect(gasUsed).toEqual(benchmarkResults.gas["batch deploy nft"]);
+        await step("Batch deploy nft gas used should match benchmark", () => {
+            expect(gasUsed).toEqual(benchmarkResults.gas["batch deploy nft"]);
+        });
     });
 
     it("collection cells", async () => {
-        expect(
-            (await getStateSizeForAccount(blockchain, collectionNFT.address))
-                .cells,
-        ).toEqual(codeSizeResults.size["collection cells"]);
+        await step("Collection cells size should match benchmark", async () => {
+            expect(
+                (
+                    await getStateSizeForAccount(
+                        blockchain,
+                        collectionNFT.address,
+                    )
+                ).cells,
+            ).toEqual(codeSizeResults.size["collection cells"]);
+        });
     });
 
     it("collection bits", async () => {
-        expect(
-            (await getStateSizeForAccount(blockchain, collectionNFT.address))
-                .bits,
-        ).toEqual(codeSizeResults.size["collection bits"]);
+        await step("Collection bits size should match benchmark", async () => {
+            expect(
+                (
+                    await getStateSizeForAccount(
+                        blockchain,
+                        collectionNFT.address,
+                    )
+                ).bits,
+            ).toEqual(codeSizeResults.size["collection bits"]);
+        });
     });
 
     it("item cells", async () => {
-        expect(
-            (await getStateSizeForAccount(blockchain, itemNFT.address)).cells,
-        ).toEqual(codeSizeResults.size["item cells"]);
+        await step("Item cells size should match benchmark", async () => {
+            expect(
+                (await getStateSizeForAccount(blockchain, itemNFT.address))
+                    .cells,
+            ).toEqual(codeSizeResults.size["item cells"]);
+        });
     });
 
     it("item bits", async () => {
-        expect(
-            (await getStateSizeForAccount(blockchain, itemNFT.address)).bits,
-        ).toEqual(codeSizeResults.size["item bits"]);
+        await step("Item bits size should match benchmark", async () => {
+            expect(
+                (await getStateSizeForAccount(blockchain, itemNFT.address))
+                    .bits,
+            ).toEqual(codeSizeResults.size["item bits"]);
+        });
     });
 }
 

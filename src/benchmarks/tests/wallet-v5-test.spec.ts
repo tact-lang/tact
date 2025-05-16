@@ -5,9 +5,7 @@ import type {
 } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import type { Address, Cell } from "@ton/core";
-import { external } from "@ton/core";
-import { SendMode } from "@ton/core";
-import { beginCell, Dictionary, toNano } from "@ton/core";
+import { beginCell, Dictionary, external, SendMode, toNano } from "@ton/core";
 import "@ton/test-utils";
 
 import type { KeyPair } from "@ton/crypto";
@@ -20,6 +18,7 @@ import {
     validUntil,
 } from "@/benchmarks/wallet-v5/utils";
 import { WalletV5 } from "@/benchmarks/wallet-v5/tact/output/wallet-v5_WalletV5";
+import { parameter, step } from "@/test/allure/allure";
 
 export function packAddress(address: Address) {
     return bufferToBigInt(address.hash);
@@ -97,39 +96,58 @@ describe("Wallet v5 correctness tests", () => {
         deployer = await blockchain.treasury("deployer");
         receiver = await blockchain.treasury("receiver");
 
+        await parameter("Deployer", deployer.address.toString());
+        await parameter("Receiver", receiver.address.toString());
+
         seqno = createSeqno();
 
-        walletV5 = blockchain.openContract(
-            await WalletV5.fromInit(
-                true,
-                0n,
-                SUBWALLET_ID,
-                bufferToBigInt(keypair.publicKey),
-                Dictionary.empty(),
-            ),
-        );
+        await step("Open contract WalletV5", async () => {
+            walletV5 = blockchain.openContract(
+                await WalletV5.fromInit(
+                    true,
+                    0n,
+                    SUBWALLET_ID,
+                    bufferToBigInt(keypair.publicKey),
+                    Dictionary.empty(),
+                ),
+            );
+        });
 
-        const deployResult = await walletV5.send(
-            deployer.getSender(),
-            {
-                value: toNano("0.05"),
+        await parameter("WalletV5", walletV5.address.toString());
+
+        const deployResult = await step(
+            "WalletV5: Send transaction",
+            async () => {
+                return await walletV5.send(
+                    deployer.getSender(),
+                    {
+                        value: toNano("0.05"),
+                    },
+                    beginCell().endCell().asSlice(),
+                );
             },
-            beginCell().endCell().asSlice(),
         );
 
-        expect(deployResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: walletV5.address,
-            deploy: true,
-            success: true,
+        await step("Should have transaction from deployer to walletV5", () => {
+            expect(deployResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: walletV5.address,
+                deploy: true,
+                success: true,
+            });
         });
 
         // top up wallet balance
-        await deployer.send({
-            to: walletV5.address,
-            value: toNano("10"),
-            sendMode: SendMode.PAY_GAS_SEPARATELY,
-        });
+        await step(
+            "Deployer: Send transaction (top-up balance) to walletV5",
+            async () => {
+                await deployer.send({
+                    to: walletV5.address,
+                    value: toNano("10"),
+                    sendMode: SendMode.PAY_GAS_SEPARATELY,
+                });
+            },
+        );
 
         snapshot = blockchain.snapshot();
     });
@@ -160,22 +178,28 @@ describe("Wallet v5 correctness tests", () => {
             },
         );
 
-        expect(extensionTransferResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: walletV5.address,
-            success: true,
-            exitCode: 0, // return instead of throw
+        await step("Should have transaction from deployer to walletV5", () => {
+            expect(extensionTransferResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: walletV5.address,
+                success: true,
+                exitCode: 0, // return instead of throw
+            });
         });
 
         // external to extension + internal with return, no send message
-        expect(extensionTransferResult.transactions.length).toEqual(2);
+        await step("Should have 2 transactions", () => {
+            expect(extensionTransferResult.transactions.length).toEqual(2);
+        });
 
         const receiverBalanceAfter = (
             await blockchain.getContract(testReceiver)
         ).balance;
 
         // did not change
-        expect(receiverBalanceAfter).toEqual(receiverBalanceBefore);
+        await step("Receiver balance should not change", () => {
+            expect(receiverBalanceAfter).toEqual(receiverBalanceBefore);
+        });
     });
 
     it("should throw on attempt to add extension that already exists", async () => {
@@ -197,10 +221,12 @@ describe("Wallet v5 correctness tests", () => {
             "internal",
         );
 
-        expect(secondAddExtensionResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: walletV5.address,
-            exitCode: 139, // throw on map.exist check
+        await step("Should have transaction from deployer to walletV5", () => {
+            expect(secondAddExtensionResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: walletV5.address,
+                exitCode: 139, // throw on map.exist check
+            });
         });
     });
 });

@@ -43,6 +43,7 @@ import * as u from "@/asm/runtime/util";
 import { execute } from "@/asm/helpers/helpers";
 import { code, dictMap } from "@/asm/runtime/util";
 import { print } from "@/asm/text/printer";
+import { step } from "@/test/allure/allure";
 
 const emptyData = () => beginCell().endCell();
 
@@ -70,13 +71,15 @@ const test = (
         const openContract = blockchain.openContract(contract);
 
         // Deploy
-        await openContract.send(
-            treasury.getSender(),
-            {
-                value: toNano("10"),
-            },
-            new Cell(),
-        );
+        await step("Send contract", async () => {
+            await openContract.send(
+                treasury.getSender(),
+                {
+                    value: toNano("10"),
+                },
+                new Cell(),
+            );
+        });
 
         const data = await openContract.getAny(methodId);
         compareResult(data);

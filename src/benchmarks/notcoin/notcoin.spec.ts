@@ -19,10 +19,10 @@ import {
     type BenchmarkResult,
     type CodeSizeResult,
 } from "@/benchmarks/utils/gas";
-import { join, resolve } from "path";
+import { resolve } from "path";
 import { readFileSync } from "fs";
 import { posixNormalize } from "@/utils/filePath";
-import { type Step, writeLog } from "@/test/utils/write-vm-log";
+import { parameter, step } from "@/test/allure/allure";
 import {
     JettonMinterNotcoin,
     type JettonUpdateContent,
@@ -68,7 +68,6 @@ function testNotcoin(
     let deployer: SandboxContract<TreasuryContract>;
     let notDeployer: SandboxContract<TreasuryContract>;
     const defaultContent: Cell = beginCell().endCell();
-    let step: Step;
     let jettonMinterNotcoin: SandboxContract<JettonMinterNotcoin>;
     let deployerJettonWalletNotcoin: SandboxContract<JettonWalletNotcoin>;
 
@@ -77,10 +76,8 @@ function testNotcoin(
         deployer = await blockchain.treasury("deployer");
         notDeployer = await blockchain.treasury("notDeployer");
 
-        step = writeLog({
-            path: join(__dirname, "output", "log.yaml"),
-            blockchain,
-        });
+        await parameter("deployer", deployer.address.toString());
+        await parameter("notDeployer", notDeployer.address.toString());
 
         const msg: JettonUpdateContent = {
             $$type: "JettonUpdateContent",
@@ -97,17 +94,24 @@ function testNotcoin(
             ),
         );
 
-        const deployResult = await jettonMinterNotcoin.send(
-            deployer.getSender(),
-            { value: toNano("0.1") },
-            msg,
+        const deployResult = await step(
+            "Send JettonUpdateContent",
+            async () => {
+                return await jettonMinterNotcoin.send(
+                    deployer.getSender(),
+                    { value: toNano("0.1") },
+                    msg,
+                );
+            },
         );
 
-        expect(deployResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: jettonMinterNotcoin.address,
-            deploy: true,
-            success: true,
+        await step("Should have deploy transaction", () => {
+            expect(deployResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: jettonMinterNotcoin.address,
+                deploy: true,
+                success: true,
+            });
         });
 
         deployerJettonWalletNotcoin = blockchain.openContract(
@@ -229,11 +233,13 @@ function testNotcoin(
             ),
         );
 
-        expect(mintResult.transactions).toHaveTransaction({
-            from: jettonMinterNotcoin.address,
-            to: deployerJettonWalletNotcoin.address,
-            success: true,
-            endStatus: "active",
+        await step("Should have mint transaction", () => {
+            expect(mintResult.transactions).toHaveTransaction({
+                from: jettonMinterNotcoin.address,
+                to: deployerJettonWalletNotcoin.address,
+                success: true,
+                endStatus: "active",
+            });
         });
 
         const someAddress = Address.parse(
@@ -254,18 +260,29 @@ function testNotcoin(
             ),
         );
 
-        expect(sendResult.transactions).not.toHaveTransaction({
-            success: false,
+        await step("Should not fail transfer", () => {
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
         });
 
-        expect(sendResult.transactions).toHaveTransaction({
-            from: deployerJettonWalletNotcoin.address,
-            success: true,
-            exitCode: 0,
+        await step("Should have successful transfer transaction", () => {
+            expect(sendResult.transactions).toHaveTransaction({
+                from: deployerJettonWalletNotcoin.address,
+                success: true,
+                exitCode: 0,
+            });
         });
 
-        const transferGasUsed = await getUsedGas(sendResult, "internal");
-        expect(transferGasUsed).toEqual(benchmarkResults.gas["transfer"]);
+        const transferGasUsed = await step(
+            "Get transfer gas used",
+            async () => {
+                return await getUsedGas(sendResult, "internal");
+            },
+        );
+        await step("Transfer gas used should match benchmark", () => {
+            expect(transferGasUsed).toEqual(benchmarkResults.gas["transfer"]);
+        });
     });
 
     it("burn", async () => {
@@ -282,14 +299,20 @@ function testNotcoin(
             ),
         );
 
-        expect(burnResult.transactions).toHaveTransaction({
-            from: deployerJettonWalletNotcoin.address,
-            to: jettonMinterNotcoin.address,
-            exitCode: 0,
+        await step("Should have burn transaction", () => {
+            expect(burnResult.transactions).toHaveTransaction({
+                from: deployerJettonWalletNotcoin.address,
+                to: jettonMinterNotcoin.address,
+                exitCode: 0,
+            });
         });
 
-        const burnGasUsed = getUsedGas(burnResult, "internal");
-        expect(burnGasUsed).toEqual(benchmarkResults.gas["burn"]);
+        const burnGasUsed = await step("Get burn gas used", () => {
+            return getUsedGas(burnResult, "internal");
+        });
+        await step("Burn gas used should match benchmark", () => {
+            expect(burnGasUsed).toEqual(benchmarkResults.gas["burn"]);
+        });
     });
 
     it("discovery", async () => {
@@ -303,58 +326,72 @@ function testNotcoin(
             ),
         );
 
-        expect(discoveryResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: jettonMinterNotcoin.address,
-            success: true,
+        await step("Should have discovery transaction", () => {
+            expect(discoveryResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: jettonMinterNotcoin.address,
+                success: true,
+            });
         });
 
-        const discoveryGasUsed = getUsedGas(discoveryResult, "internal");
-        expect(discoveryGasUsed).toEqual(benchmarkResults.gas["discovery"]);
+        const discoveryGasUsed = await step("Get discovery gas used", () => {
+            return getUsedGas(discoveryResult, "internal");
+        });
+        await step("Discovery gas used should match benchmark", () => {
+            expect(discoveryGasUsed).toEqual(benchmarkResults.gas["discovery"]);
+        });
     });
 
     it("minter cells", async () => {
-        expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    jettonMinterNotcoin.address,
-                )
-            ).cells,
-        ).toEqual(codeSizeResults.size["minter cells"]);
+        await step("Minter cells size should match benchmark", async () => {
+            expect(
+                (
+                    await getStateSizeForAccount(
+                        blockchain,
+                        jettonMinterNotcoin.address,
+                    )
+                ).cells,
+            ).toEqual(codeSizeResults.size["minter cells"]);
+        });
     });
 
     it("minter bits", async () => {
-        expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    jettonMinterNotcoin.address,
-                )
-            ).bits,
-        ).toEqual(codeSizeResults.size["minter bits"]);
+        await step("Minter bits size should match benchmark", async () => {
+            expect(
+                (
+                    await getStateSizeForAccount(
+                        blockchain,
+                        jettonMinterNotcoin.address,
+                    )
+                ).bits,
+            ).toEqual(codeSizeResults.size["minter bits"]);
+        });
     });
 
     it("wallet cells", async () => {
-        expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    deployerJettonWalletNotcoin.address,
-                )
-            ).cells,
-        ).toEqual(codeSizeResults.size["wallet cells"]);
+        await step("Wallet cells size should match benchmark", async () => {
+            expect(
+                (
+                    await getStateSizeForAccount(
+                        blockchain,
+                        deployerJettonWalletNotcoin.address,
+                    )
+                ).cells,
+            ).toEqual(codeSizeResults.size["wallet cells"]);
+        });
     });
 
     it("wallet bits", async () => {
-        expect(
-            (
-                await getStateSizeForAccount(
-                    blockchain,
-                    deployerJettonWalletNotcoin.address,
-                )
-            ).bits,
-        ).toEqual(codeSizeResults.size["wallet bits"]);
+        await step("Wallet bits size should match benchmark", async () => {
+            expect(
+                (
+                    await getStateSizeForAccount(
+                        blockchain,
+                        deployerJettonWalletNotcoin.address,
+                    )
+                ).bits,
+            ).toEqual(codeSizeResults.size["wallet bits"]);
+        });
     });
 }
 

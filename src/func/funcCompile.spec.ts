@@ -3,6 +3,8 @@ import path from "path";
 import { Logger } from "@/context/logger";
 import { funcCompile } from "@/func/funcCompile";
 import * as Stdlib from "@/stdlib/stdlib";
+import { attachment, step } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
 
 describe("funcCompile", () => {
     it("should compile small contract", async () => {
@@ -24,6 +26,9 @@ describe("funcCompile", () => {
             ],
             logger: new Logger(),
         });
-        expect(res.ok).toBe(true);
+        await attachment("Source", source, ContentType.TEXT);
+        await step("Compilation should succeed", () => {
+            expect(res.ok).toBe(true);
+        });
     });
 });

@@ -2,15 +2,18 @@ import { ADD, decompileCell, PUSHINT } from "@/asm/runtime";
 import { print } from "@/asm/text/printer";
 import { readFileSync } from "node:fs";
 import { boc } from "@/asm/runtime/util";
+import { step } from "@/test/allure/allure";
 
 describe("assembly-printer", () => {
-    it("should print simple assembly", () => {
+    it("should print simple assembly", async () => {
         const instructions = [PUSHINT(10), PUSHINT(5), ADD()];
 
-        expect(print(instructions)).toMatchSnapshot();
+        await step("Instructions should match snapshot", () => {
+            expect(print(instructions)).toMatchSnapshot();
+        });
     });
 
-    it("should print assembly", () => {
+    it("should print assembly", async () => {
         const instructions = decompileCell(
             boc(
                 readFileSync(
@@ -19,6 +22,8 @@ describe("assembly-printer", () => {
             ).asCell(),
         );
 
-        expect(print(instructions)).toMatchSnapshot();
+        await step("Instructions should match snapshot", () => {
+            expect(print(instructions)).toMatchSnapshot();
+        });
     });
 });

@@ -10,12 +10,14 @@ import { getAstFactory } from "@/ast/ast-helpers";
 import { stdlibPath } from "@/stdlib/path";
 import type { Source } from "@/imports/source";
 import { resolveErrors } from "@/types/resolveErrors";
+import { step, attachment } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
 
 const primitivesPath = path.join(stdlibPath, "/std/internal/primitives.tact");
 const stdlib = fs.readFileSync(primitivesPath, "utf-8");
 
 describe("resolveErrors", () => {
-    it("should throw an error", () => {
+    it("should throw an error", async () => {
         const src = `
 trait BaseTrait {}
 
@@ -25,6 +27,8 @@ contract Test {
     }
 }
 `;
+
+        await attachment("Code", src, ContentType.TEXT);
 
         const expectedErrors = `<unknown>:6:23: The second parameter of "require()" must be evaluated at compile time
   5 |     get fun foo(cond: Bool, error: String) {
@@ -47,6 +51,8 @@ contract Test {
         ctx = resolveDescriptors(ctx, ast);
         ctx = resolveSignatures(ctx, ast);
         ctx = resolveStatements(ctx);
-        expect(() => resolveErrors(ctx, ast)).toThrow(expectedErrors);
+        await step("resolveErrors should throw expected error", () => {
+            expect(() => resolveErrors(ctx, ast)).toThrow(expectedErrors);
+        });
     });
 });
