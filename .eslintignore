@@ -15,3 +15,7 @@ format.build.ts
 bin/*
 **/.testing/
 src/fmt/cst/cst-parser.ts
+src/asm/dict
+src/asm/runtime/instr-gen.ts
+src/asm/text/grammar.ts
+src/asm/logs/grammar.ts

@@ -104,7 +104,7 @@ The `Builder{:tact}` type represents partially composed cells, for which fast op
 * [`Builder.storeAddress(){:tact}` in Core library][b-7]
 * [`Builder.storeRef(){:tact}` in Core library][b-8]
 
-While you may use them for [manual construction](#cnp-manually) of cells, it's strongly recommended to use [Structs][struct] instead: [Construction of cells with Structs](#cnp-structs).
+While you may use them for [manual construction](#cnp-manually) of cells, it's strongly recommended to use [structs][struct] instead: [Construction of cells with structures](#cnp-structs).
 
 ## Slices
 
@@ -120,14 +120,14 @@ The `Slice{:tact}` type represents either the remainder of a partially parsed ce
 * [`Slice.loadAddress(){:tact}` in Core library][s-7]
 * [`Slice.loadRef(){:tact}` in Core library][s-8]
 
-While you may use slices for [manual parsing](#cnp-manually) of cells, it is strongly recommended to use [Structs][struct] instead: [Parsing cells with Structs](#cnp-structs).
+While you may use slices for [manual parsing](#cnp-manually) of cells, it is strongly recommended to use [structs][struct] instead: [Parsing cells with structures](#cnp-structs).
 
 ## Serialization types
 
 Similar to serialization options of the [`Int{:tact}`](/book/integers) type, `Cell{:tact}`, `Builder{:tact}`, and `Slice{:tact}` also have various representations for encoding their values in the following cases:
 
 * as [storage variables](/book/contracts#variables) of [contracts](/book/contracts) and [traits](/book/types#traits)
-* as fields of [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages)
+* as fields of [structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages)
 
 ```tact {2-3}
 contract SerializationExample {
@@ -222,7 +222,7 @@ receive(msg: JettonTransferNotification) {
 
 Upon receiving a [Jetton][jetton] transfer notification message, its cell body is converted into a [`Slice{:tact}`](#slices) and then parsed as a `JettonTransferNotification{:tact}` [Message][message]. At the end of this process, the `forwardPayload` will contain all the remaining data of the original message cell.
 
-In this context, it's not possible to violate the [Jetton][jetton] standard by placing the `forwardPayload: Slice as remaining` field in any other position within the `JettonTransferNotification{:tact}` [Message][message]. That's because Tact prohibits the usage of `as remaining{:tact}` for any field other than the last one in [Structs][struct] and [Messages][message], preventing misuse of contract storage and reducing gas consumption.
+In this context, it's not possible to violate the [Jetton][jetton] standard by placing the `forwardPayload: Slice as remaining` field in any other position within the `JettonTransferNotification{:tact}` [Message][message]. That's because Tact prohibits the usage of `as remaining{:tact}` for any field other than the last one in [structs][struct] and [Messages][message], preventing misuse of contract storage and reducing gas consumption.
 
 :::note
 
@@ -249,7 +249,7 @@ For a usage example, see the [`SignedBundle`](/ref/core-crypto#signedbundle) [st
 In Tact, there are at least two ways to construct and parse cells:
 
 * [Manually](#cnp-manually), which involves actively using [`Builder{:tact}`](#builders), [`Slice{:tact}`](#slices), and [relevant methods](/ref/core-cells).
-* [Using Structs](#cnp-structs), which is the recommended and much more convenient approach.
+* [Using structures](#cnp-structs), which is the recommended and much more convenient approach.
 
 #### Manually {#cnp-manually}
 
@@ -284,16 +284,16 @@ Construction via `Builder{:tact}`      | Parsing via `Slice{:tact}`
 [s-8]: /ref/core-cells#sliceloadref
 [s-9]: /ref/core-cells#sliceendparse
 
-#### Using Structs (recommended) {#cnp-structs}
+#### Using structures (recommended) {#cnp-structs}
 
 [Structs][struct] and [Messages][message] are almost like living [TL-B schemas][tlb], meaning they are essentially [TL-B schemas][tlb] expressed in maintainable, verifiable, and user-friendly Tact code.
 
 It is strongly recommended to use them and their [methods](/book/functions#extension-function), such as [`Struct.toCell(){:tact}`][st-tc] and [`Struct.fromCell(){:tact}`][st-fc], instead of manually constructing and parsing cells, as this allows for much more declarative and self-explanatory contracts.
 
-The examples of manual parsing [above](#cnp-manually) can be rewritten using [Structs][struct], with descriptive names for fields if desired:
+The examples of manual parsing [above](#cnp-manually) can be rewritten using structs, with descriptive names for fields if desired:
 
 ```tact /fromCell/ /toCell/
-// First Struct
+// First struct
 struct Showcase {
     id: Int as uint8;
     someImportantNumber: Int as int8;
@@ -301,7 +301,7 @@ struct Showcase {
     payload: Slice;
     nanoToncoins: Int as coins;
     wackyTacky: Address;
-    jojoRef: Adventure; // another Struct
+    jojoRef: Adventure; // another struct
 }
 
 // Here it is
@@ -328,7 +328,7 @@ fun example() {
 
 Note that Tact's auto-layout algorithm is greedy. For example, `struct Adventure{:tact}` occupies very little space and will not be stored as a reference [`Cell{:tact}`](#cells). Instead, it will be provided directly as a [`Slice{:tact}`](#slices).
 
-By using [Structs][struct] and [Messages][message] instead of manual [`Cell{:tact}`](#cells) composition and parsing, those details will be simplified away and will not cause any hassle when the optimized layout changes.
+By using structures instead of manual [`Cell{:tact}`](#cells) composition and parsing, those details will be simplified away and will not cause any hassle when the optimized layout changes.
 
 :::note[Useful links:]
 

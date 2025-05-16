@@ -572,4 +572,46 @@ describe("statement comments formatting", () => {
         }
     `),
     );
+
+    it(
+        "comments in multiline field access",
+        intact(`
+            fun foo() {
+                10
+                    // comment here prevents the formatter from working
+                    .foo;
+            }
+        `),
+    );
+
+    it(
+        "comments in multiline method call",
+        intact(`
+            fun foo() {
+                10
+                    // comment here prevents the formatter from working
+                    .foo();
+            }
+        `),
+    );
+
+    it(
+        "comments in multiline method call with struct instance",
+        intact(`
+            fun foo() {
+                Foo {}
+                // comment here prevents the formatter from working
+                    .foo();
+            }
+        `),
+    );
+
+    it(
+        "comments in single line method call",
+        intact(`
+            fun foo() {
+                let _ = SomeMessage {} /* hello */.foo();
+            }
+        `),
+    );
 });

@@ -7,19 +7,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.10] - 2025-05-16
+
+### Infrastructure
+
+- [fix] Explicit dependencies to fix Blueprint integration: PR [#3088](https://github.com/tact-lang/tact/pull/3088)
+
+## [1.6.9] - 2025-05-16
+
+### TypeScript third-party API
+
+- [fix] Move logs-related TS files to separate folder: PR [#3082](https://github.com/tact-lang/tact/pull/3082)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+
+## [1.6.8] - 2025-05-16
+
+### Breaking changes
+
+- [stdlib] Compiler now reports an error if `VarAddress` or `parseVarAddress()` is used, since starting
+  from [TVM 10](https://github.com/ton-blockchain/ton/blob/master/doc/GlobalVersions.md#version-10) they are mostly not supported: PR [#3067](https://github.com/tact-lang/tact/pull/3067).
+
+### Language features
+
+- [fix] Compiler now correctly handles optional slices, builders, and strings when generating serialization logic: PR [#3053](https://github.com/tact-lang/tact/pull/3053)
+- [fix] Compiler now disallows type usages as value (e.g. `let x = Int` or `let x = MyStruct`): PR [#3065](https://github.com/tact-lang/tact/pull/3065)
+
+### Code generation
+
+- Use FunC and Fift WASM build [v2025.04](https://github.com/ton-blockchain/ton/releases/tag/v2025.04): PR [#3077](https://github.com/tact-lang/tact/pull/3077)
+
 ### Tooling
 
 - [fix] Formatter now correctly handles floating comments: PR [#2995](https://github.com/tact-lang/tact/pull/2995)
+- [fix] Formatter now correctly handles inline comments after the last declaration: PR [#3064](https://github.com/tact-lang/tact/pull/3064)
+- [fix] Formatter now correctly handles floating comments after import: PR [#3071](https://github.com/tact-lang/tact/pull/3071)
+- [fix] Formatter now better supports comments inside chained method calls: PR [#3070](https://github.com/tact-lang/tact/pull/3070)
 
 ### Docs
 
 - Enabled format checking across the Cookbook: PR [#2980](https://github.com/tact-lang/tact/pull/2980)
 - Added references to https://github.com/tact-lang/defi-cookbook: PR [#2985](https://github.com/tact-lang/tact/pull/2985)
+- Added description of the "unreachable code" errors and enhanced the descriptions of the `return` statement: PR [#2750](https://github.com/tact-lang/tact/pull/2750)
+- Fixed description of the unary plus `+` operator: PR [#3016](https://github.com/tact-lang/tact/pull/3016)
+- Documented that map key-value types and the inner message type of the `bounced<M>` type constructor cannot be nullable: PR [#3017](https://github.com/tact-lang/tact/pull/3017)
+- Lowercased "Struct" everywhere except at the beginning of sentences: PR [#3021](https://github.com/tact-lang/tact/pull/3021)
+- Reworked the optionals page: PR [#3002](https://github.com/tact-lang/tact/pull/3002)
 
 ### Release contributors
 
 - [Novus Nota](https://github.com/novusnota)
 - [Petr Makhnev](https://github.com/i582)
+- [Daniil Sedov](https://github.com/Gusarich)
+- [skywardboundd](https://github.com/skywardboundd)
+- [xpyctumo](https://github.com/xpyctumo)
 
 ## [1.6.7] - 2025-04-24
 
