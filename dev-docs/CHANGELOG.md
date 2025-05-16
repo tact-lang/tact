@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented that map key-value types and the inner message type of the `bounced<M>` type constructor cannot be nullable: PR [#3017](https://github.com/tact-lang/tact/pull/3017)
 - Lowercased "Struct" everywhere except at the beginning of sentences: PR [#3021](https://github.com/tact-lang/tact/pull/3021)
 - Reworked the optionals page: PR [#3002](https://github.com/tact-lang/tact/pull/3002)
+- Made the low-level representation of maps more apparent: PR [#TBD](https://github.com/tact-lang/tact/pull/TBD)
 
 ### Release contributors
 
