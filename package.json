@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
   "name": "@tact-lang/compiler",
-  "version": "1.6.9",
+  "version": "1.6.10",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"
