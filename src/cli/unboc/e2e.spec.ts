@@ -1,7 +1,7 @@
 import { join, normalize } from "path";
 import { makeCodegen, runCommand } from "@/cli/test-util.build";
 import { step, attachment } from "@/test/allure/allure";
-import {ContentType} from "allure-js-commons";
+import { ContentType } from "allure-js-commons";
 
 // disable tests on windows
 const testWin =

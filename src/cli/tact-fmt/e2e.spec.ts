@@ -3,7 +3,7 @@ import { runCommand } from "@/cli/test-util.build";
 import { readFileSync, rmSync, writeFileSync } from "fs";
 import { mkdir } from "fs/promises";
 import { step, attachment } from "@/test/allure/allure";
-import {ContentType} from "allure-js-commons";
+import { ContentType } from "allure-js-commons";
 
 // disable tests on windows
 const testExceptWindows =
@@ -208,9 +208,12 @@ describe("tact-fmt foo.tact", () => {
         writeFileSync(file3, "fun foo3() {}\n");
 
         const result = await tactFmt("--check", file1, file3);
-        await step("Check multiple files CLI output should match snapshot", () => {
-            expect(result).toMatchSnapshot();
-        });
+        await step(
+            "Check multiple files CLI output should match snapshot",
+            () => {
+                expect(result).toMatchSnapshot();
+            },
+        );
 
         rmSync(innerDir, { recursive: true });
     });
@@ -241,9 +244,12 @@ describe("tact-fmt foo.tact", () => {
         writeFileSync(file3, "fun foo3() {}\n");
 
         const result = await tactFmt("--check", innerInnerDir, innerInnerDir2);
-        await step("Check multiple directories CLI output should match snapshot", () => {
-            expect(result).toMatchSnapshot();
-        });
+        await step(
+            "Check multiple directories CLI output should match snapshot",
+            () => {
+                expect(result).toMatchSnapshot();
+            },
+        );
 
         rmSync(innerDir, { recursive: true });
     });

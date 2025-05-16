@@ -7,7 +7,7 @@ import {
     CALLDICT_LONG,
 } from "@/asm/runtime";
 import { measureGas } from "@/asm/helpers/measure-gas";
-import {parameter, step} from "@/test/allure/allure";
+import { parameter, step } from "@/test/allure/allure";
 
 interface TestCase {
     readonly name: string;
