@@ -431,9 +431,9 @@ contract LazyInit {
 
 ### Getter functions
 
-[Getter functions](/book/functions#getter-functions) are **not accessible from other contracts and are exported only to the off-chain world**.
+[Getter functions](/book/functions#get) are **not accessible** from other contracts and are exported only to the off-chain world.
 
-Additionally, **getters cannot modify the contract's state variables**; they can only read their values and use them in expressions.
+Additionally, getters **cannot modify the contract's state variables** — they can only read their values and use them in expressions.
 
 ```tact
 contract HelloWorld {
@@ -450,7 +450,7 @@ contract HelloWorld {
 }
 ```
 
-Read more about them in their dedicated section: [Getter functions](/book/functions#getter-functions)
+Read more about them in their dedicated section: [Getter functions](/book/functions#get).
 
 ### Receiver functions
 
@@ -514,7 +514,7 @@ contract Example {
 }
 ```
 
-### Internal functions
+### Internal functions {#internal-functions}
 
 These functions behave similarly to private methods in popular object-oriented languages — they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](#self). That's why internal functions are sometimes referred to as "contract methods."
 
@@ -537,6 +537,8 @@ contract Functions {
     }
 }
 ```
+
+Read more about them in their dedicated section: [Internal functions](/book/functions#fun-member).
 
 :::note
 
