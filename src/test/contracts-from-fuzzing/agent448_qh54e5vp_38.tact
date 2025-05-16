@@ -1,0 +1,14 @@
+contract LargeManyParams(
+    pa: Int,
+    pb: Int,
+    pc: Int,
+    pd: Int,
+    pe: Int,
+    pf: Int,
+    pg: Int,
+    ph: Int,
+    pi: Int,
+    pj: Int,
+    pk: Int,
+    pl: Int
+) {}

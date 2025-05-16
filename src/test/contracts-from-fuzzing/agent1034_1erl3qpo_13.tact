@@ -1,0 +1,12 @@
+contract FlatParams(
+    a: Int,
+    b: Bool,
+    c: Bool,
+    d: Int,
+    e: Int,
+    f: Bool,
+    g: Int,
+    h: Bool,
+    i: Int,
+    j: Bool,
+) {}

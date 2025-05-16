@@ -1,0 +1,1 @@
+asm fun wrongCase(): Int { 42 pushint }

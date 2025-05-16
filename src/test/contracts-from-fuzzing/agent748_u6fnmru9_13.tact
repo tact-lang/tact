@@ -1,0 +1,12 @@
+contract EmptyInitContract(
+    a: Int,
+    b: Bool,
+    c: Address,
+    d: String,
+    e: Slice,
+    f: Cell,
+    g: Int?,
+    h: Bool?,
+    i: Address?,
+    j: String?
+) {}

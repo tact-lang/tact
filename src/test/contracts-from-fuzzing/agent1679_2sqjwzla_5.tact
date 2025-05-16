@@ -1,0 +1,41 @@
+contract LargeContract {
+    f1: Int;
+    f2: Int;
+    f3: Int;
+    f4: Int;
+    f5: Int;
+    f6: Int;
+    f7: Int;
+    f8: Int;
+    f9: Int;
+    f10: Int;
+    f11: Bool;
+    f12: Bool;
+    f13: Bool;
+    f14: Bool;
+    f15: Address;
+    f16: Address;
+    f17: String;
+    f18: String;
+
+    init() {
+        self.f1 = 1;
+        self.f2 = 2;
+        self.f3 = 3;
+        self.f4 = 4;
+        self.f5 = 5;
+        self.f6 = 6;
+        self.f7 = 7;
+        self.f8 = 8;
+        self.f9 = 9;
+        self.f10 = 10;
+        self.f11 = true;
+        self.f12 = false;
+        self.f13 = true;
+        self.f14 = false;
+        self.f15 = myAddress();
+        self.f16 = myAddress();
+        self.f17 = "A";
+        self.f18 = "B";
+    }
+}

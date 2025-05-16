@@ -1,0 +1,3 @@
+contract OptionalBool {
+    f: Bool?;
+}

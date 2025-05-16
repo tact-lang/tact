@@ -1,0 +1,67 @@
+contract StressManyFields {
+    f1: Int;
+    f2: Bool;
+    f3: String;
+    f4: Address;
+    f5: Int as uint8;
+    f6: Int as uint16;
+    f7: Bool;
+    f8: String;
+    f9: Int as int4;
+    f10: Int;
+    f11: Bool;
+    f12: String;
+    f13: Int;
+    f14: Address;
+    f15: Bool;
+    f16: Int as uint32;
+    f17: String;
+    f18: Int as int8;
+    f19: Address;
+    f20: Bool;
+    f21: String;
+    f22: Int as uint64;
+    f23: Bool;
+    f24: String;
+    f25: Int as int16;
+    f26: Address;
+    f27: Bool;
+    f28: String;
+    f29: Int;
+    f30: Bool;
+    f31: String;
+
+    init() {
+        self.f1 = 1;
+        self.f2 = true;
+        self.f3 = "3";
+        self.f4 = myAddress();
+        self.f5 = 5;
+        self.f6 = 6;
+        self.f7 = false;
+        self.f8 = "8";
+        self.f9 = -3;
+        self.f10 = 10;
+        self.f11 = false;
+        self.f12 = "12";
+        self.f13 = 13;
+        self.f14 = myAddress();
+        self.f15 = true;
+        self.f16 = 16;
+        self.f17 = "17";
+        self.f18 = -8;
+        self.f19 = myAddress();
+        self.f20 = true;
+        self.f21 = "21";
+        self.f22 = 22;
+        self.f23 = false;
+        self.f24 = "24";
+        self.f25 = -25;
+        self.f26 = myAddress();
+        self.f27 = true;
+        self.f28 = "28";
+        self.f29 = 29;
+        self.f30 = false;
+        self.f31 = "31";
+    }
+}

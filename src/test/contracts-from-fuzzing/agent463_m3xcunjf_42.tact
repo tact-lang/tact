@@ -1,0 +1,1 @@
+contract Test { receive( "ping" ) { {{{ }}} } } // deeply nested empty blocks

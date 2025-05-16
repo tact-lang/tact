@@ -1,0 +1,1 @@
+contract Test { receive( "a") {} receive("b") {} }

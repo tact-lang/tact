@@ -1,0 +1,13 @@
+struct Level3 { z: Int; opt: Bool?; }
+
+struct Level2 { y: Level3; }
+
+struct Level1 { x: Level2; }
+
+contract Test {
+    nested: Level1;
+
+    init() {
+        self.nested = Level1{ x: Level2{ y: Level3{z:0,opt:true} } };
+    }
+}

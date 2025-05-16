@@ -1,0 +1,2 @@
+/* foo /* bar */
+contract A {}

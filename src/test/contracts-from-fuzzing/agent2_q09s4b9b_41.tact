@@ -1,0 +1,1 @@
+fun test(): Int {{{{ return 1; } }}} contract C { receive() { test(); } }

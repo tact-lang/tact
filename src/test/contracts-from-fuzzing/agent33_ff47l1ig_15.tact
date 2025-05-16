@@ -1,0 +1,1 @@
+struct Foo { bar: Int } contract Test {}

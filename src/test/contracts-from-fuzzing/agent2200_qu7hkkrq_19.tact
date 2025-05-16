@@ -1,0 +1,3 @@
+contract OptStringImplicitNull {
+    maybeName: String?;
+}

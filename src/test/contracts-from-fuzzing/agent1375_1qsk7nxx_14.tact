@@ -1,0 +1,11 @@
+contract ChainedDefaults {
+    a: Int = 1;
+    b: Int = 2;
+    c: Int = 3;
+    d: Int = 4;
+
+    init() {
+        self.b = 20;
+        self.c = 30;
+    }
+}

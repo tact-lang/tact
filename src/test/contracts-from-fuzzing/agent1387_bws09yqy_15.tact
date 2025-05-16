@@ -1,0 +1,12 @@
+struct A { x: Int; }
+struct B { y: Int; }
+
+contract TupleStructs {
+    a: A;
+    b: B;
+
+    init() {
+        self.a = A{ x: 99 };
+        self.b = B{ y: 88 };
+    }
+}

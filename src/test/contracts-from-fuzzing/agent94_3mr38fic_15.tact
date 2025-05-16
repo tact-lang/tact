@@ -1,0 +1,3 @@
+contract MalformedTest {
+    external("ping") {}
+}

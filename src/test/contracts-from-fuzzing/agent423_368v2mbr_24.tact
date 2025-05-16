@@ -1,0 +1,3 @@
+contract OptIntNoInit {
+    value: Int?;
+}

@@ -1,0 +1,9 @@
+contract InitDefaultTest {
+    a: Int = 1;
+    b: Int = 2;
+    c: Int;
+
+    init() {
+        self.c = 3;
+    }
+}

@@ -1,0 +1,3 @@
+contract OptionalBoolDefaultNull {
+    flag: Bool?;
+}

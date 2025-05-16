@@ -1,0 +1,1 @@
+contract C { fun _fun(param: Int): Int { return 1; } }

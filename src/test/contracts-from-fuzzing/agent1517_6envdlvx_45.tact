@@ -1,0 +1,1 @@
+message(999) EmptyMessage {}

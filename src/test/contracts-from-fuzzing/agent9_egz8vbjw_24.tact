@@ -1,0 +1,1 @@
+contract X { fun f() { let a = "a \\ u"; } }

@@ -1,0 +1,11 @@
+// contract field is optional struct with optional field
+struct Inner {
+    foo: Int?;
+}
+
+contract TestContract {
+    bar: Inner?;
+    init() {
+        self.bar = Inner{ foo: null };
+    }
+}

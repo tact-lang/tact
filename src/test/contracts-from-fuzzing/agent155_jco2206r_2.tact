@@ -1,0 +1,1 @@
+contract OneBool { flag: Bool = false; }
