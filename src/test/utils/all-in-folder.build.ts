@@ -204,6 +204,7 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
                 },
             ],
             logger,
+            debugInfo: false,
         };
 
         const compilationResult = await funcCompile(funcArgs);
