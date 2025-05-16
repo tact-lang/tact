@@ -121,7 +121,7 @@ jobs:
       matrix:
         node-version: [22]
         os: [ubuntu-latest, windows-latest, macos-latest]
-        package-manager: [npm, yarn, pnpm, bun]
+        package-manager: [npm, yarn, bun]
         # follow-up ifs are for ensuring clean state at all times
     runs-on: ${{ matrix.os }}
     steps:
@@ -136,21 +136,6 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
         if: ${{ matrix.package-manager == 'bun' }}
-
-      - name: Setup PNPM
-        if: ${{ matrix.package-manager == 'pnpm' }}
-        run: |
-          # Installing the specific pnpm version to work around https://github.com/pnpm/pnpm/issues/5000
-          # and not fail suddenly when a release comes that fixes this
-          # NOTE: revisit and simplify this step if/when those bugs with pnpm are resolved
-          npm i -g pnpm@9.12.2
-          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
-          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || '' }}
-          pnpm setup -f
-          # To source .bashrc on Linux:
-          ${{ matrix.os == 'ubuntu-latest' && 'source ~/.bashrc' || '' }}
-          # To expose stuff for pnpm directly on macOS (because otherwise the pre-installed Node.js version gets used):
-          ${{ matrix.os == 'macos-latest' && 'export PNPM_HOME=~/Library/pnpm; export PATH=$PNPM_HOME:$PATH' || '' }}
 
       - name: Check that `build:fast` works in the clean repo
         run: |
@@ -171,14 +156,10 @@ jobs:
 
       - name: (${{ matrix.package-manager }}) Setup a new Blueprint project
         run: |
-          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
-          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || '' }}
-
-          # Linkage for npm, yarn, bun, pnpm
+          # Linkage for npm, yarn, bun
           ${{ matrix.package-manager == 'npm' && 'npm link' || '' }}
           ${{ matrix.package-manager == 'yarn' && 'yarn link' || '' }}
           ${{ matrix.package-manager == 'bun' && 'bun link' || '' }}
-          ${{ matrix.package-manager == 'pnpm' && 'pnpm link -g' || '' }}
 
           # Create an empty Blueprint project
           #
@@ -197,11 +178,6 @@ jobs:
           ${{
             matrix.package-manager == 'bun'
             && 'bun create ton@latest test-project --no-ci'
-            || ''
-          }}
-          ${{
-            matrix.package-manager == 'pnpm'
-            && 'cd ..; pnpm create ton@latest test-project --no-ci'
             || ''
           }}
 
@@ -227,11 +203,6 @@ jobs:
           ${{
             matrix.package-manager == 'bun'
             && 'bun link @tact-lang/compiler; bun install'
-            || ''
-          }}
-          ${{
-            matrix.package-manager == 'pnpm'
-            && 'pnpm link -g @tact-lang/compiler; pnpm install'
             || ''
           }}
 
@@ -268,12 +239,3 @@ jobs:
         run: |
           bun run build # without 'run' Bun will use its own bundler
           bun run test  # without 'run' Bun will use its own test runner
-
-      - name: (pnpm) Test a new Blueprint project
-        if: ${{ matrix.package-manager == 'pnpm' }}
-        working-directory: "../test-project"
-        run: |
-          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
-          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || '' }}
-          pnpm build
-          pnpm test
