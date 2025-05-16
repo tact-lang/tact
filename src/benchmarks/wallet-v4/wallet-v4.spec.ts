@@ -137,7 +137,7 @@ function testWalletV4(
         );
 
         // Deploy wallet
-        const deployResult = await step("Deploy wallet", async () =>
+        const deployResult = await step("Deploy wallet", () =>
             wallet.send(
                 deployer.getSender(),
                 {
