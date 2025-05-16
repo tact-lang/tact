@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Infrastructure
 
-- [fix] Explicit dependencies to fix Blueprint integration: [#3088](https://github.com/tact-lang/tact/pull/3088)
+- [fix] Explicit dependencies to fix Blueprint integration: PR [#3088](https://github.com/tact-lang/tact/pull/3088)
 
 ## [1.6.9] - 2025-05-16
 
