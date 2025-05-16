@@ -58,6 +58,36 @@ export async function run(provider: NetworkProvider) {
 }
 ```
 
+### Group contract parameters with common initial values
+
+When deploying multiple instances of the same contract type, it's common for some data fields to be initially set to the same values. For example, in [NFT Item contracts](/cookbook/nfts), fields like `ownerAddress`, `content`, and `collectionAddress` might start as `null` or have the same collection address for all items.
+
+In such cases, it's more gas-efficient to group these common fields at the beginning of the contract parameters.
+
+```tact
+// Less efficient - common values scattered
+contract NFTItem(
+    index: Int,
+    ownerAddress: Address?, // starts as null
+    collectionAddress: Address,
+    someOtherField: Int,
+    content: Cell?,        // starts as null
+) {
+    // ...implementation...
+}
+
+// More efficient - common values grouped on top
+contract NFTItem(
+    ownerAddress: Address?, // starts as null
+    content: Cell?,        // starts as null
+    collectionAddress: Address,
+    index: Int,
+    someOtherField: Int
+) {
+    // ...implementation...
+}
+```
+
 ### Do not deploy contracts with `Deployable` trait
 
 The `Deployable{:tact}` trait is now deprecated and should only be used if you require the `queryId`, which serves as a unique identifier for tracing transactions across multiple contracts.
