@@ -7,15 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.8] - 2025-05-16
+
 ### Breaking changes
 
-- Compiler now reports an error if `VarAddress` or `parseVarAddress()` is used, since starting
+- [stdlib] Compiler now reports an error if `VarAddress` or `parseVarAddress()` is used, since starting
   from [TVM 10](https://github.com/ton-blockchain/ton/blob/master/doc/GlobalVersions.md#version-10) they are mostly not supported: PR [#3067](https://github.com/tact-lang/tact/pull/3067).
 
 ### Language features
 
 - [fix] Compiler now correctly handles optional slices, builders, and strings when generating serialization logic: PR [#3053](https://github.com/tact-lang/tact/pull/3053)
 - [fix] Compiler now disallows type usages as value (e.g. `let x = Int` or `let x = MyStruct`): PR [#3065](https://github.com/tact-lang/tact/pull/3065)
+
+### Code generation
+
+- Use FunC and Fift WASM build [v2025.04](https://github.com/ton-blockchain/ton/releases/tag/v2025.04): PR [#3077](https://github.com/tact-lang/tact/pull/3077)
 
 ### Tooling
 
@@ -38,6 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [Novus Nota](https://github.com/novusnota)
 - [Petr Makhnev](https://github.com/i582)
+- [Daniil Sedov](https://github.com/Gusarich)
+- [skywardboundd](https://github.com/skywardboundd)
+- [xpyctumo](https://github.com/xpyctumo)
 
 ## [1.6.7] - 2025-04-24
 
