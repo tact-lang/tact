@@ -21,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [fix] Formatter now correctly handles floating comments: PR [#2995](https://github.com/tact-lang/tact/pull/2995)
 - [fix] Formatter now correctly handles inline comments after the last declaration: PR [#3064](https://github.com/tact-lang/tact/pull/3064)
-- [fix] Formatter now better supports comments inside chained method calls: PR [#3070](https://github.com/tact-lang/tact/pull/3070)
 - [fix] Formatter now correctly handles floating comments after import: PR [#3071](https://github.com/tact-lang/tact/pull/3071)
 - [fix] Formatter now better supports comments inside chained method calls: PR [#3070](https://github.com/tact-lang/tact/pull/3070)
 
