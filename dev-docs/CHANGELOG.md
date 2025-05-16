@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.10] - 2025-05-16
+
+### Infrastructure
+
+- [fix] Explicit dependencies to fix Blueprint integration: PR [#3088](https://github.com/tact-lang/tact/pull/3088)
+
 ## [1.6.9] - 2025-05-16
 
 ### TypeScript third-party API
 
-- [fix] Move logs-related TS files to separate folder: [PR #3082](https://github.com/tact-lang/tact/pull/3082)
+- [fix] Move logs-related TS files to separate folder: PR [#3082](https://github.com/tact-lang/tact/pull/3082)
 
 ### Release contributors
 
