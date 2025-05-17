@@ -1,6 +1,6 @@
 import { getAllExpressionTypes } from "@/types/resolveExpression";
 import { resolveDescriptors } from "@/types/resolveDescriptors";
-import { loadCases } from "@/utils/loadCases";
+import { loadCases } from "@/utils/loadCases.infra";
 import { openContext, parseModules } from "@/context/store";
 import { resolveStatements } from "@/types/resolveStatements";
 import { CompilerContext } from "@/context/context";
