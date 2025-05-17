@@ -22,7 +22,7 @@
   "scripts": {
     "compare": "ts-node src/test/utils/compare-logs.ts",
     "build:fast": "yarn clean && yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && tsc --project tsconfig.fast.json && yarn copy:stdlib && yarn copy:func && yarn to-relative",
-    "build": "cross-env NODE_OPTIONS=--max_old_space_size=4096 tsc && yarn copy:stdlib && yarn copy:func && yarn to-relative",
+    "build": "cross-env NODE_OPTIONS=--max_old_space_size=5120 tsc && yarn copy:stdlib && yarn copy:func && yarn to-relative",
     "gen:config": "ts-to-zod -k --skipValidation src/config/config.ts src/config/config.zod.ts",
     "gen:grammar": "pgen src/grammar/grammar.peggy -o src/grammar/grammar.ts",
     "gen:stdlib": "ts-node src/stdlib/stdlib.build.ts",
@@ -48,7 +48,7 @@
     "bench:ci": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=false jest ./src/benchmarks",
     "bench:update": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ts-node src/benchmarks/update.build.ts",
     "bench:add": "ts-node src/benchmarks/prompt.build.ts && yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ADD=true ts-node src/benchmarks/update.build.ts",
-    "coverage": "cross-env COVERAGE=true NODE_OPTIONS=--max_old_space_size=4096 jest --config=./jest-ci.config.js",
+    "coverage": "cross-env COVERAGE=true NODE_OPTIONS=--max_old_space_size=5120 jest --config=./jest-ci.config.js",
     "istanbul": "jest --coverage",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",

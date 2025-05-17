@@ -11,7 +11,7 @@ import type {
 import { MapTestContract } from "./output/maps2_MapTestContract";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import type { Address } from "@ton/core";
+import type { Address, Cell } from "@ton/core";
 import { beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
 
@@ -1422,6 +1422,13 @@ describe("MapTestContract", () => {
                     clearMessage,
                 );
             }
+
+            // Confirm that empty maps serialize to null and not empty Cells
+            const allMapsAsCell = await contract.getAsCellAllMaps();
+            mapConfigs.forEach(({ mapName }) => {
+                const map = allMapsAsCell[mapName] as Cell | null;
+                expect(map).toBe(null);
+            });
         }
     });
 
