@@ -1,2 +1,2 @@
-trait SomeTrait with SomeTrait {
+trait A with A {
 }

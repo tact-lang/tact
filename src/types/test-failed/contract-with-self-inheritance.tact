@@ -1,3 +1,7 @@
-contract Example with Example  {
+trait BaseTrait {
+
+}
+
+contract A with A {
 }
 
