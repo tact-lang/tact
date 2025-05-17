@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
   "name": "@tact-lang/compiler",
-  "version": "1.6.7",
+  "version": "1.6.10",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"
@@ -20,7 +20,7 @@
     }
   ],
   "scripts": {
-    "compare": "ts-node src/test/utils/compare-logs.ts",
+    "compare": "ts-node src/logs/compare-logs.infra.ts",
     "build:fast": "yarn clean && yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && tsc --project tsconfig.fast.json && yarn copy:stdlib && yarn copy:func && yarn to-relative",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=5120 tsc && yarn copy:stdlib && yarn copy:func && yarn to-relative",
     "gen:config": "ts-to-zod -k --skipValidation src/config/config.ts src/config/config.zod.ts",
@@ -60,7 +60,7 @@
     "lint:all": "yarn to-absolute && yarn gen:stdlib && yarn lint && yarn fmt:check:fast && yarn spell && yarn knip",
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "next-version": "ts-node version.build.ts",
-    "random-ast": "ts-node ./src/ast/random-ast.ts",
+    "random-ast": "ts-node ./src/ast/random-ast.infra.ts",
     "gen:make-funs": "ts-node ./src/ast/generated/gen-make-functions-script.ts && yarn prettier -w ./src/ast/generated/make-factory.ts",
     "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10",
     "gen:asm": "ts-node src/asm/generator/gen-constructors.ts && ts-node src/asm/generator/gen-converter.ts && ts-node src/asm/generator/gen-instr.ts && ts-node src/asm/generator/gen-printer.ts && ts-node src/asm/generator/gen-types.ts && yarn fmt"
@@ -75,10 +75,13 @@
     "!dist/**/output",
     "!/docs",
     "!**/*.build.*",
+    "!**/*.infra.*",
     "!**/*.spec.js",
     "!**/*.spec.d.ts",
     "!**/*.tsbuildinfo",
-    "!**/*.infra.ts"
+    "!dist/asm/helpers",
+    "!dist/asm/generator",
+    "!dist/ast/generated"
   ],
   "main": "./dist/index.js",
   "bin": {
@@ -92,8 +95,10 @@
     "@ton/crypto": "^3.2.0",
     "@tonstudio/parser-runtime": "0.0.1",
     "blockstore-core": "1.0.5",
+    "glob": "^8.1.0",
     "ipfs-unixfs-importer": "9.0.10",
     "path-normalize": "^6.0.13",
+    "yaml": "^2.7.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -128,7 +133,6 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.11.0",
     "fast-check": "^4.0.0",
-    "glob": "^8.1.0",
     "husky": "^9.1.5",
     "jest": "^29.3.1",
     "jest-environment-node": "^29.3.1",

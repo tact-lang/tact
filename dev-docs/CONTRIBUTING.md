@@ -422,4 +422,4 @@ yarn random-ast 42
 
 It will produce 42 random expressions and pretty-print them in the terminal.
 
-The implementation can be found in [`random-ast.ts`](../src/ast/random-ast.ts).
+The implementation can be found in [`random-ast.infra.ts`](../src/ast/random-ast.infra.ts).
