@@ -24,6 +24,7 @@ export function resolveImports({
     const processed: Set<string> = new Set();
     const pending: Source[] = [];
     function processImports(sourceFrom: Source) {
+        const resolvedPathsInCurrentFile: Set<string> = new Set();
         const imp = parser.parseImports(sourceFrom);
         for (const { importPath, loc } of imp) {
             // Resolve library
@@ -44,6 +45,15 @@ export function resolveImports({
             if (imported[resolved.language].has(resolved.path)) {
                 continue;
             }
+
+            // Check for duplicates within the current file
+            if (resolvedPathsInCurrentFile.has(resolved.path)) {
+                throwCompilationError(
+                    `Duplicate import of '${resolved.path}' in file '${sourceFrom.path}'`,
+                    loc,
+                );
+            }
+            resolvedPathsInCurrentFile.add(resolved.path);
 
             // Load code
             const vfs = resolved.origin === "user" ? project : stdlib;
