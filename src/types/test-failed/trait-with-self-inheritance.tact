@@ -1,0 +1,2 @@
+trait A with A {
+}
