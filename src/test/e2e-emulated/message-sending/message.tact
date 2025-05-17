@@ -22,32 +22,32 @@ contract MessageTester with Deployable {
 
         nativeReserve(ton("0.05"), ReserveAtMost | ReserveAddOriginalBalance);
 
-        message(MessageParameters{
+        MessageParameters{
             to: sender(),
             value: 0,
             mode: SendRemainingBalance,
             body: "I give you my all! Well, all that's not mine!".asComment(),
-        });
+        }.send();
     }
 
     /// Sends a message to our "topup" receiver via send(),
     /// keeps the original balance,
     /// then sends the rest in the next message via send()
     receive("ReserveAtMost_2") {
-        message(MessageParameters{
+        MessageParameters{
             to: myAddress(),
             value: 0,
             mode: SendDefaultMode | SendPayFwdFeesSeparately,
             body: "topup".asComment(),
-        });
+        }.send();
 
         nativeReserve(ton("0.05"), ReserveAtMost | ReserveAddOriginalBalance);
 
-        message(MessageParameters{
+        MessageParameters{
             to: sender(),
             value: 0,
             mode: SendRemainingBalance,
             body: "I give almost all that's not mine!".asComment(),
-        });
+        }.send();
     }
 }

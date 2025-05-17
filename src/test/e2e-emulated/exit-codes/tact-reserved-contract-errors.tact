@@ -60,12 +60,12 @@ contract ReservedContractErrorsTester with Ownable, Stoppable {
 
     /// Exit code TactExitCodeInvalidIncomingMessage
     receive("TactExitCodeInvalidIncomingMessage") {
-        message(MessageParameters {
+        MessageParameters {
             to: myAddress(), // Send a message back to this contract
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body: SpanishInquisition {}.toCell(), // Nobody expects it!
-        });
+        }.send();
     }
 
     /// Exit code TactExitCodeAccessDenied

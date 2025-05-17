@@ -11,14 +11,14 @@ contract TestInit with Deployable {
         try {
             let init: StateInit = initOf TestNested();
             dump("init@TestInit-1");
-            send(SendParameters {
+            SendParameters {
                 to: contractAddress(init),
                 value: 0,
                 mode: SendIgnoreErrors | SendRemainingValue,
                 code: init.code,
                 data: init.data,
                 body: Deploy { queryId: 0 }.toCell(),
-            });
+            }.send();
             dump("init@TestInit-SUCCESS");
         } catch (e) {
             dump("ERROR@TestInit");

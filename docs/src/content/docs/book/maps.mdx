@@ -605,13 +605,13 @@ contract Iteration {
         // Loop until reaching the value of self.counter (over all the self.record entries)
         let i: Int = 0; // Declare i as usual for loop iterations
         while (i < self.counter) {
-            send(SendParameters {
+            SendParameters {
                 bounce: false,              // Do not bounce back this message
                 to: self.record.get(i)!!,   // Set the sender address, knowing that key i exists in the map
                 value: ton("0.0000001"),    // 100 nanoToncoin (nano-tons)
                 mode: SendIgnoreErrors,     // Send ignoring any transaction errors
                 body: "SENDING".asComment() // String "SENDING" converted to a Cell as a message body
-            });
+            }.send();
             i += 1; // Don't forget to increase i
         }
     }
