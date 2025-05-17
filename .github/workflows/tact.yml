@@ -165,6 +165,12 @@ jobs:
           ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
           yarn build
 
+      - name: Validate packaged compiler
+        run: |
+          PACKAGE=$(npm pack --silent)
+          tar -xzf "$PACKAGE"
+          node package/dist/index.js --version
+
       - name: (npm) Test creation of new Blueprint projects
         if: ${{ matrix.package-manager == 'npm' }}
         run: |

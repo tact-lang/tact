@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Infrastructure
+
+- [add] Validate packaged compiler in CI to catch missing modules
+
 ## [1.6.10] - 2025-05-16
 
 ### Infrastructure
