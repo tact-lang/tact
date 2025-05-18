@@ -6,6 +6,7 @@ import type { SrcInfo } from "@/grammar";
 
 export type AbiFunction = {
     name: string;
+    isStatic?: boolean;
     resolve: (
         ctx: CompilerContext,
         args: readonly TypeRef[],

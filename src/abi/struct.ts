@@ -52,6 +52,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "fromCell",
         {
             name: "fromCell",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
                     throwCompilationError(
@@ -111,6 +112,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "opcode",
         {
             name: "opcode",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 const [arg] = args;
                 if (typeof arg === "undefined" || args.length !== 1) {
@@ -210,6 +212,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "fromSlice",
         {
             name: "fromSlice",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
                     throwCompilationError(

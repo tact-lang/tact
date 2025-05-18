@@ -900,6 +900,51 @@ exports[`resolveStatements should fail statements for map-literal-mismatch-var 1
 "
 `;
 
+exports[`resolveStatements should fail statements for method-fromcell-call-non-static-context 1`] = `
+"<unknown>:12:19: Cannot call static method "fromCell" using an instance.
+  11 |     init(cell: Cell) {
+> 12 |         let res = SomeMessage{}.fromCell(cell);
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for method-fromslice-call-non-static-context 1`] = `
+"<unknown>:12:19: Cannot call static method "fromSlice" using an instance.
+  11 |     init(slice: Slice) {
+> 12 |         let res = SomeMessage{}.fromSlice(slice);
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for method-opcode-call-non-static-context 1`] = `
+"<unknown>:11:19: Cannot call static method "opcode" using an instance.
+  10 |     receive() {
+> 11 |         let res = SomeMessage{}.opcode();
+                         ^~~~~~~~~~~~~~~~~~~~~~
+  12 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for method-tocell-call-non-instance-context 1`] = `
+"<unknown>:11:19: Cannot call non-static method "toCell" from a static context
+  10 |     receive() {
+> 11 |         let res = SomeMessage.toCell();
+                         ^~~~~~~~~~~~~~~~~~~~
+  12 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for method-toslice-call-non-instance-context 1`] = `
+"<unknown>:11:19: Cannot call non-static method "toSlice" from a static context
+  10 |     receive() {
+> 11 |         let res = SomeMessage.toSlice();
+                         ^~~~~~~~~~~~~~~~~~~~~
+  12 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for return-analysis-catch-if 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
   3 | 
@@ -3351,6 +3396,84 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
   ],
   [
     "self.value + 1",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for methods-call-instance-context 1`] = `
+[
+  [
+    "SomeMessage{}",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage{}",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage{}.toSlice()",
+    "Slice",
+  ],
+  [
+    "msg",
+    "SomeMessage",
+  ],
+  [
+    "msg.toSlice()",
+    "Slice",
+  ],
+  [
+    "SomeMessage{}",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage{}.toCell()",
+    "Cell",
+  ],
+  [
+    "msg",
+    "SomeMessage",
+  ],
+  [
+    "msg.toCell()",
+    "Cell",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for methods-call-static-context 1`] = `
+[
+  [
+    "SomeMessage",
+    "SomeMessage",
+  ],
+  [
+    "slice",
+    "Slice",
+  ],
+  [
+    "SomeMessage.fromSlice(slice)",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage",
+    "SomeMessage",
+  ],
+  [
+    "cell",
+    "Cell",
+  ],
+  [
+    "SomeMessage.fromCell(cell)",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage.opcode()",
     "Int",
   ],
 ]
