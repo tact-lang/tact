@@ -247,21 +247,21 @@ export function writeAccessors(
                     `var (${vars.join(", ")}) = __tact_tuple_destroy_${vars.length}(v);`,
                 );
             } else {
-                const batch = vars.splice(0, maxTupleSize - 1);
+                const firstBatch = vars.splice(0, maxTupleSize - 1);
                 ctx.used(`__tact_tuple_destroy_${maxTupleSize}`);
                 ctx.append(
-                    `var (${batch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(v);`,
+                    `var (${firstBatch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(v);`,
                 );
                 while (vars.length >= maxTupleSize) {
-                    const batch = vars.splice(0, maxTupleSize - 1);
+                    const nextBatch = vars.splice(0, maxTupleSize - 1);
                     ctx.used(`__tact_tuple_destroy_${maxTupleSize}`);
                     ctx.append(
-                        `var (${batch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(next);`,
+                        `var (${nextBatch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(next);`,
                     );
                 }
                 ctx.used(`__tact_tuple_destroy_${vars.length}`);
                 ctx.append(
-                    `var (${batch.join(", ")}) = __tact_tuple_destroy_${vars.length}(next);`,
+                    `var (${vars.join(", ")}) = __tact_tuple_destroy_${vars.length}(next);`,
                 );
             }
             ctx.append(`return (${out.join(", ")});`);

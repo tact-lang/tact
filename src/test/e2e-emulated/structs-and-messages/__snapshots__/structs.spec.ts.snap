@@ -303,7 +303,9 @@ exports[`structs should implement structs correctly 13`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 14`] = `
+exports[`structs should implement structs correctly 14`] = `15n`;
+
+exports[`structs should implement structs correctly 15`] = `
 {
   "$$type": "LongStruct16",
   "x1": 1n,
@@ -325,7 +327,9 @@ exports[`structs should implement structs correctly 14`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 15`] = `
+exports[`structs should implement structs correctly 16`] = `16n`;
+
+exports[`structs should implement structs correctly 17`] = `
 {
   "$$type": "LongStruct32",
   "x1": 1n,
@@ -363,7 +367,9 @@ exports[`structs should implement structs correctly 15`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 16`] = `
+exports[`structs should implement structs correctly 18`] = `32n`;
+
+exports[`structs should implement structs correctly 19`] = `
 {
   "$$type": "LongNestedStruct",
   "s1": {
@@ -461,7 +467,9 @@ exports[`structs should implement structs correctly 16`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 17`] = `
+exports[`structs should implement structs correctly 20`] = `32n`;
+
+exports[`structs should implement structs correctly 21`] = `
 {
   "$$type": "LongNestedStructWithOpts",
   "s1": null,
@@ -542,7 +550,9 @@ exports[`structs should implement structs correctly 17`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 18`] = `
+exports[`structs should implement structs correctly 22`] = `32n`;
+
+exports[`structs should implement structs correctly 23`] = `
 TupleReader {
   "items": [
     {
@@ -609,7 +619,7 @@ TupleReader {
 }
 `;
 
-exports[`structs should implement structs correctly 19`] = `
+exports[`structs should implement structs correctly 24`] = `
 TupleReader {
   "items": [
     {
@@ -680,7 +690,7 @@ TupleReader {
 }
 `;
 
-exports[`structs should implement structs correctly 20`] = `
+exports[`structs should implement structs correctly 25`] = `
 TupleReader {
   "items": [
     {
@@ -815,7 +825,7 @@ TupleReader {
 }
 `;
 
-exports[`structs should implement structs correctly 21`] = `
+exports[`structs should implement structs correctly 26`] = `
 TupleReader {
   "items": [
     {
@@ -1154,7 +1164,7 @@ TupleReader {
 }
 `;
 
-exports[`structs should implement structs correctly 22`] = `
+exports[`structs should implement structs correctly 27`] = `
 TupleReader {
   "items": [
     {
@@ -1451,7 +1461,7 @@ TupleReader {
 }
 `;
 
-exports[`structs should implement structs correctly 23`] = `
+exports[`structs should implement structs correctly 28`] = `
 {
   "$$type": "Location",
   "idx": 1n,
@@ -1472,7 +1482,7 @@ exports[`structs should implement structs correctly 23`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 24`] = `
+exports[`structs should implement structs correctly 29`] = `
 {
   "$$type": "Location",
   "idx": 2n,
@@ -1505,7 +1515,7 @@ exports[`structs should implement structs correctly 24`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 25`] = `
+exports[`structs should implement structs correctly 30`] = `
 {
   "$$type": "TripleNestedStructOpt",
   "a": 1n,
@@ -1522,7 +1532,7 @@ exports[`structs should implement structs correctly 25`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 26`] = `
+exports[`structs should implement structs correctly 31`] = `
 {
   "$$type": "TripleNestedStructOpt",
   "a": 1n,
@@ -1530,7 +1540,7 @@ exports[`structs should implement structs correctly 26`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 27`] = `
+exports[`structs should implement structs correctly 32`] = `
 {
   "$$type": "TripleNestedStructOpt",
   "a": 1n,
@@ -1542,7 +1552,7 @@ exports[`structs should implement structs correctly 27`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 28`] = `
+exports[`structs should implement structs correctly 33`] = `
 {
   "$$type": "LongAndDeepNestedStruct",
   "s1": {
@@ -1594,7 +1604,7 @@ exports[`structs should implement structs correctly 28`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 29`] = `
+exports[`structs should implement structs correctly 34`] = `
 {
   "$$type": "LongAndDeepNestedStruct",
   "s1": {
@@ -1672,7 +1682,7 @@ exports[`structs should implement structs correctly 29`] = `
 }
 `;
 
-exports[`structs should implement structs correctly 30`] = `
+exports[`structs should implement structs correctly 35`] = `
 {
   "$$type": "LongAndDeepNestedStruct",
   "s1": {

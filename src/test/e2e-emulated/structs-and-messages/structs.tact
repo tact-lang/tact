@@ -540,6 +540,27 @@ contract StructsTester {
         return self.mapWithLongStructs15.get(1)!!;
     }
 
+    get fun longStruct15AccessTest(): Int {
+        let s = LongStruct15 {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15
+        };
+        return s.x15;
+    }
+
     get fun longStruct16Test(): LongStruct16 {
         let s = LongStruct16 {
             x1: 1,
@@ -565,6 +586,28 @@ contract StructsTester {
 
         self.mapWithLongStructs16.set(1, s);
         return self.mapWithLongStructs16.get(1)!!;
+    }
+
+    get fun longStruct16AccessTest(): Int {
+        let s = LongStruct16 {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15,
+            x16: 16
+        };
+        return s.x16;
     }
 
     get fun longStruct32Test(): LongStruct32 {
@@ -608,6 +651,44 @@ contract StructsTester {
 
         self.mapWithLongStructs32.set(1, s);
         return self.mapWithLongStructs32.get(1)!!;
+    }
+
+    get fun longStruct32AccessTest(): Int {
+        let s = LongStruct32 {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15,
+            x16: 16,
+            x17: 17,
+            x18: 18,
+            x19: 19,
+            x20: 20,
+            x21: 21,
+            x22: 22,
+            x23: 23,
+            x24: 24,
+            x25: 25,
+            x26: 26,
+            x27: 27,
+            x28: 28,
+            x29: 29,
+            x30: 30,
+            x31: 31,
+            x32: 32
+        };
+        return s.x32;
     }
 
     get fun longNestedStructTest(): LongNestedStruct {
@@ -706,6 +787,102 @@ contract StructsTester {
         return s;
     }
 
+    get fun longNestedStructAccessTest(): Int {
+        let s = LongNestedStruct {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15,
+            x16: 16,
+            x17: 17,
+            x18: 18,
+            x19: 19,
+            x20: 20,
+            s1: LongStruct15 {
+                x1: 1,
+                x2: 2,
+                x3: 3,
+                x4: 4,
+                x5: 5,
+                x6: 6,
+                x7: 7,
+                x8: 8,
+                x9: 9,
+                x10: 10,
+                x11: 11,
+                x12: 12,
+                x13: 13,
+                x14: 14,
+                x15: 15
+            },
+            s2: LongStruct16 {
+                x1: 1,
+                x2: 2,
+                x3: 3,
+                x4: 4,
+                x5: 5,
+                x6: 6,
+                x7: 7,
+                x8: 8,
+                x9: 9,
+                x10: 10,
+                x11: 11,
+                x12: 12,
+                x13: 13,
+                x14: 14,
+                x15: 15,
+                x16: 16
+            },
+            s3: LongStruct32 {
+                x1: 1,
+                x2: 2,
+                x3: 3,
+                x4: 4,
+                x5: 5,
+                x6: 6,
+                x7: 7,
+                x8: 8,
+                x9: 9,
+                x10: 10,
+                x11: 11,
+                x12: 12,
+                x13: 13,
+                x14: 14,
+                x15: 15,
+                x16: 16,
+                x17: 17,
+                x18: 18,
+                x19: 19,
+                x20: 20,
+                x21: 21,
+                x22: 22,
+                x23: 23,
+                x24: 24,
+                x25: 25,
+                x26: 26,
+                x27: 27,
+                x28: 28,
+                x29: 29,
+                x30: 30,
+                x31: 31,
+                x32: 32
+            }
+        };
+
+        return s.s3.x32;
+    }
+
     get fun longNestedStructWithOptsTest(): LongNestedStructWithOpts {
         let s = LongNestedStructWithOpts {
             x1: 1,
@@ -784,6 +961,86 @@ contract StructsTester {
         };
 
         return s;
+    }
+
+    get fun longNestedStructWithOptsAccessTest(): Int {
+        let s = LongNestedStructWithOpts {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15,
+            x16: 16,
+            x17: 17,
+            x18: 18,
+            x19: 19,
+            x20: 20,
+            s1: null,
+            s2: LongStruct16 {
+                x1: 1,
+                x2: 2,
+                x3: 3,
+                x4: 4,
+                x5: 5,
+                x6: 6,
+                x7: 7,
+                x8: 8,
+                x9: 9,
+                x10: 10,
+                x11: 11,
+                x12: 12,
+                x13: 13,
+                x14: 14,
+                x15: 15,
+                x16: 16
+            },
+            s3: LongStruct32 {
+                x1: 1,
+                x2: 2,
+                x3: 3,
+                x4: 4,
+                x5: 5,
+                x6: 6,
+                x7: 7,
+                x8: 8,
+                x9: 9,
+                x10: 10,
+                x11: 11,
+                x12: 12,
+                x13: 13,
+                x14: 14,
+                x15: 15,
+                x16: 16,
+                x17: 17,
+                x18: 18,
+                x19: 19,
+                x20: 20,
+                x21: 21,
+                x22: 22,
+                x23: 23,
+                x24: 24,
+                x25: 25,
+                x26: 26,
+                x27: 27,
+                x28: 28,
+                x29: 29,
+                x30: 30,
+                x31: 31,
+                x32: 32
+            }
+        };
+
+        return s.s3!!.x32;
     }
 
     get fun longContractTest(): Int {
