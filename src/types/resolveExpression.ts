@@ -682,7 +682,8 @@ function resolveCall(
             if (StructFunctions.has(idText(exp.method))) {
                 const abi = StructFunctions.get(idText(exp.method))!;
                 const isInstanceCall = exp.self.kind !== "id";
-                const isStaticCallFromType = exp.self.kind === "id" && exp.self.text === src.name;
+                const isStaticCallFromType =
+                    exp.self.kind === "id" && exp.self.text === src.name;
 
                 if (abi.isStatic && isInstanceCall) {
                     throwCompilationError(
