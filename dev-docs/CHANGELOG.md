@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+
+- Changed the title of the "Gas-expensive" badge to "500+ gas" to avoid confusion when discussing relative gas-efficiency: PR [#TBD](https://github.com/tact-lang/tact/pull/TBD)
+
 ## [1.6.10] - 2025-05-16
 
 ### Infrastructure
