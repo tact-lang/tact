@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [fix] Added fixed-bytes support to bounced message size calculations
 
+### Docs
+
+- Changed the title of the "Gas-expensive" badge to "500+ gas" to avoid confusion when discussing relative gas-efficiency: PR [#3120](https://github.com/tact-lang/tact/pull/3120)
+
 ## [1.6.10] - 2025-05-16
 
 ### Infrastructure

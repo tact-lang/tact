@@ -109,7 +109,7 @@ let depth: Int = c.depth(); // 0
 
 ### Cell.computeDataSize
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -187,7 +187,7 @@ A section to group all extension and extension mutation functions for the [`Buil
 
 ### Builder.endCell
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun endCell(self: Builder): Cell;
@@ -1470,7 +1470,7 @@ let depth: Int = s.depth(); // 0
 
 ### Slice.computeDataSize
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -1594,7 +1594,7 @@ try {
 
 ### Slice.hash
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun hash(self: Slice): Int;
@@ -1650,7 +1650,7 @@ sha256(long) == long.hashData(); // false!
 
 ### Slice.asCell
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun asCell(self: Slice): Cell;
@@ -1692,7 +1692,7 @@ fizz == buzz; // true
 
 ### Slice.fromBase64
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun fromBase64(self: Slice): Slice;
