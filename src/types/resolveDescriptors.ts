@@ -2464,7 +2464,7 @@ function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
 
         if (Number.isInteger(format)) {
             const amount = format as number;
-            fieldBits += (type === "fixed-bytes" ? amount * 8 : amount);
+            fieldBits += type === "fixed-bytes" ? amount * 8 : amount;
         } else if (format === "coins") {
             fieldBits += 124;
         } else if (f.abi.type.type === "address") {

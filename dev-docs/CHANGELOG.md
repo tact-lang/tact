@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [fix] Added fixed-bytes support to bounced message size calculations
+
 ## [1.6.10] - 2025-05-16
 
 ### Infrastructure
