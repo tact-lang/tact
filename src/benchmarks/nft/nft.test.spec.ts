@@ -10,19 +10,14 @@ import type {
     TupleItemSlice,
     TupleItemCell,
 } from "@ton/core";
-import type { 
-    SandboxContract, 
+import type {
+    SandboxContract,
     TreasuryContract,
-    SendMessageResult
+    SendMessageResult,
 } from "@ton/sandbox";
 
 // Value imports
-import { 
-    beginCell, 
-    Cell, 
-    toNano, 
-    Dictionary 
-} from "@ton/core";
+import { beginCell, Cell, toNano, Dictionary } from "@ton/core";
 import { Blockchain } from "@ton/sandbox";
 
 // NFT Collection imports
@@ -42,14 +37,8 @@ import {
 } from "./output/collection_NFTCollection";
 
 // NFT Item imports
-import type { 
-    Transfer, 
-    NFTData 
-} from "./output/item_NFTItem";
-import { 
-    storeInitNFTBody, 
-    NFTItem 
-} from "./output/item_NFTItem";
+import type { Transfer, NFTData } from "./output/item_NFTItem";
+import { storeInitNFTBody, NFTItem } from "./output/item_NFTItem";
 
 import "@ton/test-utils";
 import { randomInt } from "crypto";
@@ -137,7 +126,7 @@ const TestValues = {
     /** Additional test values */
     ExtraValues: {
         BatchMultiplier: 10n,
-    }
+    },
 } as const;
 
 /** Dictionary type for NFT deployment data */
@@ -284,13 +273,13 @@ describe("NFT Item Contract", () => {
                 masterChainBitPricePerSecond: 0n,
                 masterChainCellPricePerSecond: 0n,
             }),
-        ); 
+        );
 
         owner = await blockchain.treasury("owner");
         notOwner = await blockchain.treasury("notOwner");
 
         emptyAddress = null;
-        defaultContent = Cell.fromBase64("te6ccgEBAQEAAgAAAA=="); // just some content ( doesn't matter )
+        defaultContent = beginCell().endCell(); // just some content ( doesn't matter )
 
         itemNFT = blockchain.openContract(
             await NFTItem.fromInit(null, null, owner.address, 0n),
@@ -428,9 +417,8 @@ describe("NFT Item Contract", () => {
             });
         });
 
-        
         it("test transfer forward fee single", async () => {
-            // If transfer is successfull NFT supposed to send up to 2 messages
+            // If transfer is successful NFT supposed to send up to 2 messages
             // 1)To the owner_address with forward_amount of coins
             // 2)To the response_addr with forward_payload if response_addr is not addr_none
             // Each of those messages costs fwd_fee
@@ -460,7 +448,7 @@ describe("NFT Item Contract", () => {
                 fwdFee = Storage.ForwardFee.Double;
             });
             it("should false with only one fwd fee on balance", async () => {
-                // If transfer is successfull NFT supposed to send up to 2 messages
+                // If transfer is successful NFT supposed to send up to 2 messages
                 // 1)To the owner_address with forward_amount of coins
                 // 2)To the response_addr with forward_payload if response_addr is not addr_none
                 // Each of those messages costs fwd_fee
@@ -985,7 +973,11 @@ describe("NFT Collection Contract", () => {
 
             return await collectionNFT.send(
                 sender.getSender(),
-                { value: Storage.BatchDeployAmount * (count + TestValues.ExtraValues.BatchMultiplier) },
+                {
+                    value:
+                        Storage.BatchDeployAmount *
+                        (count + TestValues.ExtraValues.BatchMultiplier),
+                },
                 batchMintNFT,
             );
         };
@@ -1077,7 +1069,7 @@ describe("NFT Collection Contract", () => {
             });
         });
         describe("!!--DIFF TEST---!!", () => {
-            it("Should HAVE message in batchdeploy with previous indexes", async () => {
+            it("Should HAVE message in batchDeploy with previous indexes", async () => {
                 await batchMintNFTProcess(collectionNFT, owner, owner, 50n);
                 const trxResult = await batchMintNFTProcess(
                     collectionNFT,
