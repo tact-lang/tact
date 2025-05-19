@@ -2467,9 +2467,9 @@ function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
             fieldBits += type === "fixed-bytes" ? amount * 8 : amount;
         } else if (format === "coins") {
             fieldBits += 124;
-        } else if (f.abi.type.type === "address") {
+        } else if (type === "address") {
             fieldBits += 267;
-        } else if (f.abi.type.type === "bool") {
+        } else if (type === "bool") {
             fieldBits += 1;
         } else {
             // Unsupported - all others (slice, builder, nested structs, maps)
