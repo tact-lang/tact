@@ -3,6 +3,7 @@ import type {
     Address,
     Slice,
     ContractProvider,
+    Cell,
     Sender,
     Builder,
     TupleItem,
@@ -10,14 +11,15 @@ import type {
     TupleItemSlice,
     TupleItemCell,
 } from "@ton/core";
+// Value imports
+import { beginCell, toNano, Dictionary } from "@ton/core";
+
 import type {
     SandboxContract,
     TreasuryContract,
     SendMessageResult,
 } from "@ton/sandbox";
 
-// Value imports
-import { beginCell, Cell, toNano, Dictionary } from "@ton/core";
 import { Blockchain } from "@ton/sandbox";
 
 // NFT Collection imports
