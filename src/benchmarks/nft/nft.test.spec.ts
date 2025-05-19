@@ -652,7 +652,7 @@ describe("NFT Collection Contract", () => {
 
         defaultCommonContent = beginCell().storeStringTail("common").endCell();
         defaultCollectionContent = beginCell()
-            .storeStringTail("collectioncontent")
+            .storeStringTail("collectionContent")
             .endCell();
 
         defaultNFTContent = beginCell().storeStringTail("1.json").endCell();
