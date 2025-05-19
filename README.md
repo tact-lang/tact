@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Tact language banner](./assets/banner.png)
+![Tact language banner](https://raw.githubusercontent.com/tact-lang/tact/refs/heads/main/assets/banner.png)
 
 A next-gen smart contract programming language for TON Blockchain focused on efficiency and ease of development.
 Tact is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
