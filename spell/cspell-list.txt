@@ -64,6 +64,7 @@ funcfiftlib
 funcid
 funs
 Georgiy
+Getgems
 getsimpleforwardfee
 gettest
 guarantor
@@ -199,6 +200,7 @@ timeouted
 Timeouted
 Toncoin
 Toncoins
+Tonkeeper
 tonstudio
 Topup
 Tradoor
