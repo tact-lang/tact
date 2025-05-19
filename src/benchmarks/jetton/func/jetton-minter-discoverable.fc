@@ -1,3 +1,4 @@
+;; https://github.com/ton-blockchain/token-contract/blob/f2253cb0f0e1ae0974d7dc0cef3a62cb6e19f806/ft/jetton-minter-discoverable.fc
 ;; Jettons discoverable smart contract
 #include "params.fc";
 #include "op-codes.fc";

@@ -1,3 +1,4 @@
+;; https://github.com/getgems-io/nft-contracts/blob/24ae5e9c7a6c78b592c01be32fee2edb12424be8/packages/contracts/sources/op-codes.fc
 int op::transfer() asm "0x5fcc3d14 PUSHINT";
 int op::ownership_assigned() asm "0x05138d91 PUSHINT";
 int op::excesses() asm "0xd53276db PUSHINT";
