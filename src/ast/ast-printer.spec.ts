@@ -4,6 +4,8 @@ import { getParser } from "@/grammar";
 import { join } from "path";
 import * as assert from "assert";
 import { getAstFactory } from "@/ast/ast-helpers";
+import { attachment, step } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
 
 const contractsDir = join(__dirname, "contracts");
 
@@ -40,11 +42,13 @@ describe.each(contracts)("%s", (_, path) => {
         );
     });
 
-    it("shouldn't change AST", () => {
+    it("shouldn't change AST", async () => {
         const Ast = getAstFactory();
         const { parse } = getParser(Ast);
         const code = fs.readFileSync(path, "utf-8");
         const ast = parse({ code, path, origin: "user" });
+        await attachment("Code", code, ContentType.TEXT);
+
         //TODO: change for proper recursive removal
         const astStr = stringify(ast).replace(/"id":[0-9]+,/g, "");
 
@@ -54,11 +58,22 @@ describe.each(contracts)("%s", (_, path) => {
             path,
             origin: "user",
         });
+
+        await attachment("Formatted code", formattedCode, ContentType.TEXT);
+        await attachment("AST of Code", astStr, ContentType.JSON);
+
         //TODO: change for proper recursive removal
         const astFormattedStr = stringify(astFormatted).replace(
             /"id":[0-9]+,/g,
             "",
         );
-        expect(astFormattedStr).toEqual(astStr);
+        await attachment(
+            "AST of Formatted Code",
+            astFormattedStr,
+            ContentType.JSON,
+        );
+        await step("AST string should be equal", () => {
+            expect(astFormattedStr).toEqual(astStr);
+        });
     });
 });

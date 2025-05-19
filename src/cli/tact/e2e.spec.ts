@@ -1,6 +1,8 @@
 import { stat } from "fs/promises";
 import { makeCodegen, runCommand } from "@/cli/test-util.build";
-import { join, normalize, dirname } from "path";
+import { dirname, join, normalize } from "path";
+import { attachment, step } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
 
 // disable tests on windows
 const testExceptWindows =
@@ -20,16 +22,22 @@ describe("tact --version", () => {
     testExceptWindows("Exits with correct code", async () => {
         const result = await tact("--version");
 
-        expect(result).toMatchObject({ kind: "exited", code: 0 });
+        await step("Result exited with code 0", () => {
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+        });
     });
 
     testExceptWindows("Returns correct stdout", async () => {
         const result = await tact("--version");
 
-        expect(result).toHaveProperty(
-            "stdout",
-            expect.stringMatching(/^\d+\.\d+\.\d+\ngit commit: [0-9a-f]+\n$/),
-        );
+        await step("Stdout contains version string", () => {
+            expect(result).toHaveProperty(
+                "stdout",
+                expect.stringMatching(
+                    /^\d+\.\d+\.\d+\ngit commit: [0-9a-f]+\n$/,
+                ),
+            );
+        });
     });
 });
 
@@ -62,10 +70,12 @@ describe("tact foo.tact", () => {
                 await codegen.contract(`no-err-${name}`, code),
             );
 
-            expect(result).toHaveProperty(
-                "stdout",
-                expect.not.stringMatching(/.*at \w+ \(.*/),
-            );
+            await step("Stdout contains no stacktrace", () => {
+                expect(result).toHaveProperty(
+                    "stdout",
+                    expect.not.stringMatching(/.*at \w+ \(.*/),
+                );
+            });
         },
     );
 
@@ -97,99 +107,131 @@ describe("tact foo.tact --...", () => {
     testExceptWindows(
         "Check single-contract compilation without flags",
         async () => {
+            await attachment("Code", goodContract, ContentType.TEXT);
             const path = await codegen.contract(`single`, goodContract);
             const result = await tact(path);
 
-            expect(result).toMatchObject({ kind: "exited", code: 0 });
+            await step("Result exited with code 0", () => {
+                expect(result).toMatchObject({ kind: "exited", code: 0 });
+            });
         },
     );
 
     testExceptWindows(
         "Check single-contract compilation with custom output directory",
         async () => {
+            await attachment("Code", goodContract, ContentType.TEXT);
             const path = await codegen.contract(`single-output`, goodContract);
             const customOutput = "custom-output";
             const result = await tact(`${path} --output ${customOutput}`);
 
-            expect(result).toMatchObject({ kind: "exited", code: 0 });
+            await step("Result exited with code 0", () => {
+                expect(result).toMatchObject({ kind: "exited", code: 0 });
+            });
 
             const statPromise = stat(join(dirname(path), customOutput));
-            await expect(statPromise).resolves.not.toThrow();
+            await step("Custom output directory exists", async () => {
+                await expect(statPromise).resolves.not.toThrow();
+            });
         },
     );
 
     testExceptWindows(
         "Check single-contract compilation with --check",
         async () => {
+            await attachment("Code", goodContract, ContentType.TEXT);
             const path = await codegen.contract(`single-check`, goodContract);
             const result = await tact(`--check ${path}`);
 
-            expect(result).toMatchObject({ kind: "exited", code: 0 });
+            await step("Result exited with code 0", () => {
+                expect(result).toMatchObject({ kind: "exited", code: 0 });
+            });
         },
     );
 
     testExceptWindows(
         "Check single-contract compilation with --func",
         async () => {
+            await attachment("Code", goodContract, ContentType.TEXT);
             const path = await codegen.contract(`single-func`, goodContract);
             const result = await tact(`--func ${path}`);
 
-            expect(result).toMatchObject({ kind: "exited", code: 0 });
+            await step("Result exited with code 0", () => {
+                expect(result).toMatchObject({ kind: "exited", code: 0 });
+            });
         },
     );
 
     testExceptWindows(
         "Check single-contract compilation with --with-decompilation",
         async () => {
+            await attachment("Code", goodContract, ContentType.TEXT);
             const path = await codegen.contract(
                 `single-decompile`,
                 goodContract,
             );
             const result = await tact(`--with-decompilation ${path}`);
 
-            expect(result).toMatchObject({ kind: "exited", code: 0 });
+            await step("Result exited with code 0", () => {
+                expect(result).toMatchObject({ kind: "exited", code: 0 });
+            });
         },
     );
 });
 
 describe("tact --config config.json", () => {
     testExceptWindows("Complete results", async () => {
+        await attachment("Code", goodContract, ContentType.TEXT);
         const r = await codegen.config("complete", goodContract, {
             options: { external: true },
             mode: "full",
         });
 
         const result = await tact(`--config ${r.config}`);
-        expect(result).toMatchObject({ kind: "exited", code: 0 });
+        await step("Result exited with code 0", () => {
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+        });
 
         const statPromise = stat(r.outputPath("pkg"));
-        await expect(statPromise).resolves.not.toThrow();
+        await step("Package directory exists", async () => {
+            await expect(statPromise).resolves.not.toThrow();
+        });
     });
 
     testExceptWindows("With decompiled binary", async () => {
+        await attachment("Code", goodContract, ContentType.TEXT);
         const r = await codegen.config("decompile", goodContract, {
             options: { external: true },
             mode: "fullWithDecompilation",
         });
 
         const result = await tact(`--config ${r.config}`);
-        expect(result).toMatchObject({ kind: "exited", code: 0 });
+        await step("Result exited with code 0", () => {
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+        });
 
         const statPromise = stat(r.outputPath("rev.fif"));
-        await expect(statPromise).resolves.toMatchObject({});
+        await step("Reverse binary file exists", async () => {
+            await expect(statPromise).resolves.toMatchObject({});
+        });
     });
 
     testExceptWindows("Mode passed as parameter takes priority", async () => {
+        await attachment("Code", goodContract, ContentType.TEXT);
         const r = await codegen.config("priority", goodContract, {
             options: { external: true },
             mode: "full",
         });
 
         const result = await tact(`--check --config ${r.config}`);
-        expect(result).toMatchObject({ kind: "exited", code: 0 });
+        await step("Result exited with code 0", () => {
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+        });
 
         const statPromise = stat(r.outputPath("pkg"));
-        await expect(statPromise).rejects.toThrow();
+        await step("Package directory should not exist", async () => {
+            await expect(statPromise).rejects.toThrow();
+        });
     });
 });
 
@@ -201,50 +243,66 @@ describe("tact -q foo.tact", () => {
         );
         const result = await tact(`-q ${path}`);
 
-        expect(
-            result.kind === "exited" &&
-                result.stderr.includes("Cannot find 'A'"),
-        ).toBe(true);
-        expect(result).toMatchObject({ kind: "exited", code: 30 });
+        await step("Stderr reports compilation error", () => {
+            expect(
+                result.kind === "exited" &&
+                    result.stderr.includes("Cannot find 'A'"),
+            ).toBe(true);
+        });
+        await step("Result exited with code 30", () => {
+            expect(result).toMatchObject({ kind: "exited", code: 30 });
+        });
     });
 });
 
 describe("Wrong flags", () => {
     testExceptWindows("--func --check are mutually exclusive ", async () => {
+        await attachment("Code", goodContract, ContentType.TEXT);
         const path = await codegen.contract(`func-check`, goodContract);
         const result = await tact(`${path} --func --check`);
 
-        expect(result).toMatchObject({ kind: "exited", code: 30 });
+        await step("Result exited with code 30", () => {
+            expect(result).toMatchObject({ kind: "exited", code: 30 });
+        });
     });
 
     testExceptWindows(
         "--with-decompilation --check are mutually exclusive",
         async () => {
+            await attachment("Code", goodContract, ContentType.TEXT);
             const path = await codegen.contract(
                 `decompile-check`,
                 goodContract,
             );
             const result = await tact(`${path} --with-decompilation --check`);
 
-            expect(result).toMatchObject({ kind: "exited", code: 30 });
+            await step("Result exited with code 30", () => {
+                expect(result).toMatchObject({ kind: "exited", code: 30 });
+            });
         },
     );
 
     testExceptWindows(
         "--func --with-decompilation are mutually exclusive",
         async () => {
+            await attachment("Code", goodContract, ContentType.TEXT);
             const path = await codegen.contract(`func-decompile`, goodContract);
             const result = await tact(`${path} --func --with-decompilation`);
 
-            expect(result).toMatchObject({ kind: "exited", code: 30 });
+            await step("Result exited with code 30", () => {
+                expect(result).toMatchObject({ kind: "exited", code: 30 });
+            });
         },
     );
 
     testExceptWindows("Unknown flag throws error", async () => {
+        await attachment("Code", goodContract, ContentType.TEXT);
         const path = await codegen.contract(`func-decompile`, goodContract);
         const result = await tact(`${path} --unknownOption`);
 
-        expect(result).toMatchObject({ kind: "exited", code: 30 });
+        await step("Result exited with code 30", () => {
+            expect(result).toMatchObject({ kind: "exited", code: 30 });
+        });
     });
 });
 
@@ -264,7 +322,9 @@ describe("Compilation failures", () => {
         });
 
         const result = await tact(`--config ${r.config}`);
-        expect(result).toMatchObject({ kind: "exited", code: 30 });
+        await step("Result exited with code 30", () => {
+            expect(result).toMatchObject({ kind: "exited", code: 30 });
+        });
     });
 });
 
@@ -274,7 +334,12 @@ describe("tact --eval", () => {
             '-e "(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2"',
         );
 
-        expect(result).toHaveProperty("stdout", expect.stringMatching("42\n"));
+        await step("Stdout evaluates to 42", () => {
+            expect(result).toHaveProperty(
+                "stdout",
+                expect.stringMatching("42\n"),
+            );
+        });
     });
 
     testExceptWindows(
@@ -282,10 +347,12 @@ describe("tact --eval", () => {
         async () => {
             const result = await tact('-e "0x2A"');
 
-            expect(result).toHaveProperty(
-                "stdout",
-                expect.stringMatching("42\n"),
-            );
+            await step("Stdout evaluates to 42", () => {
+                expect(result).toHaveProperty(
+                    "stdout",
+                    expect.stringMatching("42\n"),
+                );
+            });
         },
     );
 
@@ -294,10 +361,12 @@ describe("tact --eval", () => {
         async () => {
             const result = await tact('-e "42"');
 
-            expect(result).toHaveProperty(
-                "stdout",
-                expect.stringMatching("42\n"),
-            );
+            await step("Stdout evaluates to 42", () => {
+                expect(result).toHaveProperty(
+                    "stdout",
+                    expect.stringMatching("42\n"),
+                );
+            });
         },
     );
 
@@ -306,10 +375,12 @@ describe("tact --eval", () => {
         async () => {
             const result = await tact('-e "0o52"');
 
-            expect(result).toHaveProperty(
-                "stdout",
-                expect.stringMatching("42\n"),
-            );
+            await step("Stdout evaluates to 42", () => {
+                expect(result).toHaveProperty(
+                    "stdout",
+                    expect.stringMatching("42\n"),
+                );
+            });
         },
     );
 
@@ -318,10 +389,12 @@ describe("tact --eval", () => {
         async () => {
             const result = await tact('-e "0b101010"');
 
-            expect(result).toHaveProperty(
-                "stdout",
-                expect.stringMatching("42\n"),
-            );
+            await step("Stdout evaluates to 42", () => {
+                expect(result).toHaveProperty(
+                    "stdout",
+                    expect.stringMatching("42\n"),
+                );
+            });
         },
     );
 });

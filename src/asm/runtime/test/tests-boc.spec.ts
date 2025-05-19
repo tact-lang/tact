@@ -10,6 +10,7 @@ import * as path from "node:path";
 import * as fs from "node:fs";
 import { Cell } from "@ton/core";
 import { DefaultExoticCell, hex } from "@/asm/runtime/util";
+import { step } from "@/test/allure/allure";
 
 const readBoc = (filename: string): Cell | undefined => {
     const filePath = path.join(__dirname, "testdata", filename);
@@ -23,12 +24,14 @@ const readHex = (filename: string): Cell => {
 
 const test =
     (instructions: i.Instr[], expectedBoc: Cell | undefined): (() => void) =>
-    () => {
+    async () => {
         if (expectedBoc === undefined) {
             throw new Error("expectedBoc is undefined");
         }
         const compiled = i.compileCell(instructions);
-        expect(compiled.toString()).toEqual(expectedBoc.toString());
+        await step("Compiled cell should be expected", () => {
+            expect(compiled.toString()).toEqual(expectedBoc.toString());
+        });
     };
 
 describe("tests", () => {

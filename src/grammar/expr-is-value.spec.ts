@@ -2,6 +2,7 @@
 
 import { getAstFactory, isLiteral } from "@/ast/ast-helpers";
 import { getParser } from "@/grammar/index";
+import { step } from "@/test/allure/allure";
 
 const valueExpressions: string[] = ["1", "true", "false", "null"];
 
@@ -49,21 +50,27 @@ const notValueExpressions: string[] = [
     "initOf a(0,1,null)",
 ];
 
-function testIsValue(expr: string, testResult: boolean) {
+async function testIsValue(expr: string, expected: boolean): Promise<void> {
     const ast = getAstFactory();
     const { parseExpression } = getParser(ast);
-    expect(isLiteral(parseExpression(expr))).toBe(testResult);
+    await step(
+        `'${expr}' should ${expected ? "" : "NOT "}be identified as a value`,
+        () => {
+            expect(isLiteral(parseExpression(expr))).toBe(expected);
+        },
+    );
 }
 
 describe("expression-is-value", () => {
-    valueExpressions.forEach((test) => {
-        it(`should correctly determine that '${test}' is a value expression.`, () => {
-            testIsValue(test, true);
-        });
+    it("should correctly identify value expressions", async () => {
+        for (const expr of valueExpressions) {
+            await testIsValue(expr, true);
+        }
     });
-    notValueExpressions.forEach((test) => {
-        it(`should correctly determine that '${test}' is NOT a value expression.`, () => {
-            testIsValue(test, false);
-        });
+
+    it("should correctly identify non‑value expressions", async () => {
+        for (const expr of notValueExpressions) {
+            await testIsValue(expr, false);
+        }
     });
 });

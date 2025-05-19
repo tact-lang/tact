@@ -1,31 +1,32 @@
 import "@ton/test-utils";
-import { Cell, beginCell, toNano, contractAddress } from "@ton/core";
-import type { Sender, Address } from "@ton/core";
-import { Blockchain } from "@ton/sandbox";
+import type { Address, Sender } from "@ton/core";
+import { beginCell, Cell, contractAddress, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import {
-    generateResults,
-    getStateSizeForAccount,
-    generateCodeSizeResults,
-    getUsedGas,
-    printBenchmarkTable,
     type BenchmarkResult,
     type CodeSizeResult,
+    generateCodeSizeResults,
+    generateResults,
+    getStateSizeForAccount,
+    getUsedGas,
+    printBenchmarkTable,
 } from "@/benchmarks/utils/gas";
-import { join, resolve } from "path";
+import { resolve } from "path";
 import { readFileSync } from "fs";
 import { posixNormalize } from "@/utils/filePath";
-import { type Step, writeLog } from "@/test/utils/write-vm-log";
-import { Escrow } from "@/benchmarks/escrow/tact/output/escrow_Escrow";
 import type {
-    UpdateJettonWalletCode,
-    Funding,
     Approve,
     Cancel,
+    Funding,
+    UpdateJettonWalletCode,
 } from "@/benchmarks/escrow/tact/output/escrow_Escrow";
+import { Escrow } from "@/benchmarks/escrow/tact/output/escrow_Escrow";
 
 import benchmarkResults from "@/benchmarks/escrow/results_gas.json";
 import benchmarkCodeSizeResults from "@/benchmarks/escrow/results_code_size.json";
+import { attachment, parameter, step } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
 
 const loadFunCEscrowBoc = () => {
     const bocEscrow = readFileSync(
@@ -59,8 +60,6 @@ function testEscrow(
 
     const jettonWalletCode = beginCell().storeUint(0, 1).endCell();
 
-    let step: Step;
-
     const dealAmount = toNano(1);
 
     async function deployContract(
@@ -80,21 +79,30 @@ function testEscrow(
             assetAddress ? jettonWalletCode : null,
         );
 
-        const contract = blockchain.openContract(contractInit);
+        const contract = await step("Open contract", () => {
+            return blockchain.openContract(contractInit);
+        });
 
-        const deployResult = await contract.send(
-            deployer.getSender(),
-            { value: toNano("0.1") },
-            {
-                $$type: "ProvideEscrowData",
+        const deployResult = await step(
+            "Send 'ProvideEscrowData'",
+            async () => {
+                return await contract.send(
+                    deployer.getSender(),
+                    { value: toNano("0.1") },
+                    {
+                        $$type: "ProvideEscrowData",
+                    },
+                );
             },
         );
 
-        expect(deployResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: contract.address,
-            success: true,
-            deploy: true,
+        await step("Should have deploy transaction", () => {
+            expect(deployResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: contract.address,
+                success: true,
+                deploy: true,
+            });
         });
 
         return contract;
@@ -107,10 +115,10 @@ function testEscrow(
         buyer = await blockchain.treasury("buyer");
         guarantor = await blockchain.treasury("guarantor");
 
-        step = writeLog({
-            path: join(__dirname, "output", "log.yaml"),
-            blockchain,
-        });
+        await parameter("deployer", deployer.address.toString());
+        await parameter("seller", seller.address.toString());
+        await parameter("buyer", buyer.address.toString());
+        await parameter("guarantor", guarantor.address.toString());
     });
 
     const sendFunding = async (
@@ -122,7 +130,10 @@ function testEscrow(
             $$type: "Funding",
         };
 
-        return await escrowContract.send(from, { value }, msg);
+        return await step("sendFunding", async () => {
+            await attachment("value", value.toString(), ContentType.TEXT);
+            return await escrowContract.send(from, { value }, msg);
+        });
     };
 
     const sendChangeCode = async (
@@ -136,7 +147,10 @@ function testEscrow(
             newJettonWalletCode: newCode,
         };
 
-        return await escrowContract.send(from, { value }, msg);
+        return await step("sendChangeCode", async () => {
+            await attachment("value", value.toString(), ContentType.TEXT);
+            return await escrowContract.send(from, { value }, msg);
+        });
     };
 
     const sendApprove = async (
@@ -148,7 +162,10 @@ function testEscrow(
             $$type: "Approve",
         };
 
-        return await escrowContract.send(from, { value }, msg);
+        return await step("sendApprove", async () => {
+            await attachment("value", value.toString(), ContentType.TEXT);
+            return await escrowContract.send(from, { value }, msg);
+        });
     };
 
     const sendCancel = async (
@@ -160,7 +177,10 @@ function testEscrow(
             $$type: "Cancel",
         };
 
-        return await escrowContract.send(from, { value }, msg);
+        return await step("sendCancel", async () => {
+            await attachment("value", value.toString(), ContentType.TEXT);
+            return await escrowContract.send(from, { value }, msg);
+        });
     };
 
     it("fundingTon", async () => {
@@ -170,12 +190,16 @@ function testEscrow(
             sendFunding(contract, buyer.getSender(), toNano(1)),
         );
 
-        expect(sendResult.transactions).not.toHaveTransaction({
-            success: false,
+        await step("Should not fail transaction", () => {
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
         });
 
         const gasUsed = getUsedGas(sendResult, "internal");
-        expect(gasUsed).toEqual(benchmarkResults.gas["fundingTon"]);
+        await step("Gas used should match benchmark", () => {
+            expect(gasUsed).toEqual(benchmarkResults.gas["fundingTon"]);
+        });
     });
 
     it("changeCode", async () => {
@@ -195,12 +219,16 @@ function testEscrow(
             ),
         );
 
-        expect(sendResult.transactions).not.toHaveTransaction({
-            success: false,
+        await step("Should not fail transaction", () => {
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
         });
 
         const gasUsed = getUsedGas(sendResult, "internal");
-        expect(gasUsed).toEqual(benchmarkResults.gas["changeCode"]);
+        await step("Gas used should match benchmark", () => {
+            expect(gasUsed).toEqual(benchmarkResults.gas["changeCode"]);
+        });
     });
 
     it("approveTon", async () => {
@@ -218,12 +246,16 @@ function testEscrow(
             sendApprove(contract, guarantor.getSender(), toNano("0.05")),
         );
 
-        expect(sendResult.transactions).not.toHaveTransaction({
-            success: false,
+        await step("Should not fail transaction", () => {
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
         });
 
         const gasUsed = getUsedGas(sendResult, "internal");
-        expect(gasUsed).toEqual(benchmarkResults.gas["approveTon"]);
+        await step("Gas used should match benchmark", () => {
+            expect(gasUsed).toEqual(benchmarkResults.gas["approveTon"]);
+        });
     });
 
     it("cancelTon", async () => {
@@ -241,27 +273,37 @@ function testEscrow(
             sendCancel(contract, guarantor.getSender(), toNano("0.05")),
         );
 
-        expect(sendResult.transactions).not.toHaveTransaction({
-            success: false,
+        await step("Should not fail transaction", () => {
+            expect(sendResult.transactions).not.toHaveTransaction({
+                success: false,
+            });
         });
 
         const gasUsed = getUsedGas(sendResult, "internal");
-        expect(gasUsed).toEqual(benchmarkResults.gas["cancelTon"]);
+        await step("Gas used should match benchmark", () => {
+            expect(gasUsed).toEqual(benchmarkResults.gas["cancelTon"]);
+        });
     });
 
     it("cells", async () => {
         const contract = await deployContract(null, dealAmount, 1n);
 
-        expect(
-            (await getStateSizeForAccount(blockchain, contract.address)).cells,
-        ).toEqual(codeSizeResults.size["cells"]);
+        await step("Cell size should match benchmark", async () => {
+            expect(
+                (await getStateSizeForAccount(blockchain, contract.address))
+                    .cells,
+            ).toEqual(codeSizeResults.size["cells"]);
+        });
     });
 
     it("bits", async () => {
         const contract = await deployContract(null, dealAmount, 1n);
-        expect(
-            (await getStateSizeForAccount(blockchain, contract.address)).bits,
-        ).toEqual(codeSizeResults.size["bits"]);
+        await step("Bit size should match benchmark", async () => {
+            expect(
+                (await getStateSizeForAccount(blockchain, contract.address))
+                    .bits,
+            ).toEqual(codeSizeResults.size["bits"]);
+        });
     });
 }
 

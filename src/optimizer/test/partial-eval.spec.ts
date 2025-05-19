@@ -10,6 +10,7 @@ import { getParser } from "@/grammar";
 import { throwInternalCompilerError } from "@/error/errors";
 import type { FactoryAst } from "@/ast/ast-helpers";
 import { eqExpressions, getAstFactory, isLiteral } from "@/ast/ast-helpers";
+import { step } from "@/test/allure/allure";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -311,7 +312,7 @@ const booleanExpressions = [
 ];
 
 function testExpression(original: string, simplified: string) {
-    it(`should simplify ${original} to ${simplified}`, () => {
+    it(`should simplify ${original} to ${simplified}`, async () => {
         const ast = getAstFactory();
         const { parseExpression } = getParser(ast);
         const util = getAstUtil(ast);
@@ -322,7 +323,9 @@ function testExpression(original: string, simplified: string) {
         );
         const simplifiedValue = dummyEval(parseExpression(simplified), ast);
         const areMatching = eqExpressions(originalValue, simplifiedValue);
-        expect(areMatching).toBe(true);
+        await step(`Expression should simplify to expected form`, () => {
+            expect(areMatching).toBe(true);
+        });
     });
 }
 
@@ -331,7 +334,7 @@ function testExpressionWithOptimizer(
     simplified: string,
     optimizer: ExpressionTransformer,
 ) {
-    it(`should simplify ${original} to ${simplified}`, () => {
+    it(`should simplify ${original} to ${simplified}`, async () => {
         const ast = getAstFactory();
         const { parseExpression } = getParser(ast);
         const originalValue = optimizer.applyRules(
@@ -339,7 +342,9 @@ function testExpressionWithOptimizer(
         );
         const simplifiedValue = dummyEval(parseExpression(simplified), ast);
         const areMatching = eqExpressions(originalValue, simplifiedValue);
-        expect(areMatching).toBe(true);
+        await step("Expression should simplify to expected form", () => {
+            expect(areMatching).toBe(true);
+        });
     });
 }
 

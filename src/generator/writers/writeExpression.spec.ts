@@ -10,6 +10,8 @@ import { CompilerContext } from "@/context/context";
 import { getParser } from "@/grammar";
 import { getAstFactory } from "@/ast/ast-helpers";
 import type { Source } from "@/imports/source";
+import { step, attachment } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
 
 const code = `
 
@@ -70,8 +72,9 @@ const golden: string[] = [
 ];
 
 describe("writeExpression", () => {
-    it("should write expression", () => {
+    it("should write expression", async () => {
         const ast = getAstFactory();
+        await attachment("Code", code, ContentType.TEXT);
         const sources: Source[] = [
             { code: code, path: "<unknown>", origin: "user" },
         ];
@@ -93,13 +96,18 @@ describe("writeExpression", () => {
                 throw Error("Unexpected statement kind");
             }
             const wCtx = new WriterContext(ctx, "Contract1");
-            wCtx.fun("$main", () => {
-                wCtx.body(() => {
-                    expect(writeExpression(s.expression, wCtx)).toBe(
-                        golden[i]!,
-                    );
-                });
-            });
+            await step(
+                `Expression ${i} should match expected result: ${golden[i]}`,
+                () => {
+                    wCtx.fun("$main", () => {
+                        wCtx.body(() => {
+                            expect(writeExpression(s.expression, wCtx)).toBe(
+                                golden[i]!,
+                            );
+                        });
+                    });
+                },
+            );
             i++;
         }
     });
