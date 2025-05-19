@@ -216,7 +216,7 @@ const updateCodeSizeResultsFile = async (
 
 const main = async () => {
     try {
-        const benchmarkPaths = globSync(["**/*.spec.ts"], {
+        const benchmarkPaths = globSync(["**/*.spec.ts", "!**/*.test.spec.ts"], {
             cwd: __dirname,
         });
 

@@ -54,7 +54,7 @@ import {
 import "@ton/test-utils";
 import { randomInt } from "crypto";
 
-import { setStoragePrices } from "@/src/test/utils/gasUtils";
+import { setStoragePrices } from "@/test/utils/gasUtils";
 
 /** Operation codes for NFT contract messages */
 const Operations = {
