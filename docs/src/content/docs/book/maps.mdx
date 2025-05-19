@@ -97,6 +97,14 @@ No other [allowed key or value types](#allowed-types) besides [`Int{:tact}`][int
 
 :::
 
+## Low-level representation
+
+On [TVM][tvm], maps are represented as a [`Cell{:tact}`][cell] type, and it's possible to construct and parse them directly. However, doing so is highly error-prone and quite messy, which is why Tact provides maps as a standalone composite type with many of the helper methods [described below](#operations).
+
+Essentially, maps are cells with a special bits layouts, which have many supporting TVM instructions for their modification and usage. They are broadly called ["hashmaps"](https://docs.ton.org/v3/documentation/data-formats/tlb/tl-b-types#hashmap), although they are closer to balanced trees.
+
+Maps always have fixed key lengths which can be one of two kinds: long and short. For the distinction and composition of maps with either of key types, see the [description of the `.deepEquals(){:tact}`](#deepequals) map method.
+
 ## Operations
 
 ### Declare, `emptyMap()` {#emptymap}
@@ -472,7 +480,7 @@ if (fizz == null) {
 
 ### Compare with `.deepEquals()` {#deepequals}
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -528,9 +536,7 @@ Here, both maps are formed manually and both contain the same key-value pair. If
 extends fun asCell(self: map<K, V>): Cell?;
 ```
 
-On [TVM][tvm], maps are represented as a [`Cell{:tact}`][cell] type, and it's possible to construct and parse them directly. However, doing so is highly error-prone and quite messy, which is why Tact provides maps as a standalone composite type with many of the helper methods mentioned above.
-
-To cast maps back to the underlying [`Cell{:tact}`][cell] type, use the `.asCell(){:tact}` [method](/book/functions#extension-function). Since maps are initialized to `null{:tact}`, calling `.asCell(){:tact}` on a map with no values assigned will return `null{:tact}` and **not** an empty [`Cell{:tact}`][cell].
+To cast maps back to the [underlying](#low-level-representation) [`Cell{:tact}`][cell] type, use the `.asCell(){:tact}` [method](/book/functions#extension-function). Since maps are initialized to `null{:tact}`, calling `.asCell(){:tact}` on a map with no values assigned will return `null{:tact}` and **not** an empty [`Cell{:tact}`][cell].
 
 As an example, this method is useful for sending small maps directly in the body of a reply:
 

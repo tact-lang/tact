@@ -1,5 +1,5 @@
 import { getAstFactory } from "@/ast/ast-helpers";
-import { loadCases } from "@/utils/loadCases";
+import { loadCases } from "@/utils/loadCases.infra";
 import type { SrcInfo } from "@/grammar/src-info";
 import { isSrcInfo } from "@/grammar/src-info";
 import { getParser } from "@/grammar/index";

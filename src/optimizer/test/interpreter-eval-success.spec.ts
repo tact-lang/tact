@@ -8,7 +8,7 @@ import { resolveDescriptors } from "@/types/resolveDescriptors";
 import { getAllExpressionTypes } from "@/types/resolveExpression";
 import { resolveSignatures } from "@/types/resolveSignatures";
 import { resolveStatements } from "@/types/resolveStatements";
-import { loadCases } from "@/utils/loadCases";
+import { loadCases } from "@/utils/loadCases.infra";
 import { step, attachment } from "@/test/allure/allure";
 import { ContentType } from "allure-js-commons";
 
