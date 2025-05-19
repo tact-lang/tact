@@ -139,6 +139,26 @@
         "wallet cells": "16",
         "wallet bits": "8195"
       }
+    },
+    {
+      "label": "1.6.7 with with new send",
+      "pr": "https://github.com/tact-lang/tact/pull/3056",
+      "size": {
+        "minter cells": "29",
+        "minter bits": "14657",
+        "wallet cells": "15",
+        "wallet bits": "8188"
+      }
+    },
+    {
+      "label": "1.6.7 with new send",
+      "pr": "https://github.com/tact-lang/tact/pull/3056",
+      "size": {
+        "minter cells": "28",
+        "minter bits": "14665",
+        "wallet cells": "14",
+        "wallet bits": "8196"
+      }
     }
   ]
 }

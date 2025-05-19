@@ -359,6 +359,24 @@
         "burn": "11812",
         "discovery": "6161"
       }
+    },
+    {
+      "label": "1.6.7 with with new send",
+      "pr": "https://github.com/tact-lang/tact/pull/3056",
+      "gas": {
+        "transfer": "15005",
+        "burn": "11812",
+        "discovery": "6161"
+      }
+    },
+    {
+      "label": "1.6.7 with new send",
+      "pr": "https://github.com/tact-lang/tact/pull/3056",
+      "gas": {
+        "transfer": "15005",
+        "burn": "11730",
+        "discovery": "6161"
+      }
     }
   ]
 }
