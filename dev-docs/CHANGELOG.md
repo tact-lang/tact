@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
 - [fix] Added fixed-bytes support to bounced message size calculations: PR [#3129](https://github.com/tact-lang/tact/pull/3129)
+- [fix] Fixed compiler errors for bounced/trait return types
+- [fix] Added checks for bounced/trait returns in non-shuffle asm functions
 
 ### Docs
 
