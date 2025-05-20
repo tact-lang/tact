@@ -19,6 +19,7 @@ import type {
     ReceiverSelector,
     TypeDescription,
     TypeRef,
+    TypeRefMap,
 } from "@/types/types";
 import {
     printTypeRef,
@@ -47,7 +48,7 @@ import { isAssignable } from "@/types/subtyping";
 import type { ItemOrigin } from "@/imports/source";
 import { isUndefined } from "@/utils/array";
 import type { Effect } from "@/types/effects";
-import { SrcInfo } from "@/grammar";
+import type { SrcInfo } from "@/grammar";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -2727,15 +2728,17 @@ function checkMapSerializationCompatibility(
         coins: "varuint16",
     };
 
-    const serializeKey = (type: any) =>
+    const serializeKey = (type: TypeRefMap) =>
         type.key === "Int" && type.keyAs == null ? "int257" : type.keyAs;
 
-    const serializeValue = (type: any) => {
+    const serializeValue = (type: TypeRefMap): string | undefined => {
         const valueAs =
             type.value === "Int" && type.valueAs == null
                 ? "int257"
                 : type.valueAs;
-        return aliasMap[valueAs] ?? valueAs;
+        return typeof valueAs === "string"
+            ? (aliasMap[valueAs] ?? valueAs)
+            : undefined;
     };
 
     const expectedKeyAs = serializeKey(expected);
