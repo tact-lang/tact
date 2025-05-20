@@ -3,8 +3,8 @@
 exports[`resolveDescriptors should fail descriptors for asm-fun-bounced-return 1`] = `
 "<unknown>:3:1: Function "foo" returns a <bounced> type, which cannot be returned from an "asm" function.
   2 | 
-> 3 | asm (-> 0) fun foo(): bounced<Cell> { NOP }
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 3 | asm fun foo(): bounced<Cell> { NOP }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   4 | 
 "
 `;

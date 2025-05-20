@@ -1,3 +1,3 @@
 primitive Cell;
 
-asm (-> 0) fun foo(): bounced<Cell> { NOP }
+asm fun foo(): bounced<Cell> { NOP }
