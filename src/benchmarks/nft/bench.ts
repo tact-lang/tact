@@ -1,31 +1,18 @@
 import "@ton/test-utils";
 import type { Address } from "@ton/core";
-import {
-    Cell,
-    beginCell,
-    toNano,
-    contractAddress,
-    Dictionary,
-} from "@ton/core";
+import type { Cell } from "@ton/core";
+import { beginCell, toNano, Dictionary } from "@ton/core";
 
 import type { Slice, Sender, Builder } from "@ton/core";
 import { Blockchain } from "@ton/sandbox";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { BenchmarkResult, CodeSizeResult } from "@/benchmarks/utils/gas";
+import { getStateSizeForAccount, getUsedGas } from "@/benchmarks/utils/gas";
+import { join } from "path";
+import type { Step } from "@/test/utils/write-vm-log";
+import { writeLog } from "@/test/utils/write-vm-log";
+import type { NFTCollection } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 import {
-    generateResults,
-    getStateSizeForAccount,
-    generateCodeSizeResults,
-    getUsedGas,
-    printBenchmarkTable,
-    type BenchmarkResult,
-    type CodeSizeResult,
-} from "@/benchmarks/utils/gas";
-import { join, resolve } from "path";
-import { readFileSync } from "fs";
-import { posixNormalize } from "@/utils/filePath";
-import { type Step, writeLog } from "@/test/utils/write-vm-log";
-import {
-    NFTCollection,
     ReportStaticData,
     loadInitNFTBody,
 } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
@@ -36,14 +23,11 @@ import type {
     RoyaltyParams,
     InitNFTBody,
 } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
-import {
+import type {
     NFTItem,
-    type Transfer,
-    storeInitNFTBody,
+    Transfer,
 } from "@/benchmarks/nft/tact/output/collection_NFTItem";
-
-import benchmarkResults from "@/benchmarks/nft/results_gas.json";
-import benchmarkCodeSizeResults from "@/benchmarks/nft/results_code_size.json";
+import { storeInitNFTBody } from "@/benchmarks/nft/tact/output/collection_NFTItem";
 
 type dictDeployNFT = {
     amount: bigint;
@@ -66,19 +50,7 @@ const dictDeployNFTItem = {
     },
 };
 
-const loadFunCNFTBoc = () => {
-    const bocCollection = readFileSync(
-        posixNormalize(resolve(__dirname, "./func/output/nft-collection.boc")),
-    );
-
-    const bocItem = readFileSync(
-        posixNormalize(resolve(__dirname, "./func/output/nft-item.boc")),
-    );
-
-    return { bocCollection, bocItem };
-};
-
-function testNFT(
+export function bench(
     benchmarkResults: BenchmarkResult,
     codeSizeResults: CodeSizeResult,
     fromInitCollection: (
@@ -392,82 +364,3 @@ function testNFT(
         ).toEqual(codeSizeResults.size["item bits"]);
     });
 }
-
-describe("NFT Gas Tests", () => {
-    const fullResults = generateResults(benchmarkResults);
-    const fullCodeSizeResults = generateCodeSizeResults(
-        benchmarkCodeSizeResults,
-    );
-
-    describe("func", () => {
-        const funcCodeSize = fullCodeSizeResults.at(0)!;
-        const funcResult = fullResults.at(0)!;
-
-        function fromInitCollection(
-            owner: Address,
-            index: bigint,
-            content: Cell,
-            royaltyParams: RoyaltyParams,
-        ) {
-            const nftData = loadFunCNFTBoc();
-            const __code = Cell.fromBoc(nftData.bocCollection)[0]!;
-
-            const royaltyCell = beginCell()
-                .storeUint(royaltyParams.nominator, 16)
-                .storeUint(royaltyParams.dominator, 16)
-                .storeAddress(royaltyParams.owner)
-                .endCell();
-
-            const __data = beginCell()
-                .storeAddress(owner)
-                .storeUint(index, 64)
-                .storeRef(content)
-                .storeRef(Cell.fromBoc(nftData.bocItem)[0]!)
-                .storeRef(royaltyCell)
-                .endCell();
-
-            const __gen_init = { code: __code, data: __data };
-            const address = contractAddress(0, __gen_init);
-            return Promise.resolve(new NFTCollection(address, __gen_init));
-        }
-
-        function fromInitItem(
-            owner: Address | null,
-            content: Cell | null,
-            collectionAddress: Address,
-            itemIndex: bigint,
-        ) {
-            const nftData = loadFunCNFTBoc();
-            const __code = Cell.fromBoc(nftData.bocItem)[0]!;
-
-            const __data = beginCell()
-                .storeUint(itemIndex, 64)
-                .storeAddress(collectionAddress)
-                .endCell();
-
-            const __gen_init = { code: __code, data: __data };
-            const address = contractAddress(0, __gen_init);
-            return Promise.resolve(new NFTItem(address, __gen_init));
-        }
-
-        testNFT(funcResult, funcCodeSize, fromInitCollection, fromInitItem);
-    });
-
-    describe("tact", () => {
-        const tactCodeSize = fullCodeSizeResults.at(-1)!;
-        const tactResult = fullResults.at(-1)!;
-        testNFT(
-            tactResult,
-            tactCodeSize,
-            NFTCollection.fromInit.bind(NFTCollection),
-            NFTItem.fromInit.bind(NFTItem),
-        );
-    });
-
-    afterAll(() => {
-        printBenchmarkTable(fullResults, fullCodeSizeResults, {
-            implementationName: "FunC",
-            printMode: "full",
-        });
-    });
-});
