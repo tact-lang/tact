@@ -433,19 +433,11 @@ contract LazyInit {
 
 [Getter functions](/book/functions#get) are **not accessible** from other contracts and are exported only to the off-chain world.
 
-Additionally, getters **cannot modify the contract's state variables** — they can only read their values and use them in expressions.
-
 ```tact
-contract HelloWorld {
-    foo: Int;
-
-    init() {
-        self.foo = 0;
-    }
-
-    // getter function with return type Int
+contract HelloWorld(foo: Int) {
+    // Getter function with return type Int
     get fun foo(): Int {
-        return self.foo; // can't change self.foo here
+        return self.foo + 42;
     }
 }
 ```

@@ -5,10 +5,8 @@ description: "Global, asm, native functions, as well as receivers, getters, and 
 
 import { Badge } from '@astrojs/starlight/components';
 
-Tact offers a diverse set of function kinds and attributes that provide great flexibility and expressivity. The Tact functions can be generally divided into two categories:
 
-* [Primary](#primary), which constitute the backbone and the API of the contract
-* [Complementary](#complementary), which serve as helper building blocks for reusable and maintainable contracts.
+Tact offers a diverse set of function kinds and attributes that provide great flexibility and expressivity.
 
 All functions, except for [receiver functions](#receive), can have a trailing comma in their definitions (parameter lists) and calls (argument lists):
 
@@ -44,13 +42,11 @@ contract YouMakeMyHeartSing with WildThing {
 }
 ```
 
-## Primary
 
-Primary functions form the interface of your contract, defining how it interacts with the blockchain and external systems. [Getters](#get) can be directly called from outside the blockchain, while receivers handle incoming messages from other contracts ([`receive(){:tact}`](#receive)), messages sent from off-chain ([`external(){:tact}`](#external)) or messages bounced back to the contract that sent them due to some issues on the recipients side ([`bounced(){:tact}`](#bounced)).
 
-### `receive` — internal message receivers {#receive}
 
-<Badge text="Contract scope" variant="note" size="medium"/><p/>
+
+## Receivers
 
 Receiver functions are special functions responsible for receiving messages in contracts and can be defined only within a contract or trait.
 
@@ -66,7 +62,11 @@ contract Counter(counter: Int) {
 message Increment {}
 ```
 
-The basic receiver `receive(){:tact}` handles incoming messages from other contracts.
+### `receive` — internal message receivers {#receive}
+
+<Badge text="Contract scope" variant="note" size="medium"/><p/>
+
+The most common receiver functions, `receive(){:tact}`, handle incoming messages from other contracts.
 
 ```tact
 // This contract defines various kinds of receivers in their
@@ -74,12 +74,12 @@ The basic receiver `receive(){:tact}` handles incoming messages from other contr
 contract OrderOfReceivers() {
     // Empty receiver
     receive() {
-        // ...
+        inMsg().bits; // 0
     }
 
     // Text receiver
     receive("yeehaw!") {
-        // ...
+        inMsg().asString(); // "yeehaw!"
     }
 
     // Catch-all String receiver
@@ -158,9 +158,11 @@ message MessageWithSignedData {
 
 Read more about them on their dedicated page: [External messages](/book/external).
 
-### `get fun` — offchain getter functions {#get}
+## `get fun` — offchain getter functions {#get}
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
+
+The `get{:tact}` attribute is a special attribute that cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into so-called _getter functions_ (or getters for short).
 
 The `get` attribute can be applied to standard functions within contracts and traits, transforming them into getter functions. These functions are externally accessible (off-chain) without requiring message passing, allowing direct reading of contract state.
 Getter functions define getters on smart contracts and can be defined only within a contract or trait. Getter functions cannot be used to read another contract's state. If you need to obtain data, you should do so by sending a message with a request and defining a receiver function that processes the request answer.
@@ -184,7 +186,7 @@ contract Counter(
 }
 ```
 
-#### Explicit resolution of method ID collisions
+### Explicit resolution of method ID collisions
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -214,11 +216,7 @@ Unlike getters, method IDs for [internal functions](#fun-internal) and some spec
 
 Since method IDs are 19-bit signed integers and some of them are reserved, only the inclusive ranges from $-2^{18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$ are free to be used by users. To avoid collisions, it is recommended to specify method IDs only in these ranges, avoiding the method IDs of Tact-specific getters mentioned above.
 
-## Complementary
-
-Complementary functions serve as utilities and helper building blocks for your contracts. They cannot be directly called from outside the blockchain or handle incoming messages on their own, but they provide functionality for organizing logic of your contracts.
-
-### `fun` — regular functions {#fun}
+## `fun` — regular functions {#fun}
 
 <Badge text="Any scope" variant="note" size="medium"/><p/>
 
@@ -233,7 +231,7 @@ fun add(a: Int, b: Int): Int {
 TODO: adjust notes (attr, usage, self., dot not, params, ret type, mult ret vals and structs)
 TODO: scope: top/module-level (global), local (?not in tact), member (!), extension (globally, but on a type).
 
-#### Global functions {#fun-global}
+### Global functions {#fun-global}
 
 <Badge text="Global scope" variant="note" size="medium"/><p/>
 
@@ -251,7 +249,7 @@ fun customPow(a: Int, c: Int): Int {
 }
 ```
 
-#### Internal functions {#fun-internal}
+### Internal functions {#fun-internal}
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
@@ -261,7 +259,8 @@ Internal functions can access the contract's [persistent state variables](/book/
 
 They can only be called from [receivers](#receive), [getters](#get), and other internal functions, but not from other contracts.
 
-### `init` — constructor function {#init}
+
+## `init` — constructor function {#init}
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
@@ -284,11 +283,11 @@ contract Example {
 
 Read more about the `init(){:tact}` on its dedicated section: [Constructor function `init(){:tact}`](/book/contracts#init-function).
 
-### `native` — native functions {#native}
+## `native` — native functions {#native}
 
 <Badge text="Global scope" variant="note" size="medium"/><p/>
 
-TODO: adjust notes
+Native functions allow direct bindings to imported FunC functions. In order to declare them, you have to import a `.fc` or `.func` file first. Granted, the FunC's [standard library file, `stdlib.fc`](https://github.com/tact-lang/tact/blob/main/src/stdlib/stdlib/std/stdlib.fc) is always imported for you.
 
 Native functions are direct bindings of FunC functions and map directly to FunC primitives:
 
@@ -303,7 +302,7 @@ native storeUint(s: Builder, value: Int, bits: Int): Builder;
 extends mutates native loadInt(self: Slice, l: Int): Int;
 ```
 
-### `asm` — assembly functions {#asm}
+## `asm` — assembly functions {#asm}
 
 <Badge text="Global scope" variant="note" size="medium"/>
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
