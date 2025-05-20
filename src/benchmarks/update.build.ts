@@ -217,11 +217,11 @@ const updateCodeSizeResultsFile = async (
 const main = async () => {
     try {
         const benchmarkPaths = globSync(
-            ["**/*.spec.ts", "!**/*.test.spec.ts"],
+            ["**/*.spec.ts"],
             {
                 cwd: __dirname,
             },
-        );
+        ).filter(path => !path.includes('.test.'));
 
         const benchmarkName = process.argv[2];
 
