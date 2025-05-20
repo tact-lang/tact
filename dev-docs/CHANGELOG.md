@@ -7,11 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Language features
+
+- [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
+
+### Release contributors
+
+- [hazyone](https://github.com/hazyone)
+- [lordivash](https://github.com/lordivash)
+- [Novus Nota](https://github.com/novusnota)
+
 ## [1.6.10] - 2025-05-16
 
 ### Infrastructure
 
 - [fix] Explicit dependencies to fix Blueprint integration: PR [#3088](https://github.com/tact-lang/tact/pull/3088)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+- [verytactical](https://github.com/verytactical)
 
 ## [1.6.9] - 2025-05-16
 
