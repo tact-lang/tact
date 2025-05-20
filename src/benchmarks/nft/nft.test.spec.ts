@@ -39,8 +39,14 @@ import {
 } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 
 // NFT Item imports
-import type { Transfer, NFTData } from "@/benchmarks/nft/tact/output/item_NFTItem";
-import { storeInitNFTBody, NFTItem } from "@/benchmarks/nft/tact/output/item_NFTItem";
+import type {
+    Transfer,
+    NFTData,
+} from "@/benchmarks/nft/tact/output/item_NFTItem";
+import {
+    storeInitNFTBody,
+    NFTItem,
+} from "@/benchmarks/nft/tact/output/item_NFTItem";
 
 import "@ton/test-utils";
 import { randomInt } from "crypto";
@@ -217,7 +223,7 @@ function loadGetterTupleNFTData(source: TupleItem[]): NFTData {
 /**
  * Extends NFTItem interface with owner getter functionality
  */
-declare module "./output/item_NFTItem" {
+declare module "@/benchmarks/nft/tact/output/item_NFTItem" {
     interface NFTItem {
         /**
          * Gets the current owner of the NFT
@@ -231,7 +237,7 @@ declare module "./output/item_NFTItem" {
 /**
  * Extends NFTCollection interface with additional getter functionality
  */
-declare module "./output/collection_NFTCollection" {
+declare module "@/benchmarks/nft/tact/output/collection_NFTCollection" {
     interface NFTCollection {
         /**
          * Gets the next available item index for minting
@@ -1040,9 +1046,7 @@ describe("NFT Collection Contract", () => {
             await step(
                 "Check that trx.transactions has correct transaction (not owner mint)",
                 () => {
-                    expect(
-                        trx.transactions
-                    ).toHaveTransaction({
+                    expect(trx.transactions).toHaveTransaction({
                         from: notOwner.address,
                         to: collectionNFT.address,
                         success: false,
@@ -1072,9 +1076,7 @@ describe("NFT Collection Contract", () => {
             await step(
                 "Check that trx.transactions has correct transaction (should not deploy previous nft)",
                 () => {
-                    expect(
-                        trx.transactions,
-                    ).toHaveTransaction({
+                    expect(trx.transactions).toHaveTransaction({
                         from: collectionNFT.address,
                         to: _itemNFT.address,
                         deploy: false,
@@ -1096,9 +1098,7 @@ describe("NFT Collection Contract", () => {
             await step(
                 "Check that trx.transactions has correct transaction (itemIndex > nextItemIndex)",
                 () => {
-                    expect(
-                        trx.transactions
-                    ).toHaveTransaction({
+                    expect(trx.transactions).toHaveTransaction({
                         from: owner.address,
                         to: collectionNFT.address,
                         success: false,
