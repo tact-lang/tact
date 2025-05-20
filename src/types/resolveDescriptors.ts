@@ -19,6 +19,7 @@ import type {
     ReceiverSelector,
     TypeDescription,
     TypeRef,
+    TypeRefMap,
 } from "@/types/types";
 import {
     printTypeRef,
@@ -47,6 +48,7 @@ import { isAssignable } from "@/types/subtyping";
 import type { ItemOrigin } from "@/imports/source";
 import { isUndefined } from "@/utils/array";
 import type { Effect } from "@/types/effects";
+import { SrcInfo } from "@/grammar";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -1916,6 +1918,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                             `Overridden function "${traitFunction.name}" should have same return type`,
                             funInContractOrTrait.ast.loc,
                         );
+                    } else {
+                        checkMapSerializationCompatibility(
+                            traitFunction.returns,
+                            funInContractOrTrait.returns,
+                            `Overridden function "${traitFunction.name}" has incompatible return type:`,
+                            funInContractOrTrait.ast.loc,
+                        );
                     }
                     if (
                         traitFunction.params.length !==
@@ -2002,6 +2011,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     ) {
                         throwCompilationError(
                             `Overridden constant "${traitConstant.name}" should have same type`,
+                            constInContractOrTrait.ast.loc,
+                        );
+                    } else {
+                        checkMapSerializationCompatibility(
+                            traitConstant.type,
+                            constInContractOrTrait.type,
+                            `Overridden constant "${traitConstant.name}" has incompatible type:`,
                             constInContractOrTrait.ast.loc,
                         );
                     }
@@ -2691,5 +2707,49 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
             }
         }
         return [];
+    }
+}
+
+function checkMapSerializationCompatibility(
+    expected: TypeRef,
+    actual: TypeRef,
+    errorContext: string,
+    loc: SrcInfo,
+): void {
+    if (expected.kind !== "map" || actual.kind !== "map") return;
+
+    const aliasMap: Record<string, string> = {
+        coins: "varuint16",
+    };
+
+    const serializeKey = (type: any) =>
+        type.key === "Int" && type.keyAs == null ? "int257" : type.keyAs;
+
+    const serializeValue = (type: any) => {
+        const valueAs =
+            type.value === "Int" && type.valueAs == null
+                ? "int257"
+                : type.valueAs;
+        return aliasMap[valueAs] ?? valueAs;
+    };
+
+    const expectedKeyAs = serializeKey(expected);
+    const actualKeyAs = serializeKey(actual);
+
+    if (expectedKeyAs !== actualKeyAs) {
+        throwCompilationError(
+            `${errorContext} map key serialization mismatch — expected ${expectedKeyAs ? `"${expectedKeyAs}"` : "no serialization hint"} but got ${actualKeyAs ? `"${actualKeyAs}"` : "no serialization hint"}`,
+            loc,
+        );
+    }
+
+    const expectedValueAs = serializeValue(expected);
+    const actualValueAs = serializeValue(actual);
+
+    if (expectedValueAs !== actualValueAs) {
+        throwCompilationError(
+            `${errorContext} map value serialization mismatch — expected ${expectedValueAs ? `"${expectedValueAs}"` : "no serialization hint"} but got ${actualValueAs ? `"${actualValueAs}"` : "no serialization hint"}`,
+            loc,
+        );
     }
 }

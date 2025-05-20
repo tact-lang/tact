@@ -756,6 +756,42 @@ exports[`resolveDescriptors should fail descriptors for opcode-method-on-trait 1
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for override-const-map-keyas-empty 1`] = `
+"<unknown>:10:3: Overridden constant "M" has incompatible type: map key serialization mismatch — expected "int257" but got "uint32"
+   9 | contract C with T {
+> 10 |   override const M: map<Int as uint32, Int> = emptyMap();
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-const-map-keyas-mismatch 1`] = `
+"<unknown>:10:3: Overridden constant "M" has incompatible type: map key serialization mismatch — expected "uint8" but got "uint32"
+   9 | contract C with T {
+> 10 |   override const M: map<Int as uint32, Int> = emptyMap();
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-const-map-valueas-empty 1`] = `
+"<unknown>:10:3: Overridden constant "M" has incompatible type: map value serialization mismatch — expected "int257" but got "uint8"
+   9 | contract C with T {
+> 10 |   override const M: map<Int, Int as uint8> = emptyMap();
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-const-map-valueas-mismatch 1`] = `
+"<unknown>:10:3: Overridden constant "M" has incompatible type: map value serialization mismatch — expected "uint8" but got "uint32"
+   9 | contract C with T {
+> 10 |   override const M: map<Int, Int as uint32> = emptyMap();
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-contract-from-base-trait 1`] = `
 "<unknown>:8:5: Constant "BAR" overrides nothing, remove "override" modifier or inherit any traits with this constant
   7 | contract Test {
@@ -906,6 +942,24 @@ exports[`resolveDescriptors should fail descriptors for override-for-non-virtual
 > 6 |     override fun foo() {}
           ^~~~~~~~
   7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-fun-map-keyas-mismatch 1`] = `
+"<unknown>:10:3: Overridden function "test1" has incompatible return type: map key serialization mismatch — expected "int32" but got "int8"
+   9 | contract C with T {
+> 10 |   override get fun test1(): map<Int as int8, Int> {
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 |     return emptyMap();
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-fun-map-valueas-mismatch 1`] = `
+"<unknown>:10:3: Overridden function "test1" has incompatible return type: map value serialization mismatch — expected "int32" but got "int64"
+   9 | contract C with T {
+> 10 |   override get fun test1(): map<Int, Int as int64> {
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 |     return emptyMap();
 "
 `;
 
