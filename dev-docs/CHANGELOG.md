@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-fix: Fixed mismatched serialization of maps in const/fun
+- [fix]: Fixed mismatched serialization of maps in const/fun
 
 ### Language features
 

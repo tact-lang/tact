@@ -2724,20 +2724,16 @@ function checkMapSerializationCompatibility(
 ): void {
     if (expected.kind !== "map" || actual.kind !== "map") return;
 
-    const aliasMap: Record<string, string> = {
-        coins: "varuint16",
-    };
-
     const serializeKey = (type: TypeRefMap) =>
-        type.key === "Int" && type.keyAs == null ? "int257" : type.keyAs;
+        type.key === "Int" && type.keyAs === null ? "int257" : type.keyAs;
 
     const serializeValue = (type: TypeRefMap): string | undefined => {
         const valueAs =
-            type.value === "Int" && type.valueAs == null
+            type.value === "Int" && type.valueAs === null
                 ? "int257"
                 : type.valueAs;
         return typeof valueAs === "string"
-            ? (aliasMap[valueAs] ?? valueAs)
+            ? (ALIAS_MAP[valueAs] ?? valueAs)
             : undefined;
     };
 
@@ -2761,3 +2757,6 @@ function checkMapSerializationCompatibility(
         );
     }
 }
+const ALIAS_MAP: Record<string, string> = {
+    coins: "varuint16",
+};
