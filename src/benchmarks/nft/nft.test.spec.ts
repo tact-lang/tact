@@ -31,21 +31,23 @@ import type {
     RoyaltyParams,
     InitNFTBody,
     ChangeOwner,
-} from "./output/collection_NFTCollection";
+} from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 import {
     storeRoyaltyParams,
     loadInitNFTBody,
     NFTCollection,
-} from "./output/collection_NFTCollection";
+} from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 
 // NFT Item imports
-import type { Transfer, NFTData } from "./output/item_NFTItem";
-import { storeInitNFTBody, NFTItem } from "./output/item_NFTItem";
+import type { Transfer, NFTData } from "@/benchmarks/nft/tact/output/item_NFTItem";
+import { storeInitNFTBody, NFTItem } from "@/benchmarks/nft/tact/output/item_NFTItem";
 
 import "@ton/test-utils";
 import { randomInt } from "crypto";
 
 import { setStoragePrices } from "@/test/utils/gasUtils";
+
+import { step } from "@/test/allure/allure";
 
 /** Operation codes for NFT contract messages */
 const Operations = {
@@ -298,12 +300,17 @@ describe("NFT Item Contract", () => {
             beginCell().store(storeInitNFTBody(deployItemMsg)).asSlice(),
         );
 
-        expect(deployResult.transactions).toHaveTransaction({
-            from: owner.address,
-            to: itemNFT.address,
-            deploy: true,
-            success: true,
-        });
+        await step(
+            "Check that deployResult.transactions has correct transaction",
+            () => {
+                expect(deployResult.transactions).toHaveTransaction({
+                    from: owner.address,
+                    to: itemNFT.address,
+                    deploy: true,
+                    success: true,
+                });
+            },
+        );
     });
 
     const messageGetStaticData = async (
@@ -330,20 +337,43 @@ describe("NFT Item Contract", () => {
     it("should get nft data correctly", async () => {
         const staticData = await itemNFT.getGetNftData();
 
-        expect(staticData.init).toBe(-1n);
-        expect(staticData.itemIndex).toBe(0n);
-        expect(staticData.collectionAddress).toEqualAddress(owner.address);
-        expect(staticData.owner).toEqualAddress(owner.address);
-        expect(staticData.content).toEqualCell(defaultContent);
+        await step("Check that staticData.init is -1", () => {
+            expect(staticData.init).toBe(-1n);
+        });
+        await step("Check that staticData.itemIndex is 0", () => {
+            expect(staticData.itemIndex).toBe(0n);
+        });
+        await step(
+            "Check that staticData.collectionAddress equals owner.address",
+            () => {
+                expect(staticData.collectionAddress).toEqualAddress(
+                    owner.address,
+                );
+            },
+        );
+        await step("Check that staticData.owner equals owner.address", () => {
+            expect(staticData.owner).toEqualAddress(owner.address);
+        });
+        await step(
+            "Check that staticData.content equals defaultContent",
+            () => {
+                expect(staticData.content).toEqualCell(defaultContent);
+            },
+        );
     });
 
     it("should get static data correctly", async () => {
         const trxResult = await messageGetStaticData(owner, itemNFT);
-        expect(trxResult.transactions).toHaveTransaction({
-            from: owner.address,
-            to: itemNFT.address,
-            success: true,
-        });
+        await step(
+            "Check that trxResult.transactions has correct transaction (get static data)",
+            () => {
+                expect(trxResult.transactions).toHaveTransaction({
+                    from: owner.address,
+                    to: itemNFT.address,
+                    success: true,
+                });
+            },
+        );
     });
 
     describe("Transfer ownership Fee cases", () => {
@@ -369,12 +399,17 @@ describe("NFT Item Contract", () => {
                 emptyAddress,
                 Storage.TransferAmount,
             );
-            expect(trxResult.transactions).toHaveTransaction({
-                from: owner.address,
-                to: itemNFT.address,
-                success: false,
-                exitCode: ErrorCodes.InvalidFees,
-            });
+            await step(
+                "Check that trxResult.transactions has correct transaction (transfer forward amount too much)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: itemNFT.address,
+                        success: false,
+                        exitCode: ErrorCodes.InvalidFees,
+                    });
+                },
+            );
         });
 
         it("test transfer storage fee", async () => {
@@ -392,12 +427,17 @@ describe("NFT Item Contract", () => {
                 emptyAddress,
                 Storage.TransferAmount + balance,
             ); // balance + 1ton + fwd - (1ton + balance) = [0] + {fwdFee} and [0] < [minTonsForStorage]
-            expect(trxResult.transactions).toHaveTransaction({
-                from: owner.address,
-                to: itemNFT.address,
-                success: false,
-                exitCode: ErrorCodes.InvalidFees,
-            });
+            await step(
+                "Check that trxResult.transactions has correct transaction (test transfer storage fee)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: itemNFT.address,
+                        success: false,
+                        exitCode: ErrorCodes.InvalidFees,
+                    });
+                },
+            );
         });
         it("test transfer forward fee 2.0", async () => {
             // Let's verify that storage fee was an error trigger by increasing balance by min_storage
@@ -417,6 +457,25 @@ describe("NFT Item Contract", () => {
                 to: itemNFT.address,
                 success: true,
             });
+            await step(
+                "Check that trxResult.transactions has correct transaction (test transfer forward fee 2.0)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: itemNFT.address,
+                        success: true,
+                    });
+                },
+            );
+            balance = await (
+                await blockchain.getContract(itemNFT.address)
+            ).balance;
+            await step(
+                "Check that balance is less than minTonsForStorage (test transfer forward fee 2.0)",
+                () => {
+                    expect(balance).toBeLessThan(minTonsForStorage);
+                },
+            );
         });
 
         it("test transfer forward fee single", async () => {
@@ -443,6 +502,16 @@ describe("NFT Item Contract", () => {
                 to: itemNFT.address,
                 success: true,
             });
+            await step(
+                "Check that trxResult.transactions has correct transaction (test transfer forward fee single)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: itemNFT.address,
+                        success: true,
+                    });
+                },
+            );
         });
 
         describe("test transfer forward fee double", function () {
@@ -477,6 +546,17 @@ describe("NFT Item Contract", () => {
                     success: false,
                     exitCode: ErrorCodes.InvalidFees,
                 });
+                await step(
+                    "Check that trxResult.transactions has correct transaction (double forward fee, not enough for both)",
+                    () => {
+                        expect(trxResult.transactions).toHaveTransaction({
+                            from: owner.address,
+                            to: itemNFT.address,
+                            success: false,
+                            exitCode: ErrorCodes.InvalidFees,
+                        });
+                    },
+                );
             });
 
             // let now check if we have 2 fwdFees on balance
@@ -503,6 +583,22 @@ describe("NFT Item Contract", () => {
                     await blockchain.getContract(itemNFT.address)
                 ).balance;
                 expect(balance).toBeLessThan(minTonsForStorage);
+                await step(
+                    "Check that trxResult.transactions has correct transaction (double forward fee, enough for both)",
+                    () => {
+                        expect(trxResult.transactions).toHaveTransaction({
+                            from: owner.address,
+                            to: itemNFT.address,
+                            success: true,
+                        });
+                    },
+                );
+                await step(
+                    "Check that balance is less than minTonsForStorage (double forward fee)",
+                    () => {
+                        expect(balance).toBeLessThan(minTonsForStorage);
+                    },
+                );
             });
         });
         // int __test_transfer_success_forward_no_response testing in next test suite
@@ -511,7 +607,9 @@ describe("NFT Item Contract", () => {
     describe("Transfer Ownership Tests", () => {
         it("Test ownership assigned", async () => {
             const oldOwner = await itemNFT.getOwner();
-            expect(oldOwner).toEqualAddress(owner.address);
+            await step("Check that oldOwner equals owner.address", () => {
+                expect(oldOwner).toEqualAddress(owner.address);
+            });
             const trxRes = await sendTransfer(
                 itemNFT,
                 owner.getSender(),
@@ -522,12 +620,19 @@ describe("NFT Item Contract", () => {
             );
 
             const newOwner = await itemNFT.getOwner();
-            expect(newOwner).toEqualAddress(notOwner.address);
-            expect(trxRes.transactions).toHaveTransaction({
-                from: owner.address,
-                to: itemNFT.address,
-                success: true,
+            await step("Check that newOwner equals notOwner.address", () => {
+                expect(newOwner).toEqualAddress(notOwner.address);
             });
+            await step(
+                "Check that trxRes.transactions has correct transaction (ownership assigned)",
+                () => {
+                    expect(trxRes.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: itemNFT.address,
+                        success: true,
+                    });
+                },
+            );
         });
 
         it("Test transfer ownership without any messages", async () => {
@@ -540,10 +645,20 @@ describe("NFT Item Contract", () => {
                 0n,
             );
             const newOwner = await itemNFT.getOwner();
-            expect(newOwner).toEqualAddress(notOwner.address);
-            expect(trxRes.transactions).not.toHaveTransaction({
-                from: itemNFT.address,
-            });
+            await step(
+                "Check that newOwner equals notOwner.address (no messages)",
+                () => {
+                    expect(newOwner).toEqualAddress(notOwner.address);
+                },
+            );
+            await step(
+                "Check that trxRes.transactions does NOT have transaction from itemNFT.address (no messages)",
+                () => {
+                    expect(trxRes.transactions).not.toHaveTransaction({
+                        from: itemNFT.address,
+                    });
+                },
+            );
         });
 
         it("Not owner should not be able to transfer ownership", async () => {
@@ -555,12 +670,17 @@ describe("NFT Item Contract", () => {
                 emptyAddress,
                 0n,
             );
-            expect(trxResult.transactions).toHaveTransaction({
-                from: notOwner.address,
-                to: itemNFT.address,
-                success: false,
-                exitCode: ErrorCodes.NotOwner,
-            });
+            await step(
+                "Check that trxResult.transactions has correct transaction (not owner should not be able to transfer ownership)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: notOwner.address,
+                        to: itemNFT.address,
+                        success: false,
+                        exitCode: ErrorCodes.NotOwner,
+                    });
+                },
+            );
         });
     });
 
@@ -579,11 +699,38 @@ describe("NFT Item Contract", () => {
 
         it("should not get static data", async () => {
             const staticData = await itemNFT.getGetNftData();
-            expect(staticData.init).toBe(0n);
-            expect(staticData.collectionAddress).toEqualAddress(owner.address);
-            expect(staticData.owner).toBeNull();
-            expect(staticData.itemIndex).toBe(itemIndex);
-            expect(staticData.content).toBeNull();
+            await step(
+                "Check that staticData.init is 0 (not initialized)",
+                () => {
+                    expect(staticData.init).toBe(0n);
+                },
+            );
+            await step(
+                "Check that staticData.collectionAddress equals owner.address (not initialized)",
+                () => {
+                    expect(staticData.collectionAddress).toEqualAddress(
+                        owner.address,
+                    );
+                },
+            );
+            await step(
+                "Check that staticData.owner is null (not initialized)",
+                () => {
+                    expect(staticData.owner).toBeNull();
+                },
+            );
+            await step(
+                "Check that staticData.itemIndex is itemIndex (not initialized)",
+                () => {
+                    expect(staticData.itemIndex).toBe(itemIndex);
+                },
+            );
+            await step(
+                "Check that staticData.content is null (not initialized)",
+                () => {
+                    expect(staticData.content).toBeNull();
+                },
+            );
         });
 
         it("should not transfer ownership", async () => {
@@ -687,12 +834,17 @@ describe("NFT Collection Contract", () => {
             { value: Storage.DeployAmount },
             deployCollectionMsg,
         );
-        expect(deployResult.transactions).toHaveTransaction({
-            from: owner.address,
-            to: collectionNFT.address,
-            deploy: true,
-            success: true,
-        });
+        await step(
+            "Check that deployResult.transactions has correct transaction (collection)",
+            () => {
+                expect(deployResult.transactions).toHaveTransaction({
+                    from: owner.address,
+                    to: collectionNFT.address,
+                    deploy: true,
+                    success: true,
+                });
+            },
+        );
     });
 
     it("should deploy correctly", async () => {
@@ -701,10 +853,25 @@ describe("NFT Collection Contract", () => {
 
     it("should get static data correctly", async () => {
         const staticData = await collectionNFT.getGetCollectionData();
-        expect(staticData.owner).toEqualAddress(owner.address);
-        expect(staticData.nextItemIndex).toBe(0n);
-        expect(staticData.collectionContent).toEqualCell(
-            defaultCollectionContent,
+        await step(
+            "Check that staticData.owner equals owner.address (collection)",
+            () => {
+                expect(staticData.owner).toEqualAddress(owner.address);
+            },
+        );
+        await step(
+            "Check that staticData.nextItemIndex is 0 (collection)",
+            () => {
+                expect(staticData.nextItemIndex).toBe(0n);
+            },
+        );
+        await step(
+            "Check that staticData.collectionContent equals defaultCollectionContent (collection)",
+            () => {
+                expect(staticData.collectionContent).toEqualCell(
+                    defaultCollectionContent,
+                );
+            },
         );
     });
 
@@ -718,7 +885,12 @@ describe("NFT Collection Contract", () => {
             .storeSlice(defaultCommonContent.asSlice())
             .storeRef(defaultContent)
             .endCell();
-        expect(content).toEqualCell(expectedContent);
+        await step(
+            "Check that content equals expectedContent (nft content)",
+            () => {
+                expect(content).toEqualCell(expectedContent);
+            },
+        );
     });
 
     describe("ROYALTY TESTS", () => {
@@ -736,11 +908,16 @@ describe("NFT Collection Contract", () => {
                 msg,
             );
 
-            expect(trxResult.transactions).toHaveTransaction({
-                from: owner.address,
-                to: collectionNFT.address,
-                success: true,
-            });
+            await step(
+                "Check that trxResult.transactions has correct transaction (royalty msg)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: collectionNFT.address,
+                        success: true,
+                    });
+                },
+            );
 
             const exceptedMsg: Cell = beginCell()
                 .storeUint(Operations.ReportRoyaltyParams, 32)
@@ -830,30 +1007,49 @@ describe("NFT Collection Contract", () => {
             );
             const nftData = await itemNFT.getGetNftData();
 
-            expect(nftData.content).toEqualCell(defaultNFTContent);
-            expect(nftData.owner).toEqualAddress(owner.address);
-            expect(nftData.itemIndex).toBe(nextItemIndex);
-            expect(nftData.collectionAddress).toEqualAddress(
-                collectionNFT.address,
+            await step(
+                "Check that nftData.content equals defaultNFTContent",
+                () => {
+                    expect(nftData.content).toEqualCell(defaultNFTContent);
+                },
+            );
+            await step("Check that nftData.owner equals owner.address", () => {
+                expect(nftData.owner).toEqualAddress(owner.address);
+            });
+            await step("Check that nftData.itemIndex is nextItemIndex", () => {
+                expect(nftData.itemIndex).toBe(nextItemIndex);
+            });
+            await step(
+                "Check that nftData.collectionAddress equals collectionNFT.address",
+                () => {
+                    expect(nftData.collectionAddress).toEqualAddress(
+                        collectionNFT.address,
+                    );
+                },
             );
         });
 
         it("should not mint NFTItem if not owner", async () => {
             const nextItemIndex = await collectionNFT.getNextItemIndex();
-            const [_itemNFT, _trx] = await deployNFT(
+            const [_itemNFT, trx] = await deployNFT(
                 nextItemIndex,
                 collectionNFT,
                 notOwner,
                 notOwner,
             );
-            expect(
-                (_trx as { transactions: unknown }).transactions,
-            ).toHaveTransaction({
-                from: notOwner.address,
-                to: collectionNFT.address,
-                success: false,
-                exitCode: ErrorCodes.NotOwner,
-            });
+            await step(
+                "Check that trx.transactions has correct transaction (not owner mint)",
+                () => {
+                    expect(
+                        trx.transactions
+                    ).toHaveTransaction({
+                        from: notOwner.address,
+                        to: collectionNFT.address,
+                        success: false,
+                        exitCode: ErrorCodes.NotOwner,
+                    });
+                },
+            );
         });
 
         it("should not deploy previous nft", async () => {
@@ -867,39 +1063,49 @@ describe("NFT Collection Contract", () => {
                 );
                 nextItemIndex++;
             }
-            const [_itemNFT, _trx] = await deployNFT(
+            const [_itemNFT, trx] = await deployNFT(
                 0n,
                 collectionNFT,
                 owner,
                 owner,
             );
-            expect(
-                (_trx as { transactions: unknown }).transactions,
-            ).toHaveTransaction({
-                from: collectionNFT.address,
-                to: _itemNFT.address,
-                deploy: false,
-                success: false,
-                exitCode: ErrorCodes.InvalidData,
-            });
+            await step(
+                "Check that trx.transactions has correct transaction (should not deploy previous nft)",
+                () => {
+                    expect(
+                        trx.transactions,
+                    ).toHaveTransaction({
+                        from: collectionNFT.address,
+                        to: _itemNFT.address,
+                        deploy: false,
+                        success: false,
+                        exitCode: ErrorCodes.InvalidData,
+                    });
+                },
+            );
         });
 
         it("shouldn't mint item itemIndex > nextItemIndex", async () => {
             const nextItemIndex = await collectionNFT.getNextItemIndex();
-            const [_itemNFT, _trx] = await deployNFT(
+            const [_itemNFT, trx] = await deployNFT(
                 nextItemIndex + 1n,
                 collectionNFT,
                 owner,
                 owner,
             );
-            expect(
-                (_trx as { transactions: unknown }).transactions,
-            ).toHaveTransaction({
-                from: owner.address,
-                to: collectionNFT.address,
-                success: false,
-                exitCode: ErrorCodes.IncorrectIndex,
-            });
+            await step(
+                "Check that trx.transactions has correct transaction (itemIndex > nextItemIndex)",
+                () => {
+                    expect(
+                        trx.transactions
+                    ).toHaveTransaction({
+                        from: owner.address,
+                        to: collectionNFT.address,
+                        success: false,
+                        exitCode: ErrorCodes.IncorrectIndex,
+                    });
+                },
+            );
         });
 
         it("test get nft by itemIndex", async () => {
@@ -916,9 +1122,16 @@ describe("NFT Collection Contract", () => {
             const newNFT = blockchain.getContract(nftAddress);
             const getData = await (await newNFT).get("get_nft_data");
             const dataNFT = loadGetterTupleNFTData(getData.stack);
-            expect(dataNFT.itemIndex).toBe(nextItemIndex);
-            expect(dataNFT.collectionAddress).toEqualAddress(
-                collectionNFT.address,
+            await step("Check that dataNFT.itemIndex is nextItemIndex", () => {
+                expect(dataNFT.itemIndex).toBe(nextItemIndex);
+            });
+            await step(
+                "Check that dataNFT.collectionAddress equals collectionNFT.address",
+                () => {
+                    expect(dataNFT.collectionAddress).toEqualAddress(
+                        collectionNFT.address,
+                    );
+                },
             );
         });
     });
@@ -1019,11 +1232,16 @@ describe("NFT Collection Contract", () => {
                 count,
             );
 
-            expect(trxResult.transactions).toHaveTransaction({
-                from: owner.address,
-                to: collectionNFT.address,
-                success: true,
-            });
+            await step(
+                "Check that trxResult.transactions has correct transaction (batch mint success)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: collectionNFT.address,
+                        success: true,
+                    });
+                },
+            );
             itemNFT = blockchain.openContract(
                 await NFTItem.fromInit(
                     null,
@@ -1034,9 +1252,14 @@ describe("NFT Collection Contract", () => {
             );
 
             // it was deployed, that's why we can get it
-            expect(await itemNFT.getGetNftData()).toHaveProperty(
-                "itemIndex",
-                count - 1n,
+            await step(
+                "Check that itemNFT.getGetNftData() has property itemIndex",
+                async () => {
+                    expect(await itemNFT.getGetNftData()).toHaveProperty(
+                        "itemIndex",
+                        count - 1n,
+                    );
+                },
             );
         });
 
@@ -1048,11 +1271,16 @@ describe("NFT Collection Contract", () => {
                 260n,
             );
 
-            expect(trxResult.transactions).toHaveTransaction({
-                from: owner.address,
-                to: collectionNFT.address,
-                success: false,
-            }); // in orig func contracts exit code -14, but it throw in code 399 ( we can just check )
+            await step(
+                "Check that trxResult.transactions has correct transaction (should not batch mint more than 250)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: collectionNFT.address,
+                        success: false,
+                    });
+                },
+            );
         });
 
         it("Should not batch mint not owner", async () => {
@@ -1063,12 +1291,17 @@ describe("NFT Collection Contract", () => {
                 10n,
             );
 
-            expect(trxResult.transactions).toHaveTransaction({
-                from: notOwner.address,
-                to: collectionNFT.address,
-                success: false,
-                exitCode: ErrorCodes.NotOwner,
-            });
+            await step(
+                "Check that trxResult.transactions has correct transaction (not owner batch mint)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: notOwner.address,
+                        to: collectionNFT.address,
+                        success: false,
+                        exitCode: ErrorCodes.NotOwner,
+                    });
+                },
+            );
         });
         describe("!!--DIFF TEST---!!", () => {
             it("Should HAVE message in batchDeploy with previous indexes", async () => {
@@ -1089,10 +1322,15 @@ describe("NFT Collection Contract", () => {
                     ),
                 ); // random number
 
-                expect(trxResult.transactions).toHaveTransaction({
-                    from: collectionNFT.address,
-                    to: itemNFT.address,
-                });
+                await step(
+                    "Check that trxResult.transactions has correct transaction (batchDeploy with previous indexes)",
+                    () => {
+                        expect(trxResult.transactions).toHaveTransaction({
+                            from: collectionNFT.address,
+                            to: itemNFT.address,
+                        });
+                    },
+                );
             });
 
             it("Should THROW if we have index > nextItemIndex", async () => {
@@ -1104,11 +1342,16 @@ describe("NFT Collection Contract", () => {
                     70n,
                 );
 
-                expect(trxResult.transactions).toHaveTransaction({
-                    from: owner.address,
-                    to: collectionNFT.address,
-                    success: false,
-                });
+                await step(
+                    "Check that trxResult.transactions has correct transaction (index > nextItemIndex)",
+                    () => {
+                        expect(trxResult.transactions).toHaveTransaction({
+                            from: owner.address,
+                            to: collectionNFT.address,
+                            success: false,
+                        });
+                    },
+                );
             });
         });
     });
@@ -1127,13 +1370,23 @@ describe("NFT Collection Contract", () => {
                 changeOwnerMsg,
             );
 
-            expect(trxResult.transactions).toHaveTransaction({
-                from: owner.address,
-                to: collectionNFT.address,
-                success: true,
-            });
-            expect(await collectionNFT.getOwner()).toEqualAddress(
-                notOwner.address,
+            await step(
+                "Check that trxResult.transactions has correct transaction (owner transfer ownership)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: collectionNFT.address,
+                        success: true,
+                    });
+                },
+            );
+            await step(
+                "Check that collectionNFT.getOwner() equals notOwner.address",
+                async () => {
+                    expect(await collectionNFT.getOwner()).toEqualAddress(
+                        notOwner.address,
+                    );
+                },
             );
         });
         it("Not owner should not be able to transfer ownership", async () => {
@@ -1149,12 +1402,17 @@ describe("NFT Collection Contract", () => {
                 changeOwnerMsg,
             );
 
-            expect(trxResult.transactions).toHaveTransaction({
-                from: notOwner.address,
-                to: collectionNFT.address,
-                success: false,
-                exitCode: ErrorCodes.NotOwner,
-            });
+            await step(
+                "Check that trxResult.transactions has correct transaction (not owner transfer ownership)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: notOwner.address,
+                        to: collectionNFT.address,
+                        success: false,
+                        exitCode: ErrorCodes.NotOwner,
+                    });
+                },
+            );
         });
     });
 });
