@@ -9,15 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [fix] Added static/instance checks for core static methods
 
+### Language features
+
+- [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
+- [fix] Added fixed-bytes support to bounced message size calculations: PR [#3129](https://github.com/tact-lang/tact/pull/3129)
+
 ### Docs
 
 - Changed the title of the "Gas-expensive" badge to "500+ gas" to avoid confusion when discussing relative gas-efficiency: PR [#3120](https://github.com/tact-lang/tact/pull/3120)
+
+### Release contributors
+
+- [hazyone](https://github.com/hazyone)
+- [lordivash](https://github.com/lordivash)
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.6.10] - 2025-05-16
 
 ### Infrastructure
 
 - [fix] Explicit dependencies to fix Blueprint integration: PR [#3088](https://github.com/tact-lang/tact/pull/3088)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+- [verytactical](https://github.com/verytactical)
 
 ## [1.6.9] - 2025-05-16
 

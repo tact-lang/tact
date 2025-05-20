@@ -22,6 +22,7 @@ cheatsheet
 Cheatsheet
 cheatsheets
 Cheatsheets
+chksgn
 cleanall
 CNFT
 codegen
@@ -30,7 +31,6 @@ Compilables
 comptime
 Comptime
 CSBT
-chksgn
 Daniil
 Danil
 decompilation
@@ -42,18 +42,18 @@ decompiles
 decompiling
 dentry
 Descr
+dictpush
 disasm
 divmod
 dnsresolve
 Domínguez
 dstr
-dictpush
 elseifnot
 Eltociear
 Epva
 errno
-Excno
 Esorat
+Excno
 extracurrency
 flamegraph
 flamegraphs
@@ -67,6 +67,7 @@ Georgiy
 getsimpleforwardfee
 gettest
 guarantor
+hazyone
 Héctor
 hehe
 heisenbugs
@@ -79,8 +80,8 @@ infixl
 infixr
 initof
 injectivity
-Ints
 Intelli
+Ints
 ipfs
 IPFS
 ipld
@@ -107,6 +108,7 @@ Liskov
 llm
 llms
 logomark
+lordivash
 lparen
 lvalue
 lvalues
