@@ -13,6 +13,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "toCell",
         {
             name: "toCell",
+            isStatic: false,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError("toCell() expects no arguments", ref);
@@ -167,6 +168,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "toSlice",
         {
             name: "toSlice",
+            isStatic: false,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError(
