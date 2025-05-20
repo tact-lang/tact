@@ -1637,11 +1637,9 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         if (t.ast.kind === "trait" || t.ast.kind === "contract") {
             // Check there are no duplicates in the _immediately_ inherited traits
             const traitSet: Set<string> = new Set(t.ast.traits.map(idText));
-            const aggregateType =
-                t.ast.kind === "contract" ? "contract" : "trait";
             if (traitSet.size !== t.ast.traits.length) {
                 throwCompilationError(
-                    `The list of inherited traits for ${aggregateType} "${t.name}" has duplicates`,
+                    `The list of inherited traits for ${t.ast.kind} "${t.name}" has duplicates`,
                     t.ast.loc,
                 );
             }
