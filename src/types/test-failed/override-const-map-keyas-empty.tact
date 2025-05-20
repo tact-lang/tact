@@ -1,10 +1,9 @@
 primitive Int;
-primitive Int;
 trait BaseTrait {
 
 }
 trait T {
-  abstract const M: map<Cell, Int>;
+  abstract const M: map<Int, Int>;
 }
 
 contract C with T {

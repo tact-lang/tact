@@ -19,7 +19,6 @@ import type {
     ReceiverSelector,
     TypeDescription,
     TypeRef,
-    TypeRefMap,
 } from "@/types/types";
 import {
     printTypeRef,
