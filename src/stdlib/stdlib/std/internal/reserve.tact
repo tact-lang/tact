@@ -1,13 +1,13 @@
 /// Executes the `RAWRESERVE` instruction with the specified `amount` and `mode`.
 /// It queues the reservation of the specific `amount` of [nanoToncoin] from the remaining
 /// account balance per the given `mode`.
-/// 
+///
 /// The reservation action is queued to the _output action list_, which contains other actions
 /// such as message sends. In fact, the `RAWRESERVE` instruction is roughly equivalent
 /// to creating an outbound message carrying the specified `amount` of nanoToncoin
 /// or `b - amount` of nanoToncoin, where `b` is the remaining balance, to oneself. This
 /// ensures that subsequent output actions cannot spend more money than the remainder.
-/// 
+///
 /// It is possible to use raw `Int` values and manually provide them for the `mode`,
 /// but for your convenience, there is a set of constants you may use to construct
 /// the compound `mode` with ease.
