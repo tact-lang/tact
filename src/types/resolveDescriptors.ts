@@ -2464,14 +2464,16 @@ function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
 
         let fieldBits = f.abi.type.optional ? 1 : 0;
 
-        // TODO handle fixed-bytes
-        if (Number.isInteger(f.abi.type.format)) {
-            fieldBits += f.abi.type.format as number;
-        } else if (f.abi.type.format === "coins") {
+        const { type, format } = f.abi.type;
+
+        if (Number.isInteger(format)) {
+            const amount = format as number;
+            fieldBits += type === "fixed-bytes" ? amount * 8 : amount;
+        } else if (format === "coins") {
             fieldBits += 124;
-        } else if (f.abi.type.type === "address") {
+        } else if (type === "address") {
             fieldBits += 267;
-        } else if (f.abi.type.type === "bool") {
+        } else if (type === "bool") {
             fieldBits += 1;
         } else {
             // Unsupported - all others (slice, builder, nested structs, maps)

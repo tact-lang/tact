@@ -9,7 +9,7 @@ Each transaction on TON Blockchain consists of [multiple phases](https://docs.to
 
 Exit codes $0$ and $1$ indicate normal (successful) execution of the [compute phase](#compute). Exit (or [result](#action)) code $0$ indicates normal (successful) execution of the [action phase](#action). Any other exit code indicates that a certain exception has occurred and that the transaction was not successful in one way or another, i.e. the transaction was reverted or the inbound message has bounced back.
 
-TON Blockchain reserves exit code values from $0$ to $127$, while Tact utilizes exit codes from $128$ to $255$. Note that exit codes used by Tact indicate contract errors, which can occur when using Tact-generated FunC code, and are therefore thrown in the transaction's [compute phase](#compute) and not during compilation.
+TON Blockchain reserves exit code values from $0$ to $127$, while Tact utilizes exit codes from $128$ to $255$. Note that exit codes used by Tact indicate contract errors, which can occur when using Tact-generated code, and are therefore thrown in the transaction's [compute phase](#compute) and not during compilation.
 
 The range from $256$ to $65535$ is free for developer-defined exit codes.
 
@@ -346,9 +346,9 @@ try {
 
 ### 10: Dictionary error {#10}
 
-In Tact, the [`map<K, V>{:tact}`](/book/maps) type is an abstraction over the ["hash" map dictionaries of FunC](https://docs.ton.org/develop/func/dictionaries#hashmap) and the underlying [`HashmapE` type](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap) of [TL-B][tlb] and [TVM][tvm].
+In Tact, the [`map<K, V>{:tact}`](/book/maps) type is an abstraction over the ["hash" map dictionaries of TVM](/book/maps#low-level-representation).
 
-If there is incorrect manipulation of dictionaries, such as improper assumptions about their memory layout, an error with exit code $10$ is thrown: `Dictionary error`. Note that Tact prevents you from getting this error unless you perform [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) work yourself:
+If there is incorrect manipulation of dictionaries, such as improper assumptions about their memory layout, an error with exit code $10$ is thrown: `Dictionary error`. Note that Tact prevents you from getting this error unless you perform [TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) work yourself:
 
 ```tact
 /// Pre-computed Int to Int dictionary with two entries — 0: 0 and 1: 1
@@ -540,7 +540,7 @@ If the configuration is absent, the default values are:
 
 ## Tact compiler
 
-Tact utilizes exit codes from $128$ to $255$. Note that exit codes used by Tact indicate contract errors, which can occur when using Tact-generated FunC code and are therefore thrown in the transaction's [compute phase](#compute), not during compilation.
+Tact utilizes exit codes from $128$ to $255$. Note that exit codes used by Tact indicate contract errors, which can occur when using Tact-generated code and are therefore thrown in the transaction's [compute phase](#compute), not during compilation.
 
 ### 128: Null reference exception {#128}
 

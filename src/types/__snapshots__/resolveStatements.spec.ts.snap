@@ -81,6 +81,15 @@ exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`
 "
 `;
 
+exports[`resolveStatements should fail statements for bounced-type-is-smaller-in-bytes 1`] = `
+"<unknown>:18:22: Maximum size of the bounced message is 224 bits, but the "a" field of type "A" cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bits
+  17 |   bounced(src: bounced<A>) {
+> 18 |     let x: Int = src.a;
+                            ^
+  19 |   }
+"
+`;
+
 exports[`resolveStatements should fail statements for call-non-optional-method-on-optional 1`] = `
 "<unknown>:10:13: Cannot call method "isNotNone" on an expression of type "Address?" (optional Address) without unwrapping it with "!!" first
    9 |     receive() {
