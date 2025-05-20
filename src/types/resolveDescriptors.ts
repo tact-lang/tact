@@ -1063,6 +1063,22 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
             }
+            if (returns.kind !== "void") {
+                if (returns.kind === "ref") {
+                    const typeInfo = types.get(returns.name);
+                    if (typeInfo?.kind === "trait") {
+                        throwCompilationError(
+                            `Function ${idTextErr(a.name)} returns a trait, but returning traits from "asm" functions is not supported (yet).`,
+                            a.loc,
+                        );
+                    }
+                } else if (returns.kind === "ref_bounced") {
+                    throwCompilationError(
+                        `Function ${idTextErr(a.name)} returns a <bounced> type, which cannot be returned from an "asm" function.`,
+                        a.loc,
+                    );
+                }
+            }
 
             // check return shuffle
             if (a.shuffle.ret.length !== 0) {
@@ -1089,9 +1105,9 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                 case "primitive_type_decl":
                                     retTupleSize = 1;
                                     break;
-                                case "trait":
+                                default:
                                     throwInternalCompilerError(
-                                        "A trait cannot be returned from a function",
+                                        `Unexpected type kind '${ty.kind}' in 'ref' return of asm function.`,
                                         a.loc,
                                     );
                             }
@@ -1100,12 +1116,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     case "null":
                     case "map":
                         retTupleSize = 1;
-                        break;
-                    case "ref_bounced":
-                        throwInternalCompilerError(
-                            "A <bounced> type cannot be returned from a function",
-                            a.loc,
-                        );
                         break;
                     case "void":
                         retTupleSize = 0;
