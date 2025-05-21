@@ -117,7 +117,7 @@ deploy(DeployParameters {
 
 ## Outbound message processing
 
-Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in the [compute phase][compute], but are **not** sent in that phase. Instead, they are queued for execution in the [action phase][phases] in the order of their appearance in the compute phase.
+Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in the [compute phase][compute], but are **not** sent in that phase. Instead, they are queued for execution in the [action phase][phases] in the order of their appearance in the compute phase. The queue is called an _output action list_, which contains other actions such as [reservations](/ref/core-contextstate#nativereserve).
 
 Outgoing message sends may fail in the [action phase][phases] due to insufficient [action fees](https://docs.ton.org/develop/howto/fees-low-level#action-fee) or [forward fees][fwdfee], in which case they will not bounce and **will not revert** the transaction. This can happen because all values are calculated in the [compute phase][compute], all fees are computed by its end, and exceptions do not roll back the transaction during the action phase.
 

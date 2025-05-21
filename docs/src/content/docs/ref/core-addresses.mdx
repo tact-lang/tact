@@ -14,7 +14,7 @@ See also:
 
 ## newAddress
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun newAddress(chain: Int, hash: Int): Address;
@@ -52,7 +52,7 @@ let oldTonFoundationAddr: Address =
 
 ## contractAddress
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun contractAddress(s: StateInit): Address;
@@ -72,7 +72,7 @@ foundMeSome == andSomeMore; // true
 
 ## contractAddressExt
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
@@ -331,7 +331,7 @@ fizz == buzz; // true
 
 ## Address.toString
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun toString(self: Address): String;

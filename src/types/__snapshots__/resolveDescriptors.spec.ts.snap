@@ -315,6 +315,24 @@ exports[`resolveDescriptors should fail descriptors for contract-receiver-struct
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-self-inheritance-combined 1`] = `
+"<unknown>:7:1: Self-inheritance is not allowed
+  6 | contract B {}
+> 7 | contract C with A, B, C {}
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  8 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-with-self-inheritance 1`] = `
+"<unknown>:5:1: Self-inheritance is not allowed
+  4 | 
+> 5 | contract A with A {
+      ^~~~~~~~~~~~~~~~~~~
+  6 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-without-as-typed-field-inherited-with-it 1`] = `
 "<unknown>:10:5: Trait "Foo" requires field "f" of type "Int", but "Int as coins" given
    9 | contract SomeContract with Foo {
@@ -1335,6 +1353,23 @@ exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-int2
 > 10 |     i: Int as coins = 0;
            ^~~~~~~~~~~~~~~~~~~
   11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-self-inheritance 1`] = `
+"<unknown>:1:1: Self-inheritance is not allowed
+> 1 | trait A with A {
+      ^~~~~~~~~~~~~~~~
+  2 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-self-inheritance-combined 1`] = `
+"<unknown>:3:1: Self-inheritance is not allowed
+  2 | trait B {}
+> 3 | trait C with A, B, C {}
+      ^~~~~~~~~~~~~~~~~~~~~~~
+  4 | 
 "
 `;
 

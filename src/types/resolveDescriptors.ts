@@ -1638,10 +1638,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             // Check there are no duplicates in the _immediately_ inherited traits
             const traitSet: Set<string> = new Set(t.ast.traits.map(idText));
             if (traitSet.size !== t.ast.traits.length) {
-                const aggregateType =
-                    t.ast.kind === "contract" ? "contract" : "trait";
                 throwCompilationError(
-                    `The list of inherited traits for ${aggregateType} "${t.name}" has duplicates`,
+                    `The list of inherited traits for ${t.ast.kind} "${t.name}" has duplicates`,
+                    t.ast.loc,
+                );
+            }
+            if (traitSet.has(t.name)) {
+                throwCompilationError(
+                    `Self-inheritance is not allowed`,
                     t.ast.loc,
                 );
             }
@@ -2460,14 +2464,16 @@ function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
 
         let fieldBits = f.abi.type.optional ? 1 : 0;
 
-        // TODO handle fixed-bytes
-        if (Number.isInteger(f.abi.type.format)) {
-            fieldBits += f.abi.type.format as number;
-        } else if (f.abi.type.format === "coins") {
+        const { type, format } = f.abi.type;
+
+        if (Number.isInteger(format)) {
+            const amount = format as number;
+            fieldBits += type === "fixed-bytes" ? amount * 8 : amount;
+        } else if (format === "coins") {
             fieldBits += 124;
-        } else if (f.abi.type.type === "address") {
+        } else if (type === "address") {
             fieldBits += 267;
-        } else if (f.abi.type.type === "bool") {
+        } else if (type === "bool") {
             fieldBits += 1;
         } else {
             // Unsupported - all others (slice, builder, nested structs, maps)

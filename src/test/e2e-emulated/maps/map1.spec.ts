@@ -1546,6 +1546,13 @@ describe("MapTestContract", () => {
                     clearMessage,
                 );
             }
+
+            // Confirm that empty maps serialize to null and not empty Cells
+            const allMapsAsCell = await contract.getAsCellAllMaps();
+            mapConfigs.forEach(({ mapName }) => {
+                const map = allMapsAsCell[mapName] as Cell | null;
+                expect(map).toBe(null);
+            });
         }
     });
 
