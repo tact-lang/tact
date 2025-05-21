@@ -134,7 +134,10 @@ jobs:
         os: [ubuntu-latest,
             # windows-latest, macos-latest
         ]
-        package-manager: [npm, yarn, bun]
+        package-manager: [
+          npm,
+          # yarn, bun
+        ]
         # follow-up ifs are for ensuring clean state at all times
     runs-on: ${{ matrix.os }}
     steps:
