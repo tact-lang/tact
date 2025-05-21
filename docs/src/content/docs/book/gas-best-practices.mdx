@@ -120,6 +120,41 @@ Some functions in the Tact documentation are annotated with a special badge, "50
 
 If you use one of those functions, consider finding cheaper alternatives.
 
+### Pay attention to `safety` option set of `tact.config.json`
+
+When using the unwrapping [non-null assertion `!!`](/book/operators/#unary-non-null-assert) operator, you can decrease its gas consumption at the expense of its runtime `null{:tact}` checks. Thus, you should only disable such checks when you are sure there will not be a runtime `null{:tact}` present in the given branch of your code.
+
+```tact
+fun example() {
+    let val: Int? = 42;
+    if (val == null) {
+        return;
+    }
+    // At this point we know that `val` is not null,
+    // so we can safely disable runtime checks of the !! operator in the config
+    val!!; // 42
+}
+```
+
+To disable runtime `null{:tact}` checks of the `!!` operator, set the [`nullChecks`](/book/config#safety-nullchecks) field to `false{:json}` in your [`tact.config.json`](/book/config).
+
+```json filename="tact.config.json" {9}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./your-contract-file.tact",
+      "output": "./output",
+      "options": {
+        "safety": {
+          "nullChecks": false
+        }
+      }
+    }
+  ]
+}
+```
+
 ### Inline functions that are rarely called
 
 Some [kinds of functions](/book/functions) allow their code to be inlined by adding an `inline` annotation. If the function is used often, this might result in a significant increase in contract code size, but generally, it allows to save gas on redundant function calls.
