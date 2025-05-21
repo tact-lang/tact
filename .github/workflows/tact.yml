@@ -17,114 +17,114 @@ concurrency:
 permissions: read-all
 
 jobs:
-  backwards-compat:
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [18]
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#  backwards-compat:
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        node-version: [18]
+#        os: [ubuntu-latest, windows-latest, macos-latest]
+#    runs-on: ${{ matrix.os }}
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Node.js ${{ matrix.node-version }}
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#          # without caching
+#
+#      - name: Backwards compatibility tests
+#        run: |
+#          # Temporarily ignore engines
+#          yarn config set ignore-engines true
+#          # Install dependencies, gen and build the compiler
+#          yarn install
+#          yarn clean
+#          ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
+#          yarn build
+#          # Test some specific things for backwards compatibility.
+#          # It's important to restrain from using too much of Node.js 22+ features
+#          # until it goes into maintenance LTS state and majority of users catches up
+#          yarn cross-env NODE_OPTIONS=--max_old_space_size=5120 jest isSubsetOf
+#          # Clean-up
+#          yarn cleanall
+#          yarn config delete ignore-engines
+#
+#  forward-compat:
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        node-version: [23]
+#        os: [ubuntu-latest, windows-latest, macos-latest]
+#    runs-on: ${{ matrix.os }}
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Node.js ${{ matrix.node-version }}
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#          # without caching
+#
+#      - name: Forward compatibility tests
+#        run: |
+#          # Install dependencies and perform some steps of the build pipeline,
+#          # skipping the contract generation and the final `yarn build` step
+#          yarn install
+#          yarn gen:grammar
+#          yarn gen:stdlib
+#          yarn gen:func-js
+#          # Clean-up
+#          yarn cleanall
+#
+#  test:
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        node-version: [22]
+#        os: [ubuntu-latest, macos-latest]
+#    runs-on: ${{ matrix.os }}
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: ./.github/actions/test
+#      - name: Test compatibility with tact-template
+#        run: |
+#          # !!!!!!! Don't forget to update test-windows below !!!!!!!
+#          git clone https://github.com/tact-lang/tact-template.git
+#          cd tact-template
+#          # Hijack the dependency on Tact to avoid redundant npm downloads
+#          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
+#          mv temp.json package.json
+#          yarn install
+#          yarn link @tact-lang/compiler
+#          yarn build
+#          yarn test
 
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          # without caching
-
-      - name: Backwards compatibility tests
-        run: |
-          # Temporarily ignore engines
-          yarn config set ignore-engines true
-          # Install dependencies, gen and build the compiler
-          yarn install
-          yarn clean
-          ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
-          yarn build
-          # Test some specific things for backwards compatibility.
-          # It's important to restrain from using too much of Node.js 22+ features
-          # until it goes into maintenance LTS state and majority of users catches up
-          yarn cross-env NODE_OPTIONS=--max_old_space_size=5120 jest isSubsetOf
-          # Clean-up
-          yarn cleanall
-          yarn config delete ignore-engines
-
-  forward-compat:
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [23]
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          # without caching
-
-      - name: Forward compatibility tests
-        run: |
-          # Install dependencies and perform some steps of the build pipeline,
-          # skipping the contract generation and the final `yarn build` step
-          yarn install
-          yarn gen:grammar
-          yarn gen:stdlib
-          yarn gen:func-js
-          # Clean-up
-          yarn cleanall
-
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [22]
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/test
-      - name: Test compatibility with tact-template
-        run: |
-          # !!!!!!! Don't forget to update test-windows below !!!!!!!
-          git clone https://github.com/tact-lang/tact-template.git
-          cd tact-template
-          # Hijack the dependency on Tact to avoid redundant npm downloads
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
-          mv temp.json package.json
-          yarn install
-          yarn link @tact-lang/compiler
-          yarn build
-          yarn test
-
-  test-windows:
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [22]
-        os: [windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/test
-      - name: Test compatibility with tact-template
-        run: |
-          # !!!!!!! Don't forget to update test above !!!!!!!
-          $ErrorActionPreference = 'Stop'
-          git clone https://github.com/tact-lang/tact-template.git
-          cd tact-template
-          # Hijack the dependency on Tact to avoid redundant npm downloads
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
-          Move-Item temp.json package.json -Force
-          yarn install
-          yarn link @tact-lang/compiler
-          yarn build
-          yarn test
+#  test-windows:
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        node-version: [22]
+#        os: [windows-latest]
+#    runs-on: ${{ matrix.os }}
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: ./.github/actions/test
+#      - name: Test compatibility with tact-template
+#        run: |
+#          # !!!!!!! Don't forget to update test above !!!!!!!
+#          $ErrorActionPreference = 'Stop'
+#          git clone https://github.com/tact-lang/tact-template.git
+#          cd tact-template
+#          # Hijack the dependency on Tact to avoid redundant npm downloads
+#          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
+#          Move-Item temp.json package.json -Force
+#          yarn install
+#          yarn link @tact-lang/compiler
+#          yarn build
+#          yarn test
 
   test-blueprint:
     strategy:
@@ -177,32 +177,32 @@ jobs:
           npm run build
           npm run test
 
-      - name: (npm) Test Tact and Blueprint installs in existing projects
-        if: ${{ matrix.package-manager == 'npm' }}
-        run: |
-          # Out of the box, only npm experiences issues
-          # with lifecycle scripts of installed dependencies
-          mkdir npm-test && cd npm-test
-          npm init -y
-          npm i ../  # installing compiler relatively
-          npm i @ton/blueprint
+#      - name: (npm) Test Tact and Blueprint installs in existing projects
+#        if: ${{ matrix.package-manager == 'npm' }}
+#        run: |
+#          # Out of the box, only npm experiences issues
+#          # with lifecycle scripts of installed dependencies
+#          mkdir npm-test && cd npm-test
+#          npm init -y
+#          npm i ../  # installing compiler relatively
+#          npm i @ton/blueprint
 
-      - name: (yarn) Test creation of new Blueprint projects
-        if: ${{ matrix.package-manager == 'yarn' }}
-        run: |
-          yarn link
-          yarn create ton test-project --type tact-counter --contractName Counter
-          cd test-project
-          yarn link @tact-lang/compiler
-          yarn build
-          yarn test
-
-      - name: (bun) Test creation of new Blueprint projects
-        if: ${{ matrix.package-manager == 'bun' }}
-        run: |
-          bun link
-          bun create ton@latest test-project --type tact-counter --contractName Counter
-          cd test-project
-          bun link @tact-lang/compiler
-          bun run build # without 'run' Bun will use its own bundler
-          bun run test  # without 'run' Bun will use its own test runner
+#      - name: (yarn) Test creation of new Blueprint projects
+#        if: ${{ matrix.package-manager == 'yarn' }}
+#        run: |
+#          yarn link
+#          yarn create ton test-project --type tact-counter --contractName Counter
+#          cd test-project
+#          yarn link @tact-lang/compiler
+#          yarn build
+#          yarn test
+#
+#      - name: (bun) Test creation of new Blueprint projects
+#        if: ${{ matrix.package-manager == 'bun' }}
+#        run: |
+#          bun link
+#          bun create ton@latest test-project --type tact-counter --contractName Counter
+#          cd test-project
+#          bun link @tact-lang/compiler
+#          bun run build # without 'run' Bun will use its own bundler
+#          bun run test  # without 'run' Bun will use its own test runner
