@@ -573,6 +573,16 @@ const rewriteWithIfNot = (
     }
 
     if (expr.kind === "op_binary" && (expr.op === "==" || expr.op === "!=")) {
+        // Skip optimization for optional refs
+        const leftExpType = getExpType(ctx, expr.left);
+        const rightExpType = getExpType(ctx, expr.right);
+        if (
+            (leftExpType.kind === "ref" && leftExpType.optional) ||
+            (rightExpType.kind === "ref" && rightExpType.optional)
+        ) {
+            return ["if", expr];
+        }
+
         const left = constEval(expr.left, ctx);
         const right = constEval(expr.right, ctx);
 
