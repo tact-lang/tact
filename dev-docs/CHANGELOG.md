@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- [fix] Added static/instance checks for core static methods [#3119](https://github.com/tact-lang/tact/pull/3119)
+- [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
 
 ### Language features
 
