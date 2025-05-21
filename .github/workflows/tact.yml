@@ -171,9 +171,11 @@ jobs:
           npm link
           # for end-users 'npm create ton@latest' works fine even in PowerShell,
           # but it fails on Windows in GitHub Actions because of weird -- expansion
-          npx create-ton@latest test-project --type tact-counter --contractName Counter
+          # Skip dependencies installation
+          npx create-ton@latest test-project --type tact-counter --contractName Counter --no-ci
           cd test-project
           npm link @tact-lang/compiler
+          npm install
           npm run build
           npm run test
 
