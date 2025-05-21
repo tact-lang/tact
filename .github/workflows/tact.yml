@@ -159,16 +159,16 @@ jobs:
           yarn build:fast
           yarn clean
 
-      - name: Prepare Tact compiler
-        run: |
-          # There are issues with corepack + it disallows the use of pnpm for linkage later on
-          # It's only useful for making sure that Tact compiler developers use the same version of Yarn
-          # https://github.com/nodejs/corepack/issues/112
-          # corepack enable
-          yarn install
-          yarn clean
-          ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
-          yarn build
+#      - name: Prepare Tact compiler
+#        run: |
+#          # There are issues with corepack + it disallows the use of pnpm for linkage later on
+#          # It's only useful for making sure that Tact compiler developers use the same version of Yarn
+#          # https://github.com/nodejs/corepack/issues/112
+#          # corepack enable
+#          yarn install
+#          yarn clean
+#          ${{ matrix.os != 'windows-latest' && 'time ' || '' }} yarn cross-env BUILD_THREADS=4 yarn gen
+#          yarn build
 
       - name: (npm) Test creation of new Blueprint projects
         if: ${{ matrix.package-manager == 'npm' }}
