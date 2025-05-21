@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- [fix]: Fixed mismatched serialization of maps in const/fun
+- [fix]: Fixed mismatched serialization of maps in const/fun: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
 
 ### Language features
 
