@@ -170,7 +170,7 @@ Read more about them on their dedicated page: [External messages](/book/external
 
 ## `fun` — regular functions {#fun}
 
-<Badge text="Any scope" title="LELE" variant="note" size="medium"/><p/>
+<Badge text="Any scope" title="These functions can be declared or defined within contracts and at the top level" variant="note" size="medium"/><p/>
 
 Regular functions are declared using the `fun{:tact}` keyword.
 
@@ -591,7 +591,27 @@ contract Filter() with FilterTrait {
 The `abstract{:tact}` attribute allows declaring a [internal function](#fun-internal) with no body given at declaration. Functions with this attribute are meant to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
 
 ```tact
-// TODO: example
+// TODO: basic showcase of the abstract, without an override? Huh, maybe...
+trait BlackSquare {
+    abstract fun paint();
+}
+
+trait CompositionVII {
+    abstract fun oil(onCanvas: Bool): Bool;
+}
+
+contract Abstractionism() with BlackSquare, CompositionVII {
+    // ...
+    override fun oil()
+
+    // Override allows full control
+    override fun paint(color: String): Bool {
+        if (color != "black") {
+            return false;
+        }
+        return true;
+    }
+}
 ```
 
 #### `virtual` {#attributes-virtual}
@@ -600,9 +620,54 @@ The `abstract{:tact}` attribute allows declaring a [internal function](#fun-inte
 
 The `virtual{:tact}` attribute allows a [internal function](#fun-internal) to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
 
-This attribute is similar to the [`abstract{:tact}`](#attributes-abstract) attribute, except that
+This attribute is similar to the [`abstract{:tact}`](#attributes-abstract) attribute, except that you do not have to override bodies of functions with the `virtual{:tact}` attribute. But if you decide to override the function body, you may do it in any trait that depends on this trait and not only in the resulting contract.
 
-TODO: ...
+```tact
+import "@stdlib/ownable";
+
+trait DeployableFilterV1 with Ownable {
+    // Virtual functions can be optionally overridden by users of this trait.
+    virtual fun filter() {
+        // Not an owner
+        throwUnless(TactExitCodeAccessDenied, sender() == self.owner);
+    }
+
+    // Whereas internal functions with an abstract attribute must be overriden
+    // by the contract that will import this trait or any of the traits that depend on this trait.
+    abstract fun specialFilter();
+
+    // Receivers are inherited too,
+    // but they cannot defined be virtual or abstract
+    receive() { cashback(sender()) }
+}
+
+trait DeployableFilterV2 with DeployableFilterV1 {
+    override fun filter() {
+        // Not an owner
+        throwUnless(TactExitCodeAccessDenied, sender() == self.owner);
+
+        // Message carries too little Toncoin for our tastes
+        throwUnless(TactExitCodeAccessDenied, context().value < ton("1"));
+    }
+}
+
+contract Auth(owner: Address) with DeployableFilterV2 {
+    override fun specialFilter() {
+        if (randomInt() < 10) {
+            throw(TactExitCodeAccessDenied);
+        }
+    }
+
+    receive(_: TopSecretRequest) {
+        self.filter();
+        self.specialFilter();
+
+        // ...subsequent logic...
+    }
+}
+
+message TopSecretRequest {}
+```
 
 #### `override` {#attributes-override}
 
@@ -610,22 +675,13 @@ TODO: ...
 
 The `override{:tact}` attribute is used to override an inherited [internal function](#fun-internal) that has either a [`virtual{:tact}`](#attributes-virtual) or [`abstract{:tact}`](#attributes-abstract) attribute specified in the declaration of that function in one of the parent traits.
 
-```tact
-// TODO:...
-```
-
-TODO: ...can transform an abstract to virtual and then virtual no regular
-TODO: ...can transform one virtual to another virtual
-TODO: ...can transform one abstract to another abstract
-TODO: when combined with prior `virtual{:tact}`...
-
 ### Miscellaneous
 
 Various attributes that modify the behavior of functions in their special ways.
 
 #### `inline` {#attributes-inline}
 
-<Badge text="Any scope" variant="note" size="medium"/><p/>
+<Badge text="Any scope" title="This attribute can be applied to functions within contracts and functions at the top level" variant="note" size="medium"/><p/>
 
 The `inline{:tact}` attribute embeds the code of the function to its call sites, which eliminates the overhead of the calls but potentially increases the code size if the function is called from multiple places.
 
