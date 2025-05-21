@@ -553,7 +553,11 @@ There is no such attribute yet, so the special static extension functions in the
 
 ### Inheritance
 
-<Badge text="Contract scope" variant="note" size="medium"/><p/>
+<Badge text="Contract scope" title="Functions can only be inherited from traits and never at the top level" variant="note" size="medium"/><p/>
+
+The `with{:tact}` keyword allows a contract to inherit a [trait](/book/types#traits) with all its constants, fields, and functions, including those transitively inherited from other traits associated with the specified trait.
+
+In particular, all functions of the trait become accessible in the contract, regardless of any inheritance-related attributes, such as `abstract{:tact}`, `virtual{:tact}`, or `override{:tact}`.
 
 You can allow a contract inheriting a [trait][trait] to modify a [internal function](#fun-internal) marked with the `virtual{:tact}` keyword by using `override{:tact}`. A function can also be marked as `abstract{:tact}`, in which case the inheriting contract must define its implementation.
 
@@ -582,29 +586,35 @@ contract Filter() with FilterTrait {
 }
 ```
 
-{/* TODO: inheritance table or other way to represent https://github.com/tact-lang/tact/issues/3030 */}
+{/* TODO: inheritance table as per https://github.com/tact-lang/tact/issues/3030 */}
 
 #### `abstract` {#attributes-abstract}
 
-<Badge text="Contract scope" variant="note" size="medium"/><p/>
+<Badge text="Contract scope" title="This attribute can be applied to internal functions only" variant="note" size="medium"/><p/>
 
 The `abstract{:tact}` attribute allows declaring a [internal function](#fun-internal) with no body given at declaration. Functions with this attribute are meant to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
 
 ```tact
-// TODO: basic showcase of the abstract, without an override? Huh, maybe...
 trait BlackSquare {
     abstract fun paint();
 }
 
 trait CompositionVII {
-    abstract fun oil(onCanvas: Bool): Bool;
+    abstract fun paintedWithOil(preliminary: Bool): Bool;
 }
 
 contract Abstractionism() with BlackSquare, CompositionVII {
-    // ...
-    override fun oil()
+    // All functions marked as abstract must be defined in the contract that inherits them.
+    override fun paintedWithOil(preliminary: Bool): Bool {
+        if (preliminary) {
+            return false; // perhaps, watercolors were used...
+        }
+        return true;
+    }
 
-    // Override allows full control
+    // The override attribute gives you full control — the only thing must be kept
+    // the same between the abstract declaration and resulting definition
+    // is the name of the function. Return type or function parameters can be changed.
     override fun paint(color: String): Bool {
         if (color != "black") {
             return false;
@@ -616,7 +626,7 @@ contract Abstractionism() with BlackSquare, CompositionVII {
 
 #### `virtual` {#attributes-virtual}
 
-<Badge text="Contract scope" variant="note" size="medium"/><p/>
+<Badge text="Contract scope" title="This attribute can be applied to internal functions only" variant="note" size="medium"/><p/>
 
 The `virtual{:tact}` attribute allows a [internal function](#fun-internal) to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
 
@@ -671,7 +681,7 @@ message TopSecretRequest {}
 
 #### `override` {#attributes-override}
 
-<Badge text="Contract scope" variant="note" size="medium"/><p/>
+<Badge text="Contract scope" title="This attribute can be applied to internal functions only" variant="note" size="medium"/><p/>
 
 The `override{:tact}` attribute is used to override an inherited [internal function](#fun-internal) that has either a [`virtual{:tact}`](#attributes-virtual) or [`abstract{:tact}`](#attributes-abstract) attribute specified in the declaration of that function in one of the parent traits.
 
