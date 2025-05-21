@@ -1,3 +1,3 @@
 trait T {}
 
-asm (-> 0) fun foo(): T { NOP }
+asm(-> 0) fun foo(): T { NOP }

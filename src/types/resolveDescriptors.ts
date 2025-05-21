@@ -1068,13 +1068,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     const typeInfo = types.get(returns.name);
                     if (typeInfo?.kind === "trait") {
                         throwCompilationError(
-                            `Function ${idTextErr(a.name)} returns a trait, but returning traits from "asm" functions is not supported (yet).`,
+                            `Function ${idTextErr(a.name)} returns a trait, which is not supported in "asm" functions.`,
                             a.loc,
                         );
                     }
                 } else if (returns.kind === "ref_bounced") {
                     throwCompilationError(
-                        `Function ${idTextErr(a.name)} returns a <bounced> type, which cannot be returned from an "asm" function.`,
+                        `Function ${idTextErr(a.name)} returns a <bounced> type, which is not supported in "asm" functions.`,
                         a.loc,
                     );
                 }
@@ -1105,9 +1105,9 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                 case "primitive_type_decl":
                                     retTupleSize = 1;
                                     break;
-                                default:
+                                case "trait":
                                     throwInternalCompilerError(
-                                        `Unexpected type kind '${ty.kind}' in 'ref' return of asm function.`,
+                                        "A trait cannot be returned from a function",
                                         a.loc,
                                     );
                             }

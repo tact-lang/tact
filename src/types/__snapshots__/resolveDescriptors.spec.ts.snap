@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`resolveDescriptors should fail descriptors for asm-fun-bounced-return 1`] = `
-"<unknown>:3:1: Function "foo" returns a <bounced> type, which cannot be returned from an "asm" function.
+"<unknown>:3:1: Function "foo" returns a <bounced> type, which is not supported in "asm" functions.
   2 | 
 > 3 | asm fun foo(): bounced<Cell> { NOP }
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,10 +46,10 @@ exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-non-
 `;
 
 exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-bounced-return 1`] = `
-"<unknown>:3:1: Function "foo" returns a <bounced> type, which cannot be returned from an "asm" function.
+"<unknown>:3:1: Function "foo" returns a <bounced> type, which is not supported in "asm" functions.
   2 | 
-> 3 | asm (-> 0) fun foo(): bounced<Cell> { NOP }
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 3 | asm(-> 0) fun foo(): bounced<Cell> { NOP }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   4 | 
 "
 `;
@@ -82,16 +82,16 @@ exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-non-
 `;
 
 exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-trait-return 1`] = `
-"<unknown>:3:1: Function "foo" returns a trait, but returning traits from "asm" functions is not supported (yet).
+"<unknown>:3:1: Function "foo" returns a trait, which is not supported in "asm" functions.
   2 | 
-> 3 | asm (-> 0) fun foo(): T { NOP }
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 3 | asm(-> 0) fun foo(): T { NOP }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   4 | 
 "
 `;
 
 exports[`resolveDescriptors should fail descriptors for asm-fun-trait-return 1`] = `
-"<unknown>:3:1: Function "foo" returns a trait, but returning traits from "asm" functions is not supported (yet).
+"<unknown>:3:1: Function "foo" returns a trait, which is not supported in "asm" functions.
   2 | 
 > 3 | asm fun foo(): T { NOP }
       ^~~~~~~~~~~~~~~~~~~~~~~~
