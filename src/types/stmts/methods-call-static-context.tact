@@ -1,12 +1,8 @@
 primitive Cell;
 primitive Slice;
-trait BaseTrait {
+trait BaseTrait {}
 
-}
-
-message SomeMessage {
-
-}
+message SomeMessage {}
 
 contract SomeContract {
     init(slice: Slice, cell: Cell) {

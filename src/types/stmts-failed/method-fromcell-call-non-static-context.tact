@@ -1,14 +1,10 @@
 primitive Cell;
-trait BaseTrait {
+trait BaseTrait {}
 
-}
-
-message SomeMessage {
-
-}
+message SomeMessage {}
 
 contract SomeContract {
     init(cell: Cell) {
-        let res = SomeMessage{}.fromCell(cell);
+        let res = SomeMessage {}.fromCell(cell);
     }
 }

@@ -1,13 +1,9 @@
-trait BaseTrait {
+trait BaseTrait {}
 
-}
-
-message SomeMessage {
-
-}
+message SomeMessage {}
 
 contract SomeContract {
     receive() {
-        let res = SomeMessage{}.opcode();
+        let res = SomeMessage {}.opcode();
     }
 }

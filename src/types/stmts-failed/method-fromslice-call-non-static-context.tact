@@ -1,14 +1,10 @@
 primitive Slice;
-trait BaseTrait {
+trait BaseTrait {}
 
-}
-
-message SomeMessage {
-
-}
+message SomeMessage {}
 
 contract SomeContract {
     init(slice: Slice) {
-        let res = SomeMessage{}.fromSlice(slice);
+        let res = SomeMessage {}.fromSlice(slice);
     }
 }
