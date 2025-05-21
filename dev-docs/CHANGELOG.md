@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- [fix] Disable optimization of optional integer comparisons that leads to runtime exceptions: PR []()
+- [fix] Disable optimization of optional integer comparisons that leads to runtime exceptions: PR [#3210](https://github.com/tact-lang/tact/pull/3210)
 
 ### Language features
 
