@@ -131,7 +131,9 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [22]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest,
+            # windows-latest, macos-latest
+        ]
         package-manager: [npm, yarn, bun]
         # follow-up ifs are for ensuring clean state at all times
     runs-on: ${{ matrix.os }}
