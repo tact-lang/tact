@@ -109,7 +109,11 @@ export const runParallel = async (
     }
 };
 
-const runFuncBuild = async (folder: string, funcStdlibPath: string, globs: string[]) => {
+const runFuncBuild = async (
+    folder: string,
+    funcStdlibPath: string,
+    globs: string[],
+) => {
     const contractsPaths = globSync(globs, { cwd: folder });
 
     const project = createNodeFileSystem(folder, false);
@@ -227,7 +231,11 @@ const runFuncBuild = async (folder: string, funcStdlibPath: string, globs: strin
     }
 };
 
-export const allInFolderFunc = async (folder: string, funcStdlibPath: string, globs: string[]) => {
+export const allInFolderFunc = async (
+    folder: string,
+    funcStdlibPath: string,
+    globs: string[],
+) => {
     try {
         await runFuncBuild(folder, funcStdlibPath, globs);
     } catch (error) {
