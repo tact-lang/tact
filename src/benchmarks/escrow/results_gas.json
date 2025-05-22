@@ -229,6 +229,16 @@
         "approveTon": "6738",
         "cancelTon": "4639"
       }
+    },
+    {
+      "label": "1.6.10 with store_slice optimization",
+      "pr": null,
+      "gas": {
+        "fundingTon": "4303",
+        "changeCode": "4394",
+        "approveTon": "7384",
+        "cancelTon": "5303"
+      }
     }
   ]
 }

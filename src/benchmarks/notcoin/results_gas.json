@@ -62,6 +62,15 @@
         "burn": "11919",
         "discovery": "5870"
       }
+    },
+    {
+      "label": "1.6.10 with store_slice optimization",
+      "pr": null,
+      "gas": {
+        "transfer": "15759",
+        "burn": "12011",
+        "discovery": "5716"
+      }
     }
   ]
 }
