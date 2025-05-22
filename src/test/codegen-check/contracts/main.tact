@@ -186,6 +186,11 @@ contract MainContract {
         }
     }
 
+    get fun testDumpCall(a: Int) {
+        dump(a);
+        dumpStack();
+    }
+
     get fun testIfThrowOptimization(a: Int) {
         if (a == self.FOO_ONE) {
             throw(10);

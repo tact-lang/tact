@@ -62,11 +62,8 @@ exports[`codegen should correctly generate FunC code 1`] = `
 ;; $MainContract$_fun_testIfOptimizationNegative
 ((int, int, slice, cell), ()) $MainContract$_fun_testIfOptimizationNegative((int, int, slice, cell) $self, int $a) impure inline_ref;
 
-;; $MainContract$_fun_testIfThrowOptimization
-((int, int, slice, cell), ()) $MainContract$_fun_testIfThrowOptimization((int, int, slice, cell) $self, int $a) impure inline_ref;
-
-;; $MainContract$_fun_testIfThrowOptimizationNegative
-((int, int, slice, cell), ()) $MainContract$_fun_testIfThrowOptimizationNegative((int, int, slice, cell) $self, int $a) impure inline_ref;
+;; $MainContract$_fun_testDumpCall
+((int, int, slice, cell), ()) $MainContract$_fun_testDumpCall((int, int, slice, cell) $self, int $a) impure inline_ref;
 
 
 ;; main_MainContract.stdlib.fc
@@ -74,10 +71,6 @@ global (int, slice, int, slice) __tact_context;
 global slice __tact_context_sender;
 global cell __tact_child_contract_codes;
 global int __tact_randomized;
-
-() __tact_nop() asm """
-    NOP
-""";
 
 builder $global_beginCell() impure asm """
     NEWC
@@ -292,37 +285,8 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
     return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 
-((int, int, slice, cell), ()) $MainContract$_fun_testIfThrowOptimization((int, int, slice, cell) $self, int $a) impure inline_ref {
+((int, int, slice, cell), ()) $MainContract$_fun_testDumpCall((int, int, slice, cell) $self, int $a) impure inline_ref {
     var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
-    throw_if(10, ($a == 1));
-    int $cond = ($a == 1);
-    throw_unless(10, $cond);
-    return (($self'field, $self'value, $self'data, $self'mapping), ());
-}
-
-((int, int, slice, cell), ()) $MainContract$_fun_testIfThrowOptimizationNegative((int, int, slice, cell) $self, int $a) impure inline_ref {
-    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
-    if (($a == 1)) {
-        throw_if(10, true);
-    }
-    int $cond = ($a == 1);
-    ifnot ($cond) {
-        __tact_nop();
-        throw(10);
-    }
-    if (($a != 1)) {
-        __tact_nop();
-        return (($self'field, $self'value, $self'data, $self'mapping), ());
-    }
-    if ($cond) {
-    } elseif (($a == 1)) {
-        throw(10);
-    }
-    if (($a == 1)) {
-        throw(10);
-    } else {
-        throw(11);
-    }
     return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 
@@ -379,17 +343,10 @@ _ %testIfOptimizationNegative(int $a) method_id(87434) {
     return res;
 }
 
-_ %testIfThrowOptimization(int $a) method_id(71867) {
+_ %testDumpCall(int $a) method_id(66927) {
     int $a = $a;
     var self = $MainContract$_contract_load();
-    var res = self~$MainContract$_fun_testIfThrowOptimization($a);
-    return res;
-}
-
-_ %testIfThrowOptimizationNegative(int $a) method_id(69407) {
-    int $a = $a;
-    var self = $MainContract$_contract_load();
-    var res = self~$MainContract$_fun_testIfThrowOptimizationNegative($a);
+    var res = self~$MainContract$_fun_testDumpCall($a);
     return res;
 }
 
