@@ -602,6 +602,28 @@ const rewriteWithIfNot = (
     return ["if", expr];
 };
 
+const extractThrowErrorCode = (
+    stmts: readonly Ast.Statement[],
+): Ast.Expression | undefined => {
+    if (stmts.length !== 1) return undefined;
+    const stmt = stmts.at(0);
+    if (stmt === undefined) return undefined;
+    if (stmt.kind !== "statement_expression") return undefined;
+    if (stmt.expression.kind !== "static_call") return undefined;
+    if (stmt.expression.function.text === "throw") {
+        return stmt.expression.args.at(0);
+    }
+    return undefined;
+};
+
+const rewriteWithConditionalThrow = (f: Ast.StatementCondition) => {
+    const condition = f.condition;
+    if (condition.kind === "op_unary" && condition.op === "!") {
+        return { kind: "throw_unless", condition: condition.operand };
+    }
+    return { kind: "throw_if", condition };
+};
+
 // HACK ALERT: if `returns` is a string, it contains the code to invoke before returning from a receiver
 // this is used to save the contract state before returning
 function writeCondition(
@@ -611,6 +633,20 @@ function writeCondition(
     returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
+    const threwCode = extractThrowErrorCode(f.trueStatements);
+    const isAloneIf =
+        f.falseStatements === undefined || f.falseStatements.length === 0;
+
+    if (!elseif && isAloneIf && threwCode !== undefined) {
+        // if (cond) { throw(X) } => throw_if(X, cond)
+        // if (!cond) { throw(X) } => throw_unless(X, cond)
+        const { kind, condition } = rewriteWithConditionalThrow(f);
+        ctx.append(
+            `${kind}(${writeExpression(threwCode, ctx)}, ${writeExpression(condition, ctx)});`,
+        );
+        return;
+    }
+
     const [ifKind, condition] = rewriteWithIfNot(f.condition, ctx.ctx);
 
     ctx.append(
