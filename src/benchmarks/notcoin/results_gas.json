@@ -65,7 +65,7 @@
     },
     {
       "label": "1.6.10 with store_slice optimization",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/3213",
       "gas": {
         "transfer": "15759",
         "burn": "12011",
