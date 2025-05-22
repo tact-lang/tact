@@ -240,10 +240,10 @@ When you receive an internal message, you can obtain the address of the contract
 If you only need the sender's address and no additional context on the incoming message that is contained in the `Context{:tact}` struct, then use the [`sender()`](/ref/core-contextstate#sender) function as it is less gas-consuming.
 
 ```tact /sender\\(\\)/
-message(MessageParameters {
+MessageParameters {
     to: sender(),
     value: ton("0.05"),
-});
+}.send();
 ```
 
 ### Use `throwUnless()` over `require()`
@@ -315,7 +315,7 @@ send(SendParameters {
     code: initState.code,
     data: initState.data,
     body: null,
-})
+});
 
 // This
 self.reply(null);

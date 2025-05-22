@@ -45,25 +45,25 @@ trait BaseTrait {
             let balanceBeforeMessage: Int = balance - context().value;
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
-                message(MessageParameters {
+                MessageParameters {
                     bounce,
                     to,
                     value: 0,
                     mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
-                });
+                }.send();
                 return;
             }
         }
 
         // Just send with remaining balance
-        message(MessageParameters {
+        MessageParameters {
             bounce,
             to,
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body,
-        });
+        }.send();
     }
 
     /// Sends a non-bounceable message back to the sender of the current message.
@@ -89,25 +89,25 @@ trait BaseTrait {
             let balanceBeforeMessage: Int = balance - context().value;
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
-                message(MessageParameters {
+                MessageParameters {
                     bounce,
                     to,
                     value: 0,
                     mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
-                });
+                }.send();
                 return;
             }
         }
 
         // Just send with remaining balance
-        message(MessageParameters {
+        MessageParameters {
             bounce,
             to,
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body,
-        });
+        }.send();
     }
 
     /// Queues the message (bounceable or non-bounceable) to be sent to the specified address `to`.
@@ -134,25 +134,25 @@ trait BaseTrait {
                 let balanceBeforeMessage: Int = balance - ctx.value;
                 if (balanceBeforeMessage < self.storageReserve) {
                     nativeReserve(self.storageReserve, ReserveExact);
-                    message(MessageParameters {
+                    MessageParameters {
                         bounce,
                         to,
                         value: 0,
                         mode: SendRemainingBalance | SendIgnoreErrors,
                         body,
-                    });
+                    }.send();
                     return;
                 }
             }
 
             // Just send with remaining balance
-            message(MessageParameters {
+            MessageParameters {
                 bounce,
                 to,
                 value: 0,
                 mode: SendRemainingValue | SendIgnoreErrors,
                 body,
-            });
+            }.send();
             return;
         }
 
@@ -163,7 +163,7 @@ trait BaseTrait {
             let balanceBeforeMessage: Int = balance - ctx.value;
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
-                send(SendParameters {
+                SendParameters {
                     to,
                     mode: SendRemainingBalance | SendIgnoreErrors,
                     body,
@@ -171,13 +171,13 @@ trait BaseTrait {
                     bounce,
                     code: init!!.code,
                     data: init!!.data,
-                });
+                }.send();
                 return;
             }
         }
 
         // Just send with remaining balance
-        send(SendParameters {
+        SendParameters {
             bounce,
             to,
             value: 0,
@@ -185,6 +185,6 @@ trait BaseTrait {
             body,
             code: init!!.code,
             data: init!!.data,
-        });
+        }.send();
     }
 }

@@ -67,7 +67,7 @@ trait Jetton with Ownable {
         self.totalSupply = self.totalSupply - msg.amount; // Update supply
 
         if (msg.response_destination != null) { // Cashback
-            message(MessageParameters{
+            MessageParameters{
                 to: msg.response_destination!!, 
                 value: 0,
                 bounce: false,
@@ -75,7 +75,7 @@ trait Jetton with Ownable {
                 body: TokenExcesses{
                     queryId: msg.queryId
                 }.toCell()
-            });
+            }.send();
         }
     }
 
@@ -88,7 +88,7 @@ trait Jetton with Ownable {
         require(self.totalSupply + amount <= self.max_supply, "The total supply will be overlapping.");
         self.totalSupply = self.totalSupply + amount; // Update total supply
 
-        deploy(DeployParameters{
+        DeployParameters{
             init: self.getJettonWalletInit(to),
             value: 0, 
             bounce: false,
@@ -101,7 +101,7 @@ trait Jetton with Ownable {
                 forward_ton_amount: 0,
                 forward_payload: emptySlice()
             }.toCell(),
-        });
+        }.send();
     }
 
     fun requireWallet(owner: Address) {
@@ -210,7 +210,7 @@ contract JettonDefaultWallet {
         self.balance = self.balance - msg.amount; // Update balance
         require(self.balance >= 0, "Invalid balance");
 
-        deploy(DeployParameters{
+        DeployParameters{
                 init: initOf JettonDefaultWallet(self.master, msg.destination),
                 value: 0,
                 mode: SendRemainingValue, 
@@ -223,7 +223,7 @@ contract JettonDefaultWallet {
                     forward_ton_amount: msg.forward_ton_amount,
                     forward_payload: msg.forward_payload
                 }.toCell(),
-            });
+            }.send();
     }
 
     receive(msg: TokenTransferInternal) { // 0x178d4519
@@ -238,7 +238,7 @@ contract JettonDefaultWallet {
         require(self.balance >= 0, "Invalid balance"); // Update balance
 
         if (msg.forward_ton_amount > 0) { 
-            message(MessageParameters{
+            MessageParameters{
                 to: self.owner,
                 value: msg.forward_ton_amount,
                 bounce: false,
@@ -248,7 +248,7 @@ contract JettonDefaultWallet {
                     from: msg.from,
                     forward_payload: msg.forward_payload
                 }.toCell()
-            });
+            }.send();
         }
 
         let msgValue: Int = self.msgValue(ctx.value);  // Get value for gas
@@ -257,7 +257,7 @@ contract JettonDefaultWallet {
         // msgValue = msgValue - msg.forward_ton_amount - min(fwdFee, ton("0.01"));
         
         if (msg.response_destination != null) { // Cashback
-                message(MessageParameters {
+                MessageParameters {
                     to: msg.response_destination!!, 
                     value: msgValue,  
                     bounce: false,
@@ -265,7 +265,7 @@ contract JettonDefaultWallet {
                         queryId: msg.queryId
                     }.toCell(),
                     mode: SendIgnoreErrors
-                });
+                }.send();
         }
     }
 
@@ -286,7 +286,7 @@ contract JettonDefaultWallet {
         let fwdFee: Int = ctx.readForwardFee(); // Gas checks
         require(ctx.value > fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value - Burn");
 
-        message(MessageParameters{  // Burn tokens
+        MessageParameters{  // Burn tokens
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
@@ -297,7 +297,7 @@ contract JettonDefaultWallet {
                 owner: self.owner,
                 response_destination: self.owner
             }.toCell()
-        });
+        }.send();
     }
 
     bounced(msg: Slice) {
