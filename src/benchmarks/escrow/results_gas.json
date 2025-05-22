@@ -229,6 +229,16 @@
         "approveTon": "6738",
         "cancelTon": "4639"
       }
+    },
+    {
+      "label": "1.6.10 with store_slice optimization",
+      "pr": "https://github.com/tact-lang/tact/pull/3213",
+      "gas": {
+        "fundingTon": "4303",
+        "changeCode": "4394",
+        "approveTon": "6738",
+        "cancelTon": "4639"
+      }
     }
   ]
 }
