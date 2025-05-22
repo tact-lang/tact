@@ -119,16 +119,6 @@
         "internalTransfer": "5908",
         "extensionTransfer": "4702"
       }
-    },
-    {
-      "label": "1.6.10 with store_slice optimization",
-      "pr": null,
-      "gas": {
-        "externalTransfer": "5135",
-        "addExtension": "5798",
-        "internalTransfer": "5908",
-        "extensionTransfer": "4702"
-      }
     }
   ]
 }
