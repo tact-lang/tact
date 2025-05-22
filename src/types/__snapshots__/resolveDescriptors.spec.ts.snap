@@ -775,38 +775,38 @@ exports[`resolveDescriptors should fail descriptors for opcode-method-on-trait 1
 `;
 
 exports[`resolveDescriptors should fail descriptors for override-const-map-keyas-empty 1`] = `
-"<unknown>:10:3: Overridden constant "M" has incompatible type: map key serialization mismatch — expected "int257" but got "uint32"
-   9 | contract C with T {
-> 10 |   override const M: map<Int as uint32, Int> = emptyMap();
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  11 | }
+"<unknown>:8:5: Overridden constant "M" has incompatible type: map key serialization mismatch — expected "int257" but got "uint32"
+  7 | contract C with T {
+> 8 |     override const M: map<Int as uint32, Int> = emptyMap();
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | }
 "
 `;
 
 exports[`resolveDescriptors should fail descriptors for override-const-map-keyas-mismatch 1`] = `
-"<unknown>:10:3: Overridden constant "M" has incompatible type: map key serialization mismatch — expected "uint8" but got "uint32"
-   9 | contract C with T {
-> 10 |   override const M: map<Int as uint32, Int> = emptyMap();
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  11 | }
+"<unknown>:8:5: Overridden constant "M" has incompatible type: map key serialization mismatch — expected "uint8" but got "uint32"
+  7 | contract C with T {
+> 8 |     override const M: map<Int as uint32, Int> = emptyMap();
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | }
 "
 `;
 
 exports[`resolveDescriptors should fail descriptors for override-const-map-valueas-empty 1`] = `
-"<unknown>:10:3: Overridden constant "M" has incompatible type: map value serialization mismatch — expected "int257" but got "uint8"
-   9 | contract C with T {
-> 10 |   override const M: map<Int, Int as uint8> = emptyMap();
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  11 | }
+"<unknown>:8:5: Overridden constant "M" has incompatible type: map value serialization mismatch — expected "int257" but got "uint8"
+  7 | contract C with T {
+> 8 |     override const M: map<Int, Int as uint8> = emptyMap();
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | }
 "
 `;
 
 exports[`resolveDescriptors should fail descriptors for override-const-map-valueas-mismatch 1`] = `
-"<unknown>:10:3: Overridden constant "M" has incompatible type: map value serialization mismatch — expected "uint8" but got "uint32"
-   9 | contract C with T {
-> 10 |   override const M: map<Int, Int as uint32> = emptyMap();
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  11 | }
+"<unknown>:8:5: Overridden constant "M" has incompatible type: map value serialization mismatch — expected "uint8" but got "uint32"
+  7 | contract C with T {
+> 8 |     override const M: map<Int, Int as uint32> = emptyMap();
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | }
 "
 `;
 
@@ -964,20 +964,20 @@ exports[`resolveDescriptors should fail descriptors for override-for-non-virtual
 `;
 
 exports[`resolveDescriptors should fail descriptors for override-fun-map-keyas-mismatch 1`] = `
-"<unknown>:10:3: Overridden function "test1" has incompatible return type: map key serialization mismatch — expected "int32" but got "int8"
-   9 | contract C with T {
-> 10 |   override get fun test1(): map<Int as int8, Int> {
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  11 |     return emptyMap();
+"<unknown>:8:5: Overridden function "test1" has incompatible return type: map key serialization mismatch — expected "int32" but got "int8"
+  7 | contract C with T {
+> 8 |     override get fun test1(): map<Int as int8, Int> {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |         return emptyMap();
 "
 `;
 
 exports[`resolveDescriptors should fail descriptors for override-fun-map-valueas-mismatch 1`] = `
-"<unknown>:10:3: Overridden function "test1" has incompatible return type: map value serialization mismatch — expected "int32" but got "int64"
-   9 | contract C with T {
-> 10 |   override get fun test1(): map<Int, Int as int64> {
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  11 |     return emptyMap();
+"<unknown>:8:5: Overridden function "test1" has incompatible return type: map value serialization mismatch — expected "int32" but got "int64"
+  7 | contract C with T {
+> 8 |     override get fun test1(): map<Int, Int as int64> {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |         return emptyMap();
 "
 `;
 
@@ -17225,9 +17225,7 @@ exports[`resolveDescriptors should resolve descriptors for override-const-map-va
       "declarations": [],
       "id": 4,
       "kind": "trait",
-      "loc": trait BaseTrait {
-
-},
+      "loc": trait BaseTrait {},
       "name": {
         "id": 3,
         "kind": "id",
@@ -17421,10 +17419,10 @@ exports[`resolveDescriptors should resolve descriptors for override-const-map-va
       "id": 29,
       "kind": "trait",
       "loc": trait T {
-  abstract const BASIC: map<Int as uint8, Int as uint8>;
-  abstract const PURE: map<Int, Int>;
-  abstract const INT257: map<Int, Int>;
-  abstract const COINS: map<Int, Int as coins>;
+    abstract const BASIC: map<Int as uint8, Int as uint8>;
+    abstract const PURE: map<Int, Int>;
+    abstract const INT257: map<Int, Int>;
+    abstract const COINS: map<Int, Int as coins>;
 },
       "name": {
         "id": 5,
@@ -17885,10 +17883,10 @@ exports[`resolveDescriptors should resolve descriptors for override-const-map-va
       "id": 65,
       "kind": "contract",
       "loc": contract C with T {
-  override const BASIC: map<Int as uint8, Int as uint8> = emptyMap();
-  override const PURE: map<Int, Int> = emptyMap();
-  override const INT257: map<Int as int257, Int as int257> = emptyMap();
-  override const COINS: map<Int, Int as varuint16> = emptyMap();
+    override const BASIC: map<Int as uint8, Int as uint8> = emptyMap();
+    override const PURE: map<Int, Int> = emptyMap();
+    override const INT257: map<Int as int257, Int as int257> = emptyMap();
+    override const COINS: map<Int, Int as varuint16> = emptyMap();
 },
       "name": {
         "id": 30,
@@ -18183,10 +18181,10 @@ exports[`resolveDescriptors should resolve descriptors for override-const-map-va
         "id": 67,
         "kind": "contract_init",
         "loc": contract C with T {
-  override const BASIC: map<Int as uint8, Int as uint8> = emptyMap();
-  override const PURE: map<Int, Int> = emptyMap();
-  override const INT257: map<Int as int257, Int as int257> = emptyMap();
-  override const COINS: map<Int, Int as varuint16> = emptyMap();
+    override const BASIC: map<Int as uint8, Int as uint8> = emptyMap();
+    override const PURE: map<Int, Int> = emptyMap();
+    override const INT257: map<Int as int257, Int as int257> = emptyMap();
+    override const COINS: map<Int, Int as varuint16> = emptyMap();
 },
         "params": [],
         "statements": [],
@@ -18209,9 +18207,7 @@ exports[`resolveDescriptors should resolve descriptors for override-const-map-va
           "declarations": [],
           "id": 4,
           "kind": "trait",
-          "loc": trait BaseTrait {
-
-},
+          "loc": trait BaseTrait {},
           "name": {
             "id": 3,
             "kind": "id",
@@ -18405,10 +18401,10 @@ exports[`resolveDescriptors should resolve descriptors for override-const-map-va
           "id": 29,
           "kind": "trait",
           "loc": trait T {
-  abstract const BASIC: map<Int as uint8, Int as uint8>;
-  abstract const PURE: map<Int, Int>;
-  abstract const INT257: map<Int, Int>;
-  abstract const COINS: map<Int, Int as coins>;
+    abstract const BASIC: map<Int as uint8, Int as uint8>;
+    abstract const PURE: map<Int, Int>;
+    abstract const INT257: map<Int, Int>;
+    abstract const COINS: map<Int, Int as coins>;
 },
           "name": {
             "id": 5,
@@ -34829,9 +34825,7 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
       "declarations": [],
       "id": 4,
       "kind": "trait",
-      "loc": trait BaseTrait {
-
-},
+      "loc": trait BaseTrait {},
       "name": {
         "id": 3,
         "kind": "id",
@@ -35057,10 +35051,13 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
       "id": 29,
       "kind": "trait",
       "loc": trait T {
-  abstract get fun basic(): map<Int as uint8, Int as uint8>;
-  abstract get fun pure(): map<Int, Int>;
-  abstract get fun int257(): map<Int, Int>;
-  abstract get fun coins(): map<Int, Int as coins>;
+    abstract get fun basic(): map<Int as uint8, Int as uint8>;
+
+    abstract get fun pure(): map<Int, Int>;
+
+    abstract get fun int257(): map<Int, Int>;
+
+    abstract get fun coins(): map<Int, Int as coins>;
 },
       "name": {
         "id": 5,
@@ -35397,8 +35394,8 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "id": 41,
           "kind": "function_def",
           "loc": override get fun basic(): map<Int as uint8, Int as uint8> {
-    return emptyMap();
-  },
+        return emptyMap();
+    },
           "name": {
             "id": 32,
             "kind": "id",
@@ -35472,8 +35469,8 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "id": 49,
           "kind": "function_def",
           "loc": override get fun pure(): map<Int, Int> {
-      return emptyMap();
-  },
+        return emptyMap();
+    },
           "name": {
             "id": 42,
             "kind": "id",
@@ -35537,8 +35534,8 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "id": 59,
           "kind": "function_def",
           "loc": override get fun int257(): map<Int as int257, Int as int257> {
-      return emptyMap();
-  },
+        return emptyMap();
+    },
           "name": {
             "id": 50,
             "kind": "id",
@@ -35612,8 +35609,8 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "id": 68,
           "kind": "function_def",
           "loc": override get fun coins(): map<Int, Int as varuint16> {
-      return emptyMap();
-  },
+        return emptyMap();
+    },
           "name": {
             "id": 60,
             "kind": "id",
@@ -35669,18 +35666,21 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
       "id": 69,
       "kind": "contract",
       "loc": contract C with T {
-  override get fun basic(): map<Int as uint8, Int as uint8> {
-    return emptyMap();
-  }
-  override get fun pure(): map<Int, Int> {
-      return emptyMap();
-  }
-  override get fun int257(): map<Int as int257, Int as int257> {
-      return emptyMap();
-  }
-  override get fun coins(): map<Int, Int as varuint16> {
-      return emptyMap();
-  }
+    override get fun basic(): map<Int as uint8, Int as uint8> {
+        return emptyMap();
+    }
+
+    override get fun pure(): map<Int, Int> {
+        return emptyMap();
+    }
+
+    override get fun int257(): map<Int as int257, Int as int257> {
+        return emptyMap();
+    }
+
+    override get fun coins(): map<Int, Int as varuint16> {
+        return emptyMap();
+    }
 },
       "name": {
         "id": 30,
@@ -35720,8 +35720,8 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "id": 41,
           "kind": "function_def",
           "loc": override get fun basic(): map<Int as uint8, Int as uint8> {
-    return emptyMap();
-  },
+        return emptyMap();
+    },
           "name": {
             "id": 32,
             "kind": "id",
@@ -35819,8 +35819,8 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "id": 49,
           "kind": "function_def",
           "loc": override get fun pure(): map<Int, Int> {
-      return emptyMap();
-  },
+        return emptyMap();
+    },
           "name": {
             "id": 42,
             "kind": "id",
@@ -35908,8 +35908,8 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "id": 59,
           "kind": "function_def",
           "loc": override get fun int257(): map<Int as int257, Int as int257> {
-      return emptyMap();
-  },
+        return emptyMap();
+    },
           "name": {
             "id": 50,
             "kind": "id",
@@ -36007,8 +36007,8 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "id": 68,
           "kind": "function_def",
           "loc": override get fun coins(): map<Int, Int as varuint16> {
-      return emptyMap();
-  },
+        return emptyMap();
+    },
           "name": {
             "id": 60,
             "kind": "id",
@@ -36091,18 +36091,21 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
         "id": 71,
         "kind": "contract_init",
         "loc": contract C with T {
-  override get fun basic(): map<Int as uint8, Int as uint8> {
-    return emptyMap();
-  }
-  override get fun pure(): map<Int, Int> {
-      return emptyMap();
-  }
-  override get fun int257(): map<Int as int257, Int as int257> {
-      return emptyMap();
-  }
-  override get fun coins(): map<Int, Int as varuint16> {
-      return emptyMap();
-  }
+    override get fun basic(): map<Int as uint8, Int as uint8> {
+        return emptyMap();
+    }
+
+    override get fun pure(): map<Int, Int> {
+        return emptyMap();
+    }
+
+    override get fun int257(): map<Int as int257, Int as int257> {
+        return emptyMap();
+    }
+
+    override get fun coins(): map<Int, Int as varuint16> {
+        return emptyMap();
+    }
 },
         "params": [],
         "statements": [],
@@ -36125,9 +36128,7 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "declarations": [],
           "id": 4,
           "kind": "trait",
-          "loc": trait BaseTrait {
-
-},
+          "loc": trait BaseTrait {},
           "name": {
             "id": 3,
             "kind": "id",
@@ -36353,10 +36354,13 @@ exports[`resolveDescriptors should resolve descriptors for override-fun-map-valu
           "id": 29,
           "kind": "trait",
           "loc": trait T {
-  abstract get fun basic(): map<Int as uint8, Int as uint8>;
-  abstract get fun pure(): map<Int, Int>;
-  abstract get fun int257(): map<Int, Int>;
-  abstract get fun coins(): map<Int, Int as coins>;
+    abstract get fun basic(): map<Int as uint8, Int as uint8>;
+
+    abstract get fun pure(): map<Int, Int>;
+
+    abstract get fun int257(): map<Int, Int>;
+
+    abstract get fun coins(): map<Int, Int as coins>;
 },
           "name": {
             "id": 5,
