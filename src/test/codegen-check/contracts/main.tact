@@ -185,4 +185,32 @@ contract MainContract {
             return;
         }
     }
+
+    get fun testIfThrowOptimization(a: Int) {
+        if (a == self.FOO_ONE) {
+            throw(10);
+        }
+
+        let cond = a == self.FOO_ONE;
+        if (!cond) {
+            throw(10);
+        }
+    }
+
+    get fun testIfThrowOptimizationNegative(a: Int) {
+        if (a == self.FOO_ONE) {
+            throwIf(10, true);
+        }
+
+        let cond = a == self.FOO_ONE;
+        if (!cond) {
+            dump(10);
+            throw(10);
+        }
+
+        if (a != self.FOO_ONE) {
+            dump(10);
+            return;
+        }
+    }
 }
