@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
 - [fix] Added fixed-bytes support to bounced message size calculations: PR [#3129](https://github.com/tact-lang/tact/pull/3129)
 - Compiler now generates more efficient code for serialization: PR [#3213](https://github.com/tact-lang/tact/pull/3213)
+- Compiler now generates more efficient code for `if-throw` pattern with `throw_if/throw_unless` call: PR [#3216](https://github.com/tact-lang/tact/pull/3216)
 
 ### Docs
 
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [hazyone](https://github.com/hazyone)
 - [lordivash](https://github.com/lordivash)
 - [Novus Nota](https://github.com/novusnota)
+- [Petr Makhnev](https://github.com/i582)
 
 ## [1.6.10] - 2025-05-16
 
