@@ -1,5 +1,4 @@
 import { glob } from "glob";
-import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import type { Mode, Options, Project } from "@/config/parseConfig";
 import { basename, dirname, extname, join, resolve } from "path";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
