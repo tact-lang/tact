@@ -5,7 +5,7 @@ const main = async () => {
     // Disable version number in packages
     __DANGER__disableVersionNumber();
 
-    await allInFolderFunc(__dirname, ["./**/func/**/*.fc"]);
+    await allInFolderFunc(__dirname, `${__dirname}/../func/stdlib`, ["./**/func/**/*.fc"]);
 };
 
 void main();
