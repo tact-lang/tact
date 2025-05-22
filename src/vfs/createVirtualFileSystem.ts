@@ -1,5 +1,7 @@
 import normalize from "path-normalize";
 import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
+import path from "path";
+import { getFullExtension, makeSafeName } from "@/vfs/utils";
 
 export function createVirtualFileSystem(
     root: string,
@@ -47,7 +49,13 @@ export function createVirtualFileSystem(
                     `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }
-            const name = filePath.slice(normalizedRoot.length);
+            const relPath = filePath.slice(normalizedRoot.length);
+            const dir = path.dirname(relPath);
+            const ext = getFullExtension(relPath);
+            const base = path.basename(relPath, ext);
+
+            const safeName = makeSafeName(base, ext);
+            const name = path.join(dir, safeName);
             fs[name] =
                 typeof content === "string"
                     ? Buffer.from(content).toString("base64")

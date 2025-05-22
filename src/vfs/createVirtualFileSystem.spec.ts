@@ -27,4 +27,54 @@ describe("createVirtualFileSystem", () => {
         expect(vfs.exists(realPath)).toBe(true);
         expect(vfs.readFile(realPath).toString()).toBe("");
     });
+
+    it("should truncate and hash long filenames", () => {
+        const fs: Record<string, string> = {};
+        const vfs = createVirtualFileSystem("@vroot", fs, false);
+
+        const longName = "A".repeat(300);
+        const content = "Test content";
+        const ext = ".md";
+
+        const inputPath = vfs.resolve("./", `${longName}${ext}`);
+
+        vfs.writeFile(inputPath, content);
+
+        const storedPaths = Object.keys(fs);
+        expect(storedPaths.length).toBe(1);
+
+        const storedPath = storedPaths[0]!;
+        expect(storedPath).toBeDefined();
+        expect(storedPath.length).toBeLessThanOrEqual(255);
+
+        const regex = new RegExp(
+            `^${longName.slice(0, 255 - ext.length - 9)}_[0-9a-f]{8}${ext}$`,
+        );
+        expect(storedPath).toMatch(regex);
+
+        expect(fs[storedPath]).toBe(Buffer.from(content).toString("base64"));
+    });
+
+    it("should not truncate or hash short filenames", () => {
+        const fs: Record<string, string> = {};
+        const vfs = createVirtualFileSystem("@vroot", fs, false);
+
+        const shortName = "short-filename";
+        const content = "Test content";
+        const ext = ".md";
+
+        const inputPath = vfs.resolve("./", `${shortName}${ext}`);
+
+        vfs.writeFile(inputPath, content);
+
+        const storedPaths = Object.keys(fs);
+        expect(storedPaths.length).toBe(1);
+
+        const storedPath = storedPaths[0]!;
+        expect(storedPath).toBeDefined();
+
+        expect(storedPath).toBe(`${shortName}${ext}`);
+        expect(fs[storedPath]).toBe(Buffer.from(content).toString("base64"));
+    });
+
 });

@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
+import { makeSafeName } from "@/vfs/utils";
 
 describe("createNodeFileSystem", () => {
     it("should open file system", () => {
@@ -44,6 +45,74 @@ describe("createNodeFileSystem", () => {
             expect(fs.readFileSync(realPath2, "utf8")).toBe("Hello world");
         } finally {
             fs.rmSync(realPathDir2, { recursive: true, force: true });
+        }
+    });
+
+    it("should truncate and hash long filenames", () => {
+        const baseDir = path.resolve(__dirname, "./__testdata");
+        const vfs = createNodeFileSystem(baseDir, false);
+
+        const longName = "A".repeat(300);
+        const content = "Test content";
+        const ext = ".md";
+
+        const inputPath = vfs.resolve(`${longName}${ext}`);
+        const dir = path.dirname(inputPath);
+        const expectedSafeName = makeSafeName(longName, ext);
+        const expectedFullPath = path.join(dir, expectedSafeName);
+
+        try {
+            if (fs.existsSync(expectedFullPath)) {
+                fs.unlinkSync(expectedFullPath);
+            }
+
+            vfs.writeFile(inputPath, content);
+            expect(fs.existsSync(expectedFullPath)).toBe(true);
+
+            const actualContent = fs.readFileSync(expectedFullPath, "utf8");
+            expect(actualContent).toBe(content);
+
+            expect(expectedSafeName.length).toBeLessThanOrEqual(255);
+            expect(expectedSafeName).toMatch(
+                new RegExp(
+                    `^${longName.slice(0, 255 - ext.length - 9)}_[0-9a-f]{8}${ext}$`,
+                ),
+            );
+        } finally {
+            if (fs.existsSync(expectedFullPath)) {
+                fs.unlinkSync(expectedFullPath);
+            }
+        }
+    });
+    it("should not truncate or hash short filenames", () => {
+        const baseDir = path.resolve(__dirname, "./__testdata");
+        const vfs = createNodeFileSystem(baseDir, false);
+
+        const shortName = "short-filename";
+        const content = "Test content";
+        const ext = ".md";
+
+        const inputPath = vfs.resolve(`${shortName}${ext}`);
+        const dir = path.dirname(inputPath);
+        const expectedSafeName = makeSafeName(shortName, ext);
+        const expectedFullPath = path.join(dir, expectedSafeName);
+
+        try {
+            if (fs.existsSync(expectedFullPath)) {
+                fs.unlinkSync(expectedFullPath);
+            }
+
+            vfs.writeFile(inputPath, content);
+            expect(fs.existsSync(expectedFullPath)).toBe(true);
+
+            const actualContent = fs.readFileSync(expectedFullPath, "utf8");
+            expect(actualContent).toBe(content);
+
+            expect(expectedSafeName).toBe(`${shortName}${ext}`);
+        } finally {
+            if (fs.existsSync(expectedFullPath)) {
+                fs.unlinkSync(expectedFullPath);
+            }
         }
     });
 });
