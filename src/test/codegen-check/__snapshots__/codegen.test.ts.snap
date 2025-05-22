@@ -314,6 +314,10 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
         __tact_nop();
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
+    if ($cond) {
+    } elseif (($a == 1)) {
+        throw(10);
+    }
     return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 

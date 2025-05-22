@@ -212,5 +212,9 @@ contract MainContract {
             dump(10);
             return;
         }
+
+        if (cond) {} else if (a == self.FOO_ONE) {
+            throw(10);
+        }
     }
 }
