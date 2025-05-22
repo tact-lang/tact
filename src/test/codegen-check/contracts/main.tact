@@ -216,5 +216,11 @@ contract MainContract {
         if (cond) {} else if (a == self.FOO_ONE) {
             throw(10);
         }
+
+        if (a == self.FOO_ONE) {
+            throw(10);
+        } else {
+            throw(11);
+        }
     }
 }

@@ -318,6 +318,11 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
     } elseif (($a == 1)) {
         throw(10);
     }
+    if (($a == 1)) {
+        throw(10);
+    } else {
+        throw(11);
+    }
     return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 
