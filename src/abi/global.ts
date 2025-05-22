@@ -250,7 +250,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             },
             generate: (ctx, args, resolved, ref) => {
                 if (!enabledDebug(ctx.ctx)) {
-                    return `${ctx.used("__tact_nop")}()`;
+                    return ``;
                 }
                 const arg0 = args[0]!;
 
@@ -319,7 +319,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             },
             generate: (ctx, _args, _resolved, ref) => {
                 if (!enabledDebug(ctx.ctx)) {
-                    return `${ctx.used("__tact_nop")}()`;
+                    return ``;
                 }
                 const filePath = ref.file
                     ? posixNormalize(path.relative(cwd(), ref.file!))

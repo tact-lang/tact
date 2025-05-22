@@ -1,10 +1,8 @@
 import { glob } from "glob";
-import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import type { Mode, Options, Project } from "@/config/parseConfig";
 import { basename, dirname, extname, join, resolve } from "path";
 import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 import { Logger } from "@/context/logger";
-import * as Stdlib from "@/stdlib/stdlib";
 import { posixNormalize } from "@/utils/filePath";
 import { funcCompile } from "@/func/funcCompile";
 import { Worker } from "worker_threads";
@@ -111,12 +109,15 @@ export const runParallel = async (
     }
 };
 
-const runFuncBuild = async (folder: string, globs: string[]) => {
-    const stdlib = createVirtualFileSystem("@stdlib", Stdlib.files);
-
+const runFuncBuild = async (
+    folder: string,
+    funcStdlibPath: string,
+    globs: string[],
+) => {
     const contractsPaths = globSync(globs, { cwd: folder });
 
     const project = createNodeFileSystem(folder, false);
+    const funcStdlib = createNodeFileSystem(funcStdlibPath, false);
 
     const contracts = contractsPaths.map((contractPath) => {
         const name = basename(contractPath, extname(contractPath));
@@ -143,8 +144,8 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
         const importRegex = /#include\s+"([^"]+)"/g;
         const isContractRegex = /\(\)\s+recv_internal/g;
 
-        const stdlibPath = stdlib.resolve("std/stdlib.fc");
-        const stdlibCode = stdlib.readFile(stdlibPath).toString();
+        const stdlibPath = funcStdlib.resolve("stdlib.fc");
+        const stdlibCode = funcStdlib.readFile(stdlibPath).toString();
 
         // we need to regex match the imports and add them to sources
         // statements like #include "params.fc";
@@ -230,9 +231,13 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
     }
 };
 
-export const allInFolderFunc = async (folder: string, globs: string[]) => {
+export const allInFolderFunc = async (
+    folder: string,
+    funcStdlibPath: string,
+    globs: string[],
+) => {
     try {
-        await runFuncBuild(folder, globs);
+        await runFuncBuild(folder, funcStdlibPath, globs);
     } catch (error) {
         console.error(error);
         process.exit(1);

@@ -9,12 +9,6 @@ export function writeStdlib(ctx: WriterContext): void {
     // stdlib extension functions
     //
 
-    ctx.fun("__tact_nop", () => {
-        ctx.signature(`() __tact_nop()`);
-        ctx.context("stdlib");
-        ctx.asm("", "NOP");
-    });
-
     ctx.fun("__tact_sha256", () => {
         ctx.signature(`int __tact_sha256(slice data)`);
         ctx.context("stdlib");
