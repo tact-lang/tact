@@ -135,7 +135,7 @@
       "pr": null,
       "gas": {
         "transfer": "7307",
-        "get static data": "4503",
+        "get static data": "4697",
         "deploy nft": "10661",
         "batch deploy nft": "664054"
       }
