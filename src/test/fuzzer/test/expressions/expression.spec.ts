@@ -10,10 +10,8 @@ import {
     createSample,
 } from "@/test/fuzzer/src/util";
 import fc from "fast-check";
-import type {EdgeCaseConfig} from "../../src/generators/uniform-expr-gen";
-import {
-    injectEdgeCases,
-} from "../../src/generators/uniform-expr-gen";
+import type { EdgeCaseConfig } from "../../src/generators/uniform-expr-gen";
+import { injectEdgeCases } from "../../src/generators/uniform-expr-gen";
 import {
     bindingsAndExpressionPrtinter,
     compileExpression,
@@ -391,7 +389,7 @@ function addParameters(
 ): [Ast.TypedParameter, Parameter][] {
     // For each of the types, we create a parameter generator
     const result: [Ast.TypedParameter, Parameter][] = TYPES.map((ty) => {
-        const param = new Parameter(functionScope, ty, false);
+        const param = new Parameter(functionScope, ty, undefined, false);
         functionScope.addNamed("parameter", param);
         return [createSample(param.generate()), param];
     });

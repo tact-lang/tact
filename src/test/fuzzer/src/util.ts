@@ -369,13 +369,24 @@ export function filterStdlib(
     }
 
     const customTactStdlib = mF.makeModule([], result);
-    const stdlib_fc = fs
-        .readFileSync(path.join(__dirname, "minimal-fc-stdlib", "stdlib.fc"))
-        .toString("base64");
+    const funcLib = getCustomFunCStdlibCode();
 
     return {
         modules: [customTactStdlib],
-        stdlib_fc: stdlib_fc,
+        stdlib_fc: funcLib.stdlib_fc,
+        stdlib_ex_fc: funcLib.stdlib_ex_fc,
+    };
+}
+
+export function getCustomFunCStdlibCode(): {
+    stdlib_fc: string;
+    stdlib_ex_fc: string;
+} {
+    const code = fs
+        .readFileSync(path.join(__dirname, "minimal-fc-stdlib", "stdlib.fc"))
+        .toString("base64");
+    return {
+        stdlib_fc: code,
         stdlib_ex_fc: "",
     };
 }
@@ -705,6 +716,59 @@ async function buildModuleNative(
     return contractsToTest;
 }
 
+export async function compileNativeFunC(
+    sourceCode: string,
+    customStdlib: CustomStdlib,
+    blockchain: Blockchain,
+): Promise<SandboxContract<ProxyContract>> {
+    const minimalStdlib = {
+        // These two func files are needed during tvm compilation
+        ["stdlib_ex.fc"]: customStdlib.stdlib_ex_fc,
+        ["stdlib.fc"]: customStdlib.stdlib_fc,
+    };
+
+    const stdlib = createVirtualFileSystem("@stdlib", minimalStdlib);
+
+    // Compiling contract to TVM
+    const stdlibPath = stdlib.resolve("stdlib.fc");
+    //const stdlibCode = stdlib.readFile(stdlibPath).toString();
+    const stdlibExPath = stdlib.resolve("stdlib_ex.fc");
+    //const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
+
+    process.env.USE_NATIVE = "true";
+    process.env.FC_STDLIB_PATH = path.join(__dirname, "/minimal-fc-stdlib/");
+    process.env.FUNC_FIFT_COMPILER_PATH = path.join(
+        __dirname,
+        "/minimal-fc-stdlib/funcplusfift",
+    );
+    process.env.FIFT_LIBS_PATH = path.join(
+        __dirname,
+        "/minimal-fc-stdlib/fift-lib/",
+    );
+
+    const contractFilePath = path.join(
+        __dirname,
+        "/minimal-fc-stdlib/",
+        "testExpressionContract.fc",
+    );
+
+    fs.writeFileSync(contractFilePath, sourceCode);
+
+    const c = await funcCompile({
+        entries: [stdlibPath, stdlibExPath, contractFilePath],
+        sources: [],
+        logger: new Logger(),
+    });
+
+    if (!c.ok) {
+        throw new Error(c.log);
+    }
+
+    return blockchain.openContract(
+        new ProxyContract(getContractStateInit(c.output)),
+    );
+}
+
 export async function buildModule(
     module: Ast.Module,
     customStdlib: CustomStdlib,
@@ -762,6 +826,15 @@ export class ProxyContract implements Contract {
         });
         const result = (await provider.get("getBool", builder.build())).stack;
         return result.readBoolean();
+    }
+
+    async getCalc(provider: ContractProvider, params: bigint[]) {
+        const builder = new TupleBuilder();
+        params.forEach((param) => {
+            builder.writeNumber(param);
+        });
+        const result = (await provider.get("calc", builder.build())).stack;
+        return result.readBigNumber();
     }
 
     async getIndexed(provider: ContractProvider, index: number) {

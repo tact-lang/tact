@@ -19,6 +19,7 @@ export class Parameter extends NamedGenerativeEntity<Ast.TypedParameter> {
     constructor(
         parentScope: Scope,
         type: Type,
+        useName: string | undefined = undefined,
         private isBounced: boolean = false,
     ) {
         if (!parentScope.definedIn("receive", "method", "function")) {
@@ -26,7 +27,13 @@ export class Parameter extends NamedGenerativeEntity<Ast.TypedParameter> {
                 `Cannot define a function argument in the ${parentScope.kind} scope`,
             );
         }
-        super(type, createSample(generateAstId(parentScope)));
+        let finalName: Ast.Id;
+        if (useName) {
+            finalName = FuzzContext.instance.makeF.makeDummyId(useName);
+        } else {
+            finalName = createSample(generateAstId(parentScope));
+        }
+        super(type, finalName);
     }
 
     generate(): fc.Arbitrary<Ast.TypedParameter> {

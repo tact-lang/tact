@@ -142,6 +142,7 @@ export class Receive extends GenerativeEntity<Ast.Receiver> {
             const param = new Parameter(
                 this.scope,
                 msg.type,
+                undefined,
                 isBouncedMessage(msg.type),
             );
             this.scope.addNamed("parameter", param);
