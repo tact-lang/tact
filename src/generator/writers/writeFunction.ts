@@ -614,7 +614,10 @@ const extractThrowErrorCode = (
     if (stmt.kind !== "statement_expression") return undefined;
     if (stmt.expression.kind !== "static_call") return undefined;
     if (stmt.expression.function.text === "throw") {
-        return stmt.expression.args.at(0);
+        const arg = stmt.expression.args.at(0);
+        if (arg === undefined) return undefined;
+        if (arg.kind !== "number") return undefined;
+        return arg;
     }
     return undefined;
 };

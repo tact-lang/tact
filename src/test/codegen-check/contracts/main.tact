@@ -222,6 +222,11 @@ contract MainContract {
             throw(10);
         }
 
+        let x: Int = 42;
+        if (x.inc() == 0) {
+            throw(x.inc());
+        }
+
         if (a == self.FOO_ONE) {
             throw(10);
         } else {
@@ -229,3 +234,5 @@ contract MainContract {
         }
     }
 }
+
+extends mutates fun inc(self: Int): Int { self += 1; return self }
