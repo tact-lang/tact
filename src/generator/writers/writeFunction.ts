@@ -208,6 +208,9 @@ export function writeStatement(
         }
         case "statement_expression": {
             const exp = writeExpression(f.expression, ctx);
+            if (exp === "") {
+                return;
+            }
             ctx.append(`${exp};`);
             return;
         }
