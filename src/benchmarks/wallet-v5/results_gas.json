@@ -119,6 +119,16 @@
         "internalTransfer": "5908",
         "extensionTransfer": "4702"
       }
+    },
+    {
+      "label": "1.6.10 with folded if-throw to throw_if/throw_unless call",
+      "pr": "https://github.com/tact-lang/tact/pull/3216",
+      "gas": {
+        "externalTransfer": "5133",
+        "addExtension": "5796",
+        "internalTransfer": "5908",
+        "extensionTransfer": "4682"
+      }
     }
   ]
 }
