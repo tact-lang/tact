@@ -403,8 +403,8 @@ _ %testDumpCall(int $a) method_id(66927) {
     }
     ;; Empty Receiver and Text Receivers
     var text_op = slice_hash(in_msg);
-    ;; Receive "Text\\x00receiver\\x01.\\x0aThis\\x07is\\x0da\\x1ftest\\x7fcomment\\x9fwith\\x08bad\\x0cchars" message
-    if (text_op == 0xbda34c240a58a6fbef2e412f434571f1f7137bed89527d740583fc594ebe8e6d) {
+    ;; Receive "Text\\x00receiver\\x01.\\x0aThis \\x07 is \\x0d a \\x1f test \\x7f comment \\x9f with \\x08 bad \\x0c chars" message
+    if (text_op == 0x384726d137b7c49fbc0d7801f7781fe550ac11c0c968cd9fb66c25c2a00e1365) {
         $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
         return ();
     }
