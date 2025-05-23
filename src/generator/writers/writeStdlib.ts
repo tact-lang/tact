@@ -473,7 +473,7 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return (null?(a)) ? (false) : (equal_slices_bits(a, b));
+                return (null?(b)) ? (false) : (equal_slices_bits(a, b));
             `);
         });
     });
@@ -533,7 +533,7 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return (null?(a)) ? (false) : (a == b);
+                return (null?(b)) ? (false) : (a == b);
             `);
         });
     });
@@ -544,7 +544,7 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return (null?(a)) ? (true) : (a != b);
+                return (null?(b)) ? (true) : (a != b);
             `);
         });
     });
@@ -607,7 +607,7 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());
+                return (null?(b)) ? (false) : (a.cell_hash() == b.cell_hash());
             `);
         });
     });
@@ -618,7 +618,7 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return (null?(a)) ? (true) : (a.cell_hash() != b.cell_hash());
+                return (null?(b)) ? (true) : (a.cell_hash() != b.cell_hash());
             `);
         });
     });
@@ -681,7 +681,7 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return (null?(a)) ? (false) : (a.slice_hash() == b.slice_hash());
+                return (null?(b)) ? (false) : (a.slice_hash() == b.slice_hash());
             `);
         });
     });
@@ -692,7 +692,7 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return (null?(a)) ? (true) : (a.slice_hash() != b.slice_hash());
+                return (null?(b)) ? (true) : (a.slice_hash() != b.slice_hash());
             `);
         });
     });
