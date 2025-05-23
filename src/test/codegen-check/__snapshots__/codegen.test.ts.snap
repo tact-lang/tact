@@ -68,6 +68,9 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 ;; $MainContract$_fun_testIfOptimizationNegative
 ((int, int, slice, cell), ()) $MainContract$_fun_testIfOptimizationNegative((int, int, slice, cell) $self, int $a) impure inline_ref;
 
+;; $MainContract$_fun_testDumpCall
+((int, int, slice, cell), ()) $MainContract$_fun_testDumpCall((int, int, slice, cell) $self, int $a) impure inline_ref;
+
 
 ;; main_MainContract.stdlib.fc
 global (int, slice, int, slice) __tact_context;
@@ -304,6 +307,11 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 
+((int, int, slice, cell), ()) $MainContract$_fun_testDumpCall((int, int, slice, cell) $self, int $a) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
+    return (($self'field, $self'value, $self'data, $self'mapping), ());
+}
+
 ;;
 ;; Get methods of a Contract MainContract
 ;;
@@ -354,6 +362,13 @@ _ %testIfOptimizationNegative(int $a) method_id(87434) {
     int $a = $a;
     var self = $MainContract$_contract_load();
     var res = self~$MainContract$_fun_testIfOptimizationNegative($a);
+    return res;
+}
+
+_ %testDumpCall(int $a) method_id(66927) {
+    int $a = $a;
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testDumpCall($a);
     return res;
 }
 

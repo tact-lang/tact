@@ -187,4 +187,9 @@ contract MainContract {
             return;
         }
     }
+
+    get fun testDumpCall(a: Int) {
+        dump(a);
+        dumpStack();
+    }
 }

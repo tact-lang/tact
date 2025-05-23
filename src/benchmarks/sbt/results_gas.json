@@ -90,6 +90,45 @@
         "revoke": "3940",
         "take excess": "5689"
       }
+    },
+    {
+      "label": "1.6.10 with store_slice optimization",
+      "pr": "https://github.com/tact-lang/tact/pull/3213",
+      "gas": {
+        "deploy": "4220",
+        "request owner": "5014",
+        "prove ownership": "5202",
+        "get static data": "4826",
+        "destroy": "6309",
+        "revoke": "3944",
+        "take excess": "5689"
+      }
+    },
+    {
+      "label": "1.6.10 with optimized __tact_load_address_opt",
+      "pr": "https://github.com/tact-lang/tact/pull/3225",
+      "gas": {
+        "deploy": "4038",
+        "request owner": "4920",
+        "prove ownership": "5108",
+        "get static data": "4732",
+        "destroy": "6215",
+        "revoke": "3850",
+        "take excess": "5595"
+      }
+    },
+    {
+      "label": "1.6.10 with nullable-to-non-nullable comparisons reorder",
+      "pr": "https://github.com/tact-lang/tact/pull/3233",
+      "gas": {
+        "deploy": "4038",
+        "request owner": "4920",
+        "prove ownership": "5100",
+        "get static data": "4732",
+        "destroy": "6215",
+        "revoke": "3842",
+        "take excess": "5595"
+      }
     }
   ]
 }
