@@ -17,6 +17,14 @@ Tact offers a diverse set of function kinds and attributes that provide great fl
     href="#fun"
   />
   <LinkCard
+    title="Extension functions"
+    href="#extends"
+  />
+  <LinkCard
+    title="Extension mutation functions"
+    href="#mutates"
+  />
+  <LinkCard
     title="Getter functions"
     href="#get"
   />
@@ -31,14 +39,6 @@ Tact offers a diverse set of function kinds and attributes that provide great fl
   <LinkCard
     title="Assembly functions"
     href="#asm"
-  />
-  <LinkCard
-    title="Extension functions"
-    href="#attributes-extends"
-  />
-  <LinkCard
-    title="Extension mutation functions"
-    href="#attributes-mutates"
   />
   <LinkCard
     title="Inheritance"
@@ -209,8 +209,8 @@ fun customPow(a: Int, c: Int): Int {
 The following attributes can be specified for global functions:
 
 * [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
-* [`extends{:tact}`](#attributes-extends) — makes it an [extension function](#attributes-extends).
-* [`mutates{:tact}`](#attributes-mutates), along with [`extends{:tact}`](#attributes-extends) — makes it an [extension mutation function](#attributes-mutates).
+* [`extends{:tact}`](#attributes-extends) — makes it an [extension function](#extends).
+* [`mutates{:tact}`](#attributes-mutates), along with [`extends{:tact}`](#attributes-extends) — makes it an [extension mutation function](#mutates).
 
 These attributes _cannot_ be specified:
 
@@ -246,8 +246,144 @@ The following attributes can be specified for internal functions with no prior a
 
 These attributes _cannot_ be specified:
 
-* [`extends{:tact}`](#attributes-extends) — internal function cannot become an [extension function](#attributes-extends).
-* [`mutates{:tact}`](#attributes-mutates) — internal function cannot become an [extension mutation function](#attributes-mutates).
+* [`extends{:tact}`](#attributes-extends) — internal function cannot become an [extension function](#extends).
+* [`mutates{:tact}`](#attributes-mutates) — internal function cannot become an [extension mutation function](#mutates).
+
+## `extends` — extension functions {#extends}
+
+<Badge text="Global scope" variant="note" size="medium"/><p/>
+
+To define an extension function, add an `extends{:tact}` attribute to any [global function](#fun-global) and name its first parameter as `self`. The type of `self` is the type that is being extended by the extension function.
+
+```tact
+extends fun customPow(self: Int, exp: Int): Int {
+    let res: Int = 1;
+    repeat (exp) {
+        res *= self;
+    }
+    return res;
+}
+```
+
+The special `self{:tact}` identifier inside an extension function is a copy of the value of the extended type. In other words, it is the argument value passed to the `self` parameter.
+
+```tact
+// You can call extension functions on instances of the extended type,
+// such as variables...
+let val = 42;
+val.customPow(2); // 1764
+
+// ...literals...
+2.customPow(10); // 1024
+
+// ...or any other values of that type.
+pow2(2).customPow(5); // 1024
+```
+
+Most of the standard library functions that work with values of the [`Builder{:tact}`][builder] type are extension functions on that type. As such, they do not modify the original value they are applied to.
+
+To preserve newly created values with extension functions, use intermediary assignments or make a long chained call in a single assignment.
+
+```tact
+let builder = beginCell();
+let cell = builder
+    .storeUint(42, 7)
+    .storeInt(42, 7)
+    .storeBool(true)
+    .storeSlice(slice)
+    .storeCoins(42)
+    .storeAddress(address)
+    .storeRef(cell)
+    .endCell();
+// Notice that the chained extension function call did not change
+// the `builder` variable itself, which is still holding an empty Builder.
+builder.refs(); // 0
+builder.bits(); // 0
+```
+
+The first parameter of extension functions must be named `self`. Failure to do so leads to a compilation error.
+
+Additionally, naming the first parameter of any non-extension function as `self{:tact}` leads to a compilation error too.
+
+```tact
+// COMPILATION ERROR! Extend function must have first parameter named "self"
+extends fun add(this: Int, other: Int): Int {
+    //          ~~~~~~~~~
+    return this + other;
+}
+
+// COMPILATION ERROR! Parameter name "self" is reserved for functions with "extends"
+fun add(self: Int, other: Int): Int {
+    //  ~~~~~~~~~
+    return self + other;
+}
+```
+
+The following additional attributes can be specified:
+
+* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
+* [`mutates{:tact}`](#attributes-mutates) — makes it into an [extension mutation function](#attributes-mutates).
+
+These attributes _cannot_ be specified:
+
+* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — extension functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#attributes-get) — extension functions cannot become [getters](#get).
+
+## `mutates` — extension mutation functions {#mutates}
+
+<Badge text="Global scope" variant="note" size="medium"/><p/>
+
+The extension _mutation_ functions replace the value of the extended type with the new one at the end of its execution. That value would change only upon the assignment to `self{:tact}` within the function body.
+
+To define an extension mutation function, add a `mutates{:tact}` attribute to the existing [extension function](#extends).
+
+```tact
+extends mutates fun customPow(self: Int, exp: Int) {
+    let res: Int = 1;
+    repeat (exp) {
+        res *= self;
+    }
+    self = res;
+}
+```
+
+For extension mutation functions, the special `self` identifier refers to the value of the extended type, and changes made to it will persist after the function call.
+
+```tact
+// It is most useful to call extension mutation functions on instances
+// of the extended type that can keep the change stored either temporarily, i.e.,
+// within the current transaction, or permanently — in the contract's state.
+contract Mut(val: Int) {
+    receive() {
+        let valTmp = 2;
+        valTmp.customPow(10);
+        self.val.customPow(10);
+        // Now, `valTmp` holds 1024, and `self.val` holds
+        // its value prior to this transaction raised to the power 10.
+    }
+}
+```
+
+Extension mutation functions cannot modify [constants](/book/constants) because they are immutable.
+
+```tact
+const VAL: Int = 10;
+
+fun noEffect() {
+    VAL; // 10
+    VAL.customPow(10);
+    VAL; // still 10
+}
+```
+
+The following additional attributes can be specified:
+
+* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
+
+These attributes _cannot_ be specified:
+
+* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — extension mutation functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#attributes-get) — extension mutation functions cannot become [getters](#get).
 
 ## `get fun` — off-chain getter functions {#get}
 
@@ -499,8 +635,8 @@ fun example() {
 The following attributes can be specified for `native{:tact}` functions:
 
 * [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
-* [`extends{:tact}`](#attributes-extends) — makes it an [extension function](#attributes-extends).
-* [`mutates{:tact}`](#attributes-mutates), along with [`extends{:tact}`](#attributes-extends) — makes it an [extension mutation function](#attributes-mutates).
+* [`extends{:tact}`](#attributes-extends) — makes it an [extension function](#extends).
+* [`mutates{:tact}`](#attributes-mutates), along with [`extends{:tact}`](#attributes-extends) — makes it an [extension mutation function](#mutates).
 
 These attributes _cannot_ be specified:
 
@@ -536,143 +672,21 @@ Notice that the "contract" scope also includes the [traits][trait].
 
 <Badge text="Global scope" variant="note" size="medium"/><p/>
 
-[Extension functions](#attributes-extends) provide a clean way to organize and extend code by allowing you to add new behaviors to existing types. The [extension _mutation_ functions](#attributes-mutates) also allow you to modify the value they operate on. Both kinds of extension functions can be called methods and both use special attributes: `extends{:tact}` and `mutates{:tact}`, respectively.
+[Extension functions](#extends) provide a clean way to organize and extend code by allowing you to add new behaviors to existing types. The [extension _mutation_ functions](#mutates) also allow you to modify the value they operate on. Both kinds of extension functions can be called methods and both use special attributes: [`extends{:tact}`](#attributes-extends) and [`mutates{:tact}`](#attributes-mutates), respectively.
 
-#### `extends` — extension functions {#attributes-extends}
-
-<Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
-
-To define an extension function, add an `extends{:tact}` attribute to any [global function](#fun-global) and name its first parameter as `self`. The type of `self` is the type that is being extended by the extension function.
-
-```tact
-extends fun customPow(self: Int, exp: Int): Int {
-    let res: Int = 1;
-    repeat (exp) {
-        res *= self;
-    }
-    return res;
-}
-```
-
-The special `self{:tact}` identifier inside an extension function is a copy of the value of the extended type. In other words, it is the argument value passed to the `self` parameter.
-
-```tact
-// You can call extension functions on instances of the extended type,
-// such as variables...
-let val = 42;
-val.customPow(2); // 1764
-
-// ...literals...
-2.customPow(10); // 1024
-
-// ...or any other values of that type.
-pow2(2).customPow(5); // 1024
-```
-
-Most of the standard library functions that work with values of the [`Builder{:tact}`][builder] type are extension functions on that type. As such, they do not modify the original value they are applied to.
-
-To preserve newly created values with extension functions, use intermediary assignments or make a long chained call in a single assignment.
-
-```tact
-let builder = beginCell();
-let cell = builder
-    .storeUint(42, 7)
-    .storeInt(42, 7)
-    .storeBool(true)
-    .storeSlice(slice)
-    .storeCoins(42)
-    .storeAddress(address)
-    .storeRef(cell)
-    .endCell();
-// Notice that the chained extension function call did not change
-// the `builder` variable itself, which is still holding an empty Builder.
-builder.refs(); // 0
-builder.bits(); // 0
-```
-
-The first parameter of extension functions must be named `self`. Failure to do so leads to a compilation error.
-
-Additionally, naming the first parameter of any non-extension function as `self{:tact}` leads to a compilation error too.
-
-```tact
-// COMPILATION ERROR! Extend function must have first parameter named "self"
-extends fun add(this: Int, other: Int): Int {
-    //          ~~~~~~~~~
-    return this + other;
-}
-
-// COMPILATION ERROR! Parameter name "self" is reserved for functions with "extends"
-fun add(self: Int, other: Int): Int {
-    //  ~~~~~~~~~
-    return self + other;
-}
-```
-
-The following additional attributes can be specified:
-
-* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
-* [`mutates{:tact}`](#attributes-mutates) — makes it into an [extension mutation function](#attributes-mutates).
-
-These attributes _cannot_ be specified:
-
-* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — extension functions cannot be defined within a contract or a trait.
-* [`get{:tact}`](#attributes-get) — extension functions cannot become [getters](#get).
-
-#### `mutates` — extension mutation functions {#attributes-mutates}
+#### `extends` {#attributes-extends}
 
 <Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
 
-The extension _mutation_ functions replace the value of the extended type with the new one at the end of its execution. That value would change only upon the assignment to `self{:tact}` within the function body.
+The `extends{:tact}` attribute can be applied to all top level functions, transforming them into statically dispatched methods on the extended type. These methods are called [extension functions](#extends).
 
-To define an extension mutation function, add a `mutates{:tact}` attribute to the existing [extension function](#attributes-extends).
+cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into [getter functions](#get).
 
-```tact
-extends mutates fun customPow(self: Int, exp: Int) {
-    let res: Int = 1;
-    repeat (exp) {
-        res *= self;
-    }
-    self = res;
-}
-```
+#### `mutates` {#attributes-mutates}
 
-For extension mutation functions, the special `self` identifier refers to the value of the extended type, and changes made to it will persist after the function call.
+<Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
 
-```tact
-// It is most useful to call extension mutation functions on instances
-// of the extended type that can keep the change stored either temporarily, i.e.,
-// within the current transaction, or permanently — in the contract's state.
-contract Mut(val: Int) {
-    receive() {
-        let valTmp = 2;
-        valTmp.customPow(10);
-        self.val.customPow(10);
-        // Now, `valTmp` holds 1024, and `self.val` holds
-        // its value prior to this transaction raised to the power 10.
-    }
-}
-```
-
-Extension mutation functions cannot modify [constants](/book/constants) because they are immutable.
-
-```tact
-const VAL: Int = 10;
-
-fun noEffect() {
-    VAL; // 10
-    VAL.customPow(10);
-    VAL; // still 10
-}
-```
-
-The following additional attributes can be specified:
-
-* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
-
-These attributes _cannot_ be specified:
-
-* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — extension mutation functions cannot be defined within a contract or a trait.
-* [`get{:tact}`](#attributes-get) — extension mutation functions cannot become [getters](#get).
+The `mutates{:tact}` attribute can be applied to [extension functions](#extends) only, which enables the persistence of the modifications made to the value of the extended type through the `self{:tact}` identifier. They allow mutations, and so they are called [extension mutation functions](#mutates).
 
 #### Static extension functions {#attributes-extends-static}
 
