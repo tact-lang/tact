@@ -910,7 +910,7 @@ exports[`resolveStatements should fail statements for map-literal-mismatch-var 1
 `;
 
 exports[`resolveStatements should fail statements for method-fromcell-call-non-static-context 1`] = `
-"<unknown>:8:19: Cannot call static method "fromCell" using an instance.
+"<unknown>:8:19: Cannot call static method "fromCell" on an instance.
   7 |     init(cell: Cell) {
 > 8 |         let res = SomeMessage {}.fromCell(cell);
                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -919,7 +919,7 @@ exports[`resolveStatements should fail statements for method-fromcell-call-non-s
 `;
 
 exports[`resolveStatements should fail statements for method-fromslice-call-non-static-context 1`] = `
-"<unknown>:8:19: Cannot call static method "fromSlice" using an instance.
+"<unknown>:8:19: Cannot call static method "fromSlice" on an instance.
   7 |     init(slice: Slice) {
 > 8 |         let res = SomeMessage {}.fromSlice(slice);
                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -928,7 +928,7 @@ exports[`resolveStatements should fail statements for method-fromslice-call-non-
 `;
 
 exports[`resolveStatements should fail statements for method-opcode-call-non-static-context 1`] = `
-"<unknown>:7:19: Cannot call static method "opcode" using an instance.
+"<unknown>:7:19: Cannot call static method "opcode" on an instance.
   6 |     receive() {
 > 7 |         let res = SomeMessage {}.opcode();
                         ^~~~~~~~~~~~~~~~~~~~~~~
@@ -937,7 +937,7 @@ exports[`resolveStatements should fail statements for method-opcode-call-non-sta
 `;
 
 exports[`resolveStatements should fail statements for method-tocell-call-non-instance-context 1`] = `
-"<unknown>:7:19: Cannot call non-static method "toCell" from a static context
+"<unknown>:7:19: Cannot call instance method "toCell" as a static one.
   6 |     receive() {
 > 7 |         let res = SomeMessage.toCell();
                         ^~~~~~~~~~~~~~~~~~~~
@@ -946,7 +946,7 @@ exports[`resolveStatements should fail statements for method-tocell-call-non-ins
 `;
 
 exports[`resolveStatements should fail statements for method-toslice-call-non-instance-context 1`] = `
-"<unknown>:7:19: Cannot call non-static method "toSlice" from a static context
+"<unknown>:7:19: Cannot call instance method "toSlice" as a static one.
   6 |     receive() {
 > 7 |         let res = SomeMessage.toSlice();
                         ^~~~~~~~~~~~~~~~~~~~~
