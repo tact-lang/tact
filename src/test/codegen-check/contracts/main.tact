@@ -35,6 +35,8 @@ contract MainContract {
     data: Slice as bytes64;
     mapping: map<Int as uint8, Int as int256>;
 
+    receive("Text\x00receiver\x01.\nThis\x07is\x0Da\x1Ftest\x7Fcomment\x9Fwith\x08bad\x0Cchars") {}
+
     init(field: Int as uint8, value: Int as int256, data: Slice as bytes64, mapping: map<Int as uint8, Int as int256>) {
         self.field = field;
         self.value = value;
