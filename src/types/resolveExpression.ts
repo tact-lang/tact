@@ -687,13 +687,13 @@ function resolveCall(
 
                 if (abi.isStatic && isInstanceCall) {
                     throwCompilationError(
-                        `Cannot call static method ${idTextErr(exp.method)} using an instance.`,
+                        `Cannot call static method ${idTextErr(exp.method)} on an instance.`,
                         exp.loc,
                     );
                 }
                 if (!abi.isStatic && isStaticCallFromType) {
                     throwCompilationError(
-                        `Cannot call non-static method ${idTextErr(exp.method)} from a static context`,
+                        `Cannot call instance method ${idTextErr(exp.method)} as a static one.`,
                         exp.loc,
                     );
                 }
