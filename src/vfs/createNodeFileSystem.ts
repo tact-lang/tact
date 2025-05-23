@@ -1,6 +1,7 @@
 import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
 import fs from "fs";
 import path from "path";
+import { getFullExtension, makeSafeName } from "@/vfs/utils";
 
 function ensureInsideProjectRoot(filePath: string, root: string): void {
     if (!filePath.startsWith(root)) {
@@ -47,6 +48,12 @@ export function createNodeFileSystem(
             if (readonly) {
                 throw new Error("File system is readonly");
             }
+
+            const ext = getFullExtension(filePath);
+            const name = path.basename(filePath, ext);
+            const safeBase = makeSafeName(name, ext);
+            filePath = path.join(path.dirname(filePath), safeBase);
+
             ensureInsideProjectRoot(filePath, normalizedRoot);
             if (fs.existsSync(filePath)) {
                 ensureNotSymlink(filePath);
