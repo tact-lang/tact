@@ -11,6 +11,9 @@ exports[`codegen should correctly generate FunC code 1`] = `
 ;; NOTE: declarations are sorted for optimal order
 ;;
 
+;; $MainContract$_store
+builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
+
 ;; $MainContract$_load
 (slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline;
 
@@ -31,6 +34,9 @@ exports[`codegen should correctly generate FunC code 1`] = `
 
 ;; $MainContract$_contract_load
 (int, int, slice, cell) $MainContract$_contract_load() impure inline;
+
+;; $MainContract$_contract_store
+() $MainContract$_contract_store((int, int, slice, cell) v) impure inline;
 
 ;; $MainContract$_fun_testAugmentedAssignOperators
 ((int, int, slice, cell), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice, cell) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref;
@@ -132,6 +138,15 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
 ;; TLB: _ field:uint8 value:int256 data:fixed_bytes64 mapping:dict<uint8, int256> = MainContract
 ;;
 
+builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline {
+    var (v'field, v'value, v'data, v'mapping) = v;
+    build_0 = build_0.store_uint(v'field, 8);
+    build_0 = build_0.store_int(v'value, 256);
+    build_0 = build_0.store_slice(v'data);
+    build_0 = build_0.store_dict(v'mapping);
+    return build_0;
+}
+
 (slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline {
     var v'field = sc_0~load_uint(8);
     var v'value = sc_0~load_int(256);
@@ -159,6 +174,13 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
         $sc.end_parse();
         return $MainContract$_contract_init($field, $value, $data, $mapping);
     }
+}
+
+() $MainContract$_contract_store((int, int, slice, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_int(true, 1);
+    b = $MainContract$_store(b, v);
+    set_data(b.end_cell());
 }
 
 ;;
@@ -374,6 +396,19 @@ _ %testDumpCall(int $a) method_id(66927) {
     
     ;; Handle bounced messages
     if (msg_bounced) { return (); }
+    int op = 0;
+    int in_msg_length = slice_bits(in_msg);
+    if (in_msg_length >= 32) {
+        op = in_msg~load_uint(32);
+    }
+    ;; Empty Receiver and Text Receivers
+    var text_op = slice_hash(in_msg);
+    ;; Receive "Text\\x00receiver\\x01.\\x0aThis \\x07 is \\x0d a \\x1f test \\x7f comment \\x9f with \\x08 bad \\x0c chars" message
+    if (text_op == 0x384726d137b7c49fbc0d7801f7781fe550ac11c0c968cd9fb66c25c2a00e1365) {
+        $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+        return ();
+    }
+    ;; Throw if not handled
     throw(130);
 }
 

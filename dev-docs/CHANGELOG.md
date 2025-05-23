@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [fix] Added escaping of special-chars in receiver comments break FunC compilation: PR [#3234](https://github.com/tact-lang/tact/pull/3234)
+
 ### Language features
 
 - [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
