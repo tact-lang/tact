@@ -188,7 +188,7 @@ fun add(a: Int, b: Int): Int {
 }
 ```
 
-{/* TODO: bring back intermediate contents */}
+Read about common aspects of functions: [Commonalities](#commonalities).
 
 ### Global functions {#fun-global}
 
@@ -221,11 +221,22 @@ These attributes _cannot_ be specified:
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-These functions behave similarly to private methods in popular object-oriented languages — they are internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](/book/contracts#self). That is why internal (or member) functions are sometimes referred to as "contract methods".
+These functions behave similarly to private methods in popular object-oriented languages — they are internal to contracts and can be called by prefixing their names with a special [identifier `self{:tact}`](/book/contracts#self). That is why internal (or member) functions are sometimes referred to as "contract methods".
 
 Internal functions can access the contract's [persistent state variables](/book/contracts#variables) and [constants](/book/contracts#constants).
 
-They can only be called from [receivers](#receivers), [getters](#get), and other internal functions, but not from other contracts. To call them, the `self{:tact}` keyword can be used in any expression within a contract or a trait.
+They can only be called from [receivers](#receivers), [getters](#get), and other internal functions, but not from other contracts.
+
+```tact
+contract InternalFun() {
+    fun add(a: Int, b: Int): Int {
+        return a + b;
+    }
+    get fun compute() {
+        self.add(2, 2); // 4
+    }
+}
+```
 
 The following attributes can be specified for internal functions with no prior attributes:
 
@@ -242,34 +253,70 @@ These attributes _cannot_ be specified:
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-The `get{:tact}` attribute is a special attribute that cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into so-called _getter functions_ (or getters for short). These functions are externally accessible off-chain, allowing direct reading of contract state without regular message passing.
-
-Getter functions define getters on smart contracts and can be defined only within a contract or trait. Getter functions cannot be used to read another contract's state. If you need to obtain data, you should do so by sending a message with a request and defining a receiver function that processes the request answer.
+The special `get{:tact}` attribute cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into so-called _getter functions_ (or getters for short). These functions are externally accessible off-chain, allowing direct reading of contract state without regular message passing.
 
 ```tact
-contract Treasure {
-    get fun counter(): Int {
-        return self.counter;
-    }
-}
-```
-
-```tact
-contract Counter(val: Int as uint32) {
-    // Standard function with get attribute
+contract StaleCounter(val: Int as uint32) {
+    // Getter function that simply returns the current value of the state variable
     get fun value(): Int {
         return self.val;
     }
+
+    // Getter function that performs basic calculations
+    get fun valuePlus(another: Int): Int {
+        return self.val + another;
+    }
 }
 ```
+
+Despite the restriction on attributes, getter functions can still be considered internal or contract methods — calling them from within another contract function is possible. In those cases, their behavior would be identical to calling an internal function through `self{:tact}`, including any state modifications those functions can perform.
+
+However, most of the time, getter functions are there to be called from the off-chain world. And when they are called that way and not via `self{:tact}`, their state modifications no longer persist between transactions (changes are discarded).
+
+```tact
+contract WillNotBudge(val: Int) {
+    get fun changeVal() {
+        self.val = randomInt();
+        self.val; // ?, it is random!
+        // However, after this function is done,
+        // the self.val will be reset to its value prior to this function call.
+    }
+}
+```
+
+Furthermore, when **not** used as internal functions, getters do not pay the [compute fees](https://docs.ton.org/develop/howto/fees-low-level#computation-fees) and have their gas limits to prevent infinite loops or endless transactions. That is, getters can perform arbitrary computations if their internal gas limit is not surpassed in a single transaction.
+
+Those gas limits depend on the API provider used to call a certain getter, but they are usually around 100 million gas units per getter call.
+
+With that in mind, getters are most commonly used for fetching the current state of contract's persistent state variables. To do so in a convenient matter, Tact allows you to view the contract itself as a [struct][struct] of contract variables, i.e., to use `self{:tact}` to refer to the contract itself and return all of its state variable values at once in a single getter.
+
+```tact
+contract ManyFields(
+    f1: Int,
+    f2: Int,
+    // ...
+    f42: Int,
+) {
+    // Notice that the return type of this get function coincides
+    // with the name of the contract, which makes that return type
+    // view the contract as a struct of its variables.
+    get fun state(): ManyFields {
+        return self; // you do not have to list all fields of a contract for this
+    }
+}
+```
+
+### Method IDs
+
+Like other functions in TON contracts, getters have their _unique_ associated function selectors, which are 19-bit signed integer identifiers commonly called [_method IDs_](#low-level-representation).
+
+Method IDs of getters are derived from their names using the [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm as follows: `(crc16(<function_name>) & 0xffff) | 0x10000`. In addition, the Tact compiler conditionally reserves some method IDs for use in [getters of supported interfaces](/book/contracts#interfaces), namely: 113617 for `supported_interfaces`, 115390 for `lazy_deployment_completed`, and 121275 for `get_abi_ipfs`.
+
+Thus, getters and their method IDs are an important part of the contract interfaces, to the point where explorers tend to recognize contracts based not on their entire code, but on the set of getters they expose to the off-chain world.
 
 ### Explicit resolution of method ID collisions
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
-
-Like other functions in TON contracts, getters have their _unique_ associated function selectors, which are 19-bit signed integer identifiers commonly called _method IDs_.
-
-Method IDs of getters are derived from their names using the [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm as follows: `(crc16(<function_name>) & 0xffff) | 0x10000`. In addition, the Tact compiler conditionally reserves some method IDs for use in [getters of supported interfaces](/book/contracts#interfaces), namely: 113617 for `supported_interfaces`, 115390 for `lazy_deployment_completed`, and 121275 for `get_abi_ipfs`.
 
 Sometimes, getters with different names end up with the same method ID. If this happens, you can either rename some of the getters or manually specify the method ID as a [compile-time](/ref/core-comptime) expression like so:
 
@@ -795,7 +842,7 @@ inline fun add(a: Int, b: Int) {
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-The `get{:tact}` attribute is a special attribute that cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into [getter functions](#get).
+The special `get{:tact}` attribute cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into [getter functions](#get).
 
 ## Commonalities
 
