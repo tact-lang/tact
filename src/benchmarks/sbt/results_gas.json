@@ -106,7 +106,7 @@
     },
     {
       "label": "1.6.10 with optimized __tact_load_address_opt",
-      "pr": "https://github.com/tact-lang/tact/pull/3220",
+      "pr": "https://github.com/tact-lang/tact/pull/3225",
       "gas": {
         "deploy": "4038",
         "request owner": "4920",
