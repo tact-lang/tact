@@ -139,6 +139,16 @@
         "wallet cells": "16",
         "wallet bits": "8195"
       }
+    },
+    {
+      "label": "1.6.10 with store_slice optimization",
+      "pr": "https://github.com/tact-lang/tact/pull/3213",
+      "size": {
+        "minter cells": "27",
+        "minter bits": "14225",
+        "wallet cells": "14",
+        "wallet bits": "7884"
+      }
     }
   ]
 }
