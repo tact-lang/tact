@@ -178,7 +178,7 @@ asm fun abs(x: Int): Int { ABS }
 
 /// Global function.
 ///
-/// Computes and returns the logarithm of a number `num` > 0 to the base `base` ≥ 1. Results are rounded down.
+/// Computes and returns the logarithm of a number `num` > 0 to the base `base` ≥ 2. Results are rounded down.
 ///
 /// ```tact
 /// fun examples() {
@@ -193,7 +193,7 @@ asm fun abs(x: Int): Int { ABS }
 ///     }
 ///     log(1024, 2);   // 10
 ///     try {
-///         log(1024, -2);  // exit code 5 because the base is less than 1
+///         log(1024, -2);  // exit code 5 because the base is less than 2
 ///     }
 /// }
 /// ```
@@ -201,7 +201,7 @@ asm fun abs(x: Int): Int { ABS }
 /// #### Exit codes
 ///
 /// * 5: [Integer out of expected range] — Thrown when the given `num` value is non-positive
-///   or the given `base` value is less than 1.
+///   or the given `base` value is less than 2.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-math#log
