@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Fixed compiler errors for bounced/trait return types: PR [#3197](https://github.com/tact-lang/tact/pull/3197)
 - [fix] Added checks for bounced/trait returns in non-shuffle asm functions: PR [#3197](https://github.com/tact-lang/tact/pull/3197)
 - Compiler now generates more efficient code for serialization: PR [#3213](https://github.com/tact-lang/tact/pull/3213)
+- [fix] Compiler now doesn't generate `__tact_nop()` for `dump()` and `dumpStack()` in default mode: PR [#3218](https://github.com/tact-lang/tact/pull/3218)
 
 ### Docs
 
