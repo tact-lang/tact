@@ -30,7 +30,7 @@ describe("createVirtualFileSystem", () => {
 
     it("should truncate and hash long filenames", () => {
         const fs: Record<string, string> = {};
-        const vfs = createVirtualFileSystem("@vroot", fs, false);
+        const vfs = createVirtualFileSystem("/", fs, false);
 
         const longName = "A".repeat(300);
         const content = "Test content";
@@ -57,7 +57,7 @@ describe("createVirtualFileSystem", () => {
 
     it("should not truncate or hash short filenames", () => {
         const fs: Record<string, string> = {};
-        const vfs = createVirtualFileSystem("@vroot", fs, false);
+        const vfs = createVirtualFileSystem("/", fs, false);
 
         const shortName = "short-filename";
         const content = "Test content";
@@ -76,5 +76,4 @@ describe("createVirtualFileSystem", () => {
         expect(storedPath).toBe(`${shortName}${ext}`);
         expect(fs[storedPath]).toBe(Buffer.from(content).toString("base64"));
     });
-
 });
