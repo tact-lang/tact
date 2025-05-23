@@ -5,7 +5,7 @@ description: "Global, asm, native functions, as well as receivers, getters, and 
 
 import { Badge, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-Tact offers a diverse set of function kinds and attributes that provide great flexibility and expressivity. While some functions stand out, many of their [concepts and parts are common](#commonalities).
+Tact offers a diverse set of function kinds and attributes that provide great flexibility and expressivity. While some functions stand out, many of their [parts and behaviors are common](#commonalities).
 
 <CardGrid>
   <LinkCard
@@ -180,7 +180,7 @@ Read more about them on their dedicated page: [External messages](/book/external
 
 <Badge text="Any scope" title="These functions can be declared or defined within contracts and at the top level" variant="note" size="medium"/><p/>
 
-Regular functions are declared using the `fun{:tact}` keyword.
+Regular functions are defined using the `fun{:tact}` keyword.
 
 ```tact
 fun add(a: Int, b: Int): Int {
@@ -194,7 +194,7 @@ fun add(a: Int, b: Int): Int {
 
 <Badge text="Global scope" variant="note" size="medium"/><p/>
 
-You can define global functions at the module, top level.
+Regular functions that can be defined only at the top (module) level are called global. They differ from [internal functions](#fun-internal) not only in the scope, but also in available [attributes](#attributes).
 
 ```tact
 fun customPow(a: Int, c: Int): Int {
@@ -206,15 +206,37 @@ fun customPow(a: Int, c: Int): Int {
 }
 ```
 
+The following attributes can be specified for global functions:
+
+* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
+* [`extends{:tact}`](#attributes-extends) — makes it an [extension function](#attributes-extends).
+* [`mutates{:tact}`](#attributes-mutates), along with [`extends{:tact}`](#attributes-extends) — makes it an [extension mutation function](#attributes-mutates).
+
+These attributes _cannot_ be specified:
+
+* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — global functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#attributes-get) — global functions cannot be [getters](#get).
+
 ### Internal functions {#fun-internal}
 
 <Badge text="Contract scope" variant="note" size="medium"/><p/>
 
-These functions behave similarly to private methods in popular object-oriented languages — they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](/book/contracts#self). That's why internal (or member) functions are sometimes referred to as "contract methods".
+These functions behave similarly to private methods in popular object-oriented languages — they are internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](/book/contracts#self). That is why internal (or member) functions are sometimes referred to as "contract methods".
 
 Internal functions can access the contract's [persistent state variables](/book/contracts#variables) and [constants](/book/contracts#constants).
 
-They can only be called from [receivers](#receivers), [getters](#get), and other internal functions, but not from other contracts.
+They can only be called from [receivers](#receivers), [getters](#get), and other internal functions, but not from other contracts. To call them, the `self{:tact}` keyword can be used in any expression within a contract or a trait.
+
+The following attributes can be specified for internal functions with no prior attributes:
+
+* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
+* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — function [inheritance](#inheritance).
+* [`get{:tact}`](#attributes-get) — internal functions can become [getters](#get).
+
+These attributes _cannot_ be specified:
+
+* [`extends{:tact}`](#attributes-extends) — internal function cannot become an [extension function](#attributes-extends).
+* [`mutates{:tact}`](#attributes-mutates) — internal function cannot become an [extension mutation function](#attributes-mutates).
 
 ## `get fun` — off-chain getter functions {#get}
 
@@ -233,9 +255,7 @@ contract Treasure {
 ```
 
 ```tact
-contract Counter(
-    val: Int as uint32,
-) {
+contract Counter(val: Int as uint32) {
     // Standard function with get attribute
     get fun value(): Int {
         return self.val;
@@ -460,8 +480,8 @@ Attribute         | Scope    | Can be applied to
 `virtual{:tact}`  | contract | Internal functions
 `abstract{:tact}` | contract | Internal functions
 `override{:tact}` | contract | Internal functions that were previously marked with `virtual{:tact}` or `abstract{:tact}`
-`inline{:tact}`   | any      | All [secondary](#secondary) functions
-`get{:tact}`      | contract | Internal functions — turns them into [getters](#get)
+`inline{:tact}`   | any      | All functions except for receivers and getters
+`get{:tact}`      | contract | Internal functions — turns them into getters
 
 Notice that the "contract" scope also includes the [traits][trait].
 
@@ -475,40 +495,137 @@ Notice that the "contract" scope also includes the [traits][trait].
 
 <Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
 
-Extension functions allow you to implement extensions for any possible type.
-
-> **Warning**
-> The first argument MUST be named `self`, and the argument's type must be the type you are extending.
+To define an extension function, add an `extends{:tact}` attribute to any [global function](#fun-global) and name its first parameter as `self`. The type of `self` is the type that is being extended by the extension function.
 
 ```tact
-extends fun customPow(self: Int, c: Int): Int {
+extends fun customPow(self: Int, exp: Int): Int {
     let res: Int = 1;
-    repeat(c) {
+    repeat (exp) {
         res *= self;
     }
     return res;
 }
 ```
 
-TODO: better examples!
+The special `self{:tact}` identifier inside an extension function is a copy of the value of the extended type. In other words, it is the argument value passed to the `self` parameter.
+
+```tact
+// You can call extension functions on instances of the extended type,
+// such as variables...
+let val = 42;
+val.customPow(2); // 1764
+
+// ...literals...
+2.customPow(10); // 1024
+
+// ...or any other values of that type.
+pow2(2).customPow(5); // 1024
+```
+
+Most of the standard library functions that work with values of the [`Builder{:tact}`][builder] type are extension functions on that type. As such, they do not modify the original value they are applied to.
+
+To preserve newly created values with extension functions, use intermediary assignments or make a long chained call in a single assignment.
+
+```tact
+let builder = beginCell();
+let cell = builder
+    .storeUint(42, 7)
+    .storeInt(42, 7)
+    .storeBool(true)
+    .storeSlice(slice)
+    .storeCoins(42)
+    .storeAddress(address)
+    .storeRef(cell)
+    .endCell();
+// Notice that the chained extension function call did not change
+// the `builder` variable itself, which is still holding an empty Builder.
+builder.refs(); // 0
+builder.bits(); // 0
+```
+
+The first parameter of extension functions must be named `self`. Failure to do so leads to a compilation error.
+
+Additionally, naming the first parameter of any non-extension function as `self{:tact}` leads to a compilation error too.
+
+```tact
+// COMPILATION ERROR! Extend function must have first parameter named "self"
+extends fun add(this: Int, other: Int): Int {
+    //          ~~~~~~~~~
+    return this + other;
+}
+
+// COMPILATION ERROR! Parameter name "self" is reserved for functions with "extends"
+fun add(self: Int, other: Int): Int {
+    //  ~~~~~~~~~
+    return self + other;
+}
+```
+
+The following additional attributes can be specified:
+
+* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
+* [`mutates{:tact}`](#attributes-mutates) — makes it into an [extension mutation function](#attributes-mutates).
+
+These attributes _cannot_ be specified:
+
+* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — extension functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#attributes-get) — extension functions cannot become [getters](#get).
 
 #### `mutates` — extension mutation functions {#attributes-mutates}
 
 <Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
 
-TODO: ...
+The extension _mutation_ functions replace the value of the extended type with the new one at the end of its execution. That value would change only upon the assignment to `self{:tact}` within the function body.
 
-Mutation functions perform mutation on a value by replacing it with an execution result. To perform mutation, the function must change the `self` value.
+To define an extension mutation function, add a `mutates{:tact}` attribute to the existing [extension function](#attributes-extends).
 
 ```tact
-extends mutates fun customPow(self: Int, c: Int) {
+extends mutates fun customPow(self: Int, exp: Int) {
     let res: Int = 1;
-    repeat(c) {
+    repeat (exp) {
         res *= self;
     }
     self = res;
 }
 ```
+
+For extension mutation functions, the special `self` identifier refers to the value of the extended type, and changes made to it will persist after the function call.
+
+```tact
+// It is most useful to call extension mutation functions on instances
+// of the extended type that can keep the change stored either temporarily, i.e.,
+// within the current transaction, or permanently — in the contract's state.
+contract Mut(val: Int) {
+    receive() {
+        let valTmp = 2;
+        valTmp.customPow(10);
+        self.val.customPow(10);
+        // Now, `valTmp` holds 1024, and `self.val` holds
+        // its value prior to this transaction raised to the power 10.
+    }
+}
+```
+
+Extension mutation functions cannot modify [constants](/book/constants) because they are immutable.
+
+```tact
+const VAL: Int = 10;
+
+fun noEffect() {
+    VAL; // 10
+    VAL.customPow(10);
+    VAL; // still 10
+}
+```
+
+The following additional attributes can be specified:
+
+* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
+
+These attributes _cannot_ be specified:
+
+* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — extension mutation functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#attributes-get) — extension mutation functions cannot become [getters](#get).
 
 #### Static extension functions {#attributes-extends-static}
 
@@ -690,9 +807,9 @@ The above applies to all functions except for [receivers](#receivers), because t
 
 ### Scope {#commonalities-scope}
 
-All kinds of functions vary in scope: some can only be defined at the top level, such as [global functions](#fun-global), while others can only be defined at the level of contracts and traits, such as [internal functions](#fun-internal) or [receivers](#receivers).
+All kinds of functions vary in scope: some can only be defined at the top level, such as [global functions](#fun-global), while others can only be defined within contracts and traits, such as [internal functions](#fun-internal) or [receivers](#receivers).
 
-Furthermore, functions are hoisted upon declaration, such that the ones declared earlier might call those declared later and vice versa.
+Functions are hoisted upon declaration, such that the ones declared earlier might call those declared later and vice versa.
 
 ```tact
 // Global function first() is defined prior to the second() function,
@@ -711,9 +828,11 @@ fun second(flag: Bool): Bool {
 }
 ```
 
-### Early return {#commonalities-return}
+### Return values {#commonalities-return}
 
-Execution of any function can be ended prematurely with the [`return{:tact}` statement](/book/statements#return). This is also true for the [receiver functions](#receivers), where empty `return{:tact}` statements are allowed.
+All functions return a value. If the function does not have an explicit return type specified, it has an implicit return type of `void` — a pseudo-value that represents "nothing" in the Tact compiler. This also applies to the functions that do not allow specifying a return type, such as [receivers](#receivers) or [`init(){:tact}`](#init).
+
+Moreover, execution of any function can be ended prematurely with the [`return{:tact}` statement](/book/statements#return). This is also true for the [receiver functions](#receivers) and [`init(){:tact}`], where empty `return{:tact}` statements are allowed.
 
 ```tact
 contract GreedyCashier(owner: Address) {
@@ -725,6 +844,22 @@ contract GreedyCashier(owner: Address) {
         // Otherwise, forward excesses back to the sender.
         cashback(sender());
     }
+}
+```
+
+To return multiple values in a function, aggregate the values in a [struct][struct].
+
+```tact
+fun minmax(a: Int, b: Int): MinMax {
+    if (a < b) {
+        return MinMax { min: a, max: b };
+    }
+    return MinMax { min: b, max: a };
+}
+
+struct MinMax {
+    min: Int;
+    max: Int;
 }
 ```
 
@@ -790,12 +925,12 @@ contract YouMakeMyHeartSing() with WildThing {
 
     // Wildcards are also useful when you do not intend to
     // use the contents of the message and only handle the proper one
-    receive(_: FieldsDontLie) {
+    receive(_: FieldsDoNotLie) {
         // ...
     }
 }
 
-message FieldsDontLie {}
+message FieldsDoNotLie {}
 ```
 
 ## Low-level representation
@@ -807,10 +942,12 @@ A function call is, essentially, a call into the dictionary using the function's
 2. The function executes, manipulating the stack
 3. Return values are left on top of the stack, provoking another dictionary call or resulting in the end of the transaction
 
-When a so-called ["selector hack"](/book/config#optimizations-internalexternalreceiversoutsidemethodsmap) optimization is enabled, if a small number of receiver functions are defined in the contract, they are stored outside of that map and as plain instruction sequences. That saves gas but can cause the contract to be incorrectly recognized and misparsed by some explorers and user wallets, which expect the root of the contract's code (the root cell) to point at the method dictionary instead.
+When a so-called ["selector hack"](/book/config#optimizations-internalexternalreceiversoutsidemethodsmap) optimization is enabled, if the number of defined receivers is small, they are stored outside of that map as plain instruction sequences. That saves gas but can cause the contract to be incorrectly recognized and misparsed by some explorers and user wallets, which expect the root of the contract's code (the root cell) to point at the method dictionary.
 
 [p]: /book/types#primitive-types
 [struct]: /book/structs-and-messages#structs
+[cell]: /book/cells#cells
+[builder]: /book/cells#builders
 [slice]: /book/cells#slices
 [trait]: /book/types#traits
 
