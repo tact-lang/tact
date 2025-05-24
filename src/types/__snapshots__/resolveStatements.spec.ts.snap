@@ -621,7 +621,7 @@ exports[`resolveStatements should fail statements for expr-wrong-arity-module-fu
 exports[`resolveStatements should fail statements for getter-collision 1`] = `
 "<unknown>:8:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
 Pick a different getter name or explicit method ID to avoid collisions
-  7 | 
+  7 |
 > 8 |     get fun pko() {
                   ^~~
   9 |         return;
@@ -631,7 +631,7 @@ Pick a different getter name or explicit method ID to avoid collisions
 exports[`resolveStatements should fail statements for getter-collision-trait 1`] = `
 "<unknown>:8:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
 Pick a different getter name or explicit method ID to avoid collisions
-  7 | 
+  7 |
 > 8 |     get fun pko() {
                   ^~~
   9 |         return;
@@ -640,7 +640,7 @@ Pick a different getter name or explicit method ID to avoid collisions
 
 exports[`resolveStatements should fail statements for getter-collision-with-reserved_opt1 1`] = `
 "<unknown>:10:9: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
-   9 | 
+   9 |
 > 10 |     get(115390) fun _lazy_deployment_completed(): String{
                ^~~~~~
   11 |         return "not ok";
@@ -649,7 +649,7 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 
 exports[`resolveStatements should fail statements for getter-collision-with-reserved_opt2 1`] = `
 "<unknown>:10:9: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
-   9 | 
+   9 |
 > 10 |     get(121275) fun _get_abi_ipfs(): Int{
                ^~~~~~
   11 |         return 123;
@@ -658,7 +658,7 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 
 exports[`resolveStatements should fail statements for getter-collision-with-reserved_opt3 1`] = `
 "<unknown>:10:9: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
-   9 | 
+   9 |
 > 10 |     get(113617) fun _supported_interfaces(): String{
                ^~~~~~
   11 |         return "ok";
@@ -667,7 +667,7 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 
 exports[`resolveStatements should fail statements for getter-collision-with-reserved1 1`] = `
 "<unknown>:10:5: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
-   9 | 
+   9 |
 > 10 |     get fun lazy_deployment_completed(): String{
            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   11 |         return "not ok";
@@ -676,7 +676,7 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 
 exports[`resolveStatements should fail statements for getter-collision-with-reserved2 1`] = `
 "<unknown>:10:5: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
-   9 | 
+   9 |
 > 10 |     get fun get_abi_ipfs(): Int{
            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
   11 |         return 123;
@@ -685,7 +685,7 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 
 exports[`resolveStatements should fail statements for getter-collision-with-reserved3 1`] = `
 "<unknown>:10:5: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
-   9 | 
+   9 |
 > 10 |     get fun supported_interfaces(): String{
            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   11 |         return "ok";
@@ -713,7 +713,7 @@ exports[`resolveStatements should fail statements for init-vars-analysis-if 1`] 
 
 exports[`resolveStatements should fail statements for init-vars-analysis-implicit-init 1`] = `
 "<unknown>:4:1: Field "test_field" is not set
-  3 | 
+  3 |
 > 4 | contract MyContract {
       ^~~~~~~~~~~~~~~~~~~~~
   5 |     counter: Int = 0;
@@ -725,7 +725,7 @@ exports[`resolveStatements should fail statements for init-vars-analysis-missing
    9 |     value: Int;
 > 10 |     init() {
            ^~~~~~~~
-  11 | 
+  11 |
 "
 `;
 
@@ -909,9 +909,54 @@ exports[`resolveStatements should fail statements for map-literal-mismatch-var 1
 "
 `;
 
+exports[`resolveStatements should fail statements for method-fromcell-call-non-static-context 1`] = `
+"<unknown>:8:19: Cannot call static method "fromCell" on an instance.
+  7 |     init(cell: Cell) {
+> 8 |         let res = SomeMessage {}.fromCell(cell);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for method-fromslice-call-non-static-context 1`] = `
+"<unknown>:8:19: Cannot call static method "fromSlice" on an instance.
+  7 |     init(slice: Slice) {
+> 8 |         let res = SomeMessage {}.fromSlice(slice);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for method-opcode-call-non-static-context 1`] = `
+"<unknown>:7:19: Cannot call static method "opcode" on an instance.
+  6 |     receive() {
+> 7 |         let res = SomeMessage {}.opcode();
+                        ^~~~~~~~~~~~~~~~~~~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for method-tocell-call-non-instance-context 1`] = `
+"<unknown>:7:19: Cannot call instance method "toCell" as a static one.
+  6 |     receive() {
+> 7 |         let res = SomeMessage.toCell();
+                        ^~~~~~~~~~~~~~~~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for method-toslice-call-non-instance-context 1`] = `
+"<unknown>:7:19: Cannot call instance method "toSlice" as a static one.
+  6 |     receive() {
+> 7 |         let res = SomeMessage.toSlice();
+                        ^~~~~~~~~~~~~~~~~~~~~
+  8 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for return-analysis-catch-if 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-  3 | 
+  3 |
 > 4 | fun notAlwaysReachableReturn(b: Bool): Int {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     try {
@@ -920,7 +965,7 @@ exports[`resolveStatements should fail statements for return-analysis-catch-if 1
 
 exports[`resolveStatements should fail statements for return-analysis-do-if 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-  3 | 
+  3 |
 > 4 | fun notAlwaysReachableReturn(b: Bool): Int {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     do {
@@ -974,7 +1019,7 @@ exports[`resolveStatements should fail statements for return-analysis-non-void2 
 
 exports[`resolveStatements should fail statements for return-analysis-repeat 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-  3 | 
+  3 |
 > 4 | fun notAlwaysReachableReturn(n: Int): Int {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     repeat (n) {
@@ -983,7 +1028,7 @@ exports[`resolveStatements should fail statements for return-analysis-repeat 1`]
 
 exports[`resolveStatements should fail statements for return-analysis-separate-ifs 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-  3 | 
+  3 |
 > 4 | fun notAlwaysReachableReturn(b: Bool): Int {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     if (b) {
@@ -992,7 +1037,7 @@ exports[`resolveStatements should fail statements for return-analysis-separate-i
 
 exports[`resolveStatements should fail statements for return-analysis-throw-wrapped 1`] = `
 "<unknown>:15:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-  14 | 
+  14 |
 > 15 | fun notAlwaysReachableReturn(b: Bool): Int {
        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   16 |     throwWrapped(42);
@@ -1001,7 +1046,7 @@ exports[`resolveStatements should fail statements for return-analysis-throw-wrap
 
 exports[`resolveStatements should fail statements for return-analysis-try1 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-  3 | 
+  3 |
 > 4 | fun notAlwaysReachableReturn(b: Bool): Int {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     try {
@@ -1010,7 +1055,7 @@ exports[`resolveStatements should fail statements for return-analysis-try1 1`] =
 
 exports[`resolveStatements should fail statements for return-analysis-try2 1`] = `
 "<unknown>:7:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-  6 | 
+  6 |
 > 7 | fun notAlwaysReachableReturn(b: Bool): Int {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   8 |     try {
@@ -1019,7 +1064,7 @@ exports[`resolveStatements should fail statements for return-analysis-try2 1`] =
 
 exports[`resolveStatements should fail statements for return-analysis-while 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-  3 | 
+  3 |
 > 4 | fun notAlwaysReachableReturn(b: Bool): Int {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     while (b) {
@@ -1316,10 +1361,10 @@ exports[`resolveStatements should fail statements for stmt-return-void2 1`] = `
 
 exports[`resolveStatements should fail statements for stmt-return-void3 1`] = `
 "<unknown>:3:18: The function fails to return a result of type "Int"
-  2 | 
+  2 |
 > 3 | fun bar(): Int { return }
                        ^~~~~~
-  4 | 
+  4 |
 "
 `;
 
@@ -1397,7 +1442,7 @@ exports[`resolveStatements should fail statements for usage-of-bounced-field-in-
 
 exports[`resolveStatements should fail statements for usage-of-bounced-field-in-type-that-is-too-big-2 1`] = `
 "<unknown>:26:29: Maximum size of the bounced message is 224 bits, but the "amount" field of type "Withdraw" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bits
-  25 | 
+  25 |
 > 26 |         self.balance += msg.amount;
                                    ^~~~~~
   27 |     }
@@ -1532,7 +1577,7 @@ exports[`resolveStatements should fail statements for var-scope-const-shadowing-
 
 exports[`resolveStatements should fail statements for var-scope-const-shadowing-fun-param 1`] = `
 "<unknown>:5:9: Variable "foo" is trying to shadow an existing constant with the same name
-  4 | 
+  4 |
 > 5 | fun bar(foo: Int): Int {  // <-- fun param \`foo\` shadows global const \`foo\`
               ^~~
   6 |     return foo;
@@ -1829,7 +1874,7 @@ exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowin
 
 exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-fun-param 1`] = `
 "<unknown>:3:9: Variable cannot have the same name as its enclosing function: "rec"
-  2 | 
+  2 |
 > 3 | fun rec(rec: Int): Int { // <-- shadowing
               ^~~
   4 |     return rec;
@@ -3360,6 +3405,84 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
   ],
   [
     "self.value + 1",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for methods-call-instance-context 1`] = `
+[
+  [
+    "SomeMessage {}",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage {}",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage {}.toSlice()",
+    "Slice",
+  ],
+  [
+    "msg",
+    "SomeMessage",
+  ],
+  [
+    "msg.toSlice()",
+    "Slice",
+  ],
+  [
+    "SomeMessage {}",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage {}.toCell()",
+    "Cell",
+  ],
+  [
+    "msg",
+    "SomeMessage",
+  ],
+  [
+    "msg.toCell()",
+    "Cell",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for methods-call-static-context 1`] = `
+[
+  [
+    "SomeMessage",
+    "SomeMessage",
+  ],
+  [
+    "slice",
+    "Slice",
+  ],
+  [
+    "SomeMessage.fromSlice(slice)",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage",
+    "SomeMessage",
+  ],
+  [
+    "cell",
+    "Cell",
+  ],
+  [
+    "SomeMessage.fromCell(cell)",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage",
+    "SomeMessage",
+  ],
+  [
+    "SomeMessage.opcode()",
     "Int",
   ],
 ]

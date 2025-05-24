@@ -98,7 +98,7 @@ contract MainContract {
     const FOO_ZERO: Int = 0;
     const FOO_ONE: Int = 1;
 
-    get fun testIfOptimizationPositive(a: Int) {
+    get fun testIfOptimizationPositive(a: Int,  b: Int?) {
         if (a == 0) {
             return;
         }
@@ -146,6 +146,14 @@ contract MainContract {
         if (self.FOO_ONE - 1 != a) {
             return;
         }
+
+        if (b!! == 0) {
+            return;
+        }
+
+        if (b!! != 0) {
+            return;
+        }
     }
 
     get fun testIfOptimizationComplexPositive(a: Int) {
@@ -170,7 +178,7 @@ contract MainContract {
         }
     }
 
-    get fun testIfOptimizationNegative(a: Int) {
+    get fun testIfOptimizationNegative(a: Int, b: Int?) {
         if (a == self.FOO_ONE) {
             return;
         }
@@ -184,6 +192,14 @@ contract MainContract {
         }
 
         if (self.FOO_ONE != a) {
+            return;
+        }
+
+        if (b == 0) {
+            return;
+        }
+
+        if (b != 0) {
             return;
         }
     }
