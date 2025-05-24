@@ -19,7 +19,6 @@ import type {
     ReceiverSelector,
     TypeDescription,
     TypeRef,
-    TypeRefMap,
 } from "@/types/types";
 import {
     printTypeRef,
@@ -48,7 +47,6 @@ import { isAssignable } from "@/types/subtyping";
 import type { ItemOrigin } from "@/imports/source";
 import { isUndefined } from "@/utils/array";
 import type { Effect } from "@/types/effects";
-import type { SrcInfo } from "@/grammar";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -1916,20 +1914,18 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         !typeRefEquals(
                             traitFunction.returns,
                             funInContractOrTrait.returns,
+                        ) ||
+                        !isAssignable(
+                            funInContractOrTrait.returns,
+                            traitFunction.returns,
                         )
                     ) {
                         throwCompilationError(
-                            `Overridden function "${traitFunction.name}" should have same return type`,
-                            funInContractOrTrait.ast.loc,
-                        );
-                    } else {
-                        checkMapSerializationCompatibility(
-                            traitFunction.returns,
-                            funInContractOrTrait.returns,
-                            `Overridden function "${traitFunction.name}" has incompatible return type:`,
+                            `Overridden function "${traitFunction.name}" should have same and assignable return type. Expected ${printTypeRef(traitFunction.returns)}, but got ${printTypeRef(funInContractOrTrait.returns)}.`,
                             funInContractOrTrait.ast.loc,
                         );
                     }
+
                     if (
                         traitFunction.params.length !==
                         funInContractOrTrait.params.length
@@ -2011,17 +2007,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         !typeRefEquals(
                             traitConstant.type,
                             constInContractOrTrait.type,
+                        ) ||
+                        !isAssignable(
+                            constInContractOrTrait.type,
+                            traitConstant.type,
                         )
                     ) {
                         throwCompilationError(
-                            `Overridden constant "${traitConstant.name}" should have same type`,
-                            constInContractOrTrait.ast.loc,
-                        );
-                    } else {
-                        checkMapSerializationCompatibility(
-                            traitConstant.type,
-                            constInContractOrTrait.type,
-                            `Overridden constant "${traitConstant.name}" has incompatible type:`,
+                            `Overridden constant "${traitConstant.name}" should have same and assignable type. Expected ${printTypeRef(traitConstant.type)}, but got ${printTypeRef(constInContractOrTrait.type)}.`,
                             constInContractOrTrait.ast.loc,
                         );
                     }
@@ -2715,48 +2708,3 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
         return [];
     }
 }
-
-function checkMapSerializationCompatibility(
-    expected: TypeRef,
-    actual: TypeRef,
-    errorContext: string,
-    loc: SrcInfo,
-): void {
-    if (expected.kind !== "map" || actual.kind !== "map") return;
-
-    const serializeKey = (type: TypeRefMap) =>
-        type.key === "Int" && type.keyAs === null ? "int257" : type.keyAs;
-
-    const serializeValue = (type: TypeRefMap): string | undefined => {
-        const valueAs =
-            type.value === "Int" && type.valueAs === null
-                ? "int257"
-                : type.valueAs;
-        return typeof valueAs === "string"
-            ? (ALIAS_MAP[valueAs] ?? valueAs)
-            : undefined;
-    };
-
-    const expectedKeyAs = serializeKey(expected);
-    const actualKeyAs = serializeKey(actual);
-
-    if (expectedKeyAs !== actualKeyAs) {
-        throwCompilationError(
-            `${errorContext} map key serialization mismatch — expected ${expectedKeyAs ? `"${expectedKeyAs}"` : "no serialization hint"} but got ${actualKeyAs ? `"${actualKeyAs}"` : "no serialization hint"}`,
-            loc,
-        );
-    }
-
-    const expectedValueAs = serializeValue(expected);
-    const actualValueAs = serializeValue(actual);
-
-    if (expectedValueAs !== actualValueAs) {
-        throwCompilationError(
-            `${errorContext} map value serialization mismatch — expected ${expectedValueAs ? `"${expectedValueAs}"` : "no serialization hint"} but got ${actualValueAs ? `"${actualValueAs}"` : "no serialization hint"}`,
-            loc,
-        );
-    }
-}
-const ALIAS_MAP: Record<string, string> = {
-    coins: "varuint16",
-};
