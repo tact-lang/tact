@@ -26,6 +26,7 @@ import { getAstFactory, idText } from "@/ast/ast-helpers";
 import { evalConstantExpression } from "@/optimizer/constEval";
 import { getAstUtil } from "@/ast/util";
 import { prettyPrint } from "@/ast/ast-printer";
+import { escapeUnicodeControlCodes } from "@/utils/text";
 
 type ContractReceivers = {
     readonly internal: Receivers;
@@ -281,7 +282,10 @@ function writeCommentReceivers(
                 !msgOpcodeRemoved,
                 commentRcv.ast.loc,
             );
-            wCtx.append(`;; Receive "${commentRcv.selector.comment}" message`);
+            const comment = escapeUnicodeControlCodes(
+                commentRcv.selector.comment,
+            );
+            wCtx.append(`;; Receive "${comment}" message`);
 
             wCtx.inBlock(`if (text_op == 0x${hash})`, () => {
                 writeReceiverBody(commentRcv, contract, wCtx);
