@@ -124,7 +124,7 @@ If you use one of those functions, consider finding cheaper alternatives.
 
 Some [kinds of functions](/book/functions) allow their code to be inlined by adding an `inline` annotation. If the function is used often, this might result in a significant increase in contract code size, but generally, it allows to save gas on redundant function calls.
 
-Furthermore, you might reach for the [experimental `inline` field](/book/config#experimental-inline) in `tact.config.json,` which enables the inlining of all functions that can be inlined.
+Furthermore, you might reach for the [experimental `inline` field](/book/config#experimental-inline) in `tact.config.json`, which enables the inlining of all functions that can be inlined.
 
 This advice needs benchmarks to decide its usefulness on a case-by-case basis.
 
@@ -173,6 +173,47 @@ On the other hand, if you know the layout and boundaries of your data, the gener
 In both cases, you can use assembly functions (or `asm` functions for short) to manually describe the logic by writing a series of [TVM instructions][tvm-instruction]. If you know what you're doing, `asm` functions can offer you the smallest possible gas usage and the most control over [TVM][tvm] execution.
 
 Read more about them on their dedicated page: [Assembly functions](/book/assembly-functions).
+
+### Disable run-time `safety` checks for well-tested contracts
+
+:::caution
+
+  Proceed only if you have a comprehensive contract test suite and are about to apply various other security measures, such as audits. The following is not guidance but is an illustration of what can be done to maximize gas efficiency when you are sure of the safety of your contracts.
+
+:::
+
+When using the unwrapping [non-null assertion `!!`](/book/operators/#unary-non-null-assert) operator, you can decrease its gas consumption at the expense of its runtime `null{:tact}` checks. Thus, you should only disable such checks when you are sure there will not be a runtime `null{:tact}` present in the given branch of your code.
+
+```tact
+fun example() {
+    let val: Int? = 42;
+    if (val == null) {
+        return;
+    }
+    // At this point we know that `val` is not null,
+    // so we can safely disable runtime checks of the !! operator in the config
+    val!!; // 42
+}
+```
+
+To disable runtime `null{:tact}` checks of the `!!` operator, set the [`nullChecks`](/book/config#safety-nullchecks) field to `false{:json}` in your [`tact.config.json`](/book/config).
+
+```json filename="tact.config.json" {9}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./your-contract-file.tact",
+      "output": "./output",
+      "options": {
+        "safety": {
+          "nullChecks": false
+        }
+      }
+    }
+  ]
+}
+```
 
 ## Receiving messages
 

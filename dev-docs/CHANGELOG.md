@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [fix] Added escaping of special-chars in receiver comments break FunC compilation: PR [#3234](https://github.com/tact-lang/tact/pull/3234)
 - [fix] Disable optimization of optional integer comparisons that leads to runtime exceptions: PR [#3210](https://github.com/tact-lang/tact/pull/3210)
 
 ### Language features
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Docs
 
 - Changed the title of the "Gas-expensive" badge to "500+ gas" to avoid confusion when discussing relative gas-efficiency: PR [#3120](https://github.com/tact-lang/tact/pull/3120)
+- Added description of `safety`-related `tact.config.json` options to gas and security best practice pages: PR [#3206](https://github.com/tact-lang/tact/pull/3206)
 
 ### Release contributors
 
