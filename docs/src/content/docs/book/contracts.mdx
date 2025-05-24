@@ -83,7 +83,7 @@ contract Vot(
 ) with Supe {}
 ```
 
-If declared or defined in a trait, internal functions and constants can be marked as [virtual or abstract](/book/functions#virtual-and-abstract-functions) and overridden in contracts inheriting from the trait.
+If declared or defined in a trait, internal functions and constants can be marked as [virtual or abstract](/book/functions#inheritance) and overridden in contracts inheriting from the trait.
 
 ### Supported interfaces, `@interface(…)` {#interfaces}
 
@@ -431,30 +431,22 @@ contract LazyInit {
 
 ### Getter functions
 
-[Getter functions](/book/functions#getter-functions) are **not accessible from other contracts and are exported only to the off-chain world**.
-
-Additionally, **getters cannot modify the contract's state variables**; they can only read their values and use them in expressions.
+[Getter functions](/book/functions#get) are **not accessible** from other contracts and are exported only to the off-chain world.
 
 ```tact
-contract HelloWorld {
-    foo: Int;
-
-    init() {
-        self.foo = 0;
-    }
-
-    // getter function with return type Int
+contract HelloWorld(foo: Int) {
+    // Getter function with return type Int
     get fun foo(): Int {
-        return self.foo; // can't change self.foo here
+        return self.foo + 42;
     }
 }
 ```
 
-Read more about them in their dedicated section: [Getter functions](/book/functions#getter-functions)
+Read more about them in their dedicated section: [Getter functions](/book/functions#get).
 
 ### Receiver functions
 
-[Receiver functions](/book/functions#receiver-functions) in Tact can be one of the following three kinds:
+[Receiver functions](/book/functions#receivers) in Tact can be one of the following three kinds:
 
 * [`receive(){:tact}`](/book/receive), which receives internal messages (from other contracts).
 * [`bounced(){:tact}`](/book/bounced), which is called when an outgoing message from this contract bounces back.
@@ -514,7 +506,7 @@ contract Example {
 }
 ```
 
-### Internal functions
+### Internal functions {#internal-functions}
 
 These functions behave similarly to private methods in popular object-oriented languages — they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](#self). That's why internal functions are sometimes referred to as "contract methods."
 
@@ -537,6 +529,8 @@ contract Functions {
     }
 }
 ```
+
+Read more about them in their dedicated section: [Internal functions](/book/functions#fun-internal).
 
 :::note
 

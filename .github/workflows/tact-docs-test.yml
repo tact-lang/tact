@@ -70,6 +70,8 @@ jobs:
           output: "/dev/stdout"
           fail: true
           failIfEmpty: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # That way, when building the docs in the next step,
       # their link checker will be able to validate the links in stdlib

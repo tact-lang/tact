@@ -15,7 +15,7 @@ import "@stdlib/stoppable"; // this would automatically import @stdlib/ownable t
 
 ### Stoppable
 
-[Trait](/book/types#composite-types) `Stoppable{:tact}` implements a receiver for the [Message](/book/structs-and-messages#messages) [string](/book/types#primitive-types) "Stop" that can be sent by the owner. It implements the `stopped(){:tact}` [getter function](/book/functions#getter-functions) that returns `true{:tact}` if the contract is stopped (or `false{:tact}` otherwise) and provides private (non-getter) functions `requireNotStopped(){:tact}` and `requireStopped(){:tact}`.
+[Trait](/book/types#composite-types) `Stoppable{:tact}` implements a receiver for the [Message](/book/structs-and-messages#messages) [string](/book/types#primitive-types) "Stop" that can be sent by the owner. It implements the `stopped(){:tact}` [getter function](/book/functions#get) that returns `true{:tact}` if the contract is stopped (or `false{:tact}` otherwise) and provides private (non-getter) functions `requireNotStopped(){:tact}` and `requireStopped(){:tact}`.
 
 Source code:
 

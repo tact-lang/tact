@@ -39,7 +39,7 @@ import "./relative/path/to/the/target/func/file.fc";
 import "../subfolder/imported/func/file.fc";
 ```
 
-However, in order to use functions from such files, one has to declare them as `native` functions first. For example, when the standard library [`@stdlib/dns`](/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
+However, in order to use functions from such files, one has to declare them as [`native{:tact}` functions](/book/functions#native) first. For example, when the standard library [`@stdlib/dns`](/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
 
 ```tact
 // FunC code located in a file right next to the current Tact one:

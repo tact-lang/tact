@@ -398,7 +398,7 @@ asm fun myCode(): Cell { MYCODE }
 
 ### `mutates` consumes an extra value {#caveats-mutates}
 
-Specifying the [`mutates{:tact}`](/book/functions#mutation-functions) attribute, i.e. defining a mutation function, makes the assembly function consume one additional value deeper in the stack than the declared return values. Consider the following example:
+Specifying the [`mutates{:tact}`](/book/functions#attributes-mutates) attribute, i.e. defining a mutation function, makes the assembly function consume one additional value deeper in the stack than the declared return values. Consider the following example:
 
 ```tact
 asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
@@ -406,9 +406,9 @@ asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 
 Here, the `LDREF` instruction produces two stack entries: a [`Cell{:tact}`][cell] and a modified [`Slice{:tact}`][slice], in that order, with the [`Slice{:tact}`][slice] pushed on top of the stack. Then, the arrangement `-> 1 0{:tact}` inverts those values, making the [`Cell{:tact}`][cell] sit on top of the stack.
 
-Finally, the [`mutates{:tact}`](/book/functions#mutation-functions) attribute makes the function consume the deepest value on the stack, i.e. [`Slice{:tact}`][slice], and assigns it to `self{:tact}`, while returning the [`Cell{:tact}`][cell] value to the caller.
+Finally, the [`mutates{:tact}`](/book/functions#attributes-mutates) attribute makes the function consume the deepest value on the stack, i.e. [`Slice{:tact}`][slice], and assigns it to `self{:tact}`, while returning the [`Cell{:tact}`][cell] value to the caller.
 
-Overall, the [`mutates{:tact}`](/book/functions#mutation-functions) attribute can be useful in some cases, but you must remain vigilant when using it with assembly functions.
+Overall, the [`mutates{:tact}`](/book/functions#attributes-mutates) attribute can be useful in some cases, but you must remain vigilant when using it with assembly functions.
 
 :::caution
 
@@ -453,14 +453,14 @@ Read more about debugging Tact contracts on the dedicated page: [Debugging](/boo
 The following attributes can be specified:
 
 * `inline{:tact}` — does nothing, since assembly functions are always inlined.
-* [`extends{:tact}`](/book/functions#extension-function) — makes it an [extension function](/book/functions#extension-function).
-* [`mutates{:tact}`](/book/functions#mutation-functions) (along with [`extends{:tact}`](/book/functions#extension-function)) — makes it an [extension mutation function](/book/functions#mutation-functions).
+* [`extends{:tact}`](/book/functions#extensions) — makes it an [extension function](/book/functions#extensions).
+* [`mutates{:tact}`](/book/functions#attributes-mutates) (along with [`extends{:tact}`](/book/functions#extensions)) — makes it an [extension mutation function](/book/functions#attributes-mutates).
 
 These attributes _cannot_ be specified:
 
 * `abstract{:tact}` — assembly functions must have a defined body.
 * `virtual{:tact}` and `override{:tact}` — assembly functions cannot be defined within a contract or a trait.
-* [`get{:tact}`](/book/functions#getter-functions) — assembly functions cannot be [getters](/book/functions#getter-functions).
+* [`get{:tact}`](/book/functions#get) — assembly functions cannot be [getters](/book/functions#get).
 
 ```tact
 /// `Builder.storeCoins()` extension function
