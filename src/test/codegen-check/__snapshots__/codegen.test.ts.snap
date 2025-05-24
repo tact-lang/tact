@@ -86,11 +86,11 @@ forall X -> X __tact_not_null(X x) impure inline {
 }
 
 int __tact_int_eq_nullable_one(int a, int b) inline {
-    return (null?(a)) ? (false) : (a == b);
+    return (null?(b)) ? (false) : (a == b);
 }
 
 int __tact_int_neq_nullable_one(int a, int b) inline {
-    return (null?(a)) ? (true) : (a != b);
+    return (null?(b)) ? (true) : (a != b);
 }
 
 builder $global_beginCell() impure asm """
@@ -309,10 +309,10 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
     if ((1 != $a)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    if (__tact_int_eq_nullable_one($b, 0)) {
+    if (__tact_int_eq_nullable_one(0, $b)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    if (__tact_int_neq_nullable_one($b, 0)) {
+    if (__tact_int_neq_nullable_one(0, $b)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     return (($self'field, $self'value, $self'data, $self'mapping), ());
