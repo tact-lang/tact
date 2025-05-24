@@ -1063,6 +1063,22 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
             }
+            if (returns.kind !== "void") {
+                if (returns.kind === "ref") {
+                    const typeInfo = types.get(returns.name);
+                    if (typeInfo?.kind === "trait") {
+                        throwCompilationError(
+                            `Function ${idTextErr(a.name)} returns a trait, which is not supported in "asm" functions.`,
+                            a.loc,
+                        );
+                    }
+                } else if (returns.kind === "ref_bounced") {
+                    throwCompilationError(
+                        `Function ${idTextErr(a.name)} returns a <bounced> type, which is not supported in "asm" functions.`,
+                        a.loc,
+                    );
+                }
+            }
 
             // check return shuffle
             if (a.shuffle.ret.length !== 0) {
@@ -1100,12 +1116,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     case "null":
                     case "map":
                         retTupleSize = 1;
-                        break;
-                    case "ref_bounced":
-                        throwInternalCompilerError(
-                            "A <bounced> type cannot be returned from a function",
-                            a.loc,
-                        );
                         break;
                     case "void":
                         retTupleSize = 0;
