@@ -11,6 +11,14 @@ Traits and helper functions that can be used to upgrade your smart contract's co
 
 :::
 
+:::danger[Contract upgrades are NOT ready for production use]
+  The current contract upgrade facilities are experimental and **not recommended for production** due to potential data storage inconsistencies when modifying contract layouts. The following examples are given as simple illustrations of what could be done, but **not** as guidance or solid advice. 
+  
+  Using such traits in production may lead to unexpected behavior or data corruption.
+  
+  A proper implementation is being drafted — [track progress here](https://github.com/tact-lang/tact/issues/27) and [here](https://github.com/tact-lang/tact/issues/3034).
+:::
+
 ## Direct upgrade
 
 ```tact
