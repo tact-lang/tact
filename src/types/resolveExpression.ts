@@ -681,6 +681,22 @@ function resolveCall(
         if (srcT.kind === "struct") {
             if (StructFunctions.has(idText(exp.method))) {
                 const abi = StructFunctions.get(idText(exp.method))!;
+                const isInstanceCall = exp.self.kind !== "id";
+                const isStaticCallFromType =
+                    exp.self.kind === "id" && exp.self.text === src.name;
+
+                if (abi.isStatic && isInstanceCall) {
+                    throwCompilationError(
+                        `Cannot call static method ${idTextErr(exp.method)} on an instance.`,
+                        exp.loc,
+                    );
+                }
+                if (!abi.isStatic && isStaticCallFromType) {
+                    throwCompilationError(
+                        `Cannot call instance method ${idTextErr(exp.method)} as a static one.`,
+                        exp.loc,
+                    );
+                }
                 const resolved = abi.resolve(
                     ctx,
                     [src, ...exp.args.map((v) => getExpType(ctx, v))],
