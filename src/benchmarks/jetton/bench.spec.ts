@@ -1,65 +1,39 @@
 import "@ton/test-utils";
-import {
-    Address,
-    Cell,
-    beginCell,
-    toNano,
-    contractAddress,
-    type Sender,
-} from "@ton/core";
+import { Address, Cell, beginCell, toNano, type Sender } from "@ton/core";
 
 import { Blockchain } from "@ton/sandbox";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import {
-    generateResults,
     getStateSizeForAccount,
-    generateCodeSizeResults,
     getUsedGas,
-    printBenchmarkTable,
     type BenchmarkResult,
     type CodeSizeResult,
 } from "@/benchmarks/utils/gas";
-import { resolve } from "path";
-import { readFileSync } from "fs";
-import { posixNormalize } from "@/utils/filePath";
-import {
+
+import type {
     JettonMinter,
-    type JettonUpdateContent,
-    type Mint,
-    type ProvideWalletAddress,
+    JettonUpdateContent,
+    Mint,
+    ProvideWalletAddress,
 } from "@/benchmarks/jetton/tact/output/minter_JettonMinter";
+
 import {
     JettonWallet,
     type JettonTransfer,
     type JettonBurn,
 } from "@/benchmarks/jetton/tact/output/minter_JettonWallet";
 
-import benchmarkResults from "@/benchmarks/jetton/gas.json";
-import benchmarkCodeSizeResults from "@/benchmarks/jetton/size.json";
 import { step, parameter } from "@/test/allure/allure";
+import type {
+    FromInitMinter,
+    FromInitWallet,
+} from "@/benchmarks/jetton/tests/utils";
 
-const loadFunCJettonsBoc = () => {
-    const bocMinter = readFileSync(
-        posixNormalize(
-            resolve(__dirname, "./func/output/jetton-minter-discoverable.boc"),
-        ),
-    );
-
-    const bocWallet = readFileSync(
-        posixNormalize(resolve(__dirname, "./func/output/jetton-wallet.boc")),
-    );
-
-    return { bocMinter, bocWallet };
-};
-
-function testJetton(
+function benchJetton(
     benchmarkResults: BenchmarkResult,
     codeSizeResults: CodeSizeResult,
-    fromInit: (
-        totalSupply: bigint,
-        owner: Address,
-        jettonContent: Cell,
-    ) => Promise<JettonMinter>,
+    fromInit: FromInitMinter,
+    _fromInitWallet: FromInitWallet,
 ) {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
@@ -339,50 +313,6 @@ function testJetton(
     });
 }
 
-describe("Jetton Gas Tests", () => {
-    const fullResults = generateResults(benchmarkResults);
-    const fullCodeSizeResults = generateCodeSizeResults(
-        benchmarkCodeSizeResults,
-    );
+import { run } from "@/benchmarks/jetton/run";
 
-    describe("func", () => {
-        const funcCodeSize = fullCodeSizeResults.at(0)!;
-        const funcResult = fullResults.at(0)!;
-
-        function fromInit(salt: bigint, admin: Address, _content: Cell) {
-            const jettonData = loadFunCJettonsBoc();
-            const minterCell = Cell.fromBoc(jettonData.bocMinter)[0]!;
-            const walletCell = Cell.fromBoc(jettonData.bocWallet)[0]!;
-
-            const stateInitMinter = beginCell()
-                .storeCoins(0)
-                .storeAddress(admin)
-                .storeRef(beginCell().storeUint(1, 1).endCell()) // as salt
-                .storeRef(walletCell)
-                .endCell();
-
-            const init = { code: minterCell, data: stateInitMinter };
-            const address = contractAddress(0, init);
-            return Promise.resolve(new JettonMinter(address, init));
-        }
-
-        testJetton(funcResult, funcCodeSize, fromInit);
-    });
-
-    describe("tact", () => {
-        const tactCodeSize = fullCodeSizeResults.at(-1)!;
-        const tactResult = fullResults.at(-1)!;
-        testJetton(
-            tactResult,
-            tactCodeSize,
-            JettonMinter.fromInit.bind(JettonMinter),
-        );
-    });
-
-    afterAll(() => {
-        printBenchmarkTable(fullResults, fullCodeSizeResults, {
-            implementationName: "FunC",
-            printMode: "full",
-        });
-    });
-});
+run(benchJetton);
