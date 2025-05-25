@@ -721,6 +721,7 @@ export function messageOpcode(n: Ast.Number): string {
             return n.value.toString(n.base);
         case 2:
         case 8:
+            return `0x${n.value.toString(16)}`;
         case 16:
             return `0x${n.value.toString(n.base)}`;
     }
