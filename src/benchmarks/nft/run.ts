@@ -60,7 +60,7 @@ const fromInitCollection = (
     return Promise.resolve(new NFTCollection(address, __gen_init));
 };
 
-export const fromInitItem = (
+const fromInitItem = (
     _owner: Address | null,
     _content: Cell | null,
     collectionAddress: Address,
