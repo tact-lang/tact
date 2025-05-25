@@ -7,22 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- [fix] Correct long struct tuple destruction: PR [#3105](https://github.com/tact-lang/tact/pull/3105)
-- [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
-- [fix]: Fixed mismatched serialization of maps in const/fun: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
-
 ### Language features
 
+- [fix] Balanced quotation in error messages for out-of-project-root imports: PR [#3242](https://github.com/tact-lang/tact/pull/3242)
 - [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
 - [fix] Added fixed-bytes support to bounced message size calculations: PR [#3129](https://github.com/tact-lang/tact/pull/3129)
-- Compiler now generates more efficient code for serialization: PR [#3213](https://github.com/tact-lang/tact/pull/3213)
+- [fix] Allow equivalent `as`-annotations for maps types: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
+- [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
 
 ### Code generation
 
+- Compiler now generates more efficient code for slice serialization: PR [#3213](https://github.com/tact-lang/tact/pull/3213)
+- Improve gas consumption for equality comparisons of optionals: PR [#3233](https://github.com/tact-lang/tact/pull/3233)
+- Improve gas consumption for deserialization of optional addresses: PR [#3225](https://github.com/tact-lang/tact/pull/3225)
 - [fix] Correct transformation of binary and octal message opcodes to hexadecimal format: PR [#3239](https://github.com/tact-lang/tact/pull/3239)
 - [fix] Added escaping of special-chars in receiver comments break FunC compilation: PR [#3234](https://github.com/tact-lang/tact/pull/3234)
 - [fix] Disable optimization of optional integer comparisons that leads to runtime exceptions: PR [#3210](https://github.com/tact-lang/tact/pull/3210)
 - [fix] Compiler now doesn't generate `__tact_nop()` for `dump()` and `dumpStack()` in default mode: PR [#3218](https://github.com/tact-lang/tact/pull/3218)
+- [fix] Correct long struct tuple destruction: PR [#3105](https://github.com/tact-lang/tact/pull/3105)
 
 ### Docs
 
@@ -35,6 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [lordivash](https://github.com/lordivash)
 - [Novus Nota](https://github.com/novusnota)
 - [Daniil Sedov](https://github.com/Gusarich)
+- [Petr Makhnev](https://github.com/i582)
+- [Andrew Gutarev](https://github.com/pyAndr3w)
+- [Anton Trunov](https://github.com/anton-trunov)
 
 ## [1.6.10] - 2025-05-16
 
