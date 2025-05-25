@@ -115,7 +115,7 @@ export const TestValues = {
 } as const;
 
 /** Dictionary type for NFT deployment data */
-export type dictDeployNFT = {
+type dictDeployNFT = {
     amount: bigint;
     initNFTBody: InitNFTBody;
 };
