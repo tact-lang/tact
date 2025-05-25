@@ -1914,13 +1914,18 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         !typeRefEquals(
                             traitFunction.returns,
                             funInContractOrTrait.returns,
+                        ) ||
+                        !isAssignable(
+                            funInContractOrTrait.returns,
+                            traitFunction.returns,
                         )
                     ) {
                         throwCompilationError(
-                            `Overridden function "${traitFunction.name}" should have same return type`,
+                            `Overridden function "${traitFunction.name}" should have same and assignable return type. Expected ${printTypeRef(traitFunction.returns)}, but got ${printTypeRef(funInContractOrTrait.returns)}.`,
                             funInContractOrTrait.ast.loc,
                         );
                     }
+
                     if (
                         traitFunction.params.length !==
                         funInContractOrTrait.params.length
@@ -2002,10 +2007,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         !typeRefEquals(
                             traitConstant.type,
                             constInContractOrTrait.type,
+                        ) ||
+                        !isAssignable(
+                            constInContractOrTrait.type,
+                            traitConstant.type,
                         )
                     ) {
                         throwCompilationError(
-                            `Overridden constant "${traitConstant.name}" should have same type`,
+                            `Overridden constant "${traitConstant.name}" should have same and assignable type. Expected ${printTypeRef(traitConstant.type)}, but got ${printTypeRef(constInContractOrTrait.type)}.`,
                             constInContractOrTrait.ast.loc,
                         );
                     }

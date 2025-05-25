@@ -3410,6 +3410,52 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
 ]
 `;
 
+exports[`resolveStatements should resolve statements for map-literal-return 1`] = `
+[
+  [
+    "map<Int as uint8, Int as uint8> {}",
+    "map<Int as uint8, Int as uint8>",
+  ],
+  [
+    "map<Int, Int> {}",
+    "map<Int, Int>",
+  ],
+  [
+    "map<Int as int257, Int as int257> {}",
+    "map<Int as int257, Int as int257>",
+  ],
+  [
+    "map<Int, Int as varuint16> {}",
+    "map<Int, Int as varuint16>",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for map-literal-var 1`] = `
+[
+  [
+    "map<Int as uint8, Int as uint8> {}",
+    "map<Int as uint8, Int as uint8>",
+  ],
+  [
+    "map<Int, Int> {}",
+    "map<Int, Int>",
+  ],
+  [
+    "map<Int, Int> {}",
+    "map<Int, Int>",
+  ],
+  [
+    "map<Int, Int as coins> {}",
+    "map<Int, Int as coins>",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for methods-call-instance-context 1`] = `
 [
   [

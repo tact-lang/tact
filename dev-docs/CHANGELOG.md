@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
 - [fix] Added escaping of special-chars in receiver comments break FunC compilation: PR [#3234](https://github.com/tact-lang/tact/pull/3234)
 - [fix] Disable optimization of optional integer comparisons that leads to runtime exceptions: PR [#3210](https://github.com/tact-lang/tact/pull/3210)
+- [fix]: Fixed mismatched serialization of maps in const/fun: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
 
 ### Language features
 
