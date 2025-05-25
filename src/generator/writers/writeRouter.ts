@@ -427,7 +427,16 @@ function fallbackReceiverKind(
                 );
                 if (constEvalResult.kind !== "number") {
                     throwInternalCompilerError(
-                        `"throw" can only have a number as an argument, but it has throws ${prettyPrint(constEvalResult)}`,
+                        `"throw" can only have a number as an argument, but it throws ${prettyPrint(constEvalResult)}`,
+                        throwArg.loc,
+                    );
+                }
+                if (
+                    constEvalResult.value < 0n ||
+                    constEvalResult.value >= 2n ** 16n
+                ) {
+                    throwCompilationError(
+                        `Invalid exit code for "throw": ${constEvalResult.value}, but it must be in range [0, 65535]`,
                         throwArg.loc,
                     );
                 }
