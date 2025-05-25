@@ -310,21 +310,17 @@ let gas: Int = gasConsumed();
 
 ### nativeReserve
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun nativeReserve(amount: Int, mode: Int);
 ```
 
-Executes the native `RAWRESERVE` instruction with the specified amount and mode. The `RAWRESERVE` instruction creates an output action to reserve a specific amount of [nanoToncoin][nano] from the remaining balance of the account.
+Executes the [`RAWRESERVE`](https://docs.ton.org/v3/documentation/tvm/instructions#FB02) instruction with the specified `amount` and `mode`. It queues the reservation of the specific `amount` of [nanoToncoin][nano] from the remaining account balance per the given `mode`.
 
-The `RAWRESERVE` instruction takes two arguments:
-* `amount`: The number of [nanoToncoin][nano] to reserve.
-* `mode`: Determines the reservation behavior.
+The reservation action is queued to the _output action list_, which contains other actions such as [message sends](/book/send#outbound-message-processing). In fact, the `RAWRESERVE` instruction is roughly equivalent to creating an outbound message carrying the specified `amount` of nanoToncoin or `b - amount` of nanoToncoin, where `b` is the remaining balance, to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
 
-The `RAWRESERVE` instruction is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoin][nano] (or `b - amount` [nanoToncoin][nano], where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
-
-It is possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience, there's a set of constants you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+It is possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience, there is a set of constants you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on [base modes](#nativereserve-base-modes), [optional flags](#nativereserve-optional-flags), and how you can [combine them together](#nativereserve-combining-modes-with-flags).
 
 :::caution
 

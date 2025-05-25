@@ -35,6 +35,8 @@ contract MainContract {
     data: Slice as bytes64;
     mapping: map<Int as uint8, Int as int256>;
 
+    receive("Text\x00receiver\x01.\nThis \x07 is \x0D a \x1F test \x7F comment \x9F with \x08 bad \x0C chars") {}
+
     init(field: Int as uint8, value: Int as int256, data: Slice as bytes64, mapping: map<Int as uint8, Int as int256>) {
         self.field = field;
         self.value = value;
@@ -96,7 +98,7 @@ contract MainContract {
     const FOO_ZERO: Int = 0;
     const FOO_ONE: Int = 1;
 
-    get fun testIfOptimizationPositive(a: Int) {
+    get fun testIfOptimizationPositive(a: Int,  b: Int?) {
         if (a == 0) {
             return;
         }
@@ -144,6 +146,14 @@ contract MainContract {
         if (self.FOO_ONE - 1 != a) {
             return;
         }
+
+        if (b!! == 0) {
+            return;
+        }
+
+        if (b!! != 0) {
+            return;
+        }
     }
 
     get fun testIfOptimizationComplexPositive(a: Int) {
@@ -168,7 +178,7 @@ contract MainContract {
         }
     }
 
-    get fun testIfOptimizationNegative(a: Int) {
+    get fun testIfOptimizationNegative(a: Int, b: Int?) {
         if (a == self.FOO_ONE) {
             return;
         }
@@ -184,5 +194,18 @@ contract MainContract {
         if (self.FOO_ONE != a) {
             return;
         }
+
+        if (b == 0) {
+            return;
+        }
+
+        if (b != 0) {
+            return;
+        }
+    }
+
+    get fun testDumpCall(a: Int) {
+        dump(a);
+        dumpStack();
     }
 }

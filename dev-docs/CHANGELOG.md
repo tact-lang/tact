@@ -7,13 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- [fix] Correct long struct tuple destruction
+- [fix] Correct long struct tuple destruction: PR [#3105](https://github.com/tact-lang/tact/pull/3105)
+- [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
+- [fix] Added escaping of special-chars in receiver comments break FunC compilation: PR [#3234](https://github.com/tact-lang/tact/pull/3234)
+- [fix] Disable optimization of optional integer comparisons that leads to runtime exceptions: PR [#3210](https://github.com/tact-lang/tact/pull/3210)
+- [fix]: Fixed mismatched serialization of maps in const/fun: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
+
+### Language features
+
+- [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
+- [fix] Added fixed-bytes support to bounced message size calculations: PR [#3129](https://github.com/tact-lang/tact/pull/3129)
+- Compiler now generates more efficient code for serialization: PR [#3213](https://github.com/tact-lang/tact/pull/3213)
+- [fix] Compiler now doesn't generate `__tact_nop()` for `dump()` and `dumpStack()` in default mode: PR [#3218](https://github.com/tact-lang/tact/pull/3218)
+
+### Docs
+
+- Changed the title of the "Gas-expensive" badge to "500+ gas" to avoid confusion when discussing relative gas-efficiency: PR [#3120](https://github.com/tact-lang/tact/pull/3120)
+- Added description of `safety`-related `tact.config.json` options to gas and security best practice pages: PR [#3206](https://github.com/tact-lang/tact/pull/3206)
+
+### Release contributors
+
+- [hazyone](https://github.com/hazyone)
+- [lordivash](https://github.com/lordivash)
+- [Novus Nota](https://github.com/novusnota)
+- [Daniil Sedov](https://github.com/Gusarich)
 
 ## [1.6.10] - 2025-05-16
 
 ### Infrastructure
 
 - [fix] Explicit dependencies to fix Blueprint integration: PR [#3088](https://github.com/tact-lang/tact/pull/3088)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+- [verytactical](https://github.com/verytactical)
 
 ## [1.6.9] - 2025-05-16
 

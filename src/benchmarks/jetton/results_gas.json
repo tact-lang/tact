@@ -359,6 +359,24 @@
         "burn": "11812",
         "discovery": "6161"
       }
+    },
+    {
+      "label": "1.6.10 with store_slice optimization",
+      "pr": "https://github.com/tact-lang/tact/pull/3213",
+      "gas": {
+        "transfer": "14859",
+        "burn": "11728",
+        "discovery": "6135"
+      }
+    },
+    {
+      "label": "1.6.10 with optimized __tact_load_address_opt",
+      "pr": "https://github.com/tact-lang/tact/pull/3225",
+      "gas": {
+        "transfer": "14655",
+        "burn": "11728",
+        "discovery": "6135"
+      }
     }
   ]
 }
