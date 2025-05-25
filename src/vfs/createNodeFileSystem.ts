@@ -5,14 +5,14 @@ import path from "path";
 function ensureInsideProjectRoot(filePath: string, root: string): void {
     if (!filePath.startsWith(root)) {
         throw new Error(
-            `Path "${filePath} is outside of the root directory "${root}"`,
+            `Path '${filePath}' is outside of the root directory '${root}'`,
         );
     }
 }
 function ensureNotSymlink(filePath: string): void {
     if (fs.lstatSync(filePath).isSymbolicLink()) {
         throw new Error(
-            `Path "${filePath}" is a symbolic link which are not processed by Tact to forbid out-of-project-root accesses via symlinks`,
+            `Path '${filePath}' is a symbolic link which are not processed by Tact to forbid out-of-project-root accesses via symlinks`,
         );
     }
 }
