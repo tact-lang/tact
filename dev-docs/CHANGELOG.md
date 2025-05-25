@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [fix] Correct long struct tuple destruction: PR [#3105](https://github.com/tact-lang/tact/pull/3105)
 - [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
 - [fix]: Fixed mismatched serialization of maps in const/fun: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
 
@@ -33,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [hazyone](https://github.com/hazyone)
 - [lordivash](https://github.com/lordivash)
 - [Novus Nota](https://github.com/novusnota)
+- [Daniil Sedov](https://github.com/Gusarich)
 
 ## [1.6.10] - 2025-05-16
 
