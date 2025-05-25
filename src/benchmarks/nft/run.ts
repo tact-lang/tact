@@ -32,6 +32,53 @@ const loadFunCNFTBoc = () => {
     return { bocCollection, bocItem };
 };
 
+const fromInitCollection = (
+    owner: Address,
+    index: bigint,
+    content: Cell,
+    royaltyParams: RoyaltyParams,
+) => {
+    const nftData = loadFunCNFTBoc();
+    const __code = Cell.fromBoc(nftData.bocCollection)[0]!;
+
+    const royaltyCell = beginCell()
+        .storeUint(royaltyParams.nominator, 16)
+        .storeUint(royaltyParams.dominator, 16)
+        .storeAddress(royaltyParams.owner)
+        .endCell();
+
+    const __data = beginCell()
+        .storeAddress(owner)
+        .storeUint(index, 64)
+        .storeRef(content)
+        .storeRef(Cell.fromBoc(nftData.bocItem)[0]!)
+        .storeRef(royaltyCell)
+        .endCell();
+
+    const __gen_init = { code: __code, data: __data };
+    const address = contractAddress(0, __gen_init);
+    return Promise.resolve(new NFTCollection(address, __gen_init));
+};
+
+export const fromInitItem = (
+    _owner: Address | null,
+    _content: Cell | null,
+    collectionAddress: Address,
+    itemIndex: bigint,
+) => {
+    const nftData = loadFunCNFTBoc();
+    const __code = Cell.fromBoc(nftData.bocItem)[0]!;
+
+    const __data = beginCell()
+        .storeUint(itemIndex, 64)
+        .storeAddress(collectionAddress)
+        .endCell();
+
+    const __gen_init = { code: __code, data: __data };
+    const address = contractAddress(0, __gen_init);
+    return Promise.resolve(new NFTItem(address, __gen_init));
+};
+
 export const run = (
     testNFT: (
         benchmarkResults: BenchmarkResult,
@@ -59,53 +106,6 @@ export const run = (
         describe("func", () => {
             const funcCodeSize = fullCodeSizeResults.at(0)!;
             const funcResult = fullResults.at(0)!;
-
-            function fromInitCollection(
-                owner: Address,
-                index: bigint,
-                content: Cell,
-                royaltyParams: RoyaltyParams,
-            ) {
-                const nftData = loadFunCNFTBoc();
-                const __code = Cell.fromBoc(nftData.bocCollection)[0]!;
-
-                const royaltyCell = beginCell()
-                    .storeUint(royaltyParams.nominator, 16)
-                    .storeUint(royaltyParams.dominator, 16)
-                    .storeAddress(royaltyParams.owner)
-                    .endCell();
-
-                const __data = beginCell()
-                    .storeAddress(owner)
-                    .storeUint(index, 64)
-                    .storeRef(content)
-                    .storeRef(Cell.fromBoc(nftData.bocItem)[0]!)
-                    .storeRef(royaltyCell)
-                    .endCell();
-
-                const __gen_init = { code: __code, data: __data };
-                const address = contractAddress(0, __gen_init);
-                return Promise.resolve(new NFTCollection(address, __gen_init));
-            }
-
-            function fromInitItem(
-                owner: Address | null,
-                content: Cell | null,
-                collectionAddress: Address,
-                itemIndex: bigint,
-            ) {
-                const nftData = loadFunCNFTBoc();
-                const __code = Cell.fromBoc(nftData.bocItem)[0]!;
-
-                const __data = beginCell()
-                    .storeUint(itemIndex, 64)
-                    .storeAddress(collectionAddress)
-                    .endCell();
-
-                const __gen_init = { code: __code, data: __data };
-                const address = contractAddress(0, __gen_init);
-                return Promise.resolve(new NFTItem(address, __gen_init));
-            }
 
             testNFT(funcResult, funcCodeSize, fromInitCollection, fromInitItem);
         });
