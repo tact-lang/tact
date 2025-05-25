@@ -164,6 +164,9 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     duplicateAs: () => (loc: Range) => {
         return l.at(loc).error(l.text`"as" cannot be nested`);
     },
+    typeArity: (name: string, expected: number) => (loc: Range) => {
+        return l.at(loc).error(l.text`${name}<> expects ${String(expected)} arguments`);
+    },
     wrongVarIntSize: () => (loc: Range) => {
         return l.at(loc).error(l.text`Varint can only be 16 or 32 bits wide`);
     },
@@ -282,6 +285,13 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
             .at(loc)
             .error(
                 l.text`Declaration without a body must be abstract`,
+            );
+    },
+    mustBeGeneric: () => (loc: Range) => {
+        return l
+            .at(loc)
+            .error(
+                l.text`This type must be generic`,
             );
     },
 });

@@ -9,7 +9,7 @@ export const StatementLet = (
     name: $c.OptionalId,
     type_: $t.Type | undefined,
     expression: $e.Expression,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementLet =>
     Object.freeze({
         kind: "statement_let",
@@ -23,7 +23,7 @@ export const isStatementLet = ($value: StatementLet) =>
 export type StatementReturn = $.StatementReturn;
 export const StatementReturn = (
     expression: $e.Expression | undefined,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementReturn =>
     Object.freeze({
         kind: "statement_return",
@@ -35,7 +35,7 @@ export const isStatementReturn = ($value: StatementReturn) =>
 export type StatementExpression = $.StatementExpression;
 export const StatementExpression = (
     expression: $e.Expression,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementExpression =>
     Object.freeze({
         kind: "statement_expression",
@@ -48,7 +48,7 @@ export type StatementAssign = $.StatementAssign;
 export const StatementAssign = (
     path: $e.Expression,
     expression: $e.Expression,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementAssign =>
     Object.freeze({
         kind: "statement_assign",
@@ -79,7 +79,7 @@ export const StatementAugmentedAssign = (
     op: $.AugmentedAssignOperation,
     path: $e.Expression,
     expression: $e.Expression,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementAugmentedAssign =>
     Object.freeze({
         kind: "statement_augmentedassign",
@@ -96,7 +96,7 @@ export const StatementDestruct = (
     identifiers: ReadonlyMap<string, readonly [$c.Id, $c.OptionalId]>,
     ignoreUnspecifiedFields: boolean,
     expression: $e.Expression,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementDestruct =>
     Object.freeze({
         kind: "statement_destruct",
@@ -111,7 +111,7 @@ export const isStatementDestruct = ($value: StatementDestruct) =>
 export type StatementBlock = $.StatementBlock;
 export const StatementBlock = (
     statements: readonly $.Statement[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementBlock =>
     Object.freeze({
         kind: "statement_block",
@@ -126,7 +126,7 @@ export const StatementForEach = (
     valueName: $c.OptionalId,
     map: $e.Expression,
     statements: readonly $.Statement[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementForEach =>
     Object.freeze({
         kind: "statement_foreach",
@@ -151,7 +151,7 @@ export type StatementTry = $.StatementTry;
 export const StatementTry = (
     statements: readonly $.Statement[],
     catchBlock: $.CatchBlock | undefined,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementTry =>
     Object.freeze({
         kind: "statement_try",
@@ -165,7 +165,7 @@ export type StatementRepeat = $.StatementRepeat;
 export const StatementRepeat = (
     iterations: $e.Expression,
     statements: readonly $.Statement[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementRepeat =>
     Object.freeze({
         kind: "statement_repeat",
@@ -179,7 +179,7 @@ export type StatementUntil = $.StatementUntil;
 export const StatementUntil = (
     condition: $e.Expression,
     statements: readonly $.Statement[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementUntil =>
     Object.freeze({
         kind: "statement_until",
@@ -193,7 +193,7 @@ export type StatementWhile = $.StatementWhile;
 export const StatementWhile = (
     condition: $e.Expression,
     statements: readonly $.Statement[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementWhile =>
     Object.freeze({
         kind: "statement_while",
@@ -208,7 +208,7 @@ export const StatementCondition = (
     condition: $e.Expression,
     trueStatements: readonly $.Statement[],
     falseStatements: readonly $.Statement[] | undefined,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StatementCondition =>
     Object.freeze({
         kind: "statement_condition",

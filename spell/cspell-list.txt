@@ -120,12 +120,14 @@ mintable
 misparse
 misparsed
 mktemp
+Monoid
 multiformats
 nanoton
 nanotons
 Nemo
 Neovim
 nextra
+nexts
 nobounce
 nocheck
 noexcept
@@ -144,6 +146,7 @@ pinst
 POSIX
 postpack
 prando
+prevs
 quadtree
 quadtrees
 RANDU

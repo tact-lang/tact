@@ -5,7 +5,7 @@ import { getFiles } from "@/next/stdlib";
 import type { Cursor } from "@/next/fs";
 import type { AnyLogger, Logger, SourceLogger } from "@/error/logger-util";
 import type { FuncImport, Implicit, ResolvedImport, TactImport, TactSource } from "@/next/imports/source";
-import type { ModuleItem, Range } from "@/next/ast";
+import type { ModuleItems, Loc } from "@/next/ast";
 import { hideProperty } from "@/utils/tricks";
 
 type Options<M> = {
@@ -148,19 +148,19 @@ export const ProjectReader = async <M>(log: Logger<M, void>) => {
     return { read };
 };
 
-const TactImport = (source: TactSource, loc: Range | Implicit) => {
+const TactImport = (source: TactSource, loc: Loc | Implicit) => {
     const result: TactImport = { kind: "tact", source, loc };
     hideProperty(result, 'source');
     return result;
 };
 
-const FuncImport = (code: string, loc: Range) => {
+const FuncImport = (code: string, loc: Loc) => {
     const result: FuncImport = { kind: "func", code, loc };
     hideProperty(result, 'code');
     return result;
 };
 
-const TactSource = (path: string, code: string, imports: readonly ResolvedImport[], items: readonly ModuleItem[]) => {
+const TactSource = (path: string, code: string, imports: readonly ResolvedImport[], items: ModuleItems) => {
     const result: TactSource = { kind: 'tact', path, code, imports, items };
     hideProperty(result, 'code');
     return result;

@@ -17,13 +17,13 @@ export type ViaUser = {
     // which imports it came through
     readonly imports: readonly TactImport[];
     // where in the code it was defined
-    readonly defLoc: Ast.Range;
+    readonly defLoc: Ast.Loc;
     // in which source
     readonly source: TactSource;
 }
 
 // when something was just defined
-export const ViaOrigin = (defLoc: Ast.Range, source: TactSource): ViaUser => {
+export const ViaOrigin = (defLoc: Ast.Loc, source: TactSource): ViaUser => {
     const result: ViaUser = {
         kind: 'user',
         imports: [],
@@ -35,7 +35,7 @@ export const ViaOrigin = (defLoc: Ast.Range, source: TactSource): ViaUser => {
 };
 
 // when it came through an import
-export const ViaImport = (via: ViaUser, throughImport: TactImport): ViaUser => {
+export const ViaImport = (throughImport: TactImport, via: ViaUser): ViaUser => {
     const result: ViaUser = {
         kind: 'user',
         imports: [throughImport, ...via.imports],

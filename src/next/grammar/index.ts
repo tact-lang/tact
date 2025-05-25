@@ -4,10 +4,11 @@ import type { $ast } from "@/next/grammar/grammar";
 import * as G from "@/next/grammar/grammar";
 import { SyntaxErrors } from "@/next/grammar/errors";
 import { makeMakeVisitor } from "@/utils/tricks";
-import type { Range } from "@/next/ast/common";
+import type { Loc } from "@/next/ast/common";
 import { throwInternal } from "@/error/errors";
 import type { SourceLogger } from "@/error/logger-util";
 import { parseImportString } from "@/next/grammar/import-parser";
+import { builtinTypes } from "@/next/types/builtins";
 
 const makeVisitor = makeMakeVisitor("$");
 
@@ -338,8 +339,40 @@ const parseStructInstance =
         );
     };
 
+const parseBouncedArgs =
+    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TypeBounced> =>
+    (ctx) => {
+        const args = parseList(typeArgs);
+        const [head] = args;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (args.length !== 1 || !head) {
+            ctx.err.typeArity('bounced', 1)(range);
+            return Ast.TypeBounced(
+                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+                range,
+            );
+        }
+        return Ast.TypeBounced(parseType(head)(ctx), range);
+    };
+
+const parseMaybeArgs =
+    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TypeMaybe> =>
+    (ctx) => {
+        const args = parseList(typeArgs);
+        const [head] = args;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (args.length !== 1 || !head) {
+            ctx.err.typeArity('Maybe', 1)(range);
+            return Ast.TypeMaybe(
+                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+                range,
+            );
+        }
+        return Ast.TypeMaybe(parseType(head)(ctx), range);
+    };
+
 const parseMapArgs =
-    (typeArgs: $ast.typeArgs, range: Range): Handler<Ast.TypeMap> =>
+    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TypeMap> =>
     (ctx) => {
         const args = parseList(typeArgs);
         const [keyType, valueType] = args;
@@ -380,7 +413,7 @@ const parseMapField =
     };
 
 const parseSetArgs =
-    (typeArgs: $ast.typeArgs, range: Range): Handler<Ast.TypeMap> =>
+    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TypeMap> =>
     (ctx) => {
         const args = parseList(typeArgs);
         const [valueType] = args;
@@ -933,9 +966,9 @@ const parseNamedAttr =
     <K extends NamedAttr>(key: K) =>
     (
         nodes: readonly ($ast.FunctionAttribute | $ast.ConstantAttribute)[],
-    ): Handler<undefined | Range> =>
+    ): Handler<undefined | Ast.Range> =>
     (ctx) => {
-        const attrs: Range[] = [];
+        const attrs: Ast.Range[] = [];
         for (const node of nodes) {
             if (typeof node.name === "string" && node.name === key) {
                 attrs.push(ctx.toRange(node.loc));
@@ -1047,7 +1080,7 @@ const parseTypeStorage =
     };
 
 const applyFormat =
-    (type: Ast.Type, storage: $ast.storage, asLoc: Range): Handler<Ast.Type> =>
+    (type: Ast.Type, storage: $ast.storage, asLoc: Ast.Range): Handler<Ast.Type> =>
     (ctx) => {
         const fallback = Ast.TypeCons(Ast.TypeId("ERROR", asLoc), [], asLoc);
         if (type.kind === "TyInt") {
@@ -1149,6 +1182,10 @@ const applyFormat =
             const result = applyFormat(arg, storage, asLoc)(ctx);
             return Ast.TypeCons(type.name, [result], type.loc);
         } else {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (type.loc.kind !== 'range') {
+                return throwInternal("Non-range in parser")
+            }
             ctx.err.cannotHaveFormat()(type.loc);
             return fallback;
         }
@@ -1174,24 +1211,26 @@ const parseTypeAs =
         return applyFormat(result, onlyAs, asLoc)(ctx);
     };
 
-const flattenName = (name: $ast.TypeId | $ast.MapKeyword | $ast.Bounced) => {
-    if (name.$ === "MapKeyword") {
-        return "map";
-    } else if (name.$ === "Bounced") {
-        return "bounced";
-    } else {
-        return name.name;
-    }
-};
-
 const parseTypeGeneric =
     ({ name, args, loc }: $ast.TypeGeneric): Handler<Ast.Type> =>
     (ctx) => {
-        return Ast.TypeCons(
-            Ast.TypeId(flattenName(name), ctx.toRange(name.loc)),
-            map(parseList(args), parseTypeAs)(ctx),
-            ctx.toRange(loc),
-        );
+        const range = ctx.toRange(loc);
+        if (name.$ === "Bounced") {
+            return parseBouncedArgs(args, range)(ctx);
+        } else if (name.$ === "MapKeyword" || name.name === 'Map') {
+            return parseMapArgs(args, range)(ctx);
+        } else if (name.name === 'Maybe') {
+            return parseMaybeArgs(args, range)(ctx);
+        } else if (builtinTypes.has(name.name)) {
+            ctx.err.typeArity(name.name, 0)(range);
+            return Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+        } else {
+            return Ast.TypeCons(
+                Ast.TypeId(name.name, ctx.toRange(name.loc)),
+                map(parseList(args), parseTypeAs)(ctx),
+                range,
+            );
+        }
     };
 
 const parseTypeOptional =
@@ -1210,16 +1249,36 @@ const parseTypeRegular =
     ({ child }: $ast.TypeRegular): Handler<Ast.Type> =>
     (ctx) => {
         const range = ctx.toRange(child.loc);
-        if (child.name === "Int") {
-            return Ast.TypeInt(Ast.IFInt("signed", 257, range), range);
-        } else if (child.name === "Slice") {
-            return Ast.TypeSlice(Ast.SFDefault(range), range);
-        } else if (child.name === "Cell") {
-            return Ast.TypeCell(Ast.SFDefault(range), range);
-        } else if (child.name === "Builder") {
-            return Ast.TypeBuilder(Ast.SFDefault(range), range);
+        switch (child.name) {
+            case "Int":
+                return Ast.TypeInt(Ast.IFInt("signed", 257, range), range);
+            case "Slice":
+                return Ast.TypeSlice(Ast.SFDefault(range), range);
+            case "Cell":
+                return Ast.TypeCell(Ast.SFDefault(range), range);
+            case "Builder":
+                return Ast.TypeBuilder(Ast.SFDefault(range), range);
+            case "Void":
+                return Ast.TypeVoid(range);
+            case "Null":
+                return Ast.TypeNull(range);
+            case "Bool":
+                return Ast.TypeBool(range);
+            case "Address":
+                return Ast.TypeAddress(range);
+            case "String":
+                return Ast.TypeString(range);
+            case "StringBuilder":
+                return Ast.TypeStringBuilder(range);
+            case "Bounced":
+                ctx.err.mustBeGeneric()(range);
+                return Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+            case "Maybe":
+                ctx.err.mustBeGeneric()(range);
+                return Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+            default:
+                return Ast.TypeCons(parseTypeId(child)(ctx), [], range);    
         }
-        return Ast.TypeCons(parseTypeId(child)(ctx), [], range);
     };
 
 const parseTypeTensor =
@@ -1401,9 +1460,11 @@ const parseAsmFunctionRaw =
         return Ast.Function(
             !!parseNamedAttr("inline")(node.attributes)(ctx),
             parseId(node.name)(ctx),
-            map(parseList(node.typeParams), parseTypeId)(ctx),
-            node.returnType ? parseType(node.returnType)(ctx) : undefined,
-            map(parseList(node.parameters), parseParameter)(ctx),
+            Ast.FnType(
+                map(parseList(node.typeParams), parseTypeId)(ctx),
+                map(parseList(node.parameters), parseParameter)(ctx),
+                node.returnType ? parseType(node.returnType)(ctx) : undefined,
+            ),
             Ast.AsmBody(parseAsmShuffle(node.shuffle)(ctx), [
                 node.instructions.trim(),
             ]),
@@ -1413,7 +1474,7 @@ const parseAsmFunctionRaw =
 
 const checkNoGlobalAttrs = (
     attrs: readonly ($ast.FunctionAttribute | $ast.ConstantAttribute)[],
-    range: Range,
+    range: Ast.Range,
 ): Handler<void> => ctx => {
     const isVirtual = parseNamedAttr("virtual")(attrs)(ctx);
     const isOverride = parseNamedAttr("override")(attrs)(ctx);
@@ -1426,7 +1487,7 @@ const checkNoGlobalAttrs = (
 const parseInheritance = (
     hasBody: boolean,
     attrs: readonly ($ast.FunctionAttribute | $ast.ConstantAttribute)[],
-    range: Range,
+    range: Ast.Range,
 ): Handler<{ override: boolean, overridable: boolean }> => ctx => {
     const isVirtual = parseNamedAttr("virtual")(attrs)(ctx);
     const isOverride = parseNamedAttr("override")(attrs)(ctx);
@@ -1548,11 +1609,11 @@ const parseContract =
         })();
 
         return Ast.Contract(
+            init,
             parseTypeId(name)(ctx),
             map(parseList(traits), parseTypeId)(ctx),
             map(attributes, parseContractAttribute)(ctx),
-            init,
-            map(locals, parseLocalItem)(ctx),
+            parseLocalItems(locals)(ctx),
             ctx.toRange(loc),
         );
     };
@@ -1563,11 +1624,13 @@ const parseFunctionRaw =
         return Ast.Function(
             !!parseNamedAttr("inline")(node.attributes)(ctx),
             parseId(node.name)(ctx),
-            map(parseList(node.typeParams), parseTypeId)(ctx),
-            node.returnType
-                ? parseType(node.returnType)(ctx)
-                : undefined,
-            map(parseList(node.parameters), parseParameter)(ctx),
+            Ast.FnType(
+                map(parseList(node.typeParams), parseTypeId)(ctx),
+                map(parseList(node.parameters), parseParameter)(ctx),
+                node.returnType
+                    ? parseType(node.returnType)(ctx)
+                    : undefined,
+            ),
             node.body.$ === "FunctionDeclaration"
                 ? Ast.AbstractBody()
                 : Ast.RegularBody(map(node.body.body, parseStatement)(ctx)),
@@ -1584,6 +1647,10 @@ const parseExtension =
         const fn = parseFunction(node)(ctx);
         const get = parseGetAttribute(node.attributes)(ctx);
         if (get) {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (get.loc.kind !== 'range') {
+                return throwInternal("Non-range in parser");
+            }
             ctx.err.globalGetter()(get.loc);
         }
         checkNoGlobalAttrs(node.attributes, ctx.toRange(node.loc))(ctx);
@@ -1595,7 +1662,7 @@ const parseExtension =
             }
             return fn;
         }
-        const [first, ...rest] = fn.params;
+        const [first, ...rest] = fn.type.params;
         const selfType = (() => {
             if (
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1610,13 +1677,8 @@ const parseExtension =
             return first.type;
         })();
         return Ast.Extension(
-            Ast.Method(
-                !!isMutates,
-                false,
-                false,
-                undefined,
-                { ...fn, params: rest }
-            ),
+            !!isMutates,
+            { ...fn, type: { ...fn.type, params: rest } },
             selfType,
         );
     };
@@ -1678,9 +1740,11 @@ const parseNativeFunctionDecl =
         return Ast.Function(
             !!parseNamedAttr("inline")(attributes)(ctx),
             parseId(name)(ctx),
-            map(parseList(typeParams), parseTypeId)(ctx),
-            returnType ? parseType(returnType)(ctx) : undefined,
-            map(parseList(parameters), parseParameter)(ctx),
+            Ast.FnType(
+                map(parseList(typeParams), parseTypeId)(ctx),
+                map(parseList(parameters), parseParameter)(ctx),
+                returnType ? parseType(returnType)(ctx) : undefined,
+            ),
             Ast.NativeBody(parseFuncId(nativeName)(ctx)),
             ctx.toRange(loc),
         );
@@ -1760,13 +1824,15 @@ const parseTrait =
             parseTypeId(name)(ctx),
             traits ? map(parseList(traits), parseTypeId)(ctx) : [],
             map(attributes, parseContractAttribute)(ctx),
-            map(declarations, parseLocalItem)(ctx),
+            parseLocalItems(declarations)(ctx),
             ctx.toRange(loc),
         );
     };
+
+type LocalItem = Ast.FieldDecl | Ast.Receiver | Ast.Method | Ast.FieldConstant
 const parseLocalItem: (
     input: $ast.traitItemDecl,
-) => Handler<Ast.LocalItem> = makeVisitor<$ast.traitItemDecl>()({
+) => Handler<LocalItem> = makeVisitor<$ast.traitItemDecl>()({
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseMethod(parseFunctionRaw),
@@ -1774,9 +1840,40 @@ const parseLocalItem: (
     Constant: parseFieldConstant,
 });
 
+const parseLocalItems = (items: readonly $ast.traitItemDecl[]): Handler<Ast.LocalItems> => ctx => {
+    const locals = map(items, parseLocalItem)(ctx);
+
+    const fields: Ast.FieldDecl[] = [];
+    const methods: Ast.Method[] = [];
+    const receivers: Ast.Receiver[] = [];
+    const constants: Ast.FieldConstant[] = [];
+
+    for (const item of locals) {
+        switch (item.kind) {
+            case "field_decl": {
+                fields.push(item);
+                continue;
+            }
+            case "receiver": {
+                receivers.push(item);
+                continue;
+            }
+            case "method": {
+                methods.push(item);
+                continue;
+            }
+            case "field_const": {
+                constants.push(item);
+                continue;
+            }
+        }
+    }
+    return { fields, methods, receivers, constants };
+};
+
 type ModuleItemAux = Exclude<$ast.moduleItem, $ast.PrimitiveTypeDecl>;
 
-const parseModuleItemAux: (input: ModuleItemAux) => Handler<Ast.ModuleItem> =
+const parseModuleItemAux: (input: ModuleItemAux) => Handler<ModuleItem> =
     makeVisitor<ModuleItemAux>()({
         Function: parseExtension(parseFunctionRaw),
         AsmFunction: parseExtension(parseAsmFunctionRaw),
@@ -1790,8 +1887,14 @@ const parseModuleItemAux: (input: ModuleItemAux) => Handler<Ast.ModuleItem> =
         AliasDecl: parseAlias,
     });
 
+type ModuleItem =
+    | Ast.Function
+    | Ast.Extension
+    | Ast.Constant
+    | Ast.TypeDecl
+
 const parseModuleItem =
-    (node: $ast.moduleItem): Handler<Ast.ModuleItem[]> =>
+    (node: $ast.moduleItem): Handler<ModuleItem[]> =>
     (ctx) => {
         if (node.$ === "PrimitiveTypeDecl") {
             ctx.err.deprecatedPrimitiveDecl()(ctx.toRange(node.loc));
@@ -1811,12 +1914,41 @@ const parseImport =
         );
     };
 
+const splitItems = (items: readonly ModuleItem[]): Ast.ModuleItems => {
+    const functions: Ast.Function[] = [];
+    const constants: Ast.Constant[] = [];
+    const extensions: Ast.Extension[] = [];
+    const types: Ast.TypeDecl[] = [];
+    for (const item of items) {
+        switch (item.kind) {
+            case "function":
+                functions.push(item);
+                continue;
+            case "extension":
+                extensions.push(item);
+                continue;
+            case "constant":
+                constants.push(item);
+                continue;
+            case "struct_decl":
+            case "message_decl":
+            case "union_decl":
+            case "alias_decl":
+            case "contract":
+            case "trait":
+                types.push(item);
+                continue;
+        }
+    }
+    return { functions, constants, extensions, types };
+};
+
 const parseModule =
     ({ imports, items }: $ast.Module): Handler<Ast.Module> =>
     (ctx) => {
         return Ast.Module(
             map(imports, parseImport)(ctx),
-            map(items, parseModuleItem)(ctx).flat(),
+            splitItems(map(items, parseModuleItem)(ctx).flat()),
         );
     };
 
@@ -1839,7 +1971,12 @@ export const parse = <M>(
             start: position,
             end: position,
         });
-        return Ast.Module([], []);
+        return Ast.Module([], {
+            constants: [],
+            extensions: [],
+            functions: [],
+            types: [],
+        });
     }
 
     const toRange = (loc: $.Loc): Ast.Range => {

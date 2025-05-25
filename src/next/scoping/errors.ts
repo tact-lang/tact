@@ -1,6 +1,6 @@
 import type { SourceLogger } from "@/error/logger-util";
 import type { Implicit } from "@/next/imports/source";
-import type { Range } from "@/next/ast";
+import type { Loc } from "@/next/ast";
 import type * as Ty from "@/next/scoping/generated/type";
 import { printType } from "@/next/scoping/print-type";
 
@@ -11,7 +11,7 @@ export type MismatchTree = {
 }
 
 export const TcErrors = <M, R>(l: SourceLogger<M, R>) => ({
-    shadowsImported: (name: string, prevPath: string, prevRange: Range | Implicit) => (loc: Range | Implicit) => {
+    shadowsImported: (name: string, prevPath: string, prevRange: Loc | Implicit) => (loc: Loc | Implicit) => {
         if (loc.kind !== 'range') {
             return l.internal(l.text`Import from standard library cannot shadow anything`);
         }
@@ -20,7 +20,7 @@ export const TcErrors = <M, R>(l: SourceLogger<M, R>) => ({
             : l.text`from standard library`;
         return l.at(loc).error(l.text`Declaration of "${name}" shadows previous declaration ${id}`);
     },
-    shadowsBuiltin: (name: string) => (loc: Range | Implicit) => {
+    shadowsBuiltin: (name: string) => (loc: Loc | Implicit) => {
         if (loc.kind !== 'range') {
             return l.internal(l.text`Import from standard library cannot shadow anything`);
         }

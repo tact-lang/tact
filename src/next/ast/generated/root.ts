@@ -14,20 +14,12 @@ export const ImportPath = (path: $f.RelativePath, type_: $.ImportType, language:
     language
 });
 export type Import = $.Import;
-export const Import = (importPath: $.ImportPath, loc: $c.Range): $.Import => Object.freeze({
+export const Import = (importPath: $.ImportPath, loc: $c.Loc): $.Import => Object.freeze({
     kind: "import",
     importPath,
     loc
 });
 export const isImport = ($value: Import) => $value.kind === "import";
-export type TypedParameter = $.TypedParameter;
-export const TypedParameter = (name: $c.OptionalId, type_: $t.Type, loc: $c.Range): $.TypedParameter => Object.freeze({
-    kind: "typed_parameter",
-    name,
-    type: type_,
-    loc
-});
-export const isTypedParameter = ($value: TypedParameter) => $value.kind === "typed_parameter";
 export type RegularBody = $.RegularBody;
 export const RegularBody = (statements: readonly $s.Statement[]): $.RegularBody => Object.freeze({
     kind: "regular_body",
@@ -60,39 +52,15 @@ export const AbstractBody = (): $.AbstractBody => Object.freeze({
 export const isAbstractBody = ($value: AbstractBody) => $value.kind === "abstract_body";
 export type FunctionalBody = $.FunctionalBody;
 export type Function = $.Function;
-export const Function = (inline: boolean, name: $c.Id, typeParams: readonly $c.TypeId[], returnType: $t.Type | undefined, params: readonly $.TypedParameter[], body: $.FunctionalBody, loc: $c.Range): $.Function => Object.freeze({
+export const Function = (inline: boolean, name: $c.Id, type_: $t.FnType, body: $.FunctionalBody, loc: $c.Loc): $.Function => Object.freeze({
     kind: "function",
     inline,
     name,
-    typeParams,
-    returnType,
-    params,
+    type: type_,
     body,
     loc
 });
 export const isFunction = ($value: Function) => $value.kind === "function";
-export type GetAttribute = $.GetAttribute;
-export const GetAttribute = (methodId: $e.Expression | undefined, loc: $c.Range): $.GetAttribute => Object.freeze({
-    methodId,
-    loc
-});
-export type Method = $.Method;
-export const Method = (mutates: boolean, overridable: boolean, override: boolean, get: $.GetAttribute | undefined, fun: $.Function): $.Method => Object.freeze({
-    kind: "method",
-    mutates,
-    overridable,
-    override,
-    get,
-    fun
-});
-export const isMethod = ($value: Method) => $value.kind === "method";
-export type Extension = $.Extension;
-export const Extension = (method: $.Method, selfType: $t.Type): $.Extension => Object.freeze({
-    kind: "extension",
-    method,
-    selfType
-});
-export const isExtension = ($value: Extension) => $value.kind === "extension";
 export type ConstantDef = $.ConstantDef;
 export const ConstantDef = (type_: $t.Type | undefined, initializer: $e.Expression): $.ConstantDef => Object.freeze({
     kind: "constant_def",
@@ -108,15 +76,23 @@ export const ConstantDecl = (type_: $t.Type): $.ConstantDecl => Object.freeze({
 export const isConstantDecl = ($value: ConstantDecl) => $value.kind === "constant_decl";
 export type ConstantInit = $.ConstantInit;
 export type Constant = $.Constant;
-export const Constant = (name: $c.Id, init: $.ConstantInit, loc: $c.Range): $.Constant => Object.freeze({
+export const Constant = (name: $c.Id, init: $.ConstantInit, loc: $c.Loc): $.Constant => Object.freeze({
     kind: "constant",
     name,
     init,
     loc
 });
 export const isConstant = ($value: Constant) => $value.kind === "constant";
+export type Extension = $.Extension;
+export const Extension = (mutates: boolean, fun: $.Function, selfType: $t.Type): $.Extension => Object.freeze({
+    kind: "extension",
+    mutates,
+    fun,
+    selfType
+});
+export const isExtension = ($value: Extension) => $value.kind === "extension";
 export type FieldDecl = $.FieldDecl;
-export const FieldDecl = (name: $c.Id, type_: $t.Type, initializer: $e.Expression | undefined, loc: $c.Range): $.FieldDecl => Object.freeze({
+export const FieldDecl = (name: $c.Id, type_: $t.Type, initializer: $e.Expression | undefined, loc: $c.Loc): $.FieldDecl => Object.freeze({
     kind: "field_decl",
     name,
     type: type_,
@@ -125,7 +101,7 @@ export const FieldDecl = (name: $c.Id, type_: $t.Type, initializer: $e.Expressio
 });
 export const isFieldDecl = ($value: FieldDecl) => $value.kind === "field_decl";
 export type StructDecl = $.StructDecl;
-export const StructDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], fields: readonly $.FieldDecl[], loc: $c.Range): $.StructDecl => Object.freeze({
+export const StructDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], fields: readonly $.FieldDecl[], loc: $c.Loc): $.StructDecl => Object.freeze({
     kind: "struct_decl",
     name,
     typeParams,
@@ -134,7 +110,7 @@ export const StructDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], fi
 });
 export const isStructDecl = ($value: StructDecl) => $value.kind === "struct_decl";
 export type MessageDecl = $.MessageDecl;
-export const MessageDecl = (name: $c.TypeId, opcode: $e.Expression | undefined, fields: readonly $.FieldDecl[], loc: $c.Range): $.MessageDecl => Object.freeze({
+export const MessageDecl = (name: $c.TypeId, opcode: $e.Expression | undefined, fields: readonly $.FieldDecl[], loc: $c.Loc): $.MessageDecl => Object.freeze({
     kind: "message_decl",
     name,
     opcode,
@@ -148,7 +124,7 @@ export const UnionCase = (name: $c.TypeId, fields: readonly $.FieldDecl[]): $.Un
     fields
 });
 export type UnionDecl = $.UnionDecl;
-export const UnionDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], cases: readonly $.UnionCase[], loc: $c.Range): $.UnionDecl => Object.freeze({
+export const UnionDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], cases: readonly $.UnionCase[], loc: $c.Loc): $.UnionDecl => Object.freeze({
     kind: "union_decl",
     name,
     typeParams,
@@ -157,7 +133,7 @@ export const UnionDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], cas
 });
 export const isUnionDecl = ($value: UnionDecl) => $value.kind === "union_decl";
 export type AliasDecl = $.AliasDecl;
-export const AliasDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], type_: $t.Type, loc: $c.Range): $.AliasDecl => Object.freeze({
+export const AliasDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], type_: $t.Type, loc: $c.Loc): $.AliasDecl => Object.freeze({
     kind: "alias_decl",
     name,
     typeParams,
@@ -165,16 +141,10 @@ export const AliasDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], typ
     loc
 });
 export const isAliasDecl = ($value: AliasDecl) => $value.kind === "alias_decl";
-export type ContractAttribute = $.ContractAttribute;
-export const ContractAttribute = (name: string, loc: $c.Range): $.ContractAttribute => Object.freeze({
-    type: "interface",
-    name,
-    loc
-});
 export type InitFunction = $.InitFunction;
-export const InitFunction = (params: readonly $.TypedParameter[], statements: readonly $s.Statement[], loc: $c.Range): $.InitFunction => Object.freeze({
+export const InitFunction = (args: readonly $t.TypedParameter[], statements: readonly $s.Statement[], loc: $c.Loc): $.InitFunction => Object.freeze({
     kind: "init_function",
-    params,
+    args,
     statements,
     loc
 });
@@ -186,8 +156,29 @@ export const InitParams = (params: readonly $.FieldDecl[]): $.InitParams => Obje
 });
 export const isInitParams = ($value: InitParams) => $value.kind === "init_params";
 export type Init = $.Init;
+export type ContractAttribute = $.ContractAttribute;
+export const ContractAttribute = (name: string, loc: $c.Loc): $.ContractAttribute => Object.freeze({
+    type: "interface",
+    name,
+    loc
+});
+export type GetAttribute = $.GetAttribute;
+export const GetAttribute = (methodId: $e.Expression | undefined, loc: $c.Loc): $.GetAttribute => Object.freeze({
+    methodId,
+    loc
+});
+export type Method = $.Method;
+export const Method = (mutates: boolean, overridable: boolean, override: boolean, get: $.GetAttribute | undefined, fun: $.Function): $.Method => Object.freeze({
+    kind: "method",
+    mutates,
+    overridable,
+    override,
+    get,
+    fun
+});
+export const isMethod = ($value: Method) => $value.kind === "method";
 export type ReceiverSimple = $.ReceiverSimple;
-export const ReceiverSimple = (param: $.TypedParameter): $.ReceiverSimple => Object.freeze({
+export const ReceiverSimple = (param: $t.TypedParameter): $.ReceiverSimple => Object.freeze({
     kind: "simple",
     param
 });
@@ -205,21 +196,21 @@ export const ReceiverComment = (comment: $e.String): $.ReceiverComment => Object
 export const isReceiverComment = ($value: ReceiverComment) => $value.kind === "comment";
 export type ReceiverSubKind = $.ReceiverSubKind;
 export type ReceiverInternal = $.ReceiverInternal;
-export const ReceiverInternal = (subKind: $.ReceiverSubKind, loc: $c.Range): $.ReceiverInternal => Object.freeze({
+export const ReceiverInternal = (subKind: $.ReceiverSubKind, loc: $c.Loc): $.ReceiverInternal => Object.freeze({
     kind: "internal",
     subKind,
     loc
 });
 export const isReceiverInternal = ($value: ReceiverInternal) => $value.kind === "internal";
 export type ReceiverExternal = $.ReceiverExternal;
-export const ReceiverExternal = (subKind: $.ReceiverSubKind, loc: $c.Range): $.ReceiverExternal => Object.freeze({
+export const ReceiverExternal = (subKind: $.ReceiverSubKind, loc: $c.Loc): $.ReceiverExternal => Object.freeze({
     kind: "external",
     subKind,
     loc
 });
 export const isReceiverExternal = ($value: ReceiverExternal) => $value.kind === "external";
 export type ReceiverBounce = $.ReceiverBounce;
-export const ReceiverBounce = (param: $.TypedParameter, loc: $c.Range): $.ReceiverBounce => Object.freeze({
+export const ReceiverBounce = (param: $t.TypedParameter, loc: $c.Loc): $.ReceiverBounce => Object.freeze({
     kind: "bounce",
     param,
     loc
@@ -227,7 +218,7 @@ export const ReceiverBounce = (param: $.TypedParameter, loc: $c.Range): $.Receiv
 export const isReceiverBounce = ($value: ReceiverBounce) => $value.kind === "bounce";
 export type ReceiverKind = $.ReceiverKind;
 export type Receiver = $.Receiver;
-export const Receiver = (selector: $.ReceiverKind, statements: readonly $s.Statement[], loc: $c.Range): $.Receiver => Object.freeze({
+export const Receiver = (selector: $.ReceiverKind, statements: readonly $s.Statement[], loc: $c.Loc): $.Receiver => Object.freeze({
     kind: "receiver",
     selector,
     statements,
@@ -242,20 +233,26 @@ export const FieldConstant = (overridable: boolean, override: boolean, body: $.C
     body
 });
 export const isFieldConstant = ($value: FieldConstant) => $value.kind === "field_const";
-export type LocalItem = $.LocalItem;
+export type LocalItems = $.LocalItems;
+export const LocalItems = (fields: readonly $.FieldDecl[], methods: readonly $.Method[], receivers: readonly $.Receiver[], constants: readonly $.FieldConstant[]): $.LocalItems => Object.freeze({
+    fields,
+    methods,
+    receivers,
+    constants
+});
 export type Contract = $.Contract;
-export const Contract = (name: $c.TypeId, traits: readonly $c.TypeId[], attributes: readonly $.ContractAttribute[], init: $.Init | undefined, declarations: readonly $.LocalItem[], loc: $c.Range): $.Contract => Object.freeze({
+export const Contract = (init: $.Init | undefined, name: $c.TypeId, traits: readonly $c.TypeId[], attributes: readonly $.ContractAttribute[], declarations: $.LocalItems, loc: $c.Loc): $.Contract => Object.freeze({
     kind: "contract",
+    init,
     name,
     traits,
     attributes,
-    init,
     declarations,
     loc
 });
 export const isContract = ($value: Contract) => $value.kind === "contract";
 export type Trait = $.Trait;
-export const Trait = (name: $c.TypeId, traits: readonly $c.TypeId[], attributes: readonly $.ContractAttribute[], declarations: readonly $.LocalItem[], loc: $c.Range): $.Trait => Object.freeze({
+export const Trait = (name: $c.TypeId, traits: readonly $c.TypeId[], attributes: readonly $.ContractAttribute[], declarations: $.LocalItems, loc: $c.Loc): $.Trait => Object.freeze({
     kind: "trait",
     name,
     traits,
@@ -264,10 +261,16 @@ export const Trait = (name: $c.TypeId, traits: readonly $c.TypeId[], attributes:
     loc
 });
 export const isTrait = ($value: Trait) => $value.kind === "trait";
-export type ModuleItem = $.ModuleItem;
 export type TypeDecl = $.TypeDecl;
+export type ModuleItems = $.ModuleItems;
+export const ModuleItems = (functions: readonly $.Function[], constants: readonly $.Constant[], extensions: readonly $.Extension[], types: readonly $.TypeDecl[]): $.ModuleItems => Object.freeze({
+    functions,
+    constants,
+    extensions,
+    types
+});
 export type Module = $.Module;
-export const Module = (imports: readonly $.Import[], items: readonly $.ModuleItem[]): $.Module => Object.freeze({
+export const Module = (imports: readonly $.Import[], items: $.ModuleItems): $.Module => Object.freeze({
     kind: "module",
     imports,
     items

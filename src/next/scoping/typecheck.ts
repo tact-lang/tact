@@ -1,347 +1,39 @@
+() => E.WithLog<FlatType>
+
+export type Unifier = ReturnType<typeof createUnifier>
+export type LocalUnifier = ReturnType<Unifier["withParams"]>
+
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import { makeVisitor, memo } from "@/utils/tricks";
 import type { Logger } from "@/error/logger-util";
 import type { Implicit, TactImport, TactSource } from "@/next/imports/source";
 import type * as Ast from "@/next/ast";
-import type { Range } from "@/next/ast";
+import type { Loc } from "@/next/ast";
 import * as Ty from "@/next/scoping/generated/type";
 import { zip } from "@/utils/array";
 import { throwInternal } from "@/error/errors";
 import { type MismatchTree, TcErrors } from "@/next/scoping/errors";
 
-export const scope = (
-    log: Logger<string, void>,
-    root: TactSource,
-) => {
-    return foldSources(root, scopeIds(log));
-};
+// left: Either<T, U>
+// left: Int
+// left: Maybe<Cell>
+// left: Slice
 
-type Handler<T> = (children: [T, TactImport][], source: TactSource) => T
+// isGround = нет типовых переменных: Either<Cell, Cell>
+// isSimple = Cons<a, b, c, d>      : Either<T, U>
+// isGround || isSimple
+// extends fun foo(self: Either<Cell, Cell>) {}
+// extends fun foo<T, U>(self: Either<T, U>) {}
+// fun bar() { let e: Either<Cell, Cell> = ...; e.foo() }
 
-const foldSources = <T>(root: TactSource, onSource: Handler<T>): T => {
-    const rec = (source: TactSource): T => {
-        const children: [T, TactImport][] = [];
-        for (const imp of source.imports) {
-            if (imp.kind === 'tact') {
-                children.push([memoedRec(imp.source), imp]);
-            }
-        }
-        return onSource(children, source);
-    };
-    const memoedRec = memo(rec);
-    return memoedRec(root);
-};
+// extends fun foo<T>(self: T);
+// extends fun foo<K, V>(self: Either<K, V>);
+// let x: Either<A, B>;
+// x.foo();
+// findTypeMethod("foo", Either<A, B>);
 
-type Result = {
-    // readonly source: TactSource;
-    // readonly imports: readonly Result[];
-    readonly functions: ReadonlyMap<string, readonly [Ast.Function, TactSource]>;
-    readonly extensions: ReadonlyMap<string, readonly [Ast.Extension, TactSource]>;
-    readonly constants: ReadonlyMap<string, readonly [Ast.Constant, TactSource]>;
-    readonly types: ReadonlyMap<string, readonly [Ast.TypeDecl, TactSource]>;
-};
-
-type DeclRecord<T> = {
-    readonly source: TactSource;
-    readonly entry: T;
-    readonly loc: Range | Implicit;
-}
-
-type DeclMap<T> = Map<string, DeclRecord<T>>;
-
-type Registry<T> = {
-    readonly get: (key: string) => T | undefined;
-    readonly add: (
-        name: string,
-        entry: T,
-        nextSource: TactSource,
-        loc: Range | Implicit,
-    ) => void;
-}
-
-type TypeExtensionRecord = {
-    readonly source: TactSource;
-    readonly self: Ty.LocType;
-
-    readonly mutates: boolean;
-    readonly fun: Ast.Function;
-    readonly loc: Range | Implicit;
-}
-
-// type ContractExtensionRecord = {
-//     readonly source: TactSource;
-//     readonly self: Ast.Trait | Ast.Contract;
-
-//     readonly fun: Ast.Method;
-//     readonly loc: Range | Implicit;
-// }
-
-const scopeIds = (log: Logger<string, void>) =>
-    (children: [Result, TactImport][], source: TactSource): Result => {
-        const err = log.source(source.path, source.code, (logger) => TcErrors(logger));
-
-        const makeRegistry = <T>(builtins: Set<string>): Registry<T> => {
-            const ids: DeclMap<T> = new Map();
-            return {
-                get: (key) => ids.get(key)?.entry,
-                add: (name, entry, nextSource, loc) => {
-                    const prev = ids.get(name);
-                    if (builtins.has(name)) {
-                        err.shadowsBuiltin(name)(loc);
-                    } else if (typeof prev === 'undefined') {
-                        ids.set(name, { source: nextSource, entry, loc });
-                    } else if (prev.source !== nextSource) {
-                        err.shadowsImported(name, source.path, prev.loc)(loc);
-                    }
-                },
-            };
-        };
-
-        // method name -> (type -> method)
-        const typeExt: Map<string, {
-            ground: TypeExtensionRecord[],
-        }> = new Map();
-        const findTypeMethod = (
-            methodName: string,
-            selfType: Ty.LocType,
-        ): undefined | TypeExtensionRecord => {
-            const methodReg = typeExt.get(methodName);
-            if (typeof methodReg === 'undefined') {
-                return undefined;
-            }
-            for (const reg of methodReg) {
-                resolveOverload(reg.self, selfType)
-            }
-        };
-
-        // left: Either<T, U>
-        // left: Int
-        // left: Maybe<Cell>
-        // left: Slice
-
-        // isGround = нет типовых переменных: Either<Cell, Cell>
-        // isSimple = Cons<a, b, c, d>      : Either<T, U>
-        // isGround || isSimple
-        // extends fun foo(self: Either<Cell, Cell>) {}
-        // extends fun foo<T, U>(self: Either<T, U>) {}
-        // fun bar() { let e: Either<Cell, Cell> = ...; e.foo() }
-
-        // extends fun foo<T>(self: T);
-        // extends fun foo<K, V>(self: Either<K, V>);
-        // let x: Either<A, B>;
-        // x.foo();
-        // findTypeMethod("foo", Either<A, B>);
-
-        // const contractExt: Map<string, ContractExtensionRecord[]> = new Map();
-
-        const functions = makeRegistry<Ast.Function>(new Set());
-        const constants = makeRegistry<Ast.Constant>(new Set());
-        const types = makeRegistry<Ast.TypeDecl>(new Set([
-            "void",
-            "bounced",
-            "Null",
-            "Maybe",
-            "Int",
-            "Bool",
-            "Builder",
-            "Slice",
-            "Cell",
-            "Address",
-            "String",
-            "StringBuilder",
-        ]));
-
-        for (const [sources, imp] of children) {
-            for (const [name, [entry, source]] of sources.functions) {
-                functions.add(name, entry, source, imp.loc);
-            }
-            // for (const [name, [entry, source]] of sources.extensions) {
-            //     extensions.add(name, entry, source, imp.loc);
-            // }
-            for (const [name, [entry, source]] of sources.constants) {
-                constants.add(name, entry, source, imp.loc);
-            }
-            for (const [name, [entry, source]] of sources.types) {
-                types.add(name, entry, source, imp.loc);
-            }
-        }
-
-        for (const item of source.items) {
-            switch (item.kind) {
-                case "function": {
-                    functions.add(item.name.text, item, source, item.name.loc);
-                    continue;
-                }
-                case "constant": {
-                    constants.add(item.name.text, item, source, item.name.loc);
-                    continue;
-                }
-                case "extension": {
-                    // handled below
-                    continue;
-                }
-                case "struct_decl":
-                case "message_decl":
-                case "union_decl":
-                case "alias_decl":
-                case "contract":
-                case "trait": {
-                    types.add(item.name.text, item, source, item.name.loc);
-                    continue;
-                }
-            }
-        }
-
-        for (const item of source.items) {
-            switch (item.kind) {
-                case "extension": {
-                    const id = item.method.fun.name;
-                    extensions.add(id.text, item, source, id.loc);
-                    continue;
-                }
-                case "contract":
-                case "trait": {
-                    continue;
-                }
-                case "function":
-                case "constant":
-                case "struct_decl":
-                case "message_decl":
-                case "union_decl":
-                case "alias_decl": {
-                    continue;
-                }
-            }
-        }
-
-        for (const item of source.items) {
-            checkItem(types.get, err, item);
-        }
-
-        return {
-            functions: functions.get(),
-            constants: constants.get(),
-            types: types.get(),
-            extensions: extensions.get(),
-        };
-    };
-
-type Spine = SpineCons | SpineVar
-type SpineCons = {
-    readonly kind: 'cons';
-    readonly name: string;
-    readonly children: readonly Spine[];
-}
-const SpineCons = (name: string, children: readonly Spine[]): SpineCons => ({ kind: 'cons', name, children });
-type SpineVar = {
-    readonly kind: 'var';
-    readonly id: number;
-}
-const SpineVar = (id: number): SpineVar => ({ kind: 'var', id });
-
-const getSpine = (type: Ty.Type): undefined | Spine => {
-    switch (type.kind) {
-        case "map_type": {
-            const key = getSpine(type.key);
-            const value = getSpine(type.value);
-            if (!key || !value) return undefined;
-            return SpineCons("map", [key, value]);
-        }
-        case "cons_type": {
-            const children: Spine[] = [];
-            for (const arg of type.typeArgs) {
-                const spine = getSpine(arg);
-                if (spine) {
-                    children.push(spine);
-                } else {
-                    return undefined;
-                }
-            }
-            return SpineCons(type.name.text, children);
-        }
-        case "TyInt": return SpineCons("Int", []);
-        case "TySlice": return SpineCons("Slice", []);
-        case "TyCell": return SpineCons("Cell", []);
-        case "TyBuilder": return SpineCons("Builder", []);
-        case "type_var": return SpineVar(type.id);
-        case "tuple_type":
-        case "unit_type":
-        case "tensor_type":
-        case "ERROR": {
-            return undefined;
-        }
-    }
-};
-
-const noTypeParams = () => false;
-
-const checkItem = (
-    getType: (key: string) => Ast.TypeDecl | undefined,
-    err: TcErrors<string, void>,
-    node: Ast.ModuleItem,
-) => {
-    // TODO: check kinds
-    // TODO: Check if self is initialized
-    // TODO: map key should be serializable without refs
-    switch (node.kind) {
-        case "constant": {
-            const { init } = node;
-            if (init.kind === 'constant_def') {
-                const { checkExpr, assignTo } = getExprChecker(
-                    getType,
-                    noTypeParams,
-                    err,
-                );
-                const exprType = checkExpr(init.initializer);
-                if (init.type) {
-                    const res = assignTo(init.type, exprType);
-                }
-                return;
-            } else {
-                // ...
-                return;
-            }
-        }
-        case "function": {
-            // TODO: check return value 
-            // foo(x: Int): Int { if (x == 42) return 43; }
-            return;
-        }
-        case "extension": {
-            return;
-        }
-        case "struct_decl": {
-            return;
-        }
-        case "message_decl": {
-            return;
-        }
-        case "union_decl": {
-            return;
-        }
-        case "alias_decl": {
-            return;
-        }
-        case "contract": {
-            // check all contract fields are initialized
-            return;
-        }
-        case "trait": {
-            return;
-        }
-    }
-};
-
-const Int257 = (loc: Ty.Loc) => Ty.TypeInt(Ty.IFInt("signed", 257, loc), loc);
-const String = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("String", loc), [], loc);
-const Bool = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Bool", loc), [], loc);
-const Cell = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Cell", loc), [], loc);
-const Slice = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Slice", loc), [], loc);
-const StateInit = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("StateInit", loc), [], loc);
-const Maybe = (param: Ty.Type, loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Maybe", loc), [param], loc);
-const Null = (loc: Ty.Loc) => Ty.TypeCons(Ty.TypeId("Null", loc), [], loc);
-const Unit = (loc: Ty.Loc) => Ty.TypeTensor([], loc);
+// const contractExt: Map<string, ContractExtensionRecord[]> = new Map();
 
 const isNull = (type: Ty.LocType) => type.kind === 'cons_type' && type.name.text === 'Null';
 
@@ -1043,3 +735,378 @@ const substParam = (into: Ty.Type, param: string, value: Ty.Type): Ty.Type => {
 
     return rec(into);
 };
+
+// import { throwInternal } from "@/error/errors";
+// import * as Ast from "@/next/ast";
+// import * as E from "@/next/types/errors";
+// import type { Registry } from "@/next/types/merger";
+// import type { TypeEntry } from "@/next/types/typecheck";
+
+// export const decodeType = (
+//     userTypes: Registry<TypeEntry>,
+//     typeParams: readonly Ast.TypeId[],
+//     type: Ast.Type,
+// ): E.WithLog<Ast.Type | undefined> => {
+//     function* recN(
+//         types: readonly Ast.Type[],
+//     ): E.WithLog<undefined | readonly Ast.Type[]> {
+//         const results: Ast.Type[] = [];
+//         for (const type of types) {
+//             const result = yield* rec(type);
+//             if (result) {
+//                 results.push(result);
+//             } else {
+//                 return undefined
+//             }
+//         }
+//         return results;
+//     }
+
+//     function* rec(
+//         type: Ast.Type,
+//     ): E.WithLog<Ast.Type | undefined> {
+//         switch (type.kind) {
+//             case "unit_type":
+//             case "TyInt":
+//             case "TySlice":
+//             case "TyCell":
+//             case "TyBuilder":
+//             case "TypeVoid":
+//             case "TypeNull":
+//             case "TypeBool":
+//             case "TypeAddress":
+//             case "TypeString":
+//             case "TypeStringBuilder":
+//             case "TypeParam": {
+//                 return type;
+//             }
+//             case "tuple_type": {
+//                 const result = yield* recN(type.typeArgs);
+//                 return result && Ast.TypeTuple(result, type.loc);
+//             }
+//             case "tensor_type": {
+//                 const result = yield* recN(type.typeArgs);
+//                 return result && Ast.TypeTensor(result, type.loc);
+//             }
+//             case "map_type": {
+//                 const key = yield* rec(type.key);
+//                 const value = yield* rec(type.value);
+//                 if (!key || !value) {
+//                     return undefined;
+//                 }
+//                 return Ast.TypeMap(key, value, type.loc);
+//             }
+//             case "TypeBounced": {
+//                 const child = yield* rec(type.type);
+//                 if (!child) {
+//                     return undefined;
+//                 }
+//                 return Ast.TypeBounced(child, type.loc);
+//             }
+//             case "TypeMaybe": {
+//                 const child = yield* rec(type.type);
+//                 if (!child) {
+//                     return undefined;
+//                 }
+//                 return Ast.TypeMaybe(child, type.loc);
+//             }
+//             case "TypeAlias": {
+//                 return throwInternal("Alias references are never generated in parser");
+//             }
+//             case "cons_type": {
+//                 const name = type.name.text;
+//                 const arity = type.typeArgs.length;
+
+//                 const args = yield* recN(type.typeArgs);
+
+//                 const param = typeParams.find(p => p.text);
+//                 if (param) {
+//                     if (!(yield* matchArity(name, arity, 0, type.loc))) {
+//                         return undefined;
+//                     }
+//                     return Ast.TypeParam(
+//                         type.name,
+//                         type.loc,
+//                     );
+//                 }
+
+//                 if (!args) {
+//                     return undefined;
+//                 }
+                
+//                 const typeEntry = userTypes.get(name);
+//                 if (typeEntry) {
+//                     if (!(yield* matchArity(
+//                         name,
+//                         arity,
+//                         typeEntry.value.arity,
+//                         type.loc,
+//                     ))) {
+//                         return undefined;
+//                     }
+//                     const decl = typeEntry.value.type;
+//                     switch (decl.kind) {
+//                         case "FlatAlias": {
+//                             return ;
+//                         }
+//                         case "alias_decl": {
+//                             return;
+//                         }
+//                         case "FlatContract":
+//                         case "FlatTrait":
+//                         case "struct_decl":
+//                         case "message_decl":
+//                         case "union_decl":
+//                         case "contract":
+//                         case "trait": {
+//                             return Ast.TypeCons(type.name, args, type.loc);
+//                         }
+//                     }
+//                 }
+
+//                 yield ETypeNotFound(name, type.loc);
+//                 return undefined;
+//             }
+//         }
+//     }
+
+//     return rec(type);
+// }
+
+// export const ETypeNotFound = (
+//     name: string,
+//     loc: Ast.Range,
+// ): E.TcError => ({
+//     loc,
+//     descr: [
+//         E.TEText(`Type "${name}" is not defined`),
+//     ],
+// });
+// export const EContractTraitType = (
+//     kind: string,
+//     name: string,
+//     loc: Ast.Range,
+// ): E.TcError => ({
+//     loc,
+//     descr: [
+//         E.TEText(`Cannot use ${kind} ${name} as a type`),
+//     ],
+// });
+
+
+// export function* matchArity(
+//     name: string,
+//     got: number,
+//     expected: number,
+//     loc: Ast.Range,
+// ): E.WithLog<boolean> {
+//     const result = got === expected;
+//     if (!result) {
+//         yield EArity(name, expected, got, loc);
+//     }
+//     return result;
+// }
+// export const EArity = (
+//     name: string,
+//     expected: number,
+//     got: number,
+//     loc: Ast.Range,
+// ): E.TcError => ({
+//     loc,
+//     descr: [
+//         E.TEText(`Type "${name}" is expected to have ${expected} type arguments, got ${got}`),
+//     ],
+// });
+
+// import * as V from "@/next/types/via";
+// import * as E from "@/next/types/errors";
+// import type * as Ast from "@/next/ast";
+// import type { TactImport, TactSource } from "@/next/imports/source";
+// import type { FlatDecl, Schema } from "@/next/types/flat";
+
+// export type Def<T> = {
+//     // the definition
+//     readonly value: T;
+//     // where it was defined
+//     readonly via: V.ViaUser;
+// }
+// export const Def = <T>(value: T, via: V.ViaUser): Def<T> => ({ value, via });
+// export const importDef = <T>(importedBy: TactImport, { value, via }: Def<T>): Def<T> => Def(value, V.ViaImport(importedBy, via));
+
+// export type Registry<T> = Map<string, Def<T>>;
+
+// export type StructMethod = {
+//     readonly mutates: boolean;
+//     readonly fun: Ast.Function;
+// }
+
+// export type TypeMap = readonly (readonly [Schema, Def<StructMethod>])[]
+
+// export type ExtRegistry = Map<string, TypeMap>
+
+// export type Scope = {
+//     readonly types: Registry<FlatDecl>;
+//     readonly functions: Registry<Ast.Function>;
+//     readonly constants: Registry<Ast.Constant>;
+//     readonly extensions: ExtRegistry;
+// }
+
+// export type SourceCheckResult = {
+//     // import that lead to reading this file
+//     readonly importedBy: TactImport;
+//     // scopes that were computed from this file
+//     readonly globals: Scope;
+// }
+
+// export function* mergeExt(
+//     results: readonly SourceCheckResult[],
+//     source: TactSource,
+//     items: Ast.Extension[],
+//     builtins: ReadonlyMap<string, readonly Schema[]>,
+// ): E.WithLog<ExtRegistry> {
+//     const EMethodOverlap = (
+//         name: string,
+//         prev: V.Via,
+//         next: V.ViaUser,
+//     ): E.TcError => ({
+//         loc: E.viaToRange(next),
+//         descr: [
+//             E.TEText(`Method "${name}" overlaps previously defined method`),
+//             E.TEVia(prev),
+//         ],
+//     });
+
+//     const imported: ExtRegistry[] = results.map(({ globals, importedBy }) => {
+//         const exts = globals.extensions;
+//         return new Map(exts.entries().map(([k, v]) => {
+//             return [k, v.map(([k, v]) => [k, {
+//                 value: v.value,
+//                 via: V.ViaImport(importedBy, v.via),
+//             }])];
+//         }));
+//     });
+
+//     const local: ExtRegistry[] = [];
+//     for (const item of items) {
+//         const fun = item.method.fun;
+//         const schema = {
+//             typeArgs: fun.typeParams,
+//             type: item.selfType,
+//         };
+//         const def = {
+//             value: item.method,
+//             via: V.ViaOrigin(fun.loc, source),
+//         };
+//         const { canExtend } = unifier.withParams(fun.typeParams);
+//         if (yield* canExtend(item.selfType)) {
+//             local.push(new Map([[fun.name.text, [[schema, def]]]]));
+//         }
+//     }
+
+//     const all = [...imported, ...local];
+
+//     const prev: Map<string, (readonly [Schema, Def<StructMethod>])[]> = new Map();
+//     for (const next of all) {
+//         for (const [name, nextMap] of next) {
+//             const prevMap = [...prev.get(name) ?? []];
+//             const builtin = builtins.get(name) ?? [];
+//             for (const [nextSchema, nextDef] of nextMap) {
+//                 // defined in compiler
+//                 const prevBuiltin = builtin.find(prevSchema => !unifier.areOrdered(
+//                     prevSchema, nextSchema
+//                 ));
+//                 if (prevBuiltin) {
+//                     yield EMethodOverlap(name, V.ViaBuiltin(), nextDef.via);
+//                     continue;
+//                 }
+//                 const prevEntry = prevMap.find(([prevSchema]) => !unifier.areOrdered(
+//                     prevSchema, nextSchema
+//                 ));
+//                 // not defined yet; define it now
+//                 if (!prevEntry) {
+//                     prevMap.push([nextSchema, nextDef]);
+//                     continue;
+//                 }
+//                 const [, prevDef] = prevEntry;
+//                 // already defined, and it's not a diamond situation
+//                 if (prevDef.via.source !== nextDef.via.source) {
+//                     yield EMethodOverlap(name, prevDef.via, nextDef.via);
+//                 }
+//             }
+//             prev.set(name, prevMap);
+//         }
+//     }
+//     return prev;
+// }
+
+// export function* merge<T extends { name: Ast.Id | Ast.TypeId, loc: Ast.Range }>(
+//     results: readonly SourceCheckResult[],
+//     source: TactSource,
+//     kind: string,
+//     get1: (s: Scope) => Registry<T>,
+//     items: T[],
+//     builtin: Map<string, unknown>,
+// ): E.WithLog<Registry<T>> {
+//     const imported = results.map(({ globals, importedBy }) => (
+//         mapRegVia<T>(get1(globals), importedBy)
+//     ));
+//     const local = items.map((item) => createRef(
+//         item.name.text,
+//         item,
+//         V.ViaOrigin(item.loc, source),
+//     ));
+//     return yield* concatReg(
+//         builtin,
+//         kind,
+//         [...imported, ...local],
+//     )
+// }
+
+// export const createRef = <V>(name: string, value: V, via: V.ViaUser): Registry<V> => {
+//     return new Map([[name, { value, via }]]);
+// };
+
+// export const mapRegVia = <V>(fns: Registry<V>, importedBy: TactImport): Registry<V> => {
+//     return new Map(fns.entries().map(([k, v]) => {
+//         return [k, {
+//             value: v.value,
+//             via: V.ViaImport(importedBy, v.via),
+//         }];
+//     }));
+// };
+
+// export function* concatReg<V>(
+//     builtins: Map<string, unknown>,
+//     kind: string,
+//     all: readonly Registry<V>[]
+// ): E.WithLog<Registry<V>> {
+//     const ERedefine = (kind: string, name: string, prev: V.Via, next: V.ViaUser): E.TcError => ({
+//         loc: E.viaToRange(next),
+//         descr: [
+//             E.TEText(`There already is a ${kind} "${name}" from`),
+//             E.TEVia(prev),
+//         ],
+//     });
+
+//     const prev: Map<string, Def<V>> = new Map();
+//     for (const next of all) {
+//         for (const [name, nextItem] of next) {
+//             const prevItem = prev.get(name);
+//             // defined in compiler
+//             if (builtins.has(name)) {
+//                 yield ERedefine(kind, name, V.ViaBuiltin(), nextItem.via);
+//                 continue;
+//             }
+//             // not defined yet; define it now
+//             if (typeof prevItem === 'undefined') {
+//                 prev.set(name, nextItem);
+//                 continue;
+//             }
+//             // already defined, and it's not a diamond situation
+//             if (prevItem.via.source !== nextItem.via.source) {
+//                 yield ERedefine(kind, name, prevItem.via, nextItem.via);
+//             }
+//         }
+//     }
+//     return prev;
+// }

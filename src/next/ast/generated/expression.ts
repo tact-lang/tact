@@ -33,7 +33,7 @@ export const allUnaryOperation: readonly $.UnaryOperation[] = [
     "~",
 ];
 export type CodeOf = $.CodeOf;
-export const CodeOf = (contract: $c.TypeId, loc: $c.Range): $.CodeOf =>
+export const CodeOf = (contract: $c.TypeId, loc: $c.Loc): $.CodeOf =>
     Object.freeze({
         kind: "code_of",
         contract,
@@ -46,7 +46,7 @@ export type Number = $.Number;
 export const Number = (
     base: $.NumberBase,
     value: bigint,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.Number =>
     Object.freeze({
         kind: "number",
@@ -56,7 +56,7 @@ export const Number = (
     });
 export const isNumber = ($value: Number) => $value.kind === "number";
 export type Boolean = $.Boolean;
-export const Boolean = (value: boolean, loc: $c.Range): $.Boolean =>
+export const Boolean = (value: boolean, loc: $c.Loc): $.Boolean =>
     Object.freeze({
         kind: "boolean",
         value,
@@ -64,14 +64,14 @@ export const Boolean = (value: boolean, loc: $c.Range): $.Boolean =>
     });
 export const isBoolean = ($value: Boolean) => $value.kind === "boolean";
 export type Null = $.Null;
-export const Null = (loc: $c.Range): $.Null =>
+export const Null = (loc: $c.Loc): $.Null =>
     Object.freeze({
         kind: "null",
         loc,
     });
 export const isNull = ($value: Null) => $value.kind === "null";
 export type String = $.String;
-export const String = (value: string, loc: $c.Range): $.String =>
+export const String = (value: string, loc: $c.Loc): $.String =>
     Object.freeze({
         kind: "string",
         value,
@@ -79,7 +79,7 @@ export const String = (value: string, loc: $c.Range): $.String =>
     });
 export const isString = ($value: String) => $value.kind === "string";
 export type Var = $.Var;
-export const Var = (name: string, loc: $c.Range): $.Var =>
+export const Var = (name: string, loc: $c.Loc): $.Var =>
     Object.freeze({
         kind: "var",
         name,
@@ -87,7 +87,7 @@ export const Var = (name: string, loc: $c.Range): $.Var =>
     });
 export const isVar = ($value: Var) => $value.kind === "var";
 export type Unit = $.Unit;
-export const Unit = (loc: $c.Range): $.Unit =>
+export const Unit = (loc: $c.Loc): $.Unit =>
     Object.freeze({
         kind: "unit",
         loc,
@@ -96,7 +96,7 @@ export const isUnit = ($value: Unit) => $value.kind === "unit";
 export type Tensor = $.Tensor;
 export const Tensor = (
     children: readonly $.Expression[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.Tensor =>
     Object.freeze({
         kind: "tensor",
@@ -107,7 +107,7 @@ export const isTensor = ($value: Tensor) => $value.kind === "tensor";
 export type Tuple = $.Tuple;
 export const Tuple = (
     children: readonly $.Expression[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.Tuple =>
     Object.freeze({
         kind: "tuple",
@@ -119,7 +119,7 @@ export type InitOf = $.InitOf;
 export const InitOf = (
     contract: $c.TypeId,
     args: readonly $.Expression[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.InitOf =>
     Object.freeze({
         kind: "init_of",
@@ -132,7 +132,7 @@ export type StructFieldInitializer = $.StructFieldInitializer;
 export const StructFieldInitializer = (
     field: $c.Id,
     initializer: $.Expression,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StructFieldInitializer =>
     Object.freeze({
         kind: "struct_field_initializer",
@@ -147,7 +147,7 @@ export const StructInstance = (
     type_: $c.TypeId,
     typeArgs: readonly $t.Type[],
     args: readonly $.StructFieldInitializer[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StructInstance =>
     Object.freeze({
         kind: "struct_instance",
@@ -163,7 +163,7 @@ export const StaticCall = (
     function_: $c.Id,
     typeArgs: readonly $t.Type[],
     args: readonly $.Expression[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.StaticCall =>
     Object.freeze({
         kind: "static_call",
@@ -178,7 +178,7 @@ export type FieldAccess = $.FieldAccess;
 export const FieldAccess = (
     aggregate: $.Expression,
     field: $c.Id,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.FieldAccess =>
     Object.freeze({
         kind: "field_access",
@@ -194,7 +194,7 @@ export const MethodCall = (
     method: $c.Id,
     typeArgs: readonly $t.Type[],
     args: readonly $.Expression[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.MethodCall =>
     Object.freeze({
         kind: "method_call",
@@ -211,7 +211,7 @@ export const Conditional = (
     condition: $.Expression,
     thenBranch: $.Expression,
     elseBranch: $.Expression,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.Conditional =>
     Object.freeze({
         kind: "conditional",
@@ -226,7 +226,7 @@ export type OpUnary = $.OpUnary;
 export const OpUnary = (
     op: $.UnaryOperation,
     operand: $.Expression,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.OpUnary =>
     Object.freeze({
         kind: "op_unary",
@@ -240,7 +240,7 @@ export const OpBinary = (
     op: $.BinaryOperation,
     left: $.Expression,
     right: $.Expression,
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.OpBinary =>
     Object.freeze({
         kind: "op_binary",
@@ -261,7 +261,7 @@ export type MapLiteral = $.MapLiteral;
 export const MapLiteral = (
     type_: $t.TypeMap,
     fields: readonly $.MapField[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.MapLiteral =>
     Object.freeze({
         kind: "map_literal",
@@ -275,7 +275,7 @@ export type SetLiteral = $.SetLiteral;
 export const SetLiteral = (
     valueType: $t.Type,
     fields: readonly $.Expression[],
-    loc: $c.Range,
+    loc: $c.Loc,
 ): $.SetLiteral =>
     Object.freeze({
         kind: "set_literal",
@@ -286,7 +286,7 @@ export const SetLiteral = (
 export const isSetLiteral = ($value: SetLiteral) =>
     $value.kind === "set_literal";
 export type StaticMethodCall = $.StaticMethodCall;
-export const StaticMethodCall = (self: $c.TypeId, typeArgs: readonly $t.Type[], function_: $c.Id, args: readonly $.Expression[], loc: $c.Range): $.StaticMethodCall => Object.freeze({
+export const StaticMethodCall = (self: $c.TypeId, typeArgs: readonly $t.Type[], function_: $c.Id, args: readonly $.Expression[], loc: $c.Loc): $.StaticMethodCall => Object.freeze({
     kind: "static_method_call",
     self,
     typeArgs,

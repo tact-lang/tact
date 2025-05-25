@@ -1,6 +1,6 @@
 import type * as Ast from "@/next/ast";
 import { emptyPath, fromString } from "@/next/fs";
-import type { Language, Range } from "@/next/ast/common";
+import type { Language, Loc } from "@/next/ast/common";
 import type { SourceLogger } from "@/error/logger-util";
 
 const detectLanguage = (path: string): Language | undefined => {
@@ -29,18 +29,18 @@ const guessExtension = (
 const stdlibPrefix = "@stdlib/";
 
 export const ImportErrors = <M, R>(l: SourceLogger<M, R>) => ({
-    importWithBackslash: () => (loc: Range) => {
+    importWithBackslash: () => (loc: Loc) => {
         return l.at(loc).error(l.text`Import path can't contain "\\"`);
     },
-    noFolderImports: () => (loc: Range) => {
+    noFolderImports: () => (loc: Loc) => {
         return l.at(loc).error(l.text`Cannot import a folder`);
     },
-    invalidImport: () => (loc: Range) => {
+    invalidImport: () => (loc: Loc) => {
         return l
             .at(loc)
             .error(l.text`Import must start with ./, ../ or @stdlib/`);
     },
-    escapingImport: () => (loc: Range) => {
+    escapingImport: () => (loc: Loc) => {
         return l
             .at(loc)
             .error(l.text`Standard library imports should be inside its root`);
@@ -51,7 +51,7 @@ export type ImportErrors<M, R> = ReturnType<typeof ImportErrors<M, R>>;
 
 export function parseImportString(
     importText: string,
-    range: Range,
+    range: Loc,
     err: ImportErrors<string, void>,
 ): Ast.ImportPath {
     if (importText.endsWith("/")) {

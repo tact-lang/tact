@@ -1,14 +1,13 @@
 import type {
     FuncId,
     Id,
-    Range,
-    OptionalId,
+    Loc,
     TypeId,
     Language,
 } from "@/next/ast/common";
 import type { Expression, Number, String } from "@/next/ast/expression";
 import type { Statement } from "@/next/ast/statement";
-import type { Type } from "@/next/ast/type";
+import type { FnType, Type, TypedParameter } from "@/next/ast/type";
 import type { RelativePath } from "@/next/fs";
 
 export type Source = {
@@ -20,18 +19,14 @@ export type Source = {
 export type Module = {
     readonly kind: "module";
     readonly imports: readonly Import[];
-    readonly items: readonly ModuleItem[];
+    readonly items: ModuleItems;
 };
-export type ModuleItem =
-    | Function
-    | Extension
-    | Constant
-    | StructDecl
-    | MessageDecl
-    | UnionDecl
-    | AliasDecl
-    | Contract
-    | Trait;
+export type ModuleItems = {
+    readonly functions: readonly Function[];
+    readonly constants: readonly Constant[];
+    readonly extensions: readonly Extension[];
+    readonly types: readonly TypeDecl[];
+}
 export type TypeDecl =
     | StructDecl
     | MessageDecl
@@ -42,7 +37,7 @@ export type TypeDecl =
 export type Import = {
     readonly kind: "import";
     readonly importPath: ImportPath;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 // Reference to source file
 export type ImportPath = {
@@ -61,16 +56,16 @@ export type Contract = {
     readonly name: TypeId;
     readonly traits: readonly TypeId[];
     readonly attributes: readonly ContractAttribute[];
-    readonly declarations: readonly LocalItem[];
-    readonly loc: Range;
+    readonly declarations: LocalItems;
+    readonly loc: Loc;
 };
 
 export type Init = InitFunction | InitParams;
 export type InitFunction = {
     readonly kind: "init_function";
-    readonly params: readonly TypedParameter[];
+    readonly args: readonly TypedParameter[];
     readonly statements: readonly Statement[];
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 export type InitParams = {
     readonly kind: "init_params";
@@ -83,25 +78,27 @@ export type Trait = {
     readonly name: TypeId;
     readonly traits: readonly TypeId[];
     readonly attributes: readonly ContractAttribute[];
-    readonly declarations: readonly LocalItem[];
-    readonly loc: Range;
+    readonly declarations: LocalItems;
+    readonly loc: Loc;
 };
 
-export type LocalItem =
-    | FieldDecl
-    | Method
-    | Receiver
-    | FieldConstant;
+export type LocalItems = {
+    readonly fields: readonly FieldDecl[];
+    readonly methods: readonly Method[];
+    readonly receivers: readonly Receiver[];
+    readonly constants: readonly FieldConstant[];
+};
 
 export type ContractAttribute = {
     readonly type: "interface";
     readonly name: string;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 
 export type Extension = {
     readonly kind: "extension";
-    readonly method: Method;
+    readonly mutates: boolean;
+    readonly fun: Function;
     readonly selfType: Type;
 };
 
@@ -116,18 +113,16 @@ export type Method = {
 
 export type GetAttribute = {
     readonly methodId: Expression | undefined;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 
 export type Function = {
     readonly kind: "function";
     readonly inline: boolean;
     readonly name: Id;
-    readonly typeParams: readonly TypeId[];
-    readonly returnType: Type | undefined;
-    readonly params: readonly TypedParameter[];
+    readonly type: FnType;
     readonly body: FunctionalBody;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 
 export type FunctionalBody = RegularBody | AsmBody | NativeBody | AbstractBody;
@@ -153,13 +148,6 @@ export type AsmShuffle = {
     readonly ret: readonly Number[];
 };
 
-export type TypedParameter = {
-    readonly kind: "typed_parameter";
-    readonly name: OptionalId;
-    readonly type: Type;
-    readonly loc: Range;
-};
-
 export type FieldConstant = {
     readonly kind: "field_const";
     readonly overridable: boolean;
@@ -170,7 +158,7 @@ export type Constant = {
     readonly kind: "constant";
     readonly name: Id;
     readonly init: ConstantInit;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 export type ConstantInit = ConstantDef | ConstantDecl;
 export type ConstantDef = {
@@ -188,7 +176,7 @@ export type StructDecl = {
     readonly name: TypeId;
     readonly typeParams: readonly TypeId[];
     readonly fields: readonly FieldDecl[];
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 
 export type MessageDecl = {
@@ -196,7 +184,7 @@ export type MessageDecl = {
     readonly name: TypeId;
     readonly opcode: Expression | undefined;
     readonly fields: readonly FieldDecl[];
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 
 export type UnionDecl = {
@@ -204,7 +192,7 @@ export type UnionDecl = {
     readonly name: TypeId;
     readonly typeParams: readonly TypeId[];
     readonly cases: readonly UnionCase[];
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 export type UnionCase = {
     readonly name: TypeId;
@@ -216,7 +204,7 @@ export type AliasDecl = {
     readonly name: TypeId;
     readonly typeParams: readonly TypeId[];
     readonly type: Type;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 
 export type FieldDecl = {
@@ -224,14 +212,14 @@ export type FieldDecl = {
     readonly name: Id;
     readonly type: Type;
     readonly initializer: Expression | undefined;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 
 export type Receiver = {
     readonly kind: "receiver";
     readonly selector: ReceiverKind;
     readonly statements: readonly Statement[];
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 export type ReceiverSimple = {
     readonly kind: "simple";
@@ -251,16 +239,16 @@ export type ReceiverSubKind =
 export type ReceiverInternal = {
     readonly kind: "internal";
     readonly subKind: ReceiverSubKind;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 export type ReceiverExternal = {
     readonly kind: "external";
     readonly subKind: ReceiverSubKind;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 export type ReceiverBounce = {
     readonly kind: "bounce";
     readonly param: TypedParameter;
-    readonly loc: Range;
+    readonly loc: Loc;
 };
 export type ReceiverKind = ReceiverInternal | ReceiverExternal | ReceiverBounce;

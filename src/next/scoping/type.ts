@@ -1,4 +1,4 @@
-import type { Range } from "@/next/ast";
+import type { Loc } from "@/next/ast";
 
 export type TypeId = {
     readonly kind: "type_id";
@@ -6,7 +6,7 @@ export type TypeId = {
     readonly loc: Loc;
 };
 
-export type Loc = Range | Inferred | Builtin;
+export type Loc = Loc | Inferred | Builtin;
 
 /**
  * Type that was computed from AST
