@@ -20,6 +20,9 @@ int __tact_int_eq_nullable_one(int a, int b) inline;
 ;; __tact_int_neq_nullable_one
 int __tact_int_neq_nullable_one(int a, int b) inline;
 
+;; $Bin$_load_without_opcode
+(slice, (tuple)) $Bin$_load_without_opcode(slice sc_0) inline;
+
 ;; $MainContract$_store
 builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 
@@ -112,6 +115,16 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
 """;
 
 ;; main_MainContract.storage.fc
+;;
+;; Type: Bin
+;; Header: 0x00000002
+;; TLB: bin#00000002  = Bin
+;;
+
+(slice, (tuple)) $Bin$_load_without_opcode(slice sc_0) inline {
+    return (sc_0, null());
+}
+
 ;;
 ;; Type: A
 ;; TLB: _ a:int257 b:int257 c:Maybe int257 d:bool e:Maybe bool f:int257 g:int257 = A
@@ -435,6 +448,14 @@ _ %testDumpCall(int $a) method_id(66927) {
     int in_msg_length = slice_bits(in_msg);
     if (in_msg_length >= 32) {
         op = in_msg~load_uint(32);
+        ;; Receive Bin message
+        if (op == 0x2) {
+            var $m = in_msg~$Bin$_load_without_opcode();
+            throw_unless(53588, (0x2 == 2));
+            $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+            return ();
+        }
+        
     }
     ;; Empty Receiver and Text Receivers
     var text_op = slice_hash(in_msg);
