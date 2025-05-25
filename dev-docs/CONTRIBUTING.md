@@ -380,14 +380,14 @@ Benchmarks are located inside `src/benchmarks/`, one directory per benchmark:
 
 #### File & folder roles
 
-| Path / file              | Purpose                                                  |
-| ------------------------ | -------------------------------------------------------- |
-| `tact/`                  | Tact project that is being benchmarked                   |
-| `func/`                  | Equivalent FunC project that we compare against          |
-| `test.spec.ts`           | Jest test spec for contract functionality testing        |
-| `bench.spec.ts`          | Jest test spec for performance benchmarking              |
-| `gas.json`               | Aggregated gas‑consumption results, updated by the CLI   |
-| `size.json`              | Contract byte‑code size history, also updated by the CLI |
+| Path / file     | Purpose                                                  |
+| --------------- | -------------------------------------------------------- |
+| `tact/`         | Tact project that is being benchmarked                   |
+| `func/`         | Equivalent FunC project that we compare against          |
+| `test.spec.ts`  | Jest test spec for contract functionality testing        |
+| `bench.spec.ts` | Jest test spec for performance benchmarking              |
+| `gas.json`      | Aggregated gas‑consumption results, updated by the CLI   |
+| `size.json`     | Contract byte‑code size history, also updated by the CLI |
 
 > **CLI support** – All commands for creating, updating, or comparing benchmarks are documented in the [Updating Benchmarks](#benchmarks) section.
 
