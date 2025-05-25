@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compiler now generates more efficient code for slice serialization: PR [#3213](https://github.com/tact-lang/tact/pull/3213)
 - Improve gas consumption for equality comparisons of optionals: PR [#3233](https://github.com/tact-lang/tact/pull/3233)
 - Improve gas consumption for deserialization of optional addresses: PR [#3225](https://github.com/tact-lang/tact/pull/3225)
+- [fix] Detect out-of-range exit codes for the special case of a fallback receiver with `throw`: PR [#3244](https://github.com/tact-lang/tact/pull/3244)
 - [fix] Correct transformation of binary and octal message opcodes to hexadecimal format: PR [#3239](https://github.com/tact-lang/tact/pull/3239)
 - [fix] Added escaping of special-chars in receiver comments break FunC compilation: PR [#3234](https://github.com/tact-lang/tact/pull/3234)
 - [fix] Disable optimization of optional integer comparisons that leads to runtime exceptions: PR [#3210](https://github.com/tact-lang/tact/pull/3210)
