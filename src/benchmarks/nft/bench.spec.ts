@@ -42,8 +42,8 @@ import {
     storeInitNFTBody,
 } from "@/benchmarks/nft/tact/output/collection_NFTItem";
 
-import benchmarkResults from "@/benchmarks/nft/results_gas.json";
-import benchmarkCodeSizeResults from "@/benchmarks/nft/results_code_size.json";
+import benchmarkResults from "@/benchmarks/nft/gas.json";
+import benchmarkCodeSizeResults from "@/benchmarks/nft/size.json";
 
 type dictDeployNFT = {
     amount: bigint;
