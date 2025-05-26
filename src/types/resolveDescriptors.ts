@@ -2468,25 +2468,29 @@ function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
     let remainingBits = 224;
 
     for (const f of type.fields) {
-        // dicts are unsupported
-        if (f.abi.type.kind !== "simple") break;
+        let fieldBits = 0;
+        if (f.abi.type.kind === "simple") {
+            const { type, format } = f.abi.type;
 
-        let fieldBits = f.abi.type.optional ? 1 : 0;
+            if (f.abi.type.optional) {
+                fieldBits = 1;
+            }
 
-        const { type, format } = f.abi.type;
-
-        if (Number.isInteger(format)) {
-            const amount = format as number;
-            fieldBits += type === "fixed-bytes" ? amount * 8 : amount;
-        } else if (format === "coins") {
-            fieldBits += 124;
-        } else if (type === "address") {
-            fieldBits += 267;
-        } else if (type === "bool") {
-            fieldBits += 1;
-        } else {
-            // Unsupported - all others (slice, builder, nested structs, maps)
-            break;
+            if (Number.isInteger(format)) {
+                const amount = format as number;
+                fieldBits += type === "fixed-bytes" ? amount * 8 : amount;
+            } else if (format === "coins") {
+                fieldBits += 124;
+            } else if (type === "address") {
+                fieldBits += 267;
+            } else if (type === "bool") {
+                fieldBits += 1;
+            } else {
+                // Unsupported - all others (slice, builder, nested structs)
+                break;
+            }
+        } else if (f.abi.type.kind === "dict") {
+            fieldBits += 1; // 1-bit flag and 1 ref
         }
 
         if (remainingBits - fieldBits >= 0) {

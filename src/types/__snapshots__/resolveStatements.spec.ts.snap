@@ -1987,6 +1987,35 @@ exports[`resolveStatements should resolve statements for assign-self-mutating-me
 ]
 `;
 
+exports[`resolveStatements should resolve statements for bounced-type-with-map 1`] = `
+[
+  [
+    "msg",
+    "bounced<Msg>",
+  ],
+  [
+    "msg.x",
+    "Int",
+  ],
+  [
+    "dump(msg.x)",
+    "<void>",
+  ],
+  [
+    "msg",
+    "bounced<Msg2>",
+  ],
+  [
+    "msg.x",
+    "Int",
+  ],
+  [
+    "dump(msg.x)",
+    "<void>",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for constant-as-default-value-of-struct-field 1`] = `
 [
   [
