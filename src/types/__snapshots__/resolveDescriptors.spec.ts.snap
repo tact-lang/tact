@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolveDescriptors should fail descriptors for asm-fun-bounced-return 1`] = `
-"<unknown>:3:1: Function "foo" returns a <bounced> type, which is not supported in "asm" functions.
-  2 | 
-> 3 | asm fun foo(): bounced<Cell> { NOP }
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  4 | 
+exports[`resolveDescriptors should fail descriptors for asm-fun-bounced-return-access-map-field 1`] = `
+"<unknown>:11:14: Cannot access field of map type from bounced<Foo> type
+  10 |     let res = foo();
+> 11 |     dump(res.m);
+                    ^
+  12 | }
 "
 `;
 
@@ -42,15 +42,6 @@ exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-non-
 > 3 | asm(x extra) fun foo(x: Int) {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   4 |     DROP
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-bounced-return 1`] = `
-"<unknown>:3:1: Function "foo" returns a <bounced> type, which is not supported in "asm" functions.
-  2 | 
-> 3 | asm(-> 0) fun foo(): bounced<Cell> { NOP }
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  4 | 
 "
 `;
 
@@ -1723,6 +1714,94 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
 
 exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 2`] = `[]`;
 
+exports[`resolveDescriptors should resolve descriptors for asm-fun-bounced-return 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Cell;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Cell,
+        "text": "Cell",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Cell",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 26294,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-bounced-return 2`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 6,
+      "instructions": [
+        "NOP",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun foo(): bounced<Cell> { NOP },
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [],
+      "return": {
+        "id": 5,
+        "kind": "bounced_message_type",
+        "loc": bounced<Cell>,
+        "messageType": {
+          "id": 4,
+          "kind": "type_id",
+          "loc": Cell,
+          "text": "Cell",
+        },
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "methodId": null,
+    "name": "foo",
+    "origin": "user",
+    "params": [],
+    "returns": {
+      "kind": "ref_bounced",
+      "name": "Cell",
+    },
+    "self": null,
+  },
+]
+`;
+
 exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffle 1`] = `
 [
   {
@@ -2116,6 +2195,102 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 2`
     ],
     "returns": {
       "kind": "void",
+    },
+    "self": null,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-bounced-return 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Cell;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Cell,
+        "text": "Cell",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Cell",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 26294,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-bounced-return 2`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 7,
+      "instructions": [
+        "NOP",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(-> 0) fun foo(): bounced<Cell> { NOP },
+      "name": {
+        "id": 4,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [],
+      "return": {
+        "id": 6,
+        "kind": "bounced_message_type",
+        "loc": bounced<Cell>,
+        "messageType": {
+          "id": 5,
+          "kind": "type_id",
+          "loc": Cell,
+          "text": "Cell",
+        },
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [
+          {
+            "base": 10,
+            "id": 3,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "methodId": null,
+    "name": "foo",
+    "origin": "user",
+    "params": [],
+    "returns": {
+      "kind": "ref_bounced",
+      "name": "Cell",
     },
     "self": null,
   },

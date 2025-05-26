@@ -1072,11 +1072,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                             a.loc,
                         );
                     }
-                } else if (returns.kind === "ref_bounced") {
-                    throwCompilationError(
-                        `Function ${idTextErr(a.name)} returns a <bounced> type, which is not supported in "asm" functions.`,
-                        a.loc,
-                    );
                 }
             }
 
@@ -1095,6 +1090,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 let retTupleSize = 0;
                 switch (returns.kind) {
                     case "ref":
+                    case "ref_bounced":
                         {
                             const ty = types.get(returns.name)!;
                             switch (ty.kind) {
