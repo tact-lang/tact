@@ -80,6 +80,15 @@
         "burn": "11883",
         "discovery": "5716"
       }
+    },
+    {
+      "label": "1.6.10 with 1",
+      "pr": null,
+      "gas": {
+        "transfer": "15519",
+        "burn": "11875",
+        "discovery": "5716"
+      }
     }
   ]
 }

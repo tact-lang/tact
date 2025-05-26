@@ -79,6 +79,14 @@
         "item cells": "17",
         "item bits": "9401"
       }
+    },
+    {
+      "label": "1.6.10 with 1",
+      "pr": null,
+      "size": {
+        "item cells": "17",
+        "item bits": "9409"
+      }
     }
   ]
 }

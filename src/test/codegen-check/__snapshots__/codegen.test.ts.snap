@@ -50,6 +50,12 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 ;; $MainContract$_contract_store
 () $MainContract$_contract_store((int, int, slice, cell) v) impure inline;
 
+;; $global_left
+slice $global_left() impure inline_ref;
+
+;; $global_right
+slice $global_right() impure inline_ref;
+
 ;; $MainContract$_fun_testAugmentedAssignOperators
 ((int, int, slice, cell), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice, cell) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref;
 
@@ -82,6 +88,9 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 
 ;; $MainContract$_fun_testDumpCall
 ((int, int, slice, cell), ()) $MainContract$_fun_testDumpCall((int, int, slice, cell) $self, int $a) impure inline_ref;
+
+;; $MainContract$_fun_testOrder
+((int, int, slice, cell), int) $MainContract$_fun_testOrder((int, int, slice, cell) $self) impure inline_ref;
 
 
 ;; main_MainContract.stdlib.fc
@@ -230,6 +239,14 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     return ($self'field, $self'value, $self'data, $self'mapping);
 }
 
+slice $global_left() impure inline_ref {
+    return $global_myAddress();
+}
+
+slice $global_right() impure inline_ref {
+    return $global_myAddress();
+}
+
 ((int, int, slice, cell), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice, cell) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref {
     var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     int $a = $intVal;
@@ -344,10 +361,10 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     if ((1 != $a)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    if (__tact_int_eq_nullable_one(0, $b)) {
+    if (__tact_int_eq_nullable_one($b, 0)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    if (__tact_int_neq_nullable_one(0, $b)) {
+    if (__tact_int_neq_nullable_one($b, 0)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     return (($self'field, $self'value, $self'data, $self'mapping), ());
@@ -356,6 +373,12 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
 ((int, int, slice, cell), ()) $MainContract$_fun_testDumpCall((int, int, slice, cell) $self, int $a) impure inline_ref {
     var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     return (($self'field, $self'value, $self'data, $self'mapping), ());
+}
+
+((int, int, slice, cell), int) $MainContract$_fun_testOrder((int, int, slice, cell) $self) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
+    var $fresh$ret_4 = ( equal_slices_bits($global_left(), $global_right()) );
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_4);
 }
 
 ;;
@@ -417,6 +440,12 @@ _ %testDumpCall(int $a) method_id(66927) {
     int $a = $a;
     var self = $MainContract$_contract_load();
     var res = self~$MainContract$_fun_testDumpCall($a);
+    return res;
+}
+
+_ %testOrder() method_id(121793) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testOrder();
     return res;
 }
 

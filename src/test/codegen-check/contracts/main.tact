@@ -212,4 +212,11 @@ contract MainContract {
         dump(a);
         dumpStack();
     }
+
+    get fun testOrder(): Bool {
+        return left() == right();
+    }
 }
+
+fun left(): Address { dump(1); return myAddress(); }
+fun right(): Address { dump(2); return myAddress(); }
