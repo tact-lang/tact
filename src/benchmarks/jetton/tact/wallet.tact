@@ -27,7 +27,7 @@ contract JettonWallet(
                          fwdCount * ctx.readForwardFee() +
                          (2 * self.gasConsumption + self.minTonsForStorage));
 
-        deploy(DeployParameters {
+        DeployParameters {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
@@ -40,7 +40,7 @@ contract JettonWallet(
                 forwardPayload: msg.forwardPayload,
             }.toCell(),
             init: initOf JettonWallet(msg.destination, self.master, 0),
-        });
+        }.send();
     }
 
     receive(msg: JettonTransferInternal) {
@@ -61,7 +61,7 @@ contract JettonWallet(
         if (msg.forwardTonAmount > 0) {
             let fwdFee: Int = ctx.readForwardFee();
             msgValue -= msg.forwardTonAmount + fwdFee;
-            message(MessageParameters {
+            MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayFwdFeesSeparately,
@@ -72,18 +72,18 @@ contract JettonWallet(
                     sender: msg.sender,
                     forwardPayload: msg.forwardPayload,
                 }.toCell(),
-            });
+            }.send();
         }
 
         // 0xd53276db -- Cashback to the original Sender
         if (msg.responseDestination != null && msgValue > 0) {
-            message(MessageParameters {
+            MessageParameters {
                 to: msg.responseDestination!!,
                 value: msgValue,
                 mode: SendIgnoreErrors,
                 bounce: false,
                 body: JettonExcesses { queryId: msg.queryId }.toCell(),
-            });
+            }.send();
         }
     }
 
@@ -97,7 +97,7 @@ contract JettonWallet(
         let fwdFee: Int = ctx.readForwardFee();
         throwUnless(707, ctx.value > (fwdFee + 2 * self.gasConsumption));
 
-        message(MessageParameters {
+        MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
@@ -108,7 +108,7 @@ contract JettonWallet(
                 sender: self.owner,
                 responseDestination: msg.responseDestination,
             }.toCell(),
-        });
+        }.send();
     }
 
     receive(_: Slice) { throw(0xffff) }

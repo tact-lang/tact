@@ -31,13 +31,13 @@ contract Calculator {
             count += 1;
         }
         let result = sum / n;
-        message(MessageParameters{
+        MessageParameters{
             to: sender(),
             bounce: false,
             // SendDefaultMode with no flags is default
             value: request.amountToPayInResponse,
             body: AverageResult{res: result}.toCell(), 
-            });
+            }.send();
     }
 }
 
@@ -80,13 +80,13 @@ contract MessageModeTester {
     // Using default mode, no flags
     receive(msg: DoCalculatorRequest) {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
+        MessageParameters{
                 to: addr,
                 bounce: true,
                 value: msg.amountToPayInRequest,
                 mode: SendDefaultMode,
                 body: AverageRequest{from: msg.from, to: msg.to, amountToPayInResponse: msg.amountToPayInCalculatorResponse}.toCell(),
-                });
+                }.send();
         self.val = -3;
     }
 }

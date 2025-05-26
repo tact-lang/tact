@@ -56,7 +56,7 @@ contract Escrow(
             self.assetAddress!!,
             self.jettonWalletCode!!,
         );
-        message(MessageParameters {
+        MessageParameters {
             to: escrowJettonWalletAddress,
             value: self.JETTON_TRANSFER_GAS,
             body: JettonTransfer {
@@ -69,7 +69,7 @@ contract Escrow(
                 customPayload: null,
             }.toCell(),
             mode,
-        });
+        }.send();
     }
 
     receive(_: Funding) {
@@ -122,16 +122,16 @@ contract Escrow(
 
         if (self.assetAddress == null) {
             throwUnless(404, ctx.value > (2 * self.TON_TRANSFER_GAS));
-            message(MessageParameters {
+            MessageParameters {
                 to: self.sellerAddress,
                 value: self.dealAmount - royaltyAmount,
                 mode: SendPayFwdFeesSeparately,
-            });
-            message(MessageParameters {
+            }.send();
+            MessageParameters {
                 to: self.guarantorAddress,
                 value: royaltyAmount,
                 mode: SendRemainingBalance | SendDestroyIfZero, // send all remaining and destroy escrow
-            });
+            }.send();
         } else {
             throwUnless(404, ctx.value > (2 * self.JETTON_TRANSFER_GAS));
             self.sendJettons(self.sellerAddress, self.dealAmount - royaltyAmount, SendPayFwdFeesSeparately);
@@ -147,11 +147,11 @@ contract Escrow(
         // it's up to business logic to decide if guarantor gets royalty in case of cancel
         // in this implementation we don't pay royalty in case of cancel
         if (self.assetAddress == null) {
-            message(MessageParameters {
+            MessageParameters {
                 to: self.buyerAddress!!,
                 value: self.dealAmount,
                 mode: SendRemainingBalance | SendDestroyIfZero, // send all remaining and destroy escrow
-            });
+            }.send();
         } else {
             self.sendJettons(self.buyerAddress!!, self.dealAmount, SendRemainingBalance | SendDestroyIfZero);
         }
@@ -159,7 +159,7 @@ contract Escrow(
 
     // on-chain data access, could be useful to guarantor contract
     receive(_: ProvideEscrowData) {
-        message(MessageParameters {
+        MessageParameters {
             bounce: false,
             value: 0,
             to: sender(),
@@ -177,7 +177,7 @@ contract Escrow(
                 },
             }.toCell(),
             mode: SendRemainingValue,
-        });
+        }.send();
     }
 
     get fun calculateRoyaltyAmount(): Int {

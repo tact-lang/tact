@@ -386,13 +386,13 @@ contract StructsTester {
 
     receive(msg: Foo) {
         let d = Dict.fromSlice(msg.s);
-        message(MessageParameters{
+        MessageParameters{
             bounce: false,
             to: sender(),
             value: ton("0.01"),
             mode: SendPayFwdFeesSeparately,
             body: d.toCell()
-        });
+        }.send();
     }
 
     get fun structInitializerTest(): Bool {

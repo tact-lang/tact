@@ -42,6 +42,38 @@ send(SendParameters {
 
 :::
 
+### SendParameters.send {#sendparameters-send}
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.7" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun send(self: SendParameters);
+```
+
+[Queues the message](/book/send#outbound-message-processing) to be sent using a [`SendParameters{:tact}`](/book/send) [struct][struct].
+
+Attempts to queue more than 255 messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+Usage example:
+
+```tact
+SendParameters {
+    to: sender(),    // back to the sender,
+    value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+                     // and no message body
+}.send();
+```
+
+:::note[Useful links:]
+
+  [Sending messages in the Book](/book/send)\
+  [Message `mode` in the Book](/book/message-mode)\
+  [Single-contract communication in the Cookbook](/cookbook/single-communication)\
+  [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve)
+
+:::
+
 ### message
 
 <Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
@@ -65,6 +97,39 @@ message(MessageParameters {
     value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
                      // and no message body
 });
+```
+
+:::note[Useful links:]
+
+  [Sending messages in the Book](/book/send)\
+  [Message `mode` in the Book](/book/message-mode)\
+  [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve)
+
+:::
+
+### MessageParameters.send {#messageparameters-send}
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.7" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun send(self: MessageParameters);
+```
+
+[Queues the message](/book/send#outbound-message-processing) to be sent using the `MessageParameters{:tact}` [struct][struct]. Allows for cheaper non-deployment regular messages compared to the [`send(){:tact}`](#send) function.
+
+The `MessageParameters{:tact}` [struct][struct] is similar to the [`SendParameters{:tact}`](/book/send) [struct][struct], but without the `code` and `data` fields.
+
+Attempts to queue more than 255 messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+Usage example:
+
+```tact
+MessageParameters {
+    to: sender(),    // back to the sender,
+    value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+                     // and no message body
+}.send();
 ```
 
 :::note[Useful links:]
@@ -107,6 +172,48 @@ deploy(DeployParameters {
     mode: SendIgnoreErrors,      // skip the message in case of errors
     value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
 });
+```
+
+:::note[Useful links:]
+
+  [Sending messages in the Book](/book/send)\
+  [Message `mode` in the Book](/book/message-mode)\
+  [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve)
+
+:::
+
+### DeployParameters.send {#deployparameters-send}
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.7" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun send(self: DeployParameters);
+```
+
+[Queues](/book/send#outbound-message-processing) the [contract deployment message](/book/deploy) to be sent using the `DeployParameters{:tact}` [struct][struct]. Allows for cheaper on-chain deployments compared to the [`send(){:tact}`](#send) function.
+
+The `DeployParameters{:tact}` [struct][struct] consists of the following fields:
+
+Field    | Type                          | Description
+:------- | :---------------------------- | :----------
+`mode`   | [`Int{:tact}`][int]           | An 8-bit value that configures how to send a message, defaults to $0$. See: [Message `mode`](/book/message-mode).
+`body`   | [`Cell?{:tact}`][cell]        | [Optional][opt] message body as a [`Cell{:tact}`][cell].
+`value`  | [`Int{:tact}`][int]           | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee] unless the optional flag [`SendPayFwdFeesSeparately{:tact}`](/book/message-mode#optional-flags) is used.
+`bounce` | [`Bool{:tact}`][p]            | When set to `true` (default), the message bounces back to the sender if the recipient contract doesn't exist or isn't able to process the message.
+`init`   | [`StateInit{:tact}`][initpkg] | [Initial package][initpkg] of the contract (initial code and initial data). See: [`initOf{:tact}`][initpkg].
+
+Attempts to queue more than 255 messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+Usage example:
+
+```tact
+DeployParameters {
+    init: initOf SomeContract(), // with initial code and data of SomeContract
+                                 // and no additional message body
+    mode: SendIgnoreErrors,      // skip the message in case of errors
+    value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
+}.send();
 ```
 
 :::note[Useful links:]
