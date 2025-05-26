@@ -91,7 +91,7 @@ export function resolveImports({
     const codePath = project.resolve(entrypoint);
     if (!project.exists(codePath)) {
         throwCompilationError(
-            `Could not find entrypoint ${entrypoint}, file not found`,
+            `Could not find entrypoint file ${entrypoint}`,
         );
     }
     const entrySource: Source = {
