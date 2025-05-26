@@ -617,6 +617,7 @@ const rewriteWithIfNot = (
 
 const extractThrowErrorCode = (
     stmts: readonly Ast.Statement[],
+    ctx: CompilerContext,
 ): Ast.Expression | undefined => {
     const [stmt] = stmts;
     if (
@@ -625,8 +626,23 @@ const extractThrowErrorCode = (
         stmt.expression.function.text === "throw"
     ) {
         const arg = stmt.expression.args.at(0);
+        if (arg?.kind === "static_call" || arg?.kind === "method_call") {
+            // calls can change state, so we'll skip that for now
+            return undefined;
+        }
+
         if (arg?.kind === "number") {
             return arg;
+        }
+
+        if (arg === undefined) {
+            return undefined;
+        }
+
+        try {
+            return constEval(arg, ctx);
+        } catch {
+            return undefined;
         }
     }
     return undefined;
@@ -649,7 +665,7 @@ function writeCondition(
     returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
-    const throwCode = extractThrowErrorCode(f.trueStatements);
+    const throwCode = extractThrowErrorCode(f.trueStatements, ctx.ctx);
     const isAloneIf =
         f.falseStatements === undefined || f.falseStatements.length === 0;
 

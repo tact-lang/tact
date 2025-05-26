@@ -379,6 +379,9 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     throw_if(10, ($a == 1));
     int $cond = ($a == 1);
     throw_unless(10, $cond);
+    throw_if(1000, ($a == 1));
+    throw_if(1011, ($a == 1));
+    throw_if(499, ($a == 1));
     return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 
@@ -401,6 +404,9 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     int $x = 42;
     ifnot ($x~$Int$_fun_inc()) {
         throw($x~$Int$_fun_inc());
+    }
+    if (($a == 1)) {
+        throw(10);
     }
     if (($a == 1)) {
         throw(10);
