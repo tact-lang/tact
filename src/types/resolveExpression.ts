@@ -520,7 +520,7 @@ function resolveFieldAccess(
     if (src.kind === "ref_bounced" && field) {
         if (field.type.kind === "map") {
             throwCompilationError(
-                `Cannot access field with map type inside bounced receiver`,
+                `Cannot access field of map type from bounced<${src.name}>`,
                 exp.field.loc,
             );
         }
@@ -530,7 +530,7 @@ function resolveFieldAccess(
             if (name === "Cell" || name === "Slice" || name === "Builder") {
                 const optional = field.type.optional ? "?" : "";
                 throwCompilationError(
-                    `Cannot access field with ${idTextErr(name + optional)} type inside bounced receiver`,
+                    `Cannot access field of ${idTextErr(name + optional)} type from bounced<${src.name}>`,
                     exp.field.loc,
                 );
             }
