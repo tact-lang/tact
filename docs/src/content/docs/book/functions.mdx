@@ -197,12 +197,13 @@ Read about common aspects of functions: [Commonalities](#commonalities).
 Regular functions that can be defined only at the top (module) level are called global. They differ from [internal functions](#fun-internal) not only in the scope, but also in available [attributes](#attributes).
 
 ```tact
-fun customPow(a: Int, c: Int): Int {
-    let res: Int = 1;
-    repeat (c) {
-        res *= a;
-    }
-    return res;
+fun reply(msgBody: Cell) {
+    message(MessageParameters {
+        to: sender(),
+        value: 0,
+        mode: SendRemainingValue | SendIgnoreErrors,
+        body: msgBody,
+    });
 }
 ```
 
@@ -228,12 +229,16 @@ Internal functions can access the contract's [persistent state variables](/book/
 They can only be called from [receivers](#receivers), [getters](#get), and other internal functions, but not from other contracts.
 
 ```tact
-contract InternalFun() {
-    fun add(a: Int, b: Int): Int {
-        return a + b;
+contract InternalFun(stopped: Bool) {
+    // Let's define an internal function to ensure that the contract was not stopped.
+    fun requireNotStopped() {
+        throwUnless(TactExitCodeContractStopped, !self.stopped);
     }
-    get fun compute() {
-        self.add(2, 2); // 4
+    // And use that internal function within a getter.
+    get fun veryImportantComputation(): Int {
+        // Internal function calls are prefixed with `self`
+        self.requireNotStopped();
+        return 2 + 2;
     }
 }
 ```
@@ -256,28 +261,37 @@ These attributes _cannot_ be specified:
 To define an extension function, add an `extends{:tact}` attribute to any [global function](#fun-global) and name its first parameter as `self`. The type of `self` is the type that is being extended by the extension function.
 
 ```tact
-extends fun customPow(self: Int, exp: Int): Int {
-    let res: Int = 1;
-    repeat (exp) {
-        res *= self;
+// Extension function that compares two instances of the `StdAddress` type.
+extends fun equals(self: StdAddress, other: StdAddress): Bool {
+    if (self.workchain == other.workchain && self.address == other.address) {
+        return true;
     }
-    return res;
+    return false;
 }
 ```
 
 The special `self{:tact}` identifier inside an extension function is a copy of the value of the extended type. In other words, it is the argument value passed to the `self` parameter.
 
 ```tact
+// Let's define a variable to call the `equals()` extension function on.
+let addr = parseStdAddress(
+    address("EQAFmjUoZUqKFEBGYFEMbv-m61sFStgAfUR8J6hJDwUU09iT").asSlice(),
+);
+
 // You can call extension functions on instances of the extended type,
 // such as variables...
-let val = 42;
-val.customPow(2); // 1764
+addr.equals(addr); // true
 
-// ...literals...
-2.customPow(10); // 1024
+// ...literals and structure instances...
+StdAddress {
+    workchain: addr.workchain,
+    address: addr.address,
+}.equals(addr); // true
 
 // ...or any other values of that type.
-pow2(2).customPow(5); // 1024
+parseStdAddress(
+    address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N").asSlice()
+).equals(addr); // false
 ```
 
 Most of the standard library functions that work with values of the [`Builder{:tact}`][builder] type are extension functions on that type. As such, they do not modify the original value they are applied to.
@@ -338,28 +352,31 @@ The extension _mutation_ functions replace the value of the extended type with t
 To define an extension mutation function, add a `mutates{:tact}` attribute to the existing [extension function](#extends).
 
 ```tact
-extends mutates fun customPow(self: Int, exp: Int) {
-    let res: Int = 1;
-    repeat (exp) {
-        res *= self;
-    }
-    self = res;
+// Like the `skipBool` extension mutation function, but usable in chain calls.
+extends mutates fun chainSkipBool(self: Slice): Slice {
+    self.skipBool();
+
+    // Notice that returning the `self` value gives a copy of the slice,
+    // but not a mutable reference to it. Therefore, chaining of mutation functions
+    // is not very useful in most cases, and may lead to seemingly weird errors.
+    return self;
 }
 ```
 
-For extension mutation functions, the special `self` identifier refers to the value of the extended type, and changes made to it will persist after the function call.
+For extension mutation functions, the special `self{:tact}` identifier refers to the value of the extended type, and changes made to it will persist after the function call.
 
 ```tact
 // It is most useful to call extension mutation functions on instances
 // of the extended type that can keep the change stored either temporarily, i.e.,
 // within the current transaction, or permanently — in the contract's state.
-contract Mut(val: Int) {
+contract Mut(val: Slice) {
     receive() {
-        let valTmp = 2;
-        valTmp.customPow(10);
-        self.val.customPow(10);
-        // Now, `valTmp` holds 1024, and `self.val` holds
-        // its value prior to this transaction raised to the power 10.
+        let valTmp = beginCell().storeBool(true).storeInt(42, 7).asSlice();
+        valTmp.chainSkipBool().loadInt(7); // 42
+        self.val.chainSkipBool().loadInt(7); // 42
+        // Now, `valTmp` holds a slice without one bit, i.e.,
+        // only the value 42 stored using 7 bits. The `self.val` holds its original
+        // slice but without one bit from its front.
     }
 }
 ```
@@ -367,11 +384,15 @@ contract Mut(val: Int) {
 Extension mutation functions cannot modify [constants](/book/constants) because they are immutable.
 
 ```tact
+// Constant of the Int type
 const VAL: Int = 10;
+
+// Extension mutation function for the Int type
+extends mutates fun divideInHalf(self: Int) { self /= 2 }
 
 fun noEffect() {
     VAL; // 10
-    VAL.customPow(10);
+    VAL.divideInHalf();
     VAL; // still 10
 }
 ```
@@ -595,13 +616,7 @@ Consider the following FunC file:
 ;; Notice the tensor return type (int, int),
 ;; which means we would have to define at least one
 ;; Tact structure to bind to this function.
-(int, int) minmax(int a, int b) {
-    if (a < b) {
-        return (a, b);
-    } else {
-        return (b, a);
-    }
-}
+(int, int) keccak512(slice s) impure asm "ONE HASHEXT_KECCAK512 UNPAIR";
 ```
 
 In Tact code, one could access that function as follows:
@@ -611,24 +626,24 @@ In Tact code, one could access that function as follows:
 import "./import_me.fc";
 
 // 2. Declare the native function binding.
-@name(minmax) // name of the target FunC function
-native minmax(a: Int, b: Int): MinMax;
-//     ^^^^^^ name of the Tact function bind,
-//            which can be the identical to its FunC counterpart
+@name(keccak512) // name of the target FunC function
+native keccak512(s: Slice): HashPair;
+//     ^^^^^^^^^ name of the Tact function bind,
+//               which can be the identical to its FunC counterpart
 
 // 3. Define the necessary structs for the bind.
-//    In our case, it is the MinMax structure to capture multiple return values.
-struct MinMax {
-    min: Int;
-    max: Int;
+//    In our case, it is the HashPair structure to capture multiple return values.
+struct HashPair {
+    h1: Int;
+    h2: Int;
 }
 
 // 4. Use the function whenever you would like.
 //    It has the same properties as regular global functions.
 fun example() {
-    let res = minmax(20, 10);
-    res.min; // 10
-    res.max; // 20
+    let res = keccak512(emptySlice());
+    res.h1; // 663...lots of digits...092
+    res.h2; // 868...lots of digits...990
 }
 ```
 
@@ -655,6 +670,18 @@ Furthermore, `asm{:tact}` functions are nearly devoid of all abstractions and gi
 ```tact
 // Simple assembly function that creates a new `Builder`.
 asm fun beginCell(): Builder { NEWC }
+
+// Like nativeReserve(), but also allows reserving extra currencies.
+asm fun extraReserve(
+    // Toncoin amount
+    nativeAmount: Int,
+
+    // A map of 32-bit extra currency IDs to VarUInt32 amounts
+    extraAmountMap: map<Int as uint32, Int as varuint32>,
+
+    // Reservation mode
+    mode: Int,
+) { RAWRESERVEX }
 
 // Assembly function as an extension function for the `Builder` type.
 asm(value self) extends fun storeBool(self: Builder, value: Bool): Builder { 1 STI }
@@ -750,31 +777,27 @@ contract Filter() with FilterTrait {
 The `abstract{:tact}` attribute allows declaring a [internal function](#fun-internal) with no body given at declaration. Functions with this attribute are meant to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
 
 ```tact
-trait BlackSquare {
-    abstract fun paint();
+trait DelayedOwnable {
+    owner: Address;
+
+    abstract fun requireOwner();
+
+    abstract fun requireOwnerDelayed(bigBadName: Int);
 }
 
-trait CompositionVII {
-    abstract fun paintedWithOil(preliminary: Bool): Bool;
-}
-
-contract Abstractionism() with BlackSquare, CompositionVII {
-    // All functions marked as abstract must be defined in the contract that inherits them.
-    override fun paintedWithOil(preliminary: Bool): Bool {
-        if (preliminary) {
-            return false; // perhaps, watercolors were used...
-        }
-        return true;
+contract Ownership(owner: Address) with DelayedOwnable {
+    // All functions marked as abstract must be defined
+    // in the contract that inherits them.
+    override fun requireOwner() {
+        throwUnless(TactExitCodeAccessDenied, sender() == self.owner);
     }
 
-    // The override attribute gives you full control — the only thing must be kept
-    // the same between the abstract declaration and resulting definition
-    // is the name of the function. Return type or function parameters can be changed.
-    override fun paint(color: String): Bool {
-        if (color != "black") {
-            return false;
-        }
-        return true;
+    // The signature of the overridden function must match its inherited abstract
+    // counterpart on everything except parameter names. Notice the rename
+    // of the `bigBadName` parameter to `timestamp` in the function below.
+    override fun requireOwnerDelayed(timestamp: Int) {
+        throwUnless(TactExitCodeAccessDenied, now() >= timestamp);
+        throwUnless(TactExitCodeAccessDenied, sender() == self.owner);
     }
 }
 ```
@@ -897,6 +920,30 @@ fun second(flag: Bool): Bool {
 }
 ```
 
+### Naming and namespaces {#commonalities-naming}
+
+Function names follow the standard Tact [identifier naming conventions](/book/expressions#identifiers).
+
+```tact
+abstract fun azAZ09_();
+```
+
+[Internal functions](#fun-internal) and [getters](#get) exist in a namespace separate from the contract's fields. For example, a persistent state variable named `value` can co-exist with a getter function named `value()`, which is very convenient in many cases.
+
+However, identifiers of internal functions within a single contract must be distinct, as are identifiers of all top-level functions. The only exceptions are [extensions](#extensions), which can have the same identifiers, provided that the extended types of their `self` parameter differ.
+
+```tact
+// COMPILATION ERROR! Static function "globName" already exists
+fun globName() {}
+fun globName() {}
+//  ~~~~~~~~~~~~~
+
+// No errors, because despite the same identifiers,
+// the types of the `self` parameter are different
+extends fun doWith(self: Int) {}
+extends fun doWith(self: Slice) {}
+```
+
 ### Return values {#commonalities-return}
 
 All functions return a value. If the function does not have an explicit return type specified, it has an implicit return type of `void` — a pseudo-value that represents "nothing" in the Tact compiler. This also applies to the functions that do not allow specifying a return type, such as [receivers](#receivers) or [`init(){:tact}`](#init).
@@ -975,6 +1022,12 @@ fun bar() {
 ```
 
 ### Trailing semicolon {#commonalities-colon}
+
+The last [statement](/book/statements) inside the function body has a trailing semicolon — it can be freely omitted, which is useful for writing one-liners.
+
+```tact
+inline fun getCoinsStringOf(val: Int) { return val.toFloatString(9) }
+```
 
 When declaring an [internal function](#fun-internal) with [`abstract{:tact}`](#attributes-abstract) or [`virtual{:tact}`](#attributes-virtual) attributes, Tact allows you to omit a semicolon if it is the last function in the [trait's][trait] body.
 
