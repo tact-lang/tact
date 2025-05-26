@@ -14,11 +14,11 @@ exports[`codegen should correctly generate FunC code 1`] = `
 ;; __tact_not_null
 forall X -> X __tact_not_null(X x) impure inline;
 
-;; __tact_int_eq_nullable_one
-int __tact_int_eq_nullable_one(int a, int b) inline;
+;; __tact_int_eq_nullable_left
+int __tact_int_eq_nullable_left(int a, int b) inline;
 
-;; __tact_int_neq_nullable_one
-int __tact_int_neq_nullable_one(int a, int b) inline;
+;; __tact_int_neq_nullable_left
+int __tact_int_neq_nullable_left(int a, int b) inline;
 
 ;; $Bin$_load_without_opcode
 (slice, (tuple)) $Bin$_load_without_opcode(slice sc_0) inline;
@@ -103,12 +103,12 @@ forall X -> X __tact_not_null(X x) impure inline {
     throw_if(128, null?(x)); return x;
 }
 
-int __tact_int_eq_nullable_one(int a, int b) inline {
-    return (null?(b)) ? (false) : (a == b);
+int __tact_int_eq_nullable_left(int a, int b) inline {
+    return (null?(a)) ? (false) : (a == b);
 }
 
-int __tact_int_neq_nullable_one(int a, int b) inline {
-    return (null?(b)) ? (true) : (a != b);
+int __tact_int_neq_nullable_left(int a, int b) inline {
+    return (null?(a)) ? (true) : (a != b);
 }
 
 builder $global_beginCell() impure asm """
@@ -361,10 +361,10 @@ slice $global_right() impure inline_ref {
     if ((1 != $a)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    if (__tact_int_eq_nullable_one($b, 0)) {
+    if (__tact_int_eq_nullable_left($b, 0)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    if (__tact_int_neq_nullable_one($b, 0)) {
+    if (__tact_int_neq_nullable_left($b, 0)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     return (($self'field, $self'value, $self'data, $self'mapping), ());

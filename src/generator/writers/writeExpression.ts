@@ -299,8 +299,8 @@ const writeBinaryExpr =
                 return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
             }
             if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_slice_eq_bits_nullable_one`);
-                return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
+                wCtx.used(`__tact_slice_eq_bits_nullable_left`);
+                return `( ${prefix}__tact_slice_eq_bits_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
             }
             return `( ${prefix}equal_slices_bits(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
         }
@@ -322,8 +322,8 @@ const writeBinaryExpr =
                 return `__tact_cell_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_cell_${op}_nullable_one`);
-                return `__tact_cell_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
+                wCtx.used(`__tact_cell_${op}_nullable_left`);
+                return `__tact_cell_${op}_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             wCtx.used(`__tact_cell_${op}`);
             return `__tact_cell_${op}(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
@@ -346,8 +346,8 @@ const writeBinaryExpr =
                 return `__tact_slice_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_slice_${op}_nullable_one`);
-                return `__tact_slice_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
+                wCtx.used(`__tact_slice_${op}_nullable_left`);
+                return `__tact_slice_${op}_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             wCtx.used(`__tact_slice_${op}`);
             return `__tact_slice_${op}(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
@@ -386,8 +386,8 @@ const writeBinaryExpr =
                 return `__tact_int_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_int_${op}_nullable_one`);
-                return `__tact_int_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
+                wCtx.used(`__tact_int_${op}_nullable_left`);
+                return `__tact_int_${op}_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             if (f.op === "==") {
                 return `(${writeExpression(f.left, wCtx)} == ${writeExpression(f.right, wCtx)})`;

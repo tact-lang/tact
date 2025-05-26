@@ -478,6 +478,19 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
+    ctx.fun(`__tact_slice_eq_bits_nullable_left`, () => {
+        ctx.signature(
+            `int __tact_slice_eq_bits_nullable_left(slice a, slice b)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (false) : (equal_slices_bits(a, b));
+            `);
+        });
+    });
+
     ctx.fun(`__tact_slice_eq_bits_nullable`, () => {
         ctx.signature(`int __tact_slice_eq_bits_nullable(slice a, slice b)`);
         ctx.flag("inline");
@@ -545,6 +558,28 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.body(() => {
             ctx.write(`
                 return (null?(b)) ? (true) : (a != b);
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_int_eq_nullable_left`, () => {
+        ctx.signature(`int __tact_int_eq_nullable_left(int a, int b)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (false) : (a == b);
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_int_neq_nullable_left`, () => {
+        ctx.signature(`int __tact_int_neq_nullable_left(int a, int b)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (true) : (a != b);
             `);
         });
     });
@@ -623,6 +658,28 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
+    ctx.fun(`__tact_cell_eq_nullable_left`, () => {
+        ctx.signature(`int __tact_cell_eq_nullable_left(cell a, cell b)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_cell_neq_nullable_left`, () => {
+        ctx.signature(`int __tact_cell_neq_nullable_left(cell a, cell b)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (true) : (a.cell_hash() != b.cell_hash());
+            `);
+        });
+    });
+
     ctx.fun(`__tact_cell_eq_nullable`, () => {
         ctx.signature(`int __tact_cell_eq_nullable(cell a, cell b)`);
         ctx.flag("inline");
@@ -693,6 +750,28 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.body(() => {
             ctx.write(`
                 return (null?(b)) ? (true) : (a.slice_hash() != b.slice_hash());
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_slice_eq_nullable_left`, () => {
+        ctx.signature(`int __tact_slice_eq_nullable_left(slice a, slice b)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (false) : (a.slice_hash() == b.slice_hash());
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_slice_neq_nullable_left`, () => {
+        ctx.signature(`int __tact_slice_neq_nullable_left(slice a, slice b)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (true) : (a.slice_hash() != b.slice_hash());
             `);
         });
     });
