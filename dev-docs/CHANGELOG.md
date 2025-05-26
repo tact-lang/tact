@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Added fixed-bytes support to bounced message size calculations: PR [#3129](https://github.com/tact-lang/tact/pull/3129)
 - [fix] Fixed compiler errors for trait return types: PR [#3197](https://github.com/tact-lang/tact/pull/3197)
 - [fix] Added checks for trait returns in non-shuffle asm functions: PR [#3197](https://github.com/tact-lang/tact/pull/3197)
-- Compiler now generates more efficient code for serialization: PR [#3213](https://github.com/tact-lang/tact/pull/3213)
 - [fix] Allow equivalent `as`-annotations for maps types: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
 - [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
 
