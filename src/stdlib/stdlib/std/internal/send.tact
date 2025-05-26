@@ -31,9 +31,7 @@ const SendRemainingBalance: Int = 128;
 ///
 const SendOnlyEstimateFee: Int = 1024;
 
-/// **Deprecated** since Tact 1.6.5.
-///
-/// Use `SendPayFwdFeesSeparately` instead.
+/// **Deprecated** since Tact 1.6.5. Use `SendPayFwdFeesSeparately` instead.
 ///
 /// Pay forward fees separately from the message value.
 ///
