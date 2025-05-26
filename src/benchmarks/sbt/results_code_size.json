@@ -71,6 +71,22 @@
         "item cells": "17",
         "item bits": "9417"
       }
+    },
+    {
+      "label": "1.6.10 with nullable-to-non-nullable comparisons reorder",
+      "pr": "https://github.com/tact-lang/tact/pull/3233",
+      "size": {
+        "item cells": "17",
+        "item bits": "9401"
+      }
+    },
+    {
+      "label": "1.6.10 with correct evaluation order for binary expressions",
+      "pr": "https://github.com/tact-lang/tact/pull/3252",
+      "size": {
+        "item cells": "17",
+        "item bits": "9409"
+      }
     }
   ]
 }

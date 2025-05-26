@@ -517,6 +517,26 @@ function resolveFieldAccess(
         );
     }
 
+    if (src.kind === "ref_bounced" && field) {
+        if (field.type.kind === "map") {
+            throwCompilationError(
+                `Cannot access field of map type from bounced<${src.name}>`,
+                exp.field.loc,
+            );
+        }
+
+        if (field.type.kind === "ref") {
+            const name = field.type.name;
+            if (name === "Cell" || name === "Slice" || name === "Builder") {
+                const optional = field.type.optional ? "?" : "";
+                throwCompilationError(
+                    `Cannot access field of ${idTextErr(name + optional)} type from bounced<${src.name}>`,
+                    exp.field.loc,
+                );
+            }
+        }
+    }
+
     const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
     if (!field && !cst) {
         const typeStr =
@@ -681,6 +701,22 @@ function resolveCall(
         if (srcT.kind === "struct") {
             if (StructFunctions.has(idText(exp.method))) {
                 const abi = StructFunctions.get(idText(exp.method))!;
+                const isInstanceCall = exp.self.kind !== "id";
+                const isStaticCallFromType =
+                    exp.self.kind === "id" && exp.self.text === src.name;
+
+                if (abi.isStatic && isInstanceCall) {
+                    throwCompilationError(
+                        `Cannot call static method ${idTextErr(exp.method)} on an instance.`,
+                        exp.loc,
+                    );
+                }
+                if (!abi.isStatic && isStaticCallFromType) {
+                    throwCompilationError(
+                        `Cannot call instance method ${idTextErr(exp.method)} as a static one.`,
+                        exp.loc,
+                    );
+                }
                 const resolved = abi.resolve(
                     ctx,
                     [src, ...exp.args.map((v) => getExpType(ctx, v))],

@@ -249,6 +249,16 @@
         "approveTon": "6600",
         "cancelTon": "4529"
       }
+    },
+    {
+      "label": "1.6.10 with correct evaluation order for binary expressions",
+      "pr": "https://github.com/tact-lang/tact/pull/3252",
+      "gas": {
+        "fundingTon": "4121",
+        "changeCode": "4236",
+        "approveTon": "6608",
+        "cancelTon": "4537"
+      }
     }
   ]
 }

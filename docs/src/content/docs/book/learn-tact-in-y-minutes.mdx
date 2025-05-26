@@ -818,7 +818,7 @@ fun examples() {
 
         // Configure various modes of sending the message in regards to how
         // the funds will be charged, how message will be processed, etc.
-        mode: SendPayGasSeparately | SendIgnoreErrors,
+        mode: SendPayFwdFeesSeparately | SendIgnoreErrors,
 
         // Whether to allow this message to bounce back to this contract
         // in case the recipient contract doesn't exist or wasn't able to
@@ -1320,7 +1320,7 @@ contract JettonWallet(
             message(MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
-                mode: SendPayGasSeparately,
+                mode: SendPayFwdFeesSeparately,
                 bounce: false,
                 body: JettonNotification{
                     queryId: msg.queryId,

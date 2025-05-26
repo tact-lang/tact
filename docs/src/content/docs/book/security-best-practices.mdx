@@ -560,5 +560,11 @@ contract AnotherContract(
 }
 ```
 
+## Pay attention to `safety` option set of `tact.config.json`
+
+The security of the Tact compiler can be hardened or slightly relaxed by tweaking the [`safety`](/book/config#options-safety) option set in the [`tact.config.json`](/book/config).
+
+Use those settings **wisely** — disabling them often gives performance boosts at the cost of runtime checks and reduced contract safety. On the flip side, enabling them would harden the contracts but make them a bit more expensive to execute.
+
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages

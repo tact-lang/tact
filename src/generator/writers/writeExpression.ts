@@ -294,15 +294,15 @@ const writeBinaryExpr =
                 wCtx.used(`__tact_slice_eq_bits_nullable`);
                 return `( ${prefix}__tact_slice_eq_bits_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
             }
-            if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_slice_eq_bits_nullable_one`);
-                return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
-            }
             if (!lt.optional && rt.optional) {
-                wCtx.used(`__tact_slice_eq_bits_nullable_one`);
-                return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
+                wCtx.used(`__tact_slice_eq_bits_nullable_right`);
+                return `( ${prefix}__tact_slice_eq_bits_nullable_right(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
             }
-            return `( ${prefix}equal_slices_bits(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
+            if (lt.optional && !rt.optional) {
+                wCtx.used(`__tact_slice_eq_bits_nullable_left`);
+                return `( ${prefix}__tact_slice_eq_bits_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
+            }
+            return `( ${prefix}equal_slices_bits(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
         }
 
         // Case for cells equality
@@ -317,16 +317,16 @@ const writeBinaryExpr =
                 wCtx.used(`__tact_cell_${op}_nullable`);
                 return `__tact_cell_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
-            if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_cell_${op}_nullable_one`);
-                return `__tact_cell_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-            }
             if (!lt.optional && rt.optional) {
-                wCtx.used(`__tact_cell_${op}_nullable_one`);
-                return `__tact_cell_${op}_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+                wCtx.used(`__tact_cell_${op}_nullable_right`);
+                return `__tact_cell_${op}_nullable_right(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
+            }
+            if (lt.optional && !rt.optional) {
+                wCtx.used(`__tact_cell_${op}_nullable_left`);
+                return `__tact_cell_${op}_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             wCtx.used(`__tact_cell_${op}`);
-            return `__tact_cell_${op}(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+            return `__tact_cell_${op}(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
         }
 
         // Case for slices and strings equality
@@ -341,16 +341,16 @@ const writeBinaryExpr =
                 wCtx.used(`__tact_slice_${op}_nullable`);
                 return `__tact_slice_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
-            if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_slice_${op}_nullable_one`);
-                return `__tact_slice_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-            }
             if (!lt.optional && rt.optional) {
-                wCtx.used(`__tact_slice_${op}_nullable_one`);
-                return `__tact_slice_${op}_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+                wCtx.used(`__tact_slice_${op}_nullable_right`);
+                return `__tact_slice_${op}_nullable_right(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
+            }
+            if (lt.optional && !rt.optional) {
+                wCtx.used(`__tact_slice_${op}_nullable_left`);
+                return `__tact_slice_${op}_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             wCtx.used(`__tact_slice_${op}`);
-            return `__tact_slice_${op}(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+            return `__tact_slice_${op}(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
         }
 
         // Case for maps equality
@@ -381,13 +381,13 @@ const writeBinaryExpr =
                 wCtx.used(`__tact_int_${op}_nullable`);
                 return `__tact_int_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
-            if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_int_${op}_nullable_one`);
-                return `__tact_int_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-            }
             if (!lt.optional && rt.optional) {
-                wCtx.used(`__tact_int_${op}_nullable_one`);
-                return `__tact_int_${op}_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+                wCtx.used(`__tact_int_${op}_nullable_right`);
+                return `__tact_int_${op}_nullable_right(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
+            }
+            if (lt.optional && !rt.optional) {
+                wCtx.used(`__tact_int_${op}_nullable_left`);
+                return `__tact_int_${op}_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             if (f.op === "==") {
                 return `(${writeExpression(f.left, wCtx)} == ${writeExpression(f.right, wCtx)})`;

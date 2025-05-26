@@ -26,6 +26,7 @@ import { getAstFactory, idText } from "@/ast/ast-helpers";
 import { evalConstantExpression } from "@/optimizer/constEval";
 import { getAstUtil } from "@/ast/util";
 import { prettyPrint } from "@/ast/ast-printer";
+import { escapeUnicodeControlCodes } from "@/utils/text";
 
 type ContractReceivers = {
     readonly internal: Receivers;
@@ -281,7 +282,10 @@ function writeCommentReceivers(
                 !msgOpcodeRemoved,
                 commentRcv.ast.loc,
             );
-            wCtx.append(`;; Receive "${commentRcv.selector.comment}" message`);
+            const comment = escapeUnicodeControlCodes(
+                commentRcv.selector.comment,
+            );
+            wCtx.append(`;; Receive "${comment}" message`);
 
             wCtx.inBlock(`if (text_op == 0x${hash})`, () => {
                 writeReceiverBody(commentRcv, contract, wCtx);
@@ -423,7 +427,16 @@ function fallbackReceiverKind(
                 );
                 if (constEvalResult.kind !== "number") {
                     throwInternalCompilerError(
-                        `"throw" can only have a number as an argument, but it has throws ${prettyPrint(constEvalResult)}`,
+                        `"throw" can only have a number as an argument, but it throws ${prettyPrint(constEvalResult)}`,
+                        throwArg.loc,
+                    );
+                }
+                if (
+                    constEvalResult.value < 0n ||
+                    constEvalResult.value >= 2n ** 16n
+                ) {
+                    throwCompilationError(
+                        `Invalid exit code for "throw": ${constEvalResult.value}, but it must be in range [0, 65535]`,
                         throwArg.loc,
                     );
                 }
@@ -717,6 +730,7 @@ export function messageOpcode(n: Ast.Number): string {
             return n.value.toString(n.base);
         case 2:
         case 8:
+            return `0x${n.value.toString(16)}`;
         case 16:
             return `0x${n.value.toString(n.base)}`;
     }
