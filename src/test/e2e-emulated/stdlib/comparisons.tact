@@ -39,6 +39,11 @@ contract ComparisonsTester {
     get fun compare3(): Bool {
         return self.leftCell() == self.rightCell();
     }
+
+    get fun compare4(x: Int): Bool {
+        return x == x.incOptOld()
+    }
 }
 
 extends mutates fun incOld(self: Int): Int { self += 1; return self - 1 }
+extends mutates fun incOptOld(self: Int): Int? { self += 1; return self - 1 }
