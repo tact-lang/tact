@@ -81,8 +81,8 @@
       }
     },
     {
-      "label": "1.6.10 with 1",
-      "pr": null,
+      "label": "1.6.10 with correct evaluation order for binary expressions",
+      "pr": "https://github.com/tact-lang/tact/pull/3252",
       "size": {
         "item cells": "17",
         "item bits": "9409"
