@@ -46,5 +46,6 @@ describe("comparisons", () => {
         expect(await contract.getCompare4(10n)).toBe(true);
         expect(await contract.getCompare5()).toBe(true);
         expect(await contract.getCompare6()).toBe(true);
+        expect(await contract.getCompare7(10n)).toBe(true);
     });
 });
