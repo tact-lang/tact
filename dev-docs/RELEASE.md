@@ -17,7 +17,7 @@
 - [ ] Publish the new `vX.Y.Z` release on NPM: [@tact-lang/compiler](https://www.npmjs.com/package/@tact-lang/compiler)
   ```shell
   $ git checkout vX.Y.Z
-  $ yarn all && npm publish
+  $ yarn all && npm publish --registry=https://registry.npmjs.org
   ```
 - [ ] Request or perform the plugins/parsers/tools updates and releases:
   - [ ] <https://github.com/tact-lang/tact-template> (tracked in: )
