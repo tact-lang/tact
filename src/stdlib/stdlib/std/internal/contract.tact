@@ -144,6 +144,12 @@ inline extends fun hasSameBasechainAddress(self: StateInit, address: Address): B
     return baseAddress.hash!! == addressHash;
 }
 
+inline extends fun hasSameBasechainAddressWithoutShard(self: StateInit, address: Address): Bool {
+    let addressHash = parseStdAddress(address.asSlice()).address;
+    let baseAddress = contractShardBasechainAddress(self);
+    return extractLowBits(baseAddress.hash!!, 256 - prefixLength) == extractLowBits(addressHash, 256 - prefixLength);
+}
+
 /// Global function.
 ///
 /// Computes smart contract's `Address` in the workchain ID 0 (basechain) using the `StateInit` `s` of the contract. Alias to `contractAddressExt(0, s.code, s.data)`.

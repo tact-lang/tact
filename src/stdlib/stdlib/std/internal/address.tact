@@ -335,6 +335,11 @@ inline fun contractBasechainAddress(s: StateInit): BasechainAddress {
     return newBasechainAddress(hash);
 }
 
+inline fun contractShardBasechainAddress(s: StateInit): BasechainAddress {
+    let hash = beginCell().storeShardedStateInit(s).endCell().hash();
+    return newBasechainAddress(hash);
+}
+
 /// Extension function for the `Builder` type. Available since Tact 1.6.0.
 ///
 /// Stores the basechain address in the copy of the Builder and returns that copy.
@@ -439,4 +444,20 @@ asm(errorCode workchain address) fun forceWorkchain(address: Address, workchain:
     DROP
     CMP
     THROWANYIF
+}
+
+extends inline fun changeShard(self: Address, shard: Int): Address {
+    let sl: Slice = self.asSlice();
+
+    return beginCell().storeUint(sl.loadUint(11), 11).storeUint(changeShard(sl.loadUint(256), shard), 256).asSlice().loadAddress();
+}
+
+extends inline fun getShard(self: Address): Int {
+    let sl = self.asSlice();
+    sl.skipBits(11); // addr_std$10, anycast: false, workchain: int8 
+    return sl.loadUint(prefixLength);
+}
+
+inline extends fun hasSameShard(self: Address, b: Address): Bool {
+    return self.getShard() == b.getShard();
 }

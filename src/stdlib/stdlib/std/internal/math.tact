@@ -527,3 +527,11 @@ fun sqrt(num: Int): Int {
 
     return x;
 }
+
+asm fun extractLowBits(value: Int, count: Int): Int { 
+    MODPOW2
+}
+
+inline fun changeShard(hash: Int, shard: Int): Int {
+    return extractLowBits(hash, 256 - prefixLength) | (shard << (256 - prefixLength));
+}
