@@ -110,7 +110,7 @@
     },
     {
       "label": "1.6.11 with throw(0) instead of return",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/3266",
       "gas": {
         "externalTransfer": "3625",
         "addPlugin": "7399",
