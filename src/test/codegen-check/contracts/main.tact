@@ -274,7 +274,14 @@ contract MainContract {
             throw(11);
         }
     }
+
+    get fun testOrder(): Bool {
+        return left() == right();
+    }
 }
 
 extends mutates fun inc(self: Int): Int { self += 1; return self }
 fun bar(): Int { return 10 }
+
+fun left(): Address { dump(1); return myAddress(); }
+fun right(): Address { dump(2); return myAddress(); }

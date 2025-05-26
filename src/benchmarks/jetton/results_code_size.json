@@ -159,6 +159,16 @@
         "wallet cells": "14",
         "wallet bits": "7892"
       }
+    },
+    {
+      "label": "1.6.10 with correct evaluation order for binary expressions",
+      "pr": "https://github.com/tact-lang/tact/pull/3252",
+      "size": {
+        "minter cells": "27",
+        "minter bits": "14169",
+        "wallet cells": "14",
+        "wallet bits": "7884"
+      }
     }
   ]
 }
