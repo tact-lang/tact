@@ -1,5 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`resolveDescriptors should fail descriptors for asm-fun-bounced-return 1`] = `
+"<unknown>:3:1: Function "foo" returns a <bounced> type, which is not supported in "asm" functions.
+  2 | 
+> 3 | asm fun foo(): bounced<Cell> { NOP }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-duplicate 1`] = `
 "<unknown>:3:1: asm argument rearrangement cannot have duplicates
   2 | 
@@ -36,6 +45,15 @@ exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-non-
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-bounced-return 1`] = `
+"<unknown>:3:1: Function "foo" returns a <bounced> type, which is not supported in "asm" functions.
+  2 | 
+> 3 | asm(-> 0) fun foo(): bounced<Cell> { NOP }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-duplicate 1`] = `
 "<unknown>:3:1: asm return rearrangement cannot have duplicates
   2 | 
@@ -60,6 +78,24 @@ exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-non-
 > 4 | asm(-> 2 1 0) fun foo(x: Int, y: Int): Pair {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     SWAP
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-trait-return 1`] = `
+"<unknown>:3:1: Function "foo" returns a trait, which is not supported in "asm" functions.
+  2 | 
+> 3 | asm(-> 0) fun foo(): T { NOP }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for asm-fun-trait-return 1`] = `
+"<unknown>:3:1: Function "foo" returns a trait, which is not supported in "asm" functions.
+  2 | 
+> 3 | asm fun foo(): T { NOP }
+      ^~~~~~~~~~~~~~~~~~~~~~~~
+  4 | 
 "
 `;
 
