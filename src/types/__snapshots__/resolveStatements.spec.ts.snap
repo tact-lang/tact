@@ -90,6 +90,42 @@ exports[`resolveStatements should fail statements for bounced-type-is-smaller-in
 "
 `;
 
+exports[`resolveStatements should fail statements for bounced-type-with-builder 1`] = `
+"<unknown>:20:18: Cannot access field with "Builder" type inside bounced receiver
+  19 |     bounced(msg: bounced<Msg>) {
+> 20 |         dump(msg.m);
+                        ^
+  21 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for bounced-type-with-cell 1`] = `
+"<unknown>:20:18: Cannot access field with "Cell" type inside bounced receiver
+  19 |     bounced(msg: bounced<Msg>) {
+> 20 |         dump(msg.m);
+                        ^
+  21 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for bounced-type-with-map 1`] = `
+"<unknown>:19:18: Cannot access field with map type inside bounced receiver
+  18 |     bounced(msg: bounced<Msg>) {
+> 19 |         dump(msg.m);
+                        ^
+  20 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for bounced-type-with-slice 1`] = `
+"<unknown>:20:18: Cannot access field with "Slice" type inside bounced receiver
+  19 |     bounced(msg: bounced<Msg>) {
+> 20 |         dump(msg.m);
+                        ^
+  21 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for call-non-optional-method-on-optional 1`] = `
 "<unknown>:10:13: Cannot call method "isNotNone" on an expression of type "Address?" (optional Address) without unwrapping it with "!!" first
    9 |     receive() {
@@ -1987,7 +2023,94 @@ exports[`resolveStatements should resolve statements for assign-self-mutating-me
 ]
 `;
 
+exports[`resolveStatements should resolve statements for bounced-type-with-builder 1`] = `
+[
+  [
+    "msg",
+    "bounced<Msg>",
+  ],
+  [
+    "msg.x",
+    "Int",
+  ],
+  [
+    "dump(msg.x)",
+    "<void>",
+  ],
+  [
+    "msg",
+    "bounced<Msg2>",
+  ],
+  [
+    "msg.x",
+    "Int",
+  ],
+  [
+    "dump(msg.x)",
+    "<void>",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for bounced-type-with-cell 1`] = `
+[
+  [
+    "msg",
+    "bounced<Msg>",
+  ],
+  [
+    "msg.x",
+    "Int",
+  ],
+  [
+    "dump(msg.x)",
+    "<void>",
+  ],
+  [
+    "msg",
+    "bounced<Msg2>",
+  ],
+  [
+    "msg.x",
+    "Int",
+  ],
+  [
+    "dump(msg.x)",
+    "<void>",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for bounced-type-with-map 1`] = `
+[
+  [
+    "msg",
+    "bounced<Msg>",
+  ],
+  [
+    "msg.x",
+    "Int",
+  ],
+  [
+    "dump(msg.x)",
+    "<void>",
+  ],
+  [
+    "msg",
+    "bounced<Msg2>",
+  ],
+  [
+    "msg.x",
+    "Int",
+  ],
+  [
+    "dump(msg.x)",
+    "<void>",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for bounced-type-with-slice 1`] = `
 [
   [
     "msg",

@@ -2485,8 +2485,14 @@ function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
                 fieldBits += 267;
             } else if (type === "bool") {
                 fieldBits += 1;
+            } else if (
+                type === "cell" ||
+                type === "slice" ||
+                type === "builder"
+            ) {
+                fieldBits += 0; // 0 bits and 1 ref
             } else {
-                // Unsupported - all others (slice, builder, nested structs)
+                // Unsupported nested structs
                 break;
             }
         } else if (f.abi.type.kind === "dict") {
