@@ -1,22 +1,44 @@
 contract ComparisonsTester {
+    sliceCounter: Int = 0;
+    cellCounter: Int = 0;
+
     receive() {}
 
-    get fun compare1(input: Int): Bool {
-        return input.inc() == input.inc();
+    fun leftSlice(): Slice {
+        self.sliceCounter += 1;
+        return emptySlice()
     }
 
-    get fun compare2(input: Int): Bool {
-        return input.inc() == input.dec();
+    fun rightSlice(): Slice {
+        if (self.sliceCounter == 0) {
+            return beginCell().storeUint(10, 32).endCell().asSlice()
+        }
+        return emptySlice()
     }
 
-    get fun compare3(input: Int): Bool {
-        //           ^^^^^ 10
-        return input.incOld() == input.dec();
-        //     ^^^^^^^^^^^^^^    ^^^^^^^^^^^
-        //     10, input=11      10
+    fun leftCell(): Cell {
+        self.cellCounter += 1;
+        return emptyCell()
+    }
+
+    fun rightCell(): Cell {
+        if (self.cellCounter == 0) {
+            return beginCell().storeUint(10, 32).endCell()
+        }
+        return emptyCell()
+    }
+
+    get fun compare1(x: Int): Bool {
+        return x == x.incOld()
+    }
+
+    get fun compare2(): Bool {
+        return self.leftSlice() == self.rightSlice();
+    }
+
+    get fun compare3(): Bool {
+        return self.leftCell() == self.rightCell();
     }
 }
 
-extends mutates fun inc(self: Int): Int { self += 1; return self }
-extends mutates fun dec(self: Int): Int { self -= 1; return self }
 extends mutates fun incOld(self: Int): Int { self += 1; return self - 1 }

@@ -40,8 +40,8 @@ describe("comparisons", () => {
     it("should perform comparisons with mutation correctly", async () => {
         const { contract } = await state.get();
 
-        expect(await contract.getCompare1(10n)).toBe(false);
-        expect(await contract.getCompare2(10n)).toBe(false);
-        expect(await contract.getCompare3(10n)).toBe(true);
+        expect(await contract.getCompare1(10n)).toBe(true);
+        expect(await contract.getCompare2()).toBe(true);
+        expect(await contract.getCompare3()).toBe(true);
     });
 });
