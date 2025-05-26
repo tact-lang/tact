@@ -1,6 +1,6 @@
 import { throwInternal } from "@/error/errors";
-import type { Loc } from "@/next/ast";
-import type * as V from "@/next/types/via";
+import type { Loc, Via, ViaUser } from "@/next/ast";
+import type * as V from "@/next/ast/via";
 
 export type WithLog<T> = Generator<TcError, T>
 
@@ -15,6 +15,49 @@ export function runLog<T, R>(gen: Generator<T, R, unknown>): readonly [R, readon
         }
     }
 }
+
+export function* mapLog<T, U>(xs: readonly T[], f: (x: T) => WithLog<U>): WithLog<U[]> {
+    const result: U[] = [];
+    for (const x of xs) {
+        result.push(yield* f(x));
+    }
+    return result;
+}
+
+export function* filterLog<T>(xs: readonly T[], f: (x: T) => WithLog<boolean>): WithLog<T[]> {
+    const result: T[] = [];
+    for (const x of xs) {
+        const res = yield* f(x);
+        if (res) {
+            result.push(x);
+        }
+    }
+    return result;
+}
+
+export function* toMap<V extends { via: ViaUser }>(
+    kind: string,
+    xs: readonly (readonly [string, V])[],
+): WithLog<Map<string, V>> {
+    const result: Map<string, V> = new Map();
+    for (const [key, next] of xs) {
+        const prev = result.get(key);
+        if (prev) {
+            yield ERedefine(kind, key, next.via, prev.via);
+        } else {
+            result.set(key, next);
+        }
+    }
+    return result;
+}
+
+export const ERedefine = (kind: string, name: string, prev: Via, next: ViaUser): TcError => ({
+    loc: viaToRange(next),
+    descr: [
+        TEText(`There already is a ${kind} "${name}" from`),
+        TEVia(prev),
+    ],
+});
 
 export type TcError = {
     // location where IDE should show this error

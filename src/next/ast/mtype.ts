@@ -1,26 +1,6 @@
-import type { OptionalId, Loc, TypeId } from "@/next/ast/common";
-import type { DecodedType, DTypeParamRef } from "@/next/ast/dtype";
+import type { Loc, TypeId } from "@/next/ast/common";
+import type { DTypeParamRef } from "@/next/ast/dtype";
 import type * as Ast from "@/next/ast/type";
-
-export type MFnType = {
-    readonly typeParams: readonly TypeId[];
-    readonly args: readonly MTypedParameter[];
-    readonly returnType: DecodedType,
-}
-
-export type MMethodFnType = {
-    readonly typeParams: readonly TypeId[];
-    readonly self: SelfType;
-    readonly args: readonly MTypedParameter[];
-    readonly returnType: DecodedType,
-}
-
-export type MTypedParameter = {
-    readonly kind: "typed_parameter";
-    readonly name: OptionalId;
-    readonly type: DecodedType;
-    readonly loc: Loc;
-};
 
 export type SelfType =
     | MethodGroundType
@@ -48,17 +28,21 @@ export type MethodGroundType =
     | MGTypeTuple
     | MGTypeTensor;
 
-export type MGTypeInt = Ast.TypeInt
-export type MGTypeSlice = Ast.TypeSlice
-export type MGTypeCell = Ast.TypeCell
-export type MGTypeBuilder = Ast.TypeBuilder
-export type MGTypeUnit = Ast.TypeUnit
-export type MGTypeVoid = Ast.TypeVoid
-export type MGTypeNull = Ast.TypeNull
-export type MGTypeBool = Ast.TypeBool
-export type MGTypeAddress = Ast.TypeAddress
-export type MGTypeString = Ast.TypeString
-export type MGTypeStringBuilder = Ast.TypeStringBuilder
+export type Ground<T> = T & {
+    readonly ground: "yes",
+}
+
+export type MGTypeInt = Ground<Ast.TypeInt>
+export type MGTypeSlice = Ground<Ast.TypeSlice>
+export type MGTypeCell = Ground<Ast.TypeCell>
+export type MGTypeBuilder = Ground<Ast.TypeBuilder>
+export type MGTypeUnit = Ground<Ast.TypeUnit>
+export type MGTypeVoid = Ground<Ast.TypeVoid>
+export type MGTypeNull = Ground<Ast.TypeNull>
+export type MGTypeBool = Ground<Ast.TypeBool>
+export type MGTypeAddress = Ground<Ast.TypeAddress>
+export type MGTypeString = Ground<Ast.TypeString>
+export type MGTypeStringBuilder = Ground<Ast.TypeStringBuilder>
 
 export type MGTypeRef = {
     readonly ground: "yes",

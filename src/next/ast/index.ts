@@ -5,4 +5,6 @@ export * from "@/next/ast/generated/type";
 export * from "@/next/ast/generated/vtype";
 export * from "@/next/ast/generated/dtype";
 export * from "@/next/ast/generated/mtype";
+export * from "@/next/ast/generated/via";
+export * from "@/next/ast/generated/checked";
 export * from "@/next/ast/generated/root";

@@ -2,6 +2,7 @@ import type { Loc, TypeId } from "@/next/ast/common";
 import type * as Ast from "@/next/ast/type";
 
 export type DecodedType =
+    | DTypeRecover
     | DTypeRef
     | DTypeAliasRef
     | DTypeParamRef
@@ -33,6 +34,10 @@ export type DTypeBool = Ast.TypeBool
 export type DTypeAddress = Ast.TypeAddress
 export type DTypeString = Ast.TypeString
 export type DTypeStringBuilder = Ast.TypeStringBuilder
+
+export type DTypeRecover = {
+    readonly kind: "recover";
+}
 
 export type DTypeRef = {
     readonly kind: "type_ref";

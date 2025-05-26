@@ -4,38 +4,42 @@ import * as Ast from "@/next/ast";
 
 const r = Ast.Builtin();
 
-const Param = (name: string, type: Ast.DecodedType) => {
-    return Ast.MTypedParameter(
-        Ast.Id(name, r),
-        type,
-        r,
-    );
+const TypeParams = (typeParams: readonly string[]): Ast.TypeParams => {
+    const arr = typeParams.map(name => Ast.TypeId(name, r));
+    return Ast.TypeParams(arr, new Set(typeParams));
 };
 
-const t = Ast.TypeId("T", r);
-const tParam = Ast.DTypeParamRef(t, r);
-
-const k = Ast.TypeId("K", r);
-const kParam = Ast.DTypeParamRef(k, r);
-const key = Param("key", kParam);
-
-const v = Ast.TypeId("V", r);
-const vParam = Ast.DTypeParamRef(v, r);
-const value = Param("value", vParam);
-
-const mapType = Ast.MVTypeMap(kParam, vParam, r);
-
-const GenericFn = (name: string, typeParams: readonly Ast.TypeId[], args: readonly Ast.MTypedParameter[], returnType: Ast.DecodedType): [string, Ast.MFnType] => {
-    return [name, Ast.MFnType(typeParams, args, returnType)];
+const Params = (params: Record<string, Ast.DecodedType>): Ast.Parameters => {
+    const order: Ast.Parameter[] = [];
+    const set: Set<string> = new Set();
+    for (const [name, type] of Object.entries(params)) {
+        order.push(Ast.Parameter(Ast.Id(name, r), type, r));
+        set.add(name);
+    }
+    return Ast.Parameters(order, set);
 };
-const Fn = (name: string, args: readonly Ast.MTypedParameter[], returnType: Ast.DecodedType): [string, Ast.MFnType] => {
-    return [name, Ast.MFnType([], args, returnType)];
+
+const Ref = (name: string): Ast.DTypeParamRef => {
+    return Ast.DTypeParamRef(Ast.TypeId(name, r), r);
 };
-const MapMethod = (name: string, args: readonly Ast.MTypedParameter[], returnType: Ast.DecodedType): [string, Ast.MMethodFnType] => {
-    return [name, Ast.MMethodFnType(
-        [k, v],
+
+const mapType = Ast.MVTypeMap(Ref("K"), Ref("V"), r);
+
+const GenericFn = (name: string, typeParams: readonly string[], params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedFnType] => {
+    return [name, Ast.DecodedFnType(
+        TypeParams(typeParams),
+        Params(params),
+        returnType,
+    )];
+};
+const Fn = (name: string, params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedFnType] => {
+    return GenericFn(name, [], params, returnType);
+};
+const MapMethod = (name: string, params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedMethodType] => {
+    return [name, Ast.DecodedMethodType(
+        TypeParams(["K", "V"]),
         mapType,
-        args,
+        Params(params),
         returnType,
     )];
 };
@@ -61,75 +65,75 @@ export const builtinTypes = new Map([
 ].map(s => [s, s]));
 
 const ArithBin = (name: string) => {
-    return Fn(name, [Param("left", Int), Param("right", Int)], Int);
+    return Fn(name, { left: Int, right: Int }, Int);
 };
 const CompBin = (name: string) => {
-    return Fn(name, [Param("left", Int), Param("right", Int)], Bool);
+    return Fn(name, { left: Int, right: Int }, Bool);
 };
 const BoolBin = (name: string) => {
-    return Fn(name, [Param("left", Bool), Param("right", Bool)], Bool);
+    return Fn(name, { left: Bool, right: Bool }, Bool);
 };
 const EqBin = (name: string) => {
-    return GenericFn(name, [t], [Param("left", tParam), Param("right", tParam)], Bool);
+    return GenericFn(name, ["T"], { left: Ref("T"), right: Ref("T") }, Bool);
 };
 
-export const builtinFunctions: Map<string, Ast.MFnType> = new Map([
+export const builtinFunctions: Map<string, Ast.DecodedFnType> = new Map([
     // dump<T>(arg: T): Void
-    GenericFn("dump", [t], [Param("data", tParam)], Void),
+    GenericFn("dump", ["T"], { data: Ref("T") }, Void),
     // ton(value: String): Int
-    Fn("ton", [Param("value", String)], Int),
+    Fn("ton", { value: String }, Int),
     // require(that: Bool, msg: String): Void
-    Fn("require", [Param("that", Bool), Param("msg", String)], Void),
+    Fn("require", { that: Bool, msg: String }, Void),
     // address(s: String): Address
-    Fn("address", [Param("s", String)], Address),
+    Fn("address", { s: String }, Address),
     // cell(bocBase64: String): Cell
-    Fn("cell", [Param("bocBase64", String)], Cell),
+    Fn("cell", { bocBase64: String }, Cell),
     // dumpStack(): Void
-    Fn("dumpStack", [], Void),
+    Fn("dumpStack", {}, Void),
     // emptyMap<K, V>(): map<K, V>
-    GenericFn("emptyMap", [k, v], [], mapType),
+    GenericFn("emptyMap", ["K", "V"], {}, mapType),
     // slice(bocBase64: String): Slice
-    Fn("slice", [Param("bocBase64", String)], Slice),
+    Fn("slice", { bocBase64: String }, Slice),
     // rawSlice(hex: String): Slice
-    Fn("rawSlice", [Param("hex", String)], Slice),
+    Fn("rawSlice", { hex: String }, Slice),
     // ascii(str: String): Int
-    Fn("ascii", [Param("str", String)], Int),
+    Fn("ascii", { str: String }, Int),
     // crc32(str: String): Int
-    Fn("crc32", [Param("str", String)], Int),
+    Fn("crc32", { str: String }, Int),
     // sha256(data: Slice): Int
-    Fn("sha256", [Param("str", Slice)], Int),
+    Fn("sha256", { str: Slice }, Int),
 ]);
 
-export const builtinMethods: Map<string, Ast.MMethodFnType> = new Map([
+export const builtinMethods: Map<string, Ast.DecodedMethodType> = new Map([
     // set(key: K, value: V): void
-    MapMethod("set", [key, value], Void),
+    MapMethod("set", { key: Ref("K"), value: Ref("V") }, Void),
     // get(key: K): Maybe<V>
-    MapMethod("get", [key], Maybe(vParam)),
+    MapMethod("get", { key: Ref("K") }, Maybe(Ref("V"))),
     // del(key: K): Bool
-    MapMethod("del", [key], Bool),
+    MapMethod("del", { key: Ref("K") }, Bool),
     // asCell(): Maybe<Cell>
-    MapMethod("asCell", [], Maybe(Cell)),
+    MapMethod("asCell", {}, Maybe(Cell)),
     // isEmpty(): Bool
-    MapMethod("isEmpty", [], Bool),
+    MapMethod("isEmpty", {}, Bool),
     // exists(key: K): Bool
-    MapMethod("exists", [key], Bool),
+    MapMethod("exists", { key: Ref("K") }, Bool),
     // deepEquals(other: map<K, V>): Bool
-    MapMethod("deepEquals", [Param("other", mapType)], Bool),
+    MapMethod("deepEquals", { other: mapType }, Bool),
     // replace(key: K, value: V): Bool
-    MapMethod("replace", [key, value], Bool),
+    MapMethod("replace", { key: Ref("K"), value: Ref("V") }, Bool),
     // replaceGet(key: K, value: V): map<K, V>
-    MapMethod("replaceGet", [key, value], mapType),
+    MapMethod("replaceGet", { key: Ref("K"), value: Ref("V") }, mapType),
 ]);
 
-export const builtinUnary: Map<string, Ast.MFnType> = new Map([
-    Fn("+", [Param("arg", Int)], Int),
-    Fn("-", [Param("arg", Int)], Int),
-    Fn("~", [Param("arg", Int)], Int),
-    Fn("!", [Param("arg", Bool)], Bool),
-    GenericFn("!!", [t], [Param("arg", Maybe(tParam))], tParam),
+export const builtinUnary: Map<string, Ast.DecodedFnType> = new Map([
+    Fn("+", { arg: Int }, Int),
+    Fn("-", { arg: Int }, Int),
+    Fn("~", { arg: Int }, Int),
+    Fn("!", { arg: Bool }, Bool),
+    GenericFn("!!", ["T"], { arg: Maybe(Ref("T")) }, Ref("T")),
 ]);
 
-export const builtinBinary: Map<string, Ast.MFnType> = new Map([
+export const builtinBinary: Map<string, Ast.DecodedFnType> = new Map([
     // (left: Int, right: Int): Int
     ArithBin("+"),
     ArithBin("-"),
@@ -154,27 +158,27 @@ export const builtinBinary: Map<string, Ast.MFnType> = new Map([
     BoolBin("||"),
 ]);
 
-export const getStaticBuiltin = (type: Ast.DecodedType): Map<string, Ast.MFnType> => {
+export const getStaticBuiltin = (type: Ast.DecodedType): Map<string, Ast.DecodedFnType> => {
     return new Map([
         // Foo.fromSlice(slice: Slice)
-        Fn("fromSlice", [Param("slice", Slice)], type),
+        Fn("fromSlice", { slice: Slice }, type),
         // Foo.fromSlice(cell: Cell)
-        Fn("fromCell", [Param("cell", Cell)], type),
+        Fn("fromCell", { cell: Cell }, type),
     ])
 };
 
 export const structBuiltin = new Map([
     // Foo.toSlice(): Slice
-    Fn("toSlice", [], Slice),
+    Fn("toSlice", {}, Slice),
     // Foo.toCell(): Cell
-    Fn("toCell", [], Cell),
+    Fn("toCell", {}, Cell),
 ]);
 
 export const messageBuiltin = new Map([
     // Foo.toSlice(): Slice
-    Fn("toSlice", [], Slice),
+    Fn("toSlice", {}, Slice),
     // Foo.toCell(): Cell
-    Fn("toCell", [], Cell),
+    Fn("toCell", {}, Cell),
     // Foo.opcode(): Int
-    Fn("opcode", [], Int)
+    Fn("opcode", {}, Int)
 ]);

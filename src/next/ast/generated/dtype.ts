@@ -62,3 +62,8 @@ export const DTypeRef = (name: $c.TypeId, typeArgs: readonly $.DecodedType[], lo
 });
 export const isDTypeRef = ($value: DTypeRef) => $value.kind === "type_ref";
 export type DecodedType = $.DecodedType;
+export type DTypeRecover = $.DTypeRecover;
+export const DTypeRecover = (): $.DTypeRecover => Object.freeze({
+  kind: "recover"
+});
+export const isDTypeRecover = ($value: DTypeRecover) => $value.kind === "recover";
