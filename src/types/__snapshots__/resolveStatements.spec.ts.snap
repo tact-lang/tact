@@ -91,7 +91,7 @@ exports[`resolveStatements should fail statements for bounced-type-is-smaller-in
 `;
 
 exports[`resolveStatements should fail statements for bounced-type-with-builder 1`] = `
-"<unknown>:20:18: Cannot access field of "Builder" type from bounced<Msg> type
+"<unknown>:20:18: Cannot access field of "Builder" type from bounced<Msg>
   19 |     bounced(msg: bounced<Msg>) {
 > 20 |         dump(msg.m);
                         ^
@@ -100,7 +100,7 @@ exports[`resolveStatements should fail statements for bounced-type-with-builder 
 `;
 
 exports[`resolveStatements should fail statements for bounced-type-with-cell 1`] = `
-"<unknown>:20:18: Cannot access field of "Cell" type from bounced<Msg> type
+"<unknown>:20:18: Cannot access field of "Cell" type from bounced<Msg>
   19 |     bounced(msg: bounced<Msg>) {
 > 20 |         dump(msg.m);
                         ^
@@ -109,7 +109,7 @@ exports[`resolveStatements should fail statements for bounced-type-with-cell 1`]
 `;
 
 exports[`resolveStatements should fail statements for bounced-type-with-map 1`] = `
-"<unknown>:19:18: Cannot access field of map type from bounced<Msg> type
+"<unknown>:19:18: Cannot access field of map type from bounced<Msg>
   18 |     bounced(msg: bounced<Msg>) {
 > 19 |         dump(msg.m);
                         ^
@@ -118,7 +118,7 @@ exports[`resolveStatements should fail statements for bounced-type-with-map 1`] 
 `;
 
 exports[`resolveStatements should fail statements for bounced-type-with-slice 1`] = `
-"<unknown>:20:18: Cannot access field of "Slice" type from bounced<Msg> type
+"<unknown>:20:18: Cannot access field of "Slice" type from bounced<Msg>
   19 |     bounced(msg: bounced<Msg>) {
 > 20 |         dump(msg.m);
                         ^

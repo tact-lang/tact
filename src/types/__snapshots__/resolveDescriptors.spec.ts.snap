@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`resolveDescriptors should fail descriptors for asm-fun-bounced-return-access-map-field 1`] = `
-"<unknown>:11:14: Cannot access field of map type from bounced<Foo> type
+"<unknown>:11:14: Cannot access field of map type from bounced<Foo>
   10 |     let res = foo();
 > 11 |     dump(res.m);
                     ^
