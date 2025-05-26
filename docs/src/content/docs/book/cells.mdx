@@ -425,7 +425,7 @@ let areSlicesNotEqual = aSlice != bSlice; // false
 
 Note that direct comparison via the `=={:tact}` or `!={:tact}` operators implicitly uses [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hashes of the [standard `Cell{:tact}` representation](#cells-representation) under the hood.
 
-Explicit comparisons using `Cell.hash(){:tact}` or `Slice.hash(){:tact}` are also available:
+Explicit comparisons using the `hash(){:tact}` extension function that works on cells and slices are also available:
 
 ```tact
 let a = beginCell().storeUint(123, 8).endCell();

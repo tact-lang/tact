@@ -478,7 +478,7 @@ nullable != anotherNullable; // true
 
 :::note
 
-  The binary equality `=={:tact}` and inequality `!={:tact}` operators implicitly compare [maps](/book/maps) by the hashes of their respective [cells][cell] via the [`Cell.hash(){:tact}`](/ref/core-cells#cellhash) function. While this is acceptable in the majority of cases—since most map serializers behave identically to the serializer from TON Blockchain sources—it is still possible to obtain false-negative results if a map is serialized manually or if the serialization logic is modified in certain libraries.
+  The binary equality `=={:tact}` and inequality `!={:tact}` operators implicitly compare [maps](/book/maps) by the hashes of their respective [cells][cell] via the [`hash(){:tact}`](/ref/core-cells#cellhash) extension function. While this is acceptable in the majority of cases—since most map serializers behave identically to the serializer from TON Blockchain sources—it is still possible to obtain false-negative results if a map is serialized manually or if the serialization logic is modified in certain libraries.
 
   If you need to guarantee that compared maps are equal and are willing to pay significantly more gas, use the [`map.deepEquals(){:tact}`](/book/maps#deepequals) function.
 
