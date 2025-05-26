@@ -1514,3 +1514,18 @@ asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZ
 /// See: https://docs.tact-lang.org/ref/core-cells#celldepth
 ///
 asm extends fun depth(self: Cell?): Int { CDEPTH }
+
+extends inline fun storeShardedStateInit(self: Builder, init: StateInit): Builder {
+    return self
+        .storeUint(32 + prefixLength, 6) // fixed_prefix_length: true, prefixLength: uint5
+        .storeUint(6, 4) // special: false, code: true, data: true, library: false 
+        .storeRef(init.code)
+        .storeRef(init.data);
+}
+
+extends inline fun storeStateInit(self: Builder, init: StateInit): Builder {
+    return self
+        .storeUint(3, 5) // fixed_prefix_length: false, special: false, code: true, data: true, library: false
+        .storeRef(init.code)
+        .storeRef(init.data);
+}

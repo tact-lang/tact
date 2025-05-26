@@ -1,3 +1,4 @@
+const prefixLength: Int = 8;
 /// Ordinary message (default).
 ///
 /// This constant is available since Tact 1.6.0.
@@ -625,3 +626,52 @@ asm fun acceptMessage() { ACCEPT }
 /// See: https://docs.tact-lang.org/ref/core-contextstate#commit
 ///
 asm fun commit() { COMMIT }
+
+struct ShardDeployParameters {
+    deployParameters: DeployParameters;
+
+    /// The shard number to deploy the contract to.
+    shard: Int as uint8;
+}
+
+extends inline fun toShard(self: DeployParameters, shard: Int): ShardDeployParameters {
+    return ShardDeployParameters {
+        shard,
+        deployParameters: self,
+    };
+}
+
+extends inline fun send(self: ShardDeployParameters) {
+    let newStateInit = beginCell().storeShardedStateInit(self.deployParameters.init).endCell();
+    let msg = beginCell()
+        .storeUint(1, 2) // store tag = $0 and ihr_disabled = true
+        .storeBool(self.deployParameters.bounce)
+        .storeUint(1 << 10, 14) // store bounced = false and src = addr_none, addr_std$10, anycast: false, workchain = 0 (int8)
+        .storeUint(changeShard(newStateInit.hash(), self.shard), 256) // addrHash
+        .storeCoins(self.deployParameters.value)
+        .storeUint(2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1) // 1 + 4 + 4 + 64 + 32, stateInit: true, inRef: false
+        .storeRef(newStateInit)
+        .storeMaybeRef(self.deployParameters.body)
+        .endCell();
+
+    sendRawMessage(msg, self.deployParameters.mode);
+}
+
+struct ShardMessageParameters {
+    messageParameters: MessageParameters;
+
+    /// The shard number to deploy the contract to.
+    shard: Int as uint8;
+}
+
+extends inline fun toShard(self: MessageParameters, shard: Int): ShardMessageParameters {
+    return ShardMessageParameters {
+        shard,
+        messageParameters: self,
+    };
+}
+
+extends inline fun send(self: ShardMessageParameters) {
+    self.messageParameters.to = self.messageParameters.to.changeShard(self.shard);
+    message(self.messageParameters);
+}
