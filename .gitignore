@@ -10,4 +10,5 @@ src/test/e2e-slow/map-property-tests/build
 **/.testing/
 coverage.html
 coverage-*.html
+/coverage/
 allure-results
