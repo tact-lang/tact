@@ -1,6 +1,8 @@
 contract ComparisonsTester {
     sliceCounter: Int = 0;
+    sliceOptCounter: Int = 0;
     cellCounter: Int = 0;
+    cellOptCounter: Int = 0;
 
     receive() {}
 
@@ -16,6 +18,18 @@ contract ComparisonsTester {
         return emptySlice()
     }
 
+    fun leftOptSlice(): Slice? {
+        self.sliceOptCounter += 1;
+        return emptySlice()
+    }
+
+    fun rightSliceForLeftOpt(): Slice {
+        if (self.sliceOptCounter == 0) {
+            return beginCell().storeUint(10, 32).endCell().asSlice()
+        }
+        return emptySlice()
+    }
+
     fun leftCell(): Cell {
         self.cellCounter += 1;
         return emptyCell()
@@ -23,6 +37,18 @@ contract ComparisonsTester {
 
     fun rightCell(): Cell {
         if (self.cellCounter == 0) {
+            return beginCell().storeUint(10, 32).endCell()
+        }
+        return emptyCell()
+    }
+
+    fun leftOptCell(): Cell? {
+        self.cellOptCounter += 1;
+        return emptyCell()
+    }
+
+    fun rightCellForOptLeft(): Cell {
+        if (self.cellOptCounter == 0) {
             return beginCell().storeUint(10, 32).endCell()
         }
         return emptyCell()
@@ -42,6 +68,14 @@ contract ComparisonsTester {
 
     get fun compare4(x: Int): Bool {
         return x == x.incOptOld()
+    }
+
+    get fun compare5(): Bool {
+        return self.leftOptSlice() == self.rightSliceForLeftOpt();
+    }
+
+    get fun compare6(): Bool {
+        return self.leftOptCell() == self.rightCellForOptLeft();
     }
 }
 
