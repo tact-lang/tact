@@ -517,6 +517,26 @@ function resolveFieldAccess(
         );
     }
 
+    if (src.kind === "ref_bounced" && field) {
+        if (field.type.kind === "map") {
+            throwCompilationError(
+                `Cannot access field with map type inside bounced receiver`,
+                exp.field.loc,
+            );
+        }
+
+        if (field.type.kind === "ref") {
+            const name = field.type.name;
+            if (name === "Cell" || name === "Slice" || name === "Builder") {
+                const optional = field.type.optional ? "?" : "";
+                throwCompilationError(
+                    `Cannot access field with ${idTextErr(name + optional)} type inside bounced receiver`,
+                    exp.field.loc,
+                );
+            }
+        }
+    }
+
     const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
     if (!field && !cst) {
         const typeStr =

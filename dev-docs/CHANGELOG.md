@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Added checks for trait returns in non-shuffle asm functions: PR [#3197](https://github.com/tact-lang/tact/pull/3197)
 - [fix] Allow equivalent `as`-annotations for maps types: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
 - [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
+- [fix] Compiler now correctly counts the size of fields for maps in bounced messages: PR [#3255](https://github.com/tact-lang/tact/pull/3255)
 
 ### Code generation
 
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now doesn't generate `__tact_nop()` for `dump()` and `dumpStack()` in default mode: PR [#3218](https://github.com/tact-lang/tact/pull/3218)
 - [fix] Correct long struct tuple destruction: PR [#3105](https://github.com/tact-lang/tact/pull/3105)
 - Compiler now generates more efficient code for `if-throw` pattern with `throw_if/throw_unless` call: PR [#3216](https://github.com/tact-lang/tact/pull/3216)
+- [fix] Arguments of the `==` and `!=` operators get evaluated in the left-to-right order: PR [#3252](https://github.com/tact-lang/tact/pull/3252)
 
 ### Docs
 
