@@ -294,6 +294,14 @@ export function resolveABIType({
                     loc,
                 );
             }
+        } else if (type.keyType.text === "Slice") {
+            key = "slice";
+            if (type.keyStorageType) {
+                throwCompilationError(
+                    `Unsupported format ${idTextErr(type.keyStorageType)} for map key`,
+                    loc,
+                );
+            }
         } else {
             throwCompilationError(
                 `Unsupported map key type ${idTextErr(type.keyType)}`,
@@ -543,6 +551,14 @@ export function getMapAbi(src: TypeRefMap, loc: SrcInfo): ABITypeRef {
         }
     } else if (src.key === "Address") {
         key = "address";
+        if (src.keyAs) {
+            throwCompilationError(
+                `Unsupported format ${src.keyAs} for map key`,
+                loc,
+            );
+        }
+    } else if (src.key === "Slice") {
+        key = "slice";
         if (src.keyAs) {
             throwCompilationError(
                 `Unsupported format ${src.keyAs} for map key`,

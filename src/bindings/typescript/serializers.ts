@@ -351,6 +351,46 @@ const addressSerializer: Serializer<{ optional: boolean }> = {
     },
 };
 
+const sliceSerializer: Serializer<{ optional: boolean }> = {
+    tsType(v) {
+        if (v.optional) {
+            return "BitString | null";
+        } else {
+            return "BitString";
+        }
+    },
+    tsLoad(v, slice, field, w) {
+        if (v.optional) {
+            w.append(`const ${field} = ${slice}.loadMaybeSlice();`);
+        } else {
+            w.append(`const ${field} = ${slice}.loadRef().bits;`);
+        }
+    },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`const ${field} = ${reader}.readCellOpt();`);
+        } else {
+            w.append(`const ${field} = ${reader}.readCell().asSlice();`);
+        }
+    },
+    tsStore(v, builder, field, w) {
+        w.append(`${builder}.storeSlice(beginCell().storeBits(${field}).asSlice());`);
+    },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeSlice(beginCell().storeBits(${field}).asSlice());`);
+    },
+    abiMatcher(src) {
+        if (src.kind === "simple") {
+            if (src.type === "slice") {
+                // if (src.format === null || src.format === undefined) {
+                    return { optional: src.optional ?? false };
+                // }
+            }
+        }
+        return null;
+    },
+};
+
 function getCellLikeTsType(v: {
     kind: "cell" | "slice" | "builder";
     optional?: boolean;
@@ -688,7 +728,8 @@ const struct: Serializer<{ name: string; optional: boolean }> = {
 
 export type MapSerializerDescrKey =
     | { kind: "int" | "uint"; bits: number }
-    | { kind: "address" };
+    | { kind: "address" }
+    | { kind: "slice" };
 export type MapSerializerDescrValue =
     | { kind: "int" | "uint"; bits: number }
     | { kind: "varuint"; length: number }
@@ -719,6 +760,9 @@ export function getKeyParser(src: MapSerializerDescrKey) {
         }
         case "address": {
             return "Dictionary.Keys.Address()";
+        }
+        case "slice": {
+            return "Dictionary.Keys.BitString(8 + 256)";
         }
     }
 }
@@ -770,6 +814,7 @@ export const mapSerializers: Serializer<MapSerializerDescr> = {
             let key:
                 | { kind: "int" | "uint"; bits: number }
                 | { kind: "address" }
+                | { kind: "slice" }
                 | null = null;
             if (src.key === "int") {
                 if (typeof src.keyFormat === "number") {
@@ -794,6 +839,11 @@ export const mapSerializers: Serializer<MapSerializerDescr> = {
             if (src.key === "address") {
                 if (src.keyFormat === null || src.keyFormat === undefined) {
                     key = { kind: "address" };
+                }
+            }
+            if (src.key === "slice") {
+                if (src.keyFormat === null || src.keyFormat === undefined) {
+                    key = { kind: "slice" };
                 }
             }
 
@@ -880,6 +930,11 @@ export const mapSerializers: Serializer<MapSerializerDescr> = {
                 break;
             case "address": {
                 keyT = `Address`;
+                break;
+            }
+            case "slice": {
+                keyT = `BitString`;
+                break;
             }
         }
 
@@ -956,6 +1011,7 @@ export const serializers: Serializer<any>[] = [
     varIntSerializer,
     boolSerializer,
     addressSerializer,
+    sliceSerializer,
     cellSerializer,
     remainderSerializer,
     fixedBytesSerializer,

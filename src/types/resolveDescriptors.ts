@@ -82,6 +82,7 @@ function verifyMapAsAnnotationsForPrimitiveTypes(
             return;
         }
         case "Address":
+        case "Slice":
         case "Bool":
         case "Cell": {
             if (asAnnotation !== undefined) {
@@ -120,7 +121,7 @@ export function verifyMapType(mapTy: Ast.MapType, isValTypeStruct: boolean) {
     verifyMapTypes(
         mapTy.keyType,
         mapTy.keyStorageType,
-        ["Int", "Address"],
+        ["Int", "Address", "Slice"],
         "keyType",
     );
 

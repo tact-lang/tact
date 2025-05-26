@@ -52,9 +52,8 @@ struct ContractState {
     seqno: Int as uint32;
     walletId: Int as int32;
     publicKey: Int as uint256;
-//    extensionsWc: map<Int as uint8, Bool>;
-//    extensionsHash: map<Int as uint256, Bool>;
-    extensions: map<Int as uint256, Bool>;
+    extensionsWc: map<Int as uint8, Bool>;
+    extensionsHash: map<Int as uint256, Bool>;
 }
 
 struct DeployPlugin {
@@ -92,19 +91,6 @@ const PluginRemove: Int = 0x64737472 | 0x80000000;
 const AddPluginAction: Int = 0x6e6f7465;
 const RemovePluginAction: Int = 0x64737472;
 
-asm extends fun hashExt(self: Builder): Int {
-    ONE
-    HASHEXT_SHA256
-}
-
-fun toHash(wc: Int, hash: Int): Int {
-    let b = beginCell()
-        .storeInt(wc, 8)
-        .storeUint(hash, 256);
-
-    return b.hashExt();
-}
-
 contract WalletV4(
     state: ContractState,
 ) {
@@ -115,9 +101,8 @@ contract WalletV4(
 //        let wc_n_address = addrParsed.toCell().asSlice();
 //        let addr = wc_n_address;
 
-        let hash = toHash(addrParsed.workchain, addrParsed.address);
-        if (/*!self.state.extensionsWc.exists(addrParsed.workchain) ||*/
-            !self.state.extensions.exists(hash)) {
+        if (!self.state.extensionsWc.exists(addrParsed.workchain) ||
+            !self.state.extensionsHash.exists(addrParsed.address)) {
             return;
         }
 
@@ -148,14 +133,13 @@ contract WalletV4(
 //        let addr = wc_n_address;
         let addrParsed = parseStdAddress(sender().asSlice());
 
-        let hash = toHash(addrParsed.workchain, addrParsed.address);
-        if (/*!self.state.extensionsWc.exists(addrParsed.workchain) ||*/
-            !self.state.extensions.exists(hash)) {
+        if (!self.state.extensionsWc.exists(addrParsed.workchain) ||
+            !self.state.extensionsHash.exists(addrParsed.address)) {
             return;
         }
 
-//        let _ = self.state.extensionsWc.del(addrParsed.workchain);
-        let _ = self.state.extensions.del(hash);
+        let _ = self.state.extensionsWc.del(addrParsed.workchain);
+        let _ = self.state.extensionsHash.del(addrParsed.address);
 
         if (context().bounceable) {
             sendRawMessage(
@@ -229,10 +213,8 @@ contract WalletV4(
                 3,
             );
 
-//            self.state.extensionsWc.set(deployPlugin.wc, true);
-//            self.state.extensionsHash.set(plugin_address, true);
-            let hash = toHash(deployPlugin.wc, plugin_address);
-            self.state.extensions.set(hash, true);
+            self.state.extensionsWc.set(deployPlugin.wc, true);
+            self.state.extensionsHash.set(plugin_address, true);
             // todo: add throw_unless, see FunC code
         } else if (msg.op == 2) {
             let addPlugin = AddPlugin.fromSlice(msg.payload);
@@ -241,9 +223,8 @@ contract WalletV4(
 //            let addr = wc_n_address;
 //            let addr = newAddress(addPlugin.wc, addPlugin.addrHash);
 
-//            self.state.extensionsWc.set(addPlugin.wc, true);
-            let hash = toHash(addPlugin.wc, addPlugin.addrHash);
-            self.state.extensions.set(hash, true);
+            self.state.extensionsWc.set(addPlugin.wc, true);
+            self.state.extensionsHash.set(addPlugin.addrHash, true);
 
             sendRawMessage(
                 RawMsg2 {
@@ -263,10 +244,9 @@ contract WalletV4(
 //            let wc_n_address = msg.payload.loadBits(8 + 256);
 //            let addr = wc_n_address;
 //            let addr = newAddress(removePlugin.wc, removePlugin.addrHash);
-            let hash = toHash(removePlugin.wc, removePlugin.addrHash);
             throwUnless(PluginWasNotDeleted,
-//                self.state.extensionsWc.del(removePlugin.wc) &&
-                self.state.extensions.del(hash));
+                self.state.extensionsWc.del(removePlugin.wc) &&
+                self.state.extensionsHash.del(removePlugin.addrHash));
 
             sendRawMessage(
                 RawMsg2 {
@@ -300,14 +280,13 @@ contract WalletV4(
 
     get fun is_plugin_installed(wc: Int, hash: Int): Bool {
 //        let addr = beginCell().storeInt(wc, 8).storeUint(hash, 256).endCell().asSlice();
-        let hash2 = toHash(wc, hash);
-        return /*self.state.extensionsWc.exists(wc) &&*/ self.state.extensions.exists(hash2);
+        return self.state.extensionsWc.exists(wc) && self.state.extensionsHash.exists(hash);
     }
 
     // this is different from FunC version, awaiting unbounded tuple impl in Tact
     // also we need to return it as map of <wc, hash> instead of Address (skip first 4 bytes)
     get fun get_plugin_list(): map<Int as uint256, Bool> {
-        return self.state.extensions;
+        return self.state.extensionsHash;
     }
 }
 

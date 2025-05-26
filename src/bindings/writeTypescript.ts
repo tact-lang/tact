@@ -77,6 +77,7 @@ export function writeTypescript(
             Cell,
             Slice,
             Address,
+            BitString,
             Builder,
             beginCell,
             ComputeError,

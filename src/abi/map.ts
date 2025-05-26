@@ -36,7 +36,7 @@ function checkMapType(
     if (!self || self.kind !== "map") {
         throwCompilationError("expects a map as self argument", ref);
     }
-    if (self.key !== "Int" && self.key !== "Address") {
+    if (self.key !== "Int" && self.key !== "Address" && self.key !== "Slice") {
         throwCompilationError("expects a map with Int or Address keys", ref);
     }
 }
@@ -95,6 +95,8 @@ function resolveMapKeyBits(
         );
     } else if (type.key === "Address") {
         return { bits: 267, kind: "slice" };
+    } else if (type.key === "Slice") {
+        return { bits: 33 * 8, kind: "slice" };
     }
     throwCompilationError(`Unsupported key type: ${type.key}`, loc);
 }
@@ -341,6 +343,9 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
                 } else if (self.key === "Address") {
                     ctx.used(`__tact_dict_delete`);
                     return `${resolved[0]}~__tact_dict_delete(267, ${resolved[1]})`;
+                } else if (self.key === "Slice") {
+                    ctx.used(`__tact_dict_delete`);
+                    return `${resolved[0]}~__tact_dict_delete(8 + 256, ${resolved[1]})`;
                 }
 
                 throwCompilationError(
@@ -483,6 +488,9 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
                 } else if (self.key === "Address") {
                     ctx.used(`__tact_dict_exists_slice`);
                     return `__tact_dict_exists_slice(${resolved[0]}, 267, ${resolved[1]})`;
+                } else if (self.key === "Slice") {
+                    ctx.used(`__tact_dict_exists_slice`);
+                    return `__tact_dict_exists_slice(${resolved[0]}, 8 + 256, ${resolved[1]})`;
                 }
 
                 throwCompilationError(

@@ -216,10 +216,10 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
                         : t.ast.kind === "contract"
                           ? "contract"
                           : "struct";
-                throwCompilationError(
-                    `The "as remaining" field can only be the last field of the ${kind}`,
-                    field.loc,
-                );
+                // throwCompilationError(
+                //     `The "as remaining" field can only be the last field of the ${kind}`,
+                //     field.loc,
+                // );
             }
         }
 
