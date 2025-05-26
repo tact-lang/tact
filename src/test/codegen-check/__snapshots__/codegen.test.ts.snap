@@ -14,11 +14,11 @@ exports[`codegen should correctly generate FunC code 1`] = `
 ;; __tact_not_null
 forall X -> X __tact_not_null(X x) impure inline;
 
-;; __tact_int_eq_nullable_one
-int __tact_int_eq_nullable_one(int a, int b) inline;
+;; __tact_int_eq_nullable_left
+int __tact_int_eq_nullable_left(int a, int b) inline;
 
-;; __tact_int_neq_nullable_one
-int __tact_int_neq_nullable_one(int a, int b) inline;
+;; __tact_int_neq_nullable_left
+int __tact_int_neq_nullable_left(int a, int b) inline;
 
 ;; $Bin$_load_without_opcode
 (slice, (tuple)) $Bin$_load_without_opcode(slice sc_0) inline;
@@ -49,6 +49,12 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 
 ;; $MainContract$_contract_store
 () $MainContract$_contract_store((int, int, slice, cell) v) impure inline;
+
+;; $global_left
+slice $global_left() impure inline_ref;
+
+;; $global_right
+slice $global_right() impure inline_ref;
 
 ;; $Int$_fun_inc
 (int, int) $Int$_fun_inc(int $self) impure inline_ref;
@@ -92,6 +98,9 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 ;; $MainContract$_fun_testIfThrowOptimizationNegative
 ((int, int, slice, cell), ()) $MainContract$_fun_testIfThrowOptimizationNegative((int, int, slice, cell) $self, int $a) impure inline_ref;
 
+;; $MainContract$_fun_testOrder
+((int, int, slice, cell), int) $MainContract$_fun_testOrder((int, int, slice, cell) $self) impure inline_ref;
+
 
 ;; main_MainContract.stdlib.fc
 global (int, slice, int, slice) __tact_context;
@@ -103,12 +112,12 @@ forall X -> X __tact_not_null(X x) impure inline {
     throw_if(128, null?(x)); return x;
 }
 
-int __tact_int_eq_nullable_one(int a, int b) inline {
-    return (null?(b)) ? (false) : (a == b);
+int __tact_int_eq_nullable_left(int a, int b) inline {
+    return (null?(a)) ? (false) : (a == b);
 }
 
-int __tact_int_neq_nullable_one(int a, int b) inline {
-    return (null?(b)) ? (true) : (a != b);
+int __tact_int_neq_nullable_left(int a, int b) inline {
+    return (null?(a)) ? (true) : (a != b);
 }
 
 builder $global_beginCell() impure asm """
@@ -239,6 +248,14 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     return ($self'field, $self'value, $self'data, $self'mapping);
 }
 
+slice $global_left() impure inline_ref {
+    return $global_myAddress();
+}
+
+slice $global_right() impure inline_ref {
+    return $global_myAddress();
+}
+
 (int, int) $Int$_fun_inc(int $self) impure inline_ref {
     var ($self) = $self;
     $self = $self + 1;
@@ -360,10 +377,10 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     if ((1 != $a)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    if (__tact_int_eq_nullable_one(0, $b)) {
+    if (__tact_int_eq_nullable_left($b, 0)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
-    if (__tact_int_neq_nullable_one(0, $b)) {
+    if (__tact_int_neq_nullable_left($b, 0)) {
         return (($self'field, $self'value, $self'data, $self'mapping), ());
     }
     return (($self'field, $self'value, $self'data, $self'mapping), ());
@@ -414,6 +431,12 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
         throw(11);
     }
     return (($self'field, $self'value, $self'data, $self'mapping), ());
+}
+
+((int, int, slice, cell), int) $MainContract$_fun_testOrder((int, int, slice, cell) $self) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
+    var $fresh$ret_5 = ( equal_slices_bits($global_left(), $global_right()) );
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_5);
 }
 
 ;;
@@ -489,6 +512,12 @@ _ %testIfThrowOptimizationNegative(int $a) method_id(69407) {
     int $a = $a;
     var self = $MainContract$_contract_load();
     var res = self~$MainContract$_fun_testIfThrowOptimizationNegative($a);
+    return res;
+}
+
+_ %testOrder() method_id(121793) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testOrder();
     return res;
 }
 
