@@ -31,6 +31,8 @@ struct C {
     h: Address;
 }
 
+const EXIT_CODE: Int = 1000;
+
 contract MainContract {
     field: Int as uint8;
     value: Int as int256;
@@ -101,6 +103,7 @@ contract MainContract {
 
     const FOO_ZERO: Int = 0;
     const FOO_ONE: Int = 1;
+    const EXIT_CODE: Int = 999;
 
     get fun testIfOptimizationPositive(a: Int,  b: Int?) {
         if (a == 0) {
@@ -212,4 +215,66 @@ contract MainContract {
         dump(a);
         dumpStack();
     }
+
+    get fun testIfThrowOptimization(a: Int) {
+        if (a == self.FOO_ONE) {
+            throw(10);
+        }
+
+        let cond = a == self.FOO_ONE;
+        if (!cond) {
+            throw(10);
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(EXIT_CODE);
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(EXIT_CODE + 11);
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(self.EXIT_CODE / 2);
+        }
+    }
+
+    get fun testIfThrowOptimizationNegative(a: Int) {
+        if (a == self.FOO_ONE) {
+            throwIf(10, true);
+        }
+
+        let cond = a == self.FOO_ONE;
+        if (!cond) {
+            dump(10);
+            throw(10);
+        }
+
+        if (a != self.FOO_ONE) {
+            dump(10);
+            return;
+        }
+
+        if (cond) {} else if (a == self.FOO_ONE) {
+            throw(10);
+        }
+
+        let x: Int = 42;
+        if (x.inc() == 0) {
+            throw(x.inc());
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(bar());
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(10);
+        } else {
+            throw(11);
+        }
+    }
 }
+
+extends mutates fun inc(self: Int): Int { self += 1; return self }
+fun bar(): Int { return 10 }
