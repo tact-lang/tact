@@ -276,7 +276,7 @@ fun conversionFun() {
 
 ### Obtain from a `Cell` or `Slice`, `.fromCell()` and `.fromSlice()` {#fromcellslice}
 
-Instead of manually parsing a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] via a series of relevant `Slice.loadSomething(){:tact}` function calls, one can use `.fromCell(){:tact}` and `.fromSlice(){:tact}` [extension functions](/book/functions#extension-function) to convert the provided [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] into the needed [struct](#structs) or [Message](#messages).
+Instead of manually parsing a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] via a series of relevant `Slice{:tact}` extension function calls, one can use `.fromCell(){:tact}` and `.fromSlice(){:tact}` [extension functions](/book/functions#extension-function) to convert the provided `Cell{:tact}` or `Slice{:tact}` into the needed [struct](#structs) or [Message](#messages).
 
 These extension functions only attempt to parse a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] according to the structure of your struct or Message. In case the layouts don't match, various exceptions may be thrown — make sure to wrap your code in [`try...catch{:tact}`](/book/statements#try-catch) blocks to prevent unexpected results.
 
