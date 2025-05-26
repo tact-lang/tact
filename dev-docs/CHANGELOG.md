@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.11] - 2025-05-26
+
 ### Language features
 
 - [fix] Balanced quotation in error messages for out-of-project-root imports: PR [#3242](https://github.com/tact-lang/tact/pull/3242)
