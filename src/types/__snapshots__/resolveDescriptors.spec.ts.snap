@@ -774,6 +774,42 @@ exports[`resolveDescriptors should fail descriptors for opcode-method-on-trait 1
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for override-const-map-keyas-empty 1`] = `
+"<unknown>:8:5: Overridden constant "M" should have same and assignable type. Expected map<Int, Int>, but got map<Int as uint32, Int>.
+  7 | contract C with T {
+> 8 |     override const M: map<Int as uint32, Int> = emptyMap();
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-const-map-keyas-mismatch 1`] = `
+"<unknown>:8:5: Overridden constant "M" should have same and assignable type. Expected map<Int as uint8, Int>, but got map<Int as uint32, Int>.
+  7 | contract C with T {
+> 8 |     override const M: map<Int as uint32, Int> = emptyMap();
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-const-map-valueas-empty 1`] = `
+"<unknown>:8:5: Overridden constant "M" should have same and assignable type. Expected map<Int, Int>, but got map<Int, Int as uint8>.
+  7 | contract C with T {
+> 8 |     override const M: map<Int, Int as uint8> = emptyMap();
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-const-map-valueas-mismatch 1`] = `
+"<unknown>:8:5: Overridden constant "M" should have same and assignable type. Expected map<Int, Int as uint8>, but got map<Int, Int as uint32>.
+  7 | contract C with T {
+> 8 |     override const M: map<Int, Int as uint32> = emptyMap();
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-contract-from-base-trait 1`] = `
 "<unknown>:8:5: Constant "BAR" overrides nothing, remove "override" modifier or inherit any traits with this constant
   7 | contract Test {
@@ -924,6 +960,24 @@ exports[`resolveDescriptors should fail descriptors for override-for-non-virtual
 > 6 |     override fun foo() {}
           ^~~~~~~~
   7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-fun-map-keyas-mismatch 1`] = `
+"<unknown>:8:5: Overridden function "test1" should have same and assignable return type. Expected map<Int as int32, Int>, but got map<Int as int8, Int>.
+  7 | contract C with T {
+> 8 |     override get fun test1(): map<Int as int8, Int> {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |         return emptyMap();
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-fun-map-valueas-mismatch 1`] = `
+"<unknown>:8:5: Overridden function "test1" should have same and assignable return type. Expected map<Int, Int as int32>, but got map<Int, Int as int64>.
+  7 | contract C with T {
+> 8 |     override get fun test1(): map<Int, Int as int64> {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |         return emptyMap();
 "
 `;
 
@@ -17133,6 +17187,1467 @@ exports[`resolveDescriptors should resolve descriptors for multi-inheritance-wit
 
 exports[`resolveDescriptors should resolve descriptors for multi-inheritance-with-duplicate-methods-via-diamond 2`] = `[]`;
 
+exports[`resolveDescriptors should resolve descriptors for override-const-map-valueas-keyas 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 12,
+          "kind": "constant_decl",
+          "loc": abstract const BASIC: map<Int as uint8, Int as uint8>;,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": BASIC,
+            "text": "BASIC",
+          },
+          "type": {
+            "id": 11,
+            "keyStorageType": {
+              "id": 8,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "keyType": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as uint8, Int as uint8>,
+            "valueStorageType": {
+              "id": 10,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "valueType": {
+              "id": 9,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 17,
+          "kind": "constant_decl",
+          "loc": abstract const PURE: map<Int, Int>;,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": PURE,
+            "text": "PURE",
+          },
+          "type": {
+            "id": 16,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 14,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 15,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 22,
+          "kind": "constant_decl",
+          "loc": abstract const INT257: map<Int, Int>;,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": INT257,
+            "text": "INT257",
+          },
+          "type": {
+            "id": 21,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 19,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 20,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 28,
+          "kind": "constant_decl",
+          "loc": abstract const COINS: map<Int, Int as coins>;,
+          "name": {
+            "id": 23,
+            "kind": "id",
+            "loc": COINS,
+            "text": "COINS",
+          },
+          "type": {
+            "id": 27,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 24,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as coins>,
+            "valueStorageType": {
+              "id": 26,
+              "kind": "id",
+              "loc": coins,
+              "text": "coins",
+            },
+            "valueType": {
+              "id": 25,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+      ],
+      "id": 29,
+      "kind": "trait",
+      "loc": trait T {
+    abstract const BASIC: map<Int as uint8, Int as uint8>;
+    abstract const PURE: map<Int, Int>;
+    abstract const INT257: map<Int, Int>;
+    abstract const COINS: map<Int, Int as coins>;
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": T,
+        "text": "T",
+      },
+      "traits": [],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 12,
+          "kind": "constant_decl",
+          "loc": abstract const BASIC: map<Int as uint8, Int as uint8>;,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": BASIC,
+            "text": "BASIC",
+          },
+          "type": {
+            "id": 11,
+            "keyStorageType": {
+              "id": 8,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "keyType": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as uint8, Int as uint8>,
+            "valueStorageType": {
+              "id": 10,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "valueType": {
+              "id": 9,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "loc": abstract const BASIC: map<Int as uint8, Int as uint8>;,
+        "name": "BASIC",
+        "type": {
+          "key": "Int",
+          "keyAs": "uint8",
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "uint8",
+        },
+        "value": undefined,
+      },
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 17,
+          "kind": "constant_decl",
+          "loc": abstract const PURE: map<Int, Int>;,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": PURE,
+            "text": "PURE",
+          },
+          "type": {
+            "id": 16,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 14,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 15,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "loc": abstract const PURE: map<Int, Int>;,
+        "name": "PURE",
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": null,
+        },
+        "value": undefined,
+      },
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 22,
+          "kind": "constant_decl",
+          "loc": abstract const INT257: map<Int, Int>;,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": INT257,
+            "text": "INT257",
+          },
+          "type": {
+            "id": 21,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 19,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 20,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "loc": abstract const INT257: map<Int, Int>;,
+        "name": "INT257",
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": null,
+        },
+        "value": undefined,
+      },
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 28,
+          "kind": "constant_decl",
+          "loc": abstract const COINS: map<Int, Int as coins>;,
+          "name": {
+            "id": 23,
+            "kind": "id",
+            "loc": COINS,
+            "text": "COINS",
+          },
+          "type": {
+            "id": 27,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 24,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as coins>,
+            "valueStorageType": {
+              "id": 26,
+              "kind": "id",
+              "loc": coins,
+              "text": "coins",
+            },
+            "valueType": {
+              "id": 25,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "loc": abstract const COINS: map<Int, Int as coins>;,
+        "name": "COINS",
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "coins",
+        },
+        "value": undefined,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 6769,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 40,
+          "initializer": {
+            "args": [],
+            "function": {
+              "id": 38,
+              "kind": "id",
+              "loc": emptyMap,
+              "text": "emptyMap",
+            },
+            "id": 39,
+            "kind": "static_call",
+            "loc": emptyMap(),
+          },
+          "kind": "constant_def",
+          "loc": override const BASIC: map<Int as uint8, Int as uint8> = emptyMap();,
+          "name": {
+            "id": 32,
+            "kind": "id",
+            "loc": BASIC,
+            "text": "BASIC",
+          },
+          "type": {
+            "id": 37,
+            "keyStorageType": {
+              "id": 34,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "keyType": {
+              "id": 33,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as uint8, Int as uint8>,
+            "valueStorageType": {
+              "id": 36,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "valueType": {
+              "id": 35,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 47,
+          "initializer": {
+            "args": [],
+            "function": {
+              "id": 45,
+              "kind": "id",
+              "loc": emptyMap,
+              "text": "emptyMap",
+            },
+            "id": 46,
+            "kind": "static_call",
+            "loc": emptyMap(),
+          },
+          "kind": "constant_def",
+          "loc": override const PURE: map<Int, Int> = emptyMap();,
+          "name": {
+            "id": 41,
+            "kind": "id",
+            "loc": PURE,
+            "text": "PURE",
+          },
+          "type": {
+            "id": 44,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 42,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 43,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 56,
+          "initializer": {
+            "args": [],
+            "function": {
+              "id": 54,
+              "kind": "id",
+              "loc": emptyMap,
+              "text": "emptyMap",
+            },
+            "id": 55,
+            "kind": "static_call",
+            "loc": emptyMap(),
+          },
+          "kind": "constant_def",
+          "loc": override const INT257: map<Int as int257, Int as int257> = emptyMap();,
+          "name": {
+            "id": 48,
+            "kind": "id",
+            "loc": INT257,
+            "text": "INT257",
+          },
+          "type": {
+            "id": 53,
+            "keyStorageType": {
+              "id": 50,
+              "kind": "id",
+              "loc": int257,
+              "text": "int257",
+            },
+            "keyType": {
+              "id": 49,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as int257, Int as int257>,
+            "valueStorageType": {
+              "id": 52,
+              "kind": "id",
+              "loc": int257,
+              "text": "int257",
+            },
+            "valueType": {
+              "id": 51,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 64,
+          "initializer": {
+            "args": [],
+            "function": {
+              "id": 62,
+              "kind": "id",
+              "loc": emptyMap,
+              "text": "emptyMap",
+            },
+            "id": 63,
+            "kind": "static_call",
+            "loc": emptyMap(),
+          },
+          "kind": "constant_def",
+          "loc": override const COINS: map<Int, Int as varuint16> = emptyMap();,
+          "name": {
+            "id": 57,
+            "kind": "id",
+            "loc": COINS,
+            "text": "COINS",
+          },
+          "type": {
+            "id": 61,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 58,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varuint16>,
+            "valueStorageType": {
+              "id": 60,
+              "kind": "id",
+              "loc": varuint16,
+              "text": "varuint16",
+            },
+            "valueType": {
+              "id": 59,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+      ],
+      "id": 65,
+      "kind": "contract",
+      "loc": contract C with T {
+    override const BASIC: map<Int as uint8, Int as uint8> = emptyMap();
+    override const PURE: map<Int, Int> = emptyMap();
+    override const INT257: map<Int as int257, Int as int257> = emptyMap();
+    override const COINS: map<Int, Int as varuint16> = emptyMap();
+},
+      "name": {
+        "id": 30,
+        "kind": "id",
+        "loc": C,
+        "text": "C",
+      },
+      "params": undefined,
+      "traits": [
+        {
+          "id": 31,
+          "kind": "id",
+          "loc": T,
+          "text": "T",
+        },
+      ],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 40,
+          "initializer": {
+            "args": [],
+            "function": {
+              "id": 38,
+              "kind": "id",
+              "loc": emptyMap,
+              "text": "emptyMap",
+            },
+            "id": 39,
+            "kind": "static_call",
+            "loc": emptyMap(),
+          },
+          "kind": "constant_def",
+          "loc": override const BASIC: map<Int as uint8, Int as uint8> = emptyMap();,
+          "name": {
+            "id": 32,
+            "kind": "id",
+            "loc": BASIC,
+            "text": "BASIC",
+          },
+          "type": {
+            "id": 37,
+            "keyStorageType": {
+              "id": 34,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "keyType": {
+              "id": 33,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as uint8, Int as uint8>,
+            "valueStorageType": {
+              "id": 36,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "valueType": {
+              "id": 35,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "loc": override const BASIC: map<Int as uint8, Int as uint8> = emptyMap();,
+        "name": "BASIC",
+        "type": {
+          "key": "Int",
+          "keyAs": "uint8",
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "uint8",
+        },
+        "value": undefined,
+      },
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 47,
+          "initializer": {
+            "args": [],
+            "function": {
+              "id": 45,
+              "kind": "id",
+              "loc": emptyMap,
+              "text": "emptyMap",
+            },
+            "id": 46,
+            "kind": "static_call",
+            "loc": emptyMap(),
+          },
+          "kind": "constant_def",
+          "loc": override const PURE: map<Int, Int> = emptyMap();,
+          "name": {
+            "id": 41,
+            "kind": "id",
+            "loc": PURE,
+            "text": "PURE",
+          },
+          "type": {
+            "id": 44,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 42,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 43,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "loc": override const PURE: map<Int, Int> = emptyMap();,
+        "name": "PURE",
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": null,
+        },
+        "value": undefined,
+      },
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 56,
+          "initializer": {
+            "args": [],
+            "function": {
+              "id": 54,
+              "kind": "id",
+              "loc": emptyMap,
+              "text": "emptyMap",
+            },
+            "id": 55,
+            "kind": "static_call",
+            "loc": emptyMap(),
+          },
+          "kind": "constant_def",
+          "loc": override const INT257: map<Int as int257, Int as int257> = emptyMap();,
+          "name": {
+            "id": 48,
+            "kind": "id",
+            "loc": INT257,
+            "text": "INT257",
+          },
+          "type": {
+            "id": 53,
+            "keyStorageType": {
+              "id": 50,
+              "kind": "id",
+              "loc": int257,
+              "text": "int257",
+            },
+            "keyType": {
+              "id": 49,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as int257, Int as int257>,
+            "valueStorageType": {
+              "id": 52,
+              "kind": "id",
+              "loc": int257,
+              "text": "int257",
+            },
+            "valueType": {
+              "id": 51,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "loc": override const INT257: map<Int as int257, Int as int257> = emptyMap();,
+        "name": "INT257",
+        "type": {
+          "key": "Int",
+          "keyAs": "int257",
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "int257",
+        },
+        "value": undefined,
+      },
+      {
+        "ast": {
+          "attributes": [
+            {
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 64,
+          "initializer": {
+            "args": [],
+            "function": {
+              "id": 62,
+              "kind": "id",
+              "loc": emptyMap,
+              "text": "emptyMap",
+            },
+            "id": 63,
+            "kind": "static_call",
+            "loc": emptyMap(),
+          },
+          "kind": "constant_def",
+          "loc": override const COINS: map<Int, Int as varuint16> = emptyMap();,
+          "name": {
+            "id": 57,
+            "kind": "id",
+            "loc": COINS,
+            "text": "COINS",
+          },
+          "type": {
+            "id": 61,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 58,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varuint16>,
+            "valueStorageType": {
+              "id": 60,
+              "kind": "id",
+              "loc": varuint16,
+              "text": "varuint16",
+            },
+            "valueType": {
+              "id": 59,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "loc": override const COINS: map<Int, Int as varuint16> = emptyMap();,
+        "name": "COINS",
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "varuint16",
+        },
+        "value": undefined,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 67,
+        "kind": "contract_init",
+        "loc": contract C with T {
+    override const BASIC: map<Int as uint8, Int as uint8> = emptyMap();
+    override const PURE: map<Int, Int> = emptyMap();
+    override const INT257: map<Int as int257, Int as int257> = emptyMap();
+    override const COINS: map<Int, Int as varuint16> = emptyMap();
+},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "C",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "C{}",
+    "tlb": "_  = C",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 12,
+              "kind": "constant_decl",
+              "loc": abstract const BASIC: map<Int as uint8, Int as uint8>;,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": BASIC,
+                "text": "BASIC",
+              },
+              "type": {
+                "id": 11,
+                "keyStorageType": {
+                  "id": 8,
+                  "kind": "id",
+                  "loc": uint8,
+                  "text": "uint8",
+                },
+                "keyType": {
+                  "id": 7,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int as uint8, Int as uint8>,
+                "valueStorageType": {
+                  "id": 10,
+                  "kind": "id",
+                  "loc": uint8,
+                  "text": "uint8",
+                },
+                "valueType": {
+                  "id": 9,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 17,
+              "kind": "constant_decl",
+              "loc": abstract const PURE: map<Int, Int>;,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": PURE,
+                "text": "PURE",
+              },
+              "type": {
+                "id": 16,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 14,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int>,
+                "valueStorageType": undefined,
+                "valueType": {
+                  "id": 15,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 22,
+              "kind": "constant_decl",
+              "loc": abstract const INT257: map<Int, Int>;,
+              "name": {
+                "id": 18,
+                "kind": "id",
+                "loc": INT257,
+                "text": "INT257",
+              },
+              "type": {
+                "id": 21,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 19,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int>,
+                "valueStorageType": undefined,
+                "valueType": {
+                  "id": 20,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 28,
+              "kind": "constant_decl",
+              "loc": abstract const COINS: map<Int, Int as coins>;,
+              "name": {
+                "id": 23,
+                "kind": "id",
+                "loc": COINS,
+                "text": "COINS",
+              },
+              "type": {
+                "id": 27,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 24,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as coins>,
+                "valueStorageType": {
+                  "id": 26,
+                  "kind": "id",
+                  "loc": coins,
+                  "text": "coins",
+                },
+                "valueType": {
+                  "id": 25,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+          ],
+          "id": 29,
+          "kind": "trait",
+          "loc": trait T {
+    abstract const BASIC: map<Int as uint8, Int as uint8>;
+    abstract const PURE: map<Int, Int>;
+    abstract const INT257: map<Int, Int>;
+    abstract const COINS: map<Int, Int as coins>;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": T,
+            "text": "T",
+          },
+          "traits": [],
+        },
+        "constants": [
+          {
+            "ast": {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 12,
+              "kind": "constant_decl",
+              "loc": abstract const BASIC: map<Int as uint8, Int as uint8>;,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": BASIC,
+                "text": "BASIC",
+              },
+              "type": {
+                "id": 11,
+                "keyStorageType": {
+                  "id": 8,
+                  "kind": "id",
+                  "loc": uint8,
+                  "text": "uint8",
+                },
+                "keyType": {
+                  "id": 7,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int as uint8, Int as uint8>,
+                "valueStorageType": {
+                  "id": 10,
+                  "kind": "id",
+                  "loc": uint8,
+                  "text": "uint8",
+                },
+                "valueType": {
+                  "id": 9,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            "loc": abstract const BASIC: map<Int as uint8, Int as uint8>;,
+            "name": "BASIC",
+            "type": {
+              "key": "Int",
+              "keyAs": "uint8",
+              "kind": "map",
+              "value": "Int",
+              "valueAs": "uint8",
+            },
+            "value": undefined,
+          },
+          {
+            "ast": {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 17,
+              "kind": "constant_decl",
+              "loc": abstract const PURE: map<Int, Int>;,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": PURE,
+                "text": "PURE",
+              },
+              "type": {
+                "id": 16,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 14,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int>,
+                "valueStorageType": undefined,
+                "valueType": {
+                  "id": 15,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            "loc": abstract const PURE: map<Int, Int>;,
+            "name": "PURE",
+            "type": {
+              "key": "Int",
+              "keyAs": null,
+              "kind": "map",
+              "value": "Int",
+              "valueAs": null,
+            },
+            "value": undefined,
+          },
+          {
+            "ast": {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 22,
+              "kind": "constant_decl",
+              "loc": abstract const INT257: map<Int, Int>;,
+              "name": {
+                "id": 18,
+                "kind": "id",
+                "loc": INT257,
+                "text": "INT257",
+              },
+              "type": {
+                "id": 21,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 19,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int>,
+                "valueStorageType": undefined,
+                "valueType": {
+                  "id": 20,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            "loc": abstract const INT257: map<Int, Int>;,
+            "name": "INT257",
+            "type": {
+              "key": "Int",
+              "keyAs": null,
+              "kind": "map",
+              "value": "Int",
+              "valueAs": null,
+            },
+            "value": undefined,
+          },
+          {
+            "ast": {
+              "attributes": [
+                {
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 28,
+              "kind": "constant_decl",
+              "loc": abstract const COINS: map<Int, Int as coins>;,
+              "name": {
+                "id": 23,
+                "kind": "id",
+                "loc": COINS,
+                "text": "COINS",
+              },
+              "type": {
+                "id": 27,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 24,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as coins>,
+                "valueStorageType": {
+                  "id": 26,
+                  "kind": "id",
+                  "loc": coins,
+                  "text": "coins",
+                },
+                "valueType": {
+                  "id": 25,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            "loc": abstract const COINS: map<Int, Int as coins>;,
+            "name": "COINS",
+            "type": {
+              "key": "Int",
+              "keyAs": null,
+              "kind": "map",
+              "value": "Int",
+              "valueAs": "coins",
+            },
+            "value": undefined,
+          },
+        ],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 6769,
+      },
+    ],
+    "uid": 30887,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for override-const-map-valueas-keyas 2`] = `[]`;
+
 exports[`resolveDescriptors should resolve descriptors for override-for-abstract-constant 1`] = `
 [
   {
@@ -33271,6 +34786,1903 @@ exports[`resolveDescriptors should resolve descriptors for override-for-virtual-
 `;
 
 exports[`resolveDescriptors should resolve descriptors for override-for-virtual-function-in-trait-with-multi-inheritance-from-base-trait 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for override-fun-map-valueas-keyas 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 12,
+          "kind": "function_decl",
+          "loc": abstract get fun basic(): map<Int as uint8, Int as uint8>;,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": basic,
+            "text": "basic",
+          },
+          "params": [],
+          "return": {
+            "id": 11,
+            "keyStorageType": {
+              "id": 8,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "keyType": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as uint8, Int as uint8>,
+            "valueStorageType": {
+              "id": 10,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "valueType": {
+              "id": 9,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 17,
+          "kind": "function_decl",
+          "loc": abstract get fun pure(): map<Int, Int>;,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": pure,
+            "text": "pure",
+          },
+          "params": [],
+          "return": {
+            "id": 16,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 14,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 15,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 22,
+          "kind": "function_decl",
+          "loc": abstract get fun int257(): map<Int, Int>;,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": int257,
+            "text": "int257",
+          },
+          "params": [],
+          "return": {
+            "id": 21,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 19,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 20,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 28,
+          "kind": "function_decl",
+          "loc": abstract get fun coins(): map<Int, Int as coins>;,
+          "name": {
+            "id": 23,
+            "kind": "id",
+            "loc": coins,
+            "text": "coins",
+          },
+          "params": [],
+          "return": {
+            "id": 27,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 24,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as coins>,
+            "valueStorageType": {
+              "id": 26,
+              "kind": "id",
+              "loc": coins,
+              "text": "coins",
+            },
+            "valueType": {
+              "id": 25,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+      ],
+      "id": 29,
+      "kind": "trait",
+      "loc": trait T {
+    abstract get fun basic(): map<Int as uint8, Int as uint8>;
+
+    abstract get fun pure(): map<Int, Int>;
+
+    abstract get fun int257(): map<Int, Int>;
+
+    abstract get fun coins(): map<Int, Int as coins>;
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": T,
+        "text": "T",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "basic" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 12,
+          "kind": "function_decl",
+          "loc": abstract get fun basic(): map<Int as uint8, Int as uint8>;,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": basic,
+            "text": "basic",
+          },
+          "params": [],
+          "return": {
+            "id": 11,
+            "keyStorageType": {
+              "id": 8,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "keyType": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as uint8, Int as uint8>,
+            "valueStorageType": {
+              "id": 10,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "valueType": {
+              "id": 9,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "isAbstract": true,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "basic",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "key": "Int",
+          "keyAs": "uint8",
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "uint8",
+        },
+        "self": {
+          "kind": "ref",
+          "name": "T",
+          "optional": false,
+        },
+      },
+      "pure" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 17,
+          "kind": "function_decl",
+          "loc": abstract get fun pure(): map<Int, Int>;,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": pure,
+            "text": "pure",
+          },
+          "params": [],
+          "return": {
+            "id": 16,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 14,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 15,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "isAbstract": true,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "pure",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": null,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "T",
+          "optional": false,
+        },
+      },
+      "int257" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 22,
+          "kind": "function_decl",
+          "loc": abstract get fun int257(): map<Int, Int>;,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": int257,
+            "text": "int257",
+          },
+          "params": [],
+          "return": {
+            "id": 21,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 19,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 20,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "isAbstract": true,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "int257",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": null,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "T",
+          "optional": false,
+        },
+      },
+      "coins" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": abstract,
+              "type": "abstract",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 28,
+          "kind": "function_decl",
+          "loc": abstract get fun coins(): map<Int, Int as coins>;,
+          "name": {
+            "id": 23,
+            "kind": "id",
+            "loc": coins,
+            "text": "coins",
+          },
+          "params": [],
+          "return": {
+            "id": 27,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 24,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as coins>,
+            "valueStorageType": {
+              "id": 26,
+              "kind": "id",
+              "loc": coins,
+              "text": "coins",
+            },
+            "valueType": {
+              "id": 25,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "isAbstract": true,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "coins",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "coins",
+        },
+        "self": {
+          "kind": "ref",
+          "name": "T",
+          "optional": false,
+        },
+      },
+    },
+    "globalVariables": Set {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 6769,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 41,
+          "kind": "function_def",
+          "loc": override get fun basic(): map<Int as uint8, Int as uint8> {
+        return emptyMap();
+    },
+          "name": {
+            "id": 32,
+            "kind": "id",
+            "loc": basic,
+            "text": "basic",
+          },
+          "params": [],
+          "return": {
+            "id": 37,
+            "keyStorageType": {
+              "id": 34,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "keyType": {
+              "id": 33,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as uint8, Int as uint8>,
+            "valueStorageType": {
+              "id": 36,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "valueType": {
+              "id": 35,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 38,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 39,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 40,
+              "kind": "statement_return",
+              "loc": return emptyMap();,
+            },
+          ],
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 49,
+          "kind": "function_def",
+          "loc": override get fun pure(): map<Int, Int> {
+        return emptyMap();
+    },
+          "name": {
+            "id": 42,
+            "kind": "id",
+            "loc": pure,
+            "text": "pure",
+          },
+          "params": [],
+          "return": {
+            "id": 45,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 43,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 44,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 46,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 47,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 48,
+              "kind": "statement_return",
+              "loc": return emptyMap();,
+            },
+          ],
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 59,
+          "kind": "function_def",
+          "loc": override get fun int257(): map<Int as int257, Int as int257> {
+        return emptyMap();
+    },
+          "name": {
+            "id": 50,
+            "kind": "id",
+            "loc": int257,
+            "text": "int257",
+          },
+          "params": [],
+          "return": {
+            "id": 55,
+            "keyStorageType": {
+              "id": 52,
+              "kind": "id",
+              "loc": int257,
+              "text": "int257",
+            },
+            "keyType": {
+              "id": 51,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as int257, Int as int257>,
+            "valueStorageType": {
+              "id": 54,
+              "kind": "id",
+              "loc": int257,
+              "text": "int257",
+            },
+            "valueType": {
+              "id": 53,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 56,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 57,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 58,
+              "kind": "statement_return",
+              "loc": return emptyMap();,
+            },
+          ],
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 68,
+          "kind": "function_def",
+          "loc": override get fun coins(): map<Int, Int as varuint16> {
+        return emptyMap();
+    },
+          "name": {
+            "id": 60,
+            "kind": "id",
+            "loc": coins,
+            "text": "coins",
+          },
+          "params": [],
+          "return": {
+            "id": 64,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 61,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varuint16>,
+            "valueStorageType": {
+              "id": 63,
+              "kind": "id",
+              "loc": varuint16,
+              "text": "varuint16",
+            },
+            "valueType": {
+              "id": 62,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 65,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 66,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 67,
+              "kind": "statement_return",
+              "loc": return emptyMap();,
+            },
+          ],
+        },
+      ],
+      "id": 69,
+      "kind": "contract",
+      "loc": contract C with T {
+    override get fun basic(): map<Int as uint8, Int as uint8> {
+        return emptyMap();
+    }
+
+    override get fun pure(): map<Int, Int> {
+        return emptyMap();
+    }
+
+    override get fun int257(): map<Int as int257, Int as int257> {
+        return emptyMap();
+    }
+
+    override get fun coins(): map<Int, Int as varuint16> {
+        return emptyMap();
+    }
+},
+      "name": {
+        "id": 30,
+        "kind": "id",
+        "loc": C,
+        "text": "C",
+      },
+      "params": undefined,
+      "traits": [
+        {
+          "id": 31,
+          "kind": "id",
+          "loc": T,
+          "text": "T",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "basic" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 41,
+          "kind": "function_def",
+          "loc": override get fun basic(): map<Int as uint8, Int as uint8> {
+        return emptyMap();
+    },
+          "name": {
+            "id": 32,
+            "kind": "id",
+            "loc": basic,
+            "text": "basic",
+          },
+          "params": [],
+          "return": {
+            "id": 37,
+            "keyStorageType": {
+              "id": 34,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "keyType": {
+              "id": 33,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as uint8, Int as uint8>,
+            "valueStorageType": {
+              "id": 36,
+              "kind": "id",
+              "loc": uint8,
+              "text": "uint8",
+            },
+            "valueType": {
+              "id": 35,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 38,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 39,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 40,
+              "kind": "statement_return",
+              "loc": return emptyMap();,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": true,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "basic",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "key": "Int",
+          "keyAs": "uint8",
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "uint8",
+        },
+        "self": {
+          "kind": "ref",
+          "name": "C",
+          "optional": false,
+        },
+      },
+      "pure" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 49,
+          "kind": "function_def",
+          "loc": override get fun pure(): map<Int, Int> {
+        return emptyMap();
+    },
+          "name": {
+            "id": 42,
+            "kind": "id",
+            "loc": pure,
+            "text": "pure",
+          },
+          "params": [],
+          "return": {
+            "id": 45,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 43,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": undefined,
+            "valueType": {
+              "id": 44,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 46,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 47,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 48,
+              "kind": "statement_return",
+              "loc": return emptyMap();,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": true,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "pure",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": null,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "C",
+          "optional": false,
+        },
+      },
+      "int257" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 59,
+          "kind": "function_def",
+          "loc": override get fun int257(): map<Int as int257, Int as int257> {
+        return emptyMap();
+    },
+          "name": {
+            "id": 50,
+            "kind": "id",
+            "loc": int257,
+            "text": "int257",
+          },
+          "params": [],
+          "return": {
+            "id": 55,
+            "keyStorageType": {
+              "id": 52,
+              "kind": "id",
+              "loc": int257,
+              "text": "int257",
+            },
+            "keyType": {
+              "id": 51,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int as int257, Int as int257>,
+            "valueStorageType": {
+              "id": 54,
+              "kind": "id",
+              "loc": int257,
+              "text": "int257",
+            },
+            "valueType": {
+              "id": 53,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 56,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 57,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 58,
+              "kind": "statement_return",
+              "loc": return emptyMap();,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": true,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "int257",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "key": "Int",
+          "keyAs": "int257",
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "int257",
+        },
+        "self": {
+          "kind": "ref",
+          "name": "C",
+          "optional": false,
+        },
+      },
+      "coins" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": undefined,
+              "type": "get",
+            },
+          ],
+          "id": 68,
+          "kind": "function_def",
+          "loc": override get fun coins(): map<Int, Int as varuint16> {
+        return emptyMap();
+    },
+          "name": {
+            "id": 60,
+            "kind": "id",
+            "loc": coins,
+            "text": "coins",
+          },
+          "params": [],
+          "return": {
+            "id": 64,
+            "keyStorageType": undefined,
+            "keyType": {
+              "id": 61,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varuint16>,
+            "valueStorageType": {
+              "id": 63,
+              "kind": "id",
+              "loc": varuint16,
+              "text": "varuint16",
+            },
+            "valueType": {
+              "id": 62,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 65,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 66,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 67,
+              "kind": "statement_return",
+              "loc": return emptyMap();,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": true,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "coins",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "varuint16",
+        },
+        "self": {
+          "kind": "ref",
+          "name": "C",
+          "optional": false,
+        },
+      },
+    },
+    "globalVariables": Set {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 71,
+        "kind": "contract_init",
+        "loc": contract C with T {
+    override get fun basic(): map<Int as uint8, Int as uint8> {
+        return emptyMap();
+    }
+
+    override get fun pure(): map<Int, Int> {
+        return emptyMap();
+    }
+
+    override get fun int257(): map<Int as int257, Int as int257> {
+        return emptyMap();
+    }
+
+    override get fun coins(): map<Int, Int as varuint16> {
+        return emptyMap();
+    }
+},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "C",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "C{}",
+    "tlb": "_  = C",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "kind": "function_attribute",
+                  "loc": get,
+                  "methodId": undefined,
+                  "type": "get",
+                },
+              ],
+              "id": 12,
+              "kind": "function_decl",
+              "loc": abstract get fun basic(): map<Int as uint8, Int as uint8>;,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": basic,
+                "text": "basic",
+              },
+              "params": [],
+              "return": {
+                "id": 11,
+                "keyStorageType": {
+                  "id": 8,
+                  "kind": "id",
+                  "loc": uint8,
+                  "text": "uint8",
+                },
+                "keyType": {
+                  "id": 7,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int as uint8, Int as uint8>,
+                "valueStorageType": {
+                  "id": 10,
+                  "kind": "id",
+                  "loc": uint8,
+                  "text": "uint8",
+                },
+                "valueType": {
+                  "id": 9,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "kind": "function_attribute",
+                  "loc": get,
+                  "methodId": undefined,
+                  "type": "get",
+                },
+              ],
+              "id": 17,
+              "kind": "function_decl",
+              "loc": abstract get fun pure(): map<Int, Int>;,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": pure,
+                "text": "pure",
+              },
+              "params": [],
+              "return": {
+                "id": 16,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 14,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int>,
+                "valueStorageType": undefined,
+                "valueType": {
+                  "id": 15,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "kind": "function_attribute",
+                  "loc": get,
+                  "methodId": undefined,
+                  "type": "get",
+                },
+              ],
+              "id": 22,
+              "kind": "function_decl",
+              "loc": abstract get fun int257(): map<Int, Int>;,
+              "name": {
+                "id": 18,
+                "kind": "id",
+                "loc": int257,
+                "text": "int257",
+              },
+              "params": [],
+              "return": {
+                "id": 21,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 19,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int>,
+                "valueStorageType": undefined,
+                "valueType": {
+                  "id": 20,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "kind": "function_attribute",
+                  "loc": get,
+                  "methodId": undefined,
+                  "type": "get",
+                },
+              ],
+              "id": 28,
+              "kind": "function_decl",
+              "loc": abstract get fun coins(): map<Int, Int as coins>;,
+              "name": {
+                "id": 23,
+                "kind": "id",
+                "loc": coins,
+                "text": "coins",
+              },
+              "params": [],
+              "return": {
+                "id": 27,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 24,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as coins>,
+                "valueStorageType": {
+                  "id": 26,
+                  "kind": "id",
+                  "loc": coins,
+                  "text": "coins",
+                },
+                "valueType": {
+                  "id": 25,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+          ],
+          "id": 29,
+          "kind": "trait",
+          "loc": trait T {
+    abstract get fun basic(): map<Int as uint8, Int as uint8>;
+
+    abstract get fun pure(): map<Int, Int>;
+
+    abstract get fun int257(): map<Int, Int>;
+
+    abstract get fun coins(): map<Int, Int as coins>;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": T,
+            "text": "T",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "basic" => {
+            "ast": {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "kind": "function_attribute",
+                  "loc": get,
+                  "methodId": undefined,
+                  "type": "get",
+                },
+              ],
+              "id": 12,
+              "kind": "function_decl",
+              "loc": abstract get fun basic(): map<Int as uint8, Int as uint8>;,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": basic,
+                "text": "basic",
+              },
+              "params": [],
+              "return": {
+                "id": 11,
+                "keyStorageType": {
+                  "id": 8,
+                  "kind": "id",
+                  "loc": uint8,
+                  "text": "uint8",
+                },
+                "keyType": {
+                  "id": 7,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int as uint8, Int as uint8>,
+                "valueStorageType": {
+                  "id": 10,
+                  "kind": "id",
+                  "loc": uint8,
+                  "text": "uint8",
+                },
+                "valueType": {
+                  "id": 9,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            "isAbstract": true,
+            "isGetter": true,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "basic",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "key": "Int",
+              "keyAs": "uint8",
+              "kind": "map",
+              "value": "Int",
+              "valueAs": "uint8",
+            },
+            "self": {
+              "kind": "ref",
+              "name": "T",
+              "optional": false,
+            },
+          },
+          "pure" => {
+            "ast": {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "kind": "function_attribute",
+                  "loc": get,
+                  "methodId": undefined,
+                  "type": "get",
+                },
+              ],
+              "id": 17,
+              "kind": "function_decl",
+              "loc": abstract get fun pure(): map<Int, Int>;,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": pure,
+                "text": "pure",
+              },
+              "params": [],
+              "return": {
+                "id": 16,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 14,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int>,
+                "valueStorageType": undefined,
+                "valueType": {
+                  "id": 15,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            "isAbstract": true,
+            "isGetter": true,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "pure",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "key": "Int",
+              "keyAs": null,
+              "kind": "map",
+              "value": "Int",
+              "valueAs": null,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "T",
+              "optional": false,
+            },
+          },
+          "int257" => {
+            "ast": {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "kind": "function_attribute",
+                  "loc": get,
+                  "methodId": undefined,
+                  "type": "get",
+                },
+              ],
+              "id": 22,
+              "kind": "function_decl",
+              "loc": abstract get fun int257(): map<Int, Int>;,
+              "name": {
+                "id": 18,
+                "kind": "id",
+                "loc": int257,
+                "text": "int257",
+              },
+              "params": [],
+              "return": {
+                "id": 21,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 19,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int>,
+                "valueStorageType": undefined,
+                "valueType": {
+                  "id": 20,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            "isAbstract": true,
+            "isGetter": true,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "int257",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "key": "Int",
+              "keyAs": null,
+              "kind": "map",
+              "value": "Int",
+              "valueAs": null,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "T",
+              "optional": false,
+            },
+          },
+          "coins" => {
+            "ast": {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "kind": "function_attribute",
+                  "loc": get,
+                  "methodId": undefined,
+                  "type": "get",
+                },
+              ],
+              "id": 28,
+              "kind": "function_decl",
+              "loc": abstract get fun coins(): map<Int, Int as coins>;,
+              "name": {
+                "id": 23,
+                "kind": "id",
+                "loc": coins,
+                "text": "coins",
+              },
+              "params": [],
+              "return": {
+                "id": 27,
+                "keyStorageType": undefined,
+                "keyType": {
+                  "id": 24,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as coins>,
+                "valueStorageType": {
+                  "id": 26,
+                  "kind": "id",
+                  "loc": coins,
+                  "text": "coins",
+                },
+                "valueType": {
+                  "id": 25,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            "isAbstract": true,
+            "isGetter": true,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": false,
+            "methodId": null,
+            "name": "coins",
+            "origin": "user",
+            "params": [],
+            "returns": {
+              "key": "Int",
+              "keyAs": null,
+              "kind": "map",
+              "value": "Int",
+              "valueAs": "coins",
+            },
+            "self": {
+              "kind": "ref",
+              "name": "T",
+              "optional": false,
+            },
+          },
+        },
+        "globalVariables": Set {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 6769,
+      },
+    ],
+    "uid": 30887,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for override-fun-map-valueas-keyas 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for receive-message-with-biggest-allowed-size 1`] = `
 [

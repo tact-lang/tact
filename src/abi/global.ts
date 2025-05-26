@@ -23,6 +23,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "ton",
         {
             name: "ton",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError(
@@ -62,6 +63,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "require",
         {
             name: "require",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
                     throwCompilationError(
@@ -119,6 +121,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "address",
         {
             name: "address",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError(
@@ -174,6 +177,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "cell",
         {
             name: "cell",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError("cell() expects one argument", ref);
@@ -219,6 +223,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "dump",
         {
             name: "dump",
+            isStatic: true,
             resolve: (_ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError(
@@ -308,6 +313,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "dumpStack",
         {
             name: "dumpStack",
+            isStatic: true,
             resolve: (_ctx, args, ref) => {
                 if (args.length !== 0) {
                     throwCompilationError(
@@ -334,6 +340,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "emptyMap",
         {
             name: "emptyMap",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 0) {
                     throwCompilationError("emptyMap expects no arguments", ref);
@@ -349,6 +356,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "sha256",
         {
             name: "sha256",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError("sha256 expects 1 argument", ref);
@@ -413,6 +421,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "slice",
         {
             name: "slice",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError("slice() expects one argument", ref);
@@ -457,6 +466,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "rawSlice",
         {
             name: "rawSlice",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError(
@@ -507,6 +517,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "ascii",
         {
             name: "ascii",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError("ascii() expects one argument", ref);
@@ -549,6 +560,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         "crc32",
         {
             name: "crc32",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError("crc32() expects one argument", ref);
