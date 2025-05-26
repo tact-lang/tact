@@ -615,6 +615,47 @@ const rewriteWithIfNot = (
     return ["if", expr];
 };
 
+const extractThrowErrorCode = (
+    stmts: readonly Ast.Statement[],
+    ctx: CompilerContext,
+): Ast.Expression | undefined => {
+    const [stmt] = stmts;
+    if (
+        stmt?.kind === "statement_expression" &&
+        stmt.expression.kind === "static_call" &&
+        stmt.expression.function.text === "throw"
+    ) {
+        const arg = stmt.expression.args.at(0);
+        if (arg?.kind === "static_call" || arg?.kind === "method_call") {
+            // calls can change state, so we'll skip that for now
+            return undefined;
+        }
+
+        if (arg?.kind === "number") {
+            return arg;
+        }
+
+        if (arg === undefined) {
+            return undefined;
+        }
+
+        try {
+            return constEval(arg, ctx);
+        } catch {
+            return undefined;
+        }
+    }
+    return undefined;
+};
+
+const rewriteWithConditionalThrow = (f: Ast.StatementCondition) => {
+    const condition = f.condition;
+    if (condition.kind === "op_unary" && condition.op === "!") {
+        return { kind: "throw_unless", condition: condition.operand };
+    }
+    return { kind: "throw_if", condition };
+};
+
 // HACK ALERT: if `returns` is a string, it contains the code to invoke before returning from a receiver
 // this is used to save the contract state before returning
 function writeCondition(
@@ -624,6 +665,20 @@ function writeCondition(
     returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
+    const throwCode = extractThrowErrorCode(f.trueStatements, ctx.ctx);
+    const isAloneIf =
+        f.falseStatements === undefined || f.falseStatements.length === 0;
+
+    if (!elseif && isAloneIf && throwCode !== undefined) {
+        // if (cond) { throw(X) } => throw_if(X, cond)
+        // if (!cond) { throw(X) } => throw_unless(X, cond)
+        const { kind, condition } = rewriteWithConditionalThrow(f);
+        ctx.append(
+            `${kind}(${writeExpression(throwCode, ctx)}, ${writeExpression(condition, ctx)});`,
+        );
+        return;
+    }
+
     const [ifKind, condition] = rewriteWithIfNot(f.condition, ctx.ctx);
 
     ctx.append(
