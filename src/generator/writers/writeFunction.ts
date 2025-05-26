@@ -608,16 +608,16 @@ const rewriteWithIfNot = (
 const extractThrowErrorCode = (
     stmts: readonly Ast.Statement[],
 ): Ast.Expression | undefined => {
-    if (stmts.length !== 1) return undefined;
-    const stmt = stmts.at(0);
-    if (stmt === undefined) return undefined;
-    if (stmt.kind !== "statement_expression") return undefined;
-    if (stmt.expression.kind !== "static_call") return undefined;
-    if (stmt.expression.function.text === "throw") {
+    const [stmt] = stmts;
+    if (
+        stmt?.kind === "statement_expression" &&
+        stmt.expression.kind === "static_call" &&
+        stmt.expression.function.text === "throw"
+    ) {
         const arg = stmt.expression.args.at(0);
-        if (arg === undefined) return undefined;
-        if (arg.kind !== "number") return undefined;
-        return arg;
+        if (arg?.kind === "number") {
+            return arg;
+        }
     }
     return undefined;
 };
@@ -639,16 +639,16 @@ function writeCondition(
     returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
-    const threwCode = extractThrowErrorCode(f.trueStatements);
+    const throwCode = extractThrowErrorCode(f.trueStatements);
     const isAloneIf =
         f.falseStatements === undefined || f.falseStatements.length === 0;
 
-    if (!elseif && isAloneIf && threwCode !== undefined) {
+    if (!elseif && isAloneIf && throwCode !== undefined) {
         // if (cond) { throw(X) } => throw_if(X, cond)
         // if (!cond) { throw(X) } => throw_unless(X, cond)
         const { kind, condition } = rewriteWithConditionalThrow(f);
         ctx.append(
-            `${kind}(${writeExpression(threwCode, ctx)}, ${writeExpression(condition, ctx)});`,
+            `${kind}(${writeExpression(throwCode, ctx)}, ${writeExpression(condition, ctx)});`,
         );
         return;
     }
