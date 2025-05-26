@@ -543,11 +543,11 @@ contract CounterBuiltinInit {
 contract CounterDIYInit(
     // Persistent state variables
     initialized: Bool, // set this field to `false` during deployment
-    counter: Int as uint32, // set this field to `0` during deployment
+    counter: Int as uint32, // value of this field will be overridden in the `customInit()`
 ) {
     // Internal function, which will be used in place of a pseudo-constructor function
-    fun init() {
-        // Stop further actions if this init() function was called before
+    fun customInit() {
+        // Stop further actions if this customInit() function was called before
         if (self.initialized) {
             return;
         }
@@ -559,14 +559,14 @@ contract CounterDIYInit(
     receive() {
         // Don't forget to add this call at the start of every receiver
         // that can be used for deployments.
-        self.init();
+        self.customInit();
         cashback(sender());
     }
 
     receive(_: Increment) {
         // Don't forget to add this call at the start of every receiver
         // that can be used for deployments.
-        self.init();
+        self.customInit();
         self.counter += 1;
     }
 
@@ -589,7 +589,7 @@ Read more about the `init(){:tact}` on its dedicated section: [Constructor funct
 
 Native functions are Tact's [FFI](https://en.wikipedia.org/wiki/Foreign_function_interface) to FunC — they allow direct bindings to imported FunC functions. In order to declare them, you have to import a `.fc` or `.func` file first. Granted, the FunC's [standard library file, `stdlib.fc`](https://github.com/tact-lang/tact/blob/main/src/stdlib/stdlib/std/stdlib.fc), is always imported for you.
 
-Consider the following FunC function:
+Consider the following FunC file:
 
 ```func title="import_me.fc"
 ;; Notice the tensor return type (int, int),
@@ -652,6 +652,14 @@ Assembly functions are top-level functions that allow you to write Tact assembly
 
 Furthermore, `asm{:tact}` functions are nearly devoid of all abstractions and give direct access to the underlying stack and register contents on which TVM operates.
 
+```tact
+// Simple assembly function that creates a new `Builder`.
+asm fun beginCell(): Builder { NEWC }
+
+// Assembly function as an extension function for the `Builder` type.
+asm(value self) extends fun storeBool(self: Builder, value: Bool): Builder { 1 STI }
+```
+
 Read more about them on their dedicated page: [Assembly functions](/book/assembly-functions).
 
 ## Function attributes {#attributes}
@@ -702,7 +710,7 @@ There is no such attribute yet, so the special static extension functions in the
 
 <Badge text="Contract scope" title="Functions can only be inherited from traits and never at the top level" variant="note" size="medium"/><p/>
 
-The `with{:tact}` keyword allows a contract to inherit a [trait](/book/types#traits) with all its constants, fields, and functions, including those transitively inherited from other traits associated with the specified trait.
+The `with{:tact}` keyword allows a contract to inherit a [trait][trait] with all its constants, fields, and functions, including those transitively inherited from other traits associated with the specified trait.
 
 In particular, all functions of the trait become accessible in the contract, regardless of any inheritance-related attributes, such as `abstract{:tact}`, `virtual{:tact}`, or `override{:tact}`.
 
@@ -924,6 +932,8 @@ struct MinMax {
 }
 ```
 
+[Reachability](/book/statements#return) of `return{:tact}` statements should always be evident to the compiler. Otherwise, a compilation error will occur.
+
 ### Recursion {#commonalities-recursion}
 
 Recursive functions are allowed, including the mutually recursive functions. There is no upper limit on the recursion depth or the number of calls — computations will continue until there is no more gas to spend.
@@ -961,6 +971,25 @@ fun bar() {
     foo(
         5, // trailing comma in argument lists is allowed too!
     );
+}
+```
+
+### Trailing semicolon {#commonalities-colon}
+
+When declaring an [internal function](#fun-internal) with [`abstract{:tact}`](#attributes-abstract) or [`virtual{:tact}`](#attributes-virtual) attributes, Tact allows you to omit a semicolon if it is the last function in the [trait's][trait] body.
+
+```tact
+trait CompositionVII {
+    abstract fun paintedWithOil(preliminary: Bool): Bool // no semicolon needed
+}
+
+contract Abstractionism() with CompositionVII {
+    override fun paintedWithOil(preliminary: Bool): Bool {
+        if (preliminary) {
+            return false; // perhaps, watercolors were used...
+        }
+        return true;
+    }
 }
 ```
 
