@@ -50,6 +50,9 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 ;; $MainContract$_contract_store
 () $MainContract$_contract_store((int, int, slice, cell) v) impure inline;
 
+;; $Int$_fun_inc
+(int, int) $Int$_fun_inc(int $self) impure inline_ref;
+
 ;; $MainContract$_fun_testAugmentedAssignOperators
 ((int, int, slice, cell), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice, cell) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref;
 
@@ -82,6 +85,12 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 
 ;; $MainContract$_fun_testDumpCall
 ((int, int, slice, cell), ()) $MainContract$_fun_testDumpCall((int, int, slice, cell) $self, int $a) impure inline_ref;
+
+;; $MainContract$_fun_testIfThrowOptimization
+((int, int, slice, cell), ()) $MainContract$_fun_testIfThrowOptimization((int, int, slice, cell) $self, int $a) impure inline_ref;
+
+;; $MainContract$_fun_testIfThrowOptimizationNegative
+((int, int, slice, cell), ()) $MainContract$_fun_testIfThrowOptimizationNegative((int, int, slice, cell) $self, int $a) impure inline_ref;
 
 
 ;; main_MainContract.stdlib.fc
@@ -230,6 +239,13 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     return ($self'field, $self'value, $self'data, $self'mapping);
 }
 
+(int, int) $Int$_fun_inc(int $self) impure inline_ref {
+    var ($self) = $self;
+    $self = $self + 1;
+    var $fresh$ret_0 = $self;
+    return ($self, $fresh$ret_0);
+}
+
 ((int, int, slice, cell), int) $MainContract$_fun_testAugmentedAssignOperators((int, int, slice, cell) $self, int $intVal, int $intVal2, int $boolVal, int $boolVal2) impure inline_ref {
     var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
     int $a = $intVal;
@@ -238,26 +254,26 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     int $b = $boolVal;
     $b = ($b ? $boolVal2 : (false));
     $b = ($b ? (true) : $boolVal2);
-    var $fresh$ret_0 = ($a + ($b ? 10 : 20));
-    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_0);
+    var $fresh$ret_1 = ($a + ($b ? 10 : 20));
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_1);
 }
 
 ((int, int, slice, cell), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForA((int, int, slice, cell) $self) impure inline_ref {
     var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
-    var $fresh$ret_1 = $A$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, true, 3, 4);
-    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_1);
+    var $fresh$ret_2 = $A$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, true, 3, 4);
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_2);
 }
 
 ((int, int, slice, cell), (int, int, int, int, int, int, int)) $MainContract$_fun_writeSerializationForB((int, int, slice, cell) $self) impure inline_ref {
     var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
-    var $fresh$ret_2 = $B$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, null(), 3, 4);
-    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_2);
+    var $fresh$ret_3 = $B$_constructor_a_b_c_d_e_f_g(1, 2, null(), false, null(), 3, 4);
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_3);
 }
 
 ((int, int, slice, cell), (cell, cell, slice, slice, int, int, int, slice)) $MainContract$_fun_writeSerializationForC((int, int, slice, cell) $self) impure inline_ref {
     var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
-    var $fresh$ret_3 = $C$_constructor_a_b_c_d_e_f_g_h($Builder$_fun_endCell(store_int($global_beginCell(), 0, 32)), null(), null(), null(), true, 1, 2, $global_myAddress());
-    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_3);
+    var $fresh$ret_4 = $C$_constructor_a_b_c_d_e_f_g_h($Builder$_fun_endCell(store_int($global_beginCell(), 0, 32)), null(), null(), null(), true, 1, 2, $global_myAddress());
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_4);
 }
 
 ((int, int, slice, cell), ()) $MainContract$_fun_testIfOptimizationPositive((int, int, slice, cell) $self, int $a, int $b) impure inline_ref {
@@ -358,6 +374,48 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     return (($self'field, $self'value, $self'data, $self'mapping), ());
 }
 
+((int, int, slice, cell), ()) $MainContract$_fun_testIfThrowOptimization((int, int, slice, cell) $self, int $a) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
+    throw_if(10, ($a == 1));
+    int $cond = ($a == 1);
+    throw_unless(10, $cond);
+    throw_if(1000, ($a == 1));
+    throw_if(1011, ($a == 1));
+    throw_if(499, ($a == 1));
+    return (($self'field, $self'value, $self'data, $self'mapping), ());
+}
+
+((int, int, slice, cell), ()) $MainContract$_fun_testIfThrowOptimizationNegative((int, int, slice, cell) $self, int $a) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
+    if (($a == 1)) {
+        throw_if(10, true);
+    }
+    int $cond = ($a == 1);
+    ifnot ($cond) {
+        throw(10);
+    }
+    if (($a != 1)) {
+        return (($self'field, $self'value, $self'data, $self'mapping), ());
+    }
+    if ($cond) {
+    } elseif (($a == 1)) {
+        throw(10);
+    }
+    int $x = 42;
+    ifnot ($x~$Int$_fun_inc()) {
+        throw($x~$Int$_fun_inc());
+    }
+    if (($a == 1)) {
+        throw(10);
+    }
+    if (($a == 1)) {
+        throw(10);
+    } else {
+        throw(11);
+    }
+    return (($self'field, $self'value, $self'data, $self'mapping), ());
+}
+
 ;;
 ;; Get methods of a Contract MainContract
 ;;
@@ -417,6 +475,20 @@ _ %testDumpCall(int $a) method_id(66927) {
     int $a = $a;
     var self = $MainContract$_contract_load();
     var res = self~$MainContract$_fun_testDumpCall($a);
+    return res;
+}
+
+_ %testIfThrowOptimization(int $a) method_id(71867) {
+    int $a = $a;
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testIfThrowOptimization($a);
+    return res;
+}
+
+_ %testIfThrowOptimizationNegative(int $a) method_id(69407) {
+    int $a = $a;
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_testIfThrowOptimizationNegative($a);
     return res;
 }
 
