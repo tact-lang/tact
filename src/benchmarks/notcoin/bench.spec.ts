@@ -19,62 +19,68 @@ import {
     type BenchmarkResult,
     type CodeSizeResult,
 } from "@/benchmarks/utils/gas";
-import { resolve } from "path";
+import { join, resolve } from "path";
 import { readFileSync } from "fs";
 import { posixNormalize } from "@/utils/filePath";
+import { type Step, writeLog } from "@/test/utils/write-vm-log";
 import {
-    JettonMinter,
+    JettonMinterNotcoin,
     type JettonUpdateContent,
     type Mint,
     type ProvideWalletAddress,
-} from "@/benchmarks/jetton/tact/output/minter_JettonMinter";
+} from "@/benchmarks/notcoin/tact/output/minter_JettonMinterNotcoin";
 import {
-    JettonWallet,
+    JettonWalletNotcoin,
     type JettonTransfer,
     type JettonBurn,
-} from "@/benchmarks/jetton/tact/output/minter_JettonWallet";
+} from "@/benchmarks/notcoin/tact/output/wallet_JettonWalletNotcoin";
 
-import benchmarkResults from "@/benchmarks/jetton/results_gas.json";
-import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json";
-import { step, parameter } from "@/test/allure/allure";
+import benchmarkResults from "@/benchmarks/notcoin/gas.json";
+import benchmarkCodeSizeResults from "@/benchmarks/notcoin/size.json";
 
-const loadFunCJettonsBoc = () => {
+const loadNotcoinJettonsBoc = () => {
     const bocMinter = readFileSync(
         posixNormalize(
-            resolve(__dirname, "./func/output/jetton-minter-discoverable.boc"),
+            resolve(__dirname, "./func/output/jetton-minter-not.boc"),
         ),
     );
 
     const bocWallet = readFileSync(
-        posixNormalize(resolve(__dirname, "./func/output/jetton-wallet.boc")),
+        posixNormalize(
+            resolve(__dirname, "./func/output/jetton-wallet-not.boc"),
+        ),
     );
 
     return { bocMinter, bocWallet };
 };
 
-function testJetton(
+function testNotcoin(
     benchmarkResults: BenchmarkResult,
     codeSizeResults: CodeSizeResult,
     fromInit: (
         totalSupply: bigint,
         owner: Address,
+        nextOwner: Address,
         jettonContent: Cell,
-    ) => Promise<JettonMinter>,
+    ) => Promise<JettonMinterNotcoin>,
 ) {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
     let notDeployer: SandboxContract<TreasuryContract>;
     const defaultContent: Cell = beginCell().endCell();
-    let jettonMinter: SandboxContract<JettonMinter>;
-    let deployerJettonWallet: SandboxContract<JettonWallet>;
+    let step: Step;
+    let jettonMinterNotcoin: SandboxContract<JettonMinterNotcoin>;
+    let deployerJettonWalletNotcoin: SandboxContract<JettonWalletNotcoin>;
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
         deployer = await blockchain.treasury("deployer");
         notDeployer = await blockchain.treasury("notDeployer");
 
-        await parameter("deployer", deployer.address.toString());
-        await parameter("notDeployer", notDeployer.address.toString());
+        step = writeLog({
+            path: join(__dirname, "output", "log.yaml"),
+            blockchain,
+        });
 
         const msg: JettonUpdateContent = {
             $$type: "JettonUpdateContent",
@@ -82,11 +88,16 @@ function testJetton(
             content: new Cell(),
         };
 
-        jettonMinter = blockchain.openContract(
-            await fromInit(0n, deployer.address, defaultContent),
+        jettonMinterNotcoin = blockchain.openContract(
+            await fromInit(
+                0n,
+                deployer.address,
+                deployer.address,
+                defaultContent,
+            ),
         );
 
-        const deployResult = await jettonMinter.send(
+        const deployResult = await jettonMinterNotcoin.send(
             deployer.getSender(),
             { value: toNano("0.1") },
             msg,
@@ -94,20 +105,20 @@ function testJetton(
 
         expect(deployResult.transactions).toHaveTransaction({
             from: deployer.address,
-            to: jettonMinter.address,
+            to: jettonMinterNotcoin.address,
             deploy: true,
             success: true,
         });
 
-        deployerJettonWallet = blockchain.openContract(
-            await JettonWallet.fromAddress(
-                await jettonMinter.getGetWalletAddress(deployer.address),
+        deployerJettonWalletNotcoin = blockchain.openContract(
+            await JettonWalletNotcoin.fromAddress(
+                await jettonMinterNotcoin.getGetWalletAddress(deployer.address),
             ),
         );
     });
 
     const sendFunding = async (
-        jettonWallet: SandboxContract<JettonWallet>,
+        jettonWallet: SandboxContract<JettonWalletNotcoin>,
         from: Sender,
         value: bigint,
         jetton_amount: bigint,
@@ -137,7 +148,7 @@ function testJetton(
     };
 
     const sendMint = async (
-        jettonMinter: SandboxContract<JettonMinter>,
+        jettonMinterNotcoin: SandboxContract<JettonMinterNotcoin>,
         from: Sender,
         to: Address,
         jetton_amount: bigint,
@@ -153,9 +164,9 @@ function testJetton(
                 $$type: "JettonTransferInternal",
                 queryId: 0n,
                 amount: jetton_amount,
-                responseDestination: jettonMinter.address,
+                responseDestination: jettonMinterNotcoin.address,
                 forwardTonAmount: forward_ton_amount,
-                sender: jettonMinter.address,
+                sender: jettonMinterNotcoin.address,
                 forwardPayload: beginCell()
                     .storeUint(0, 1)
                     .endCell()
@@ -163,7 +174,7 @@ function testJetton(
             },
         };
 
-        return await jettonMinter.send(
+        return await jettonMinterNotcoin.send(
             from,
             { value: total_ton_amount + toNano("0.015") },
             msg,
@@ -171,7 +182,7 @@ function testJetton(
     };
 
     const sendDiscovery = async (
-        jettonMinter: SandboxContract<JettonMinter>,
+        jettonMinterNotcoin: SandboxContract<JettonMinterNotcoin>,
         from: Sender,
         address: Address,
         includeAddress: boolean,
@@ -184,11 +195,11 @@ function testJetton(
             includeAddress: includeAddress,
         };
 
-        return await jettonMinter.send(from, { value }, msg);
+        return await jettonMinterNotcoin.send(from, { value }, msg);
     };
 
     const sendBurn = async (
-        jettonWallet: SandboxContract<JettonWallet>,
+        jettonWallet: SandboxContract<JettonWalletNotcoin>,
         from: Sender,
         value: bigint,
         jetton_amount: bigint,
@@ -209,7 +220,7 @@ function testJetton(
     it("transfer", async () => {
         const mintResult = await step("mint", () =>
             sendMint(
-                jettonMinter,
+                jettonMinterNotcoin,
                 deployer.getSender(),
                 deployer.address,
                 toNano(100000),
@@ -219,8 +230,8 @@ function testJetton(
         );
 
         expect(mintResult.transactions).toHaveTransaction({
-            from: jettonMinter.address,
-            to: deployerJettonWallet.address,
+            from: jettonMinterNotcoin.address,
+            to: deployerJettonWalletNotcoin.address,
             success: true,
             endStatus: "active",
         });
@@ -231,7 +242,7 @@ function testJetton(
 
         const sendResult = await step("transfer", () =>
             sendFunding(
-                deployerJettonWallet,
+                deployerJettonWalletNotcoin,
                 deployer.getSender(),
                 toNano(1),
                 1n,
@@ -248,7 +259,7 @@ function testJetton(
         });
 
         expect(sendResult.transactions).toHaveTransaction({
-            from: deployerJettonWallet.address,
+            from: deployerJettonWalletNotcoin.address,
             success: true,
             exitCode: 0,
         });
@@ -262,7 +273,7 @@ function testJetton(
 
         const burnResult = await step("burn", () =>
             sendBurn(
-                deployerJettonWallet,
+                deployerJettonWalletNotcoin,
                 deployer.getSender(),
                 toNano(10),
                 burnAmount,
@@ -272,8 +283,8 @@ function testJetton(
         );
 
         expect(burnResult.transactions).toHaveTransaction({
-            from: deployerJettonWallet.address,
-            to: jettonMinter.address,
+            from: deployerJettonWalletNotcoin.address,
+            to: jettonMinterNotcoin.address,
             exitCode: 0,
         });
 
@@ -284,7 +295,7 @@ function testJetton(
     it("discovery", async () => {
         const discoveryResult = await step("discovery", () =>
             sendDiscovery(
-                jettonMinter,
+                jettonMinterNotcoin,
                 deployer.getSender(),
                 notDeployer.address,
                 false,
@@ -294,7 +305,7 @@ function testJetton(
 
         expect(discoveryResult.transactions).toHaveTransaction({
             from: deployer.address,
-            to: jettonMinter.address,
+            to: jettonMinterNotcoin.address,
             success: true,
         });
 
@@ -304,15 +315,23 @@ function testJetton(
 
     it("minter cells", async () => {
         expect(
-            (await getStateSizeForAccount(blockchain, jettonMinter.address))
-                .cells,
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    jettonMinterNotcoin.address,
+                )
+            ).cells,
         ).toEqual(codeSizeResults.size["minter cells"]);
     });
 
     it("minter bits", async () => {
         expect(
-            (await getStateSizeForAccount(blockchain, jettonMinter.address))
-                .bits,
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    jettonMinterNotcoin.address,
+                )
+            ).bits,
         ).toEqual(codeSizeResults.size["minter bits"]);
     });
 
@@ -321,7 +340,7 @@ function testJetton(
             (
                 await getStateSizeForAccount(
                     blockchain,
-                    deployerJettonWallet.address,
+                    deployerJettonWalletNotcoin.address,
                 )
             ).cells,
         ).toEqual(codeSizeResults.size["wallet cells"]);
@@ -332,14 +351,14 @@ function testJetton(
             (
                 await getStateSizeForAccount(
                     blockchain,
-                    deployerJettonWallet.address,
+                    deployerJettonWalletNotcoin.address,
                 )
             ).bits,
         ).toEqual(codeSizeResults.size["wallet bits"]);
     });
 }
 
-describe("Jetton Gas Tests", () => {
+describe("Notcoin Gas Tests", () => {
     const fullResults = generateResults(benchmarkResults);
     const fullCodeSizeResults = generateCodeSizeResults(
         benchmarkCodeSizeResults,
@@ -349,33 +368,39 @@ describe("Jetton Gas Tests", () => {
         const funcCodeSize = fullCodeSizeResults.at(0)!;
         const funcResult = fullResults.at(0)!;
 
-        function fromInit(salt: bigint, admin: Address, _content: Cell) {
-            const jettonData = loadFunCJettonsBoc();
+        function fromInit(
+            totalSupply: bigint,
+            owner: Address,
+            nextOwner: Address,
+            jettonContent: Cell,
+        ) {
+            const jettonData = loadNotcoinJettonsBoc();
             const minterCell = Cell.fromBoc(jettonData.bocMinter)[0]!;
             const walletCell = Cell.fromBoc(jettonData.bocWallet)[0]!;
 
             const stateInitMinter = beginCell()
-                .storeCoins(0)
-                .storeAddress(admin)
-                .storeRef(beginCell().storeUint(1, 1).endCell()) // as salt
+                .storeCoins(totalSupply)
+                .storeAddress(owner)
+                .storeAddress(nextOwner)
                 .storeRef(walletCell)
+                .storeRef(jettonContent)
                 .endCell();
 
             const init = { code: minterCell, data: stateInitMinter };
             const address = contractAddress(0, init);
-            return Promise.resolve(new JettonMinter(address, init));
+            return Promise.resolve(new JettonMinterNotcoin(address, init));
         }
 
-        testJetton(funcResult, funcCodeSize, fromInit);
+        testNotcoin(funcResult, funcCodeSize, fromInit);
     });
 
     describe("tact", () => {
         const tactCodeSize = fullCodeSizeResults.at(-1)!;
         const tactResult = fullResults.at(-1)!;
-        testJetton(
+        testNotcoin(
             tactResult,
             tactCodeSize,
-            JettonMinter.fromInit.bind(JettonMinter),
+            JettonMinterNotcoin.fromInit.bind(JettonMinterNotcoin),
         );
     });
 

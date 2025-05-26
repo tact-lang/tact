@@ -1,5 +1,7 @@
 import "./messages";
 
+asm fun forceBasechainFunc(address: Address) { REWRITESTDADDR DROP 333 THROWIF }
+
 contract JettonWallet(
     owner: Address,
     master: Address,
@@ -9,7 +11,7 @@ contract JettonWallet(
     const gasConsumption: Int = ton("0.015");
 
     receive(msg: JettonTransfer) {
-        forceBasechain(msg.destination);
+        forceBasechainFunc(msg.destination);
         throwUnless(705, sender() == self.owner);
 
         self.balance -= msg.amount;
