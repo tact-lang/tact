@@ -20,9 +20,6 @@ int __tact_int_eq_nullable_left(int a, int b) inline;
 ;; __tact_int_neq_nullable_left
 int __tact_int_neq_nullable_left(int a, int b) inline;
 
-;; $Bin$_load_without_opcode
-(slice, (tuple)) $Bin$_load_without_opcode(slice sc_0) inline;
-
 ;; $MainContract$_store
 builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 
@@ -132,17 +129,15 @@ cell $Builder$_fun_endCell(builder $self) impure asm """
     ENDC
 """;
 
+int $Slice$_fun_depth(slice $self) impure asm """
+    SDEPTH
+""";
+
+int $Cell$_fun_depth(cell $self) impure asm """
+    CDEPTH
+""";
+
 ;; main_MainContract.storage.fc
-;;
-;; Type: Bin
-;; Header: 0x00000002
-;; TLB: bin#00000002  = Bin
-;;
-
-(slice, (tuple)) $Bin$_load_without_opcode(slice sc_0) inline {
-    return (sc_0, null());
-}
-
 ;;
 ;; Type: A
 ;; TLB: _ a:int257 b:int257 c:Maybe int257 d:bool e:Maybe bool f:int257 g:int257 = A
@@ -551,8 +546,43 @@ _ %testOrder() method_id(121793) {
         op = in_msg~load_uint(32);
         ;; Receive Bin message
         if (op == 0x2) {
-            var $m = in_msg~$Bin$_load_without_opcode();
+            var $m = empty_tuple();
             throw_unless(53588, (0x2 == 2));
+            $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+            return ();
+        }
+        
+        ;; Receive Message1 message
+        if (op == 3110385022) {
+            var $msg'a = in_msg~load_int(257);
+            throw($msg'a);
+            $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+            return ();
+        }
+        
+        ;; Receive Message2 message
+        if (op == 797349837) {
+            var $msg'value = in_msg~load_ref();
+            var $msg'value2 = in_msg~load_ref().begin_parse();
+            int $sc_1 = 10;
+            int $sc_2 = 20;
+            int $in_msg = ($sc_1 + $sc_2);
+            throw_if($in_msg, ($in_msg == 0));
+            throw(($Cell$_fun_depth($msg'value) + $Slice$_fun_depth($msg'value2)));
+            $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+            return ();
+        }
+        
+        ;; Receive Message3 message
+        if (op == 1120645875) {
+            var $msg'val1 = in_msg~load_int(257);
+            var $msg'val2 = in_msg~load_int(257);
+            var $msg'val3 = in_msg~load_int(257);
+            slice sc_1 = in_msg~load_ref().begin_parse();
+            var $msg'val4 = sc_1~load_int(257);
+            var $msg'val5 = sc_1~load_int(257);
+            var $msg'val6 = sc_1~load_int(257);
+            throw(((((($msg'val1 + $msg'val2) + $msg'val3) + $msg'val4) + $msg'val5) + $msg'val6));
             $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
             return ();
         }
