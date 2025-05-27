@@ -120,7 +120,7 @@ function handleStructOrOtherValue(
             value.kind === "ref" && !value.optional
                 ? ops.writerCell(t.name, ctx)
                 : ops.writerCellOpt(t.name, ctx);
-        return `${resolved[0]}~${funcName}(${bits}, ${resolved[1]}, ${writerFunc}(${resolved[2]}))`;
+        return `${resolved[0]}~${funcName}(${bits}, ${resolved[1]}, ${writerFunc}(${resolved[2]}, begin_cell()))`;
     }
     throwCompilationError(`"${t.name}" can't be value of a map`, ref);
 }
@@ -749,7 +749,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
                                 ? ops.writerCell(t.name, ctx)
                                 : ops.writerCellOpt(t.name, ctx);
                         ctx.used(`__tact_dict_replaceget_${kind}_cell`);
-                        return `${ops.readerOpt(t.name, ctx)}(${resolved[0]}~__tact_dict_replaceget_${kind}_cell(${bits}, ${resolved[1]}, ${writerFunc}(${resolved[2]})))`;
+                        return `${ops.readerOpt(t.name, ctx)}(${resolved[0]}~__tact_dict_replaceget_${kind}_cell(${bits}, ${resolved[1]}, ${writerFunc}(${resolved[2]}, begin_cell())))`;
                     }
                     throwCompilationError(
                         `"${t.name}" can't be value of a map`,

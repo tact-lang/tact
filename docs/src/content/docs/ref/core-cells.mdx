@@ -2076,9 +2076,9 @@ contract Example {
 }
 ```
 
-:::caution
+:::note
 
-    The initialization bit (in case the contract uses fields and `init()`) is not included in the resulting `Cell{:tact}` or `Slice{:tact}`.
+    If a contract doesn't use [contract parameters](/book/contracts#parameters), the resulting `Cell{:tact}` or `Slice{:tact}` will contain a leading one bit representing the lazy initialization bit.
 
 :::
 
@@ -2107,9 +2107,9 @@ contract Example {
 }
 ```
 
-:::caution
+:::note
 
-    The initialization bit (in case the contract uses fields and `init()`) is not included in the resulting `Cell{:tact}` or `Slice{:tact}`.
+    If a contract doesn't use [contract parameters](/book/contracts#parameters), the resulting `Cell{:tact}` or `Slice{:tact}` will contain a leading one bit representing the lazy initialization bit.
 
 :::
 

@@ -546,24 +546,37 @@ You can convert a contract instance to a [`Cell{:tact}`](/book/cells#cells) or [
 These methods will build a new `Cell{:tact}` or `Slice{:tact}` with the contract data.
 
 ```tact
-contract Example(
-    owner: Address,
-) {
-    get fun asCell(): Cell {
-        return self.toCell(); // returns a Cell with the contract data
-    }
+// ...
 
-    get fun asSlice(): Slice {
-        return self.toSlice(); // returns a Slice with the contract data
+contract WalletV4(
+    seqno: Int as uint32,
+    walletId: Int as int32,
+    publicKey: Int as uint256,
+    extensions: map<Address, Bool>,
+) {
+    // ...
+    external(msgSlice: Slice) {
+        let msg = ExtRequest.fromSlice(msgSlice);
+        throwIf(Expired, msg.validUntil < now());
+        throwUnless(SeqnoMismatch, msg.seqno == self.seqno);
+        throwUnless(WalletIdMismatch, msg.walletId == self.walletId);
+        throwUnless(SignatureMismatch, msg.bundle.verifySignature(self.publicKey));
+
+        acceptMessage();
+        self.seqno += 1;
+        setData(self.toCell()); // <- set the contract data explicitly for low level control
+        commit();
+
+        // ...
     }
 }
 ```
 
 This is useful when you need to explicitly set data of your contract for low level control of the contract data.
 
-:::caution
+:::note
 
-    The initialization bit (in case the contract uses fields and `init()`) is not included in the resulting `Cell{:tact}` or `Slice{:tact}`.
+    If a contract doesn't use [contract parameters](/book/contracts#parameters), the resulting `Cell{:tact}` or `Slice{:tact}` will contain a leading one bit representing the lazy initialization bit.
 
 :::
 
