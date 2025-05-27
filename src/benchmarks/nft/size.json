@@ -199,6 +199,16 @@
         "item cells": "10",
         "item bits": "5217"
       }
+    },
+    {
+      "label": "1.6.12 with structs as possible",
+      "pr": "https://github.com/tact-lang/tact/pull/3289",
+      "size": {
+        "collection cells": "39",
+        "collection bits": "19204",
+        "item cells": "10",
+        "item bits": "5017"
+      }
     }
   ]
 }
