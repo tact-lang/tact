@@ -36,13 +36,6 @@ struct RawMsgWithDeploy {
     body: Cell;
 }
 
-struct ContractState {
-    seqno: Int as uint32;
-    walletId: Int as int32;
-    publicKey: Int as uint256;
-    extensions: map<Address, Bool>;
-}
-
 struct DeployPlugin {
     wc: Int as uint8;
     amount: Int as coins;
@@ -79,12 +72,15 @@ const AddPluginAction: Int = 0x6e6f7465;
 const RemovePluginAction: Int = 0x64737472;
 
 contract WalletV4(
-    state: ContractState,
+    seqno: Int as uint32,
+    walletId: Int as int32,
+    publicKey: Int as uint256,
+    extensions: map<Address, Bool>,
 ) {
     receive(msg: PluginRequestFunds) {
         let addr = sender(); // check gas for ctx
 
-        if (!self.state.extensions.exists(addr)) {
+        if (!self.extensions.exists(addr)) {
             return;
         }
 
@@ -108,11 +104,11 @@ contract WalletV4(
     receive(msg: RemovePlugin) {
         let addr = sender(); // check gas for ctx
 
-        if (!self.state.extensions.exists(addr)) {
+        if (!self.extensions.exists(addr)) {
             return;
         }
 
-        let _ = self.state.extensions.del(addr);
+        let _ = self.extensions.del(addr);
 
         if (context().bounceable) {
             sendRawMessage(
@@ -131,13 +127,13 @@ contract WalletV4(
     external(msgSlice: Slice) {
         let msg = ExtRequest.fromSlice(msgSlice);
         throwIf(Expired, msg.validUntil < now());
-        throwUnless(SeqnoMismatch, msg.seqno == self.state.seqno);
-        throwUnless(WalletIdMismatch, msg.walletId == self.state.walletId);
-        throwUnless(SignatureMismatch, msg.bundle.verifySignature(self.state.publicKey));
+        throwUnless(SeqnoMismatch, msg.seqno == self.seqno);
+        throwUnless(WalletIdMismatch, msg.walletId == self.walletId);
+        throwUnless(SignatureMismatch, msg.bundle.verifySignature(self.publicKey));
 
         acceptMessage();
-        self.state.seqno += 1;
-        setData(self.state.toCell());
+        self.seqno += 1;
+        setData(self.toCell());
         commit();
 
         // simple transfer
@@ -154,7 +150,9 @@ contract WalletV4(
                 let mode = payload.loadUint(8);
                 sendRawMessage(payload.loadRef(), mode);
             }
-            return;
+
+            // throw(0) is idiom to successfully exit current transaction without saving state
+            throw(0);
         }
 
         // deploy and add plugin
@@ -173,13 +171,13 @@ contract WalletV4(
                 3,
             );
 
-            self.state.extensions.set(addr, true);
+            self.extensions.set(addr, true);
         } else if (msg.op == 2) {
             let addPlugin = AddPlugin.fromSlice(msg.payload);
 
             let addr = newAddress(addPlugin.wc, addPlugin.addrHash);
 
-            self.state.extensions.set(addr, true);
+            self.extensions.set(addr, true);
 
             sendRawMessage(
                 RawMsg {
@@ -196,7 +194,7 @@ contract WalletV4(
             let removePlugin = RemovePluginStruct.fromSlice(msg.payload);
 
             let addr = newAddress(removePlugin.wc, removePlugin.addrHash);
-            throwUnless(PluginWasNotDeleted, self.state.extensions.del(addr));
+            throwUnless(PluginWasNotDeleted, self.extensions.del(addr));
 
             sendRawMessage(
                 RawMsg {
@@ -216,25 +214,25 @@ contract WalletV4(
     }
 
     get fun seqno(): Int {
-        return self.state.seqno;
+        return self.seqno;
     }
 
     get fun get_subwallet_id(): Int {
-        return self.state.walletId;
+        return self.walletId;
     }
 
     get fun get_public_key(): Int {
-        return self.state.publicKey;
+        return self.publicKey;
     }
 
     get fun is_plugin_installed(wc: Int, hash: Int): Bool {
-        return self.state.extensions.exists(newAddress(wc, hash));
+        return self.extensions.exists(newAddress(wc, hash));
     }
 
     // this is different from FunC version, awaiting unbounded tuple impl in Tact
     // also we need to return it as map of <wc, hash> instead of Address (skip first 4 bytes)
     get fun get_plugin_list(): map<Address, Bool> {
-        return self.state.extensions;
+        return self.extensions;
     }
 }
 

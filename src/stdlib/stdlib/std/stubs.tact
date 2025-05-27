@@ -252,6 +252,9 @@ primitive AnyStruct;
 /// Pseudo-type that represents any Message.
 primitive AnyMessage;
 
+/// Pseudo-type that represents any Contract.
+primitive AnyContract;
+
 /// Extension function for any struct type.
 ///
 /// Converts a `Cell` into the specified struct and returns that struct.
@@ -501,6 +504,56 @@ extends fun toCell(self: AnyMessage): Cell;
 /// See: https://docs.tact-lang.org/ref/core-cells/#messagetoslice
 ///
 extends fun toSlice(self: AnyMessage): Slice;
+
+/// Extension function for any contract type. Available since Tact 1.6.12.
+///
+/// Converts the contract data to a `Cell` and returns it.
+///
+/// ```tact
+/// contract Example {
+///     probably: Int as coins = 42;
+///     nothing: Int as coins = 27;
+///
+///     get fun asCell(): Cell {
+///         return self.toCell();
+///     }
+/// }
+/// ```
+///
+/// If a contract doesn't use [contract parameters], the resulting `Cell`
+/// or `Slice` will contain a leading one bit representing the [lazy initialization bit].
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#contracttocell
+///
+/// [contract parameters]: https://docs.tact-lang.org/book/contracts#parameters
+/// [lazy initialization bit]: https://docs.tact-lang.org/book/functions/#init
+///
+extends fun toCell(self: AnyContract): Cell;
+
+/// Extension function for any contract type. Available since Tact 1.6.12.
+///
+/// Converts the contract data to a `Slice` and returns it. Alias to `self.toCell().asSlice()`.
+///
+/// ```tact
+/// contract Example {
+///     probably: Int as coins = 42;
+///     nothing: Int as coins = 27;
+///
+///     get fun asSlice(): Slice {
+///         return self.toSlice();
+///     }
+/// }
+/// ```
+///
+/// If a contract doesn't use [contract parameters], the resulting `Cell`
+/// or `Slice` will contain a leading one bit representing the [lazy initialization bit].
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#contracttoslice
+///
+/// [contract parameters]: https://docs.tact-lang.org/book/contracts#parameters
+/// [lazy initialization bit]: https://docs.tact-lang.org/book/functions/#init
+///
+extends fun toSlice(self: AnyContract): Slice;
 
 /// Creates an empty map of type `map<K, V>`, initially set to `null`.
 ///

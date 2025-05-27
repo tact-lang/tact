@@ -80,6 +80,24 @@
         "burn": "11883",
         "discovery": "5716"
       }
+    },
+    {
+      "label": "1.6.10 with correct evaluation order for binary expressions",
+      "pr": "https://github.com/tact-lang/tact/pull/3252",
+      "gas": {
+        "transfer": "15519",
+        "burn": "11875",
+        "discovery": "5716"
+      }
+    },
+    {
+      "label": "1.6.11 with inline message loading",
+      "pr": "https://github.com/tact-lang/tact/pull/2993",
+      "gas": {
+        "transfer": "15413",
+        "burn": "11739",
+        "discovery": "5818"
+      }
     }
   ]
 }

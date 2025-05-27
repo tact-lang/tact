@@ -45,7 +45,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")})`;
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}, begin_cell())`;
             },
         },
     ],
@@ -206,7 +206,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}).begin_parse()`;
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}, begin_cell()).begin_parse()`;
             },
         },
     ],
