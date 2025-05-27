@@ -142,6 +142,19 @@
         "revoke": "3850",
         "take excess": "5595"
       }
+    },
+    {
+      "label": "1.6.11 with toCell() on contracts",
+      "pr": "https://github.com/tact-lang/tact/pull/3274",
+      "gas": {
+        "deploy": "4030",
+        "request owner": "4928",
+        "prove ownership": "5116",
+        "get static data": "4732",
+        "destroy": "6215",
+        "revoke": "3850",
+        "take excess": "5595"
+      }
     }
   ]
 }
