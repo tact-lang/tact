@@ -179,6 +179,16 @@
         "deploy nft": "10520",
         "batch deploy nft": "654138"
       }
+    },
+    {
+      "label": "1.6.11 with optimized send",
+      "pr": null,
+      "gas": {
+        "transfer": "6979",
+        "get static data": "4424",
+        "deploy nft": "10335",
+        "batch deploy nft": "654266"
+      }
     }
   ]
 }
