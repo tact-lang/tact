@@ -1890,9 +1890,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 const funInContractOrTrait = contractOrTrait.functions.get(
                     traitFunction.name,
                 );
-                if (!funInContractOrTrait && traitFunction.isAbstract) {
+                if (
+                    contractOrTrait.kind === "contract" &&
+                    !funInContractOrTrait &&
+                    traitFunction.isAbstract
+                ) {
                     throwCompilationError(
-                        `Trait "${inheritedTrait.name}" requires function "${traitFunction.name}"`,
+                        `Missing implementation of abstract method "${traitFunction.name}" declared in trait "${inheritedTrait.name}"`,
                         contractOrTrait.ast.loc,
                     );
                 }
@@ -1993,13 +1997,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     (v) => v.name === traitConstant.name,
                 );
                 if (
+                    contractOrTrait.kind === "contract" &&
                     !constInContractOrTrait &&
                     traitConstant.ast.attributes.find(
                         (v) => v.type === "abstract",
                     )
                 ) {
                     throwCompilationError(
-                        `Trait "${inheritedTrait.name}" requires constant "${traitConstant.name}"`,
+                        `Missing implementation of abstract constant "${traitConstant.name}" declared in trait "${inheritedTrait.name}"`,
                         contractOrTrait.ast.loc,
                     );
                 }
