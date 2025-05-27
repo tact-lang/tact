@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Language features
+
+- Compiler now allows `toCell()` and `toSlice()` methods on contract types: PR [#3274](https://github.com/tact-lang/tact/pull/3274)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+
 ## [1.6.11] - 2025-05-26
 
 ### Language features
