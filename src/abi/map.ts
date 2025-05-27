@@ -33,6 +33,10 @@ function checkMapType(
     value: string;
     valueAs: string | null;
 } {
+    if (self?.kind === "null") {
+        // allow `foo.deepEqual(emptyMap())`
+        return
+    }
     if (!self || self.kind !== "map") {
         throwCompilationError("expects a map as self argument", ref);
     }
@@ -511,6 +515,12 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
 
                 const [self, other] = args;
                 checkMapType(self, ref);
+
+                if (other?.kind === "null") {
+                    // allow `foo.deepEqual(emptyMap())`
+                    return { kind: "ref", name: "Bool", optional: false };
+                }
+
                 checkMapType(other, ref);
 
                 if (!isAssignable(self, other)) {
