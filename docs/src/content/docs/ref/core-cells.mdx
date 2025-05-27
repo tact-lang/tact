@@ -2051,6 +2051,68 @@ contract Example {
 }
 ```
 
+## Contract.toCell
+
+<Badge text="Available since Tact 1.6.12" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun toCell(self: Contract): Cell;
+```
+
+Extension function for any [contract][contract] type.
+
+Converts the contract state to a [`Cell{:tact}`][cell] and returns it.
+
+Usage example:
+
+```tact
+contract Example {
+    probably: Int as coins = 42;
+    nothing: Int as coins = 27;
+
+    get fun asCell(): Cell {
+        return self.toCell(); // "x{12A11B}"
+    }
+}
+```
+
+:::caution
+
+    The initialization bit (in case the contract uses fields and `init()`) is not included in the resulting `Cell{:tact}` or `Slice{:tact}`.
+
+:::
+
+## Contract.toSlice
+
+<Badge text="Available since Tact 1.6.12" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun toSlice(self: Contract): Slice;
+```
+
+Extension function for any [contract][contract] type.
+
+Converts the contract state to a [`Slice{:tact}`][slice] and returns it. An alias to `self.toCell().asSlice(){:tact}`.
+
+Usage example:
+
+```tact
+contract Example {
+    probably: Int as coins = 42;
+    nothing: Int as coins = 27;
+
+    get fun asSlice(): Slice {
+        return self.toSlice(); // "CS{Cell{000612a11b} bits: 0..24; refs: 0..0}"
+    }
+}
+```
+
+:::caution
+
+    The initialization bit (in case the contract uses fields and `init()`) is not included in the resulting `Cell{:tact}` or `Slice{:tact}`.
+
+:::
+
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
@@ -2059,6 +2121,7 @@ contract Example {
 [slice]: /book/cells#slices
 [map]: /book/maps
 [struct]: /book/structs-and-messages#structs
+[contract]: /book/contracts
 [message]: /book/structs-and-messages#messages
 [opcode]: /book/structs-and-messages#message-opcodes
 [null]: /book/optionals

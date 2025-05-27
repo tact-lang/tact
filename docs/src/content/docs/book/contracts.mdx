@@ -538,6 +538,42 @@ Read more about them in their dedicated section: [Internal functions](/book/func
 
 :::
 
+### Converting to Cell or Slice
+
+<Badge text="Available since Tact 1.6.12" variant="tip" size="medium"/><p/>
+
+You can convert a contract instance to a [`Cell{:tact}`](/book/cells#cells) or [`Slice{:tact}`](/book/cells#slices) using the `toCell(){:tact}` and `toSlice(){:tact}` methods.
+These methods will build a new `Cell{:tact}` or `Slice{:tact}` with the contract data.
+
+```tact
+contract Example(
+    owner: Address,
+) {
+    get fun asCell(): Cell {
+        return self.toCell(); // returns a Cell with the contract data
+    }
+
+    get fun asSlice(): Slice {
+        return self.toSlice(); // returns a Slice with the contract data
+    }
+}
+```
+
+This is useful when you need to explicitly set data of your contract for low level control of the contract data.
+
+:::caution
+
+    The initialization bit (in case the contract uses fields and `init()`) is not included in the resulting `Cell{:tact}` or `Slice{:tact}`.
+
+:::
+
+:::note[Useful links:]
+
+  [`Contract.toCell(){:tact}` in Core library][ct-tc]\
+  [`Contract.toSlice(){:tact}` in Core library][ct-ts]
+
+:::
+
 [p]: /book/types#primitive-types
 [int]: /book/integers
 [trait]: /book/types#traits
@@ -546,3 +582,6 @@ Read more about them in their dedicated section: [Internal functions](/book/func
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [bp]: https://github.com/ton-org/blueprint
 [bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration
+
+[ct-tc]: /ref/core-cells#contracttocell
+[ct-ts]: /ref/core-cells#contracttoslice
