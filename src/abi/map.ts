@@ -35,7 +35,7 @@ function checkMapType(
 } {
     if (self?.kind === "null") {
         // allow `foo.deepEqual(emptyMap())`
-        return
+        return;
     }
     if (!self || self.kind !== "map") {
         throwCompilationError("expects a map as self argument", ref);
