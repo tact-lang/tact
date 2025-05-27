@@ -11,7 +11,7 @@ const setup = async () => {
     blockchain.verbosity.print = false;
 
     const treasury = await blockchain.treasury("treasury");
-    const contract = blockchain.openContract(await Test.fromInit(0n));
+    const contract = blockchain.openContract(await Test.fromInit());
 
     const deployResult = await contract.send(
         treasury.getSender(),

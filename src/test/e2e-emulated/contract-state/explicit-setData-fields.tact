@@ -4,8 +4,8 @@ message Msg2 {}
 contract Test {
     seqno: Int;
 
-    init(seqno: Int) {
-        self.seqno = seqno;
+    init() {
+        self.seqno = 0;
     }
 
     receive() {}
