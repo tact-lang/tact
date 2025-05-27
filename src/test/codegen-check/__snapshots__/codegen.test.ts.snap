@@ -23,6 +23,9 @@ int __tact_int_neq_nullable_left(int a, int b) inline;
 ;; $MainContract$_store
 builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 
+;; $MainContract$_store_cell
+cell $MainContract$_store_cell((int, int, slice, cell) v, builder b) inline;
+
 ;; $MainContract$_load
 (slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline;
 
@@ -97,6 +100,12 @@ slice $global_right() impure inline_ref;
 
 ;; $MainContract$_fun_testOrder
 ((int, int, slice, cell), int) $MainContract$_fun_testOrder((int, int, slice, cell) $self) impure inline_ref;
+
+;; $MainContract$_fun_asCell
+((int, int, slice, cell), cell) $MainContract$_fun_asCell((int, int, slice, cell) $self) impure inline_ref;
+
+;; $MainContract$_fun_asSlice
+((int, int, slice, cell), slice) $MainContract$_fun_asSlice((int, int, slice, cell) $self) impure inline_ref;
 
 
 ;; main_MainContract.stdlib.fc
@@ -192,6 +201,10 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     build_0 = build_0.store_slice(v'data);
     build_0 = build_0.store_dict(v'mapping);
     return build_0;
+}
+
+cell $MainContract$_store_cell((int, int, slice, cell) v, builder b) inline {
+    return $MainContract$_store(b, v).end_cell();
 }
 
 (slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline {
@@ -434,6 +447,18 @@ slice $global_right() impure inline_ref {
     return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_5);
 }
 
+((int, int, slice, cell), cell) $MainContract$_fun_asCell((int, int, slice, cell) $self) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
+    var $fresh$ret_6 = $MainContract$_store_cell(($self'field, $self'value, $self'data, $self'mapping), begin_cell().store_uint(1, 1));
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_6);
+}
+
+((int, int, slice, cell), slice) $MainContract$_fun_asSlice((int, int, slice, cell) $self) impure inline_ref {
+    var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
+    var $fresh$ret_7 = $MainContract$_store_cell(($self'field, $self'value, $self'data, $self'mapping), begin_cell().store_uint(1, 1)).begin_parse();
+    return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_7);
+}
+
 ;;
 ;; Get methods of a Contract MainContract
 ;;
@@ -513,6 +538,18 @@ _ %testIfThrowOptimizationNegative(int $a) method_id(69407) {
 _ %testOrder() method_id(121793) {
     var self = $MainContract$_contract_load();
     var res = self~$MainContract$_fun_testOrder();
+    return res;
+}
+
+_ %asCell() method_id(102234) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_asCell();
+    return res;
+}
+
+_ %asSlice() method_id(68231) {
+    var self = $MainContract$_contract_load();
+    var res = self~$MainContract$_fun_asSlice();
     return res;
 }
 
