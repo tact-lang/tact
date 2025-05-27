@@ -1,3 +1,5 @@
+import "./constants";
+
 message(0x7369676e) ExternalSignedRequest {
     walletId: Int as uint32;
     validUntil: Int as uint32;
@@ -54,10 +56,10 @@ contract WalletV5(
             throw(0);
         }
 
-        throwIf(132, !self.isSignatureAllowed && self.extensions.isEmpty());
-        throwUnless(133, msg.seqno == self.seqno);
-        throwUnless(134, msg.walletId == self.walletId);
-        throwIf(136, msg.validUntil <= now());
+        throwIf(signatureDisabled, !self.isSignatureAllowed && self.extensions.isEmpty());
+        throwUnless(invalidSeqno, msg.seqno == self.seqno);
+        throwUnless(invalidWalletId, msg.walletId == self.walletId);
+        throwIf(expired, msg.validUntil <= now());
 
         self.seqno += 1;
         commit();
@@ -80,10 +82,10 @@ contract WalletV5(
             throw(135);
         }
 
-        throwIf(132, !self.isSignatureAllowed && self.extensions.isEmpty());
-        throwUnless(133, msg.seqno == self.seqno);
-        throwUnless(134, msg.walletId == self.walletId);
-        throwIf(136, msg.validUntil <= now());
+        throwIf(signatureDisabled, !self.isSignatureAllowed && self.extensions.isEmpty());
+        throwUnless(invalidSeqno, msg.seqno == self.seqno);
+        throwUnless(invalidWalletId, msg.walletId == self.walletId);
+        throwIf(expired, msg.validUntil <= now());
 
         acceptMessage();
 
@@ -139,28 +141,28 @@ contract WalletV5(
                 let addr = parseStdAddress(actions.loadAddress().asSlice());
                 let myAddr = parseStdAddress(myAddress().asSlice());
 
-                throwUnless(145, addr.workchain == myAddr.workchain); // force_workchain optimization
+                throwUnless(extensionWrongWorkchain, addr.workchain == myAddr.workchain); // force_workchain optimization
 
                 if (isAddExt) {
                     // blocked by https://github.com/tact-lang/tact/issues/2842
                     // throwUnless(139, self.extensions.add(addr.address, true));
-                    throwIf(139, self.extensions.exists(addr.address));
+                    throwIf(addExtension, self.extensions.exists(addr.address));
                     self.extensions.set(addr.address, true);
                 } else if (isDeleteExt) {
-                    throwUnless(140, self.extensions.del(addr.address));
-                    throwIf(144, self.extensions.isEmpty() && !self.isSignatureAllowed);
+                    throwUnless(removeExtension, self.extensions.del(addr.address));
+                    throwIf(removeLastExtensionWhenSignatureDisabled, self.extensions.isEmpty() && !self.isSignatureAllowed);
                 }
             } else if (actions.checkAndRemoveSetSignAllowedPrefix()) {
-                throwUnless(146, isExtension);
+                throwUnless(onlyExtensionCanChangeSignatureMode, isExtension);
                 let newSignMode = actions.loadBool();
-                throwIf(143, newSignMode == self.isSignatureAllowed);
+                throwIf(thisSignatureModeAlreadySet, newSignMode == self.isSignatureAllowed);
                 self.isSignatureAllowed = newSignMode;
 
                 if (!self.isSignatureAllowed && self.extensions.isEmpty()) {
-                    throw(142);
+                    throw(disableSignatureWhenExtensionsIsEmpty);
                 }
             } else {
-                throw(141);
+                throw(unsupportedAction);
             }
 
             if (actions.refsEmpty()) {
@@ -195,16 +197,16 @@ inline fun processSendMessages(outActions: Cell, isExternal: Bool): Cell {
     while (!cs.empty()) {
         cs.enforceAndRemoveActionSendMsgPrefix();
 
-        throwUnless(147, cs.bits() == 8);
-        throwUnless(147, cs.refs() == 2);
-        throwIf(137, isExternal && (countTrailingZeroes(cs.preloadBits(7)) > 0));
+        throwUnless(invalidC5, cs.bits() == 8);
+        throwUnless(invalidC5, cs.refs() == 2);
+        throwIf(externalSendMessageMustHaveIgnoreErrorsSendMode, isExternal && (countTrailingZeroes(cs.preloadBits(7)) > 0));
 
         cs = cs.preloadRef().beginParseExotic().data;
         count += 1;
     }
 
-    throwUnless(147, count <= 255);
-    throwUnless(147, cs.refs() == 0);
+    throwUnless(invalidC5, count <= 255);
+    throwUnless(invalidC5, cs.refs() == 0);
 
     return outActions;
 }
