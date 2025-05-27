@@ -34,8 +34,8 @@ import {
     type JettonBurn,
 } from "@/benchmarks/jetton/tact/output/minter_JettonWallet";
 
-import benchmarkResults from "@/benchmarks/jetton/results_gas.json";
-import benchmarkCodeSizeResults from "@/benchmarks/jetton/results_code_size.json";
+import benchmarkResults from "@/benchmarks/jetton/gas.json";
+import benchmarkCodeSizeResults from "@/benchmarks/jetton/size.json";
 import { step, parameter } from "@/test/allure/allure";
 
 const loadFunCJettonsBoc = () => {

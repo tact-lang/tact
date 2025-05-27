@@ -32,7 +32,7 @@ import {
     validUntil,
 } from "@/benchmarks/wallet-v5/utils";
 
-import benchmarkResults from "@/benchmarks/wallet-v5/results_gas.json";
+import benchmarkResults from "@/benchmarks/wallet-v5/gas.json";
 import { WalletV5 } from "@/benchmarks/wallet-v5/tact/output/wallet-v5_WalletV5";
 
 export function packAddress(address: Address) {
