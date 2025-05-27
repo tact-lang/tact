@@ -1896,7 +1896,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     traitFunction.isAbstract
                 ) {
                     throwCompilationError(
-                        `Trait "${inheritedTrait.name}" requires function "${traitFunction.name}"`,
+                        `Missing implementation of abstract method "${traitFunction.name}" declared in trait "${inheritedTrait.name}"`,
                         contractOrTrait.ast.loc,
                     );
                 }
@@ -2004,7 +2004,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     )
                 ) {
                     throwCompilationError(
-                        `Trait "${inheritedTrait.name}" requires constant "${traitConstant.name}"`,
+                        `Missing implementation of abstract constant "${traitConstant.name}" declared in trait "${inheritedTrait.name}"`,
                         contractOrTrait.ast.loc,
                     );
                 }

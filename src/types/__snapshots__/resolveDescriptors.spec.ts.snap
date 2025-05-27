@@ -190,7 +190,7 @@ exports[`resolveDescriptors should fail descriptors for contract-decl-remainder-
 `;
 
 exports[`resolveDescriptors should fail descriptors for contract-does-not-override-abstract-const 1`] = `
-"<unknown>:8:1: Trait "T" requires constant "Foo"
+"<unknown>:8:1: Missing implementation of abstract constant "Foo" declared in trait "T"
   7 | 
 > 8 | contract TestContract with T {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -199,7 +199,7 @@ exports[`resolveDescriptors should fail descriptors for contract-does-not-overri
 `;
 
 exports[`resolveDescriptors should fail descriptors for contract-does-not-override-abstract-const-with-deep-inheritance 1`] = `
-"<unknown>:10:1: Trait "T" requires constant "Foo"
+"<unknown>:10:1: Missing implementation of abstract constant "Foo" declared in trait "T"
    9 | 
 > 10 | contract TestContract with T1 {
        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -208,7 +208,7 @@ exports[`resolveDescriptors should fail descriptors for contract-does-not-overri
 `;
 
 exports[`resolveDescriptors should fail descriptors for contract-does-not-override-abstract-getter-with-deep inheritance 1`] = `
-"<unknown>:10:1: Trait "T" requires function "getter"
+"<unknown>:10:1: Missing implementation of abstract method "getter" declared in trait "T"
    9 | 
 > 10 | contract TestContract with T1 {
        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
