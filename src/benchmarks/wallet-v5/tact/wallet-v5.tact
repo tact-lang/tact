@@ -215,9 +215,9 @@ struct SliceFlag {
     flag: Bool;
 }
 asm extends fun beginParseExotic(self: Cell): SliceFlag { XCTOS }
-asm extends mutates fun enforceAndRemoveActionSendMsgPrefix(self: Slice) { x{0ec3c86d} SDBEGINS}
+asm extends mutates fun enforceAndRemoveActionSendMsgPrefix(self: Slice) { x{0ec3c86d} SDBEGINS }
 asm fun setC5(outActions: Cell) { c5 POP }
 
-asm extends mutates fun checkAndRemoveAddExtensionPrefix(self: Slice): Bool {x{02} SDBEGINSQ}
-asm extends mutates fun checkAndRemoveDeleteExtensionPrefix(self: Slice): Bool {x{03} SDBEGINSQ}
-asm extends mutates fun checkAndRemoveSetSignAllowedPrefix(self: Slice): Bool {x{04} SDBEGINSQ}
+asm extends mutates fun checkAndRemoveAddExtensionPrefix(self: Slice): Bool { x{02} SDBEGINSQ }
+asm extends mutates fun checkAndRemoveDeleteExtensionPrefix(self: Slice): Bool { x{03} SDBEGINSQ }
+asm extends mutates fun checkAndRemoveSetSignAllowedPrefix(self: Slice): Bool { x{04} SDBEGINSQ }
