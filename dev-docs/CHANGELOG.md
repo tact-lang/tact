@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Language features
 
+- [fix] Better error message when an integer key or value in a map literal is out of its serialization range: PR [#3285](https://github.com/tact-lang/tact/pull/3285)
 - [fix] Balanced quotation in error messages for out-of-project-root imports: PR [#3242](https://github.com/tact-lang/tact/pull/3242)
 - [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
 - [fix] Added fixed-bytes support to bounced message size calculations: PR [#3129](https://github.com/tact-lang/tact/pull/3129)
