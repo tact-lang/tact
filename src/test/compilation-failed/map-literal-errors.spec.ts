@@ -4,17 +4,17 @@ describe("map-literal-errors", () => {
     itShouldNotCompile({
         testName: "map-literal-cell",
         errorMessage:
-            "Could not reduce map literal: it either uses run-time values or unsupported features like structs, cells or asm functions",
+            "Invalid map literal: it either uses run-time values or unsupported features like structs, cells or asm functions",
     });
     itShouldNotCompile({
         testName: "map-literal-runtime",
         errorMessage:
-            "Could not reduce map literal: it either uses run-time values or unsupported features like structs, cells or asm functions",
+            "Invalid map literal: it either uses run-time values or unsupported features like structs, cells or asm functions",
     });
     itShouldNotCompile({
         testName: "map-literal-structs",
         errorMessage:
-            "Could not reduce map literal: it either uses run-time values or unsupported features like structs, cells or asm functions",
+            "Invalid map literal: it either uses run-time values or unsupported features like structs, cells or asm functions",
     });
     itShouldNotCompile({
         testName: "map-literal-uint-key-out-of-range",

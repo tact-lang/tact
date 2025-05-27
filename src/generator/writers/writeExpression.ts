@@ -835,7 +835,7 @@ const writeMapLiteral =
     (node: Ast.MapLiteral) =>
     (_ctx: WriterContext): string => {
         throwCompilationError(
-            "Could not reduce map literal: it either uses run-time values or unsupported features like structs, cells or asm functions",
+            "Invalid map literal: it either uses run-time values or unsupported features like structs, cells or asm functions",
             node.loc,
         );
         // NB! Intentionally left here for when we can distinguish which Ast.Id are variables
