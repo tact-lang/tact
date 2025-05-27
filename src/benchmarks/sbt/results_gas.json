@@ -161,8 +161,8 @@
       "pr": "https://github.com/tact-lang/tact/pull/2993",
       "gas": {
         "deploy": "4030",
-        "request owner": "4876",
-        "prove ownership": "5054",
+        "request owner": "4884",
+        "prove ownership": "5062",
         "get static data": "4714",
         "destroy": "6197",
         "revoke": "3850",
