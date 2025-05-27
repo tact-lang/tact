@@ -89,6 +89,15 @@
         "burn": "11875",
         "discovery": "5716"
       }
+    },
+    {
+      "label": "1.6.11 with inline message loading",
+      "pr": "https://github.com/tact-lang/tact/pull/2993",
+      "gas": {
+        "transfer": "15413",
+        "burn": "11739",
+        "discovery": "5818"
+      }
     }
   ]
 }

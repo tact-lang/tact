@@ -31,6 +31,24 @@ struct C {
     h: Address;
 }
 
+message Message1 {
+    a: Int;
+}
+
+message Message2 {
+    value: Cell;
+    value2: Slice;
+}
+
+message Message3 {
+    val1: Int;
+    val2: Int;
+    val3: Int;
+    val4: Int;
+    val5: Int;
+    val6: Int;
+}
+
 const EXIT_CODE: Int = 1000;
 
 contract MainContract {
@@ -48,6 +66,25 @@ contract MainContract {
         self.value = value;
         self.data = data;
         self.mapping = mapping;
+    }
+
+    receive(msg: Message1) {
+        throw(msg.a);
+    }
+
+    receive(msg: Message2) {
+        let sc_1 = 10;
+        let sc_2 = 20;
+        let in_msg = sc_1 + sc_2;
+        if (in_msg == 0) {
+            throw(in_msg);
+        }
+
+        throw(msg.value.depth() + msg.value2.depth());
+    }
+
+    receive(msg: Message3) {
+        throw(msg.val1 + msg.val2 + msg.val3 + msg.val4 + msg.val5 + msg.val6);
     }
 
     get fun testAugmentedAssignOperators(intVal: Int, intVal2: Int, boolVal: Bool, boolVal2: Bool): Int {

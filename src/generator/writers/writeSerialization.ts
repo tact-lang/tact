@@ -9,7 +9,8 @@ import { ops } from "@/generator/writers/ops";
 import { resolveFuncTypeFromAbi } from "@/generator/writers/resolveFuncTypeFromAbi";
 import { resolveFuncTypeFromAbiUnpack } from "@/generator/writers/resolveFuncTypeFromAbiUnpack";
 import type { ItemOrigin } from "@/imports/source";
-import type { TypeDescription } from "@/types/types";
+import type { TypeDescription, TypeRef } from "@/types/types";
+import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
 
 const SMALL_STRUCT_MAX_FIELDS = 10;
 
@@ -349,7 +350,14 @@ export function writeParser(
             }
 
             // Write cell parser
-            writeCellParser(allocation.root, 0, ctx);
+            writeCellParser(
+                allocation.root,
+                type,
+                0,
+                ctx,
+                undefined,
+                undefined,
+            );
 
             // Compile tuple
             if (allocation.ops.length === 0) {
@@ -396,12 +404,12 @@ export function writeParser(
 }
 
 export function writeBouncedParser(
-    name: string,
-    forceInline: boolean,
+    type: TypeDescription,
     allocation: StorageAllocation,
-    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
+    const name = type.name;
+    const forceInline = type.kind === "contract";
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     ctx.fun(ops.readerBounced(name, ctx), () => {
@@ -419,7 +427,14 @@ export function writeBouncedParser(
             // Opcode already eaten and checked
 
             // Write cell parser
-            writeCellParser(allocation.root, 0, ctx);
+            writeCellParser(
+                allocation.root,
+                type,
+                0,
+                ctx,
+                undefined,
+                undefined,
+            );
 
             // Compile tuple
             if (allocation.ops.length === 0) {
@@ -454,51 +469,96 @@ export function writeOptionalParser(
     });
 }
 
-function writeCellParser(
+export function writeCellParser(
     cell: AllocationCell,
+    type: TypeDescription | undefined,
     gen: number,
     ctx: WriterContext,
+    prefix: string | undefined,
+    sliceName: string | undefined,
 ): number {
     // Write current fields
     for (const f of cell.ops) {
-        writeFieldParser(f, gen, ctx);
+        const field = type?.fields.find((v) => v.name === f.name);
+        writeFieldParser(f, field?.type, gen, ctx, prefix, sliceName);
     }
 
     // Handle next cell
     if (cell.next) {
-        ctx.append(`slice sc_${gen + 1} = sc_${gen}~load_ref().begin_parse();`);
-        return writeCellParser(cell.next, gen + 1, ctx);
+        ctx.append(
+            `slice ${genSliceName(gen + 1, sliceName)} = ${genSliceName(gen, sliceName)}~load_ref().begin_parse();`,
+        );
+        return writeCellParser(
+            cell.next,
+            type,
+            gen + 1,
+            ctx,
+            prefix,
+            sliceName,
+        );
     } else {
         return gen;
     }
 }
 
+const genSliceName = (gen: number, initialSliceName: string | undefined) => {
+    if (gen === 0 && typeof initialSliceName !== "undefined") {
+        return initialSliceName;
+    }
+    return `sc_${gen}`;
+};
+
+const fieldParserLeftHand = (
+    wCtx: WriterContext,
+    name: string,
+    prefix: string | undefined,
+    type: TypeDescription | TypeRef | undefined,
+    inline: boolean,
+) => {
+    const prefixName = prefix ?? "v";
+    const varName = `${prefixName}'${name}`;
+
+    if (inline && type) {
+        const fields = resolveFuncTypeUnpack(type, varName, wCtx);
+        const presentation = fields.length > 0 ? fields : varName;
+        return `var ${presentation}`;
+    }
+
+    return `var ${varName}`;
+};
+
 function writeFieldParser(
     f: AllocationOperation,
+    type: TypeDescription | TypeRef | undefined,
     gen: number,
     ctx: WriterContext,
+    prefix: string | undefined,
+    sliceName: string | undefined,
 ) {
+    const inline = typeof sliceName !== "undefined";
+
     const op = f.op;
-    const varName = `var v'${f.name}`;
+    const leftHand = fieldParserLeftHand(ctx, f.name, prefix, type, inline);
+    const slice = genSliceName(gen, sliceName);
 
     switch (op.kind) {
         case "int": {
             if (op.optional) {
                 ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_int(${op.bits}) : null();`,
+                    `${leftHand} = ${slice}~load_int(1) ? ${slice}~load_int(${op.bits}) : null();`,
                 );
             } else {
-                ctx.append(`${varName} = sc_${gen}~load_int(${op.bits});`);
+                ctx.append(`${leftHand} = ${slice}~load_int(${op.bits});`);
             }
             return;
         }
         case "uint": {
             if (op.optional) {
                 ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_uint(${op.bits}) : null();`,
+                    `${leftHand} = ${slice}~load_int(1) ? ${slice}~load_uint(${op.bits}) : null();`,
                 );
             } else {
-                ctx.append(`${varName} = sc_${gen}~load_uint(${op.bits});`);
+                ctx.append(`${leftHand} = ${slice}~load_uint(${op.bits});`);
             }
             return;
         }
@@ -508,29 +568,29 @@ function writeFieldParser(
         case "varuint32": {
             if (op.optional) {
                 ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_${op.kind}() : null();`,
+                    `${leftHand} = ${slice}~load_int(1) ? ${slice}~load_${op.kind}() : null();`,
                 );
             } else {
-                ctx.append(`${varName} = sc_${gen}~load_${op.kind}();`);
+                ctx.append(`${leftHand} = ${slice}~load_${op.kind}();`);
             }
             return;
         }
         case "boolean": {
             if (op.optional) {
                 ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_int(1) : null();`,
+                    `${leftHand} = ${slice}~load_int(1) ? ${slice}~load_int(1) : null();`,
                 );
             } else {
-                ctx.append(`${varName} = sc_${gen}~load_int(1);`);
+                ctx.append(`${leftHand} = ${slice}~load_int(1);`);
             }
             return;
         }
         case "address": {
             if (op.optional) {
                 ctx.used(`__tact_load_address_opt`);
-                ctx.append(`${varName} = sc_${gen}~__tact_load_address_opt();`);
+                ctx.append(`${leftHand} = ${slice}~__tact_load_address_opt();`);
             } else {
-                ctx.append(`${varName} = sc_${gen}~load_msg_addr();`);
+                ctx.append(`${leftHand} = ${slice}~load_msg_addr();`);
             }
             return;
         }
@@ -539,17 +599,17 @@ function writeFieldParser(
                 if (op.format !== "default") {
                     throw new Error(`Impossible`);
                 }
-                ctx.append(`${varName} = sc_${gen}~load_maybe_ref();`);
+                ctx.append(`${leftHand} = ${slice}~load_maybe_ref();`);
             } else {
                 switch (op.format) {
                     case "default":
                         {
-                            ctx.append(`${varName} = sc_${gen}~load_ref();`);
+                            ctx.append(`${leftHand} = ${slice}~load_ref();`);
                         }
                         break;
                     case "remainder": {
                         ctx.append(
-                            `${varName} = begin_cell().store_slice(sc_${gen}).end_cell();`,
+                            `${leftHand} = begin_cell().store_slice(${slice}).end_cell();`,
                         );
                     }
                 }
@@ -562,20 +622,20 @@ function writeFieldParser(
                     throw new Error(`Impossible`);
                 }
                 ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref().begin_parse() : null();`,
+                    `${leftHand} = ${slice}~load_int(1) ? ${slice}~load_ref().begin_parse() : null();`,
                 );
             } else {
                 switch (op.format) {
                     case "default":
                         {
                             ctx.append(
-                                `${varName} = sc_${gen}~load_ref().begin_parse();`,
+                                `${leftHand} = ${slice}~load_ref().begin_parse();`,
                             );
                         }
                         break;
                     case "remainder":
                         {
-                            ctx.append(`${varName} = sc_${gen};`);
+                            ctx.append(`${leftHand} = ${slice};`);
                         }
                         break;
                 }
@@ -588,21 +648,21 @@ function writeFieldParser(
                     throw new Error(`Impossible`);
                 }
                 ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? begin_cell().store_slice(sc_${gen}~load_ref().begin_parse()) : null();`,
+                    `${leftHand} = ${slice}~load_int(1) ? begin_cell().store_slice(${slice}~load_ref().begin_parse()) : null();`,
                 );
             } else {
                 switch (op.format) {
                     case "default":
                         {
                             ctx.append(
-                                `${varName} = begin_cell().store_slice(sc_${gen}~load_ref().begin_parse());`,
+                                `${leftHand} = begin_cell().store_slice(${slice}~load_ref().begin_parse());`,
                             );
                         }
                         break;
                     case "remainder":
                         {
                             ctx.append(
-                                `${varName} = begin_cell().store_slice(sc_${gen});`,
+                                `${leftHand} = begin_cell().store_slice(${slice});`,
                             );
                         }
                         break;
@@ -613,27 +673,27 @@ function writeFieldParser(
         case "string": {
             if (op.optional) {
                 ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref().begin_parse() : null();`,
+                    `${leftHand} = ${slice}~load_int(1) ? ${slice}~load_ref().begin_parse() : null();`,
                 );
             } else {
-                ctx.append(`${varName} = sc_${gen}~load_ref().begin_parse();`);
+                ctx.append(`${leftHand} = ${slice}~load_ref().begin_parse();`);
             }
             return;
         }
         case "fixed-bytes": {
             if (op.optional) {
                 ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_bits(${op.bytes * 8}) : null();`,
+                    `${leftHand} = ${slice}~load_int(1) ? ${slice}~load_bits(${op.bytes * 8}) : null();`,
                 );
             } else {
                 ctx.append(
-                    `${varName} = sc_${gen}~load_bits(${op.bytes * 8});`,
+                    `${leftHand} = ${slice}~load_bits(${op.bytes * 8});`,
                 );
             }
             return;
         }
         case "map": {
-            ctx.append(`${varName} = sc_${gen}~load_dict();`);
+            ctx.append(`${leftHand} = ${slice}~load_dict();`);
             return;
         }
         case "struct": {
@@ -642,7 +702,7 @@ function writeFieldParser(
                     throw Error("Not implemented");
                 } else {
                     ctx.append(
-                        `${varName} = sc_${gen}~load_int(1) ? ${ops.typeAsOptional(op.type, ctx)}(sc_${gen}~${ops.reader(op.type, "with-opcode", ctx)}()) : null();`,
+                        `${leftHand} = ${slice}~load_int(1) ? ${ops.typeAsOptional(op.type, ctx)}(${slice}~${ops.reader(op.type, "with-opcode", ctx)}()) : null();`,
                     );
                 }
             } else {
@@ -650,7 +710,7 @@ function writeFieldParser(
                     throw Error("Not implemented");
                 } else {
                     ctx.append(
-                        `${varName} = sc_${gen}~${ops.reader(op.type, "with-opcode", ctx)}();`,
+                        `${leftHand} = ${slice}~${ops.reader(op.type, "with-opcode", ctx)}();`,
                     );
                 }
             }
