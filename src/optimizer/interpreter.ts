@@ -86,24 +86,24 @@ const ensureMapIntKeyOrValRange = (
     const val = num.value;
     switch (intFormat.kind) {
         case "int":
-            {
-                if (
-                    minSignedInt(intFormat.bits) <= val &&
-                    val <= maxSignedInt(intFormat.bits)
-                )
-                    return num;
-                throwErrorConstEval(
-                    `integer '${prettyPrint(num)}' does not fit into ${intFormat.bits}-bit signed integer type`,
-                    num.loc,
-                );
+            if (
+                minSignedInt(intFormat.bits) <= val &&
+                val <= maxSignedInt(intFormat.bits)
+            ) {
+                return num;
             }
+            throwErrorConstEval(
+                `integer '${prettyPrint(num)}' does not fit into ${intFormat.bits}-bit signed integer type`,
+                num.loc,
+            );
             break;
         case "uint":
             if (
                 minUnsignedInt(intFormat.bits) <= val &&
                 val <= maxUnsignedInt(intFormat.bits)
-            )
+            ) {
                 return num;
+            }
             throwErrorConstEval(
                 `integer '${prettyPrint(num)}' does not fit into ${intFormat.bits}-bit unsigned integer type`,
                 num.loc,
@@ -113,8 +113,9 @@ const ensureMapIntKeyOrValRange = (
             if (
                 minVarInt(intFormat.length) <= val &&
                 val <= maxVarInt(intFormat.length)
-            )
+            ) {
                 return num;
+            }
             throwErrorConstEval(
                 `integer '${prettyPrint(num)}' does not fit into variable-length signed integer type with ${intFormat.length}-bit length`,
                 num.loc,
@@ -124,8 +125,9 @@ const ensureMapIntKeyOrValRange = (
             if (
                 minVarUint(intFormat.length) <= val &&
                 val <= maxVarUint(intFormat.length)
-            )
+            ) {
                 return num;
+            }
             throwErrorConstEval(
                 `integer '${prettyPrint(num)}' does not fit into variable-length unsigned integer type with ${intFormat.length}-bit length`,
                 num.loc,
