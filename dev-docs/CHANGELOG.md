@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
-- Completely reworked the functions page: PR [#3076](https://github.com/tact-lang/tact/pull/3076), PR [#TBD](https://github.com/tact-lang/tact/pull/TBD)
+- Completely reworked the functions page: PR [#3076](https://github.com/tact-lang/tact/pull/3076), PR [#3277](https://github.com/tact-lang/tact/pull/3277)
 
 ### Release contributors
 
