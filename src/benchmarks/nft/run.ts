@@ -17,8 +17,8 @@ import { NFTCollection } from "@/benchmarks/nft/tact/output/collection_NFTCollec
 import type { RoyaltyParams } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 import { NFTItem } from "@/benchmarks/nft/tact/output/collection_NFTItem";
 
-import benchmarkResults from "@/benchmarks/nft/results_gas.json";
-import benchmarkCodeSizeResults from "@/benchmarks/nft/results_code_size.json";
+import benchmarkResults from "@/benchmarks/nft/gas.json";
+import benchmarkCodeSizeResults from "@/benchmarks/nft/size.json";
 
 const loadFunCNFTBoc = () => {
     const bocCollection = readFileSync(

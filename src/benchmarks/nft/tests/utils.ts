@@ -77,8 +77,12 @@ export const ErrorCodes = {
     InvalidFees: 402,
     /** Error code for incorrect index */
     IncorrectIndex: 402,
+    /** Error code for incorrect deployer */
+    IncorrectDeployer: 401,
     /** Error code for invalid data */
     InvalidData: 65535,
+    /** Error code for invalid destination workchain */
+    InvalidDestinationWorkchain: 333,
 } as const;
 
 /** Test related constants */

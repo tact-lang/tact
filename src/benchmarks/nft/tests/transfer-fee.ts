@@ -5,6 +5,7 @@ import type { InitNFTBody } from "@/benchmarks/nft/tact/output/collection_NFTCol
 import {
     storeInitNFTBody,
     type NFTItem,
+    InvalidFees,
 } from "@/benchmarks/nft/tact/output/item_NFTItem";
 import "@ton/test-utils";
 import { step } from "@/test/allure/allure";
@@ -112,7 +113,7 @@ export const testTransferFee = (
                         from: owner.address,
                         to: itemNFT.address,
                         success: false,
-                        exitCode: ErrorCodes.InvalidFees,
+                        exitCode: Number(InvalidFees),
                     });
                 },
             );
@@ -135,7 +136,7 @@ export const testTransferFee = (
                         from: owner.address,
                         to: itemNFT.address,
                         success: false,
-                        exitCode: ErrorCodes.InvalidFees,
+                        exitCode: Number(InvalidFees),
                     });
                 },
             );
@@ -248,7 +249,7 @@ export const testTransferForwardFeeDouble = (
                 from: owner.address,
                 to: itemNFT.address,
                 success: false,
-                exitCode: ErrorCodes.InvalidFees,
+                exitCode: Number(InvalidFees),
             });
             await step(
                 "Check that trxResult.transactions has correct transaction (double forward fee, not enough for both)",
@@ -257,7 +258,7 @@ export const testTransferForwardFeeDouble = (
                         from: owner.address,
                         to: itemNFT.address,
                         success: false,
-                        exitCode: ErrorCodes.InvalidFees,
+                        exitCode: Number(InvalidFees),
                     });
                 },
             );
