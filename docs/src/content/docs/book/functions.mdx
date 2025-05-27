@@ -46,7 +46,7 @@ Tact offers a diverse set of function kinds and attributes that provide great fl
   />
   <LinkCard
     title="Inlining"
-    href="#attributes-inline"
+    href="#inline"
   />
   <LinkCard
     title="Commonalities"
@@ -60,7 +60,7 @@ Tact offers a diverse set of function kinds and attributes that provide great fl
 
 ## Receiver functions {#receivers}
 
-Receiver functions are special functions responsible for receiving messages in contracts and can be defined only within a contract or trait.
+Receiver functions are special functions responsible for [receiving messages](/book/receive) in contracts and can be defined only within a contract or trait.
 
 ```tact
 contract Counter(counter: Int) {
@@ -194,7 +194,7 @@ Read about common aspects of functions: [Commonalities](#commonalities).
 
 <Badge text="Global scope" variant="note" size="medium"/><p/>
 
-Regular functions that can be defined only at the top (module) level are called global. They differ from [internal functions](#fun-internal) not only in the scope, but also in available [attributes](#attributes).
+Regular functions that can be defined only at the top (module) level are called global. They differ from [internal functions](#fun-internal) not only in the scope, but also in available [attributes](#commonalities-attributes).
 
 ```tact
 fun reply(msgBody: Cell) {
@@ -209,14 +209,14 @@ fun reply(msgBody: Cell) {
 
 The following attributes can be specified for global functions:
 
-* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
-* [`extends{:tact}`](#attributes-extends) — makes it an [extension function](#extends).
-* [`mutates{:tact}`](#attributes-mutates), along with [`extends{:tact}`](#attributes-extends) — makes it an [extension mutation function](#mutates).
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
+* [`extends{:tact}`](#extends) — makes it an [extension function](#extends).
+* [`mutates{:tact}`](#mutates), along with [`extends{:tact}`](#extends) — makes it an [extension mutation function](#mutates).
 
 These attributes _cannot_ be specified:
 
-* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — global functions cannot be defined within a contract or a trait.
-* [`get{:tact}`](#attributes-get) — global functions cannot be [getters](#get).
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — global functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#get) — global functions cannot be [getters](#get).
 
 ### Internal functions {#fun-internal}
 
@@ -245,20 +245,28 @@ contract InternalFun(stopped: Bool) {
 
 The following attributes can be specified for internal functions with no prior attributes:
 
-* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
-* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — function [inheritance](#inheritance).
-* [`get{:tact}`](#attributes-get) — internal functions can become [getters](#get).
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — function [inheritance](#inheritance).
+* [`get{:tact}`](#get) — internal functions can become [getters](#get).
 
 These attributes _cannot_ be specified:
 
-* [`extends{:tact}`](#attributes-extends) — internal function cannot become an [extension function](#extends).
-* [`mutates{:tact}`](#attributes-mutates) — internal function cannot become an [extension mutation function](#mutates).
+* [`extends{:tact}`](#extends) — internal function cannot become an [extension function](#extends).
+* [`mutates{:tact}`](#mutates) — internal function cannot become an [extension mutation function](#mutates).
 
-## `extends` — extension functions {#extends}
+## Extensions
 
 <Badge text="Global scope" variant="note" size="medium"/><p/>
 
-To define an extension function, add an `extends{:tact}` attribute to any [global function](#fun-global) and name its first parameter as `self`. The type of `self` is the type that is being extended by the extension function.
+[Extension functions](#extends) provide a clean way to organize and extend code by allowing you to add new behaviors to existing types. The [extension _mutation_ functions](#mutates) also allow you to modify the value they operate on. Both kinds of extension functions can be called methods and both use special attributes: [`extends{:tact}`](#extends) and [`mutates{:tact}`](#mutates), respectively.
+
+### `extends` — extension functions {#extends}
+
+<Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
+
+The `extends{:tact}` attribute can be applied to all top level functions, transforming them into statically dispatched methods on the extended type. These methods are called _extension functions_.
+
+To define an extension function, add an `extends{:tact}` attribute to any [global function](#fun-global) and name its first parameter as `self`. The type of `self` is the type that is being extended.
 
 ```tact
 // Extension function that compares two instances of the `StdAddress` type.
@@ -335,17 +343,19 @@ fun add(self: Int, other: Int): Int {
 
 The following additional attributes can be specified:
 
-* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
-* [`mutates{:tact}`](#attributes-mutates) — makes it into an [extension mutation function](#attributes-mutates).
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
+* [`mutates{:tact}`](#mutates) — makes it into an [extension mutation function](#mutates).
 
 These attributes _cannot_ be specified:
 
-* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — extension functions cannot be defined within a contract or a trait.
-* [`get{:tact}`](#attributes-get) — extension functions cannot become [getters](#get).
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — extension functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#get) — extension functions cannot become [getters](#get).
 
-## `mutates` — extension mutation functions {#mutates}
+### `mutates` — extension mutation functions {#mutates}
 
-<Badge text="Global scope" variant="note" size="medium"/><p/>
+<Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
+
+The `mutates{:tact}` attribute can be applied to [extension functions](#extends) only, which enables the persistence of the modifications made to the value of the extended type through the `self{:tact}` identifier. They allow mutations, and so they are called _extension mutation functions_.
 
 The extension _mutation_ functions replace the value of the extended type with the new one at the end of its execution. That value would change only upon the assignment to `self{:tact}` within the function body.
 
@@ -399,12 +409,22 @@ fun noEffect() {
 
 The following additional attributes can be specified:
 
-* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
 
 These attributes _cannot_ be specified:
 
-* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — extension mutation functions cannot be defined within a contract or a trait.
-* [`get{:tact}`](#attributes-get) — extension mutation functions cannot become [getters](#get).
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — extension mutation functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#get) — extension mutation functions cannot become [getters](#get).
+
+### Static extension functions {#extends-static}
+
+There is no such attribute yet, so the special static extension functions in the standard library of Tact are introduced directly by the compiler:
+
+* [`Message.opcode(){:tact}`](/ref/core-cells#messageopcode)
+* [`Message.fromCell(){:tact}`](/ref/core-cells#messagefromcell)
+* [`Message.fromSlice(){:tact}`](/ref/core-cells#messagefromslice)
+* [`Struct.fromCell(){:tact}`](/ref/core-cells#structfromcell)
+* [`Struct.fromSlice(){:tact}`](/ref/core-cells#structfromslice)
 
 ## `get fun` — off-chain getter functions {#get}
 
@@ -600,7 +620,7 @@ contract CounterDIYInit(
 message Increment {}
 ```
 
-None of the [attributes](#attributes) can be specified for the `init(){:tact}` function.
+None of the [attributes](#commonalities-attributes) can be specified for the `init(){:tact}` function.
 
 Read more about the `init(){:tact}` on its dedicated section: [Constructor function `init(){:tact}`](/book/contracts#init-function).
 
@@ -649,14 +669,14 @@ fun example() {
 
 The following attributes can be specified for `native{:tact}` functions:
 
-* [`inline{:tact}`](#attributes-inline) — embeds the function contents at the call site.
-* [`extends{:tact}`](#attributes-extends) — makes it an [extension function](#extends).
-* [`mutates{:tact}`](#attributes-mutates), along with [`extends{:tact}`](#attributes-extends) — makes it an [extension mutation function](#mutates).
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
+* [`extends{:tact}`](#extends) — makes it an [extension function](#extends).
+* [`mutates{:tact}`](#mutates), along with [`extends{:tact}`](#extends) — makes it an [extension mutation function](#mutates).
 
 These attributes _cannot_ be specified:
 
-* [`abstract{:tact}`](#attributes-abstract), [`virtual{:tact}`](#attributes-virtual) and [`override{:tact}`](#attributes-override) — native functions cannot be defined within a contract or a trait.
-* [`get{:tact}`](#attributes-get) — native functions cannot be [getters](#get).
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — native functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#get) — native functions cannot be [getters](#get).
 
 ## `asm` — assembly functions {#asm}
 
@@ -689,51 +709,7 @@ asm(value self) extends fun storeBool(self: Builder, value: Bool): Builder { 1 S
 
 Read more about them on their dedicated page: [Assembly functions](/book/assembly-functions).
 
-## Function attributes {#attributes}
-
-Attribute         | Scope    | Can be applied to
-:---------------- | :------- | :----------------
-`extends{:tact}`  | global   | All global functions
-`mutates{:tact}`  | global   | Functions with `extends{:tact}` attribute
-`virtual{:tact}`  | contract | Internal functions
-`abstract{:tact}` | contract | Internal functions
-`override{:tact}` | contract | Internal functions that were previously marked with `virtual{:tact}` or `abstract{:tact}`
-`inline{:tact}`   | any      | All functions except for receivers and getters
-`get{:tact}`      | contract | Internal functions — turns them into getters
-
-Notice that the "contract" scope also includes the [traits][trait].
-
-### Extensions
-
-<Badge text="Global scope" variant="note" size="medium"/><p/>
-
-[Extension functions](#extends) provide a clean way to organize and extend code by allowing you to add new behaviors to existing types. The [extension _mutation_ functions](#mutates) also allow you to modify the value they operate on. Both kinds of extension functions can be called methods and both use special attributes: [`extends{:tact}`](#attributes-extends) and [`mutates{:tact}`](#attributes-mutates), respectively.
-
-#### `extends` {#attributes-extends}
-
-<Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
-
-The `extends{:tact}` attribute can be applied to all top level functions, transforming them into statically dispatched methods on the extended type. These methods are called [extension functions](#extends).
-
-cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into [getter functions](#get).
-
-#### `mutates` {#attributes-mutates}
-
-<Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
-
-The `mutates{:tact}` attribute can be applied to [extension functions](#extends) only, which enables the persistence of the modifications made to the value of the extended type through the `self{:tact}` identifier. They allow mutations, and so they are called [extension mutation functions](#mutates).
-
-#### Static extension functions {#attributes-extends-static}
-
-There is no such attribute yet, so the special static extension functions in the standard library of Tact are introduced directly by the compiler:
-
-* [`Message.opcode(){:tact}`](/ref/core-cells#messageopcode)
-* [`Message.fromCell(){:tact}`](/ref/core-cells#messagefromcell)
-* [`Message.fromSlice(){:tact}`](/ref/core-cells#messagefromslice)
-* [`Struct.fromCell(){:tact}`](/ref/core-cells#structfromcell)
-* [`Struct.fromSlice(){:tact}`](/ref/core-cells#structfromslice)
-
-### Inheritance
+## Inheritance
 
 <Badge text="Contract scope" title="Functions can only be inherited from traits and never at the top level" variant="note" size="medium"/><p/>
 
@@ -770,7 +746,7 @@ contract Filter() with FilterTrait {
 
 {/* TODO: inheritance table as per https://github.com/tact-lang/tact/issues/3030 */}
 
-#### `abstract` {#attributes-abstract}
+### `abstract` {#abstract}
 
 <Badge text="Contract scope" title="This attribute can be applied to internal functions only" variant="note" size="medium"/><p/>
 
@@ -802,13 +778,13 @@ contract Ownership(owner: Address) with DelayedOwnable {
 }
 ```
 
-#### `virtual` {#attributes-virtual}
+### `virtual` {#virtual}
 
 <Badge text="Contract scope" title="This attribute can be applied to internal functions only" variant="note" size="medium"/><p/>
 
 The `virtual{:tact}` attribute allows a [internal function](#fun-internal) to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
 
-This attribute is similar to the [`abstract{:tact}`](#attributes-abstract) attribute, except that you do not have to override bodies of functions with the `virtual{:tact}` attribute. But if you decide to override the function body, you may do it in any trait that depends on this trait and not only in the resulting contract.
+This attribute is similar to the [`abstract{:tact}`](#abstract) attribute, except that you do not have to override bodies of functions with the `virtual{:tact}` attribute. But if you decide to override the function body, you may do it in any trait that depends on this trait and not only in the resulting contract.
 
 ```tact
 import "@stdlib/ownable";
@@ -857,43 +833,17 @@ contract Auth(owner: Address) with DeployableFilterV2 {
 message TopSecretRequest {}
 ```
 
-#### `override` {#attributes-override}
+### `override` {#override}
 
 <Badge text="Contract scope" title="This attribute can be applied to internal functions only" variant="note" size="medium"/><p/>
 
-The `override{:tact}` attribute is used to override an inherited [internal function](#fun-internal) that has either a [`virtual{:tact}`](#attributes-virtual) or [`abstract{:tact}`](#attributes-abstract) attribute specified in the declaration of that function in one of the parent traits.
-
-### Miscellaneous
-
-Various attributes that modify the behavior of functions in their special ways.
-
-#### `inline` {#attributes-inline}
-
-<Badge text="Any scope" title="This attribute can be applied to functions within contracts and functions at the top level" variant="note" size="medium"/><p/>
-
-The `inline{:tact}` attribute embeds the code of the function to its call sites, which eliminates the overhead of the calls but potentially increases the code size if the function is called from multiple places.
-
-This attribute can improve performance of large infrequently called functions or small, alias-like functions. It can be combined with any other attribute except for [`get{:tact}`](#attributes-get).
-
-```tact
-inline fun add(a: Int, b: Int) {
-    // The following addition will be performed in-place,
-    // at all the `add()` call sites.
-    return a + b;
-}
-```
-
-#### `get` {#attributes-get}
-
-<Badge text="Contract scope" variant="note" size="medium"/><p/>
-
-The special `get{:tact}` attribute cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into [getter functions](#get).
+The `override{:tact}` attribute is used to override an inherited [internal function](#fun-internal) that has either a [`virtual{:tact}`](#virtual) or [`abstract{:tact}`](#abstract) attribute specified in the declaration of that function in one of the parent traits.
 
 ## Commonalities
 
 Functions commonly share the same aspects, parts, or behavior. For example, due to the nature of TVM, Tact uses the [call by value](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_value) parameter-passing and binding strategy, which applies to all function kinds. That is, the evaluated value of any variable passed in a function call or assigned in the [`let{:tact}`](/book/statements#let) or [assignment](/book/statements#assignment) statement is copied.
 
-Therefore, there are no modifications of the original values in different scopes, except for the [extension _mutation_ functions](#attributes-mutates). And even so, those functions do not mutate the original value denoted by the `self{:tact}` keyword — instead, they discard the old value and replace it with the new one obtained at the end of the function body.
+Therefore, there are no modifications of the original values in different scopes, except for the [extension _mutation_ functions](#mutates). And even so, those functions do not mutate the original value denoted by the `self{:tact}` keyword — instead, they discard the old value and replace it with the new one obtained at the end of the function body.
 
 The above applies to all functions except for [receivers](#receivers), because they cannot be called directly and are only executed upon receiving specific messages.
 
@@ -919,6 +869,22 @@ fun second(flag: Bool): Bool {
     return first(); // always true, because of the prior condition
 }
 ```
+
+### Attributes {#commonalities-attributes}
+
+Function attributes modify a function's behavior and typically restrict it to a specific scope.
+
+Attribute                      | Scope    | Can be applied to
+:----------------------------- | :------- | :----------------
+[`extends{:tact}`](#extends)   | global   | All global functions
+[`mutates{:tact}`](#mutates)   | global   | Functions with `extends{:tact}` attribute
+[`virtual{:tact}`](#virtual)   | contract | Internal functions
+[`abstract{:tact}`](#abstract) | contract | Internal functions
+[`override{:tact}`](#override) | contract | Internal functions that were previously marked with `virtual{:tact}` or `abstract{:tact}`
+[`inline{:tact}`](#inline)     | any      | All functions except for receivers and getters
+[`get{:tact}`](#get)           | contract | Internal functions — turns them into getters
+
+Notice that the "contract" scope also includes the [traits][trait].
 
 ### Naming and namespaces {#commonalities-naming}
 
@@ -1005,6 +971,22 @@ fun example(someA: Int, someB: Int) {
 }
 ```
 
+### Code embedding with `inline` {#inline}
+
+<Badge text="Any scope" title="This attribute can be applied to functions within contracts and functions at the top level" variant="note" size="medium"/><p/>
+
+The `inline{:tact}` attribute embeds the code of the function to its call sites, which eliminates the overhead of the calls but potentially increases the code size if the function is called from multiple places.
+
+This attribute can improve performance of large infrequently called functions or small, alias-like functions. It can be combined with any other attribute except for [`get{:tact}`](#get).
+
+```tact
+inline fun add(a: Int, b: Int) {
+    // The following addition will be performed in-place,
+    // at all the `add()` call sites.
+    return a + b;
+}
+```
+
 ### Trailing comma {#commonalities-comma}
 
 All functions, except for [receiver functions](#receivers), can have a trailing comma in their definitions (parameter lists) and calls (argument lists):
@@ -1029,7 +1011,7 @@ The last [statement](/book/statements) inside the function body has a trailing s
 inline fun getCoinsStringOf(val: Int) { return val.toFloatString(9) }
 ```
 
-When declaring an [internal function](#fun-internal) with [`abstract{:tact}`](#attributes-abstract) or [`virtual{:tact}`](#attributes-virtual) attributes, Tact allows you to omit a semicolon if it is the last function in the [trait's][trait] body.
+When declaring an [internal function](#fun-internal) with [`abstract{:tact}`](#abstract) or [`virtual{:tact}`](#virtual) attributes, Tact allows you to omit a semicolon if it is the last function in the [trait's][trait] body.
 
 ```tact
 trait CompositionVII {
