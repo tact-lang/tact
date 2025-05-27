@@ -27,7 +27,7 @@ int __tact_int_neq_nullable_left(int a, int b) inline;
 builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline;
 
 ;; $MainContract$_store_cell
-cell $MainContract$_store_cell((int, int, slice, cell) v) inline;
+cell $MainContract$_store_cell((int, int, slice, cell) v, builder b) inline;
 
 ;; $MainContract$_load
 (slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline;
@@ -208,8 +208,8 @@ builder $MainContract$_store(builder build_0, (int, int, slice, cell) v) inline 
     return build_0;
 }
 
-cell $MainContract$_store_cell((int, int, slice, cell) v) inline {
-    return $MainContract$_store(begin_cell(), v).end_cell();
+cell $MainContract$_store_cell((int, int, slice, cell) v, builder b) inline {
+    return $MainContract$_store(b, v).end_cell();
 }
 
 (slice, ((int, int, slice, cell))) $MainContract$_load(slice sc_0) inline {
@@ -454,13 +454,13 @@ slice $global_right() impure inline_ref {
 
 ((int, int, slice, cell), cell) $MainContract$_fun_asCell((int, int, slice, cell) $self) impure inline_ref {
     var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
-    var $fresh$ret_6 = $MainContract$_store_cell(($self'field, $self'value, $self'data, $self'mapping));
+    var $fresh$ret_6 = $MainContract$_store_cell(($self'field, $self'value, $self'data, $self'mapping), begin_cell().store_uint(1, 1));
     return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_6);
 }
 
 ((int, int, slice, cell), slice) $MainContract$_fun_asSlice((int, int, slice, cell) $self) impure inline_ref {
     var (($self'field, $self'value, $self'data, $self'mapping)) = $self;
-    var $fresh$ret_7 = $MainContract$_store_cell(($self'field, $self'value, $self'data, $self'mapping)).begin_parse();
+    var $fresh$ret_7 = $MainContract$_store_cell(($self'field, $self'value, $self'data, $self'mapping), begin_cell().store_uint(1, 1)).begin_parse();
     return (($self'field, $self'value, $self'data, $self'mapping), $fresh$ret_7);
 }
 
