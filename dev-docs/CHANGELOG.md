@@ -11,9 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [fix] Compiler now doesn't require explicit re-declaration for abstract methods and fields in traits: PR [#3272](https://github.com/tact-lang/tact/pull/3272)
 
+### Docs
+
+- Completely reworked the functions page: PR [#3076](https://github.com/tact-lang/tact/pull/3076), PR [#3277](https://github.com/tact-lang/tact/pull/3277)
+
 ### Release contributors
 
 - [Petr Makhnev](https://github.com/i582)
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.6.11] - 2025-05-26
 
