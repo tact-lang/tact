@@ -278,6 +278,14 @@ contract MainContract {
     get fun testOrder(): Bool {
         return left() == right();
     }
+
+    get fun asCell(): Cell {
+        return self.toCell();
+    }
+
+    get fun asSlice(): Slice {
+        return self.toSlice();
+    }
 }
 
 extends mutates fun inc(self: Int): Int { self += 1; return self }

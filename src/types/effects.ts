@@ -5,6 +5,7 @@ import { getAllTypes, getType } from "@/types/resolveDescriptors";
 import { idTextErr, throwInternalCompilerError } from "@/error/errors";
 import { getExpType } from "@/types/resolveExpression";
 import { StructFunctions } from "@/abi/struct";
+import { ContractFunctions } from "@/abi/contracts";
 
 export type Effect = "contractStorageRead" | "contractStorageWrite";
 
@@ -301,6 +302,12 @@ function methodEffects(
                 return new Set();
             }
 
+            const builtin = ContractFunctions.get(idText(method));
+            if (typeof builtin !== "undefined") {
+                // toCell builtin
+                return new Set<Effect>(["contractStorageRead"]);
+            }
+
             const methodDescr = selfType.functions.get(idText(method));
             if (typeof methodDescr === "undefined") {
                 throwInternalCompilerError(
@@ -381,6 +388,13 @@ function methodEffects(
                     StructFunctions.has(idText(method))
                 ) {
                     // For struct built-in functions like toCell(), we only need read access
+                    return new Set<Effect>(["contractStorageRead"]);
+                }
+                if (
+                    selfType.kind === "contract" &&
+                    ContractFunctions.has(idText(method))
+                ) {
+                    // For contracts built-in functions like toCell(), we only need read access
                     return new Set<Effect>(["contractStorageRead"]);
                 }
 
