@@ -109,6 +109,16 @@
         "wallet cells": "13",
         "wallet bits": "7828"
       }
+    },
+    {
+      "label": "1.6.11 with inline message loading",
+      "pr": "https://github.com/tact-lang/tact/pull/2993",
+      "size": {
+        "minter cells": "29",
+        "minter bits": "15495",
+        "wallet cells": "13",
+        "wallet bits": "7708"
+      }
     }
   ]
 }
