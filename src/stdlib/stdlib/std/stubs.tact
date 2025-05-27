@@ -521,11 +521,12 @@ extends fun toSlice(self: AnyMessage): Slice;
 /// ```
 ///
 /// If a contract doesn't use [contract parameters], the resulting `Cell`
-/// or `Slice` will contain a leading one bit representing the lazy initialization bit.
+/// or `Slice` will contain a leading one bit representing the [lazy initialization bit].
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells/#contracttocell
 ///
 /// [contract parameters]: https://docs.tact-lang.org/book/contracts#parameters
+/// [lazy initialization bit]: https://docs.tact-lang.org/book/functions/#init
 ///
 extends fun toCell(self: AnyContract): Cell;
 
@@ -545,11 +546,12 @@ extends fun toCell(self: AnyContract): Cell;
 /// ```
 ///
 /// If a contract doesn't use [contract parameters], the resulting `Cell`
-/// or `Slice` will contain a leading one bit representing the lazy initialization bit.
+/// or `Slice` will contain a leading one bit representing the [lazy initialization bit].
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells/#contracttoslice
 ///
 /// [contract parameters]: https://docs.tact-lang.org/book/contracts#parameters
+/// [lazy initialization bit]: https://docs.tact-lang.org/book/functions/#init
 ///
 extends fun toSlice(self: AnyContract): Slice;
 
