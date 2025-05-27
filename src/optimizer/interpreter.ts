@@ -54,13 +54,92 @@ import {
 } from "@/bindings/typescript/serializers";
 import { getMapAbi } from "@/types/resolveABITypeRef";
 
+const minSignedInt = (nBits: number): bigint => -(2n ** (BigInt(nBits) - 1n));
+
+const maxSignedInt = (nBits: number): bigint => 2n ** (BigInt(nBits) - 1n) - 1n;
+
+const minUnsignedInt = (_nBits: number): bigint => 0n;
+
+const maxUnsignedInt = (nBits: number): bigint => 2n ** BigInt(nBits) - 1n;
+
+const minVarInt = (length: number): bigint =>
+    minSignedInt(8 * (2 ** length - 1));
+
+const maxVarInt = (length: number): bigint =>
+    maxSignedInt(8 * (2 ** length - 1));
+
+const minVarUint = (_length: number): bigint => 0n;
+
+const maxVarUint = (length: number): bigint =>
+    maxUnsignedInt(8 * (2 ** length - 1));
+
+type mapKeyOrValueIntFormat =
+    | { kind: "int"; bits: number }
+    | { kind: "uint"; bits: number }
+    | { kind: "varint"; length: number }
+    | { kind: "varuint"; length: number };
+
+const ensureMapIntKeyOrValRange = (
+    num: Ast.Number,
+    intFormat: mapKeyOrValueIntFormat,
+): Ast.Number => {
+    const val = num.value;
+    switch (intFormat.kind) {
+        case "int":
+            {
+                if (
+                    minSignedInt(intFormat.bits) <= val &&
+                    val <= maxSignedInt(intFormat.bits)
+                )
+                    return num;
+                throwErrorConstEval(
+                    `integer '${prettyPrint(num)}' does not fit into ${intFormat.bits}-bit signed integer type`,
+                    num.loc,
+                );
+            }
+            break;
+        case "uint":
+            if (
+                minUnsignedInt(intFormat.bits) <= val &&
+                val <= maxUnsignedInt(intFormat.bits)
+            )
+                return num;
+            throwErrorConstEval(
+                `integer '${prettyPrint(num)}' does not fit into ${intFormat.bits}-bit unsigned integer type`,
+                num.loc,
+            );
+            break;
+        case "varint":
+            if (
+                minVarInt(intFormat.length) <= val &&
+                val <= maxVarInt(intFormat.length)
+            )
+                return num;
+            throwErrorConstEval(
+                `integer '${prettyPrint(num)}' does not fit into variable-length signed integer type with ${intFormat.length}-bit length`,
+                num.loc,
+            );
+            break;
+        case "varuint":
+            if (
+                minVarUint(intFormat.length) <= val &&
+                val <= maxVarUint(intFormat.length)
+            )
+                return num;
+            throwErrorConstEval(
+                `integer '${prettyPrint(num)}' does not fit into variable-length unsigned integer type with ${intFormat.length}-bit length`,
+                num.loc,
+            );
+    }
+};
+
 // TVM integers are signed 257-bit integers
-const minTvmInt: bigint = -(2n ** 256n);
-const maxTvmInt: bigint = 2n ** 256n - 1n;
+const minTvmInt: bigint = minSignedInt(257);
+const maxTvmInt: bigint = maxSignedInt(257);
 
 // Range allowed in repeat statements
-const minRepeatStatement: bigint = -(2n ** 256n); // Note it is the same as minimum for TVM
-const maxRepeatStatement: bigint = 2n ** 31n - 1n;
+const minRepeatStatement: bigint = minTvmInt; // Note it is the same as minimum for TVM
+const maxRepeatStatement: bigint = maxSignedInt(32);
 
 // Util factory methods
 // FIXME: pass util as argument
@@ -1179,15 +1258,27 @@ export class Interpreter {
                 }
                 let dict = Dictionary.empty(keyType, valueType);
                 for (const { key: keyExpr, value: valueExpr } of ast.fields) {
-                    const keyValue = parseKey(
-                        this.interpretExpressionInternal(keyExpr),
-                        keyExpr.loc,
-                    );
-                    const valValue = parseValue(
-                        this.interpretExpressionInternal(valueExpr),
-                        valueExpr.loc,
-                    );
-                    dict = dict.set(keyValue, valValue);
+                    const keyValue = this.interpretExpressionInternal(keyExpr);
+                    if (keyValue.kind === "number") {
+                        if (res.key.kind === "int" || res.key.kind === "uint") {
+                            ensureMapIntKeyOrValRange(keyValue, res.key);
+                        }
+                    }
+                    const dictKeyValue = parseKey(keyValue, keyExpr.loc);
+                    const valValue =
+                        this.interpretExpressionInternal(valueExpr);
+                    if (valValue.kind === "number") {
+                        if (
+                            res.value.kind === "int" ||
+                            res.value.kind === "uint" ||
+                            res.value.kind === "varint" ||
+                            res.value.kind === "varuint"
+                        ) {
+                            ensureMapIntKeyOrValRange(valValue, res.value);
+                        }
+                    }
+                    const dictValValue = parseValue(valValue, valueExpr.loc);
+                    dict = dict.set(dictKeyValue, dictValValue);
                 }
                 return beginCell()
                     .storeDictDirect(dict)
