@@ -36,7 +36,7 @@ import {
     validUntil,
 } from "@/benchmarks/wallet-v5/utils";
 
-import benchmarkResults from "@/benchmarks/wallet-v4/results_gas.json";
+import benchmarkResults from "@/benchmarks/wallet-v4/gas.json";
 
 function createSimpleTransferBody(testReceiver: Address, forwardValue: bigint) {
     const msg = beginCell().storeUint(0, 8);

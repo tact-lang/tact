@@ -24,8 +24,8 @@ import type {
     Cancel,
 } from "@/benchmarks/escrow/tact/output/escrow_Escrow";
 
-import benchmarkResults from "@/benchmarks/escrow/results_gas.json";
-import benchmarkCodeSizeResults from "@/benchmarks/escrow/results_code_size.json";
+import benchmarkResults from "@/benchmarks/escrow/gas.json";
+import benchmarkCodeSizeResults from "@/benchmarks/escrow/size.json";
 
 const loadFunCEscrowBoc = () => {
     const bocEscrow = readFileSync(

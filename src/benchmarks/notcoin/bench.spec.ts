@@ -35,8 +35,8 @@ import {
     type JettonBurn,
 } from "@/benchmarks/notcoin/tact/output/wallet_JettonWalletNotcoin";
 
-import benchmarkResults from "@/benchmarks/notcoin/results_gas.json";
-import benchmarkCodeSizeResults from "@/benchmarks/notcoin/results_code_size.json";
+import benchmarkResults from "@/benchmarks/notcoin/gas.json";
+import benchmarkCodeSizeResults from "@/benchmarks/notcoin/size.json";
 
 const loadNotcoinJettonsBoc = () => {
     const bocMinter = readFileSync(
