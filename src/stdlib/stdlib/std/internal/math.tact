@@ -81,7 +81,7 @@ asm fun nativeRandom(): Int { RANDU256 }
 // then z := x * range / 2^256 is computed.
 asm fun nativeRandomInterval(max: Int): Int { RAND }
 
-/// Generates and returns a new pseudo-random unsigned 256-bit `Int` value `x`.
+/// Generates a new pseudo-random unsigned 256-bit `Int` value `x`.
 ///
 /// The algorithm works as follows: first, the `sha512(r)` is computed. There, `r` is an old
 /// value of the random seed, which is taken as a 32-byte array constructed from the big-endian
@@ -101,7 +101,7 @@ inline fun randomInt(): Int {
     return nativeRandom();
 }
 
-/// Generates and returns a new pseudo-random unsigned `Int` value `x` in the provided semi-closed
+/// Generates a new pseudo-random unsigned `Int` value `x` in the provided semi-closed
 /// interval: `min` ≤ `x` < `max`, or `min` ≥ `x` > `max` if both `min` and `max` are negative.
 ///
 /// Note that the `max` value is never included in the interval.
@@ -124,16 +124,16 @@ inline fun random(min: Int, max: Int): Int {
 
 /// Global function.
 ///
-/// Computes and returns the minimum of two `Int` values `x` and `y`.
+/// Computes the minimum of two `Int` values `x` and `y`.
 ///
 /// ```tact
 /// fun examples() {
 ///     min(1, 2);        // 1
 ///     min(2, 2);        // 2
 ///     min(007, 3);      // 3
-///     min(0x45, 3_0_0); // 69, nice
+///     min(0x42, 3_0_0); // 66, nice
 ///     //  ↑     ↑
-///     //  69    300
+///     //  66    300
 /// }
 /// ```
 ///
@@ -143,7 +143,7 @@ asm fun min(x: Int, y: Int): Int { MIN }
 
 /// Global function.
 ///
-/// Computes and returns the maximum of two `Int` values `x` and `y`.
+/// Computes the maximum of two `Int` values `x` and `y`.
 ///
 /// ```tact
 /// fun examples() {
@@ -162,7 +162,7 @@ asm fun max(x: Int, y: Int): Int { MAX }
 
 /// Global function.
 ///
-/// Computes and returns the absolute value of the `Int` value `x`.
+/// Computes the absolute value of the `Int` value `x`.
 ///
 /// ```tact
 /// fun examples() {
@@ -172,13 +172,19 @@ asm fun max(x: Int, y: Int): Int { MAX }
 /// }
 /// ```
 ///
+/// /// #### Exit codes
+///
+/// * 4: [Integer overflow] — Thrown when the argument equals the minimum representable integer, -2^256.
+///
 /// See: https://docs.tact-lang.org/ref/core-math#abs
+///
+/// [Integer overflow]: https://docs.tact-lang.org/book/exit-codes/#4
 ///
 asm fun abs(x: Int): Int { ABS }
 
 /// Global function.
 ///
-/// Computes and returns the logarithm of a number `num` > 0 to the base `base` ≥ 2. Results are rounded down.
+/// Computes the logarithm of a number `num` > 0 to the base `base` ≥ 2. Results are rounded down.
 ///
 /// ```tact
 /// fun examples() {
@@ -250,7 +256,7 @@ asm fun log2(num: Int): Int { DUP 5 THROWIFNOT UBITSIZE DEC }
 
 /// Global function.
 ///
-/// Computes and returns the exponentiation involving two numbers: the `base` and the exponent (or _power_) `exp`.
+/// Computes the exponentiation involving two numbers: the `base` and the exponent (or _power_) `exp`.
 ///
 /// This function tries to resolve constant values in compile-time whenever possible.
 ///
@@ -273,12 +279,14 @@ asm fun log2(num: Int): Int { DUP 5 THROWIFNOT UBITSIZE DEC }
 ///
 /// #### Exit codes
 ///
+/// * 4: [Integer overflow] — Thrown when the result exceeds the range of representable integers, i.e. [-2^256; 2^256 - 1].
 /// * 5: [Integer out of expected range] — Thrown when the given `exp` value is negative.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-math#pow
 /// * https://docs.tact-lang.org/ref/core-math#pow2
 ///
+/// [Integer overflow]: https://docs.tact-lang.org/book/exit-codes/#4
 /// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes/#5
 ///
 inline fun pow(base: Int, exp: Int): Int {
@@ -315,19 +323,21 @@ inline fun pow(base: Int, exp: Int): Int {
 ///
 /// #### Exit codes
 ///
+/// * 4: [Integer overflow] — Thrown when the result exceeds the range of representable integers, i.e. [-2^256; 2^256 - 1].
 /// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `exp`.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-math#pow2
 /// * https://docs.tact-lang.org/ref/core-math#pow
 ///
+/// [Integer overflow]: https://docs.tact-lang.org/book/exit-codes/#4
 /// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun pow2(exp: Int): Int { POW2 }
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Computes and returns the sign of the `Int` value `x`. Produces 1 if the `x` is positive, -1 if the `x` is negative, and 0 if the `x` is 0.
+/// Computes the sign of the `Int` value `x`. Produces 1 if the `x` is positive, -1 if the `x` is negative, and 0 if the `x` is 0.
 ///
 /// ```tact
 /// fun examples() {
@@ -345,7 +355,7 @@ asm fun sign(x: Int): Int { SGN }
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Computes and returns the rounded up result of division of the `Int` `x` by the `Int` `y`.
+/// Computes the rounded up result of division of the numbers `x` and `y`.
 ///
 /// ```tact
 /// fun examples() {
@@ -358,7 +368,7 @@ asm fun sign(x: Int): Int { SGN }
 ///
 /// #### Exit codes
 ///
-/// * 4: [Integer overflow] — Thrown when the given `y` value is equal to 0.
+/// * 4: [Integer overflow] — Thrown when division by zero is attempted or -2^256 is divided by -1.
 ///
 /// See: https://docs.tact-lang.org/ref/core-math#divc
 ///
@@ -368,7 +378,7 @@ asm fun divc(x: Int, y: Int): Int { DIVC }
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Computes and returns the rounded up result of `(x * y) / z`.
+/// Computes the rounded up result of `(x * y) / z`.
 ///
 /// ```tact
 /// fun examples() {
@@ -385,7 +395,7 @@ asm fun divc(x: Int, y: Int): Int { DIVC }
 ///
 /// * 4: [Integer overflow] — Thrown when the value in calculation goes beyond
 ///   the range from -2^256 to 2^256 - 1 inclusive, or if there's an attempt to
-///   divide by `z` equal to 0.
+///   divide by zero.
 ///
 /// See: https://docs.tact-lang.org/ref/core-math#muldivc
 ///
@@ -395,7 +405,7 @@ asm fun muldivc(x: Int, y: Int, z: Int): Int { MULDIVC }
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Computes and returns the rounded down result of `(x * y) / 2^z`. It is a more gas-efficient equivalent of doing the bitwise shift right on the result of multiplication of `Int` `x` times `Int` `y`, where `Int` `z` is the right operand of the shift.
+/// Computes the rounded down result of `(x * y) / 2^z`. It is a more gas-efficient equivalent of doing the bitwise shift right on the result of multiplication of `x` and `y`, where `z` is the right operand of the shift.
 ///
 /// ```tact
 /// fun examples() {
@@ -423,7 +433,7 @@ asm fun mulShiftRight(x: Int, y: Int, z: Int): Int { MULRSHIFT }
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Similar to `mulShiftRight()`, but instead of rounding down, the result value is rounded to the nearest integer. If there are two equally close integers, rounding is done toward the even one.
+/// Computes `floor((x * y) / 2^z + 0.5)`. It is similar to `mulShiftRight`, but instead of rounding down, the result value is rounded to the nearest integer with results like 42.5 rounded to 43.
 ///
 /// ```tact
 /// fun examples() {
@@ -451,7 +461,7 @@ asm fun mulShiftRightRound(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Similar to `mulShiftRight()`, but instead of rounding down, the result value is rounded up.
+/// Computes `ceil((x * y) / 2^z)`. Similar to `mulShiftRight()`, but instead of rounding down, the result value is rounded up.
 ///
 /// ```tact
 /// fun examples() {
@@ -479,7 +489,7 @@ asm fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Computes the square root of the `Int` value `num`. Returns the result rounded to the nearest integer. If there are two equally close integers, rounding is done toward the even one.
+/// Computes the square root of the `Int` value `num`. Returns the result rounded to the nearest integer.
 ///
 /// ```tact
 /// fun examples() {

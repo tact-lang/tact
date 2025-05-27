@@ -38,8 +38,8 @@ import type {
     ExcessOut,
 } from "@/benchmarks/sbt/tact/output/item_SBTItem";
 
-import benchmarkResults from "@/benchmarks/sbt/results_gas.json";
-import benchmarkCodeSizeResults from "@/benchmarks/sbt/results_code_size.json";
+import benchmarkResults from "@/benchmarks/sbt/gas.json";
+import benchmarkCodeSizeResults from "@/benchmarks/sbt/size.json";
 
 const loadFunCSBTBoc = () => {
     const bocItem = readFileSync(

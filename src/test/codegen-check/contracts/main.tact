@@ -31,6 +31,26 @@ struct C {
     h: Address;
 }
 
+message Message1 {
+    a: Int;
+}
+
+message Message2 {
+    value: Cell;
+    value2: Slice;
+}
+
+message Message3 {
+    val1: Int;
+    val2: Int;
+    val3: Int;
+    val4: Int;
+    val5: Int;
+    val6: Int;
+}
+
+const EXIT_CODE: Int = 1000;
+
 contract MainContract {
     field: Int as uint8;
     value: Int as int256;
@@ -46,6 +66,25 @@ contract MainContract {
         self.value = value;
         self.data = data;
         self.mapping = mapping;
+    }
+
+    receive(msg: Message1) {
+        throw(msg.a);
+    }
+
+    receive(msg: Message2) {
+        let sc_1 = 10;
+        let sc_2 = 20;
+        let in_msg = sc_1 + sc_2;
+        if (in_msg == 0) {
+            throw(in_msg);
+        }
+
+        throw(msg.value.depth() + msg.value2.depth());
+    }
+
+    receive(msg: Message3) {
+        throw(msg.val1 + msg.val2 + msg.val3 + msg.val4 + msg.val5 + msg.val6);
     }
 
     get fun testAugmentedAssignOperators(intVal: Int, intVal2: Int, boolVal: Bool, boolVal2: Bool): Int {
@@ -101,6 +140,7 @@ contract MainContract {
 
     const FOO_ZERO: Int = 0;
     const FOO_ONE: Int = 1;
+    const EXIT_CODE: Int = 999;
 
     get fun testIfOptimizationPositive(a: Int,  b: Int?) {
         if (a == 0) {
@@ -212,4 +252,81 @@ contract MainContract {
         dump(a);
         dumpStack();
     }
+
+    get fun testIfThrowOptimization(a: Int) {
+        if (a == self.FOO_ONE) {
+            throw(10);
+        }
+
+        let cond = a == self.FOO_ONE;
+        if (!cond) {
+            throw(10);
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(EXIT_CODE);
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(EXIT_CODE + 11);
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(self.EXIT_CODE / 2);
+        }
+    }
+
+    get fun testIfThrowOptimizationNegative(a: Int) {
+        if (a == self.FOO_ONE) {
+            throwIf(10, true);
+        }
+
+        let cond = a == self.FOO_ONE;
+        if (!cond) {
+            dump(10);
+            throw(10);
+        }
+
+        if (a != self.FOO_ONE) {
+            dump(10);
+            return;
+        }
+
+        if (cond) {} else if (a == self.FOO_ONE) {
+            throw(10);
+        }
+
+        let x: Int = 42;
+        if (x.inc() == 0) {
+            throw(x.inc());
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(bar());
+        }
+
+        if (a == self.FOO_ONE) {
+            throw(10);
+        } else {
+            throw(11);
+        }
+    }
+
+    get fun testOrder(): Bool {
+        return left() == right();
+    }
+
+    get fun asCell(): Cell {
+        return self.toCell();
+    }
+
+    get fun asSlice(): Slice {
+        return self.toSlice();
+    }
 }
+
+extends mutates fun inc(self: Int): Int { self += 1; return self }
+fun bar(): Int { return 10 }
+
+fun left(): Address { dump(1); return myAddress(); }
+fun right(): Address { dump(2); return myAddress(); }

@@ -288,7 +288,7 @@ Construction via `Builder{:tact}`      | Parsing via `Slice{:tact}`
 
 [Structs][struct] and [Messages][message] are almost like living [TL-B schemas][tlb], meaning they are essentially [TL-B schemas][tlb] expressed in maintainable, verifiable, and user-friendly Tact code.
 
-It is strongly recommended to use them and their [methods](/book/functions#extension-function), such as [`Struct.toCell(){:tact}`][st-tc] and [`Struct.fromCell(){:tact}`][st-fc], instead of manually constructing and parsing cells, as this allows for much more declarative and self-explanatory contracts.
+It is strongly recommended to use them and their [methods](/book/functions#extensions), such as [`Struct.toCell(){:tact}`][st-tc] and [`Struct.fromCell(){:tact}`][st-fc], instead of manually constructing and parsing cells, as this allows for much more declarative and self-explanatory contracts.
 
 The examples of manual parsing [above](#cnp-manually) can be rewritten using structs, with descriptive names for fields if desired:
 
@@ -338,7 +338,9 @@ By using structures instead of manual [`Cell{:tact}`](#cells) composition and pa
   [`Struct.fromSlice(){:tact}` in Core library][st-fs]\
   [`Message.toCell(){:tact}` in Core library][msg-tc]\
   [`Message.fromCell(){:tact}` in Core library][msg-fc]\
-  [`Message.fromSlice(){:tact}` in Core library][msg-fs]
+  [`Message.fromSlice(){:tact}` in Core library][msg-fs]\
+  [`Contract.toCell(){:tact}` in Core library][ct-tc]\
+  [`Contract.toSlice(){:tact}` in Core library][ct-ts]
 
 :::
 
@@ -348,6 +350,8 @@ By using structures instead of manual [`Cell{:tact}`](#cells) composition and pa
 [msg-tc]: /ref/core-cells#messagetocell
 [msg-fc]: /ref/core-cells#messagefromcell
 [msg-fs]: /ref/core-cells#messagefromslice
+[ct-tc]: /ref/core-cells#contracttocell
+[ct-ts]: /ref/core-cells#contracttoslice
 
 ### Check if empty {#operations-empty}
 

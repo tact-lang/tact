@@ -237,12 +237,8 @@ const main = async () => {
                 return;
             }
 
-            const resultsGas = join(specPath, "..", "results_gas.json");
-            const resultsCodeSize = join(
-                specPath,
-                "..",
-                "results_code_size.json",
-            );
+            const resultsGas = join(specPath, "..", "gas.json");
+            const resultsCodeSize = join(specPath, "..", "size.json");
 
             const isUpdate = typeof process.env.ADD !== "undefined";
 

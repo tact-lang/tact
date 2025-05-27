@@ -1,22 +1,6 @@
 import "./constants";
 import "./messages";
 
-inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, payload: Builder, sendMode: Int) {
-    let msgBody = beginCell().storeUint(op, 32).storeUint(queryId, 64);
-
-    if (payload.bits() != 0) {
-        msgBody = msgBody.storeBuilder(payload);
-    }
-
-    message(MessageParameters {
-        bounce: false,
-        to: toAddress,
-        value: amount,
-        body: msgBody.endCell(),
-        mode: sendMode,
-    });
-}
-
 struct NFTItemInit {
     owner: Address;
     content: Cell;
@@ -28,7 +12,22 @@ contract NFTItem(
     collectionAddress: Address,
     itemIndex: Int as uint64,
 ) {
-    receive() {} //to ignore empty messages
+    receive() {} // ignore empty messages
+
+    receive(msg: GetStaticData) {
+        throwUnless(NotInit, self.owner != null);
+
+        sendMsg(
+            sender(),
+            0,
+            ReportStaticData,
+            msg.queryId,
+            beginCell()
+                .storeUint(self.itemIndex, 256)
+                .storeAddress(self.collectionAddress),
+            SendRemainingValue,
+        ); // implementation detail
+    }
 
     receive(msg: Slice) {
         // Check if owner == null, which means the contract hasn't been initialized yet
@@ -52,15 +51,15 @@ contract NFTItem(
         throwUnless(IncorrectForwardPayload, msg.forwardPayload.bits() >= 1);
         forceBasechain(msg.newOwner);
 
-        let fwdFees: Int = context().readForwardFee();
+        let fwdFees = context().readForwardFee();
 
-        let restAmount: Int = myBalance() - minTonsForStorage;
+        let restAmount = myBalance() - minTonsForStorage;
         if (msg.forwardAmount > 0) {
-            restAmount -= (msg.forwardAmount + fwdFees);
+            restAmount -= msg.forwardAmount + fwdFees;
         }
 
         // when we load addr_none$00 in tact we got null
-        let needResponse: Bool = (msg.responseDestination != null);
+        let needResponse = msg.responseDestination != null;
         if (needResponse) {
             restAmount -= fwdFees;
         }
@@ -68,19 +67,31 @@ contract NFTItem(
         throwUnless(InvalidFees, restAmount >= 0);
 
         if (msg.forwardAmount > 0) {
-            sendMsg(msg.newOwner, msg.forwardAmount, OwnershipAssigned, msg.queryId, beginCell().storeAddress(self.owner!!).storeSlice(msg.forwardPayload), SendPayFwdFeesSeparately);
+            sendMsg(
+                msg.newOwner,
+                msg.forwardAmount,
+                OwnershipAssigned,
+                msg.queryId,
+                beginCell()
+                    .storeAddress(self.owner!!)
+                    .storeSlice(msg.forwardPayload),
+                SendPayFwdFeesSeparately,
+            );
         }
+
         if (needResponse) {
             forceBasechain(msg.responseDestination!!);
-            sendMsg(msg.responseDestination!!, restAmount, Excesses, msg.queryId, beginCell(), SendPayFwdFeesSeparately);
+            sendMsg(
+                msg.responseDestination!!,
+                restAmount,
+                Excesses,
+                msg.queryId,
+                beginCell(),
+                SendPayFwdFeesSeparately,
+            );
         }
+
         self.owner = msg.newOwner;
-    }
-
-    receive(msg: GetStaticData) {
-        throwUnless(NotInit, self.owner != null);
-
-        sendMsg(sender(), 0, ReportStaticData, msg.queryId, beginCell().storeUint(self.itemIndex, 256).storeAddress(self.collectionAddress), SendRemainingValue); // implementation detail
     }
 
     get fun get_nft_data(): NFTData {
@@ -92,4 +103,18 @@ contract NFTItem(
             content: self.content,
         };
     }
+}
+
+inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, payload: Builder, sendMode: Int) {
+    message(MessageParameters {
+        bounce: false,
+        to: toAddress,
+        value: amount,
+        body: beginCell()
+            .storeUint(op, 32)
+            .storeUint(queryId, 64)
+            .storeBuilder(payload)
+            .endCell(),
+        mode: sendMode,
+    });
 }

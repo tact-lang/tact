@@ -29,7 +29,6 @@ import type { PluginRequestFunds } from "@/benchmarks/wallet-v4/tact/output/wall
 import {
     storePluginRequestFunds,
     WalletV4,
-    type ContractState,
 } from "@/benchmarks/wallet-v4/tact/output/wallet-v4_WalletV4";
 import {
     bufferToBigInt,
@@ -37,7 +36,7 @@ import {
     validUntil,
 } from "@/benchmarks/wallet-v5/utils";
 
-import benchmarkResults from "@/benchmarks/wallet-v4/results_gas.json";
+import benchmarkResults from "@/benchmarks/wallet-v4/gas.json";
 
 function createSimpleTransferBody(testReceiver: Address, forwardValue: bigint) {
     const msg = beginCell().storeUint(0, 8);
@@ -72,7 +71,12 @@ function createAddPluginBody(pluginAddress: Address, amount: bigint) {
 
 function testWalletV4(
     benchmarkResult: BenchmarkResult,
-    fromInit: (state: ContractState) => Promise<WalletV4>,
+    fromInit: (
+        seqno: bigint,
+        walletId: bigint,
+        publicKey: bigint,
+        extensions: Dictionary<Address, boolean>,
+    ) => Promise<WalletV4>,
 ) {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
@@ -130,13 +134,12 @@ function testWalletV4(
         seqno = createSeqnoCounter();
 
         wallet = blockchain.openContract(
-            await fromInit({
-                $$type: "ContractState",
-                seqno: 0n,
-                walletId: SUBWALLET_ID,
-                publicKey: bufferToBigInt(keypair.publicKey),
-                extensions: Dictionary.empty(),
-            }),
+            await fromInit(
+                0n,
+                SUBWALLET_ID,
+                bufferToBigInt(keypair.publicKey),
+                Dictionary.empty(),
+            ),
         );
 
         // Deploy wallet
@@ -314,7 +317,12 @@ describe("WalletV4 Gas Tests", () => {
     describe("func", () => {
         const funcResult = fullResults.at(0)!;
 
-        async function fromFuncInit(contractState: ContractState) {
+        async function fromFuncInit(
+            seqno: bigint,
+            walletId: bigint,
+            publicKey: bigint,
+            _extensions: Dictionary<Address, boolean>,
+        ) {
             const bocWallet = readFileSync(
                 posixNormalize(
                     resolve(__dirname, "./func/output/wallet-v4.boc"),
@@ -324,9 +332,9 @@ describe("WalletV4 Gas Tests", () => {
             const walletCell = Cell.fromBoc(bocWallet)[0]!;
 
             const stateInitWallet = beginCell()
-                .storeUint(contractState.seqno, 32)
-                .storeUint(contractState.walletId, 32)
-                .storeUint(contractState.publicKey, 256)
+                .storeUint(seqno, 32)
+                .storeUint(walletId, 32)
+                .storeUint(publicKey, 256)
                 .storeDict(Dictionary.empty())
                 .endCell();
 

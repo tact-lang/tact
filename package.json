@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
   "name": "@tact-lang/compiler",
-  "version": "1.6.10",
+  "version": "1.6.11",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"
@@ -45,8 +45,13 @@
     "test:fast": "jest --config=./jest-fast.config.js",
     "test:allure": "rimraf ./allure-results && yarn test && allure serve allure-results",
     "bench": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true jest --testMatch=\"**/src/benchmarks/**/bench.spec.ts\"",
+<<<<<<< HEAD
     "bench:test": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true jest --testMatch=\"**/src/benchmarks/**/test.spec.ts\"",
     "bench:ci": "yarn gen:contracts:benchmarks && yarn bench && yarn bench:test",
+=======
+    "bench:test": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=false jest --testMatch=\"**/src/benchmarks/**/test.spec.ts\"",
+    "bench:ci": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true jest --testMatch=\"**/src/benchmarks/**/bench.spec.ts\" && cross-env PRINT_TABLE=false jest --testMatch=\"**/src/benchmarks/**/test.spec.ts\"",
+>>>>>>> origin/main
     "bench:update": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ts-node src/benchmarks/update.build.ts",
     "bench:add": "ts-node src/benchmarks/prompt.build.ts && yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ADD=true ts-node src/benchmarks/update.build.ts",
     "coverage": "cross-env COVERAGE=true NODE_OPTIONS=--max_old_space_size=5120 jest --config=./jest-ci.config.js",

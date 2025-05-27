@@ -159,6 +159,36 @@
         "deploy nft": "10570",
         "batch deploy nft": "654954"
       }
+    },
+    {
+      "label": "1.6.10 with correct evaluation order for binary expressions",
+      "pr": "https://github.com/tact-lang/tact/pull/3252",
+      "gas": {
+        "transfer": "7205",
+        "get static data": "4650",
+        "deploy nft": "10554",
+        "batch deploy nft": "654146"
+      }
+    },
+    {
+      "label": "1.6.11 with inline message loading",
+      "pr": "https://github.com/tact-lang/tact/pull/2993",
+      "gas": {
+        "transfer": "6989",
+        "get static data": "4632",
+        "deploy nft": "10520",
+        "batch deploy nft": "654138"
+      }
+    },
+    {
+      "label": "1.6.11 with optimized send",
+      "pr": null,
+      "gas": {
+        "transfer": "6979",
+        "get static data": "4424",
+        "deploy nft": "10335",
+        "batch deploy nft": "654266"
+      }
     }
   ]
 }

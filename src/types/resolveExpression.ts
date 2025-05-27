@@ -27,6 +27,7 @@ import { isAssignable, moreGeneralType } from "@/types/subtyping";
 import { StructFunctions } from "@/abi/struct";
 import { prettyPrint } from "@/ast/ast-printer";
 import type { SrcInfo } from "@/grammar";
+import { ContractFunctions } from "@/abi/contracts";
 
 const store = createContextStore<{
     ast: Ast.Expression;
@@ -517,6 +518,26 @@ function resolveFieldAccess(
         );
     }
 
+    if (src.kind === "ref_bounced" && field) {
+        if (field.type.kind === "map") {
+            throwCompilationError(
+                `Cannot access field of map type from bounced<${src.name}>`,
+                exp.field.loc,
+            );
+        }
+
+        if (field.type.kind === "ref") {
+            const name = field.type.name;
+            if (name === "Cell" || name === "Slice" || name === "Builder") {
+                const optional = field.type.optional ? "?" : "";
+                throwCompilationError(
+                    `Cannot access field of ${idTextErr(name + optional)} type from bounced<${src.name}>`,
+                    exp.field.loc,
+                );
+            }
+        }
+    }
+
     const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
     if (!field && !cst) {
         const typeStr =
@@ -678,9 +699,13 @@ function resolveCall(
         const srcT = getType(ctx, src.name);
 
         // Check struct ABI
-        if (srcT.kind === "struct") {
-            if (StructFunctions.has(idText(exp.method))) {
-                const abi = StructFunctions.get(idText(exp.method))!;
+        if (srcT.kind === "struct" || srcT.kind === "contract") {
+            const abi =
+                srcT.kind === "struct"
+                    ? StructFunctions.get(idText(exp.method))
+                    : ContractFunctions.get(idText(exp.method));
+
+            if (abi) {
                 const isInstanceCall = exp.self.kind !== "id";
                 const isStaticCallFromType =
                     exp.self.kind === "id" && exp.self.text === src.name;
