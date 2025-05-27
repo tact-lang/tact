@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now doesn't require explicit re-declaration for abstract methods and fields in traits: PR [#3272](https://github.com/tact-lang/tact/pull/3272)
 - Compiler now allows `toCell()` and `toSlice()` methods on contract types: PR [#3274](https://github.com/tact-lang/tact/pull/3274)
 - Compiler now generates message loading in place for better performance: PR [#2993](https://github.com/tact-lang/tact/pull/2993)
+- Compiler now shows a more informative error message if two `require()` calls have the same generated error code: PR [#3286](https://github.com/tact-lang/tact/pull/3286)
 
 ### Docs
 
