@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Language features
 
 - [fix] Compiler now doesn't require explicit re-declaration for abstract methods and fields in traits: PR [#3272](https://github.com/tact-lang/tact/pull/3272)
+- Compiler now allows `toCell()` and `toSlice()` methods on contract types: PR [#3274](https://github.com/tact-lang/tact/pull/3274)
 
 ### Docs
 

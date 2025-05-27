@@ -60,14 +60,12 @@ export function writeSerializer(
             `cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(
                 allocation.ops.map((v) => v.type),
                 ctx,
-            )} v)`,
+            )} v, builder b)`,
         );
         ctx.flag("inline");
         ctx.context("type:" + name);
         ctx.body(() => {
-            ctx.append(
-                `return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();`,
-            );
+            ctx.append(`return ${ops.writer(name, ctx)}(b, v).end_cell();`);
         });
     });
 }
@@ -78,7 +76,9 @@ export function writeOptionalSerializer(
     ctx: WriterContext,
 ) {
     ctx.fun(ops.writerCellOpt(name, ctx), () => {
-        ctx.signature(`cell ${ops.writerCellOpt(name, ctx)}(tuple v)`);
+        ctx.signature(
+            `cell ${ops.writerCellOpt(name, ctx)}(tuple v, builder b)`,
+        );
         ctx.flag("inline");
         ctx.context("type:" + name);
         ctx.body(() => {
@@ -86,7 +86,7 @@ export function writeOptionalSerializer(
                 if (null?(v)) {
                     return null();
                 }
-                return ${ops.writerCell(name, ctx)}(${ops.typeNotNull(name, ctx)}(v));
+                return ${ops.writerCell(name, ctx)}(${ops.typeNotNull(name, ctx)}(v), b);
             `);
         });
     });
