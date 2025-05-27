@@ -74,7 +74,7 @@ message(0x2c76b973) ProvideWalletAddress {
 
 message(0xd1735400) TakeWalletAddress {
     queryId: Int as uint64;
-    walletAddress: Address;
+    walletAddress: BasechainAddress;
     ownerAddress: Cell?; //It is Maybe ^Address, just encoded it like this
 }
 

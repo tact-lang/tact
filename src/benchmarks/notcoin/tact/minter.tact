@@ -44,7 +44,11 @@ contract JettonMinterNotcoin(
             : emptyBasechainAddress();
 
         message(MessageParameters {
-            body: makeTakeWalletAddressMsg(targetJettonWallet, msg),
+            body: TakeWalletAddress {
+                queryId: msg.queryId,
+                walletAddress: targetJettonWallet,
+                ownerAddress: msg.includeAddress ? beginCell().storeAddress(msg.ownerAddress).endCell() : null,
+            }.toCell(),
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendBounceIfActionFail,
@@ -111,15 +115,6 @@ contract JettonMinterNotcoin(
 }
 
 asm fun emptyAddress(): Address { b{00} PUSHSLICE }
-
-inline fun makeTakeWalletAddressMsg(targetJettonWallet: BasechainAddress, msg: ProvideWalletAddress): Cell {
-    return beginCell()
-        .storeUint(TakeWalletAddress.opcode(), 32)
-        .storeUint(msg.queryId, 64)
-        .storeBasechainAddress(targetJettonWallet)
-        .storeMaybeRef(msg.includeAddress ? beginCell().storeAddress(msg.ownerAddress).endCell() : null)
-        .endCell();
-}
 
 inline fun getJettonWalletInit(address: Address): StateInit {
     return initOf JettonWalletNotcoin(0, address, myAddress());
