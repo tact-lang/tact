@@ -5,6 +5,8 @@ trait T {
   abstract get fun getter(): Int;
 }
 
-contract TestContract with T {
+trait T1 with T {}
+
+contract TestContract with T1 {
   // does not override an abstract getter
 }

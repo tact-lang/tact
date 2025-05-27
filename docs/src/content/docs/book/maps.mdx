@@ -28,11 +28,11 @@ contract NestedMaps {
 
     get fun test(): Int {
         // An outer map `map<Address, AllowanceMap>`,
-        // with `AllowanceMap` Structs as values,
+        // with `AllowanceMap` structs as values,
         // each containing maps of type `map<Address, Int>`
         let allowances: map<Address, AllowanceMap> = emptyMap();
 
-        // An inner map in the `unbox` field of the `AllowanceMap` Struct
+        // An inner map in the `unbox` field of the `AllowanceMap` struct
         let allowance = AllowanceMap { unbox: emptyMap() };
 
         // Setting the inner map entry
@@ -62,8 +62,16 @@ Allowed value types:
 * [`Bool{:tact}`](/book/types#booleans)
 * [`Cell{:tact}`][cell]
 * [`Address{:tact}`][p]
-* [Struct][struct]
-* [Message][message]
+* any [struct][struct] type
+* any [Message][message] type
+
+Neither key nor value types can be made [optional](/book/optionals).
+
+```tact
+// COMPILATION ERROR! Map key types cannot be optional
+let myMap: map<Int?, Int> = emptyMap();
+//             ~~~~
+```
 
 ## Serialization
 
@@ -88,6 +96,14 @@ No other [allowed key or value types](#allowed-types) besides [`Int{:tact}`][int
   Read more about serialization in Tact: [Compatibility with FunC](/book/func#convert-serialization).
 
 :::
+
+## Low-level representation
+
+On [TVM][tvm], maps are represented as a [`Cell{:tact}`][cell] type, and it's possible to construct and parse them directly. However, doing so is highly error-prone and quite messy, which is why Tact provides maps as a standalone composite type with many of the helper methods [described below](#operations).
+
+Essentially, maps are cells with a special bits layouts, which have many supporting TVM instructions for their modification and usage. They are broadly called ["hashmaps"](https://docs.ton.org/v3/documentation/data-formats/tlb/tl-b-types#hashmap), although they are closer to balanced trees.
+
+Maps always have fixed key lengths which can be one of two kinds: long and short. For the distinction and composition of maps with either of key types, see the [description of the `.deepEquals(){:tact}`](#deepequals) map method.
 
 ## Operations
 
@@ -223,7 +239,7 @@ fun getExchangesList(): map<Address, Cell> {
 extends mutates fun set(self: map<K, V>, key: K, val: V?);
 ```
 
-To set or replace the value under a key, call the `.set(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps.
+To set or replace the value under a key, call the `.set(){:tact}` [method](/book/functions#extensions), which is accessible for all maps.
 
 ```tact
 // Empty map
@@ -244,7 +260,7 @@ fizz.set(7, 68); // key 7 now points to value 68
 extends fun get(self: map<K, V>, key: K): V?;
 ```
 
-You can check if a key is found in the map by calling the `.get(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps. This will return [`null{:tact}`](/book/optionals) if the key is missing or the value if the key is found.
+You can check if a key is found in the map by calling the `.get(){:tact}` [method](/book/functions#extensions), which is accessible for all maps. This will return [`null{:tact}`](/book/optionals) if the key is missing or the value if the key is found.
 
 ```tact
 // Empty map
@@ -276,7 +292,7 @@ if (gotButUnsure != null) {
 extends mutates fun replace(self: map<K, V>, key: K, val: V): Bool;
 ```
 
-To replace the value associated with a key, if such a key exists, use the `.replace(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` upon successful replacement and `false{:tact}` otherwise.
+To replace the value associated with a key, if such a key exists, use the `.replace(){:tact}` [method](/book/functions#extensions). It returns `true{:tact}` upon successful replacement and `false{:tact}` otherwise.
 
 ```tact
 // Empty map
@@ -368,7 +384,7 @@ oldVal2; // null
 extends mutates fun del(self: map<K, V>, key: K): Bool;
 ```
 
-To delete a single key-value pair (a single entry), use the `.del(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` in the case of successful deletion and `false{:tact}` otherwise.
+To delete a single key-value pair (a single entry), use the `.del(){:tact}` [method](/book/functions#extensions). It returns `true{:tact}` in the case of successful deletion and `false{:tact}` otherwise.
 
 ```tact
 // Empty map
@@ -414,7 +430,7 @@ With this approach, all previous entries of the map are completely discarded fro
 extends fun exists(self: map<K, V>, key: K): Bool;
 ```
 
-The `.exists(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if a value under the given key exists in the map and `false{:tact}` otherwise.
+The `.exists(){:tact}` [method](/book/functions#extensions) on maps returns `true{:tact}` if a value under the given key exists in the map and `false{:tact}` otherwise.
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
@@ -446,7 +462,7 @@ if (fizz.get(1 / 2) != null) { // also true, but consumes more gas
 extends fun isEmpty(self: map<K, V>): Bool;
 ```
 
-The `.isEmpty(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if the map is empty and `false{:tact}` otherwise:
+The `.isEmpty(){:tact}` [method](/book/functions#extensions) on maps returns `true{:tact}` if the map is empty and `false{:tact}` otherwise:
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
@@ -464,7 +480,7 @@ if (fizz == null) {
 
 ### Compare with `.deepEquals()` {#deepequals}
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -472,7 +488,7 @@ if (fizz == null) {
 extends fun deepEquals(self: map<K, V>, other: map<K, V>): Bool;
 ```
 
-The `.deepEquals(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if all entries of the map match corresponding entries of another map, ignoring possible differences in the [underlying serialization logic][hashmap]. Returns `false{:tact}` otherwise.
+The `.deepEquals(){:tact}` [method](/book/functions#extensions) on maps returns `true{:tact}` if all entries of the map match corresponding entries of another map, ignoring possible differences in the [underlying serialization logic][hashmap]. Returns `false{:tact}` otherwise.
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
@@ -520,9 +536,7 @@ Here, both maps are formed manually and both contain the same key-value pair. If
 extends fun asCell(self: map<K, V>): Cell?;
 ```
 
-On [TVM][tvm], maps are represented as a [`Cell{:tact}`][cell] type, and it's possible to construct and parse them directly. However, doing so is highly error-prone and quite messy, which is why Tact provides maps as a standalone composite type with many of the helper methods mentioned above.
-
-To cast maps back to the underlying [`Cell{:tact}`][cell] type, use the `.asCell(){:tact}` [method](/book/functions#extension-function). Since maps are initialized to `null{:tact}`, calling `.asCell(){:tact}` on a map with no values assigned will return `null{:tact}` and **not** an empty [`Cell{:tact}`][cell].
+To cast maps back to the [underlying](#low-level-representation) [`Cell{:tact}`][cell] type, use the `.asCell(){:tact}` [method](/book/functions#extensions). Since maps are initialized to `null{:tact}`, calling `.asCell(){:tact}` on a map with no values assigned will return `null{:tact}` and **not** an empty [`Cell{:tact}`][cell].
 
 As an example, this method is useful for sending small maps directly in the body of a reply:
 
@@ -624,17 +638,15 @@ It's often useful to set an upper-bound restriction on such maps, so that you [d
 
 :::caution
 
-  Note that manually keeping track of the number of items or checking the length of such maps is very error-prone and generally discouraged. Instead, try to wrap your map into a [Struct][struct] and define [extension functions](/book/functions#extension-function) on it. See an example in the Cookbook: [How to emulate an array using a map wrapped in a Struct](/cookbook/data-structures#array).
+  Note that manually keeping track of the number of items or checking the length of such maps is very error-prone and generally discouraged. Instead, try to wrap your map into a [struct][struct] and define [extension functions](/book/functions#extensions) on it. See an example in the Cookbook: [How to emulate an array using a map wrapped in a struct](/cookbook/data-structures#array).
 
 :::
 
 :::note
 
-  This example was adapted from [howardpen9/while-example-tact](https://github.com/howardpen9/while-example-tact/blob/de5807fcd20dba5f6a3748d112511477fb22bfcc/contracts/awesome.tact#L19C10-L19C10).
-
   See other examples of map usage in the Cookbook:\
-  [How to emulate a stack using a map wrapped in a Struct](/cookbook/data-structures#stack)\
-  [How to emulate a circular buffer using a map wrapped in a Struct](/cookbook/data-structures#circular-buffer)
+  [How to emulate a stack using a map wrapped in a struct](/cookbook/data-structures#stack)\
+  [How to emulate a circular buffer using a map wrapped in a struct](/cookbook/data-structures#circular-buffer)
 
 :::
 

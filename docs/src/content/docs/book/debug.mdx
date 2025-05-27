@@ -186,7 +186,7 @@ To see the results of [`dump(){:tact}`][dump] function calls and use the ["print
 
 Assuming you've created a [new counter contract project](/#start), let's see how it works in practice.
 
-First, let's place a call to [`dump(){:tact}`][dump] in `contracts/simple_counter.tact`, which will output the `amount` passed in the `msg{:tact}` [Struct][struct] to the contract's debug console:
+First, let's place a call to [`dump(){:tact}`][dump] in `contracts/simple_counter.tact`, which will output the `amount` passed in the `msg{:tact}` [struct][struct] to the contract's debug console:
 
 ```tact title="contracts/simple_counter.tact" {3}
 // ...
@@ -275,7 +275,7 @@ it('should increase counter', async () => {
 :::note
 
   See more test examples in the [Sandbox][sb] documentation:\
-  [Testing flow (FunC)](https://github.com/ton-org/sandbox/blob/main/docs/testing-key-points.md)\
+  [Testing flow](https://github.com/ton-org/sandbox/blob/main/docs/testing-key-points.md)\
   [Writing tests for Tact](https://github.com/ton-org/sandbox/blob/main/docs/tact-testing-examples.md)
 
 :::
@@ -630,7 +630,7 @@ it('your test clause title', async () => {
 
 ## Logging via `emit` {#logging}
 
-A [global static function](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-send#emit) sends a message to the outer world — it doesn't have a specific recipient.
+A [global function](/book/functions#fun-global) [`emit(){:tact}`](/ref/core-send#emit) sends a message to the outer world — it doesn't have a specific recipient.
 
 This function is very handy for logging and analyzing data off-chain — one just has to look at [external messages](/book/external) produced by the contract.
 
@@ -665,7 +665,7 @@ Note that some explorers deserialize the message body sent for you, while others
 Consider the following example:
 
 ```tact
-// We have a Struct
+// We have a struct
 struct Ballroom {
     meme: Bool;
     in: Int;
@@ -679,7 +679,7 @@ contract Bonanza {
         // emit a String
         emit("But to the Supes? Absolutely diabolical.".asComment());
 
-        // and a Struct
+        // and a struct
         emit(Ballroom { meme: true, in: 42, theory: "Duh" }.toCell());
     }
 }
@@ -716,11 +716,11 @@ it('emits', async () => {
 });
 ```
 
-To parse the second emitted message, we could manually use several `.loadSomething(){:typescript}` functions, but that's overly brittle — if the fields of the `Ballroom{:tact}` [Struct][struct] ever change, you'd need to start all over. That could significantly backfire when you have numerous tests written in that manner.
+To parse the second emitted message, we could manually use several `.loadSomething(){:typescript}` functions, but that's overly brittle — if the fields of the `Ballroom{:tact}` [struct][struct] ever change, you'd need to start all over. That could significantly backfire when you have numerous tests written in that manner.
 
-Fortunately, the Tact compiler auto-generates [TypeScript bindings (or wrappers)](/book/compile#wrap-ts) for contracts, making it easy to reuse them in your test suite. Not only do they provide wrappers for the contract you're testing, but they also export helper functions to store or load [Structs][struct] and [Messages][message] defined in the contract. These helper functions have names similar to their corresponding [Structs][struct] and [Messages][message], prefixed with `load`.
+Fortunately, the Tact compiler auto-generates [TypeScript bindings (or wrappers)](/book/compile#wrap-ts) for contracts, making it easy to reuse them in your test suite. Not only do they provide wrappers for the contract you're testing, but they also export helper functions to store or load structs and [Messages][message] defined in the contract. These helper functions have names similar to their corresponding structures, prefixed with `load`.
 
-For example, in our case, we'll need a function called `loadBallroom(){:typescript}`, to parse a [`Slice{:tact}`][slice] into the `Ballroom{:tact}` [Struct][struct] in TypeScript. To import it, either type the name and let your IDE suggest auto-importing it for you, or look at the top of your test suite file — there should be a similar line:
+For example, in our case, we'll need a function called `loadBallroom(){:typescript}`, to parse a [`Slice{:tact}`][slice] into the `Ballroom{:tact}` struct in TypeScript. To import it, either type the name and let your IDE suggest auto-importing it for you, or look at the top of your test suite file — there should be a similar line:
 
 ```typescript
 import { Bonanza } from '../wrappers/Bonanza';
@@ -736,7 +736,7 @@ it('emits', async () => {
   // We'll need only the body of the observed message:
   const secondMsgBody = res.externals[1].body;
 
-  // Now, let's parse it, knowing it's the Ballroom Struct.
+  // Now, let's parse it, knowing it's the Ballroom struct.
   // NOTE: In a real-world scenario,
   //       you'd want to check that first or wrap this in a try...catch
   const secondMsgStruct = loadBallroom(secondMsgBody.asSlice());

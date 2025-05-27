@@ -220,7 +220,7 @@ function writeSerializerField(
                     {
                         if (op.optional) {
                             ctx.append(
-                                `build_${gen} = build_${gen}.store_maybe_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
+                                `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_maybe_ref(begin_cell().store_slice(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`,
                             );
                         } else {
                             ctx.append(
@@ -246,7 +246,7 @@ function writeSerializerField(
                     {
                         if (op.optional) {
                             ctx.append(
-                                `build_${gen} = build_${gen}.store_maybe_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
+                                `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_maybe_ref(begin_cell().store_builder(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`,
                             );
                         } else {
                             ctx.append(
@@ -269,7 +269,7 @@ function writeSerializerField(
         case "string": {
             if (op.optional) {
                 ctx.append(
-                    `build_${gen} = build_${gen}.store_maybe_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
+                    `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_maybe_ref(begin_cell().store_slice(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`,
                 );
             } else {
                 ctx.append(

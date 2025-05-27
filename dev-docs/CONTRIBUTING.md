@@ -18,7 +18,7 @@ The summaries include information like
 
 Currently, Tact does not have a (formal) language specification, so one needs to consult the [Tact docs](https://docs.tact-lang.org) and the tests in this repository.
 
-The list of known bugs can be obtained using the following GitHub request: <https://github.com/tact-lang/tact/issues?q=is%3Aopen+is%3Aissue+label%3Abug>.
+The list of known bugs can be obtained using the following GitHub request: <https://github.com/tact-lang/tact/issues?q=is%3Aopen%20is%3Aissue%20label%3A%22kind%3A%20bug%22>.
 
 The document outlines how you can contribute and provides information about different components of the compiler, including their entry points.
 
@@ -245,6 +245,18 @@ To add a new benchmark:
 3. Run `yarn gen:contracts:benchmarks` to recompile benchmarks.
 4. Add additional benchmark
 
+### Generate Allure report
+
+We use [Allure](https://allurereport.org/) to generate reports for our tests.
+
+To run the tests and generate the Allure report:
+
+```shell
+yarn test:allure
+```
+
+Developers can use `step()`, `parameter()` and `attachment()` (and other) from `src/test/allure/allure.ts` to increase the readability of the test report
+
 ## Project map
 
 ### Compiler driver
@@ -410,4 +422,4 @@ yarn random-ast 42
 
 It will produce 42 random expressions and pretty-print them in the terminal.
 
-The implementation can be found in [`random-ast.ts`](../src/ast/random-ast.ts).
+The implementation can be found in [`random-ast.infra.ts`](../src/ast/random-ast.infra.ts).

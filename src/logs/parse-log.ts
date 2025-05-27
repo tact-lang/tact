@@ -5,8 +5,8 @@ import { parse as parseYaml } from "yaml";
 import { z } from "zod";
 import { parse, str, type Loc as ParserLoc } from "@tonstudio/parser-runtime";
 import { relative } from "path";
-import type { $ast } from "@/test/utils/logs";
-import * as $ from "@/test/utils/logs";
+import type { $ast } from "@/logs/logs";
+import * as $ from "@/logs/logs";
 import { getSrcInfo } from "@/grammar/src-info";
 
 const packageSchema = z.array(
@@ -55,6 +55,12 @@ export type Log = {
     readonly name: string;
     readonly transactions: readonly Transaction[];
 };
+
+export async function readLog(path: string): Promise<string[]> {
+    const code = await readFile(path, "utf-8");
+    const reports = packageSchema.parse(parseYaml(code));
+    return reports.map(({ messages }) => messages.join("\n"));
+}
 
 export const parseLog = async (path: string): Promise<Log[]> => {
     const code = await readFile(path, "utf-8");

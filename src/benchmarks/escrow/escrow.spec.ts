@@ -1,8 +1,6 @@
 import "@ton/test-utils";
-import type { Address } from "@ton/core";
 import { Cell, beginCell, toNano, contractAddress } from "@ton/core";
-
-import type { Sender } from "@ton/core";
+import type { Sender, Address } from "@ton/core";
 import { Blockchain } from "@ton/sandbox";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import {

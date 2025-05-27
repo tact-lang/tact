@@ -183,6 +183,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         "set",
         {
             name: "set",
+            isStatic: false,
             resolve(
                 ctx: CompilerContext,
                 args: readonly (TypeRef | undefined)[],
@@ -219,6 +220,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         "get",
         {
             name: "get",
+            isStatic: false,
             resolve(
                 ctx: CompilerContext,
                 args: readonly (TypeRef | undefined)[],
@@ -304,6 +306,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         "del",
         {
             name: "del",
+            isStatic: false,
             resolve(
                 ctx: CompilerContext,
                 args: readonly (TypeRef | undefined)[],
@@ -351,6 +354,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         "asCell",
         {
             name: "asCell",
+            isStatic: false,
             resolve(
                 ctx: CompilerContext,
                 args: readonly (TypeRef | undefined)[],
@@ -392,6 +396,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         "isEmpty",
         {
             name: "isEmpty",
+            isStatic: false,
             resolve(
                 ctx: CompilerContext,
                 args: readonly (TypeRef | undefined)[],
@@ -433,6 +438,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         "exists",
         {
             name: "exists",
+            isStatic: false,
             resolve(
                 ctx: CompilerContext,
                 args: readonly (TypeRef | undefined)[],
@@ -490,6 +496,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         "deepEquals",
         {
             name: "deepEquals",
+            isStatic: false,
             resolve(
                 ctx: CompilerContext,
                 args: readonly (TypeRef | undefined)[],
@@ -567,6 +574,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         "replace",
         {
             name: "replace",
+            isStatic: false,
             resolve(
                 ctx: CompilerContext,
                 args: readonly (TypeRef | undefined)[],
@@ -653,6 +661,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
         "replaceGet",
         {
             name: "replaceGet",
+            isStatic: false,
             resolve(
                 ctx: CompilerContext,
                 args: readonly (TypeRef | undefined)[],

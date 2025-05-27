@@ -121,13 +121,13 @@
       }
     },
     {
-      "label": "1.6.7 with inlined message loading",
-      "pr": "https://github.com/tact-lang/tact/pull/2993",
+      "label": "1.6.10 with folded if-throw to throw_if/throw_unless call",
+      "pr": "https://github.com/tact-lang/tact/pull/3216",
       "gas": {
-        "externalTransfer": "4969",
-        "addExtension": "5632",
-        "internalTransfer": "5742",
-        "extensionTransfer": "4676"
+        "externalTransfer": "5133",
+        "addExtension": "5796",
+        "internalTransfer": "5908",
+        "extensionTransfer": "4682"
       }
     }
   ]

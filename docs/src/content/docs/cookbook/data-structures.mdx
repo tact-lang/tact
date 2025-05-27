@@ -13,7 +13,7 @@ All of the data structures listed here are made using the built-in [`map<K, V>{:
 
 An [array](https://en.wikipedia.org/wiki/Array_(data_structure)) is a data structure consisting of a continuous block of memory, which represents a collection of elements of the same memory size, each identified by at least one array key or _index_.
 
-The following example emulates an array using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
+The following example emulates an array using a [`map<Int, V>{:tact}`][map] wrapped in a [struct][struct], where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
 
 ```tact
 struct Array {
@@ -171,7 +171,7 @@ A [stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) is a data st
 * push, which adds an element to the end of the collection
 * pop, which removes the most recently added element
 
-The following example emulates a stack using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
+The following example emulates a stack using a [`map<Int, V>{:tact}`][map] wrapped in a [struct][struct], where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
 
 ```tact
 struct Stack {
@@ -277,7 +277,7 @@ contract MapAsStack {
 
 A [circular buffer](https://en.wikipedia.org/wiki/Circular_buffer) (circular queue, cyclic buffer, or ring buffer) is a data structure that uses a single, fixed-size [buffer](https://en.wikipedia.org/wiki/Data_buffer) as if it were connected end-to-end.
 
-The following example emulates a circular buffer using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
+The following example emulates a circular buffer using a [`map<Int, V>{:tact}`][map] wrapped in a [struct][struct], where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
 
 ```tact
 struct CircularBuffer {
@@ -394,3 +394,4 @@ contract MapAsCircularBuffer {
 :::
 
 [map]: /book/maps
+[struct]: /book/structs-and-messages#structs

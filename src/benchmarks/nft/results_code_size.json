@@ -141,13 +141,43 @@
       }
     },
     {
-      "label": "1.6.7 with inlined message loading",
-      "pr": "https://github.com/tact-lang/tact/pull/2993",
+      "label": "1.6.10 with store_slice optimization",
+      "pr": "https://github.com/tact-lang/tact/pull/3213",
       "size": {
-        "collection cells": "39",
-        "collection bits": "20452",
+        "collection cells": "38",
+        "collection bits": "20444",
         "item cells": "10",
-        "item bits": "5569"
+        "item bits": "5609"
+      }
+    },
+    {
+      "label": "1.6.10 with optimized __tact_load_address_opt",
+      "pr": "https://github.com/tact-lang/tact/pull/3225",
+      "size": {
+        "collection cells": "38",
+        "collection bits": "20156",
+        "item cells": "10",
+        "item bits": "5465"
+      }
+    },
+    {
+      "label": "1.6.10 with nullable-to-non-nullable comparisons reorder",
+      "pr": "https://github.com/tact-lang/tact/pull/3233",
+      "size": {
+        "collection cells": "38",
+        "collection bits": "20140",
+        "item cells": "10",
+        "item bits": "5457"
+      }
+    },
+    {
+      "label": "1.6.10 with correct evaluation order for binary expressions",
+      "pr": "https://github.com/tact-lang/tact/pull/3252",
+      "size": {
+        "collection cells": "38",
+        "collection bits": "20116",
+        "item cells": "10",
+        "item bits": "5449"
       }
     }
   ]

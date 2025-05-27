@@ -154,7 +154,9 @@ contract WalletV4(
                 let mode = payload.loadUint(8);
                 sendRawMessage(payload.loadRef(), mode);
             }
-            return;
+
+            // throw(0) is idiom to successfully exit current transaction without saving state
+            throw(0);
         }
 
         // deploy and add plugin
