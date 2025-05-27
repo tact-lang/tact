@@ -515,7 +515,7 @@ extends fun toSlice(self: AnyMessage): Slice;
 ///     nothing: Int as coins = 27;
 ///
 ///     get fun asCell(): Cell {
-///         return self.toCell(); // "x{12A11B}"
+///         return self.toCell();
 ///     }
 /// }
 /// ```
@@ -540,7 +540,7 @@ extends fun toCell(self: AnyContract): Cell;
 ///     nothing: Int as coins = 27;
 ///
 ///     get fun asSlice(): Slice {
-///         return self.toSlice(); // "CS{Cell{000612a11b} bits: 0..24; refs: 0..0}"
+///         return self.toSlice();
 ///     }
 /// }
 /// ```
