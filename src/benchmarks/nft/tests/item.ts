@@ -1,16 +1,18 @@
-import { Address, type Cell } from "@ton/core";
+import { Address, toNano, type Cell } from "@ton/core";
 import { beginCell } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import type {
-    GetStaticData,
-    InitNFTBody,
+import {
+    OwnershipAssigned,
+    type GetStaticData,
+    type InitNFTBody,
 } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 import {
     storeInitNFTBody,
     type NFTItem,
-    IncorrectForwardPayload, 
+    IncorrectForwardPayload,
     IncorrectDeployer,
+    Excesses,
 } from "@/benchmarks/nft/tact/output/item_NFTItem";
 import "@ton/test-utils";
 import { setStoragePrices } from "@/test/utils/gasUtils";
@@ -21,6 +23,18 @@ import {
     getItemOwner,
     sendTransfer,
 } from "@/benchmarks/nft/tests/utils";
+
+import {
+    testTransferFee,
+    testTransferForwardFeeDouble,
+} from "@/benchmarks/nft/tests/transfer-fee";
+
+export type FromInitItem = (
+    owner: Address | null,
+    content: Cell | null,
+    collectionAddress: Address,
+    itemIndex: bigint,
+) => Promise<NFTItem>;
 
 const messageGetStaticData = async (
     sender: SandboxContract<TreasuryContract>,
@@ -38,14 +52,7 @@ const messageGetStaticData = async (
     return trxResult;
 };
 
-const globalSetup = async (
-    fromInitItem: (
-        owner: Address | null,
-        content: Cell | null,
-        collectionAddress: Address,
-        itemIndex: bigint,
-    ) => Promise<NFTItem>,
-) => {
+const globalSetup = async (fromInitItem: FromInitItem) => {
     const blockchain = await Blockchain.create();
     const config = blockchain.config;
     blockchain.setConfig(
@@ -94,7 +101,7 @@ const globalSetup = async (
         await fromInitItem(null, null, owner.address, 1n),
     );
 
-    await messageGetStaticData(owner, notInitItem); // deploy in sandbox 
+    await messageGetStaticData(owner, notInitItem); // deploy in sandbox
 
     return {
         blockchain,
@@ -107,15 +114,7 @@ const globalSetup = async (
     };
 };
 
-
-const testGetStaticData = (
-    fromInitItem: (
-        owner: Address | null,
-        content: Cell | null,
-        collectionAddress: Address,
-        itemIndex: bigint,
-    ) => Promise<NFTItem>,
-) => {
+const testGetStaticData = (fromInitItem: FromInitItem) => {
     const setup = async () => {
         return await globalSetup(fromInitItem);
     };
@@ -153,14 +152,7 @@ const testGetStaticData = (
     });
 };
 
-const testGetNftData = (
-    fromInitItem: (
-        owner: Address | null,
-        content: Cell | null,
-        collectionAddress: Address,
-        itemIndex: bigint,
-    ) => Promise<NFTItem>,
-) => {
+const testGetNftData = (fromInitItem: FromInitItem) => {
     const setup = async () => {
         return await globalSetup(fromInitItem);
     };
@@ -236,14 +228,7 @@ const testGetNftData = (
     });
 };
 
-const testDeploy = (
-    fromInitItem: (
-        owner: Address | null,
-        content: Cell | null,
-        collectionAddress: Address,
-        itemIndex: bigint,
-    ) => Promise<NFTItem>,
-) => {
+const testDeploy = (fromInitItem: FromInitItem) => {
     const setup = async () => {
         return await globalSetup(fromInitItem);
     };
@@ -289,7 +274,7 @@ const testDeploy = (
                 owner: notOwner.address,
                 content: defaultContent,
             };
-        
+
             const deployResult = await notInitItem.send(
                 notOwner.getSender(),
                 { value: Storage.DeployAmount },
@@ -311,14 +296,7 @@ const testDeploy = (
     });
 };
 
-const testTransfer = (
-    fromInitItem: (
-        owner: Address | null,
-        content: Cell | null,
-        collectionAddress: Address,
-        itemIndex: bigint,
-    ) => Promise<NFTItem>,
-) => {
+const testTransfer = (fromInitItem: FromInitItem) => {
     const setup = async () => {
         return await globalSetup(fromInitItem);
     };
@@ -395,7 +373,7 @@ const testTransfer = (
             );
         });
 
-        it("should throw exit code if newOwner isnot from basechain", async () => {
+        it("should throw exit code if newOwner isn't from basechain", async () => {
             const { itemNFT, owner } = await setup();
             const trxResult = await sendTransfer(
                 itemNFT,
@@ -450,6 +428,7 @@ const testTransfer = (
                 },
             );
         });
+
         it("should transfer ownership without any messages", async () => {
             const { itemNFT, owner, notOwner, emptyAddress } = await setup();
             const trxRes = await sendTransfer(
@@ -476,21 +455,83 @@ const testTransfer = (
                 },
             );
         });
+
+        it("should transfer ownership with forward payload", async () => {
+            const { itemNFT, owner, notOwner } = await setup();
+            const forwardAmount = toNano(0.1);
+            const forwardPayload = beginCell()
+                .storeStringTail("test forward payload")
+                .asSlice();
+
+            const trxRes = await sendTransfer(
+                itemNFT,
+                owner.getSender(),
+                Storage.DeployAmount,
+                notOwner.address,
+                null,
+                forwardAmount,
+                forwardPayload,
+            );
+
+            const expectedBody = beginCell()
+                .storeUint(OwnershipAssigned, 32)
+                .storeUint(0n, 64)
+                .storeAddress(owner.address)
+                .storeSlice(forwardPayload)
+                .endCell();
+
+            await step(
+                "Check that trxRes.transactions has correct transaction (ownership assigned with forward payload)",
+                () => {
+                    expect(trxRes.transactions).toHaveTransaction({
+                        from: itemNFT.address,
+                        to: notOwner.address,
+                        value: forwardAmount,
+                        body: expectedBody,
+                    });
+                },
+            );
+        });
+
+        it("should transfer ownership with response destination", async () => {
+            const { itemNFT, owner, notOwner } = await setup();
+            const forwardAmount = 0n;
+
+            const trxRes = await sendTransfer(
+                itemNFT,
+                owner.getSender(),
+                Storage.DeployAmount,
+                notOwner.address,
+                owner.address,
+                forwardAmount,
+            );
+
+            const expectedBody = beginCell()
+                .storeUint(Excesses, 32)
+                .storeUint(0n, 64)
+                .endCell();
+
+            await step(
+                "Check that trxRes.transactions has correct transaction (ownership assigned with response destination)",
+                () => {
+                    expect(trxRes.transactions).toHaveTransaction({
+                        from: itemNFT.address,
+                        to: owner.address,
+                        body: expectedBody,
+                    });
+                },
+            );
+        });
     });
 };
 
-export const testItem = (
-    fromInitItem: (
-        owner: Address | null,
-        content: Cell | null,
-        collectionAddress: Address,
-        itemIndex: bigint,
-    ) => Promise<NFTItem>,
-) => {
+export const testItem = (fromInitItem: FromInitItem) => {
     describe("NFT Item Contract", () => {
         testGetStaticData(fromInitItem);
         testGetNftData(fromInitItem);
         testDeploy(fromInitItem);
         testTransfer(fromInitItem);
+        testTransferFee(fromInitItem);
+        testTransferForwardFeeDouble(fromInitItem);
     });
 };

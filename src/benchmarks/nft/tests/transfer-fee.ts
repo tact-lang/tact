@@ -10,11 +10,7 @@ import {
 import "@ton/test-utils";
 import { step } from "@/test/allure/allure";
 import { setStoragePrices } from "@/test/utils/gasUtils";
-import {
-    Storage,
-    ErrorCodes,
-    sendTransfer,
-} from "@/benchmarks/nft/tests/utils";
+import { Storage, sendTransfer } from "@/benchmarks/nft/tests/utils";
 
 const globalSetup = async (
     fromInitItem: (

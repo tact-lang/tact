@@ -35,14 +35,21 @@ import {
     dictDeployNFTItem,
 } from "@/benchmarks/nft/tests/utils";
 
-const globalSetup = async (
-    fromInitCollection: (
-        owner: Address,
-        index: bigint,
-        content: Cell,
-        royaltyParams: RoyaltyParams,
-    ) => Promise<NFTCollection>,
-) => {
+type FromInitItem = (
+    owner: Address | null,
+    content: Cell | null,
+    collectionAddress: Address,
+    itemIndex: bigint,
+) => Promise<NFTItem>;
+
+export type FromInitCollection = (
+    owner: Address,
+    index: bigint,
+    content: Cell,
+    royaltyParams: RoyaltyParams,
+) => Promise<NFTCollection>;
+
+const globalSetup = async (fromInitCollection: FromInitCollection) => {
     const blockchain = await Blockchain.create();
     const owner = await blockchain.treasury("owner");
     const notOwner = await blockchain.treasury("notOwner");
@@ -108,162 +115,21 @@ const globalSetup = async (
     };
 };
 
-export const testCollection = (
-    fromInitCollection: (
-        owner: Address,
-        index: bigint,
-        content: Cell,
-        royaltyParams: RoyaltyParams,
-    ) => Promise<NFTCollection>,
-) => {
+const testEmptyMessages = (fromInitCollection: FromInitCollection) => {
     const setup = async () => {
         return await globalSetup(fromInitCollection);
     };
 
-    describe("NFT Collection Contract", () => {
-        it("should deploy correctly", async () => {
-            await setup();
-            // checking in setup
-        });
-
-        it("should get static data correctly", async () => {
-            const { collectionNFT, owner, defaultCollectionContent } =
-                await setup();
-            const staticData = await collectionNFT.getGetCollectionData();
-            await step(
-                "Check that staticData.owner equals owner.address (collection)",
-                () => {
-                    expect(staticData.owner).toEqualAddress(owner.address);
-                },
-            );
-            await step(
-                "Check that staticData.nextItemIndex is 0 (collection)",
-                () => {
-                    expect(staticData.nextItemIndex).toBe(0n);
-                },
-            );
-            await step(
-                "Check that staticData.collectionContent equals defaultCollectionContent (collection)",
-                () => {
-                    expect(staticData.collectionContent).toEqualCell(
-                        defaultCollectionContent,
-                    );
-                },
-            );
-        });
-
-        it("should get nft content correctly", async () => {
-            const { collectionNFT, defaultContent, defaultCommonContent } =
-                await setup();
-            const content = await collectionNFT.getGetNftContent(
-                0n,
-                defaultContent,
-            );
-            const expectedContent = beginCell()
-                .storeUint(1, 8)
-                .storeSlice(defaultCommonContent.asSlice())
-                .storeRef(defaultContent)
-                .endCell();
-            await step(
-                "Check that content equals expectedContent (nft content)",
-                () => {
-                    expect(content).toEqualCell(expectedContent);
-                },
-            );
-        });
-
-        it("should transfer ownership correctly", async () => {
-            const { collectionNFT, owner, notOwner } = await setup();
-            const changeOwnerMsg: ChangeOwner = {
-                $$type: "ChangeOwner",
-                queryId: 1n,
-                newOwner: notOwner.address,
-            };
-
-            const trxResult = await collectionNFT.send(
-                owner.getSender(),
-                { value: Storage.ChangeOwnerAmount },
-                changeOwnerMsg,
-            );
-
-            await step(
-                "Check that trxResult.transactions has correct transaction (owner transfer ownership)",
-                () => {
-                    expect(trxResult.transactions).toHaveTransaction({
-                        from: owner.address,
-                        to: collectionNFT.address,
-                        success: true,
-                    });
-                },
-            );
-            await step(
-                "Check that collectionNFT.getOwner() equals notOwner.address",
-                async () => {
-                    expect(await getOwner(collectionNFT)).toEqualAddress(
-                        notOwner.address,
-                    );
-                },
-            );
-        });
-        it("should return error if not owner tries to transfer ownership", async () => {
-            const { collectionNFT, owner, notOwner } = await setup();
-            const changeOwnerMsg: ChangeOwner = {
-                $$type: "ChangeOwner",
-                queryId: 1n,
-                newOwner: owner.address,
-            };
-
-            const trxResult = await collectionNFT.send(
-                notOwner.getSender(),
-                { value: Storage.ChangeOwnerAmount },
-                changeOwnerMsg,
-            );
-
-            await step(
-                "Check that trxResult.transactions has correct transaction (not owner transfer ownership)",
-                () => {
-                    expect(trxResult.transactions).toHaveTransaction({
-                        from: notOwner.address,
-                        to: collectionNFT.address,
-                        success: false,
-                        exitCode: ErrorCodes.NotOwner,
-                    });
-                },
-            );
-        });
-    });
-};
-
-export const testRoyalty = (
-    fromInitCollection: (
-        owner: Address,
-        index: bigint,
-        content: Cell,
-        royaltyParams: RoyaltyParams,
-    ) => Promise<NFTCollection>,
-) => {
-    const setup = async () => {
-        return await globalSetup(fromInitCollection);
-    };
-
-    describe("Royalty cases", () => {
-        it("should send royalty msg correctly", async () => {
-            const { collectionNFT, owner, royaltyParams } = await setup();
-            const queryId = 0n;
-
-            const msg: GetRoyaltyParams = {
-                $$type: "GetRoyaltyParams",
-                queryId: BigInt(queryId),
-            };
-
+    describe("Empty messages cases", () => {
+        it("should ignore empty messages", async () => {
+            const { collectionNFT, owner } = await setup();
             const trxResult = await collectionNFT.send(
                 owner.getSender(),
                 { value: Storage.DeployAmount },
-                msg,
+                null,
             );
-
             await step(
-                "Check that trxResult.transactions has correct transaction (royalty msg)",
+                "Check that trxResult.transactions has correct transaction (empty messages)",
                 () => {
                     expect(trxResult.transactions).toHaveTransaction({
                         from: owner.address,
@@ -272,48 +138,13 @@ export const testRoyalty = (
                     });
                 },
             );
-
-            const exceptedMsg: Cell = beginCell()
-                .storeUint(Operations.ReportRoyaltyParams, 32)
-                .storeUint(queryId, 64)
-                .storeUint(royaltyParams.nominator, 16)
-                .storeUint(royaltyParams.dominator, 16)
-                .storeAddress(royaltyParams.owner)
-                .endCell();
-            expect(trxResult.transactions).toHaveTransaction({
-                from: collectionNFT.address,
-                to: owner.address,
-                body: exceptedMsg,
-            });
-        });
-
-        it("should get royalty params correctly", async () => {
-            const { collectionNFT, royaltyParams } = await setup();
-            const currRoyaltyParams = await collectionNFT.getRoyaltyParams();
-            expect(
-                beginCell()
-                    .store(storeRoyaltyParams(currRoyaltyParams))
-                    .asSlice(),
-            ).toEqualSlice(
-                beginCell().store(storeRoyaltyParams(royaltyParams)).asSlice(),
-            );
         });
     });
 };
 
-export const testDeploy = (
-    fromInitCollection: (
-        owner: Address,
-        index: bigint,
-        content: Cell,
-        royaltyParams: RoyaltyParams,
-    ) => Promise<NFTCollection>,
-    fromInitItem: (
-        owner: Address | null,
-        content: Cell | null,
-        collectionAddress: Address,
-        itemIndex: bigint,
-    ) => Promise<NFTItem>,
+const testDeployItem = (
+    fromInitCollection: FromInitCollection,
+    fromInitItem: FromInitItem,
 ) => {
     describe("NFT deploy cases", () => {
         it("should deploy NFTItem correctly", async () => {
@@ -528,19 +359,69 @@ export const testDeploy = (
     });
 };
 
-export const testBatchDeploy = (
-    fromInitCollection: (
-        owner: Address,
-        index: bigint,
-        content: Cell,
-        royaltyParams: RoyaltyParams,
-    ) => Promise<NFTCollection>,
-    fromInitItem: (
-        owner: Address | null,
-        content: Cell | null,
-        collectionAddress: Address,
-        itemIndex: bigint,
-    ) => Promise<NFTItem>,
+const testRoyalty = (fromInitCollection: FromInitCollection) => {
+    const setup = async () => {
+        return await globalSetup(fromInitCollection);
+    };
+
+    describe("Royalty cases", () => {
+        it("should send royalty msg correctly", async () => {
+            const { collectionNFT, owner, royaltyParams } = await setup();
+            const queryId = 0n;
+
+            const msg: GetRoyaltyParams = {
+                $$type: "GetRoyaltyParams",
+                queryId: BigInt(queryId),
+            };
+
+            const trxResult = await collectionNFT.send(
+                owner.getSender(),
+                { value: Storage.DeployAmount },
+                msg,
+            );
+
+            await step(
+                "Check that trxResult.transactions has correct transaction (royalty msg)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: collectionNFT.address,
+                        success: true,
+                    });
+                },
+            );
+
+            const exceptedMsg: Cell = beginCell()
+                .storeUint(Operations.ReportRoyaltyParams, 32)
+                .storeUint(queryId, 64)
+                .storeUint(royaltyParams.nominator, 16)
+                .storeUint(royaltyParams.dominator, 16)
+                .storeAddress(royaltyParams.owner)
+                .endCell();
+            expect(trxResult.transactions).toHaveTransaction({
+                from: collectionNFT.address,
+                to: owner.address,
+                body: exceptedMsg,
+            });
+        });
+
+        it("should get royalty params correctly", async () => {
+            const { collectionNFT, royaltyParams } = await setup();
+            const currRoyaltyParams = await collectionNFT.getRoyaltyParams();
+            expect(
+                beginCell()
+                    .store(storeRoyaltyParams(currRoyaltyParams))
+                    .asSlice(),
+            ).toEqualSlice(
+                beginCell().store(storeRoyaltyParams(royaltyParams)).asSlice(),
+            );
+        });
+    });
+};
+
+const testBatchDeploy = (
+    fromInitCollection: FromInitCollection,
+    fromInitItem: FromInitItem,
 ) => {
     const setup = async () => {
         return await globalSetup(fromInitCollection);
@@ -723,5 +604,248 @@ export const testBatchDeploy = (
                 },
             );
         });
+    });
+};
+
+const testChangeOwner = (fromInitCollection: FromInitCollection) => {
+    const setup = async () => {
+        return await globalSetup(fromInitCollection);
+    };
+
+    describe("Change owner cases", () => {
+        it("should transfer ownership correctly", async () => {
+            const { collectionNFT, owner, notOwner } = await setup();
+            const changeOwnerMsg: ChangeOwner = {
+                $$type: "ChangeOwner",
+                queryId: 1n,
+                newOwner: notOwner.address,
+            };
+
+            const trxResult = await collectionNFT.send(
+                owner.getSender(),
+                { value: Storage.ChangeOwnerAmount },
+                changeOwnerMsg,
+            );
+
+            await step(
+                "Check that trxResult.transactions has correct transaction (owner transfer ownership)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: owner.address,
+                        to: collectionNFT.address,
+                        success: true,
+                    });
+                },
+            );
+            await step(
+                "Check that collectionNFT.getOwner() equals notOwner.address",
+                async () => {
+                    expect(await getOwner(collectionNFT)).toEqualAddress(
+                        notOwner.address,
+                    );
+                },
+            );
+        });
+
+        it("should return error if not owner tries to transfer ownership", async () => {
+            const { collectionNFT, owner, notOwner } = await setup();
+            const changeOwnerMsg: ChangeOwner = {
+                $$type: "ChangeOwner",
+                queryId: 1n,
+                newOwner: owner.address,
+            };
+
+            const trxResult = await collectionNFT.send(
+                notOwner.getSender(),
+                { value: Storage.ChangeOwnerAmount },
+                changeOwnerMsg,
+            );
+
+            await step(
+                "Check that trxResult.transactions has correct transaction (not owner transfer ownership)",
+                () => {
+                    expect(trxResult.transactions).toHaveTransaction({
+                        from: notOwner.address,
+                        to: collectionNFT.address,
+                        success: false,
+                        exitCode: ErrorCodes.NotOwner,
+                    });
+                },
+            );
+        });
+    });
+};
+
+const testGetCollectionData = (fromInitCollection: FromInitCollection) => {
+    const setup = async () => {
+        return await globalSetup(fromInitCollection);
+    };
+
+    describe("Get collection data cases", () => {
+        it("should get collection data correctly", async () => {
+            const { collectionNFT, owner, defaultCollectionContent } =
+                await setup();
+            const staticData = await collectionNFT.getGetCollectionData();
+            await step(
+                "Check that staticData.owner equals owner.address",
+                () => {
+                    expect(staticData.owner).toEqualAddress(owner.address);
+                },
+            );
+            await step("Check that staticData.nextItemIndex is 0", () => {
+                expect(staticData.nextItemIndex).toBe(0n);
+            });
+            await step(
+                "Check that staticData.collectionContent equals defaultCollectionContent",
+                () => {
+                    expect(staticData.collectionContent).toEqualCell(
+                        defaultCollectionContent,
+                    );
+                },
+            );
+        });
+    });
+};
+
+const testGetNftAddressByIndex = (
+    fromInitCollection: FromInitCollection,
+    fromInitItem: FromInitItem,
+) => {
+    const setup = async () => {
+        return await globalSetup(fromInitCollection);
+    };
+
+    describe("Get nft address by index cases", () => {
+        const deployNFT = async (
+            itemIndex: bigint,
+            collectionNFT: SandboxContract<NFTCollection>,
+            sender: SandboxContract<TreasuryContract>,
+            owner: SandboxContract<TreasuryContract>,
+            defaultNFTContent: Cell,
+            blockchain: Blockchain,
+        ): Promise<[SandboxContract<NFTItem>, SendMessageResult]> => {
+            const initNFTBody: InitNFTBody = {
+                $$type: "InitNFTBody",
+                owner: owner.address,
+                content: defaultNFTContent,
+            };
+
+            const mintMsg: DeployNFT = {
+                $$type: "DeployNFT",
+                queryId: 1n,
+                itemIndex: itemIndex,
+                amount: Storage.NftMintAmount,
+                initNFTBody: beginCell()
+                    .store(storeInitNFTBody(initNFTBody))
+                    .endCell(),
+            };
+
+            const itemNFT = blockchain.openContract(
+                await fromInitItem(
+                    null,
+                    null,
+                    collectionNFT.address,
+                    itemIndex,
+                ),
+            );
+
+            const trxResult = await collectionNFT.send(
+                sender.getSender(),
+                { value: Storage.DeployAmount },
+                mintMsg,
+            );
+            return [itemNFT, trxResult];
+        };
+
+        it("should get nft address by index correctly", async () => {
+            const { collectionNFT, owner, defaultNFTContent, blockchain } =
+                await setup();
+            const nftAddress = await collectionNFT.getGetNftAddressByIndex(0n);
+
+            const [_itemNFT, trxDeploy] = await deployNFT(
+                0n,
+                collectionNFT,
+                owner,
+                owner,
+                defaultNFTContent,
+                blockchain,
+            );
+
+            await step(
+                "Check that trxDeploy.transactions has correct transaction (deploy item)",
+                () => {
+                    expect(trxDeploy.transactions).toHaveTransaction({
+                        from: collectionNFT.address,
+                        to: nftAddress,
+                        success: true,
+                    });
+                },
+            );
+        });
+    });
+};
+
+const testGetRoyaltyParams = (fromInitCollection: FromInitCollection) => {
+    const setup = async () => {
+        return await globalSetup(fromInitCollection);
+    };
+
+    describe("Get royalty params cases", () => {
+        it("should get royalty params correctly", async () => {
+            const { collectionNFT, royaltyParams } = await setup();
+            const currRoyaltyParams = await collectionNFT.getRoyaltyParams();
+            expect(
+                beginCell()
+                    .store(storeRoyaltyParams(currRoyaltyParams))
+                    .asSlice(),
+            ).toEqualSlice(
+                beginCell().store(storeRoyaltyParams(royaltyParams)).asSlice(),
+            );
+        });
+    });
+};
+
+const testGetNftContent = (fromInitCollection: FromInitCollection) => {
+    const setup = async () => {
+        return await globalSetup(fromInitCollection);
+    };
+
+    describe("Get nft content cases", () => {
+        it("should get nft content correctly", async () => {
+            const { collectionNFT, defaultContent, defaultCommonContent } =
+                await setup();
+            const content = await collectionNFT.getGetNftContent(
+                0n,
+                defaultContent,
+            );
+            const expectedContent = beginCell()
+                .storeUint(1, 8)
+                .storeSlice(defaultCommonContent.asSlice())
+                .storeRef(defaultContent)
+                .endCell();
+            await step(
+                "Check that content equals expectedContent (nft content)",
+                () => {
+                    expect(content).toEqualCell(expectedContent);
+                },
+            );
+        });
+    });
+};
+
+export const testCollection = (
+    fromInitCollection: FromInitCollection,
+    fromInitItem: FromInitItem,
+) => {
+    describe("NFT Collection Contract", () => {
+        testEmptyMessages(fromInitCollection);
+        testDeployItem(fromInitCollection, fromInitItem);
+        testRoyalty(fromInitCollection);
+        testBatchDeploy(fromInitCollection, fromInitItem);
+        testChangeOwner(fromInitCollection);
+        testGetCollectionData(fromInitCollection);
+        testGetNftAddressByIndex(fromInitCollection, fromInitItem);
+        testGetRoyaltyParams(fromInitCollection);
+        testGetNftContent(fromInitCollection);
     });
 };
