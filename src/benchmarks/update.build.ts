@@ -218,7 +218,7 @@ const main = async () => {
     try {
         const benchmarkPaths = globSync(["**/bench.spec.ts"], {
             cwd: __dirname,
-        }).filter((path) => !path.includes(".test."));
+        });
 
         const benchmarkName = process.argv[2];
 
