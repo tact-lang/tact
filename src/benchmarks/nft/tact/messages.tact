@@ -73,3 +73,19 @@ message(0xa8cb00ad) ReportRoyaltyParams {
     queryId: Int as uint64;
     params: RoyaltyParams;
 }
+
+message(0x8b771735) ReportStaticData {
+    queryId: Int as uint64;
+    itemIndex: Int as uint256;
+    collectionAddress: Address;
+}
+
+message(0x05138d91) OwnershipAssigned {
+    queryId: Int as uint64;
+    newOwner: Address;
+    forwardPayload: Slice;
+}
+
+message(0xd53276db) ExcessOut {
+    queryId: Int as uint64;
+}
