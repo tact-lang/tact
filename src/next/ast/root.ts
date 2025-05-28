@@ -63,7 +63,7 @@ export type Contract = {
 export type Init = InitFunction | InitParams;
 export type InitFunction = {
     readonly kind: "init_function";
-    readonly args: readonly TypedParameter[];
+    readonly params: readonly TypedParameter[];
     readonly statements: readonly Statement[];
     readonly loc: Loc;
 };

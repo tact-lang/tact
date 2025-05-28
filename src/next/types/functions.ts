@@ -1,34 +1,42 @@
+/* eslint-disable require-yield */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
-import type { TactImport, TactSource } from "@/next/imports/source";
+import type { TactSource } from "@/next/imports/source";
 import { builtinFunctions } from "@/next/types/builtins";
-import { decodeFnType } from "@/next/types/util";
+import { decodeFnType } from "@/next/types/type-fn";
+import { decodeBody } from "@/next/types/body";
 
 const errorKind = "function";
 
-export function* getAllFunctions(
+export function* decodeFunctions(
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
-    sigs: ReadonlyMap<string, Ast.DeclSig>,
-    aliases: Map<string, Ast.AliasSig | Ast.BadSig>,
-): E.WithLog<ReadonlyMap<string, Ast.FnSig>> {
+    scopeRef: () => Ast.Scope,
+): E.WithLog<ReadonlyMap<string, Ast.Decl<Ast.FnSig>>> {
     const allFnSigs = [
         // imported
         ...imported.flatMap(({ globals, importedBy }) => (
-            [...globals.fnSigs]
-                .map(([name, s]) => [name, toSigDecoded(s, importedBy)] as const)
+            [...globals.functions]
+                .map(([name, fn]) => [
+                    name,
+                    Ast.Decl(fn.decl, Ast.ViaImport(importedBy, fn.via)),
+                ] as const)
         )),
         // local
         ...yield* E.mapLog(source.items.functions, function* (fn) {
-            const { name, type, inline, body, loc } = fn;
-            const via = Ast.ViaOrigin(loc, source);
-            const fnType = yield* decodeFnType(type, via, sigs, aliases);
-            return [name.text, Ast.FnSig(fnType, via)] as const;
+            return [
+                fn.name.text, 
+                Ast.Decl(
+                    yield* decodeFunction(fn, scopeRef),
+                    Ast.ViaOrigin(fn.loc, source)
+                )
+            ] as const;
         }),
     ];
 
     // remove duplicates and builtins
-    const filteredSigs: Map<string, Ast.FnSig> = new Map();
+    const filteredSigs: Map<string, Ast.Decl<Ast.FnSig>> = new Map();
     for (const [name, sig] of allFnSigs) {
         const isBuiltin = builtinFunctions.has(name);
         if (isBuiltin) {
@@ -47,7 +55,15 @@ export function* getAllFunctions(
     return filteredSigs;
 }
 
-const toSigDecoded = (fn: Ast.FnSig, importedBy: TactImport): Ast.FnSig => {
-    const via = Ast.ViaImport(importedBy, fn.via);
-    return Ast.FnSig(fn.type, via);
-};
+function* decodeFunction(
+    fn: Ast.Function,
+    scopeRef: () => Ast.Scope,
+) {
+    const { type, inline, body, loc } = fn;
+    const fnType = yield* decodeFnType(type, scopeRef);
+    return Ast.FnSig(
+        fnType,
+        inline,
+        yield* decodeBody(body, fnType, loc, scopeRef),
+    );
+}

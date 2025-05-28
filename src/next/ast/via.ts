@@ -21,5 +21,7 @@ export type ViaUser = {
 }
 
 export type ViaMember = {
-    readonly inheritance: readonly ViaUser[];
+    readonly traits: readonly [string, Ast.Loc][];
+    readonly defLoc: Ast.Loc;
+    readonly parentName: string;
 }

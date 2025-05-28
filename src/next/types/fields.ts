@@ -1,0 +1,192 @@
+/* eslint-disable require-yield */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import * as Ast from "@/next/ast";
+import * as E from "@/next/types/errors";
+import { throwInternal } from "@/error/errors";
+import { decodeTypeLazy } from "@/next/types/type";
+import { decodeExpr } from "@/next/types/expression";
+import { checkFieldOverride } from "@/next/types/override";
+import { decodeConstantDef } from "@/next/types/constant-def";
+
+type MaybeExpr = Ast.Lazy<Ast.DecodedExpression> | undefined
+
+export function* getFieldishGeneral(
+    typeName: string,
+    traits: readonly Ast.Decl<Ast.TraitContent>[],
+    constants: readonly Ast.FieldConstant[],
+    fields: readonly Ast.FieldDecl[],
+    scopeRef: () => Ast.Scope,
+): E.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<MaybeExpr>>>> {
+    // collect all inherited fields and constants
+    const inherited: Map<string, Ast.DeclMem<Ast.Fieldish<MaybeExpr>>> = new Map();
+    for (const { via, decl: { fieldish } } of traits) {
+        for (const name of fieldish.order) {
+            const field = fieldish.map.get(name);
+            if (!field) {
+                return throwInternal("Field was lost");
+            }
+            const nextVia = Ast.ViaMemberTrait(
+                name,
+                via.defLoc,
+                field.via,
+            );
+            const prev = inherited.get(name);
+            if (prev) {
+                yield E.ERedefineMember(name, prev.via, nextVia);
+            } else {
+                inherited.set(name, Ast.DeclMem(field.decl, nextVia));
+            }
+        }
+    }
+
+    // in which order fields were defined
+    const order: string[] = [];
+
+    // collection of all defined fields and constants
+    const all: Map<string, Ast.DeclMem<Ast.Fieldish<MaybeExpr>>> = new Map();
+
+    // whether inherited field/constant was defined locally
+    const overridden: Set<string> = new Set();
+
+    for (const field of fields) {
+        const name = field.name;
+        const nextVia = Ast.ViaMemberOrigin(typeName, field.loc);
+
+        const prev = all.get(name.text);
+        if (prev) {
+            // duplicate local field
+            yield E.ERedefineMember(name.text, prev.via, nextVia);
+        }
+
+        // remember order of fields
+        order.push(name.text);
+
+        // decode field
+        all.set(name.text, decodeField(typeName, field, scopeRef));
+
+        // check if this field was inherited
+        const prevInh = inherited.get(name.text);
+        if (prevInh) {
+            // remember that this inherited field was handled
+            overridden.add(name.text);
+
+            if (prevInh.decl.kind !== 'field') {
+                // cannot override constant with field
+                yield E.ERedefineMember(name.text, prevInh.via, nextVia);
+            }
+        }
+    }
+
+    for (const field of constants) {
+        const { override, overridable, body } = field;
+        const { init, name, loc } = body;
+        const nextVia = Ast.ViaMemberOrigin(typeName, loc);
+
+        const prev = all.get(name.text);
+        if (prev) {
+            // duplicate local constant
+            yield E.ERedefineMember(name.text, prev.via, nextVia);
+        }
+
+        // we mostly need this for technical reasons:
+        // fields and constants occupy the same namespace
+        order.push(name.text);
+
+        // remember that this inherited constant was handled.
+        // we always override previous constants for type
+        // recovery reasons, so no other conditions are given
+        const prevInh = inherited.get(name.text);
+        if (prevInh) {
+            overridden.add(name.text);
+        }
+
+        // get the definition
+        const next = yield* decodeConstant(init, overridable, nextVia, scopeRef);
+        
+        // check that override/abstract/virtual modifiers are correct
+        yield* checkFieldOverride(
+            name.text,
+            prevInh,
+            next.decl.type,
+            nextVia,
+            override,
+            scopeRef,
+        );
+
+        // we're all set to store this constant
+        all.set(name.text, next);
+    }
+
+    // add fields/constants that were NOT overridden
+    for (const [name, field] of inherited) {
+        if (overridden.has(name)) {
+            continue;
+        }
+        if (field.decl.kind === 'field') {
+            // fields must always be redefined
+            yield EMustCopyField(name, field.via);
+        } else {
+            // constants are inherited as is
+        }
+        all.set(name, field);
+    }
+
+    return {
+        order,
+        map: all,
+    };
+}
+
+function decodeField(
+    typeName: string,
+    field: Ast.FieldDecl,
+    scopeRef: () => Ast.Scope,
+) {
+    const { initializer, name, type, loc } = field;
+    const nextVia = Ast.ViaMemberOrigin(typeName, loc);
+
+    // contracts don't have type parameters
+    const typeParams = Ast.TypeParams([], new Set());
+
+    // decode field
+    return Ast.DeclMem(
+        Ast.InhFieldSig(
+            decodeTypeLazy(typeParams, type, scopeRef),
+            initializer && decodeExpr(initializer, scopeRef),
+        ),
+        nextVia,
+    );
+}
+
+const EMustCopyField = (
+    name: string,
+    prev: Ast.ViaMember,
+): E.TcError => ({
+    loc: prev.defLoc,
+    descr: [
+        E.TEText(`Field "${name}" was defined in parent trait, but never mentioned`),
+        E.TEViaMember(prev),
+    ],
+});
+
+function* decodeConstant(
+    init: Ast.ConstantInit,
+    overridable: boolean,
+    nextVia: Ast.ViaMember,
+    scopeRef: () => Ast.Scope,
+): E.WithLog<Ast.DeclMem<Ast.FieldConstSig<MaybeExpr>>> {
+    const typeParams = Ast.TypeParams([], new Set());
+    if (init.kind === 'constant_decl') {
+        const type = decodeTypeLazy(typeParams, init.type, scopeRef);
+        return Ast.DeclMem(
+            Ast.FieldConstSig(overridable, type, undefined),
+            nextVia,
+        );
+    } else {
+        const [type, expr] = decodeConstantDef(typeParams, init, scopeRef);
+        return Ast.DeclMem(
+            Ast.FieldConstSig(overridable, type, expr),
+            nextVia,
+        );
+    }
+}

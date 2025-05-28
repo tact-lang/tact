@@ -1,6 +1,10 @@
-import type { Loc, OptionalId, TypeId } from "@/next/ast/common";
+import type { DecodedExpression } from "@/next/ast/checked-expr";
+import type { DecodedStatement } from "@/next/ast/checked-stmt";
+import type { FuncId, Loc, OptionalId, TypeId } from "@/next/ast/common";
 import type { DecodedType, DTypeRef } from "@/next/ast/dtype";
+import type { Lazy } from "@/next/ast/lazy";
 import type { SelfType } from "@/next/ast/mtype";
+import type { AsmInstruction, AsmShuffle, ContractAttribute } from "@/next/ast/root";
 import type { ViaMember, ViaUser } from "@/next/ast/via";
 import type { TactImport } from "@/next/imports/source";
 
@@ -11,17 +15,19 @@ export type SourceCheckResult = {
     readonly globals: Scope;
 }
 
-export type DeclSigs = ReadonlyMap<string, DeclSig>
-
 export type Scope = {
-    readonly typeDecls: ReadonlyMap<string, TypeDeclSig>;
-    readonly fnSigs: ReadonlyMap<string, FnSig>;
-    readonly constSigs: ReadonlyMap<string, ConstSig>;
-    readonly extSigs: ReadonlyMap<string, readonly ExtSig[]>;
+    readonly typeDecls: ReadonlyMap<string, Decl<TypeDeclSig>>;
+    readonly functions: ReadonlyMap<string, Decl<FnSig>>;
+    readonly constants: ReadonlyMap<string, Decl<ConstSig>>;
+    readonly extensions: ReadonlyMap<string, Lazy<readonly Decl<ExtSig>[]>>;
+}
+
+export type Decl<T> = {
+    readonly decl: T;
+    readonly via: ViaUser;
 }
 
 export type TypeDeclSig =
-    | BadSig
     | AliasSig
     | ContractSig
     | TraitSig
@@ -29,112 +35,124 @@ export type TypeDeclSig =
     | MessageSig
     | UnionSig
 
-export type DeclSig = {
-    readonly use: TypeUse;
-    readonly arity: number;
-    readonly via: ViaUser;
-}
-export type TypeUse = "usual" | "alias" | "contract" | "forbidden"
-
 export type ConstSig = {
-    readonly type: DecodedType;
-    readonly via: ViaUser;
+    readonly initializer: Lazy<DecodedExpression>;
+    readonly type: Lazy<DecodedType>;
 }
 
 export type FnSig = {
     readonly type: DecodedFnType;
-    readonly via: ViaUser;
+    readonly inline: boolean;
+    readonly body: Body;
 }
+
+export type Body = TactBody | FuncBody | FiftBody
+
+export type TactBody = {
+    readonly kind: "tact";
+    readonly statements: readonly DecodedStatement[];
+};
+export type FuncBody = {
+    readonly kind: "func";
+    readonly nativeName: FuncId;
+};
+export type FiftBody = {
+    readonly kind: "fift";
+    readonly shuffle: Lazy<AsmShuffle>;
+    readonly instructions: readonly AsmInstruction[];
+};
 
 export type ExtSig = {
     readonly type: DecodedMethodType;
-    readonly via: ViaUser;
-}
-
-export type BadSig = {
-    readonly kind: 'bad';
-    readonly arity: number;
-    readonly via: ViaUser;
+    readonly inline: boolean;
+    readonly body: Body;
 }
 
 export type AliasSig = {
     readonly kind: 'alias';
     readonly typeParams: TypeParams;
-    readonly type: DecodedType;
-    readonly via: ViaUser;
+    readonly type: Lazy<DecodedType>;
 }
 
 export type ContractSig = {
     readonly kind: 'contract';
-    readonly init: Parameters;
-    readonly content: CommonSig;
-    readonly via: ViaUser;
+    readonly attributes: readonly ContractAttribute[];
+    readonly params: Parameters;
+    readonly content: Lazy<ContractContent>;
 }
+export type ContractContent = CommonSig<
+    Lazy<DecodedExpression>,
+    Body
+>
 export type TraitSig = {
     readonly kind: 'trait';
-    readonly content: CommonSig;
-    readonly via: ViaUser;
+    readonly content: Lazy<TraitContent>;
 }
-export type CommonSig = {
-    readonly name: TypeId;
-    readonly fields: Ordered<InhFieldSig>;
-    readonly constants: ReadonlyMap<string, FieldConstSig>;
-    readonly methods: ReadonlyMap<string, MethodSig>;
+export type TraitContent = CommonSig<
+    Lazy<DecodedExpression> | undefined,
+    Body | undefined
+>
+export type CommonSig<Expr, Body> = {
+    readonly fieldish: Ordered<DeclMem<Fieldish<Expr>>>;
+    readonly methods: ReadonlyMap<string, DeclMem<MethodSig<Body>>>;
     readonly bounce: BounceSig;
     readonly internal: RecvSig;
     readonly external: RecvSig;
 }
 
-export type InhFieldSig = {
-    readonly type: DecodedType
-    readonly via: ViaMember;
+export type Fieldish<Expr> = InhFieldSig<Expr> | FieldConstSig<Expr>;
+export type InhFieldSig<Expr> = {
+    readonly kind: 'field';
+    readonly type: Lazy<DecodedType>
+    readonly init: Expr;
+}
+export type FieldConstSig<Expr> = {
+    readonly kind: 'constant';
+    readonly overridable: boolean;
+    readonly type: Lazy<DecodedType>;
+    readonly init: Expr;
 }
 
-export type FieldConstSig = {
+export type MethodSig<Body> = {
     readonly overridable: boolean;
-    readonly override: boolean;
-    readonly type: DecodedType;
-    readonly via: ViaMember;
-}
-
-export type MethodSig = {
-    readonly overridable: boolean;
-    readonly override: boolean;
-    readonly type: DecodedFnType;
-    readonly via: ViaMember;
+    readonly type: DecodedMethodType;
+    readonly inline: boolean;
+    readonly body: Body;
+    readonly getMethodId: Lazy<bigint> | undefined;
 }
 
 export type BounceSig = {
-    readonly message: ReadonlyMap<string, MessageRecv>;
-    readonly messageAny: undefined | MessageAnyRecv;
+    readonly message: ReadonlyMap<string, DeclMem<MessageRecv>>;
+    readonly messageAny: undefined | DeclMem<MessageAnyRecv>;
 }
 
 export type RecvSig = {
-    readonly message: ReadonlyMap<string, MessageRecv>;
-    readonly messageAny: undefined | MessageAnyRecv;
-    readonly string: ReadonlyMap<string, StringRecv>;
-    readonly stringAny: undefined | StringAnyRecv;
-    readonly empty: undefined | EmptyRecv;
+    readonly message: ReadonlyMap<string, DeclMem<MessageRecv>>;
+    readonly messageAny: undefined | DeclMem<MessageAnyRecv>;
+    readonly string: ReadonlyMap<string, DeclMem<StringRecv>>;
+    readonly stringAny: undefined | DeclMem<StringAnyRecv>;
+    readonly empty: undefined | DeclMem<EmptyRecv>;
 }
 
 export type MessageRecv = {
     readonly name: OptionalId;
     readonly type: DTypeRef;
-    readonly via: ViaMember;
 }
 export type MessageAnyRecv = {
     readonly name: OptionalId;
-    readonly via: ViaMember;
 }
 export type StringRecv = {
     readonly comment: string;
-    readonly via: ViaMember;
 }
 export type StringAnyRecv = {
     readonly name: OptionalId;
-    readonly via: ViaMember;
 }
 export type EmptyRecv = {
+    readonly one: 1;
+}
+
+export type DeclMem<T> = {
+    readonly decl: T;
     readonly via: ViaMember;
 }
 
@@ -142,44 +160,43 @@ export type StructSig = {
     readonly kind: "struct";
     readonly typeParams: TypeParams;
     readonly fields: Ordered<FieldSig>;
-    readonly via: ViaUser;
 }
 
 export type MessageSig = {
     readonly kind: "message";
-    readonly typeParams: TypeParams;
     readonly fields: Ordered<FieldSig>;
-    readonly via: ViaUser;
 }
 
 export type UnionSig = {
     readonly kind: "union";
     readonly typeParams: TypeParams;
-    readonly cases: ReadonlyMap<string, ReadonlyMap<string, DecodedType>>;
-    readonly via: ViaUser;
+    readonly cases: ReadonlyMap<string, ReadonlyMap<string, Lazy<DecodedType>>>;
 }
 
 export type FieldSig = {
-    readonly type: DecodedType;
+    readonly type: Lazy<DecodedType>;
     readonly via: ViaUser;
 }
 
 export type DecodedFnType = {
+    readonly kind: "DecodedFnType";
     readonly typeParams: TypeParams;
     readonly params: Parameters;
-    readonly returnType: DecodedType,
+    readonly returnType: Lazy<DecodedType>,
 }
 
 export type DecodedMethodType = {
+    readonly kind: "DecodedMethodType";
+    readonly mutates: boolean;
     readonly typeParams: TypeParams;
     readonly self: SelfType;
     readonly params: Parameters;
-    readonly returnType: DecodedType,
+    readonly returnType: Lazy<DecodedType>,
 }
 
 export type DecodedParameter = {
     readonly name: OptionalId;
-    readonly type: DecodedType;
+    readonly type: Lazy<DecodedType>;
     readonly loc: Loc;
 };
 
@@ -195,7 +212,7 @@ export type Parameters = {
 
 export type Parameter = {
     readonly name: OptionalId;
-    readonly type: DecodedType;
+    readonly type: Lazy<DecodedType>;
     readonly loc: Loc;
 };
 
@@ -203,5 +220,3 @@ export type TypeParams = {
     readonly order: readonly TypeId[];
     readonly set: ReadonlySet<string>;
 }
-
-

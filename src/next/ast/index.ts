@@ -7,4 +7,8 @@ export * from "@/next/ast/generated/dtype";
 export * from "@/next/ast/generated/mtype";
 export * from "@/next/ast/generated/via";
 export * from "@/next/ast/generated/checked";
+export * from "@/next/ast/generated/checked-expr";
+export * from "@/next/ast/generated/checked-stmt";
 export * from "@/next/ast/generated/root";
+export * from "@/next/ast/generated/value";
+export * from "@/next/ast/lazy";

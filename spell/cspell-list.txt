@@ -32,6 +32,7 @@ Comptime
 CSBT
 Daniil
 Danil
+dealias
 decompilation
 Decompilation
 decompile
@@ -52,6 +53,7 @@ Epva
 errno
 Esorat
 extracurrency
+Fieldish
 flamegraph
 flamegraphs
 forall

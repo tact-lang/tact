@@ -4,7 +4,6 @@ import type { $ast } from "@/next/grammar/grammar";
 import * as G from "@/next/grammar/grammar";
 import { SyntaxErrors } from "@/next/grammar/errors";
 import { makeMakeVisitor } from "@/utils/tricks";
-import type { Loc } from "@/next/ast/common";
 import { throwInternal } from "@/error/errors";
 import type { SourceLogger } from "@/error/logger-util";
 import { parseImportString } from "@/next/grammar/import-parser";
@@ -1457,18 +1456,19 @@ const parseAsmShuffle =
 const parseAsmFunctionRaw =
     (node: $ast.AsmFunction): Handler<Ast.Function> =>
     (ctx) => {
+        const range = ctx.toRange(node.loc);
         return Ast.Function(
             !!parseNamedAttr("inline")(node.attributes)(ctx),
             parseId(node.name)(ctx),
             Ast.FnType(
                 map(parseList(node.typeParams), parseTypeId)(ctx),
                 map(parseList(node.parameters), parseParameter)(ctx),
-                node.returnType ? parseType(node.returnType)(ctx) : undefined,
+                node.returnType ? parseType(node.returnType)(ctx) : Ast.TypeVoid(range),
             ),
             Ast.AsmBody(parseAsmShuffle(node.shuffle)(ctx), [
                 node.instructions.trim(),
             ]),
-            ctx.toRange(node.loc),
+            range,
         );
     };
 
@@ -1621,6 +1621,7 @@ const parseContract =
 const parseFunctionRaw =
     (node: $ast.$Function): Handler<Ast.Function> =>
     (ctx) => {
+        const range = ctx.toRange(node.loc);
         return Ast.Function(
             !!parseNamedAttr("inline")(node.attributes)(ctx),
             parseId(node.name)(ctx),
@@ -1629,12 +1630,12 @@ const parseFunctionRaw =
                 map(parseList(node.parameters), parseParameter)(ctx),
                 node.returnType
                     ? parseType(node.returnType)(ctx)
-                    : undefined,
+                    : Ast.TypeVoid(range),
             ),
             node.body.$ === "FunctionDeclaration"
                 ? Ast.AbstractBody()
                 : Ast.RegularBody(map(node.body.body, parseStatement)(ctx)),
-            ctx.toRange(node.loc),
+            range,
         );
     };
 
@@ -1737,16 +1738,19 @@ const parseNativeFunctionDecl =
         loc,
     }: $ast.NativeFunctionDecl): Handler<Ast.Function> =>
     (ctx) => {
+        const range = ctx.toRange(loc);
         return Ast.Function(
             !!parseNamedAttr("inline")(attributes)(ctx),
             parseId(name)(ctx),
             Ast.FnType(
                 map(parseList(typeParams), parseTypeId)(ctx),
                 map(parseList(parameters), parseParameter)(ctx),
-                returnType ? parseType(returnType)(ctx) : undefined,
+                returnType
+                    ? parseType(returnType)(ctx)
+                    : Ast.TypeVoid(range),
             ),
             Ast.NativeBody(parseFuncId(nativeName)(ctx)),
-            ctx.toRange(loc),
+            range,
         );
     };
 

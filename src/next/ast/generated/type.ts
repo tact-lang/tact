@@ -205,7 +205,7 @@ export const TypedParameter = (name: $c.OptionalId, type_: $.Type, loc: $c.Loc):
     loc
 });
 export type FnType = $.FnType;
-export const FnType = (typeParams: readonly $c.TypeId[], params: readonly $.TypedParameter[], returnType: $.Type | undefined): $.FnType => Object.freeze({
+export const FnType = (typeParams: readonly $c.TypeId[], params: readonly $.TypedParameter[], returnType: $.Type): $.FnType => Object.freeze({
     typeParams,
     params,
     returnType

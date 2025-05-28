@@ -1,38 +1,26 @@
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
-import { dealiasType } from "@/next/types/aliases";
 import { decodeTypeParams } from "@/next/types/type-params";
-import { throwInternal } from "@/error/errors";
-
-export const recoverName = (name: string, set: ReadonlySet<string>) => {
-    for (let i = 0; i < 100; ++i) {
-        const nextName = `${name}${i}`;
-        if (!set.has(nextName)) {
-            return nextName;
-        }
-    }
-    return throwInternal("Iteration limit reached");
-};
+import { dealiasTypeLazy } from "@/next/types/type";
+import { recoverName } from "@/next/types/name";
 
 export function* decodeFnType(
     { typeParams, params, returnType }: Ast.FnType,
-    via: Ast.ViaUser,
-    sigs: ReadonlyMap<string, Ast.DeclSig>,
-    aliases: ReadonlyMap<string, Ast.AliasSig | Ast.BadSig>,
+    scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.DecodedFnType> {
     const decodedTypeParams = yield* decodeTypeParams(typeParams);
     const dealias = (type: Ast.Type) => {
-        return dealiasType(sigs, aliases, decodedTypeParams, type);
+        return dealiasTypeLazy(decodedTypeParams, type, scopeRef);
     };
     return Ast.DecodedFnType(
         decodedTypeParams,
         yield* decodeParams(dealias, params),
-        yield* dealias(returnType ?? Ast.TypeVoid(via.defLoc)),
+        dealias(returnType),
     );
 }
 
 function* decodeParams(
-    dealias: (type: Ast.Type) => E.WithLog<Ast.DecodedType>,
+    dealias: (type: Ast.Type) => Ast.Lazy<Ast.DecodedType>,
     params: readonly Ast.TypedParameter[],
 ): E.WithLog<Ast.Parameters> {
     const order: Ast.Parameter[] = [];
@@ -41,7 +29,7 @@ function* decodeParams(
         const name = yield* decodeParamName(param.name, set);
         order.push(Ast.Parameter(
             param.name,
-            yield* dealias(param.type),
+            dealias(param.type),
             param.loc,
         ));
         if (typeof name !== 'undefined') {

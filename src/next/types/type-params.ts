@@ -1,6 +1,6 @@
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
-import { recoverName } from "@/next/types/util";
+import { recoverName } from "@/next/types/name";
 
 export function* decodeTypeParams(ids: readonly Ast.TypeId[]): E.WithLog<Ast.TypeParams> {
     const set: Set<string> = new Set();

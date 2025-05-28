@@ -1,8 +1,16 @@
+/* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import * as Ast from "@/next/ast";
 
+// FIXME
+export const tactMethodIds = [113617n, 115390n, 121275n];
+
 const r = Ast.Builtin();
+
+const FakeLazy = <T>(t: T): Ast.Lazy<T> => function* () {
+    return t;
+};
 
 const TypeParams = (typeParams: readonly string[]): Ast.TypeParams => {
     const arr = typeParams.map(name => Ast.TypeId(name, r));
@@ -13,7 +21,7 @@ const Params = (params: Record<string, Ast.DecodedType>): Ast.Parameters => {
     const order: Ast.Parameter[] = [];
     const set: Set<string> = new Set();
     for (const [name, type] of Object.entries(params)) {
-        order.push(Ast.Parameter(Ast.Id(name, r), type, r));
+        order.push(Ast.Parameter(Ast.Id(name, r), FakeLazy(type), r));
         set.add(name);
     }
     return Ast.Parameters(order, set);
@@ -29,18 +37,19 @@ const GenericFn = (name: string, typeParams: readonly string[], params: Record<s
     return [name, Ast.DecodedFnType(
         TypeParams(typeParams),
         Params(params),
-        returnType,
+        FakeLazy(returnType),
     )];
 };
 const Fn = (name: string, params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedFnType] => {
     return GenericFn(name, [], params, returnType);
 };
-const MapMethod = (name: string, params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedMethodType] => {
+const MapMethod = (name: string, mutates: boolean, params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedMethodType] => {
     return [name, Ast.DecodedMethodType(
+        mutates,
         TypeParams(["K", "V"]),
         mapType,
         Params(params),
-        returnType,
+        FakeLazy(returnType),
     )];
 };
 
@@ -106,23 +115,23 @@ export const builtinFunctions: Map<string, Ast.DecodedFnType> = new Map([
 
 export const builtinMethods: Map<string, Ast.DecodedMethodType> = new Map([
     // set(key: K, value: V): void
-    MapMethod("set", { key: Ref("K"), value: Ref("V") }, Void),
+    MapMethod("set", true, { key: Ref("K"), value: Ref("V") }, Void),
     // get(key: K): Maybe<V>
-    MapMethod("get", { key: Ref("K") }, Maybe(Ref("V"))),
+    MapMethod("get", false, { key: Ref("K") }, Maybe(Ref("V"))),
     // del(key: K): Bool
-    MapMethod("del", { key: Ref("K") }, Bool),
+    MapMethod("del", true, { key: Ref("K") }, Bool),
     // asCell(): Maybe<Cell>
-    MapMethod("asCell", {}, Maybe(Cell)),
+    MapMethod("asCell", false, {}, Maybe(Cell)),
     // isEmpty(): Bool
-    MapMethod("isEmpty", {}, Bool),
+    MapMethod("isEmpty", false, {}, Bool),
     // exists(key: K): Bool
-    MapMethod("exists", { key: Ref("K") }, Bool),
+    MapMethod("exists", false, { key: Ref("K") }, Bool),
     // deepEquals(other: map<K, V>): Bool
-    MapMethod("deepEquals", { other: mapType }, Bool),
+    MapMethod("deepEquals", false, { other: mapType }, Bool),
     // replace(key: K, value: V): Bool
-    MapMethod("replace", { key: Ref("K"), value: Ref("V") }, Bool),
+    MapMethod("replace", true, { key: Ref("K"), value: Ref("V") }, Bool),
     // replaceGet(key: K, value: V): map<K, V>
-    MapMethod("replaceGet", { key: Ref("K"), value: Ref("V") }, mapType),
+    MapMethod("replaceGet", true, { key: Ref("K"), value: Ref("V") }, mapType),
 ]);
 
 export const builtinUnary: Map<string, Ast.DecodedFnType> = new Map([

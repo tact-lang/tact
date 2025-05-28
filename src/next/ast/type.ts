@@ -3,7 +3,7 @@ import type { Loc, OptionalId, TypeId } from "@/next/ast/common";
 export type FnType = {
     readonly typeParams: readonly TypeId[];
     readonly params: readonly TypedParameter[];
-    readonly returnType: Type | undefined,
+    readonly returnType: Type,
 }
 
 export type MethodFnType = {

@@ -1,73 +1,131 @@
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
-import { dealiasType } from "@/next/types/aliases";
-import { decodeFnType } from "@/next/types/util";
-import { builtinMethods } from "@/next/types/builtins";
-import { throwInternal } from "@/error/errors";
-import type { TactImport, TactSource } from "@/next/imports/source";
 import { zip } from "@/utils/array";
+import { throwInternal } from "@/error/errors";
+import { decodeFnType } from "@/next/types/type-fn";
+import { dealiasTypeLazy } from "@/next/types/type";
+import { decodeBody } from "@/next/types/body";
+import { builtinMethods } from "@/next/types/builtins";
+import type { TactSource } from "@/next/imports/source";
 
-export function* getAllExtensions(
+export function decodeExtensions(
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
-    sigs: ReadonlyMap<string, Ast.DeclSig>,
-    aliases: Map<string, Ast.AliasSig | Ast.BadSig>,
-): E.WithLog<ReadonlyMap<string, readonly Ast.ExtSig[]>> {
-    const importedExts = imported.flatMap(({ globals, importedBy }) => (
-        [...globals.extSigs]
-            .map(([name, exts]) => [name, exts.map(ext => toSigDecoded(ext, importedBy))] as const)
-    ));
-    const localExts = yield* E.mapLog(source.items.extensions, function* (ext) {
-        const { selfType, mutates, fun } = ext;
-        const { name, type, body, inline, loc } = fun;
-        const via = Ast.ViaOrigin(loc, source);
-        const decodedFn = yield* decodeFnType(type, via, sigs, aliases);
-        const self = yield* toSelfType(sigs, yield* dealiasType(
-            sigs,
-            aliases,
-            decodedFn.typeParams,
-            selfType,
-        ));
-        if (!self) {
-            return [];
-        }
-        const methodType = Ast.DecodedMethodType(
-            decodedFn.typeParams,
-            self,
-            decodedFn.params,
-            decodedFn.returnType,
-        );
-        return [[name.text, [Ast.ExtSig(methodType, via)]] as const];
-    });
+    scopeRef: () => Ast.Scope,
+): ReadonlyMap<string, Ast.Lazy<readonly Ast.Decl<Ast.ExtSig>[]>> {
+    const allExts: Map<string, Ast.Lazy<readonly Ast.Decl<Ast.ExtSig>[]>[]> = new Map();
 
-    const result: Map<string, Ast.ExtSig[]> = new Map();
-    for (const [name, exts] of [...importedExts, ...localExts.flat()]) {
-        const prev = result.get(name) ?? [];
-        result.set(name, prev);
-        for (const ext of exts) {
-            const builtin = builtinMethods.get(name);
-            if (builtin && !isCompatible(builtin, ext.type)) {
-                yield EMethodOverlap(name, Ast.ViaBuiltin(), ext.via);
-                continue;
-            }
-            const prevs = result.get(name) ?? [];
-            if (yield* areCompatible(name, prevs, ext)) {
-                prev.push(ext);
-            }
+    // imported
+    for (const { globals, importedBy } of imported) {
+        for (const [name, lazyExts] of globals.extensions) {
+            const map = allExts.get(name) ?? [];
+            allExts.set(name, map);
+            map.push(function* () {
+                const exts = yield* lazyExts();
+                return exts.map(ext => Ast.Decl(
+                    ext.decl,
+                    Ast.ViaImport(importedBy, ext.via),
+                ));
+            });
         }
+    }
+
+    // local
+    for (const ext of source.items.extensions) {
+        const name = ext.fun.name.text;
+        const map = allExts.get(name) ?? [];
+        allExts.set(name, map);
+        map.push(function* () {
+            const decoded = yield* decodeExt(ext, scopeRef);
+            if (!decoded) {
+                return [];
+            }
+            return [Ast.Decl(
+                decoded,
+                Ast.ViaOrigin(ext.fun.loc, source),
+            )];
+        });
+    }
+
+    const result: Map<string, Ast.Lazy<Ast.Decl<Ast.ExtSig>[]>> = new Map();
+    for (const [name, exts] of allExts) {
+        // checking method overlap is only possible when all the types
+        // can be resolved
+        result.set(name, Ast.Lazy(function* () {
+            // force all thunks
+            const all: Ast.Decl<Ast.ExtSig>[] = [];
+            for (const lazyExt of exts) {
+                const exts = yield* lazyExt();
+                all.push(...exts);
+            }
+
+            // check overlap and deduplicate
+            const prevs: Ast.Decl<Ast.ExtSig>[] = [];
+            for (const ext of all) {
+                const builtin = builtinMethods.get(name);
+                if (builtin && !isCompatible(builtin, ext.decl.type)) {
+                    yield EMethodOverlap(name, Ast.ViaBuiltin(), ext.via);
+                    continue;
+                }
+                if (yield* areCompatible(name, prevs, ext)) {
+                    prevs.push(ext);
+                }
+            }
+            return prevs;
+        }));
     }
 
     return result;
 }
 
+function* decodeExt(
+    node: Ast.Extension,
+    scopeRef: () => Ast.Scope,
+) {
+    const { selfType, mutates, fun } = node;
+    const { type, body, inline, loc } = fun;
+    
+    const decodedFn = yield* decodeFnType(type, scopeRef);
+
+    const lazySelf = dealiasTypeLazy(
+        decodedFn.typeParams,
+        selfType,
+        scopeRef,
+    );
+    const self = yield* toSelfType(yield* lazySelf(), scopeRef);
+
+    if (!self) {
+        return undefined;
+    }
+    
+    const methodType = Ast.DecodedMethodType(
+        mutates,
+        decodedFn.typeParams,
+        self,
+        decodedFn.params,
+        decodedFn.returnType,
+    );
+
+    const decodedBody = yield* decodeBody(
+        body,
+        methodType,
+        loc,
+        scopeRef,
+    );
+
+    return Ast.ExtSig(methodType, inline, decodedBody);
+}
+
 function* areCompatible(
     name: string,
-    prevs: readonly Ast.ExtSig[],
-    next: Ast.ExtSig,
+    prevs: readonly Ast.Decl<Ast.ExtSig>[],
+    next: Ast.Decl<Ast.ExtSig>,
 ): E.WithLog<boolean> {
     for (const prev of prevs) {
+        const prevType = prev.decl.type;
+        const nextType = next.decl.type;
         // NB! checking by reference, see `toSigDecoded`
-        if (prev.type !== next.type && !isCompatible(prev.type, next.type)) {
+        if (prevType !== nextType && !isCompatible(prevType, nextType)) {
             yield EMethodOverlap(name, prev.via, next.via);
             return false;
         }
@@ -90,11 +148,13 @@ const EMethodOverlap = (
 function isCompatible(
     prev: Ast.DecodedMethodType,
     next: Ast.DecodedMethodType,
-): boolean {
-    return prev.self.kind !== next.self.kind ||
-        prev.self.ground === 'yes' &&
-        next.self.ground === 'yes' &&
-        !areEqual(prev.self, next.self);
+) {
+    const prevSelf = prev.self;
+    const nextSelf = next.self;
+    return prevSelf.kind !== nextSelf.kind ||
+        prevSelf.ground === 'yes' &&
+        nextSelf.ground === 'yes' &&
+        !areEqual(prevSelf, nextSelf);
 }
 
 function areEqual(
@@ -146,41 +206,31 @@ function allEqual(
     return zip(prevs, nexts).every(([prev, next]) => areEqual(prev, next));
 }
 
-const toSigDecoded = (
-    prev: Ast.ExtSig,
-    importedBy: TactImport,
-): Ast.ExtSig => {
-    const via = Ast.ViaImport(importedBy, prev.via);
-    // NB! it's important to NOT change the reference to prev.type
-    //     as we're deduplicating same extension by reference
-    return Ast.ExtSig(prev.type, via);
-};
-
 function* toSelfType(
-    sigs: ReadonlyMap<string, Ast.DeclSig>,
     type: Ast.DecodedType,
+    scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.SelfType | undefined> {
     switch (type.kind) {
         case "recover": {
             return undefined;
         }
         case "type_ref": {
-            const def = sigs.get(type.name.text);
+            const def = scopeRef().typeDecls.get(type.name.text);
             if (!def) {
                 return throwInternal("Decoder returned broken reference")
             }
-            switch (def.use) {
+            switch (def.decl.kind) {
                 case "alias": {
                     return throwInternal("Decoder returned broken reference")
                 }
-                case "contract": {
+                case "contract":
+                case "trait": {
                     yield ENoMethods("contract", type.loc);
                     return undefined;
                 }
-                case "forbidden": {
-                    return undefined;
-                }
-                case "usual": {
+                case "struct":
+                case "message":
+                case "union": {
                     const allVars = type.typeArgs.filter(arg => {
                         return arg.kind === 'TypeParam';
                     });
@@ -204,7 +254,7 @@ function* toSelfType(
                     }
                     const ground: Ast.MethodGroundType[] = [];
                     for (const arg of type.typeArgs) {
-                        const result = yield* toGroundType(sigs, arg);
+                        const result = yield* toGroundType(arg, scopeRef);
                         if (!result) {
                             yield EBadMethodType(type.loc);
                             return undefined;
@@ -236,7 +286,7 @@ function* toSelfType(
                     type.loc,
                 );
             }
-            const ground = yield* toGroundType(sigs, type);
+            const ground = yield* toGroundType(type, scopeRef);
             if (!ground) {
                 yield EBadMethodType(type.loc);
                 return undefined;
@@ -254,7 +304,7 @@ function* toSelfType(
                     type.loc,
                 );
             }
-            const ground = yield* toGroundType(sigs, type);
+            const ground = yield* toGroundType(type, scopeRef);
             if (!ground) {
                 yield EBadMethodType(type.loc);
                 return undefined;
@@ -281,7 +331,7 @@ function* toSelfType(
                     type.loc,
                 );    
             }
-            const ground = yield* toGroundType(sigs, type);
+            const ground = yield* toGroundType(type, scopeRef);
             if (!ground) {
                 yield EBadMethodType(type.loc);
                 return undefined;
@@ -308,33 +358,33 @@ function* toSelfType(
 }
 
 function* toGroundType(
-    sigs: ReadonlyMap<string, Ast.DeclSig>,
-    type: Ast.DecodedType
+    type: Ast.DecodedType,
+    scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.MethodGroundType | undefined> {
     switch (type.kind) {
         case "recover": {
             return undefined;
         }
         case "type_ref": {
-            const typeDecl = sigs.get(type.name.text);
+            const typeDecl = scopeRef().typeDecls.get(type.name.text);
             if (!typeDecl) {
                 return throwInternal("Decoder returned broken reference")
             }
-            switch (typeDecl.use) {
-                case "contract": {
+            switch (typeDecl.decl.kind) {
+                case "contract":
+                case "trait": {
                     yield ENoMethods("contract", type.loc);
                     return undefined;
                 }
                 case "alias": {
                     return throwInternal("Decoder returned broken reference")
                 }
-                case "forbidden": {
-                    return undefined;
-                }
-                case "usual": {
+                case "struct":
+                case "message":
+                case "union": {
                     const ground: Ast.MethodGroundType[] = [];
                     for (const arg of type.typeArgs) {
-                        const result = yield* toGroundType(sigs, arg);
+                        const result = yield* toGroundType(arg, scopeRef);
                         if (!result) {
                             return undefined;
                         }
@@ -357,27 +407,27 @@ function* toGroundType(
             return undefined;
         }
         case "map_type": {
-            const key = yield* toGroundType(sigs, type.key);
-            const value = yield* toGroundType(sigs, type.value);
+            const key = yield* toGroundType(type.key, scopeRef);
+            const value = yield* toGroundType(type.value, scopeRef);
             return key && value && Ast.MGTypeMap(key, value, type.loc);
         }
         case "TypeBounced": {
             return undefined;
         }
         case "TypeMaybe": {
-            const child = yield* toGroundType(sigs, type.type);
+            const child = yield* toGroundType(type.type, scopeRef);
             return child && Ast.MGTypeMaybe(child, type.loc);
         }
         case "tuple_type": {
             const children = yield* E.mapLog(type.typeArgs, function* (child) {
-                const result = yield* toGroundType(sigs, child);
+                const result = yield* toGroundType(child, scopeRef);
                 return result ? [result] : [];
             });
             return Ast.MGTypeTuple(children.flat(), type.loc);
         }
         case "tensor_type": {
             const children = yield* E.mapLog(type.typeArgs, function* (child) {
-                const result = yield* toGroundType(sigs, child);
+                const result = yield* toGroundType(child, scopeRef);
                 return result ? [result] : [];
             });
             return Ast.MGTypeTensor(children.flat(), type.loc);

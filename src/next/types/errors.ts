@@ -1,5 +1,5 @@
 import { throwInternal } from "@/error/errors";
-import type { Loc, Via, ViaUser } from "@/next/ast";
+import type { Loc, Via, ViaMember, ViaUser } from "@/next/ast";
 import type * as V from "@/next/ast/via";
 
 export type WithLog<T> = Generator<TcError, T>
@@ -51,14 +51,6 @@ export function* toMap<V extends { via: ViaUser }>(
     return result;
 }
 
-export const ERedefine = (kind: string, name: string, prev: Via, next: ViaUser): TcError => ({
-    loc: viaToRange(next),
-    descr: [
-        TEText(`There already is a ${kind} "${name}" from`),
-        TEVia(prev),
-    ],
-});
-
 export type TcError = {
     // location where IDE should show this error
     readonly loc: Loc;
@@ -66,7 +58,7 @@ export type TcError = {
     readonly descr: readonly TELine[];
 }
 
-export type TELine = TEText | TEVia | TECode;
+export type TELine = TEText | TEVia | TEViaMember | TECode;
 
 export type TEText = {
     readonly kind: 'text';
@@ -81,6 +73,13 @@ export type TEVia = {
 }
 
 export const TEVia = (via: V.Via): TEVia => ({ kind: 'via', via });
+
+export type TEViaMember = {
+    readonly kind: 'via-member';
+    readonly via: V.ViaMember;
+}
+
+export const TEViaMember = (via: V.ViaMember): TEViaMember => ({ kind: 'via-member', via });
 
 export type TECode = {
     readonly kind: 'code';
@@ -100,3 +99,26 @@ export const viaToRange = ({ imports, defLoc: definedAt }: V.ViaUser): Loc => {
     }
     return throwInternal("Implicit import shadows something. Duplicates in stdlib?");
 };
+
+export const ERedefine = (kind: string, name: string, prev: Via, next: ViaUser): TcError => ({
+    loc: viaToRange(next),
+    descr: [
+        TEText(`There already is a ${kind} "${name}" from`),
+        TEVia(prev),
+    ],
+});
+
+export const ERedefineMember = (
+    name: string,
+    prev: ViaMember,
+    next: ViaMember,
+): TcError => ({
+    loc: next.defLoc,
+    descr: [
+        TEText(`"${name}" is inherited twice`),
+        TEText(`First defined at`),
+        TEViaMember(prev),
+        TEText(`Redefined at`),
+        TEViaMember(next),
+    ],
+});

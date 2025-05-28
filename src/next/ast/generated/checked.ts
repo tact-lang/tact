@@ -5,180 +5,135 @@ import type * as $m from "@/next/ast/mtype";
 import type * as $v from "@/next/ast/via";
 import type * as $ from "@/next/ast/checked";
 import type { TactImport } from "@/next/imports/source";
+import type { Lazy } from "@/next/ast/lazy";
+import type { AsmInstruction, AsmShuffle, ContractAttribute } from "@/next/ast/root";
+import type { DecodedStatement } from "@/next/ast/checked-stmt";
+import type { DecodedExpression } from "@/next/ast/checked-expr";
 
-export type TypeUse = $.TypeUse;
-export const allTypeUse: readonly $.TypeUse[] = ["usual", "alias", "forbidden"];
-export type DeclSig = $.DeclSig;
-export const DeclSig = (use: $.TypeUse, arity: number, via: $v.ViaUser): $.DeclSig => Object.freeze({
-    use,
-    arity,
-    via
-});
-export type DeclSigs = $.DeclSigs;
 export type TypeParams = $.TypeParams;
 export const TypeParams = (order: readonly $c.TypeId[], set: ReadonlySet<string>): TypeParams => Object.freeze({
     order,
     set,
 });
 export type AliasSig = $.AliasSig;
-export const AliasSig = (typeParams: $.TypeParams, type_: $d.DecodedType, via: $v.ViaUser): $.AliasSig => Object.freeze({
+export const AliasSig = (typeParams: $.TypeParams, type_: Lazy<$d.DecodedType>): $.AliasSig => Object.freeze({
     kind: 'alias',
     typeParams,
     type: type_,
-    via
 });
 export type Ordered<V> = $.Ordered<V>;
 export const Ordered = <V>(order: readonly string[], map: ReadonlyMap<string, V>): $.Ordered<V> => Object.freeze({
     order,
     map
 });
-export type InhFieldSig = $.InhFieldSig;
-export const InhFieldSig = (type_: $d.DecodedType, via: $v.ViaMember): $.InhFieldSig => Object.freeze({
-    type: type_,
-    via
-});
-export type FieldConstSig = $.FieldConstSig;
-export const FieldConstSig = (overridable: boolean, override: boolean, type_: $d.DecodedType, via: $v.ViaMember): $.FieldConstSig => Object.freeze({
-    overridable,
-    override,
-    type: type_,
-    via
-});
+
 export type DecodedFnType = $.DecodedFnType;
-export const DecodedFnType = (typeParams: $.TypeParams, params: $.Parameters, returnType: $d.DecodedType): $.DecodedFnType => Object.freeze({
+export const DecodedFnType = (typeParams: $.TypeParams, params: $.Parameters, returnType: Lazy<$d.DecodedType>): $.DecodedFnType => Object.freeze({
+    kind: "DecodedFnType",
     typeParams,
     params,
     returnType
 });
-export type MethodSig = $.MethodSig;
-export const MethodSig = (overridable: boolean, override: boolean, type_: $.DecodedFnType, via: $v.ViaMember): $.MethodSig => Object.freeze({
-    overridable,
-    override,
-    type: type_,
-    via
-});
 export type MessageRecv = $.MessageRecv;
-export const MessageRecv = (name: $c.OptionalId, type_: $d.DTypeRef, via: $v.ViaMember): $.MessageRecv => Object.freeze({
+export const MessageRecv = (name: $c.OptionalId, type_: $d.DTypeRef): $.MessageRecv => Object.freeze({
     name,
     type: type_,
-    via
 });
 export type MessageAnyRecv = $.MessageAnyRecv;
-export const MessageAnyRecv = (name: $c.OptionalId, via: $v.ViaMember): $.MessageAnyRecv => Object.freeze({
+export const MessageAnyRecv = (name: $c.OptionalId): $.MessageAnyRecv => Object.freeze({
     name,
-    via
 });
 export type BounceSig = $.BounceSig;
-export const BounceSig = (message: ReadonlyMap<string, $.MessageRecv>, messageAny: $.MessageAnyRecv | undefined): $.BounceSig => Object.freeze({
+export const BounceSig = (message: ReadonlyMap<string, DeclMem<$.MessageRecv>>, messageAny: DeclMem<$.MessageAnyRecv> | undefined): $.BounceSig => Object.freeze({
     message,
     messageAny
 });
 export type StringRecv = $.StringRecv;
-export const StringRecv = (comment: string, via: $v.ViaMember): $.StringRecv => Object.freeze({
+export const StringRecv = (comment: string): $.StringRecv => Object.freeze({
     comment,
-    via
 });
 export type StringAnyRecv = $.StringAnyRecv;
-export const StringAnyRecv = (name: $c.OptionalId, via: $v.ViaMember): $.StringAnyRecv => Object.freeze({
+export const StringAnyRecv = (name: $c.OptionalId): $.StringAnyRecv => Object.freeze({
     name,
-    via
 });
 export type EmptyRecv = $.EmptyRecv;
-export const EmptyRecv = (via: $v.ViaMember): $.EmptyRecv => Object.freeze({
-    via
+export const EmptyRecv = (): $.EmptyRecv => Object.freeze({
+    one: 1,
 });
 export type RecvSig = $.RecvSig;
-export const RecvSig = (message: ReadonlyMap<string, $.MessageRecv>, messageAny: $.MessageAnyRecv | undefined, string_: ReadonlyMap<string, $.StringRecv>, stringAny: $.StringAnyRecv | undefined, empty: $.EmptyRecv | undefined): $.RecvSig => Object.freeze({
+export const RecvSig = (
+    message: ReadonlyMap<string, DeclMem<$.MessageRecv>>,
+    messageAny: DeclMem<$.MessageAnyRecv> | undefined,
+    string_: ReadonlyMap<string, DeclMem<$.StringRecv>>,
+    stringAny: DeclMem<$.StringAnyRecv> | undefined,
+    empty: DeclMem<$.EmptyRecv> | undefined
+): $.RecvSig => Object.freeze({
     message,
     messageAny,
     string: string_,
     stringAny,
     empty
 });
-export type CommonSig = $.CommonSig;
-export const CommonSig = (name: $c.TypeId, fields: $.Ordered<$.InhFieldSig>, constants: ReadonlyMap<string, $.FieldConstSig>, methods: ReadonlyMap<string, $.MethodSig>, bounce: $.BounceSig, internal: $.RecvSig, external: $.RecvSig): $.CommonSig => Object.freeze({
-    name,
-    fields,
-    constants,
-    methods,
-    bounce,
-    internal,
-    external
-});
-export type ContractSig = $.ContractSig;
-export const ContractSig = (init: $.Parameters, content: $.CommonSig, via: $v.ViaUser): $.ContractSig => Object.freeze({
-    kind: 'contract',
-    init,
-    content,
-    via,
-});
-export type TraitSig = $.TraitSig;
-export const TraitSig = (content: $.CommonSig, via: $v.ViaUser): $.TraitSig => Object.freeze({
-    kind: 'trait',
-    content,
-    via
-});
 export type FieldSig = $.FieldSig;
-export const FieldSig = (type_: $d.DecodedType, via: $v.ViaUser): $.FieldSig => Object.freeze({
+export const FieldSig = (type_: Lazy<$d.DecodedType>, via: $v.ViaUser): $.FieldSig => Object.freeze({
     type: type_,
     via
 });
 export type StructSig = $.StructSig;
-export const StructSig = (typeParams: $.TypeParams, fields: $.Ordered<$.FieldSig>, via: $v.ViaUser): $.StructSig => Object.freeze({
+export const StructSig = (typeParams: $.TypeParams, fields: $.Ordered<$.FieldSig>): $.StructSig => Object.freeze({
     kind: "struct",
     typeParams,
     fields,
-    via
 });
 export const isStructSig = ($value: StructSig) => $value.kind === "struct";
 export type MessageSig = $.MessageSig;
-export const MessageSig = (typeParams: $.TypeParams, fields: $.Ordered<$.FieldSig>, via: $v.ViaUser): $.MessageSig => Object.freeze({
+export const MessageSig = (typeParams: $.TypeParams, fields: $.Ordered<$.FieldSig>): $.MessageSig => Object.freeze({
     kind: "message",
     typeParams,
     fields,
-    via
 });
 export const isMessageSig = ($value: MessageSig) => $value.kind === "message";
 export type UnionSig = $.UnionSig;
-export const UnionSig = (typeParams: $.TypeParams, cases: ReadonlyMap<string, ReadonlyMap<string, $d.DecodedType>>, via: $v.ViaUser): $.UnionSig => Object.freeze({
+export const UnionSig = (typeParams: $.TypeParams, cases: ReadonlyMap<string, ReadonlyMap<string, Lazy<$d.DecodedType>>>): $.UnionSig => Object.freeze({
     kind: "union",
     typeParams,
     cases,
-    via
 });
 export const isUnionSig = ($value: UnionSig) => $value.kind === "union";
 export type TypeDeclSig = $.TypeDeclSig;
-export type FnSig = $.FnSig;
-export const FnSig = (type_: $.DecodedFnType, via: $v.ViaUser): $.FnSig => Object.freeze({
-    type: type_,
-    via
-});
 export type ConstSig = $.ConstSig;
-export const ConstSig = (type_: $d.DecodedType, via: $v.ViaUser): $.ConstSig => Object.freeze({
+export const ConstSig = (init: Lazy<DecodedExpression>, type_: Lazy<$d.DecodedType>): $.ConstSig => Object.freeze({
+    initializer: init,
     type: type_,
-    via
 });
 export type ExtSig = $.ExtSig;
-export const ExtSig = (type: $.DecodedMethodType, via: $v.ViaUser): $.ExtSig => Object.freeze({
+export const ExtSig = (type: $.DecodedMethodType, inline: boolean, body: $.Body): $.ExtSig => Object.freeze({
     type,
-    via
+    inline,
+    body,
 });
 export type Scope = $.Scope;
-export const Scope = (typeDecls: ReadonlyMap<string, $.TypeDeclSig>, fnSigs: ReadonlyMap<string, $.FnSig>, constSigs: ReadonlyMap<string, $.ConstSig>, extSigs: ReadonlyMap<string, readonly $.ExtSig[]>): $.Scope => Object.freeze({
+export type Decl<T> = $.Decl<T>;
+export const Decl = <T>(decl: T, via: $v.ViaUser): Decl<T> => ({
+    decl, via
+});
+export const Scope = (typeDecls: ReadonlyMap<string, $.Decl<$.TypeDeclSig>>, fnSigs: ReadonlyMap<string, $.Decl<$.FnSig>>, constSigs: ReadonlyMap<string, $.Decl<$.ConstSig>>, extSigs: ReadonlyMap<string, Lazy<readonly $.Decl<$.ExtSig>[]>>): $.Scope => Object.freeze({
     typeDecls,
-    fnSigs,
-    constSigs,
-    extSigs
+    functions: fnSigs,
+    constants: constSigs,
+    extensions: extSigs
 });
 export type DecodedMethodType = $.DecodedMethodType;
-export const DecodedMethodType = (typeParams: $.TypeParams, self: $m.SelfType, params: $.Parameters, returnType: $d.DecodedType): $.DecodedMethodType => Object.freeze({
+export const DecodedMethodType = (mutates: boolean, typeParams: $.TypeParams, self: $m.SelfType, params: $.Parameters, returnType: Lazy<$d.DecodedType>): $.DecodedMethodType => Object.freeze({
+    kind: "DecodedMethodType",
+    mutates,
     typeParams,
     self,
     params,
     returnType
 });
 export type DecodedParameter = $.DecodedParameter;
-export const DecodedParameter = (name: $c.OptionalId, type_: $d.DecodedType, loc: $c.Loc): $.DecodedParameter => Object.freeze({
+export const DecodedParameter = (name: $c.OptionalId, type_: Lazy<$d.DecodedType>, loc: $c.Loc): $.DecodedParameter => Object.freeze({
     name,
     type: type_,
     loc
@@ -188,18 +143,8 @@ export const SourceCheckResult = (importedBy: TactImport, globals: $.Scope): $.S
     importedBy,
     globals
 });
-export type BadSig = $.BadSig;
-export const BadSig = (
-    arity: number,
-    via: $v.ViaUser,
-): $.BadSig => Object.freeze({
-    kind: "bad",
-    arity,
-    via,
-});
-export const isBadSig = ($value: BadSig) => $value.kind === "bad";
 export type Parameter = $.Parameter;
-export const Parameter = (name: $c.OptionalId, type_: $d.DecodedType, loc: $c.Loc): $.Parameter => Object.freeze({
+export const Parameter = (name: $c.OptionalId, type_: Lazy<$d.DecodedType>, loc: $c.Loc): $.Parameter => Object.freeze({
     name,
     type: type_,
     loc
@@ -209,3 +154,81 @@ export const Parameters = (order: readonly $.Parameter[], set: ReadonlySet<strin
     order,
     set
 });
+export type TactBody = $.TactBody;
+export const TactBody = (statements: readonly DecodedStatement[]): $.TactBody => Object.freeze({
+    kind: "tact",
+    statements
+});
+export const isTactBody = ($value: TactBody) => $value.kind === "tact";
+export type FuncBody = $.FuncBody;
+export const FuncBody = (nativeName: $c.FuncId): $.FuncBody => Object.freeze({
+    kind: "func",
+    nativeName
+});
+export const isFuncBody = ($value: FuncBody) => $value.kind === "func";
+export type FiftBody = $.FiftBody;
+export const FiftBody = (shuffle: Lazy<AsmShuffle>, instructions: readonly AsmInstruction[]): $.FiftBody => Object.freeze({
+    kind: "fift",
+    shuffle,
+    instructions
+});
+export const isFiftBody = ($value: FiftBody) => $value.kind === "fift";
+export type Body = $.Body;
+export type FnSig = $.FnSig;
+export const FnSig = (type_: $.DecodedFnType, inline: boolean, body: $.Body): $.FnSig => Object.freeze({
+    type: type_,
+    inline,
+    body,
+});
+export type DeclMem<T> = $.DeclMem<T>;
+export const DeclMem = <T>(decl: T, via: $v.ViaMember): DeclMem<T> => ({
+    decl, via
+});
+export type InhFieldSig<Expr> = $.InhFieldSig<Expr>;
+export const InhFieldSig = <Expr,>(type_: Lazy<$d.DecodedType>, init: Expr): $.InhFieldSig<Expr> => Object.freeze({
+    kind: "field",
+    type: type_,
+    init
+});
+export const isInhFieldSig = <Expr,>($value: InhFieldSig<Expr>) => $value.kind === "field";
+export type FieldConstSig<Expr> = $.FieldConstSig<Expr>;
+export const FieldConstSig = <Expr,>(overridable: boolean, type_: Lazy<$d.DecodedType>, init: Expr): $.FieldConstSig<Expr> => Object.freeze({
+    kind: "constant",
+    overridable,
+    type: type_,
+    init
+});
+export const isFieldConstSig = <Expr,>($value: FieldConstSig<Expr>) => $value.kind === "constant";
+export type Fieldish<Expr> = $.Fieldish<Expr>;
+export type MethodSig<Body> = $.MethodSig<Body>;
+export const MethodSig = <Body,>(overridable: boolean, type_: $.DecodedMethodType, inline: boolean, body: Body, getMethodId: Lazy<bigint> | undefined): $.MethodSig<Body> => Object.freeze({
+    overridable,
+    type: type_,
+    inline,
+    body,
+    getMethodId
+});
+export type CommonSig<Expr, Body> = $.CommonSig<Expr, Body>;
+export const CommonSig = <Expr, Body>(fieldish: $.Ordered<$.DeclMem<$.Fieldish<Expr>>>, methods: ReadonlyMap<string, $.DeclMem<$.MethodSig<Body>>>, bounce: $.BounceSig, internal: $.RecvSig, external: $.RecvSig): $.CommonSig<Expr, Body> => Object.freeze({
+    fieldish,
+    methods,
+    bounce,
+    internal,
+    external
+});
+export type ContractSig = $.ContractSig;
+export const ContractSig = (attributes: readonly ContractAttribute[], params: $.Parameters, content: Lazy<$.CommonSig<Lazy<DecodedExpression>, $.Body>>): $.ContractSig => Object.freeze({
+    kind: "contract",
+    attributes,
+    params,
+    content
+});
+export const isContractSig = ($value: ContractSig) => $value.kind === "contract";
+export type ContractContent = $.ContractContent;
+export type TraitContent = $.TraitContent;
+export type TraitSig = $.TraitSig;
+export const TraitSig = (content: Lazy<$.CommonSig<Lazy<DecodedExpression> | undefined, $.Body | undefined>>): $.TraitSig => Object.freeze({
+    kind: "trait",
+    content
+});
+export const isTraitSig = ($value: TraitSig) => $value.kind === "trait";

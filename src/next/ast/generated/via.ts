@@ -34,6 +34,16 @@ export const ViaImport = (throughImport: TactImport, via: $.ViaUser): $.ViaUser 
     return result;
 };
 
-export const ViaMember = (
-    inheritance: readonly $.ViaUser[]
-): $.ViaMember => ({ inheritance });
+export const ViaMemberOrigin = (
+    parentName: string,
+    defLoc: $c.Loc
+): $.ViaMember => ({ defLoc, parentName, traits: [] });
+
+export const ViaMemberTrait = (
+    parentName: string,
+    defLoc: $c.Loc,
+    via: $.ViaMember,
+): $.ViaMember => ({ defLoc, parentName, traits: [
+    [via.parentName, via.defLoc],
+    ...via.traits
+] });
