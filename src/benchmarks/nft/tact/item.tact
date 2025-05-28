@@ -27,7 +27,7 @@ contract NFTItem(
                 collectionAddress: self.collectionAddress,
             }.toCell(),
             mode: SendRemainingValue,
-        }); 
+        });
     }
 
     receive(msg: Slice) {

@@ -2,13 +2,12 @@ import "./constants";
 import "./messages";
 import "./item";
 
-
 struct Content {
     collectionContent: Cell;
     nftContent: Cell;
 }
 
-struct NFTContent { 
+struct NFTContent {
     tag: Int as uint8;
     commonContent: Slice;
     individualNFTContent: Cell;
@@ -108,14 +107,13 @@ contract NFTCollection {
         return self.royaltyParams;
     }
 
-    
     get fun get_nft_content(index: Int, individualNFTContent: Cell): NFTContent {
         let commonContent = Content.fromCell(self.content).nftContent.asSlice();
 
         return NFTContent {
             tag: 1,
-            commonContent: commonContent,
-            individualNFTContent: individualNFTContent,
+            commonContent,
+            individualNFTContent,
         };
     }
 }
