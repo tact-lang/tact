@@ -7,7 +7,7 @@
         "burn": "12514",
         "discovery": "6554"
       },
-      "pr": "https://github.com/ton-blockchain/token-contract"
+      "pr": "https://github.com/ton-blockchain/token-contract/blob/21e7844fa6dbed34e0f4c70eb5f0824409640a30/ft"
     },
     {
       "label": "1.5.3",
@@ -25,7 +25,7 @@
         "burn": "26594",
         "discovery": "15408"
       },
-      "pr": null
+      "pr": "https://github.com/tact-lang/tact/pull/1905"
     },
     {
       "label": "1.5.3 without self-code in system cell",
@@ -34,7 +34,7 @@
         "burn": "17898",
         "discovery": "11135"
       },
-      "pr": null
+      "pr": "https://github.com/tact-lang/tact/pull/1905"
     },
     {
       "label": "1.5.3 with removed JettonWallet duplicate",
@@ -43,7 +43,7 @@
         "burn": "17728",
         "discovery": "11055"
       },
-      "pr": null
+      "pr": "https://github.com/tact-lang/tact/pull/1905"
     },
     {
       "label": "1.5.3 with #1586 and #1589",
@@ -52,7 +52,7 @@
         "burn": "17718",
         "discovery": "11063"
       },
-      "pr": null
+      "pr": "https://github.com/tact-lang/tact/pull/1905"
     },
     {
       "label": "1.5.3 with faster readForwardFee",
@@ -61,7 +61,7 @@
         "burn": "17718",
         "discovery": "11063"
       },
-      "pr": null
+      "pr": "https://github.com/tact-lang/tact/pull/1905"
     },
     {
       "label": "1.5.3 without run-time null checks for `!!`",
@@ -70,7 +70,7 @@
         "burn": "17686",
         "discovery": "11039"
       },
-      "pr": null
+      "pr": "https://github.com/tact-lang/tact/pull/1905"
     },
     {
       "label": "1.5.3 with optimized send()",
@@ -79,7 +79,7 @@
         "burn": "16029",
         "discovery": "10093"
       },
-      "pr": null
+      "pr": "https://github.com/tact-lang/tact/pull/1905"
     },
     {
       "label": "1.5.3 with improved storeBool",
@@ -245,7 +245,7 @@
     },
     {
       "label": "1.5.3 with optimized contract storage saving",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2067",
       "gas": {
         "transfer": "15896",
         "burn": "11927",
@@ -317,7 +317,7 @@
     },
     {
       "label": "1.6.4 with no selector hack",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2398",
       "gas": {
         "transfer": "15182",
         "burn": "11979",

@@ -8,7 +8,7 @@
         "wallet cells": "37",
         "wallet bits": "12748"
       },
-      "pr": null
+      "pr": "https://github.com/ton-blockchain/token-contract/blob/21e7844fa6dbed34e0f4c70eb5f0824409640a30/ft"
     },
     {
       "label": "1.5.4 with NOPs optimized",
@@ -82,7 +82,7 @@
     },
     {
       "label": "1.6.4 with no selector hack",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2398",
       "size": {
         "minter cells": "31",
         "minter bits": "14646",

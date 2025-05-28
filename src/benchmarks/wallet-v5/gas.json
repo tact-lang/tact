@@ -8,7 +8,7 @@
         "internalTransfer": "5645",
         "extensionTransfer": "3854"
       },
-      "pr": "https://github.com/ton-blockchain/wallet-contract-v5"
+      "pr": "https://github.com/ton-blockchain/wallet-contract-v5/blob/047852ac96a45a8ed418d18960fa6d621a667ed3/contracts/wallet_v5.fc"
     },
     {
       "label": "1.6.1",
@@ -32,7 +32,7 @@
     },
     {
       "label": "1.6.4 with no selector hack",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2398",
       "gas": {
         "externalTransfer": "8069",
         "addExtension": "8392",

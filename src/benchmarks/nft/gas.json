@@ -8,7 +8,8 @@
         "deploy nft": "10469",
         "batch deploy nft": "1049281"
       },
-      "pr": null
+
+      "pr": "https://github.com/ton-blockchain/token-contract/blob/21e7844fa6dbed34e0f4c70eb5f0824409640a30/nft"
     },
     {
       "label": "Tact",
@@ -82,7 +83,7 @@
     },
     {
       "label": "1.6.6 with deployNFTItem outside contract",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2837",
       "gas": {
         "transfer": "7634",
         "get static data": "5763",
@@ -182,7 +183,7 @@
     },
     {
       "label": "1.6.11 with optimized send",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/3278",
       "gas": {
         "transfer": "6979",
         "get static data": "4424",
