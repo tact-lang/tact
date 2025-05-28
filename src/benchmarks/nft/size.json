@@ -201,7 +201,7 @@
       }
     },
     {
-      "label": "1.6.12 with using structs as possible",
+      "label": "1.6.12 with idiomatic structs handling",
       "pr": "https://github.com/tact-lang/tact/pull/3299",
       "size": {
         "collection cells": "39",
