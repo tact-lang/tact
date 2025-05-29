@@ -1,0 +1,58 @@
+import { beginCell, toNano } from "@ton/core";
+import { Blockchain } from "@ton/sandbox";
+import { Test } from "./output/from-cell-contract-parameters_Test";
+import "@ton/test-utils";
+import { cached } from "@/test/utils/cache-state";
+
+const deployValue = toNano("1");
+
+const setup = async () => {
+    const blockchain = await Blockchain.create();
+    blockchain.verbosity.print = false;
+
+    const treasury = await blockchain.treasury("treasury");
+    const contract = blockchain.openContract(await Test.fromInit(0n, 1n));
+
+    const deployResult = await contract.send(
+        treasury.getSender(),
+        { value: deployValue },
+        null,
+    );
+    expect(deployResult.transactions).toHaveTransaction({
+        from: treasury.address,
+        to: contract.address,
+        success: true,
+        deploy: true,
+    });
+
+    return {
+        blockchain,
+        treasury,
+        contract,
+    };
+};
+
+describe("fromCell for contract with parameters", () => {
+    const state = cached(setup);
+
+    it("should correctly deserialize", async () => {
+        const { contract, treasury } = await state.get();
+
+        await contract.send(
+            treasury.getSender(),
+            {
+                value: toNano("1"),
+            },
+            {
+                $$type: "NewContractData",
+                cell: beginCell().storeUint(1, 32).storeUint(2, 32).endCell(),
+            },
+        );
+        expect(await contract.getState()).toMatchObject({
+            $$type: "Test$Data",
+            x: 1n,
+            y: 2n,
+        });
+        expect(await contract.getInverseLaw()).toEqual(true);
+    });
+});
