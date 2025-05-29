@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Language features
 
-- Support `fromCell()` and `fromSlice()` methods on contract types: PR [#3303](https://github.com/tact-lang/tact/pull/3303), PR [#3305](https://github.com/tact-lang/tact/pull/3305)
+- Support `fromCell()` and `fromSlice()` methods on contract types: PR [#3305](https://github.com/tact-lang/tact/pull/3305)
 
 ### Release contributors
 
