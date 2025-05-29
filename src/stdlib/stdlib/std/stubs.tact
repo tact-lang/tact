@@ -433,7 +433,7 @@ fun AnyMessage_fromSlice(slice: Slice): M;
 ///
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
-fun AnyContract_fromCell(cell: Cell): S;
+fun AnyContract_fromCell(cell: Cell): C;
 
 /// Extension function for any contract type. Available since Tact 1.6.13.
 ///
