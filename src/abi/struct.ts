@@ -45,7 +45,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")})`;
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}, begin_cell())`;
             },
         },
     ],
@@ -206,7 +206,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}).begin_parse()`;
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}, begin_cell()).begin_parse()`;
             },
         },
     ],
@@ -226,14 +226,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg1 = args[1]!;
                 if (arg0.kind !== "ref") {
                     throwCompilationError(
-                        "fromSlice() is implemented only for struct types",
+                        "fromSlice() is implemented only for struct/contract types",
                         ref,
                     );
                 }
                 const tp = getType(ctx, arg0.name);
                 if (tp.kind !== "struct") {
                     throwCompilationError(
-                        "fromSlice() is implemented only for struct types",
+                        "fromSlice() is implemented only for struct/contract types",
                         ref,
                     );
                 }
@@ -256,7 +256,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg1 = args[1]!;
                 if (arg0.kind !== "ref") {
                     throwCompilationError(
-                        "fromSlice() is implemented only for struct types",
+                        "fromSlice() is implemented only for struct/contract types",
                         ref,
                     );
                 }

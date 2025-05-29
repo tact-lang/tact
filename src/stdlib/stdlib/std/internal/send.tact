@@ -31,7 +31,7 @@ const SendRemainingBalance: Int = 128;
 ///
 const SendOnlyEstimateFee: Int = 1024;
 
-/// **Deprecated** since Tact 1.6.5.
+/// **Deprecated** since Tact 1.6.5. Use `SendPayFwdFeesSeparately` instead.
 ///
 /// Pay forward fees separately from the message value.
 ///
@@ -471,9 +471,7 @@ asm fun cashback(to: Address) {
     SENDRAWMSG
 }
 
-/// Global function. **Deprecated** since Tact 1.6.6.
-///
-/// Use `sendRawMessage()` instead.
+/// Global function. **Deprecated** since Tact 1.6.6. Use `sendRawMessage()` instead.
 ///
 /// Queues the message to be sent by specifying the complete `msg` cell and the message `mode`.
 ///
@@ -509,9 +507,7 @@ asm fun nativeSendMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 ///
 asm fun sendRawMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 
-/// Global function. **Deprecated** since Tact 1.6.6.
-///
-/// Use `sendRawMessageReturnForwardFee()` instead.
+/// Global function. **Deprecated** since Tact 1.6.6. Use `sendRawMessageReturnForwardFee()` instead.
 ///
 /// Similar to `sendRawMessage()`, but also calculates and returns the forward fee in nanoToncoin.
 ///

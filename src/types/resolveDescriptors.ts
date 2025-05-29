@@ -1063,6 +1063,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
             }
+            if (returns.kind !== "void") {
+                if (returns.kind === "ref") {
+                    const typeInfo = types.get(returns.name);
+                    if (typeInfo?.kind === "trait") {
+                        throwCompilationError(
+                            `Function ${idTextErr(a.name)} returns a trait, which is not supported in "asm" functions.`,
+                            a.loc,
+                        );
+                    }
+                }
+            }
 
             // check return shuffle
             if (a.shuffle.ret.length !== 0) {
@@ -1079,6 +1090,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 let retTupleSize = 0;
                 switch (returns.kind) {
                     case "ref":
+                    case "ref_bounced":
                         {
                             const ty = types.get(returns.name)!;
                             switch (ty.kind) {
@@ -1100,12 +1112,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     case "null":
                     case "map":
                         retTupleSize = 1;
-                        break;
-                    case "ref_bounced":
-                        throwInternalCompilerError(
-                            "A <bounced> type cannot be returned from a function",
-                            a.loc,
-                        );
                         break;
                     case "void":
                         retTupleSize = 0;
@@ -1884,9 +1890,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 const funInContractOrTrait = contractOrTrait.functions.get(
                     traitFunction.name,
                 );
-                if (!funInContractOrTrait && traitFunction.isAbstract) {
+                if (
+                    contractOrTrait.kind === "contract" &&
+                    !funInContractOrTrait &&
+                    traitFunction.isAbstract
+                ) {
                     throwCompilationError(
-                        `Trait "${inheritedTrait.name}" requires function "${traitFunction.name}"`,
+                        `Missing implementation of abstract method "${traitFunction.name}" declared in trait "${inheritedTrait.name}"`,
                         contractOrTrait.ast.loc,
                     );
                 }
@@ -1987,13 +1997,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     (v) => v.name === traitConstant.name,
                 );
                 if (
+                    contractOrTrait.kind === "contract" &&
                     !constInContractOrTrait &&
                     traitConstant.ast.attributes.find(
                         (v) => v.type === "abstract",
                     )
                 ) {
                     throwCompilationError(
-                        `Trait "${inheritedTrait.name}" requires constant "${traitConstant.name}"`,
+                        `Missing implementation of abstract constant "${traitConstant.name}" declared in trait "${inheritedTrait.name}"`,
                         contractOrTrait.ast.loc,
                     );
                 }
@@ -2468,25 +2479,35 @@ function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
     let remainingBits = 224;
 
     for (const f of type.fields) {
-        // dicts are unsupported
-        if (f.abi.type.kind !== "simple") break;
+        let fieldBits = 0;
+        if (f.abi.type.kind === "simple") {
+            const { type, format } = f.abi.type;
 
-        let fieldBits = f.abi.type.optional ? 1 : 0;
+            if (f.abi.type.optional) {
+                fieldBits = 1;
+            }
 
-        const { type, format } = f.abi.type;
-
-        if (Number.isInteger(format)) {
-            const amount = format as number;
-            fieldBits += type === "fixed-bytes" ? amount * 8 : amount;
-        } else if (format === "coins") {
-            fieldBits += 124;
-        } else if (type === "address") {
-            fieldBits += 267;
-        } else if (type === "bool") {
-            fieldBits += 1;
-        } else {
-            // Unsupported - all others (slice, builder, nested structs, maps)
-            break;
+            if (Number.isInteger(format)) {
+                const amount = format as number;
+                fieldBits += type === "fixed-bytes" ? amount * 8 : amount;
+            } else if (format === "coins") {
+                fieldBits += 124;
+            } else if (type === "address") {
+                fieldBits += 267;
+            } else if (type === "bool") {
+                fieldBits += 1;
+            } else if (
+                type === "cell" ||
+                type === "slice" ||
+                type === "builder"
+            ) {
+                fieldBits += 0; // 0 bits and 1 ref
+            } else {
+                // Unsupported nested structs
+                break;
+            }
+        } else if (f.abi.type.kind === "dict") {
+            fieldBits += 1; // 1-bit flag and 1 ref
         }
 
         if (remainingBits - fieldBits >= 0) {

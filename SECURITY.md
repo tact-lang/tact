@@ -4,7 +4,7 @@
 
 We release security patches for the following versions:
 
-- [1.6.10](https://www.npmjs.com/package/@tact-lang/compiler/v/1.6.10),
+- [1.6.12](https://www.npmjs.com/package/@tact-lang/compiler/v/1.6.12),
 - [1.5.4](https://www.npmjs.com/package/@tact-lang/compiler/v/1.5.4).
 
 Other versions are not supported.

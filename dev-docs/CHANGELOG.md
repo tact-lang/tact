@@ -9,11 +9,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Language features
 
+- Support `fromCell()` and `fromSlice()` methods on contract types: PR [#3303](https://github.com/tact-lang/tact/pull/3303)
+
+### Release contributors
+
+- [Anton Trunov](https://github.com/anton-trunov)
+
+## [1.6.12] - 2025-05-27
+
+### Language features
+
+- Support `toCell()` and `toSlice()` methods on contract types: PR [#3274](https://github.com/tact-lang/tact/pull/3274)
+- No explicit re-declarations for abstract methods and constants in traits: PR [#3272](https://github.com/tact-lang/tact/pull/3272)
+- A more informative error message if two `require()` calls have the same generated error code: PR [#3286](https://github.com/tact-lang/tact/pull/3286)
+
+### Code generation
+
+- Inline message deserialization for better gas consumption: PR [#2993](https://github.com/tact-lang/tact/pull/2993)
+
+### Docs
+
+- Completely reworked the functions page: PR [#3076](https://github.com/tact-lang/tact/pull/3076), PR [#3277](https://github.com/tact-lang/tact/pull/3277)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+- [Novus Nota](https://github.com/novusnota)
+- [Anton Trunov](https://github.com/anton-trunov)
+
+## [1.6.11] - 2025-05-26
+
+### Language features
+
+- [fix] Better error message when an integer key or value in a map literal is out of its serialization range: PR [#3285](https://github.com/tact-lang/tact/pull/3285)
 - [fix] Balanced quotation in error messages for out-of-project-root imports: PR [#3242](https://github.com/tact-lang/tact/pull/3242)
 - [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
 - [fix] Added fixed-bytes support to bounced message size calculations: PR [#3129](https://github.com/tact-lang/tact/pull/3129)
+- [fix] Fixed compiler errors for trait return types: PR [#3197](https://github.com/tact-lang/tact/pull/3197)
+- [fix] Added checks for trait returns in non-shuffle asm functions: PR [#3197](https://github.com/tact-lang/tact/pull/3197)
 - [fix] Allow equivalent `as`-annotations for maps types: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
 - [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
+- [fix] Compiler now correctly counts the size of fields for maps in bounced messages: PR [#3255](https://github.com/tact-lang/tact/pull/3255)
+- [fix] Compiler now allows `bounced<T>` as a return type of assembly functions: PR [#3259](https://github.com/tact-lang/tact/pull/3259)
 
 ### Code generation
 
@@ -27,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Compiler now doesn't generate `__tact_nop()` for `dump()` and `dumpStack()` in default mode: PR [#3218](https://github.com/tact-lang/tact/pull/3218)
 - [fix] Correct long struct tuple destruction: PR [#3105](https://github.com/tact-lang/tact/pull/3105)
 - Compiler now generates more efficient code for `if-throw` pattern with `throw_if/throw_unless` call: PR [#3216](https://github.com/tact-lang/tact/pull/3216)
+- [fix] Arguments of the `==` and `!=` operators get evaluated in the left-to-right order: PR [#3252](https://github.com/tact-lang/tact/pull/3252)
 
 ### Docs
 
