@@ -397,6 +397,82 @@ fun AnyMessage_fromCell(cell: Cell): M;
 ///
 fun AnyMessage_fromSlice(slice: Slice): M;
 
+/// Extension function for any contract type. Available since Tact 1.6.13.
+///
+/// Converts a `Cell` into the specified contract struct and returns it.
+///
+/// ```tact
+/// contract GuessCoinContract {
+///     probably: Int as coins = 42;
+///     nothing: Int as coins = 27;
+///
+///     receive() { cashback(sender()) }
+/// }
+///
+/// fun directParse(payload: Cell): GuessCoinContract {
+///     return GuessCoinContract.fromCell(payload);
+/// }
+///
+/// fun cautiousParse(payload: Cell): GuessCoinContract? {
+///     let coin: GuessCoinContract? = null;
+///     try {
+///         coin = GuessCoinContract.fromCell(payload);
+///     } catch (e) {
+///         dump("Cell payload doesn't match GuessCoinContract struct!");
+///     }
+///     return coin;
+/// }
+/// ```
+///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when attempting to pass a `Cell` with a layout different
+///   from the specified contract or to load more data than `Cell` contains.
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#contractfromcell
+///
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+///
+fun AnyContract_fromCell(cell: Cell): S;
+
+/// Extension function for any contract type. Available since Tact 1.6.13.
+///
+/// Converts a `Slice` into the specified contract struct and returns it.
+///
+/// ```tact
+/// contract GuessCoinContract {
+///     probably: Int as coins = 42;
+///     nothing: Int as coins = 27;
+///
+///     receive() { cashback(sender()) }
+/// }
+///
+/// fun directParse(payload: Slice): GuessCoinContract {
+///     return GuessCoinContract.fromSlice(payload);
+/// }
+///
+/// fun cautiousParse(payload: Slice): GuessCoinContract? {
+///     let coin: GuessCoinContract? = null;
+///     try {
+///         coin = GuessCoinContract.fromSlice(payload);
+///     } catch (e) {
+///         dump("Slice payload doesn't match GuessCoinContract struct!");
+///     }
+///     return coin;
+/// }
+/// ```
+///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when attempting to pass a `Slice` with a layout different
+///   from the specified contract or to load more data than `Slice` contains.
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#contractfromslice
+///
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+///
+fun AnyContract_fromSlice(slice: Slice): C;
+
 /// Extension function for any Message type. Available since Tact 1.6.7.
 ///
 /// Returns the message opcode.
