@@ -5,7 +5,7 @@ import {
     resolveDescriptors,
 } from "@/types/resolveDescriptors";
 import { resolveSignatures } from "@/types/resolveSignatures";
-import { loadCases } from "@/utils/loadCases";
+import { loadCases } from "@/utils/loadCases.infra";
 import { openContext, parseModules } from "@/context/store";
 import { featureEnable } from "@/config/features";
 import type { SrcInfo } from "@/grammar";

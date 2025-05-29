@@ -1,5 +1,5 @@
 import { join } from "path";
-import { readLog } from "@/test/utils/parse-log";
+import { readLog } from "@/logs/parse-log";
 import {
     collectAsmCoverage,
     generateShortSummary,

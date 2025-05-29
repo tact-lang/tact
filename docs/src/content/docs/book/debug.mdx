@@ -275,7 +275,7 @@ it('should increase counter', async () => {
 :::note
 
   See more test examples in the [Sandbox][sb] documentation:\
-  [Testing flow (FunC)](https://github.com/ton-org/sandbox/blob/main/docs/testing-key-points.md)\
+  [Testing flow](https://github.com/ton-org/sandbox/blob/main/docs/testing-key-points.md)\
   [Writing tests for Tact](https://github.com/ton-org/sandbox/blob/main/docs/tact-testing-examples.md)
 
 :::
@@ -630,7 +630,7 @@ it('your test clause title', async () => {
 
 ## Logging via `emit` {#logging}
 
-A [global static function](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-send#emit) sends a message to the outer world — it doesn't have a specific recipient.
+A [global function](/book/functions#fun-global) [`emit(){:tact}`](/ref/core-send#emit) sends a message to the outer world — it doesn't have a specific recipient.
 
 This function is very handy for logging and analyzing data off-chain — one just has to look at [external messages](/book/external) produced by the contract.
 

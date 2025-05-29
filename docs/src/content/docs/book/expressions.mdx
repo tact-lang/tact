@@ -30,7 +30,7 @@ Every operator in Tact forms an expression, but there's much more to uncover, as
 
 Literals represent values in Tact. These are fixed values—not variables—that you _literally_ provide in your code. All literals in Tact are expressions themselves.
 
-You can also call [extension functions](/book/functions#extension-function) defined on certain [primitive types][p] directly on their corresponding literal values:
+You can also call [extension functions](/book/functions#extensions) defined on certain [primitive types][p] directly on their corresponding literal values:
 
 ```tact
 // Calling toString() defined for Int on an integer literal:
@@ -257,7 +257,7 @@ fun example(): Int {
 
 ## Extension function call
 
-[Extension functions](/book/functions#extension-function) are defined only on specific types. They can be called similarly to method calls in many other languages:
+[Extension functions](/book/functions#extensions) are defined only on specific types. They can be called similarly to method calls in many other languages:
 
 ```tact
 42.toString(); // toString() is a stdlib function that is defined on Int type
@@ -265,7 +265,7 @@ fun example(): Int {
 
 ## Static function call
 
-A global [static function](/book/functions#global-static-functions) or an internal function of a [contract](/book/contracts) can be called from anywhere in the function body:
+A [global function](/book/functions#fun-global) or a [internal function](/book/functions#fun-internal) of a [contract](/book/contracts) can be called from anywhere in the function body:
 
 ```tact
 contract ExampleContract {
@@ -282,7 +282,7 @@ contract ExampleContract {
 
 ## `initOf` {#initof}
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 The expression `initOf{:tact}` computes the initial state, i.e., `StateInit{:tact}`, of a [contract](/book/contracts):
 
@@ -330,7 +330,7 @@ Field  | Type                  | Description
 ## `codeOf` {#codeof}
 
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 The expression `codeOf{:tact}` returns a [`Cell{:tact}`][cell] containing the code of a [contract](/book/contracts):

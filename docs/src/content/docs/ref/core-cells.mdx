@@ -15,7 +15,7 @@ import { Badge } from '@astrojs/starlight/components';
 
   To do so, advanced users are recommended to use [Type Language - Binary (TL-B) schemas][tlb].
 
-  Additionally, every user is recommended to use [structs][struct] and their [methods](/book/functions#extension-function), such as [`Struct.toCell(){:tact}`](#structtocell) and [`Struct.fromCell(){:tact}`](#structfromcell), instead of manually constructing and parsing cells, because structs and [Messages][message] are closest to being the [living TL-B schemas of your contracts](/book/cells#cnp-structs).
+  Additionally, every user is recommended to use [structs][struct] and their [methods](/book/functions#extensions), such as [`Struct.toCell(){:tact}`](#structtocell) and [`Struct.fromCell(){:tact}`](#structfromcell), instead of manually constructing and parsing cells, because structs and [Messages][message] are closest to being the [living TL-B schemas of your contracts](/book/cells#cnp-structs).
 
 :::
 
@@ -109,7 +109,7 @@ let depth: Int = c.depth(); // 0
 
 ### Cell.computeDataSize
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -187,7 +187,7 @@ A section to group all extension and extension mutation functions for the [`Buil
 
 ### Builder.endCell
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun endCell(self: Builder): Cell;
@@ -1470,7 +1470,7 @@ let depth: Int = s.depth(); // 0
 
 ### Slice.computeDataSize
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -1594,7 +1594,7 @@ try {
 
 ### Slice.hash
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun hash(self: Slice): Int;
@@ -1650,7 +1650,7 @@ sha256(long) == long.hashData(); // false!
 
 ### Slice.asCell
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun asCell(self: Slice): Cell;
@@ -1692,7 +1692,7 @@ fizz == buzz; // true
 
 ### Slice.fromBase64
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun fromBase64(self: Slice): Slice;
@@ -2051,6 +2051,68 @@ contract Example {
 }
 ```
 
+## Contract.toCell
+
+<Badge text="Available since Tact 1.6.12" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun toCell(self: Contract): Cell;
+```
+
+Extension function for any [contract][contract] type.
+
+Converts the contract state to a [`Cell{:tact}`][cell] and returns it.
+
+Usage example:
+
+```tact
+contract Example {
+    probably: Int as coins = 42;
+    nothing: Int as coins = 27;
+
+    get fun asCell(): Cell {
+        return self.toCell();
+    }
+}
+```
+
+:::note
+
+    If a contract doesn't use [contract parameters](/book/contracts#parameters), the resulting `Cell{:tact}` or `Slice{:tact}` will contain a leading one bit representing the [lazy initialization bit](/book/functions/#init).
+
+:::
+
+## Contract.toSlice
+
+<Badge text="Available since Tact 1.6.12" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun toSlice(self: Contract): Slice;
+```
+
+Extension function for any [contract][contract] type.
+
+Converts the contract state to a [`Slice{:tact}`][slice] and returns it. An alias to `self.toCell().asSlice(){:tact}`.
+
+Usage example:
+
+```tact
+contract Example {
+    probably: Int as coins = 42;
+    nothing: Int as coins = 27;
+
+    get fun asSlice(): Slice {
+        return self.toSlice();
+    }
+}
+```
+
+:::note
+
+    If a contract doesn't use [contract parameters](/book/contracts#parameters), the resulting `Cell{:tact}` or `Slice{:tact}` will contain a leading one bit representing the [lazy initialization bit](/book/functions/#init).
+
+:::
+
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
@@ -2059,6 +2121,7 @@ contract Example {
 [slice]: /book/cells#slices
 [map]: /book/maps
 [struct]: /book/structs-and-messages#structs
+[contract]: /book/contracts
 [message]: /book/structs-and-messages#messages
 [opcode]: /book/structs-and-messages#message-opcodes
 [null]: /book/optionals

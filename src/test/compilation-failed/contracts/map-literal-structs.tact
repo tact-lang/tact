@@ -1,3 +1,8 @@
+struct Foo {
+    x: Int;
+    y: Int;
+}
+
 contract MapLiteralStructs {
     get fun structs(): map<Int as uint16, Foo> {
         return map<Int as uint16, Foo> {

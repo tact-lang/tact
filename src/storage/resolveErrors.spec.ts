@@ -49,4 +49,45 @@ contract Test {
         ctx = resolveStatements(ctx);
         expect(() => resolveErrors(ctx, ast)).toThrow(expectedErrors);
     });
+
+    it("should throw on duplicate error code", () => {
+        const src = `
+trait BaseTrait {}
+
+contract Test {
+    get fun foo(): Int {
+        require(false, "113");
+        return 0;
+    }
+
+    get fun bar(): Int {
+        require(false, "241");
+        return 0;
+    }
+}
+`;
+
+        const expectedErrors = `<unknown>:11:24: Error message "241" maps to error code 38048, which is already assigned to "113", change the message to resolve this conflict
+  10 |     get fun bar(): Int {
+> 11 |         require(false, "241");
+                              ^~~~~
+  12 |         return 0;
+`;
+
+        const ast = getAstFactory();
+        const sources: Source[] = [
+            { code: stdlib, path: primitivesPath, origin: "stdlib" },
+            { code: src, path: "<unknown>", origin: "user" },
+        ];
+        let ctx = openContext(
+            new CompilerContext(),
+            sources,
+            [],
+            parseModules(sources, getParser(ast)),
+        );
+        ctx = resolveDescriptors(ctx, ast);
+        ctx = resolveSignatures(ctx, ast);
+        ctx = resolveStatements(ctx);
+        expect(() => resolveErrors(ctx, ast)).toThrow(expectedErrors);
+    });
 });

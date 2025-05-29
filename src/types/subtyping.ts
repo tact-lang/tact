@@ -17,8 +17,8 @@ export function isAssignable(src: TypeRef, to: TypeRef): boolean {
         return (
             src.key === to.key &&
             src.value === to.value &&
-            src.keyAs === to.keyAs &&
-            src.valueAs === to.valueAs
+            isCompatibleAsType(src.key, src.keyAs, to.keyAs) &&
+            isCompatibleAsType(src.value, src.valueAs, to.valueAs)
         );
     }
 
@@ -46,6 +46,39 @@ export function isAssignable(src: TypeRef, to: TypeRef): boolean {
 
     // All other options are not assignable
     return false;
+}
+
+const EQUIVALENCES_BY_TYPE: Record<string, [string, string][]> = {
+    Int: [
+        ["", "int257"],
+        ["coins", "varuint16"],
+    ],
+};
+
+/**
+ * Checks compatibility of 'as' types, considering equivalences for certain type names.
+ * If no equivalences are defined for the typeName, falls back to strict equality.
+ * Treats null as an empty string for comparison.
+ */
+function isCompatibleAsType(
+    typeName: string,
+    a: string | null,
+    b: string | null,
+): boolean {
+    if (a === b) return true;
+
+    const aNorm = a ?? "";
+    const bNorm = b ?? "";
+
+    const equivalents = EQUIVALENCES_BY_TYPE[typeName];
+    if (!equivalents) {
+        return aNorm === bNorm;
+    }
+
+    return equivalents.some(
+        ([x, y]) =>
+            (aNorm === x && bNorm === y) || (aNorm === y && bNorm === x),
+    );
 }
 
 export function moreGeneralType(

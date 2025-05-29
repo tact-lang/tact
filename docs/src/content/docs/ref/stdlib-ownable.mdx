@@ -37,7 +37,7 @@ message ChangeOwnerOk {
 
 The [trait](/book/types#composite-types) `Ownable{:tact}` declares an owner (non-editable) of a [contract](/book/contracts) and provides a helper function `requireOwner(){:tact}`, which checks that a message was sent by the owner.
 
-This [trait](/book/types#composite-types) requires a field `owner: Address{:tact}` to be declared and exposes a [getter function](/book/functions#getter-functions) `owner(){:tact}`, which reads it from the [contract](/book/contracts).
+This [trait](/book/types#composite-types) requires a field `owner: Address{:tact}` to be declared and exposes a [getter function](/book/functions#get) `owner(){:tact}`, which reads it from the [contract](/book/contracts).
 
 Source code:
 

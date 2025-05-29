@@ -144,7 +144,7 @@ contract OpcodeRecognition {
 }
 ```
 
-This is useful in cases where you want to handle certain opcodes of a given smart contract, such as the [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md). A shortlist of opcodes this contract can process is [provided here in FunC](https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc). They serve as an interface to the smart contract.
+This is useful in cases where you want to handle certain opcodes of a given smart contract, such as the [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md). The messages and their respective opcodes that this contract can process are defined [here in the Tact's Jetton implementation](https://github.com/tact-lang/jetton/blob/3f02e1065b871cbab300e019f578c3fb0b19effa/src/contracts/base/messages.tact). They serve as an interface to the smart contract.
 
 <Badge text="Available since Tact 1.6" variant="tip" size="small"/> A message opcode can be any [compile-time](/ref/core-comptime) expression that evaluates to a positive 32-bit integer, so the following is also valid:
 
@@ -246,7 +246,7 @@ fun example() {
 
 ### Convert to a `Cell`, `.toCell()` {#tocell}
 
-It is possible to convert an arbitrary [struct](#structs) or [Message](#messages) to the [`Cell{:tact}`][cell] type by using the `.toCell(){:tact}` [extension function](/book/functions#extension-function):
+It is possible to convert an arbitrary [struct](#structs) or [Message](#messages) to the [`Cell{:tact}`][cell] type by using the `.toCell(){:tact}` [extension function](/book/functions#extensions):
 
 ```tact
 struct Big {
@@ -276,7 +276,7 @@ fun conversionFun() {
 
 ### Obtain from a `Cell` or `Slice`, `.fromCell()` and `.fromSlice()` {#fromcellslice}
 
-Instead of manually parsing a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] via a series of relevant `.loadSomething(){:tact}` function calls, one can use `.fromCell(){:tact}` and `.fromSlice(){:tact}` [extension functions](/book/functions#extension-function) to convert the provided [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] into the needed [struct](#structs) or [Message](#messages).
+Instead of manually parsing a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] via a series of relevant `.loadSomething(){:tact}` function calls, one can use `.fromCell(){:tact}` and `.fromSlice(){:tact}` [extension functions](/book/functions#extensions) to convert the provided [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] into the needed [struct](#structs) or [Message](#messages).
 
 These extension functions only attempt to parse a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] according to the structure of your struct or Message. In case the layouts don't match, various exceptions may be thrown — make sure to wrap your code in [`try...catch{:tact}`](/book/statements#try-catch) blocks to prevent unexpected results.
 

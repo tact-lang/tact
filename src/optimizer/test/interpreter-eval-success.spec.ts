@@ -8,7 +8,7 @@ import { resolveDescriptors } from "@/types/resolveDescriptors";
 import { getAllExpressionTypes } from "@/types/resolveExpression";
 import { resolveSignatures } from "@/types/resolveSignatures";
 import { resolveStatements } from "@/types/resolveStatements";
-import { loadCases } from "@/utils/loadCases";
+import { loadCases } from "@/utils/loadCases.infra";
 
 describe("interpreter-evaluation", () => {
     for (const r of loadCases(__dirname + "/success/")) {
