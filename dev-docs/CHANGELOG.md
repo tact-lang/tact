@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Docs
 
 - Described off-chain calls and mention exit code 11 for getters: PR [#3314](https://github.com/tact-lang/tact/pull/3314)
-- Remarked the futility of synchronous on-chain data retrieval patterns for getters: PR [#3315](https://github.com/tact-lang/tact/pull/3315)
+- Remarked the futility of synchronous on-chain data retrieval patterns for getters: PR [#3316](https://github.com/tact-lang/tact/pull/3316)
 
 ## [1.6.13] - 2025-05-29
 
