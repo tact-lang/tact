@@ -322,6 +322,51 @@ export function writeTypescript(
         w.append();
     }
 
+    // Internal receivers
+    if (
+        abi.receivers &&
+        abi.receivers.filter((v) => v.receiver === "internal").length > 0
+    ) {
+        // Types
+        const receivers: string[] = [];
+        for (const r of abi.receivers) {
+            if (r.receiver !== "internal") {
+                continue;
+            }
+            switch (r.message.kind) {
+                case "empty":
+                    {
+                        receivers.push(`null`);
+                    }
+                    break;
+                case "typed":
+                    {
+                        receivers.push(r.message.type);
+                    }
+                    break;
+                case "text":
+                    {
+                        if (
+                            r.message.text !== null &&
+                            r.message.text !== undefined
+                        ) {
+                            receivers.push(JSON.stringify(r.message.text));
+                        } else {
+                            receivers.push(`string`);
+                        }
+                    }
+                    break;
+                case "any":
+                    {
+                        receivers.push(`Slice`);
+                    }
+                    break;
+            }
+        }
+        w.append(`export type ${abi.name}_messageTypes = ${receivers.join(" | ")};`);
+        w.append();
+    }
+
     // Wrapper
     w.append(`export class ${abi.name} implements Contract {`);
     w.inIndent(() => {
@@ -450,7 +495,7 @@ export function writeTypescript(
 
             // Receiver function
             w.append(
-                `async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: ${receivers.join(" | ")}) {`,
+                `async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: ${abi.name}_messageTypes ) {`,
             );
             w.inIndent(() => {
                 w.append();
