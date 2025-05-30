@@ -363,7 +363,9 @@ export function writeTypescript(
                     break;
             }
         }
-        w.append(`export type ${abi.name}_messageTypes = ${receivers.join(" | ")};`);
+        w.append(
+            `export type ${abi.name}_messageTypes = ${receivers.join(" | ")};`,
+        );
         w.append();
     }
 
