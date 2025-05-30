@@ -394,8 +394,8 @@ two <= 2; // true
 - [`Int{:tact}`][int]
 - [`Bool{:tact}`][bool]
 - [`Address{:tact}`][p]
-- [`cell{:tact}`][cell]，通过`.hash(){:tact}`隐式比较
-- [`Slice{:tact}`][slice]，通过`.hash(){:tact}`隐式比较
+- [`Cell{:tact}`][cell]，通过`Cell.hash(){:tact}`隐式比较
+- [`Slice{:tact}`][slice]，通过`Slice.hash(){:tact}`隐式比较
 - [`String{:tact}`][p]
 - [`map<K, V>{:tact}`](/zh-cn/book/maps)，但前提是它们的键和值类型相同
 - [Optionals and `null{:tact}` value](/zh-cn/book/optionals)
@@ -445,7 +445,7 @@ nullable != anotherNullable; // true
 
 :::note
 
-  二进制相等 `=={:tact}` 和不等式 `!={:tact}` 运算符通过[`.hash(){:tact}`](/zh-cn/ref/core-cells#cellhash)函数，隐式地通过各自[cell][cell]的哈希值比较[maps](/zh-cn/book/maps)。 虽然这在大多数情况下没有问题，因为大多数映射序列化器的工作原理与 TON 区块链源中的序列化器相同，但通过手动序列化映射或更改某些库中序列化器的逻辑，仍有可能得到错误的负面结果。
+  二进制相等 `=={:tact}` 和不等式 `!={:tact}` 运算符通过[`Cell.hash(){:tact}`](/zh-cn/ref/core-cells#cellhash)函数，隐式地通过各自[cell][cell]的哈希值比较[maps](/zh-cn/book/maps)。 虽然这在大多数情况下没有问题，因为大多数映射序列化器的工作原理与 TON 区块链源中的序列化器相同，但通过手动序列化映射或更改某些库中序列化器的逻辑，仍有可能得到错误的负面结果。
 
   如果你需要保证比较的映射是相等的，并且愿意为此支付更多的gas，可以使用 [`map.deepEquals(){:tact}`](/zh-cn/book/maps#deepequals) 函数。
 
