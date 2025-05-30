@@ -483,6 +483,12 @@ contract ManyFields(
 }
 ```
 
+Keep in mind that getters can obtain the contract's data only off-chain. However, for one contract to retrieve data from another contract on-chain, it must exchange messages with it. Since communication is asynchronous, the received data might become irrelevant or invalid because, by the time the message with that data reaches your contract, the actual state of variables on another contract might have changed already.
+
+Thus, efficient data exchange is only feasible in contract systems where you have control over the source code of all contracts or when the interface and behavior of some contracts are defined strictly according to some [standards](https://github.com/ton-blockchain/teps), such as [Jettons](/cookbook/jettons) or [NFTs](/cookbook/nfts).
+
+Even in such cases, contracts on TON exchange messages as signals to perform a certain action on or with the sent data but never merely to read the state of another contract.
+
 ### Method IDs
 
 Like other functions in TON contracts, getters have their _unique_ associated function selectors, which are 19-bit signed integer identifiers commonly called [_method IDs_](#low-level-representation).
