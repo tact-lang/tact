@@ -49,7 +49,7 @@ contract NFTItem(
         throwUnless(NotInit, self.owner != null);
         throwUnless(IncorrectSender, sender() == self.owner);
         throwUnless(IncorrectForwardPayload, msg.forwardPayload.bits() >= 1);
-        forceBasechain(msg.newOwner);
+        forceBasechainFunc(msg.newOwner);
 
         let fwdFees = context().readForwardFee();
 
@@ -80,7 +80,7 @@ contract NFTItem(
         }
 
         if (needResponse) {
-            forceBasechain(msg.responseDestination!!);
+            forceBasechainFunc(msg.responseDestination!!);
             sendMsg(
                 msg.responseDestination!!,
                 restAmount,
@@ -104,6 +104,8 @@ contract NFTItem(
         };
     }
 }
+
+asm fun forceBasechainFunc(address: Address) { REWRITESTDADDR DROP 333 THROWIF }
 
 inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, payload: Builder, sendMode: Int) {
     message(MessageParameters {
