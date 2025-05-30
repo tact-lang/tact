@@ -1,3 +1,4 @@
+;; https://github.com/OpenBuilders/notcoin-contract/blob/main/contracts/jetton-minter.fc
 ;; Jetton minter smart contract
 
 #pragma version >=0.4.3;
