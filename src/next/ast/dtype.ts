@@ -61,7 +61,8 @@ export type DTypeParamRef = {
 
 export type DTypeBounced = {
     readonly kind: "TypeBounced"
-    readonly type: DecodedType;
+    // name of the message type
+    readonly name: TypeId;
     readonly loc: Loc;
 }
 

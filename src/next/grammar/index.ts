@@ -542,10 +542,14 @@ const parseSuffixCall =
                 loc,
             );
         } else if (child.kind === "field_access") {
+            const parsedTypeArgs = map(parseList(typeArgs), parseType)(ctx);
+            if (parsedTypeArgs.length > 0) {
+                ctx.err.noGenericMethods()(loc);
+            }
             return Ast.MethodCall(
                 child.aggregate,
                 child.field,
-                map(parseList(typeArgs), parseType)(ctx),
+                [],
                 paramsAst,
                 loc,
             );
@@ -1595,7 +1599,7 @@ const parseContract =
                 if (initFn) {
                     ctx.err.initFnAndParams()(ctx.toRange(initFn.loc));
                 }
-                return Ast.InitParams(params);
+                return Ast.InitParams(params, ctx.toRange(loc));
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             } else if (initFn) {
                 return Ast.InitFunction(

@@ -79,6 +79,7 @@ infixl
 infixr
 initof
 injectivity
+Instanitable
 Ints
 ipfs
 IPFS

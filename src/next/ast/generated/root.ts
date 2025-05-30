@@ -142,17 +142,18 @@ export const AliasDecl = (name: $c.TypeId, typeParams: readonly $c.TypeId[], typ
 });
 export const isAliasDecl = ($value: AliasDecl) => $value.kind === "alias_decl";
 export type InitFunction = $.InitFunction;
-export const InitFunction = (args: readonly $t.TypedParameter[], statements: readonly $s.Statement[], loc: $c.Loc): $.InitFunction => Object.freeze({
+export const InitFunction = (params: readonly $t.TypedParameter[], statements: readonly $s.Statement[], loc: $c.Loc): $.InitFunction => Object.freeze({
     kind: "init_function",
-    args,
+    params,
     statements,
     loc
 });
 export const isInitFunction = ($value: InitFunction) => $value.kind === "init_function";
 export type InitParams = $.InitParams;
-export const InitParams = (params: readonly $.FieldDecl[]): $.InitParams => Object.freeze({
+export const InitParams = (params: readonly $.FieldDecl[], loc: $c.Loc): $.InitParams => Object.freeze({
     kind: "init_params",
-    params
+    params,
+    loc,
 });
 export const isInitParams = ($value: InitParams) => $value.kind === "init_params";
 export type Init = $.Init;

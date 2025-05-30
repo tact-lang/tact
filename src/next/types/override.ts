@@ -8,7 +8,7 @@ import { assignMethodType } from "@/next/types/type-method";
 export function* checkFieldOverride(
     name: string,
     prev: Ast.DeclMem<Ast.Fieldish<
-        Ast.Lazy<Ast.DecodedExpression> | undefined
+        Ast.Lazy<Ast.Value> | undefined
     >> | undefined,
     nextType: Ast.Lazy<Ast.DecodedType>,
     nextVia: Ast.ViaMember,

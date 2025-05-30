@@ -3,19 +3,17 @@
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
 
-type MaybeExpr = Ast.Lazy<Ast.DecodedExpression> | undefined
-
 export function* getInheritedTraits(
     traits: readonly Ast.TypeId[],
     scopeRef: () => Ast.Scope,
-): E.WithLog<readonly Ast.Decl<Ast.CommonSig<MaybeExpr>>[]> {
+): E.WithLog<readonly Ast.Decl<Ast.TraitContent>[]> {
     const decls = scopeRef().typeDecls;
-    const prevTraits: Ast.Decl<Ast.CommonSig<MaybeExpr>>[] = [];
+    const prevTraits: Ast.Decl<Ast.TraitContent>[] = [];
     for (const trait of traits) {
         const name = trait.text;
-        const decl = decls.get(trait.text);
+        const decl = decls.get(name);
         if (!decl) {
-            yield EUndefinedTrait(trait.text, trait.loc);
+            yield EUndefinedTrait(name, trait.loc);
             continue;
         }
         const { via, decl: traitDecl } = decl;

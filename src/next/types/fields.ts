@@ -3,15 +3,16 @@
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
 import { throwInternal } from "@/error/errors";
-import { decodeTypeLazy } from "@/next/types/type";
+import { assignType, decodeTypeLazy } from "@/next/types/type";
 import { decodeExpr } from "@/next/types/expression";
 import { checkFieldOverride } from "@/next/types/override";
 import { decodeConstantDef } from "@/next/types/constant-def";
+import { evalExpr } from "@/next/types/expr-eval";
 
-type MaybeExpr = Ast.Lazy<Ast.DecodedExpression> | undefined
+type MaybeExpr = Ast.Lazy<Ast.Value> | undefined
 
 export function* getFieldishGeneral(
-    typeName: string,
+    typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
     constants: readonly Ast.FieldConstant[],
     fields: readonly Ast.FieldDecl[],
@@ -39,6 +40,12 @@ export function* getFieldishGeneral(
         }
     }
 
+    const selfType = Ast.MVTypeRef(
+        typeName,
+        [],
+        typeName.loc,
+    )
+
     // in which order fields were defined
     const order: string[] = [];
 
@@ -50,7 +57,7 @@ export function* getFieldishGeneral(
 
     for (const field of fields) {
         const name = field.name;
-        const nextVia = Ast.ViaMemberOrigin(typeName, field.loc);
+        const nextVia = Ast.ViaMemberOrigin(typeName.text, field.loc);
 
         const prev = all.get(name.text);
         if (prev) {
@@ -62,7 +69,12 @@ export function* getFieldishGeneral(
         order.push(name.text);
 
         // decode field
-        all.set(name.text, decodeField(typeName, field, scopeRef));
+        all.set(name.text, decodeField(
+            typeName.text,
+            field,
+            scopeRef,
+            selfType,
+        ));
 
         // check if this field was inherited
         const prevInh = inherited.get(name.text);
@@ -80,7 +92,7 @@ export function* getFieldishGeneral(
     for (const field of constants) {
         const { override, overridable, body } = field;
         const { init, name, loc } = body;
-        const nextVia = Ast.ViaMemberOrigin(typeName, loc);
+        const nextVia = Ast.ViaMemberOrigin(typeName.text, loc);
 
         const prev = all.get(name.text);
         if (prev) {
@@ -101,7 +113,13 @@ export function* getFieldishGeneral(
         }
 
         // get the definition
-        const next = yield* decodeConstant(init, overridable, nextVia, scopeRef);
+        const next = yield* decodeConstant(
+            init,
+            overridable,
+            nextVia,
+            scopeRef,
+            selfType,
+        );
         
         // check that override/abstract/virtual modifiers are correct
         yield* checkFieldOverride(
@@ -141,6 +159,7 @@ function decodeField(
     typeName: string,
     field: Ast.FieldDecl,
     scopeRef: () => Ast.Scope,
+    selfType: Ast.SelfType,
 ) {
     const { initializer, name, type, loc } = field;
     const nextVia = Ast.ViaMemberOrigin(typeName, loc);
@@ -148,12 +167,25 @@ function decodeField(
     // contracts don't have type parameters
     const typeParams = Ast.TypeParams([], new Set());
 
+    const decoded = decodeTypeLazy(typeParams, type, scopeRef);
+
+    const init = initializer && Ast.Lazy(function* () {
+        const ascribed = yield* decoded();
+        const expr = yield* decodeExpr(
+            typeParams,
+            initializer,
+            scopeRef,
+            selfType,
+            new Map(),
+        );
+        const computed = expr.computedType;
+        yield* assignType(ascribed, computed, scopeRef);
+        return yield* evalExpr(expr, scopeRef);
+    });
+
     // decode field
     return Ast.DeclMem(
-        Ast.InhFieldSig(
-            decodeTypeLazy(typeParams, type, scopeRef),
-            initializer && decodeExpr(initializer, scopeRef),
-        ),
+        Ast.InhFieldSig(decoded, init),
         nextVia,
     );
 }
@@ -174,6 +206,7 @@ function* decodeConstant(
     overridable: boolean,
     nextVia: Ast.ViaMember,
     scopeRef: () => Ast.Scope,
+    selfType: Ast.SelfType,
 ): E.WithLog<Ast.DeclMem<Ast.FieldConstSig<MaybeExpr>>> {
     const typeParams = Ast.TypeParams([], new Set());
     if (init.kind === 'constant_decl') {
@@ -183,7 +216,12 @@ function* decodeConstant(
             nextVia,
         );
     } else {
-        const [type, expr] = decodeConstantDef(typeParams, init, scopeRef);
+        const [type, expr] = decodeConstantDef(
+            typeParams,
+            init,
+            scopeRef,
+            selfType,
+        );
         return Ast.DeclMem(
             Ast.FieldConstSig(overridable, type, expr),
             nextVia,

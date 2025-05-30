@@ -150,7 +150,8 @@ function* getTypeTupleSize(
             }
             switch (decl.decl.kind) {
                 case "contract": {
-                    return decl.decl.content.fields.order.length;
+                    const content = yield* decl.decl.content();
+                    return content.fieldish.order.length;
                 }
                 case "struct":
                 case "message": {

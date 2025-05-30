@@ -56,6 +56,9 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
     notCallable: () => (loc: Range) => {
         return l.at(loc).error(l.text`Expression is not callable`);
     },
+    noGenericMethods: () => (loc: Range) => {
+        return l.at(loc).error(l.text`Cannot pass type arguments to generic method`);
+    },
     noBouncedWithoutArg: () => (loc: Range) => {
         return l
             .at(loc)

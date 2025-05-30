@@ -6,6 +6,10 @@ import { throwInternal } from "@/error/errors";
 import { getFieldishGeneral } from "@/next/types/fields";
 import { getInheritedTraits } from "@/next/types/traits-scope";
 import { getMethodsGeneral } from "@/next/types/methods";
+import { getReceivers } from "@/next/types/receivers";
+import { decodeDealiasTypeLazy, decodeTypeLazy } from "@/next/types/type";
+import { decodeParams } from "@/next/types/type-fn";
+import { decodeStatements } from "@/next/types/statements";
 
 export function* decodeContract(
     contract: Ast.Contract,
@@ -14,8 +18,15 @@ export function* decodeContract(
     const { name, attributes, declarations, init } = contract;
     const { constants, fields, methods, receivers } = declarations;
 
-    // delayed until we get all traits
-    const content = Ast.Lazy(function* () {
+    // here we have a strange loop
+    // to get fields in contentLazy we need contract parameters from initLazy
+    // to compute fields for empty init, we need to know contentLazy
+    // to check init body in initLazy we have to know `self` from contentLazy
+
+    const decodedInit = yield* decodeInit(init, () => contentLazy(), scopeRef);
+
+    // delayed until we get all traits and init
+    const contentLazy: Ast.Lazy<Ast.ContractContent> = Ast.Lazy(function* () {
         const traits = yield* getInheritedTraits(
             contract.traits,
             scopeRef,
@@ -24,8 +35,9 @@ export function* decodeContract(
         // const contentRef = () => content;
         const content: Ast.ContractContent = {
             fieldish: yield* getFieldishFromContract(
-                name.text,
+                name,
                 traits,
+                decodedInit,
                 constants,
                 fields,
                 scopeRef,
@@ -36,18 +48,123 @@ export function* decodeContract(
                 methods,
                 scopeRef,
             ),
-            bounce,
-            external,
-            internal,
+            receivers: yield* getReceivers(
+                name,
+                traits,
+                receivers,
+                scopeRef,
+            ),
         };
 
         return content;
     });
 
-    const decodedInit = decodeInit(init, fields, scopeRef);
-
-    return Ast.ContractSig(attributes, decodedInit, content);
+    return Ast.ContractSig(attributes, decodedInit, contentLazy);
 }
+
+function* decodeInit(
+    init: Ast.Init | undefined,
+    contentLazy: Ast.Lazy<Ast.ContractContent>,
+    scopeRef: () => Ast.Scope,
+): E.WithLog<Ast.InitSig> {
+    const typeParams = Ast.TypeParams([], new Set());
+    if (!init) {
+        // no init
+        const lazyInit = Ast.Lazy(function* () {
+            const order: string[] = [];
+            const map: Map<string, Ast.Lazy<Ast.Value>> = new Map();
+            const { fieldish } = (yield* contentLazy());
+            for (const name of fieldish.order) {
+                const f = fieldish.map.get(name);
+                if (!f) {
+                    return throwInternal("Missing field");
+                }
+                if (f.decl.kind === 'field') {
+                    const init = f.decl.init;
+                    if (init) {
+                        order.push(name);
+                        map.set(name, init);
+                    } else {
+                        yield ENoInitializerEmpty(f.via.defLoc);
+                    }
+                }
+            }
+            return Ast.Ordered(order, map);
+        });
+        return Ast.InitEmpty(lazyInit);
+    } else if (init.kind === 'init_params') {
+        const order: string[] = [];
+        const paramMap: Map<string, Ast.FieldDecl> = new Map();
+        for (const param of init.params) {
+            const name = param.name.text;
+            const prev = paramMap.get(name);
+            if (prev) {
+                yield EDuplicateParam(name, prev.loc, param.loc);
+            } else {
+                order.push(name);
+                paramMap.set(name, param);
+            }
+        }
+
+        const map: Map<string, Ast.InitParam> = new Map();
+        for (const [name, param] of paramMap) {
+            const decoded = decodeTypeLazy(typeParams, param.type, scopeRef)
+            if (!param.initializer) {
+                yield ENoInitializerParams(param.loc);
+            }
+            // TODO: support Foo { } syntax for contracts
+            // const lazyExpr = Ast.Lazy(function* () {
+            //     const expr = yield* decodeExpr(param.initializer, scopeRef)();
+            //     const computed = expr.computedType;
+            //     const ascribed = yield* decoded();
+            //     yield* assignType( ascribed, computed, scopeRef);
+            //     return yield* evalExpr(expr, scopeRef);
+            // });
+            map.set(name, Ast.InitParam(decoded, undefined, param.loc));
+        }
+        return Ast.InitSimple(Ast.Ordered(order, map), init.loc);
+    } else {
+        const { params, statements } = init;
+
+        const decodedParams = yield* decodeParams((type) => {
+            return decodeDealiasTypeLazy(typeParams, type, scopeRef);
+        }, params);
+
+        const body = decodeStatements(statements, scopeRef);
+
+        return Ast.InitFn(decodedParams, body);
+    }
+}
+const EDuplicateParam = (
+    name: string,
+    prev: Ast.Loc,
+    next: Ast.Loc,
+): E.TcError => ({
+    loc: next,
+    descr: [
+        E.TEText(`Contract parameter ${name} was already defined`),
+        E.TEText(`New definition:`),
+        E.TECode(next),
+        E.TEText(`Previously defined at:`),
+        E.TECode(prev),
+    ],
+});
+const ENoInitializerParams = (
+    loc: Ast.Loc,
+): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Contract parameters cannot have an initializer`),
+    ],
+});
+const ENoInitializerEmpty = (
+    loc: Ast.Loc,
+): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`When there is no init() or contract parameters, all fields must have an initializer`),
+    ],
+});
 
 function* getMethodsFromContract(
     typeName: Ast.TypeId,
@@ -76,16 +193,17 @@ function* getMethodsFromContract(
 }
 
 function* getFieldishFromContract(
-    typeName: string,
+    typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
+    init: Ast.InitSig,
     constants: readonly Ast.FieldConstant[],
     fields: readonly Ast.FieldDecl[],
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.DecodedExpression>>>>> {
+): E.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.Value>>>>> {
     const res = yield* getFieldishGeneral(typeName, traits, constants, fields, scopeRef);
     
     const order: string[] = [];
-    const map: Map<string, Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.DecodedExpression>>>> = new Map();
+    const map: Map<string, Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.Value>>>> = new Map();
     for (const name of res.order) {
         const field = res.map.get(name);
         if (!field) {
@@ -104,9 +222,31 @@ function* getFieldishFromContract(
         }
     }
 
-    return { order, map };
+    if (init.kind === 'simple') {
+        const map: Map<string, Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.Value>>>> = new Map();
+        if (order.length !== 0) {
+            yield EFieldsTwice(init.loc);
+        }
+        for (const [name, param] of init.fill.map) {
+            order.push(name);
+            map.set(name, Ast.DeclMem(
+                Ast.InhFieldSig(param.type, param.init),
+                Ast.ViaMemberOrigin(typeName.text, param.loc),
+            ));
+        }
+        return { order: init.fill.order, map };
+    } else {
+        return { order, map };
+    }
 }
-
+const EFieldsTwice = (
+    loc: Ast.Loc,
+): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Cannot define other fields when using contract parameters`),
+    ],
+});
 const EAbstract = (
     kind: string,
     name: string,

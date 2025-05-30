@@ -12,6 +12,10 @@ export type SelfType =
 
 export type MethodGroundType =
     | MGTypeRef
+    | MGTypeMap
+    | MGTypeMaybe
+    | MGTypeTuple
+    | MGTypeTensor
     | MGTypeInt
     | MGTypeSlice
     | MGTypeCell
@@ -22,11 +26,7 @@ export type MethodGroundType =
     | MGTypeBool
     | MGTypeAddress
     | MGTypeString
-    | MGTypeStringBuilder
-    | MGTypeMap
-    | MGTypeMaybe
-    | MGTypeTuple
-    | MGTypeTensor;
+    | MGTypeStringBuilder;
 
 export type Ground<T> = T & {
     readonly ground: "yes",

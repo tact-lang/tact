@@ -3,7 +3,7 @@ import * as E from "@/next/types/errors";
 import { zip } from "@/utils/array";
 import { throwInternal } from "@/error/errors";
 import { decodeFnType } from "@/next/types/type-fn";
-import { dealiasTypeLazy } from "@/next/types/type";
+import { decodeDealiasTypeLazy } from "@/next/types/type";
 import { decodeBody } from "@/next/types/body";
 import { builtinMethods } from "@/next/types/builtins";
 import type { TactSource } from "@/next/imports/source";
@@ -87,12 +87,12 @@ function* decodeExt(
     
     const decodedFn = yield* decodeFnType(type, scopeRef);
 
-    const lazySelf = dealiasTypeLazy(
+    const lazySelf = decodeDealiasTypeLazy(
         decodedFn.typeParams,
         selfType,
         scopeRef,
     );
-    const self = yield* toSelfType(yield* lazySelf(), scopeRef);
+    const self = yield* decodeSelfType(yield* lazySelf(), scopeRef);
 
     if (!self) {
         return undefined;
@@ -206,7 +206,7 @@ function allEqual(
     return zip(prevs, nexts).every(([prev, next]) => areEqual(prev, next));
 }
 
-function* toSelfType(
+function* decodeSelfType(
     type: Ast.DecodedType,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.SelfType | undefined> {

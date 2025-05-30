@@ -70,6 +70,7 @@ export type InitFunction = {
 export type InitParams = {
     readonly kind: "init_params";
     readonly params: readonly FieldDecl[];
+    readonly loc: Loc;
 };
 
 export type Trait = {

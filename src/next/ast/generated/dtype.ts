@@ -31,9 +31,9 @@ export const DTypeMaybe = (type_: $.DecodedType, loc: $c.Loc): $.DTypeMaybe => O
 });
 export const isDTypeMaybe = ($value: DTypeMaybe) => $value.kind === "TypeMaybe";
 export type DTypeBounced = $.DTypeBounced;
-export const DTypeBounced = (type_: $.DecodedType, loc: $c.Loc): $.DTypeBounced => Object.freeze({
+export const DTypeBounced = (name: $c.TypeId, loc: $c.Loc): $.DTypeBounced => Object.freeze({
     kind: "TypeBounced",
-    type: type_,
+    name,
     loc
 });
 export const isDTypeBounced = ($value: DTypeBounced) => $value.kind === "TypeBounced";

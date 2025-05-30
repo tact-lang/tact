@@ -15,7 +15,7 @@ export const decodeTypeLazy = (
     scopeRef().typeDecls,
 ));
 
-export const dealiasTypeLazy = (
+export const decodeDealiasTypeLazy = (
     typeParams: Ast.TypeParams,
     type: Ast.Type,
     scopeRef: () => Ast.Scope,
@@ -25,13 +25,45 @@ export const dealiasTypeLazy = (
         type,
         scopeRef().typeDecls,
     );
-    return yield* dealiasType(
+    return yield* dealiasTypeAux(
         decoded,
         scopeRef().typeDecls,
     );
 });
 
-function decodeType(
+export function* dealiasType(
+    type: Ast.DecodedType,
+    scopeRef: () => Ast.Scope,
+) {
+    return yield* dealiasTypeAux(
+        type,
+        scopeRef().typeDecls,
+    );
+}
+
+export function* decodeTypeMap(
+    typeParams: Ast.TypeParams,
+    type: Ast.TypeMap,
+    scopeRef: () => Ast.Scope,
+) {
+    const { typeDecls } = scopeRef();
+    const key = yield* decodeType(typeParams, type.key, typeDecls);
+    const value = yield* decodeType(typeParams, type.value, typeDecls);
+    return Ast.DTypeMap(key, value, type.loc);
+}
+
+export function* decodeTypeSet(
+    typeParams: Ast.TypeParams,
+    type: Ast.TypeMap,
+    scopeRef: () => Ast.Scope,
+) {
+    const { typeDecls } = scopeRef();
+    const key = yield* decodeType(typeParams, type.key, typeDecls);
+    const value = yield* decodeType(typeParams, type.value, typeDecls);
+    return Ast.DTypeMap(key, value, type.loc);
+}
+
+export function decodeType(
     typeParams: Ast.TypeParams,
     type: Ast.Type,
     typeDecls: ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>,
@@ -75,13 +107,27 @@ function decodeType(
                 return Ast.DTypeTensor(result, type.loc);
             }
             case "map_type": {
+                // NB! modify along with decodeTypeMap above
                 const key = yield* rec(type.key);
                 const value = yield* rec(type.value);
                 return Ast.DTypeMap(key, value, type.loc);
             }
             case "TypeBounced": {
                 const child = yield* rec(type.type);
-                return Ast.DTypeBounced(child, type.loc);
+                if (child.kind !== 'type_ref' || child.typeArgs.length > 0) {
+                    yield EBouncedMessage(type.loc);
+                    return Ast.DTypeRecover();
+                }
+                const typeEntry = typeDecls.get(child.name.text);
+                if (!typeEntry) {
+                    yield EBouncedMessage(type.loc);
+                    return Ast.DTypeRecover();
+                } else if (typeEntry.decl.kind === 'message') {
+                    return Ast.DTypeBounced(child.name, type.loc);
+                } else {
+                    yield EBouncedMessage(type.loc);
+                    return Ast.DTypeRecover();
+                }
             }
             case "TypeMaybe": {
                 const child = yield* rec(type.type);
@@ -168,6 +214,15 @@ const getArity = (decl: Ast.TypeDeclSig): number => {
     }
 }
 
+const EBouncedMessage = (
+    loc: Ast.Loc,
+): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Only message types can be bounced<>`),
+    ],
+});
+
 const ETypeNotFound = (
     name: string,
     loc: Ast.Loc,
@@ -212,7 +267,7 @@ const ETraitNotType = (
     ],
 });
 
-const dealiasType = (
+const dealiasTypeAux = (
     type: Ast.DecodedType,
     typeDecls: ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>,
 ) => {
@@ -246,10 +301,6 @@ const dealiasType = (
                 const value = yield* rec(type.value);
                 return Ast.DTypeMap(key, value, type.loc);
             }
-            case "TypeBounced": {
-                const args = yield* rec(type.type);
-                return Ast.DTypeBounced(args, type.loc);
-            }
             case "TypeMaybe": {
                 const args = yield* rec(type.type);
                 return Ast.DTypeMaybe(args, type.loc);
@@ -272,7 +323,8 @@ const dealiasType = (
             case "TypeBool":
             case "TypeAddress":
             case "TypeString":
-            case "TypeStringBuilder": {
+            case "TypeStringBuilder":
+            case "TypeBounced": {
                 return type;
             }
         }
@@ -320,10 +372,6 @@ const substitute = (
                 const value = rec(type.value);
                 return Ast.DTypeMap(key, value, type.loc);
             }
-            case "TypeBounced": {
-                const args = rec(type.type);
-                return Ast.DTypeBounced(args, type.loc);
-            }
             case "TypeMaybe": {
                 const args = rec(type.type);
                 return Ast.DTypeMaybe(args, type.loc);
@@ -347,7 +395,8 @@ const substitute = (
             case "TypeBool":
             case "TypeAddress":
             case "TypeString":
-            case "TypeStringBuilder": {
+            case "TypeStringBuilder":
+            case "TypeBounced": {
                 return type;
             }
         }
@@ -356,10 +405,133 @@ const substitute = (
     return rec(type);
 };
 
+export function* instantiateStruct(
+    typeName: Ast.TypeId,
+    typeArgs: readonly Ast.DecodedType[],
+    // NB! these are type params from enclosing scope
+    typeParams: Ast.TypeParams,
+    scopeRef: () => Ast.Scope,
+): E.WithLog<undefined | { type: Ast.DTypeRef, fields: Ast.Ordered<Ast.InhFieldSig> }> {
+    const decl = scopeRef().typeDecls.get(typeName.text);
+    switch (decl?.decl.kind) {
+        case undefined: {
+            yield ENoSuchType(typeName.text, typeName.loc);
+            return undefined;
+        }
+        case "contract": {
+            // TODO: support Foo { } syntax for contracts
+            yield ENotInstantiable(typeName.text, typeName.loc);
+            return undefined;
+        }
+        case "trait":
+        case "union": {
+            yield ENotInstantiable(typeName.text, typeName.loc);
+            return undefined;
+        }
+        case "struct":
+        case "message": {
+            const declArity = decl.decl.kind === "message"
+                ? 0
+                : decl.decl.typeParams.order.length;
+            const useArity = typeArgs.length;
+            if (declArity !== useArity) {
+                yield ETypeArity(
+                    typeName.text,
+                    typeName.loc,
+                    declArity,
+                    useArity,
+                );
+                return undefined;
+            }
+            return {
+                type: Ast.DTypeRef(typeName, typeArgs, typeName.loc),
+                fields: decl.decl.fields
+            };
+        }
+        case "alias": {
+            const declArity = decl.decl.typeParams.order.length;
+            const useArity = typeArgs.length;
+            if (declArity !== useArity) {
+                yield ETypeArity(
+                    typeName.text,
+                    typeName.loc,
+                    declArity,
+                    useArity,
+                );
+                return undefined;
+            }
+            const type = yield* dealiasType(
+                Ast.DTypeAliasRef(typeName, typeArgs, typeName.loc),
+                scopeRef,
+            );
+            if (type.kind !== 'type_ref') {
+                yield ENotInstantiable(typeName.text, typeName.loc);
+                return undefined;
+            }
+            return yield* instantiateStruct(
+                type.name,
+                type.typeArgs,
+                typeParams,
+                scopeRef,
+            );
+        }
+    }
+}
+const ENoSuchType = (name: string, loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Type ${name} is not defined`),
+    ],
+});
+const ENotInstantiable = (name: string, loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Cannot create value of type ${name}`),
+    ],
+});
+const ETypeArity = (name: string, loc: Ast.Loc, declArity: number, useArity: number): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Type ${name} expects ${declArity} arguments, got ${useArity}`),
+    ],
+});
+
 export function* assignType(
     ascribed: Ast.DecodedType,
     computed: Ast.DecodedType,
     scopeRef: () => Ast.Scope,
-) {
+): E.WithLog<boolean> {
 
+}
+
+export function* mgu(
+    left: Ast.DecodedType,
+    right: Ast.DecodedType,
+    scopeRef: () => Ast.Scope,
+): E.WithLog<Ast.DecodedType> {
+    // left = simplifyHead(left);
+    // right = simplifyHead(right);
+    // if (left.kind === 'ERROR' || right.kind === 'ERROR') {
+    //     return Ty.TypeErrorRecovered();
+    // }
+    // if (left.kind === 'type_var' || right.kind === 'type_var') {
+    //     return throwInternal("Trying to unify type variable");
+    // }
+    // const children: MismatchTree[] = [];
+    // if (assignToAux1(left, right, children)) {
+    //     return left;
+    // }
+    // if (assignToAux1(right, left, children)) {
+    //     return right;
+    // }
+    // if (isNull(right)) {
+    //     return Maybe(left, loc);
+    // }
+    // if (isNull(left)) {
+    //     return Maybe(right, loc);
+    // }
+    // for (const tree of children) {
+    //     err.typeMismatch(tree)(loc);
+    // }
+    // return Ty.TypeErrorRecovered();
 }

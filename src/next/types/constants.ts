@@ -48,11 +48,16 @@ function* decodeConstant(
     if (init.kind === "constant_decl") {
         yield ETopLevelDecl(loc);
         const type = function*() { return Ast.DTypeRecover(); };
-        const expr = function*() { return Ast.DNull(type, Ast.Builtin()); };
+        const expr = function*() { return Ast.VNumber(0n, constant.loc); };
         return Ast.ConstSig(expr, type);
     } else {
         const typeParams = Ast.TypeParams([], new Set());
-        const [type, expr] = decodeConstantDef(typeParams, init, scopeRef);
+        const [type, expr] = decodeConstantDef(
+            typeParams,
+            init,
+            scopeRef,
+            undefined,
+        );
         return Ast.ConstSig(expr, type);
     }
 }

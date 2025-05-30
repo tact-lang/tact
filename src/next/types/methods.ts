@@ -7,8 +7,9 @@ import { decodeFnType } from "@/next/types/type-fn";
 import { checkMethodOverride } from "@/next/types/override";
 import { decodeExpr } from "@/next/types/expression";
 import { crc16 } from "@/utils/crc16";
-import { tactMethodIds } from "@/next/types/builtins";
+import { Int, tactMethodIds } from "@/next/types/builtins";
 import { evalExpr } from "@/next/types/expr-eval";
+import { assignType } from "@/next/types/type";
 
 export function* getMethodsGeneral(
     typeName: Ast.TypeId,
@@ -66,12 +67,15 @@ export function* getMethodsGeneral(
             )
             : undefined;
         const getMethodId = decodeGetLazy(
+            decodedFn.typeParams, // FIXME: should `get` really get access to them?
             name,
             get,
             scopeRef,
+            selfType,
         );
-
-        // check for abstract
+        if (getMethodId && decodedFn.typeParams.order.length > 0) {
+            yield EGenericGetter(loc);
+        }
 
         const prevInh = inherited.get(name.text);
         if (prevInh) {
@@ -109,37 +113,50 @@ export function* getMethodsGeneral(
 
     return all;
 }
+const EGenericGetter = (loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Getter method cannot be generic`),
+    ],
+});
 
 function decodeGetLazy(
+    typeParams: Ast.TypeParams, 
     fnName: Ast.Id,
     get: Ast.GetAttribute | undefined,
     scopeRef: () => Ast.Scope,
+    selfType: Ast.SelfType,
 ): undefined | Ast.Lazy<bigint> {
     if (!get) {
         return undefined;
     }
-    return Ast.Lazy(() => decodeGet(fnName, get, scopeRef));
+    return Ast.Lazy(() => decodeGet(
+        typeParams, 
+        fnName, 
+        get, 
+        scopeRef, 
+        selfType,
+    ));
 }
 
 function* decodeGet(
+    typeParams: Ast.TypeParams,
     fnName: Ast.Id,
     get: Ast.GetAttribute,
     scopeRef: () => Ast.Scope,
+    selfType: Ast.SelfType,
 ): E.WithLog<bigint> {
     if (get.methodId) {
-        // decode expression
-        const exprLazy = decodeExpr(get.methodId, scopeRef);
-        
-        // force computation
-        const expr = yield* exprLazy();
-
-        // check type of expression
-        const type = yield* expr.computedType();
-
-        if (type.kind === 'TyInt') {
-            // evaluate expression
+        const expr = yield* decodeExpr(
+            typeParams,
+            get.methodId,
+            scopeRef,
+            selfType,
+            new Map(),
+        );
+        const type = expr.computedType;
+        if (yield* assignType(Int, type, scopeRef)) {
             const methodId = yield* evalExpr(expr, scopeRef);
-            
             if (
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 methodId.kind === 'number' &&
@@ -147,7 +164,6 @@ function* decodeGet(
             ) {
                 return methodId.value;
             }
-
             // if evaluation failed, fallthrough to computing it
         } else {
             // TODO: yield EMismatch();
@@ -156,10 +172,8 @@ function* decodeGet(
 
     // compute method id out of function name
     const methodId = BigInt((crc16(fnName.text) & 0xffff) | 0x10000);
-    
     // just in case
     yield* checkMethodId(methodId, fnName.loc);
-
     return methodId;
 }
 

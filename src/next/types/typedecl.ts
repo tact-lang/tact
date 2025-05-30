@@ -2,10 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
-import { builtinTypes } from "@/next/types/builtins";
 import type { TactSource } from "@/next/imports/source";
+import { builtinTypes } from "@/next/types/builtins";
 import { decodeAlias } from "@/next/types/alias";
 import { decodeContract } from "@/next/types/contract";
+import { decodeTrait } from "@/next/types/trait";
+import { decodeStruct } from "@/next/types/struct";
+import { decodeMessage } from "@/next/types/message";
+import { decodeUnion } from "@/next/types/union";
 
 const errorKind = 'type';
 
@@ -28,7 +32,7 @@ export function* decodeTypeDecls(
             return new Map([[
                 decl.name.text,
                 Ast.Decl(
-                    yield* decodeTypeDecl(decl, source, scopeRef),
+                    yield* decodeTypeDecl(decl, scopeRef),
                     via,
                 ),
             ]]);
@@ -60,7 +64,6 @@ export function* decodeTypeDecls(
 
 function* decodeTypeDecl(
     decl: Ast.TypeDecl,
-    source: TactSource,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.TypeDeclSig> {
     switch (decl.kind) {
@@ -71,20 +74,16 @@ function* decodeTypeDecl(
             return yield* decodeContract(decl, scopeRef);
         }
         case "trait": {
-            throw new Error();
-            // return Ast.DeclSig('contract', 0, via);
-        }
-        case "message_decl": {
-            throw new Error();
-            // return Ast.DeclSig('usual', 0, via);
+            return yield* decodeTrait(decl, scopeRef);
         }
         case "struct_decl": {
-            throw new Error();
-            // return Ast.DeclSig('usual', decl.typeParams.length, via);
+            return yield* decodeStruct(decl, scopeRef);
+        }
+        case "message_decl": {
+            return yield* decodeMessage(decl, scopeRef);
         }
         case "union_decl": {
-            throw new Error();
-            // return Ast.DeclSig('usual', decl.typeParams.length, via);
+            return yield* decodeUnion(decl, scopeRef);
         }
     }
 }

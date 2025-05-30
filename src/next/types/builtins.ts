@@ -66,7 +66,7 @@ export const StringBuilder = Ast.TypeStringBuilder(r);
 export const MapType = (k: Ast.DecodedType, v: Ast.DecodedType) => Ast.DTypeMap(k, v, r);
 export const Maybe = (t: Ast.DecodedType) => Ast.DTypeMaybe(t, r)
 export const Unit = Ast.TypeUnit(r);
-export const StateInit = Ast.TypeCons(Ast.TypeId("StateInit", r), [], r);
+export const StateInit = Ast.DTypeRef(Ast.TypeId("StateInit", r), [], r);
 
 export const builtinTypes = new Map([
     "Int", "Slice", "Cell", "Builder", "Void", "Null", "Bool",
@@ -109,8 +109,9 @@ export const builtinFunctions: Map<string, Ast.DecodedFnType> = new Map([
     Fn("ascii", { str: String }, Int),
     // crc32(str: String): Int
     Fn("crc32", { str: String }, Int),
-    // sha256(data: Slice): Int
-    Fn("sha256", { str: Slice }, Int),
+    // don't forget about our best friend, sha256
+    // it is the only overloaded function in the language
+    // sha256(data: Slice | String): Int
 ]);
 
 export const builtinMethods: Map<string, Ast.DecodedMethodType> = new Map([
