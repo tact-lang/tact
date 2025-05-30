@@ -538,16 +538,15 @@ Read more about them in their dedicated section: [Internal functions](/book/func
 
 :::
 
-### Converting to Cell or Slice
+### Operations
+
+#### Converting to Cell or Slice {#tocellslice}
 
 <Badge text="Available since Tact 1.6.12" variant="tip" size="medium"/><p/>
 
-You can convert a contract instance to a [`Cell{:tact}`](/book/cells#cells) or [`Slice{:tact}`](/book/cells#slices) using the `toCell(){:tact}` and `toSlice(){:tact}` methods.
-These methods will build a new `Cell{:tact}` or `Slice{:tact}` with the contract data.
+You can convert a contract instance to a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] using the [`toCell(){:tact}`][ct-tc] and [`toSlice(){:tact}`][ct-ts] methods. These methods will build a new `Cell{:tact}` or `Slice{:tact}` with the contract data.
 
 ```tact
-// ...
-
 contract WalletV4(
     seqno: Int as uint32,
     walletId: Int as int32,
@@ -576,7 +575,7 @@ This is useful when you need to explicitly set data of your contract for low lev
 
 :::note
 
-    If a contract doesn't use [contract parameters](/book/contracts#parameters), the resulting `Cell{:tact}` or `Slice{:tact}` will contain a leading one bit representing the [lazy initialization bit](/book/functions/#init).
+  If a contract doesn't use [contract parameters](/book/contracts#parameters), the resulting `Cell{:tact}` or `Slice{:tact}` will contain a leading one bit representing the [lazy initialization bit](/book/functions/#init).
 
 :::
 
@@ -587,8 +586,48 @@ This is useful when you need to explicitly set data of your contract for low lev
 
 :::
 
+#### Obtaining from Cell or Slice {#fromcellslice}
+
+<Badge text="Available since Tact 1.6.13" variant="tip" size="medium"/><p/>
+
+If you have a contract data [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] with composed using the [`toCell{:tact}` or `toSlice{:tact}` methods](#tocellslice), you can obtain the initial contract [struct](/book/structs-and-messages#structs) back with the respective [`fromCell(){:tact}`][ct-fc] and [`fromSlice(){:tact}`][ct-fs] functions. These functions would parse a given `Cell{:tact}` or `Slice{:tact}` and produce a struct with contract variables.
+
+```tact
+contract PointCaller(
+    x: Int as uint32,
+    y: Int as uint32,
+) {
+    receive(msg: NewContractData) {
+        let contractStruct = PointCaller.fromCell(msg.cell);
+        self.x = contractStruct.x;
+        self.y = contractStruct.y;
+    }
+
+    get fun inverseLaw(): Bool {
+        let contractStruct = PointCaller.fromCell(self.toCell());
+        let contractCell = self.toCell();
+
+        return contractStruct.toCell() == contractCell; // always true
+    }
+}
+
+message NewContractData {
+    // Can be obtained with a call to PointCaller.toCell()
+    cell: Cell;
+}
+```
+
+:::note[Useful links:]
+
+  [`Contract.fromCell(){:tact}` in Core library][ct-fc]\
+  [`Contract.fromSlice(){:tact}` in Core library][ct-fs]
+
+:::
+
 [p]: /book/types#primitive-types
 [int]: /book/integers
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices
 [trait]: /book/types#traits
 
 [compute]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
@@ -598,3 +637,5 @@ This is useful when you need to explicitly set data of your contract for low lev
 
 [ct-tc]: /ref/core-cells#contracttocell
 [ct-ts]: /ref/core-cells#contracttoslice
+[ct-fc]: /ref/core-cells#contractfromcell
+[ct-fs]: /ref/core-cells#contractfromslice
