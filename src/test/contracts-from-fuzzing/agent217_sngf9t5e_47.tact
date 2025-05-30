@@ -1,0 +1,1 @@
+fun x(): Int { return 5 } fun y(): Int { return 10 }

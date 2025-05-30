@@ -1,0 +1,3 @@
+contract OptionalUninit {
+  count: Int?;
+}

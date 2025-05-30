@@ -1,0 +1,18 @@
+contract LongParams(
+    p1: Int,
+    p2: Bool,
+    p3: Address,
+    p4: String,
+    p5: Int?,
+    p6: Bool?,
+    p7: Cell,
+    p8: Slice,
+    p9: String?,
+    p10: Address,
+    p11: Int,
+    p12: Bool,
+    p13: Int?,
+    p14: String,
+    p15: Int,
+    p16: Bool
+) {}

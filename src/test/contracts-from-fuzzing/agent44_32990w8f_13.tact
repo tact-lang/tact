@@ -1,0 +1,1 @@
+contract MyContract(x: map<Int, Int,>) {}

@@ -1,0 +1,3 @@
+contract DefaultOptField {
+  a: Int?;
+}

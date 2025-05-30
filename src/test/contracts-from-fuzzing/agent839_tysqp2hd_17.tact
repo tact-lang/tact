@@ -1,0 +1,18 @@
+contract ManyParams(
+    a0: Int,
+    a1: Int?,
+    a2: Bool,
+    a3: Bool?,
+    a4: Address,
+    a5: Address?,
+    a6: String,
+    a7: String?,
+    a8: Int,
+    a9: Int?,
+    a10: Bool,
+    a11: Bool?,
+    a12: Address,
+    a13: Address?,
+    a14: String,
+    a15: String?,
+) {}

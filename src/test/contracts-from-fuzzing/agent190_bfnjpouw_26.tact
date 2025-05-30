@@ -1,0 +1,18 @@
+contract TestParams(
+    a: Int,
+    b: Int as uint32,
+    c: Int?,
+    d: Int? as uint32,
+    e: Bool,
+    f: Bool?,
+    g: Address,
+    h: Address?,
+    i: Cell,
+    j: Cell?,
+    k: Slice,
+    l: Slice?,
+    m: String,
+    n: String?,
+    o: Int as uint64,
+    p: Int? as uint64,
+) {}

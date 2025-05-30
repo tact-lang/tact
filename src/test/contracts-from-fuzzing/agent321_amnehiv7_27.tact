@@ -1,0 +1,9 @@
+contract ManyOptionals(
+  a: Int?,
+  b: Bool?,
+  c: Address?,
+  d: String?,
+  e: Cell?,
+  f: Int?,
+  g: Cell?,
+) {}

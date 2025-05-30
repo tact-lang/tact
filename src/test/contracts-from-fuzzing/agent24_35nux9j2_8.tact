@@ -1,0 +1,1 @@
+contract A { get fun foo() {} }

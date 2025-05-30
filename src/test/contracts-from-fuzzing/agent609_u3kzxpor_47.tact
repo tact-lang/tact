@@ -1,0 +1,3 @@
+contract ParamsWithBool(
+    flag: Bool
+) {}

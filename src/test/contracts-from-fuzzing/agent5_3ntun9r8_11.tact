@@ -1,0 +1,1 @@
+contract MyContract { const A: Int = 1; }

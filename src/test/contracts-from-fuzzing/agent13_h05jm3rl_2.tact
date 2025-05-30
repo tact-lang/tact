@@ -1,0 +1,1 @@
+asm fun addOne(a: Int): Int { 1 PUSHINT ADD }

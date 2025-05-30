@@ -1,0 +1,32 @@
+contract TestContract {
+    f1: Int = 1;
+    f2: Int = 2;
+    f3: Bool = true;
+    f4: String = "a";
+    f5: Bool = false;
+    f6: String = "b";
+    f7: Int = 7;
+    f8: Int = 8;
+    f9: Int = 9;
+    f10: Bool = true;
+    f11: Bool = false;
+    f12: String = "c";
+    f13: String = "d";
+    f14: Int = 14;
+    f15: Int = 15;
+    f16: Bool = true;
+    f17: String = "e";
+    f18: Int = 18;
+    f19: Bool = false;
+    f20: Int = 20;
+    f21: String = "f";
+    f22: Bool = true;
+    f23: Int = 23;
+    f24: String = "g";
+    f25: Bool = false;
+    f26: Int = 26;
+    f27: String = "h";
+    f28: Bool = false;
+    f29: Int = 29;
+    f30: String = "i";
+}

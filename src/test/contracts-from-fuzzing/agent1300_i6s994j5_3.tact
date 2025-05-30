@@ -1,0 +1,1 @@
+contract SingleOptInt { value: Int? = null; }

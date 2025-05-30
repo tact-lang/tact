@@ -1,0 +1,1 @@
+contract Test { receive("msg") { let x = --1; } }

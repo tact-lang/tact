@@ -1,0 +1,2 @@
+/* outer /* inner */
+contract X {}

@@ -1,0 +1,20 @@
+contract LongParams(
+    a: Int,
+    b: Int,
+    c: String,
+    d: String,
+    e: Bool,
+    f: Bool,
+    g: Int?,
+    h: String?,
+    i: Bool?,
+    j: Int,
+    k: Int,
+    l: String,
+    m: String,
+    n: Bool,
+    o: Bool,
+    p: Int?,
+    q: String?,
+    r: Bool?
+) {}

@@ -1,0 +1,12 @@
+struct IntSer {
+    a: Int as uint3;
+    b: Int as int5;
+    c: Int as uint8;
+}
+
+contract SerializationTricky {
+    field: IntSer;
+    init() {
+        self.field = IntSer{ a:5, b:-5, c:123 };
+    }
+}

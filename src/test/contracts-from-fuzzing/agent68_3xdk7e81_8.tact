@@ -1,0 +1,10 @@
+trait MyTrait {
+    virtual const MY_FEE: Int = ton("1");
+}
+
+contract MyContract with MyTrait {
+    override const MY_FEE: Int = ton("0.5");
+    fee: Int = self.MY_FEE;
+
+    receive() {}
+}

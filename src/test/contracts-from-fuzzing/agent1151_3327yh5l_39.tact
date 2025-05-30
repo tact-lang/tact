@@ -1,0 +1,3 @@
+contract ImplicitInitWithNull {
+    a: Int?;
+}

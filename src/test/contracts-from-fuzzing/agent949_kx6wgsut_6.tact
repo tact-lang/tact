@@ -1,0 +1,37 @@
+struct DeeplyNested {
+    layer1: Layer1;
+}
+
+struct Layer1 {
+    layer2: Layer2;
+}
+
+struct Layer2 {
+    layer3: Layer3;
+}
+
+struct Layer3 {
+    layer4: Layer4;
+}
+
+struct Layer4 {
+    x: Int;
+}
+
+contract DeepNestTest {
+    data: DeeplyNested;
+
+    init() {
+        self.data = DeeplyNested{
+            layer1: Layer1{
+                layer2: Layer2{
+                    layer3: Layer3{
+                        layer4: Layer4{
+                            x: 999
+                        }
+                    }
+                }
+            }
+        };
+    }
+}

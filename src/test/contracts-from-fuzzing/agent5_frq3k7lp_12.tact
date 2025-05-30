@@ -1,0 +1,1 @@
+asm fun pushOnly(x: Int) { INC }

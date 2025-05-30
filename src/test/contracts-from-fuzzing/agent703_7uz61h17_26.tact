@@ -1,0 +1,3 @@
+contract StringDefault {
+    a: String = "";
+}

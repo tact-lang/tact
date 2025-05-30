@@ -1,0 +1,13 @@
+contract ManyBoolsInts {
+    b1: Bool; b2: Bool; b3: Bool; b4: Bool;
+    b5: Bool; b6: Bool; b7: Bool; b8: Bool;
+    i1: Int; i2: Int; i3: Int; i4: Int;
+    i5: Int; i6: Int; i7: Int; i8: Int;
+
+    init() {
+        self.b1=true;self.b2=false;self.b3=true;self.b4=false;
+        self.b5=true;self.b6=false;self.b7=true;self.b8=false;
+        self.i1=1;self.i2=2;self.i3=3;self.i4=4;
+        self.i5=5;self.i6=6;self.i7=7;self.i8=8;
+    }
+}

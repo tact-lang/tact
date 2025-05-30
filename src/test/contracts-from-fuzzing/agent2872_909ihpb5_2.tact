@@ -1,0 +1,3 @@
+contract OptionalImplicit {
+  foo: Int?;
+}

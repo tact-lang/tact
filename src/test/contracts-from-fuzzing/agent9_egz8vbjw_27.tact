@@ -1,0 +1,1 @@
+contract X { fun get():Int { return 1; } }

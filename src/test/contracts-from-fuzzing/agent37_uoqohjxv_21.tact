@@ -1,0 +1,2 @@
+contract Broken( /* nothing */ ) {
+}

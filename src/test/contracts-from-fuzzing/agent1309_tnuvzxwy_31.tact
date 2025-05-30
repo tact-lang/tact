@@ -1,0 +1,3 @@
+contract EmptyStructInit {
+    init() {}
+}

@@ -1,0 +1,10 @@
+contract ContractParamsExample(
+    foo: Int,
+    bar: Bool,
+    baz: String,
+    addr: Address,
+    optInt: Int?,
+    optBool: Bool?,
+    optStr: String?,
+    optAddr: Address?,
+) {}

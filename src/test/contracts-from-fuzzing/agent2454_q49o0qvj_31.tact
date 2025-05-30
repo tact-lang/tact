@@ -1,0 +1,10 @@
+contract ParamContract(
+    val1: Int,
+    val2: Int,
+    flag: Bool,
+    text: String,
+    addr: Address,
+    optInt: Int?,
+    optBool: Bool?,
+    optStr: String?
+) {}

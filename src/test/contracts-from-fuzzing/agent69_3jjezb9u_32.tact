@@ -1,0 +1,1 @@
+contract A() { receive() { let x = ((((5)))); } }

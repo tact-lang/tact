@@ -1,0 +1,18 @@
+contract BigFlat(
+    a: Int,
+    b: Bool,
+    c: String,
+    d: Address,
+    e: Cell,
+    f: Slice,
+    g: Builder,
+    h: Int as uint8,
+    i: Int as int64,
+    j: Int?,
+    k: Bool?,
+    l: String?,
+    m: Address?,
+    n: Slice?,
+    o: Builder?,
+    p: Cell?,
+) {}

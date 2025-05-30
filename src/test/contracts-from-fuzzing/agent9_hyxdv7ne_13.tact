@@ -1,0 +1,1 @@
+asm(-> 1 0) extends mutates fun loadRefNew(self: Slice): Cell { LDREF }

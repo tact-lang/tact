@@ -1,0 +1,5 @@
+contract TestReceiver {
+    receive() {
+         return;
+    }
+}

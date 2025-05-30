@@ -1,0 +1,1 @@
+contract TestStringHash { receive() { let hashResult: Int = "Sample string".hashData(); } }

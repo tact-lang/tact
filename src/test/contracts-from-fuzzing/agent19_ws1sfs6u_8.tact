@@ -1,0 +1,1 @@
+asm fun quotesTest(): Cell { "PUSHINT" }

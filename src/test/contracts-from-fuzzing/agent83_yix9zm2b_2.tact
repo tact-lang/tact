@@ -1,0 +1,1 @@
+contract X { receive() { if true { dump(1); } } }

@@ -1,0 +1,12 @@
+contract BigOptionalStructParam(
+    param: Int?,
+    param2: String?,
+    param3: Bool?,
+    param4: Address?,
+    param5: Int?,
+    param6: String?,
+    param7: Bool?,
+    param8: Address?,
+    param9: Int?,
+    param10: String? 
+) {}

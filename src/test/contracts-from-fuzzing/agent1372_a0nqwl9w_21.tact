@@ -1,0 +1,10 @@
+contract ParamOptionalCombo(
+    a: Int?,
+    b: Bool?,
+    c: String?,
+    d: Cell?,
+    e: Int,
+    f: Bool,
+    g: String,
+    h: Cell,
+) {}

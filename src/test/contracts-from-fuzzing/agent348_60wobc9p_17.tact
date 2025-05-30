@@ -1,0 +1,17 @@
+contract ManyParams(
+    a: Int,
+    b: Bool,
+    c: String,
+    d: Int?,
+    e: Bool,
+    f: Address,
+    g: Int,
+    h: String,
+    i: Bool?,
+    j: Int,
+    k: String,
+    l: Bool,
+    m: Address,
+    n: Int?,
+    o: Bool
+) {}

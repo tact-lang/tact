@@ -1,0 +1,5 @@
+contract NoPersistent {
+    init() {
+        // nothing
+    }
+}

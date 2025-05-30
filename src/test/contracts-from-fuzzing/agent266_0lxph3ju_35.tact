@@ -1,0 +1,1 @@
+fun foo() {} @interface("X") contract X {}
