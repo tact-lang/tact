@@ -2,6 +2,17 @@ import "./constants";
 import "./messages";
 import "./item";
 
+struct Content {
+    collectionContent: Cell;
+    nftContent: Cell;
+}
+
+struct NFTContent {
+    tag: Int as uint8;
+    commonContent: Slice;
+    individualNFTContent: Cell;
+}
+
 contract NFTCollection {
     owner: Address;
     nextItemIndex: Int as uint64; // IndexSizeBits = 64
@@ -80,10 +91,9 @@ contract NFTCollection {
     }
 
     get fun get_collection_data(): CollectionData {
-        let cs: Slice = self.content.beginParse();
         return CollectionData {
             nextItemIndex: self.nextItemIndex,
-            collectionContent: cs.loadRef(),
+            collectionContent: Content.fromCell(self.content).collectionContent,
             owner: self.owner,
         };
     }
@@ -97,15 +107,14 @@ contract NFTCollection {
         return self.royaltyParams;
     }
 
-    get fun get_nft_content(index: Int, individualNFTContent: Cell): Cell {
-        let cs = self.content.beginParse();
-        cs.skipRef();
-        let commonContent = cs.loadRef().beginParse();
-        return beginCell()
-            .storeUint(1, 8) // off-chain tag
-            .storeSlice(commonContent)
-            .storeRef(individualNFTContent)
-            .endCell();
+    get fun get_nft_content(index: Int, individualNFTContent: Cell): NFTContent {
+        let commonContent = Content.fromCell(self.content).nftContent.asSlice();
+
+        return NFTContent {
+            tag: 1,
+            commonContent,
+            individualNFTContent,
+        };
     }
 }
 

@@ -189,6 +189,16 @@
         "deploy nft": "10335",
         "batch deploy nft": "654266"
       }
+    },
+    {
+      "label": "1.6.12 with idiomatic structs handling",
+      "pr": "https://github.com/tact-lang/tact/pull/3299",
+      "gas": {
+        "transfer": "6839",
+        "get static data": "4336",
+        "deploy nft": "10335",
+        "batch deploy nft": "654266"
+      }
     }
   ]
 }

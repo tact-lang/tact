@@ -17,16 +17,17 @@ contract NFTItem(
     receive(msg: GetStaticData) {
         throwUnless(NotInit, self.owner != null);
 
-        sendMsg(
-            sender(),
-            0,
-            ReportStaticData,
-            msg.queryId,
-            beginCell()
-                .storeUint(self.itemIndex, 256)
-                .storeAddress(self.collectionAddress),
-            SendRemainingValue,
-        ); // implementation detail
+        message(MessageParameters {
+            bounce: false,
+            to: sender(),
+            value: 0,
+            body: ReportStaticData {
+                queryId: msg.queryId,
+                itemIndex: self.itemIndex,
+                collectionAddress: self.collectionAddress,
+            }.toCell(),
+            mode: SendRemainingValue,
+        });
     }
 
     receive(msg: Slice) {
@@ -67,28 +68,30 @@ contract NFTItem(
         throwUnless(InvalidFees, restAmount >= 0);
 
         if (msg.forwardAmount > 0) {
-            sendMsg(
-                msg.newOwner,
-                msg.forwardAmount,
-                OwnershipAssigned,
-                msg.queryId,
-                beginCell()
-                    .storeAddress(self.owner!!)
-                    .storeSlice(msg.forwardPayload),
-                SendPayFwdFeesSeparately,
-            );
+            message(MessageParameters {
+                bounce: false,
+                to: msg.newOwner,
+                value: msg.forwardAmount,
+                body: OwnershipAssigned {
+                    queryId: msg.queryId,
+                    newOwner: self.owner!!,
+                    forwardPayload: msg.forwardPayload,
+                }.toCell(),
+                mode: SendPayFwdFeesSeparately,
+            });
         }
 
         if (needResponse) {
             forceBasechain(msg.responseDestination!!);
-            sendMsg(
-                msg.responseDestination!!,
-                restAmount,
-                Excesses,
-                msg.queryId,
-                beginCell(),
-                SendPayFwdFeesSeparately,
-            );
+            message(MessageParameters {
+                bounce: false,
+                to: msg.responseDestination!!,
+                value: restAmount,
+                body: ExcessOut {
+                    queryId: msg.queryId,
+                }.toCell(),
+                mode: SendPayFwdFeesSeparately,
+            });
         }
 
         self.owner = msg.newOwner;
@@ -103,18 +106,4 @@ contract NFTItem(
             content: self.content,
         };
     }
-}
-
-inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, payload: Builder, sendMode: Int) {
-    message(MessageParameters {
-        bounce: false,
-        to: toAddress,
-        value: amount,
-        body: beginCell()
-            .storeUint(op, 32)
-            .storeUint(queryId, 64)
-            .storeBuilder(payload)
-            .endCell(),
-        mode: sendMode,
-    });
 }
