@@ -62,8 +62,8 @@ Allowed value types:
 * [`Bool{:tact}`](/book/types#booleans)
 * [`Cell{:tact}`][cell]
 * [`Address{:tact}`][p]
-* any [struct][struct] type (Note: while structs can be values in maps, using them directly in [map literals](#initialize) is currently unsupported)
-* any [Message][message] type
+* any [struct][struct] type, except for [map literals](#initialize)
+* any [Message][message] type, except for [map literals](#initialize)
 
 Neither key nor value types can be made [optional](/book/optionals).
 
@@ -146,7 +146,7 @@ map<K, V> { key1: value1, key2: value2, /* ... */, keyN: valueN };
 Map literals are expressions that provide a concise and gas-effective way to create maps. First goes the `map<K, V>{:tact}` type expression, then a curly-brace enclosed comma-delimited list of zero or more predefined key-value pairs.
 
 :::note
-While `struct` types are generally allowed as map values (see [Allowed value types](#allowed-types)), they are currently **not supported** directly within map literals. Attempting to use a `struct` as a value in a map literal will result in a compiler error.
+  While [struct][struct] and [message struct][message] types are generally [allowed as map values](#allowed-types), they are currently **not supported** within map literals. Attempts to use them as such lead to compilation errors.
 :::
 
 ```tact
