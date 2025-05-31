@@ -260,7 +260,7 @@ statement
 statements = "{" @statement* "}";
 
 StatementLet        = keyword<"let"> name:Id type:ascription? "=" init:expression semicolon;
-StatementDestruct   = keyword<"let"> type:TypeId "{" fields:inter<destructItem, ","> rest:optionalRest "}" "=" init:expression semicolon;
+StatementDestruct   = keyword<"let"> type:TypeId typeArgs:typeArgs? "{" fields:inter<destructItem, ","> rest:optionalRest "}" "=" init:expression semicolon;
 StatementBlock      = body:statements;
 StatementReturn     = keyword<"return"> expression:expression? semicolon;
 StatementExpression = expression:expression semicolon;

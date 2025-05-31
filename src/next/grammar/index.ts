@@ -718,25 +718,18 @@ const parseDestructItem: (
 const parseStatementDestruct =
     ({
         type,
+        typeArgs,
         fields,
         rest,
         init,
         loc,
     }: $ast.StatementDestruct): Handler<Ast.StatementDestruct> =>
     (ctx) => {
-        const ids: Map<string, [Ast.Id, Ast.OptionalId]> = new Map();
-        for (const param of parseList(fields)) {
-            const pair = parseDestructItem(param)(ctx);
-            const [field] = pair;
-            const name = field.text;
-            if (ids.has(name)) {
-                ctx.err.duplicateField(name)(ctx.toRange(param.loc));
-            }
-            ids.set(name, pair);
-        }
+        const ids = map(parseList(fields), parseDestructItem)(ctx);
 
         return Ast.StatementDestruct(
             parseTypeId(type)(ctx),
+            map(parseList(typeArgs), parseType)(ctx),
             ids,
             rest.$ === "RestArgument",
             parseExpression(init)(ctx),

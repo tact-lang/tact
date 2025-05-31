@@ -1,5 +1,5 @@
-import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
+import type * as Ast from "@/next/ast";
+// import * as E from "@/next/types/errors";
 
 export type TlbType =
     | TlbInt

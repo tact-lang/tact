@@ -53,6 +53,7 @@ function* decodeConstant(
     } else {
         const typeParams = Ast.TypeParams([], new Set());
         const [type, expr] = decodeConstantDef(
+            loc,
             typeParams,
             init,
             scopeRef,

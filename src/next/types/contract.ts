@@ -10,6 +10,7 @@ import { getReceivers } from "@/next/types/receivers";
 import { decodeDealiasTypeLazy, decodeTypeLazy } from "@/next/types/type";
 import { decodeParams } from "@/next/types/type-fn";
 import { decodeStatements } from "@/next/types/statements";
+import { Void } from "@/next/types/builtins";
 
 export function* decodeContract(
     contract: Ast.Contract,
@@ -23,7 +24,11 @@ export function* decodeContract(
     // to compute fields for empty init, we need to know contentLazy
     // to check init body in initLazy we have to know `self` from contentLazy
 
-    const decodedInit = yield* decodeInit(init, () => contentLazy(), scopeRef);
+    const decodedInit = yield* decodeInit(
+        init,
+        () => contentLazy(),
+        scopeRef,
+    );
 
     // delayed until we get all traits and init
     const contentLazy: Ast.Lazy<Ast.ContractContent> = Ast.Lazy(function* () {
@@ -35,6 +40,7 @@ export function* decodeContract(
         // const contentRef = () => content;
         const content: Ast.ContractContent = {
             fieldish: yield* getFieldishFromContract(
+                contractSig,
                 name,
                 traits,
                 decodedInit,
@@ -43,6 +49,7 @@ export function* decodeContract(
                 scopeRef,
             ),
             methods: yield* getMethodsFromContract(
+                contractSig,
                 name,
                 traits,
                 methods,
@@ -59,10 +66,13 @@ export function* decodeContract(
         return content;
     });
 
-    return Ast.ContractSig(attributes, decodedInit, contentLazy);
+    const contractSig = Ast.ContractSig(attributes, decodedInit, contentLazy);
+
+    return contractSig;
 }
 
 function* decodeInit(
+    selfType: Ast.SelfType,
     init: Ast.Init | undefined,
     contentLazy: Ast.Lazy<Ast.ContractContent>,
     scopeRef: () => Ast.Scope,
@@ -130,9 +140,20 @@ function* decodeInit(
             return decodeDealiasTypeLazy(typeParams, type, scopeRef);
         }, params);
 
-        const body = decodeStatements(statements, scopeRef);
+        const body = yield* decodeStatements(
+            statements,
+            typeParams,
+            selfType,
+            Void,
+            yield* getRequired(selfType),
+            scopeRef,
+        );
 
-        return Ast.InitFn(decodedParams, body);
+        // TODO: make Lazy a builder
+        // (Lazy: LazyBuilder)
+        // Lazy(`body of ${name}`, function* (Lazy) { ... })
+
+        return Ast.InitFn(decodedParams, body.node);
     }
 }
 const EDuplicateParam = (
@@ -166,13 +187,70 @@ const ENoInitializerEmpty = (
     ],
 });
 
+function* getRequired(selfType: Ast.SelfType | undefined): E.WithLog<undefined | Set<string>> {
+    if (!selfType) {
+        return new Set();
+    }
+    const required: Set<string> = new Set();
+    switch (selfType.kind) {
+        case "type_ref": {
+            switch (selfType.type.kind) {
+                case "contract":
+                case "trait": {
+                    const { fieldish } = (yield* selfType.type.content());
+                    for (const [name, field] of fieldish.map) {
+                        if (field.decl.kind === 'field' && !field.decl.init) {
+                            required.add(name)
+                        }
+                    }
+                    return required;
+                }
+                case "struct":
+                case "message":
+                case "union": {
+                    // no requirement to fill self on these, because they have
+                    // no init()
+                    return required;
+                }
+            }
+            // linter needs this
+            return required;
+        }
+        case "map_type":
+        case "TypeMaybe":
+        case "tuple_type":
+        case "tensor_type":
+        case "TyInt":
+        case "TySlice":
+        case "TyCell":
+        case "TyBuilder":
+        case "unit_type":
+        case "TypeVoid":
+        case "TypeNull":
+        case "TypeBool":
+        case "TypeAddress":
+        case "TypeString":
+        case "TypeStateInit":
+        case "TypeStringBuilder": {
+            return undefined;
+        }
+    }
+}
+
 function* getMethodsFromContract(
+    contractSig: Ast.ContractSig,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
     methods: readonly Ast.Method[],
     scopeRef: () => Ast.Scope
 ): E.WithLog<ReadonlyMap<string, Ast.DeclMem<Ast.MethodSig<Ast.Body>>>> {
-    const res = yield* getMethodsGeneral(typeName, traits, methods, scopeRef);
+    const res = yield* getMethodsGeneral(
+        contractSig,
+        typeName, 
+        traits, 
+        methods, 
+        scopeRef,
+    );
 
     const map: Map<string, Ast.DeclMem<Ast.MethodSig<Ast.Body>>> = new Map();
     for (const [name, { via, decl: method }] of res) {
@@ -193,6 +271,7 @@ function* getMethodsFromContract(
 }
 
 function* getFieldishFromContract(
+    contractSig: Ast.ContractSig,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
     init: Ast.InitSig,
@@ -200,7 +279,14 @@ function* getFieldishFromContract(
     fields: readonly Ast.FieldDecl[],
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.Value>>>>> {
-    const res = yield* getFieldishGeneral(typeName, traits, constants, fields, scopeRef);
+    const res = yield* getFieldishGeneral(
+        contractSig,
+        typeName, 
+        traits, 
+        constants, 
+        fields, 
+        scopeRef,
+    );
     
     const order: string[] = [];
     const map: Map<string, Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.Value>>>> = new Map();

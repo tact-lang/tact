@@ -3,6 +3,7 @@
 import { throwInternal } from "@/error/errors";
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
+import { printType } from "@/next/types/type-print";
 import { zip } from "@/utils/array";
 
 // type C<T> = map<int4, T>
@@ -536,67 +537,216 @@ const ETypeArity = (name: string, loc: Ast.Loc, declArity: number, useArity: num
 });
 
 export function* assignType(
-    ascribed: Ast.DecodedType,
-    computed: Ast.DecodedType,
-    scopeRef: () => Ast.Scope,
+    loc: Ast.Loc,
+    to: Ast.DecodedType,
+    from: Ast.DecodedType,
 ): E.WithLog<boolean> {
-    // export type MismatchTree = {
-    //     readonly to: Ty.LocType;
-    //     readonly from: Ty.LocType;
-    //     readonly children: MismatchTree[];
-    // }
-    // switch (to.kind) {
-    //     case 'TyBuilder':
-    //     case 'TyCell':
-    //     case 'TyInt':
-    //     case 'TySlice':
-    //     case "unit_type": {
-    //         return from.kind === to.kind;
-    //     }
-    //     case "tuple_type":
-    //     case "tensor_type": {
-    //         return from.kind === to.kind && assignAll(to.typeArgs, from.typeArgs, tree);
-    //     }
-    //     case "map_type": {
-    //         return isNull(from)
-    //             || from.kind === 'map_type' && assignToAux1(to.key, from.key, tree) && assignToAux1(to.value, from.value, tree);
-    //     }
-    //     case 'cons_type': {
-    //         return hasTypeParam(to.name.text) && to.typeArgs.length === 0
-    //             || to.name.text === 'Maybe' && isNull(from)
-    //             || from.kind === 'cons_type' && to.name.text === from.name.text && assignAll(to.typeArgs, from.typeArgs, tree);
-    //     }
-    // }
+    const result = assignTypeAux(to, from);
+    if (result.kind === 'failure') {
+        yield EMismatch(result.tree, loc);
+        return false;
+    }
+    return true;
 }
+
+type AssignResult = AssignSuccess | AssignFailure
+type AssignSuccess = {
+    readonly kind: 'success';
+}
+const AssignSuccess = (): AssignSuccess => Object.freeze({ kind: 'success' });
+type AssignFailure = {
+    readonly kind: 'failure';
+    readonly tree: E.MatchTree;
+}
+const AssignFailure = (tree: E.MatchTree): AssignFailure => Object.freeze({ kind: 'failure', tree });
+
+type Log = Generator<E.MatchTree, boolean>;
+
+function assignTypeAux(
+    to: Ast.DecodedType,
+    from: Ast.DecodedType,
+) {
+    function* recN(
+        tos: readonly Ast.DecodedType[], 
+        froms: readonly Ast.DecodedType[],
+    ): Log {
+        if (tos.length !== froms.length) {
+            return throwInternal("Arg count does not match after type decoding");
+        }
+        let result = true;
+        for (const [to, from] of zip(tos, froms)) {
+            const res = yield* rec(to, from);
+            // NB! cannot merge into one line, otherwise it will
+            //     short-circuit
+            result &&= res;
+        }
+        return result;
+    }
+
+    function* rec(
+        to: Ast.DecodedType, 
+        from: Ast.DecodedType,
+    ): Log {
+        const result = collectMismatches(to, from);
+        if (result.kind === 'failure') {
+            yield result.tree;
+            return false;
+        }
+        return true;
+    }
+
+    function collectMismatches(
+        to: Ast.DecodedType, 
+        from: Ast.DecodedType,
+    ): AssignResult {
+        const gen = check(to, from);
+        const results: E.MatchTree[] = [];
+        for (; ;) {
+            const res = gen.next();
+            if (!res.done) {
+                // collect all errors (if any)
+                results.push(res.value);
+                continue;
+            }
+            if (!results.length) {
+                return AssignSuccess();
+            }
+            const toStr = printType(to, false);
+            const fromStr = printType(from, false);
+            if (!toStr || !fromStr) {
+                // if types have errors, we don't print the error
+                // because it resulted from another error
+                return AssignSuccess();
+            }
+            return AssignFailure(E.MatchTree(to, from, results));
+        }
+    }
+
+    function* check(
+        to: Ast.DecodedType, 
+        from: Ast.DecodedType,
+    ): Log {
+        if (from.kind === 'TypeAlias') {
+            if (from.type.kind === 'NotDealiased') {
+                return throwInternal("Decoder returned aliased type");
+            }
+            from = from.type;
+            return yield* rec(to, from);
+        }
+        switch (to.kind) {
+            case "recover": {
+                return true;
+            }
+            case "TypeAlias": {
+                if (to.type.kind === 'NotDealiased') {
+                    return throwInternal("Decoder returned aliased type");
+                }
+                to = to.type;
+                return yield* rec(to, from);
+            }
+            case "type_ref": {
+                return to.kind === from.kind &&
+                    to.name.text === from.name.text &&
+                    (yield* recN(to.typeArgs, from.typeArgs));
+            }
+            case "tuple_type":
+            case "tensor_type": {
+                return to.kind === from.kind &&
+                    (yield* recN(to.typeArgs, from.typeArgs));
+            }
+            case "TypeParam": {
+                return to.kind === from.kind &&
+                    to.name.text === from.name.text;
+                }
+            case "TypeBounced": {
+                return to.kind === from.kind &&
+                    to.name.text === from.name.text;
+            }
+            case "TypeMaybe": {
+                return from.kind === 'TypeNull' ||
+                    to.kind === from.kind &&
+                    (yield* rec(to.type, from.type));
+            }
+            case "map_type": {
+                return from.kind === 'TypeNull' ||
+                    to.kind === from.kind &&
+                    (yield* rec(to.key, from.key)) && 
+                    (yield* rec(to.value, from.value));
+            }
+            case "TyInt":
+            case "TySlice":
+            case "TyCell":
+            case "TyBuilder":
+            case "unit_type":
+            case "TypeVoid":
+            case "TypeNull":
+            case "TypeBool":
+            case "TypeAddress":
+            case "TypeStateInit":
+            case "TypeString":
+            case "TypeStringBuilder": {
+                return from.kind === to.kind;
+            }
+        }
+    }
+
+    return collectMismatches(to, from);
+}
+const EMismatch = (tree: E.MatchTree, loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Type mismatch`),
+        E.TEMismatch(tree),
+    ],
+});
 
 export function* mgu(
     left: Ast.DecodedType,
     right: Ast.DecodedType,
-    scopeRef: () => Ast.Scope,
+    loc: Ast.Loc,
 ): E.WithLog<Ast.DecodedType> {
-    // left = simplifyHead(left);
-    // right = simplifyHead(right);
-    // if (left.kind === 'ERROR' || right.kind === 'ERROR') {
-    //     return Ty.TypeErrorRecovered();
-    // }
-    // if (left.kind === 'type_var' || right.kind === 'type_var') {
-    //     return throwInternal("Trying to unify type variable");
-    // }
-    // const children: MismatchTree[] = [];
-    // if (assignToAux1(left, right, children)) {
-    //     return left;
-    // }
-    // if (assignToAux1(right, left, children)) {
-    //     return right;
-    // }
-    // if (isNull(right)) {
-    //     return Maybe(left, loc);
-    // }
-    // if (isNull(left)) {
-    //     return Maybe(right, loc);
-    // }
-    // for (const tree of children) {
-    //     err.typeMismatch(tree)(loc);
-    // }
-    // return Ty.TypeErrorRecovered();
+    function* rec(
+        left: Ast.DecodedType,
+        right: Ast.DecodedType,
+    ): E.WithLog<Ast.DecodedType> {
+        if (right.kind === 'TypeAlias') {
+            if (right.type.kind === 'NotDealiased') {
+                return throwInternal("Decoder returned aliased type");
+            }
+            right = right.type;
+            return yield* rec(left, right);
+        }
+        if (left.kind === 'TypeAlias') {
+            if (left.type.kind === 'NotDealiased') {
+                return throwInternal("Decoder returned aliased type");
+            }
+            left = left.type;
+            return yield* rec(left, left);
+        }
+        const resultL = assignTypeAux(left, right);
+        if (resultL.kind === 'success') {
+            return left;
+        }
+        const resultR = assignTypeAux(right, left);
+        if (resultR.kind === 'success') {
+            return right;
+        }
+        if (right.kind === 'TypeNull') {
+            return Ast.DTypeMaybe(left, loc);
+        }
+        if (left.kind === 'TypeNull') {
+            return Ast.DTypeMaybe(right, loc);
+        }
+        yield ENotUnifiable(resultL.tree, loc);
+        return Ast.DTypeRecover();
+    }
+
+    return yield* rec(left, right);
 }
+const ENotUnifiable = (tree: E.MatchTree, loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Branches of condition have mismatched types`),
+        E.TEMismatch(tree),
+    ],
+});

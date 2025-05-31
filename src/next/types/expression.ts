@@ -92,9 +92,9 @@ const decodeMapCons: Decode<Ast.MapLiteral, Ast.DMapLiteral> = function* (node, 
     const ascribed = yield* decodeTypeMap(ctx.typeParams, node.type, ctx.scopeRef);
     const fields = yield* E.mapLog(node.fields, function* (field) {
         const key = yield* decodeExprCtx(field.key, ctx);
-        yield* assignType(ascribed.key, key.computedType, ctx.scopeRef);
+        yield* assignType(field.key.loc, ascribed.key, key.computedType);
         const value = yield* decodeExprCtx(field.value, ctx);
-        yield* assignType(ascribed.value, value.computedType, ctx.scopeRef);
+        yield* assignType(field.value.loc, ascribed.value, value.computedType);
         return Ast.DMapField(key, value);
     });
     return Ast.DMapLiteral(ascribed, fields, node.loc);
@@ -114,6 +114,7 @@ const decodeStructCons: Decode<Ast.StructInstance, Ast.DStructInstance> = functi
         ctx.typeParams,
         ctx.scopeRef,
     );
+    // see checkFields in statement.ts
     const fields = yield* checkFields(
         instance?.fields,
         node.args,
@@ -147,9 +148,9 @@ function* checkFields(
             const typeField = typeFields.map.get(fieldName);
             if (typeField) {
                 yield* assignType(
+                    expr.loc,
                     yield* typeField.type(),
                     expr.computedType,
-                    ctx.scopeRef,
                 );
             } else {
                 yield ENoSuchField(fieldName, arg.loc);
@@ -327,10 +328,10 @@ const decodeUnary: Decode<Ast.OpUnary, Ast.DOpUnary> = function* (node, ctx) {
 
 const decodeTernary: Decode<Ast.Conditional, Ast.DConditional> = function* (node, ctx) {
     const condition = yield* decodeExprCtx(node.condition, ctx);
-    yield* assignType(Bool, condition.computedType, ctx.scopeRef);
+    yield* assignType(condition.loc, Bool, condition.computedType);
     const thenBranch = yield* decodeExprCtx(node.thenBranch, ctx);
     const elseBranch = yield* decodeExprCtx(node.elseBranch, ctx);
-    const commonType = yield* mgu(thenBranch.computedType, elseBranch.computedType, ctx.scopeRef);
+    const commonType = yield* mgu(thenBranch.computedType, elseBranch.computedType, node.loc);
     return Ast.DConditional(condition, thenBranch, elseBranch, commonType, node.loc);
 }
 

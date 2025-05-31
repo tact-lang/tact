@@ -81,7 +81,7 @@ function* decodeOpcode(
             new Map(),
         );
         const computed = expr.computedType;
-        if (yield* assignType(Int, computed, scopeRef)) {
+        if (yield* assignType(opcode.loc, Int, computed)) {
             const result = yield* evalExpr(expr, scopeRef);
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (result.kind === 'number') {

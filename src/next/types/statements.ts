@@ -4,26 +4,29 @@
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
 import { throwInternal } from "@/error/errors";
-import { Bool, builtinAugmented, Int } from "@/next/types/builtins";
+import { Bool, builtinAugmented, Int, Void } from "@/next/types/builtins";
 import { decodeExprCtx } from "@/next/types/expression";
 import { convertExprToLValue } from "@/next/types/lvalue";
-import { assignType, decodeType } from "@/next/types/type";
+import { assignType, dealiasType, decodeType, decodeTypeLazy } from "@/next/types/type";
 import { getCallResult } from "@/next/types/type-fn";
 
 export function decodeStatements(
     statements: readonly Ast.Statement[],
+    typeParams: Ast.TypeParams,
+    selfType: undefined | Ast.SelfType,
+    returnType: Ast.DecodedType,
+    required: undefined | ReadonlySet<string>,
     scopeRef: () => Ast.Scope,
-): readonly Ast.DecodedStatement[] {
-    const context: Context = {
-        scopeRef,
-        localScopeRef,
-        required: getRequired(selfType),
-        selfType,
+) {
+    const ctx: Context = {
+        localScopeRef: new Map(),
+        required,
         returnType,
+        scopeRef,
+        selfType,
         typeParams,
     };
-    yield* rec(statements, context, emptyEff);
-    return [];
+    return rec(statements, ctx, emptyEff);
 }
 
 const rec: Decode<
@@ -75,56 +78,6 @@ const Effects = (
     returnOrThrow: boolean,
     setSelfPaths: ReadonlySet<string>,
 ): Effects => Object.freeze({ returnOrThrow, setSelfPaths })
-
-function* getRequired(selfType: Ast.SelfType | undefined): E.WithLog<undefined | Set<string>> {
-    if (!selfType) {
-        return new Set();
-    }
-    const required: Set<string> = new Set();
-    switch (selfType.kind) {
-        case "type_ref": {
-            switch (selfType.type.kind) {
-                case "contract":
-                case "trait": {
-                    const { fieldish } = (yield* selfType.type.content());
-                    for (const [name, field] of fieldish.map) {
-                        if (field.decl.kind === 'field' && !field.decl.init) {
-                            required.add(name)
-                        }
-                    }
-                    return required;
-                }
-                case "struct":
-                case "message":
-                case "union": {
-                    // no requirement to fill self on these, because they have
-                    // no init()
-                    return required;
-                }
-            }
-            // linter needs this
-            return required;
-        }
-        case "map_type":
-        case "TypeMaybe":
-        case "tuple_type":
-        case "tensor_type":
-        case "TyInt":
-        case "TySlice":
-        case "TyCell":
-        case "TyBuilder":
-        case "unit_type":
-        case "TypeVoid":
-        case "TypeNull":
-        case "TypeBool":
-        case "TypeAddress":
-        case "TypeString":
-        case "TypeStateInit":
-        case "TypeStringBuilder": {
-            return undefined;
-        }
-    }
-}
 
 const emptyEff: Effects = Object.freeze({
     returnOrThrow: false,
@@ -253,7 +206,6 @@ const EShadowConst = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => 
     ],
 });
 
-
 const decodeStatement: Decode<Ast.Statement, Ast.DecodedStatement> = function (stmt, ctx, eff) {
     switch (stmt.kind) {
         case "statement_let": return decodeLet(stmt, ctx, eff);
@@ -277,7 +229,7 @@ const decodeLet: Decode<Ast.StatementLet, Ast.DStatementLet> = function* (node, 
     const result = Ast.DStatementLet(node.name, expr, node.loc);
     if (node.type) {
         const ascribed = yield* decodeType(ctx.typeParams, node.type, ctx.scopeRef().typeDecls)
-        yield* assignType(ascribed, expr.computedType, ctx.scopeRef);
+        yield* assignType(expr.loc, ascribed, expr.computedType);
         const newCtx = yield* defineVar(node.name, ascribed, ctx);
         return Result(result, newCtx, eff);
     } else {
@@ -290,9 +242,10 @@ const decodeReturn: Decode<Ast.StatementReturn, Ast.DStatementReturn> = function
     const newEff = yield* setHadExit(eff, true, ctx.required, node.loc);
     if (node.expression) {
         const expr = yield* decodeExprCtx(node.expression, ctx);
-        yield* assignType(ctx.returnType, expr.computedType, ctx.scopeRef);
+        yield* assignType(expr.loc, ctx.returnType, expr.computedType);
         return Result(Ast.DStatementReturn(expr, node.loc), ctx, newEff);
     } else {
+        yield* assignType(node.loc, ctx.returnType, Void);
         return Result(Ast.DStatementReturn(undefined, node.loc), ctx, newEff);
     }
 };
@@ -312,7 +265,7 @@ const decodeAssign: Decode<Ast.StatementAssign, Ast.DStatementAssign | Ast.DStat
     const left = yield* decodeExprCtx(node.path, ctx);
     const path = yield* convertExprToLValue(left);
     if (path) {
-        yield* assignType(path.computedType, right.computedType, ctx.scopeRef);
+        yield* assignType(path.loc, path.computedType, right.computedType);
         const newEff = yield* setHadAssign(eff, path);
         return Result(Ast.DStatementAssign(path, right, node.loc), ctx, newEff);
     } else {
@@ -339,7 +292,7 @@ const decodeAssignAugmented: Decode<Ast.StatementAugmentedAssign, Ast.DStatement
 
 const decodeCondition: Decode<Ast.StatementCondition, Ast.DStatementCondition> = function* (node, ctx, eff) {
     const condition = yield* decodeExprCtx(node.condition, ctx);
-    yield* assignType(Bool, condition.computedType, ctx.scopeRef);
+    yield* assignType(condition.loc, Bool, condition.computedType);
     const trueRes = yield* rec(node.trueStatements, ctx, eff);
     if (node.falseStatements) {
         const falseRes = yield* rec(node.falseStatements, ctx, eff);
@@ -353,7 +306,7 @@ const decodeCondition: Decode<Ast.StatementCondition, Ast.DStatementCondition> =
 
 const decodeWhile: Decode<Ast.StatementWhile, Ast.DStatementWhile> = function* (node, ctx, eff) {
     const condition = yield* decodeExprCtx(node.condition, ctx);
-    yield* assignType(Bool, condition.computedType, ctx.scopeRef);
+    yield* assignType(condition.loc, Bool, condition.computedType);
     const result = yield* rec(node.statements, ctx, eff);
     // might be executed zero times, so it doesn't matter
     // if it always returns, or assigns to `self`
@@ -362,7 +315,7 @@ const decodeWhile: Decode<Ast.StatementWhile, Ast.DStatementWhile> = function* (
 
 const decodeUntil: Decode<Ast.StatementUntil, Ast.DStatementUntil> = function* (node, ctx, eff) {
     const condition = yield* decodeExprCtx(node.condition, ctx);
-    yield* assignType(Bool, condition.computedType, ctx.scopeRef);
+    yield* assignType(condition.loc, Bool, condition.computedType);
     const result = yield* rec(node.statements, ctx, eff);
     // until executes its body at least once
     return Result(Ast.DStatementUntil(condition, result.node, node.loc), ctx, result.effects);
@@ -370,7 +323,7 @@ const decodeUntil: Decode<Ast.StatementUntil, Ast.DStatementUntil> = function* (
 
 const decodeRepeat: Decode<Ast.StatementRepeat, Ast.DStatementRepeat> = function* (node, ctx, eff) {
     const iterations = yield* decodeExprCtx(node.iterations, ctx);
-    yield* assignType(Int, iterations.computedType, ctx.scopeRef);
+    yield* assignType(iterations.loc, Int, iterations.computedType);
     const result = yield* rec(node.statements, ctx, eff);
     // might be executed zero times, so it doesn't matter
     // if it always returns, or assigns to `self`
@@ -425,15 +378,155 @@ function* defineForVars(
     }
 }
 
-const decodeDestruct: Decode<Ast.StatementDestruct, Ast.DStatementDestruct> = function* (node, ctx, eff) {
+const decodeDestruct: Decode<Ast.StatementDestruct, Ast.DStatementDestruct | Ast.DStatementExpression> = function* (node, ctx, eff) {
     const expr = yield* decodeExprCtx(node.expression, ctx);
-    node.identifiers // defineVar each, ReadonlyMap -> Ordered, assignType like in decodeStructCons
-    node.ignoreUnspecifiedFields // throw if #identifier != declTypes.get(node.type).fields.filter(x => x.kind === 'field').length
-    node.type // assignType(ascribed, expr.computedType)
+
+    const typeArgs = yield* E.mapLog(node.typeArgs, function* (arg) {
+        return yield* decodeTypeLazy(ctx.typeParams, arg, ctx.scopeRef)();
+    });
+
+    const decl = yield* findStruct(node.type, typeArgs, ctx.scopeRef);
+    if (!decl) {
+        return Result(Ast.DStatementExpression(expr, node.loc), ctx, eff);
+    }
+
+    const ascribed = Ast.DTypeRef(node.type, decl, typeArgs, node.loc);
+    yield* assignType(node.loc, ascribed, expr.computedType);
+    
+    // see checkFields in expression.ts
+    const [fields, newCtx] = yield* checkFields(
+        node.loc,
+        node.identifiers, 
+        decl.fields, 
+        node.ignoreUnspecifiedFields,
+        ctx,
+    );
+
+    return Result(Ast.DStatementDestruct(node.type, fields, node.ignoreUnspecifiedFields, expr, node.loc), newCtx, eff);
 };
+function* checkFields(
+    nodeLoc: Ast.Loc,
+    stmtFields: readonly (readonly [Ast.Id, Ast.OptionalId])[],
+    declFields: Ast.Ordered<Ast.InhFieldSig>,
+    ignoreUnspecifiedFields: boolean,
+    ctx: Context,
+): E.WithLog<readonly [Ast.Ordered<Ast.DestructPattern>, Context]> {
+    const order: string[] = [];
+    const map: Map<string, [Ast.DestructPattern, Ast.Loc]> = new Map();
+    for (const [field, variable] of stmtFields) {
+        const fieldName = field.text;
+        const prev = map.get(fieldName);
+        if (prev) {
+            const [, prevLoc] = prev;
+            yield EDuplicateField(fieldName, prevLoc, field.loc);
+            continue;
+        }
+        
+        const decl = declFields.map.get(fieldName);
+        if (!decl) {
+            yield ENoSuchField(fieldName, field.loc);
+            continue;
+        }
+
+        order.push(fieldName);
+
+        map.set(fieldName, [Ast.DestructPattern(
+            field,
+            variable,
+        ), field.loc]);
+
+        ctx = yield* defineVar(
+            variable, 
+            yield* decl.type(), 
+            ctx
+        );
+    }
+
+    if (!ignoreUnspecifiedFields) {
+        for (const fieldName of declFields.order) {
+            if (!map.has(fieldName)) {
+                yield EMissingField(fieldName, nodeLoc);
+            }
+        }
+    }
+
+    const result = new Map(
+        [...map].map(([name, [pattern]]) => [name, pattern])
+    );
+    return [Ast.Ordered(order, result), ctx];
+}
+const EMissingField = (name: string, prev: Ast.Loc): E.TcError => ({
+    loc: prev,
+    descr: [
+        E.TEText(`Value for field "${name}" is missing`),
+        E.TECode(prev),
+    ],
+});
+const ENoSuchField = (name: string, next: Ast.Loc): E.TcError => ({
+    loc: next,
+    descr: [
+        E.TEText(`There is no field "${name}"`),
+        E.TECode(next),
+    ],
+});
+const EDuplicateField = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+    loc: prev,
+    descr: [
+        E.TEText(`Duplicate field "${name}"`),
+        E.TEText(`Defined at:`),
+        E.TECode(next),
+        E.TEText(`Previously defined at:`),
+        E.TECode(prev),
+    ],
+});
+function* findStruct(
+    id: Ast.TypeId,
+    typeArgs: Ast.DecodedType[],
+    scopeRef: () => Ast.Scope,
+) {
+    const decl = scopeRef().typeDecls.get(id.text);
+    if (!decl) {
+        return throwInternal("Bad ref from decoder");
+    }
+    switch (decl.decl.kind) {
+        case "alias": {
+            const type = yield* dealiasType(
+                Ast.DTypeAliasRef(
+                    Ast.NotDealiased(),
+                    id,
+                    typeArgs,
+                    id.loc,
+                ),
+                scopeRef,
+            );
+            if (type.kind === 'type_ref' && (type.type.kind === 'struct' || type.type.kind === 'message')) {
+                return type.type;
+            } else {
+                yield ENotDestructible(id.text, id.loc);
+                return undefined;
+            }
+        }
+        case "contract":
+        case "union":
+        case "trait": {
+            yield ENotDestructible(id.text, id.loc);
+            return undefined;
+        }
+        case "struct":
+        case "message": {
+            return decl.decl;
+        }
+    }
+}
+const ENotDestructible = (name: string, prev: Ast.Loc): E.TcError => ({
+    loc: prev,
+    descr: [
+        E.TEText(`Type "${name}" doesn't `),
+        E.TECode(prev),
+    ],
+});
 
 const decodeBlock: Decode<Ast.StatementBlock, Ast.DStatementBlock> = function* (node, ctx, eff) {
-    const [body, bodyCtx] = yield* rec(node.statements, ctx, eff);
-    // TODO: handle return/self bullshit
-    return [Ast.DStatementBlock(body, node.loc), ctx];
+    const result = yield* rec(node.statements, ctx, eff);
+    return Result(Ast.DStatementBlock(result.node, node.loc), ctx, result.effects);
 };

@@ -93,7 +93,8 @@ export const isStatementAugmentedAssign = ($value: StatementAugmentedAssign) =>
 export type StatementDestruct = $.StatementDestruct;
 export const StatementDestruct = (
     type_: $c.TypeId,
-    identifiers: ReadonlyMap<string, readonly [$c.Id, $c.OptionalId]>,
+    typeArgs: readonly $t.Type[],
+    identifiers: readonly (readonly [$c.Id, $c.OptionalId])[],
     ignoreUnspecifiedFields: boolean,
     expression: $e.Expression,
     loc: $c.Loc,
@@ -101,6 +102,7 @@ export const StatementDestruct = (
     Object.freeze({
         kind: "statement_destruct",
         type: type_,
+        typeArgs,
         identifiers,
         ignoreUnspecifiedFields,
         expression,

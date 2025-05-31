@@ -274,6 +274,7 @@ export namespace $ast {
   export type StatementDestruct = $.Located<{
     readonly $: "StatementDestruct";
     readonly type: TypeId;
+    readonly typeArgs: typeArgs | undefined;
     readonly fields: inter<destructItem, ",">;
     readonly rest: optionalRest;
     readonly init: expression;
@@ -583,7 +584,7 @@ export const generic = <T,>(T: $.Parser<T>): $.Parser<$ast.generic<T>> => $.righ
 export const typeParams: $.Parser<$ast.typeParams> = generic(TypeId);
 export const typeArgs: $.Parser<$ast.typeArgs> = generic($type);
 export const StatementLet: $.Parser<$ast.StatementLet> = $.loc($.field($.pure("StatementLet"), "$", $.right(keyword($.str("let")), $.field(Id, "name", $.field($.opt(ascription), "type", $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps))))))));
-export const StatementDestruct: $.Parser<$ast.StatementDestruct> = $.loc($.field($.pure("StatementDestruct"), "$", $.right(keyword($.str("let")), $.field(TypeId, "type", $.right($.str("{"), $.field(inter($.lazy(() => destructItem), $.str(",")), "fields", $.field($.lazy(() => optionalRest), "rest", $.right($.str("}"), $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps)))))))))));
+export const StatementDestruct: $.Parser<$ast.StatementDestruct> = $.loc($.field($.pure("StatementDestruct"), "$", $.right(keyword($.str("let")), $.field(TypeId, "type", $.field($.opt(typeArgs), "typeArgs", $.right($.str("{"), $.field(inter($.lazy(() => destructItem), $.str(",")), "fields", $.field($.lazy(() => optionalRest), "rest", $.right($.str("}"), $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps))))))))))));
 export const StatementBlock: $.Parser<$ast.StatementBlock> = $.loc($.field($.pure("StatementBlock"), "$", $.field($.lazy(() => statements), "body", $.eps)));
 export const StatementReturn: $.Parser<$ast.StatementReturn> = $.loc($.field($.pure("StatementReturn"), "$", $.right(keyword($.str("return")), $.field($.opt($.lazy(() => expression)), "expression", $.right(semicolon, $.eps)))));
 export const StatementCondition: $.Parser<$ast.StatementCondition> = $.loc($.field($.pure("StatementCondition"), "$", $.right(keyword($.str("if")), $.field($.lazy(() => expression), "condition", $.field($.lazy(() => statements), "trueBranch", $.field($.opt($.right(keyword($.str("else")), $.alt($.lazy(() => FalseBranch), $.lazy(() => StatementCondition)))), "falseBranch", $.eps))))));

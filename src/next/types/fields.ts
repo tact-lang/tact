@@ -12,6 +12,7 @@ import { evalExpr } from "@/next/types/expr-eval";
 type MaybeExpr = Ast.Lazy<Ast.Value> | undefined
 
 export function* getFieldishGeneral(
+    traitSigRef: Ast.TraitSig | Ast.ContractSig,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
     constants: readonly Ast.FieldConstant[],
@@ -42,6 +43,7 @@ export function* getFieldishGeneral(
 
     const selfType = Ast.MVTypeRef(
         typeName,
+        traitSigRef,
         [],
         typeName.loc,
     )
@@ -161,7 +163,7 @@ function decodeField(
     scopeRef: () => Ast.Scope,
     selfType: Ast.SelfType,
 ) {
-    const { initializer, name, type, loc } = field;
+    const { initializer, type, loc } = field;
     const nextVia = Ast.ViaMemberOrigin(typeName, loc);
 
     // contracts don't have type parameters
@@ -179,7 +181,7 @@ function decodeField(
             new Map(),
         );
         const computed = expr.computedType;
-        yield* assignType(ascribed, computed, scopeRef);
+        yield* assignType(loc, ascribed, computed);
         return yield* evalExpr(expr, scopeRef);
     });
 
@@ -217,6 +219,7 @@ function* decodeConstant(
         );
     } else {
         const [type, expr] = decodeConstantDef(
+            nextVia.defLoc,
             typeParams,
             init,
             scopeRef,

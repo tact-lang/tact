@@ -1,3 +1,4 @@
+import type { Ordered } from "@/next/ast/checked";
 import type { DecodedExpression, LValue } from "@/next/ast/checked-expr";
 import type { Id, Loc, OptionalId, TypeId } from "@/next/ast/common";
 import type { AugmentedAssignOperation } from "@/next/ast/statement";
@@ -107,11 +108,16 @@ export type DStatementDestruct = {
     readonly kind: "statement_destruct";
     readonly type: TypeId;
     /** field name -> [field id, local id] */
-    readonly identifiers: ReadonlyMap<string, readonly [Id, OptionalId]>;
+    readonly identifiers: Ordered<DestructPattern>;
     readonly ignoreUnspecifiedFields: boolean;
     readonly expression: DecodedExpression;
     readonly loc: Loc;
 };
+
+export type DestructPattern = {
+    readonly field: Id;
+    readonly variable: OptionalId;
+}
 
 export type DStatementBlock = {
     readonly kind: "statement_block";

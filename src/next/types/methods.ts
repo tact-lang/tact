@@ -12,6 +12,7 @@ import { evalExpr } from "@/next/types/expr-eval";
 import { assignType } from "@/next/types/type";
 
 export function* getMethodsGeneral(
+    declSig: Ast.TraitSig | Ast.ContractSig,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
     methods: readonly Ast.Method[],
@@ -50,7 +51,7 @@ export function* getMethodsGeneral(
         const nextVia = Ast.ViaMemberOrigin(typeName.text, loc);
 
         const decodedFn = yield* decodeFnType(type, scopeRef);
-        const selfType = Ast.MVTypeRef(typeName, [], loc);
+        const selfType = Ast.MVTypeRef(typeName, declSig, [], loc);
         const methodType = Ast.DecodedMethodType(
             mutates,
             decodedFn.typeParams,
@@ -155,7 +156,7 @@ function* decodeGet(
             new Map(),
         );
         const type = expr.computedType;
-        if (yield* assignType(Int, type, scopeRef)) {
+        if (yield* assignType(expr.loc, Int, type)) {
             const methodId = yield* evalExpr(expr, scopeRef);
             if (
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

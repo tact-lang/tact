@@ -30,6 +30,7 @@ export function* decodeTrait(
         // const contentRef = () => content;
         const content: Ast.TraitContent = {
             fieldish: yield* getFieldishGeneral(
+                traitSig,
                 name,
                 traits,
                 constants,
@@ -37,6 +38,7 @@ export function* decodeTrait(
                 scopeRef,
             ),
             methods: yield* getMethodsGeneral(
+                traitSig,
                 name,
                 traits,
                 methods,
@@ -53,7 +55,9 @@ export function* decodeTrait(
         return content;
     });
 
-    return Ast.TraitSig(contentLazy);
+    const traitSig = Ast.TraitSig(contentLazy);
+
+    return traitSig;
 }
 
 const ENoAttributes = (

@@ -244,6 +244,7 @@ function* decodeSelfType(
                         }
                         return Ast.MVTypeRef(
                             type.name,
+                            def.decl,
                             allVars,
                             type.loc,
                         );    

@@ -4,6 +4,7 @@ import { decodeExpr } from "@/next/types/expression";
 import { evalExpr } from "@/next/types/expr-eval";
 
 export function decodeConstantDef(
+    defLoc: Ast.Loc,
     typeParams: Ast.TypeParams,
     { type, initializer }: Ast.ConstantDef,
     scopeRef: () => Ast.Scope,
@@ -24,7 +25,7 @@ export function decodeConstantDef(
             );
             const computed = expr.computedType;
             const ascribed = yield* ascribedType();
-            yield* assignType( ascribed, computed, scopeRef);
+            yield* assignType(defLoc, ascribed, computed);
             return yield* evalExpr(expr, scopeRef);
         });
         return [ascribedType, lazyExpr];

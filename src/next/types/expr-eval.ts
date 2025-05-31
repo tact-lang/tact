@@ -7,5 +7,5 @@ export function* evalExpr(
     expr: Ast.DecodedExpression,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.Value> {
-    return Ast.VNumber(0n);
+    return Ast.VNumber(0n, expr.loc);
 }

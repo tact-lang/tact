@@ -1,6 +1,8 @@
 import { throwInternal } from "@/error/errors";
-import type { Loc, Via, ViaMember, ViaUser } from "@/next/ast";
+import type { DecodedType, Loc, Via, ViaMember, ViaUser } from "@/next/ast";
 import type * as V from "@/next/ast/via";
+
+// TODO: move to src/next/ast/ to avoid an extra E.* everywhere
 
 export type WithLog<T> = Generator<TcError, T>
 
@@ -66,35 +68,48 @@ export type TcError = {
     readonly descr: readonly TELine[];
 }
 
-export type TELine = TEText | TEVia | TEViaMember | TECode;
+export type TELine = TEText | TEVia | TEViaMember | TECode | TEMismatch;
 
 export type TEText = {
     readonly kind: 'text';
     readonly text: string;
 }
-
 export const TEText = (text: string): TEText => ({ kind: 'text', text });
 
 export type TEVia = {
     readonly kind: 'via';
     readonly via: V.Via;
 }
-
 export const TEVia = (via: V.Via): TEVia => ({ kind: 'via', via });
 
 export type TEViaMember = {
     readonly kind: 'via-member';
     readonly via: V.ViaMember;
 }
-
 export const TEViaMember = (via: V.ViaMember): TEViaMember => ({ kind: 'via-member', via });
 
 export type TECode = {
     readonly kind: 'code';
     readonly loc: Loc;
 }
-
 export const TECode = (loc: Loc): TECode => ({ kind: 'code', loc });
+
+export type TEMismatch = {
+    readonly kind: 'mismatch';
+    readonly tree: MatchTree;
+}
+export const TEMismatch = (tree: MatchTree): TEMismatch => ({ kind: 'mismatch', tree });
+
+export type MatchTree = {
+    readonly expected: DecodedType;
+    readonly got: DecodedType;
+    readonly children: readonly MatchTree[];
+}
+export const MatchTree = (
+    expected: DecodedType,
+    got: DecodedType,
+    children: readonly MatchTree[],
+): MatchTree => ({ expected, got, children });
 
 export const viaToRange = ({ imports, defLoc: definedAt }: V.ViaUser): Loc => {
     const [head] = imports;

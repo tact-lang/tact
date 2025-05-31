@@ -46,7 +46,7 @@ export function* decodeUnion(
                 );
                 const computed = expr.computedType;
                 const ascribed = yield* ascribedType();
-                yield* assignType( ascribed, computed, scopeRef);
+                yield* assignType(expr.loc, ascribed, computed);
                 return yield* evalExpr(expr, scopeRef);
             }) : undefined;
             const decoded = Ast.InhFieldSig(ascribedType, lazyExpr);

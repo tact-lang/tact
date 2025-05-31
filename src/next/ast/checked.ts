@@ -53,11 +53,13 @@ export type FnSig = {
     readonly body: Body;
 }
 
+export type Statements = Lazy<readonly DecodedStatement[]>;
+
 export type Body = TactBody | FuncBody | FiftBody
 
 export type TactBody = {
     readonly kind: "tact";
-    readonly statements: readonly DecodedStatement[];
+    readonly statements: Statements;
 };
 export type FuncBody = {
     readonly kind: "func";
@@ -102,7 +104,7 @@ export type InitFn = {
     readonly kind: 'function';
     // here we just specify the function
     readonly params: Parameters;
-    readonly statements: readonly DecodedStatement[];
+    readonly statements: Statements;
 }
 export type InitParam = {
     readonly type: Lazy<DecodedType>;
@@ -179,23 +181,23 @@ export type MessageRecv = {
     readonly kind: "binary";
     readonly name: OptionalId;
     readonly type: DTypeRef | DTypeBounced;
-    readonly statements: readonly DecodedStatement[];
+    readonly statements: Statements;
 }
 export type MessageAnyRecv = {
     readonly name: OptionalId;
-    readonly statements: readonly DecodedStatement[];
+    readonly statements: Statements;
 }
 export type StringRecv = {
     readonly kind: "string";
     readonly comment: string;
-    readonly statements: readonly DecodedStatement[];
+    readonly statements: Statements;
 }
 export type StringAnyRecv = {
     readonly name: OptionalId;
-    readonly statements: readonly DecodedStatement[];
+    readonly statements: Statements;
 }
 export type EmptyRecv = {
-    readonly statements: readonly DecodedStatement[];
+    readonly statements: Statements;
 }
 
 export type DeclMem<T> = {

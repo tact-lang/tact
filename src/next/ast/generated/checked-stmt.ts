@@ -3,6 +3,7 @@ import type * as $ from "@/next/ast/checked-stmt";
 import type * as $e from "@/next/ast/checked-expr";
 import type * as $c from "@/next/ast/common";
 import type * as $s from "@/next/ast/statement";
+import type { Ordered } from "@/next/ast/checked";
 
 export type DStatementLet = $.DStatementLet;
 export const DStatementLet = (name: $c.OptionalId, expression: $e.DecodedExpression, loc: $c.Loc): $.DStatementLet => Object.freeze({
@@ -43,8 +44,13 @@ export const DStatementAugmentedAssign = (op: $s.AugmentedAssignOperation, path:
     loc
 });
 export const isDStatementAugmentedAssign = ($value: DStatementAugmentedAssign) => $value.kind === "statement_augmentedassign";
+export type DestructPattern = $.DestructPattern;
+export const DestructPattern = (field: $c.Id, variable: $c.OptionalId): $.DestructPattern => Object.freeze({
+    field,
+    variable,
+});
 export type DStatementDestruct = $.DStatementDestruct;
-export const DStatementDestruct = (type_: $c.TypeId, identifiers: ReadonlyMap<string, readonly [$c.Id, $c.OptionalId]>, ignoreUnspecifiedFields: boolean, expression: $e.DecodedExpression, loc: $c.Loc): $.DStatementDestruct => Object.freeze({
+export const DStatementDestruct = (type_: $c.TypeId, identifiers: Ordered<$.DestructPattern>, ignoreUnspecifiedFields: boolean, expression: $e.DecodedExpression, loc: $c.Loc): $.DStatementDestruct => Object.freeze({
     kind: "statement_destruct",
     type: type_,
     identifiers,

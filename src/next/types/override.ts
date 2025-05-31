@@ -28,9 +28,9 @@ export function* checkFieldOverride(
         } else {
             // overriding constant
             yield* assignType(
+                nextVia.defLoc,
                 yield* prev.decl.type(),
                 yield* nextType(),
-                scopeRef,
             );
         }
     } else {

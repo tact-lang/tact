@@ -119,8 +119,8 @@ export type StatementForEach = {
 export type StatementDestruct = {
     readonly kind: "statement_destruct";
     readonly type: TypeId;
-    /** field name -> [field id, local id] */
-    readonly identifiers: ReadonlyMap<string, readonly [Id, OptionalId]>;
+    readonly typeArgs: readonly Type[];
+    readonly identifiers: readonly (readonly [Id, OptionalId])[];
     readonly ignoreUnspecifiedFields: boolean;
     readonly expression: Expression;
     readonly loc: Loc;
