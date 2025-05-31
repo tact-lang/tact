@@ -55,6 +55,8 @@ export type DTypeRef = {
     readonly name: TypeId;
     readonly type: TypeDeclRefable;
     readonly typeArgs: readonly DecodedType[];
+    // readonly funcType: Lazy<FuncType>;
+    // readonly alloc: Lazy<Allocation>
     readonly loc: Loc;
 };
 

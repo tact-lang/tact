@@ -19,9 +19,7 @@ export const runTest = async (path: string): Promise<string> => {
             }
 
             const tcResult = typecheck(result);
-            types = tcResult.errors.length
-                ? { errors: tcResult.errors }
-                : { scope: tcResult.value };
+            types = tcResult;
         });
     });
     return toJs({ types, result });
