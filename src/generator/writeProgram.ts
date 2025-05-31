@@ -29,12 +29,13 @@ import {
 } from "@/generator/writers/writeContract";
 import { funcInitIdOf } from "@/generator/writers/id";
 import { idToHex } from "@/utils/idToHex";
-import { trimIndent } from "@/utils/text";
 import type { ContractsCodes } from "@/generator/writers/writeContract";
 import { writeTypescriptValue } from "@/generator/writers/writeExpression";
+import type { TypeDescription } from "@/types/types";
 
 export async function writeProgram(
     ctx: CompilerContext,
+    contract: TypeDescription,
     abiSrc: ContractABI,
     basename: string,
     contractCodes: Readonly<ContractsCodes>,
@@ -63,7 +64,7 @@ export async function writeProgram(
         .filter((it) => it.loc.origin === "user")
         .map((it) => ({
             name: it.name,
-            value: writeTypescriptValue(it.value),
+            value: writeTypescriptValue(ctx, it.value, it.type, it.loc),
             fromContract: false,
         }));
 
@@ -106,12 +107,23 @@ export async function writeProgram(
     // stdlib
     //
 
-    const stdlibHeader = trimIndent(`
-        global (int, slice, int, slice) __tact_context;
-        global slice __tact_context_sender;
-        global cell __tact_child_contract_codes;
-        global int __tact_randomized;
-    `);
+    const globalVariables: string[] = [];
+
+    if (contract.globalVariables.has("context")) {
+        globalVariables.push("global (int, slice, int, slice) __tact_context;");
+    }
+    if (contract.globalVariables.has("sender")) {
+        globalVariables.push("global slice __tact_context_sender;");
+    }
+
+    globalVariables.push("global cell __tact_child_contract_codes;");
+    globalVariables.push("global int __tact_randomized;");
+
+    if (contract.globalVariables.has("inMsg")) {
+        globalVariables.push("global slice __tact_in_msg;");
+    }
+
+    const stdlibHeader = globalVariables.join("\n");
 
     const stdlibFunctions = tryExtractModule(functions, "stdlib", []);
     if (stdlibFunctions) {
@@ -193,7 +205,7 @@ export async function writeProgram(
             constants.push(
                 ...t.constants.map((it) => ({
                     name: it.name,
-                    value: writeTypescriptValue(it.value),
+                    value: writeTypescriptValue(ctx, it.value, it.type, it.loc),
                     fromContract: true,
                 })),
             );
@@ -362,13 +374,7 @@ function writeAll(
                 wCtx,
             );
             writeOptionalParser(t.name, t.origin, wCtx);
-            writeBouncedParser(
-                t.name,
-                t.kind === "contract",
-                allocationBounced,
-                t.origin,
-                wCtx,
-            );
+            writeBouncedParser(t, allocationBounced, wCtx);
         }
     }
 

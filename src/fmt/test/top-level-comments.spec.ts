@@ -1,4 +1,4 @@
-import { intact } from "@/fmt/test/helpers";
+import { intact, test } from "@/fmt/test/helpers";
 
 describe("top level declarations comments formatting", () => {
     it(
@@ -9,6 +9,16 @@ describe("top level declarations comments formatting", () => {
 
         fun foo() {}
     `),
+    );
+
+    it(
+        "comments after import",
+        intact(`
+            import "./filename.tact";
+            // text1
+            // text2
+
+        `),
     );
 
     it(
@@ -92,6 +102,26 @@ describe("top level declarations comments formatting", () => {
         } // after struct
 
         struct Bar {}
+    `),
+    );
+
+    it(
+        "comment after last field in struct",
+        intact(`
+        struct RequestBody {
+            field: Address;
+            // Other data fields...
+        }
+    `),
+    );
+
+    it(
+        "comment after last field in message",
+        intact(`
+        message RequestBody {
+            field: Address;
+            // Other data fields...
+        }
     `),
     );
 
@@ -337,5 +367,156 @@ describe("top level declarations comments formatting", () => {
             }
         }
     `),
+    );
+
+    it(
+        "floating comments",
+        intact(`
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+        `),
+    );
+
+    it(
+        "floating comments before declaration",
+        intact(`
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "floating comments between declarations",
+        intact(`
+            fun loge(x: Int): Int {}
+
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "floating comments between declarations without leading newline",
+        intact(`
+            fun loge(x: Int): Int {}
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "several floating comments between declarations",
+        intact(`
+            fun loge(x: Int): Int {}
+
+            // func reference
+
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "several floating comments before declaration",
+        intact(`
+            // func reference
+
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "several floating comments between import and declaration",
+        intact(`
+            import "";
+
+            // func reference
+
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "several floating comments between import and declaration 2",
+        intact(`
+            import "";
+
+            // some reference
+
+            // other reference
+            // with multiline comment
+
+            // bla bla
+
+            // func reference
+
+            // int math::sqrt(int x) inline {
+            //   if (x == 0) { return x; }
+            // }
+
+            fun sqrt(x: Int): Int {}
+        `),
+    );
+
+    it(
+        "several floating comments between import and declaration with several empty lines",
+        test(
+            `
+                import "";
+
+                // func reference
+
+
+                // int math::sqrt(int x) inline {
+                //   if (x == 0) { return x; }
+                // }
+
+                fun sqrt(x: Int): Int {}
+            `,
+            `
+                import "";
+
+                // func reference
+
+                // int math::sqrt(int x) inline {
+                //   if (x == 0) { return x; }
+                // }
+
+                fun sqrt(x: Int): Int {}
+            `,
+        ),
+    );
+
+    it(
+        "trailing comments for last constant without newline",
+        intact(`const FOO: Int = 0; // comment`),
+    );
+
+    it(
+        "trailing comments for last function with newline",
+        intact(`
+            fun bar(); // comment
+        `),
     );
 });

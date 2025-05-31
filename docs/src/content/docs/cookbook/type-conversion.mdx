@@ -22,7 +22,7 @@ extends fun toInt(self: String): Int {
     // Loop until the String is empty
     while (!string.empty()) {
         let char: Int = string.loadUint(8); // load 8 bits (1 byte) from the Slice
-        acc = (acc * 10) + (char - 48);     // use ASCII table to get numeric value
+        acc = (acc * 10) + (char - 48); //     use ASCII table to get numeric value
         // Note that this approach would produce unexpected results
         //   when the starting String contains non-numeric characters!
     }
@@ -54,8 +54,8 @@ let floatString: String = number.toFloatString(3);
 let coinsString: String = number.toCoinsString();
 
 dump(numberString); // "261119911"
-dump(floatString);  // "261119.911"
-dump(coinsString);  // "0.261119911"
+dump(floatString); //  "261119.911"
+dump(coinsString); //  "0.261119911"
 ```
 
 :::note[Useful links:]
@@ -82,12 +82,12 @@ message(0x45) Nice {
 }
 
 fun convert() {
-    let st = Profit{
+    let st = Profit {
         big: null,
         dict: null,
         energy: 42,
     };
-    let msg = Nice{ maybeStr: "Message of the day!" };
+    let msg = Nice { maybeStr: "Message of the day!" };
 
     st.toCell();
     msg.toCell();
@@ -118,12 +118,12 @@ message(0x45) Nice {
 }
 
 fun convert() {
-    let stCell = Profit{
+    let stCell = Profit {
         big: null,
         dict: null,
         energy: 42,
     }.toCell();
-    let msgCell = Nice{ maybeStr: "Message of the day!" }.toCell();
+    let msgCell = Nice { maybeStr: "Message of the day!" }.toCell();
 
     Profit.fromCell(stCell);
     Nice.fromCell(msgCell);

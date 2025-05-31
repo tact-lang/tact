@@ -9,15 +9,15 @@ The following statements can appear anywhere in a [function](/book/functions) bo
 
 ## `let` statement {#let}
 
-The `let{:tact}` statement allows local and [block](#block)-scoped variable declaration.
+The `let{:tact}` statement allows local and [block](#block)-scoped variable definitions. In Tact, variables are mutable, but **require** to be initialized with an expression.
 
-In Tact, declaring a local variable always **requires** an initial value. However, the type ascription can be omitted, and Tact will try to infer it from the initial value:
+However, type ascriptions can be omitted, and Tact will infer the type of the new variable from the computed value of the expression:
 
 ```tact
-let value: Int = 123; // full declaration with type and value
+let value: Int = 123; // full definition with type and value
 let vInferred = 123;  // inferred type Int from the mandatory value
 
-let vExplicitCtx: Context = context(); // explicit type Context, a built-in Struct
+let vExplicitCtx: Context = context(); // explicit type Context, a built-in struct
 let vCtx = context();                  // inferred type Context
 ```
 
@@ -50,6 +50,62 @@ The `return{:tact}` statement ends [function](/book/functions) execution and spe
 // Simple wrapper over stdlib function now()
 fun getTimeFromNow(offset: Int): Int {
     return now() + offset;
+}
+```
+
+If the function does not have an explicit return type, it has an implicit return type of `void`. As such, the `return{:tact}` statement must be empty.
+
+```tact
+extends mutates fun equalize(self: Int, num: Int) {
+    if (self == num) {
+        return;
+    } else {
+        self = num;
+        return;
+    }
+}
+```
+
+All statements after the `return{:tact}` statement are unreachable and will not be executed. Such statements are detected by the Tact compiler, producing an "Unreachable code" error.
+
+This is done to help avoid potential logical errors in the code, although `return{:tact}`-reachability analysis is not almighty and might reject valid examples.
+
+```tact
+extends mutates fun equalize(self: Int, num: Int) {
+    if (self == num) {
+        return;
+    } else {
+        self = num;
+        return;
+    }
+
+    throw(42); // COMPILATION ERROR! Unreachable statement
+//  ~~~~~~~~~
+}
+
+fun retWhenNot(flag: Bool): Int {
+    if (flag) {
+        throw(200);
+    } else {
+        return 42;
+    }
+
+    return 1000; // COMPILATION ERROR! Unreachable statement
+//  ~~~~~~~~~~~
+}
+
+fun throwWrapped(code: Int) {
+    throw(code);
+}
+
+// The following function always throws, but this cannot be
+// determined without a thorough inter-procedural analysis
+// and, as such, compiler won't allow it.
+//
+// COMPILATION ERROR! Function does not always return a result
+fun triggerCompiler(): Int {
+//  ~~~~~~~~~~~~~~~
+    throwWrapped(42);
 }
 ```
 
@@ -103,7 +159,7 @@ value += 5;         // augmented assignment (one of many)
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
-The destructuring assignment is a concise way to unpack [Structs][s] and [Messages][m] into distinct variables. It mirrors the [instantiation syntax](/book/expressions#instantiation), but instead of creating a new [Struct][s] or [Message][m], it binds every field or some of the fields to their respective variables.
+The destructuring assignment is a concise way to unpack [structs][struct] and [Messages][message] into distinct variables. It mirrors the [instantiation syntax](/book/expressions#instantiation), but instead of creating a new structure it binds every field or some of the fields to their respective variables.
 
 The syntax is derived from the [`let` statement](#let), and instead of specifying the variable name directly, it involves specifying the structure type on the left side of the [assignment operator `={:tact}`](/book/operators#assignment), which corresponds to the structure type of the value on the right side.
 
@@ -119,9 +175,9 @@ fun basic() {
     let Example { number } = get42();
     //  -------   ------     -------
     //  ↑         ↑          ↑
-    //  |         |          gives the Example Struct
+    //  |         |          gives the Example struct
     //  |         definition of "number" variable, derived
-    //  |         from the field "number" in Example Struct
+    //  |         from the field "number" in Example struct
     //  target structure type "Example"
     //  to destructure fields from
 
@@ -130,7 +186,7 @@ fun basic() {
     let Example { number } = Example { number: 42 };
     //                       ----------------------
     //                       ↑
-    //                       instantiation of Example Struct
+    //                       instantiation of Example struct
 
     // Above examples of syntax are roughly equivalent
     // to the following series of statements:
@@ -180,14 +236,14 @@ fun naming(s: Example) {
     let Example { field: varFromField } = s;
     //                   ------------     ↑
     //                   ↑                |
-    //                   |                instance of Example Struct, received
+    //                   |                instance of Example struct, received
     //                   |                as a parameter of the function "naming"
     //                   definition of "varFromField" variable, derived
-    //                   from the field "field" in Example Struct
+    //                   from the field "field" in Example struct
 }
 ```
 
-Note that the order of bindings doesn't matter — all fields retain their values and types under their names regardless of the order in which they appear in their definition in the respective [Struct][s] or [Message][m].
+Note that the order of bindings doesn't matter — all fields retain their values and types under their names regardless of the order in which they appear in their definition in the respective [struct][struct] or [Message][message].
 
 ```tact
 // "first" goes first, then goes "second"
@@ -198,9 +254,9 @@ fun order(s: Two) {
     //        ------  -----
     //        ↑       ↑
     //        |       this variable will be of type Int,
-    //        |       same as the "first" field in Struct Two
+    //        |       same as the "first" field in struct Two
     //        this variable will be of type String,
-    //        same as the "second" field in Struct Two
+    //        same as the "second" field in struct Two
 }
 ```
 
@@ -234,7 +290,7 @@ fun ignore(s: Many) {
 
 :::caution
 
-  At the moment, destructuring of nested [Structs][s] or [Messages][m] isn't allowed. That is, the following won't work:
+  At the moment, destructuring of nested [structs][struct] or [Messages][message] isn't allowed. That is, the following won't work:
 
   ```tact
   struct First { nested: Second }
@@ -444,7 +500,7 @@ do {
 
 The `foreach{:tact}` loop operates on key-value pairs (entries) of the [`map<K, V>{:tact}`](/book/maps) type in sequential order: from the smallest keys of the map to the biggest ones.
 
-This loop executes a block of code for each entry in the given map, capturing the key and value on each iteration. This is handy when you don't know in advance how many items there are in the map or don't want to explicitly look for each of the entries using the [`.get(){:tact}`](/book/maps#get) [method](/book/functions#extension-function) of maps.
+This loop executes a block of code for each entry in the given map, capturing the key and value on each iteration. This is handy when you don't know in advance how many items there are in the map or don't want to explicitly look for each of the entries using the [`.get(){:tact}`](/book/maps#get) [method](/book/functions#extensions) of maps.
 
 Note that the names of captured keys and values in each iteration are arbitrary and can be any valid Tact identifier, provided they are new to the current scope. The most common options are: `k` and `v`, or `key` and `value`.
 
@@ -471,7 +527,7 @@ foreach (key, value in cells) { // or just k, v
 dump(sum); // 1000
 ```
 
-It's also possible to iterate over a map in contract storage, and over maps as members of instances of [Struct](/book/structs-and-messages#structs) or [Message](/book/structs-and-messages#messages) types:
+It's also possible to iterate over a map in contract storage, and over maps as members of instances of [structure](/book/structs-and-messages) types:
 
 ```tact
 import "@stdlib/deploy";
@@ -488,15 +544,15 @@ contract Iterated {
         oh_my.set(1, 27);
 
         self.oh_my = oh_my; // assigning local map to the storage one
-        let fizz = Fizz{ oh_my }; // field punning
-        let buzz = Buzz{ oh_my }; // field punning
+        let fizz = Fizz { oh_my }; // field punning
+        let buzz = Buzz { oh_my }; // field punning
 
         // Iterating over map in contract storage
         foreach (key, value in self.oh_my) {
             // ...
         }
 
-        // Iterating over map member of a Struct Fizz instance
+        // Iterating over map member of a struct Fizz instance
         foreach (key, value in fizz.oh_my) {
             // ...
         }
@@ -549,7 +605,7 @@ foreach (_, _ in quartiles) {
   }
   ```
 
-  Trying to iterate over a map member of a [Struct](/book/structs-and-messages#structs) returned from a function also won't work, because the function call is an expression and neither an identifier nor a nested identifier access:
+  Trying to iterate over a map member of a [struct][struct] returned from a function also won't work, because the function call is an expression and neither an identifier nor a nested identifier access:
 
   ```tact
   foreach (k, v in genCoolStruct().map) {
@@ -569,5 +625,5 @@ foreach (_, _ in quartiles) {
 :::
 
 [int]: /book/integers
-[s]: /book/structs-and-messages#structs
-[m]: /book/structs-and-messages#messages
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages

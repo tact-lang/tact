@@ -1,5 +1,5 @@
 import { getAllTypes, resolveDescriptors } from "@/types/resolveDescriptors";
-import { loadCases } from "@/utils/loadCases";
+import { loadCases } from "@/utils/loadCases.infra";
 import { openContext, parseModules } from "@/context/store";
 import { resolveStatements } from "@/types/resolveStatements";
 import { CompilerContext } from "@/context/context";
@@ -8,11 +8,14 @@ import { getParser } from "@/grammar";
 import { getAstFactory } from "@/ast/ast-helpers";
 import { computeReceiversEffects } from "@/types/effects";
 import type { Source } from "@/imports/source";
+import { attachment } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
 
 describe("effects", () => {
     for (const testContract of loadCases(__dirname + "/effects/")) {
         it(`should correctly compute effects: ${testContract.name}`, () => {
             const Ast = getAstFactory();
+            attachment("Code", testContract.code, ContentType.TEXT);
             const sources: Source[] = [
                 {
                     code: testContract.code,

@@ -37,7 +37,11 @@ import {
 import { enabledExternals } from "@/config/features";
 import { isRuntimeType } from "@/types/isRuntimeType";
 import { GlobalFunctions } from "@/abi/global";
-import { getExpType, resolveExpression } from "@/types/resolveExpression";
+import {
+    getExpType,
+    resolveExpression,
+    throwVarAddrHardDeprecateError,
+} from "@/types/resolveExpression";
 import { addVariable, emptyContext } from "@/types/resolveStatements";
 import { isAssignable } from "@/types/subtyping";
 import type { ItemOrigin } from "@/imports/source";
@@ -109,7 +113,7 @@ function verifyMapTypes(
     verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation, kind);
 }
 
-function verifyMapType(mapTy: Ast.MapType, isValTypeStruct: boolean) {
+export function verifyMapType(mapTy: Ast.MapType, isValTypeStruct: boolean) {
     // optional and other compound key and value types are disallowed at the level of grammar
 
     // check allowed key types
@@ -271,6 +275,51 @@ function uidForName(name: string, types: Map<string, TypeDescription>) {
     return uid;
 }
 
+/**
+ * Collect global variables usage **per project**, not per contract!
+ */
+export function computeGlobalVariablesUsages(
+    ctx: CompilerContext,
+): CompilerContext {
+    const ast = getRawAST(ctx);
+
+    const globalVariables: Set<string> = new Set();
+
+    const handler = (node: Ast.AstNode) => {
+        traverse(node, (node) => {
+            if (node.kind === "static_call") {
+                const name = idText(node.function);
+                if (name === "inMsg") {
+                    globalVariables.add("inMsg");
+                }
+                if (name === "sender") {
+                    globalVariables.add("sender");
+                }
+                if (name === "context") {
+                    globalVariables.add("context");
+                }
+            }
+        });
+    };
+
+    for (const a of ast.types) {
+        handler(a);
+    }
+
+    for (const a of ast.functions) {
+        handler(a);
+    }
+
+    for (const a of ast.types) {
+        if (a.kind === "contract") {
+            const contract = getType(ctx, a.name);
+            contract.globalVariables = globalVariables;
+        }
+    }
+
+    return ctx;
+}
+
 export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
@@ -307,6 +356,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         functions: new Map(),
                         receivers: [],
                         dependsOn: [],
+                        globalVariables: new Set(),
                         init: null,
                         ast: a,
                         interfaces: [],
@@ -330,6 +380,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         functions: new Map(),
                         receivers: [],
                         dependsOn: [],
+                        globalVariables: new Set(),
                         init: null,
                         ast: a,
                         interfaces: a.attributes.map((v) => v.name.value),
@@ -354,6 +405,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         functions: new Map(),
                         receivers: [],
                         dependsOn: [],
+                        globalVariables: new Set(),
                         init: null,
                         ast: a,
                         interfaces: [],
@@ -376,6 +428,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     functions: new Map(),
                     receivers: [],
                     dependsOn: [],
+                    globalVariables: new Set(),
                     init: null,
                     ast: a,
                     interfaces: a.attributes.map((v) => v.name.value),
@@ -453,7 +506,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 params.push({
                     name: r.name,
                     type,
-                    as: r.as?.text ?? null,
+                    as: r.as,
                     loc: r.loc,
                 });
                 if (isRuntimeType(type)) {
@@ -500,6 +553,16 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }) as Ast.ContractInit,
                 contract: a,
             };
+        }
+
+        if (a.kind === "contract" && a.params === undefined) {
+            // check `as` types
+            const init = a.declarations.find(
+                (it) => it.kind === "contract_init",
+            );
+            if (init) {
+                init.params.forEach((param) => resolveABIType(param));
+            }
         }
     }
 
@@ -1000,6 +1063,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
             }
+            if (returns.kind !== "void") {
+                if (returns.kind === "ref") {
+                    const typeInfo = types.get(returns.name);
+                    if (typeInfo?.kind === "trait") {
+                        throwCompilationError(
+                            `Function ${idTextErr(a.name)} returns a trait, which is not supported in "asm" functions.`,
+                            a.loc,
+                        );
+                    }
+                }
+            }
 
             // check return shuffle
             if (a.shuffle.ret.length !== 0) {
@@ -1016,6 +1090,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 let retTupleSize = 0;
                 switch (returns.kind) {
                     case "ref":
+                    case "ref_bounced":
                         {
                             const ty = types.get(returns.name)!;
                             switch (ty.kind) {
@@ -1037,12 +1112,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     case "null":
                     case "map":
                         retTupleSize = 1;
-                        break;
-                    case "ref_bounced":
-                        throwInternalCompilerError(
-                            "A <bounced> type cannot be returned from a function",
-                            a.loc,
-                        );
                         break;
                     case "void":
                         retTupleSize = 0;
@@ -1090,7 +1159,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             params.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
-                as: null,
+                as: r.as,
                 loc: r.loc,
             });
         }
@@ -1575,10 +1644,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             // Check there are no duplicates in the _immediately_ inherited traits
             const traitSet: Set<string> = new Set(t.ast.traits.map(idText));
             if (traitSet.size !== t.ast.traits.length) {
-                const aggregateType =
-                    t.ast.kind === "contract" ? "contract" : "trait";
                 throwCompilationError(
-                    `The list of inherited traits for ${aggregateType} "${t.name}" has duplicates`,
+                    `The list of inherited traits for ${t.ast.kind} "${t.name}" has duplicates`,
+                    t.ast.loc,
+                );
+            }
+            if (traitSet.has(t.name)) {
+                throwCompilationError(
+                    `Self-inheritance is not allowed`,
                     t.ast.loc,
                 );
             }
@@ -1817,9 +1890,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 const funInContractOrTrait = contractOrTrait.functions.get(
                     traitFunction.name,
                 );
-                if (!funInContractOrTrait && traitFunction.isAbstract) {
+                if (
+                    contractOrTrait.kind === "contract" &&
+                    !funInContractOrTrait &&
+                    traitFunction.isAbstract
+                ) {
                     throwCompilationError(
-                        `Trait "${inheritedTrait.name}" requires function "${traitFunction.name}"`,
+                        `Missing implementation of abstract method "${traitFunction.name}" declared in trait "${inheritedTrait.name}"`,
                         contractOrTrait.ast.loc,
                     );
                 }
@@ -1847,13 +1924,18 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         !typeRefEquals(
                             traitFunction.returns,
                             funInContractOrTrait.returns,
+                        ) ||
+                        !isAssignable(
+                            funInContractOrTrait.returns,
+                            traitFunction.returns,
                         )
                     ) {
                         throwCompilationError(
-                            `Overridden function "${traitFunction.name}" should have same return type`,
+                            `Overridden function "${traitFunction.name}" should have same and assignable return type. Expected ${printTypeRef(traitFunction.returns)}, but got ${printTypeRef(funInContractOrTrait.returns)}.`,
                             funInContractOrTrait.ast.loc,
                         );
                     }
+
                     if (
                         traitFunction.params.length !==
                         funInContractOrTrait.params.length
@@ -1915,13 +1997,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     (v) => v.name === traitConstant.name,
                 );
                 if (
+                    contractOrTrait.kind === "contract" &&
                     !constInContractOrTrait &&
                     traitConstant.ast.attributes.find(
                         (v) => v.type === "abstract",
                     )
                 ) {
                     throwCompilationError(
-                        `Trait "${inheritedTrait.name}" requires constant "${traitConstant.name}"`,
+                        `Missing implementation of abstract constant "${traitConstant.name}" declared in trait "${inheritedTrait.name}"`,
                         contractOrTrait.ast.loc,
                     );
                 }
@@ -1935,10 +2018,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         !typeRefEquals(
                             traitConstant.type,
                             constInContractOrTrait.type,
+                        ) ||
+                        !isAssignable(
+                            constInContractOrTrait.type,
+                            traitConstant.type,
                         )
                     ) {
                         throwCompilationError(
-                            `Overridden constant "${traitConstant.name}" should have same type`,
+                            `Overridden constant "${traitConstant.name}" should have same and assignable type. Expected ${printTypeRef(traitConstant.type)}, but got ${printTypeRef(constInContractOrTrait.type)}.`,
                             constInContractOrTrait.ast.loc,
                         );
                     }
@@ -2283,14 +2370,25 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     return ctx;
 }
 
+export function getTypeOrUndefined(
+    ctx: CompilerContext,
+    ident: Ast.Id | Ast.TypeId | string,
+): TypeDescription | undefined {
+    try {
+        return getType(ctx, ident);
+    } catch {
+        return undefined;
+    }
+}
+
 export function getType(
     ctx: CompilerContext,
     ident: Ast.Id | Ast.TypeId | string,
 ): TypeDescription {
+    const errorLoc = typeof ident === "string" ? undefined : ident.loc;
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
-        const errorLoc = typeof ident === "string" ? undefined : ident.loc;
         if (errorLoc) {
             throwCompilationError(
                 `Type ${idTextErr(name)} not found`,
@@ -2299,6 +2397,11 @@ export function getType(
         }
         throwInternalCompilerError(`Type ${idTextErr(name)} not found`);
     }
+
+    if (r.name === "VarAddress" && errorLoc) {
+        throwVarAddrHardDeprecateError(errorLoc);
+    }
+
     return r;
 }
 
@@ -2376,23 +2479,35 @@ function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
     let remainingBits = 224;
 
     for (const f of type.fields) {
-        // dicts are unsupported
-        if (f.abi.type.kind !== "simple") break;
+        let fieldBits = 0;
+        if (f.abi.type.kind === "simple") {
+            const { type, format } = f.abi.type;
 
-        let fieldBits = f.abi.type.optional ? 1 : 0;
+            if (f.abi.type.optional) {
+                fieldBits = 1;
+            }
 
-        // TODO handle fixed-bytes
-        if (Number.isInteger(f.abi.type.format)) {
-            fieldBits += f.abi.type.format as number;
-        } else if (f.abi.type.format === "coins") {
-            fieldBits += 124;
-        } else if (f.abi.type.type === "address") {
-            fieldBits += 267;
-        } else if (f.abi.type.type === "bool") {
-            fieldBits += 1;
-        } else {
-            // Unsupported - all others (slice, builder, nested structs, maps)
-            break;
+            if (Number.isInteger(format)) {
+                const amount = format as number;
+                fieldBits += type === "fixed-bytes" ? amount * 8 : amount;
+            } else if (format === "coins") {
+                fieldBits += 124;
+            } else if (type === "address") {
+                fieldBits += 267;
+            } else if (type === "bool") {
+                fieldBits += 1;
+            } else if (
+                type === "cell" ||
+                type === "slice" ||
+                type === "builder"
+            ) {
+                fieldBits += 0; // 0 bits and 1 ref
+            } else {
+                // Unsupported nested structs
+                break;
+            }
+        } else if (f.abi.type.kind === "dict") {
+            fieldBits += 1; // 1-bit flag and 1 ref
         }
 
         if (remainingBits - fieldBits >= 0) {

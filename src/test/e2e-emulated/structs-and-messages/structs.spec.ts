@@ -24,24 +24,24 @@ import "@ton/test-utils";
 
 describe("structs", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<StructsTester>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await StructsTester.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -262,12 +262,12 @@ describe("structs", () => {
         // https://github.com/tact-lang/tact/issues/472
 
         const sendResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             "example",
         );
         expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: false,
             exitCode: 9,
@@ -275,23 +275,32 @@ describe("structs", () => {
 
         {
             const sendResult = await contract.send(
-                treasure.getSender(),
+                treasury.getSender(),
                 { value: toNano("10") },
                 "exampleVarIntegers",
             );
             expect(sendResult.transactions).toHaveTransaction({
-                from: treasure.address,
+                from: treasury.address,
                 to: contract.address,
                 success: true,
             });
         }
 
         expect(await contract.getLongStruct15Test()).toMatchSnapshot();
+        expect(await contract.getLongStruct15AccessTest()).toMatchSnapshot();
         expect(await contract.getLongStruct16Test()).toMatchSnapshot();
+        expect(await contract.getLongStruct16AccessTest()).toMatchSnapshot();
         expect(await contract.getLongStruct32Test()).toMatchSnapshot();
+        expect(await contract.getLongStruct32AccessTest()).toMatchSnapshot();
         expect(await contract.getLongNestedStructTest()).toMatchSnapshot();
         expect(
+            await contract.getLongNestedStructAccessTest(),
+        ).toMatchSnapshot();
+        expect(
             await contract.getLongNestedStructWithOptsTest(),
+        ).toMatchSnapshot();
+        expect(
+            await contract.getLongNestedStructWithOptsAccessTest(),
         ).toMatchSnapshot();
         expect(await contract.getLongContractTest()).toEqual(210n);
 
@@ -404,7 +413,7 @@ describe("structs", () => {
         m.set(2, 2n);
         m.set(3, 3n);
         const result = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             {
                 $$type: "Foo",
@@ -417,7 +426,7 @@ describe("structs", () => {
         });
         expect(result.transactions).toHaveTransaction({
             from: contract.address,
-            to: treasure.address,
+            to: treasury.address,
             body: beginCell().storeDict(m).endCell(),
         });
 

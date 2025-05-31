@@ -13,7 +13,7 @@ To perform [nanoToncoin][nano] reservations, use [`nativeReserve(){:tact}`](/ref
 
 ### send
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun send(params: SendParameters);
@@ -26,7 +26,7 @@ Attempts to queue more than 255 messages throw an exception with [exit code 33](
 Usage example:
 
 ```tact
-send(SendParameters{
+send(SendParameters {
     to: sender(),    // back to the sender,
     value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
                      // and no message body
@@ -44,7 +44,7 @@ send(SendParameters{
 
 ### message
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -60,7 +60,7 @@ Attempts to queue more than 255 messages throw an exception with an [exit code 3
 Usage example:
 
 ```tact
-message(MessageParameters{
+message(MessageParameters {
     to: sender(),    // back to the sender,
     value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
                      // and no message body
@@ -77,7 +77,7 @@ message(MessageParameters{
 
 ### deploy
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -101,7 +101,7 @@ Attempts to queue more than 255 messages throw an exception with an [exit code 3
 Usage example:
 
 ```tact
-deploy(DeployParameters{
+deploy(DeployParameters {
     init: initOf SomeContract(), // with initial code and data of SomeContract
                                  // and no additional message body
     mode: SendIgnoreErrors,      // skip the message in case of errors
@@ -119,7 +119,7 @@ deploy(DeployParameters{
 
 ### cashback
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6.1" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -140,7 +140,7 @@ cashback(sender());
 
 // The cashback() function above is cheaper, but functionally
 // equivalent to the following call to the message() function
-message(MessageParameters{
+message(MessageParameters {
     mode: SendRemainingValue | SendIgnoreErrors,
     body: null,
     value: 0,
@@ -151,7 +151,7 @@ message(MessageParameters{
 
 ### emit
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun emit(body: Cell);
@@ -187,24 +187,9 @@ Various niche, dangerous, or unstable features which can produce unexpected resu
 
 :::
 
-### nativeSendMessage
-
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
-<Badge text="Deprecated since Tact 1.6.6" variant="tip" size="medium"/><p/>
-
-Use [`sendRawMessage(){:tact}`](#sendrawmessage) instead.
-
-```tact
-fun nativeSendMessage(msg: Cell, mode: Int);
-```
-
-[Queues the message](/book/send#outbound-message-processing) to be sent by specifying the complete `msg` cell and the [message `mode`](/book/message-mode).
-
-Attempts to queue more than $255$ messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
-
 ### sendRawMessage
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -221,24 +206,9 @@ Attempts to queue more than $255$ messages throw an exception with [exit code 33
 
 :::
 
-### nativeSendMessageReturnForwardFee
-
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
-<Badge text="Deprecated since Tact 1.6.6" variant="tip" size="medium"/><p/>
-
-Use [`sendRawMessageReturnForwardFee(){:tact}`](#sendrawmessagereturnforwardfee) instead.
-
-```tact
-fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int;
-```
-
-Similar to [`sendRawMessage(){:tact}`](#sendrawmessage), but also calculates and returns the [forward fee][fwdfee] in [nanoToncoin][nano].
-
-Attempts to queue more than $255$ messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
-
 ### sendRawMessageReturnForwardFee
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -253,6 +223,36 @@ The `sendRawMessageReturnForwardFee(){:tact}` function may throw the following e
 * 7: [Type check error] - Thrown if any of the blockchain config, contract balance or incoming message value are invalid.
 * 11: ["Unknown" error] - Thrown if the message cell is ill-formed or the TVM config is invalid.
 * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+
+### nativeSendMessage
+
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Deprecated since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+Use [`sendRawMessage(){:tact}`](#sendrawmessage) instead.
+
+```tact
+fun nativeSendMessage(msg: Cell, mode: Int);
+```
+
+[Queues the message](/book/send#outbound-message-processing) to be sent by specifying the complete `msg` cell and the [message `mode`](/book/message-mode).
+
+Attempts to queue more than $255$ messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+### nativeSendMessageReturnForwardFee
+
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Deprecated since Tact 1.6.6" variant="tip" size="medium"/><p/>
+
+Use [`sendRawMessageReturnForwardFee(){:tact}`](#sendrawmessagereturnforwardfee) instead.
+
+```tact
+fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int;
+```
+
+Similar to [`sendRawMessage(){:tact}`](#sendrawmessage), but also calculates and returns the [forward fee][fwdfee] in [nanoToncoin][nano].
+
+Attempts to queue more than $255$ messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
 
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans

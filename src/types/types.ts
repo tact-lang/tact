@@ -20,33 +20,44 @@ export type TypeDescription = {
     init: InitDescription | null;
     ast: Ast.TypeDecl;
     dependsOn: TypeDescription[];
+    globalVariables: Set<string>;
     interfaces: string[];
     constants: ConstantDescription[];
 };
 
+export type TypeRefRef = {
+    kind: "ref";
+    name: string;
+    optional: boolean;
+};
+
+export type TypeRefMap = {
+    kind: "map";
+    key: string;
+    keyAs: string | null;
+    value: string;
+    valueAs: string | null;
+};
+
+export type TypeRefBounced = {
+    kind: "ref_bounced";
+    name: string;
+};
+
+export type TypeRefVoid = {
+    kind: "void";
+};
+
+export type TypeRefNull = {
+    kind: "null";
+};
+
 export type TypeRef =
-    | {
-          kind: "ref";
-          name: string;
-          optional: boolean;
-      }
-    | {
-          kind: "map";
-          key: string;
-          keyAs: string | null;
-          value: string;
-          valueAs: string | null;
-      }
-    | {
-          kind: "ref_bounced";
-          name: string;
-      }
-    | {
-          kind: "void";
-      }
-    | {
-          kind: "null";
-      };
+    | TypeRefRef
+    | TypeRefMap
+    | TypeRefBounced
+    | TypeRefVoid
+    | TypeRefNull;
 
 export type FieldDescription = {
     name: string;
@@ -189,7 +200,7 @@ export type ReceiverDescription = {
 export type InitParameter = {
     name: Ast.OptionalId;
     type: TypeRef;
-    as: string | null;
+    as: Ast.Id | undefined;
     loc: SrcInfo;
 };
 

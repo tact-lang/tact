@@ -5,6 +5,12 @@ on:
   schedule:
     - cron: "5 0 * * 2" # 00:05 on Tuesday, near the dependabot.yml
 
+permissions: read-all
+
+env:
+  # To surpass rate limits for GitHub-based URLS
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   linkcheck:
     runs-on: ubuntu-latest
@@ -33,7 +39,7 @@ jobs:
 
       - name: (dev-docs) Check broken HTTP(S) links
         uses: lycheeverse/lychee-action@v2
-        id: lychee_dev
+        id: lychee-dev
         with:
           args: >
             -n -s https -s http
@@ -51,7 +57,7 @@ jobs:
 
       - name: (stdlib) Check broken HTTP(S) links in doc comments
         uses: lycheeverse/lychee-action@v2
-        id: lychee_dev
+        id: lychee-stdlib
         with:
           args: >
             -n -s https -s http

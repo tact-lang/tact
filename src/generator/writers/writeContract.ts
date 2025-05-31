@@ -229,7 +229,6 @@ export function writeInit(
             ctx.flag("inline");
         }
         ctx.context("type:" + t.name + "$init");
-        ctx.flag("inline");
         ctx.body(() => {
             ctx.append(";; Build init code cell");
             ctx.append();
@@ -296,7 +295,7 @@ export function writeInit(
                     t.dependsOn.length > 0
                 ) {
                     ctx.append(
-                        `b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`,
+                        `b = b.store_builder_ref(begin_cell().store_dict(contracts));`,
                     );
                 }
             }
@@ -413,10 +412,19 @@ export function writeMainContract(
                 wCtx.append(`var msg_bounceable = cs~load_int(1);`); // bounce:Bool
                 wCtx.append(`var msg_bounced = cs~load_int(1);`); // bounced:Bool
                 wCtx.append(`slice msg_sender_addr = cs~load_msg_addr();`);
-                wCtx.append(
-                    `__tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);`,
-                );
-                wCtx.append(`__tact_context_sender = msg_sender_addr;`);
+
+                if (contract.globalVariables.has("context")) {
+                    wCtx.append(
+                        `__tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);`,
+                    );
+                }
+                if (contract.globalVariables.has("sender")) {
+                    wCtx.append(`__tact_context_sender = msg_sender_addr;`);
+                }
+                if (contract.globalVariables.has("inMsg")) {
+                    wCtx.append(`__tact_in_msg = in_msg;`);
+                }
+
                 wCtx.append();
 
                 writeLoadContractVariables(contract, wCtx);
@@ -445,6 +453,10 @@ export function writeMainContract(
             wCtx.append();
 
             wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
+                if (contract.globalVariables.has("inMsg")) {
+                    wCtx.append(`__tact_in_msg = in_msg;`);
+                }
+
                 writeLoadContractVariables(contract, wCtx);
 
                 writeNonBouncedRouter(

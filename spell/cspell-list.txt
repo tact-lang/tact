@@ -22,6 +22,7 @@ cheatsheet
 Cheatsheet
 cheatsheets
 Cheatsheets
+chksgn
 cleanall
 CNFT
 codegen
@@ -42,6 +43,7 @@ decompiles
 decompiling
 dentry
 Descr
+dictpush
 disasm
 divmod
 dnsresolve
@@ -52,6 +54,7 @@ Eltociear
 Epva
 errno
 Esorat
+Excno
 extracurrency
 Fieldish
 flamegraph
@@ -66,6 +69,8 @@ Georgiy
 getsimpleforwardfee
 gettest
 guarantor
+Gutarev
+hazyone
 Héctor
 hehe
 heisenbugs
@@ -79,7 +84,7 @@ infixl
 infixr
 initof
 injectivity
-Instanitable
+Intelli
 Ints
 ipfs
 IPFS
@@ -107,6 +112,7 @@ Liskov
 llm
 llms
 logomark
+lordivash
 lparen
 lvalue
 lvalues
@@ -120,6 +126,7 @@ memecoin
 Merkle
 minmax
 mintable
+miscompilation
 misparse
 misparsed
 mktemp
@@ -230,4 +237,5 @@ xffff
 XMODEM
 xpyctumo
 xtwitter
+yeehaw
 привет

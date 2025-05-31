@@ -68,7 +68,7 @@ Source code:
 ```tact
 trait Deployable {
     receive(deploy: Deploy) {
-        self.notify(DeployOk{queryId: deploy.queryId}.toCell());
+        self.notify(DeployOk { queryId: deploy.queryId }.toCell());
     }
 }
 ```

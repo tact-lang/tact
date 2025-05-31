@@ -88,11 +88,7 @@ A frequent use-case for basechain addresses is checking message sender addresses
 contract Child(parentAddr: Address) {
     receive() {
         // Forward surplus to the parent address
-        message(MessageParameters{
-            to: self.parentAddr,
-            value: 0,
-            mode: SendRemainingValue,
-        });
+        cashback(self.parentAddr);
     }
 }
 
@@ -114,13 +110,13 @@ To ensure that a certain [`Address{:tact}`][p] is in the basechain and can be re
 
 See other functions related to the `BasechainAddress{:tact}` struct:
 
-* [`emptyBasechainAddress{:tact}`](/ref/core-addresses#emptybasechainaddress)
-* [`newBasechainAddress{:tact}`](/ref/core-addresses#newbasechainaddress)
-* [`contractBasechainAddress{:tact}`](/ref/core-addresses#contractbasechainaddress)
+* [`emptyBasechainAddress(){:tact}`](/ref/core-addresses#emptybasechainaddress)
+* [`newBasechainAddress(){:tact}`](/ref/core-addresses#newbasechainaddress)
+* [`contractBasechainAddress(){:tact}`](/ref/core-addresses#contractbasechainaddress)
 
-### Pay attention to "Gas-expensive" badge
+### Pay attention to "500+ gas" badge
 
-Some functions in the Tact documentation are annotated with a special badge, "Gas-expensive", which marks the functions that use 500 gas units or more. It is placed right under the function name heading and looks like this: <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+Some functions in the Tact documentation are annotated with a special badge, "500+ gas", which marks the functions that use 500 gas units or more. It is placed right under the function name heading and looks like this: <Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 
 If you use one of those functions, consider finding cheaper alternatives.
 
@@ -128,7 +124,7 @@ If you use one of those functions, consider finding cheaper alternatives.
 
 Some [kinds of functions](/book/functions) allow their code to be inlined by adding an `inline` annotation. If the function is used often, this might result in a significant increase in contract code size, but generally, it allows to save gas on redundant function calls.
 
-Furthermore, you might reach for the [experimental `inline` field](/book/config#experimental-inline) in `tact.config.json,` which enables the inlining of all functions that can be inlined.
+Furthermore, you might reach for the [experimental `inline` field](/book/config#experimental-inline) in `tact.config.json`, which enables the inlining of all functions that can be inlined.
 
 This advice needs benchmarks to decide its usefulness on a case-by-case basis.
 
@@ -178,11 +174,52 @@ In both cases, you can use assembly functions (or `asm` functions for short) to 
 
 Read more about them on their dedicated page: [Assembly functions](/book/assembly-functions).
 
+### Disable run-time `safety` checks for well-tested contracts
+
+:::caution
+
+  Proceed only if you have a comprehensive contract test suite and are about to apply various other security measures, such as audits. The following is not guidance but is an illustration of what can be done to maximize gas efficiency when you are sure of the safety of your contracts.
+
+:::
+
+When using the unwrapping [non-null assertion `!!`](/book/operators/#unary-non-null-assert) operator, you can decrease its gas consumption at the expense of its runtime `null{:tact}` checks. Thus, you should only disable such checks when you are sure there will not be a runtime `null{:tact}` present in the given branch of your code.
+
+```tact
+fun example() {
+    let val: Int? = 42;
+    if (val == null) {
+        return;
+    }
+    // At this point we know that `val` is not null,
+    // so we can safely disable runtime checks of the !! operator in the config
+    val!!; // 42
+}
+```
+
+To disable runtime `null{:tact}` checks of the `!!` operator, set the [`nullChecks`](/book/config#safety-nullchecks) field to `false{:json}` in your [`tact.config.json`](/book/config).
+
+```json filename="tact.config.json" {9}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./your-contract-file.tact",
+      "output": "./output",
+      "options": {
+        "safety": {
+          "nullChecks": false
+        }
+      }
+    }
+  ]
+}
+```
+
 ## Receiving messages
 
 ### Prefer binary receivers to text receivers
 
-Tact automatically handles various message body types, including binary and string (text) ones. Both message bodies start with a 32-bit integer header (or tag) called an opcode, which helps distinguish their following contents.
+Tact automatically handles various message body types, including binary and string (text) ones. Both message bodies start with a 32-bit integer header (or tag) called an [opcode](/book/structs-and-messages#message-opcodes), which helps distinguish their following contents.
 
 To prevent conflicts with binary message bodies which are usually sent on the blockchain, the string (text) receivers skip the opcode and instead route based on the hash of the message body contents — an expensive operation that requires more than 500 units of gas.
 
@@ -192,7 +229,7 @@ While text receivers are convenient during development in testing, when preparin
 message(1) One {}
 message(2) Two {}
 
-contract Example {
+contract Example() {
     // Prefer this
     receive(_: One) {
         // ...
@@ -207,6 +244,24 @@ contract Example {
     }
     receive("two") {
         // ...
+    }
+}
+```
+
+### Prefer `inMsg()` to `Message.toSlice()`
+
+<Badge text="Available since Tact 1.6.7" variant="tip" size="medium"/><p/>
+
+When working with an incoming message, prefer using the [`inMsg(){:tact}`](/ref/core-contextstate#inmsg) function over the [`Message.toSlice(){:tact}`](/ref/core-cells#messagetoslice) extension function, because the `inMsg(){:tact}` function provides direct access to the incoming message body [`Slice{:tact}`][p], while `msg.toSlice(){:tact}` performs redundant operations to recreate that `Slice{:tact}`.
+
+```tact
+contract Example() {
+    receive(msg: SomeMessage) {
+        // Prefer this
+        let body = inMsg();
+
+        // over this
+        let sameBody = msg.toSlice();
     }
 }
 ```
@@ -226,7 +281,7 @@ When you receive an internal message, you can obtain the address of the contract
 If you only need the sender's address and no additional context on the incoming message that is contained in the `Context{:tact}` struct, then use the [`sender()`](/ref/core-contextstate#sender) function as it is less gas-consuming.
 
 ```tact /sender\\(\\)/
-message(MessageParameters{
+message(MessageParameters {
     to: sender(),
     value: ton("0.05"),
 });
@@ -248,9 +303,38 @@ fun example() {
 }
 ```
 
+### Use `SignedBundle` to verify signatures in external message receivers
+
+When handling [external messages](/book/external), the [`SignedBundle{:tact}`](/ref/core-crypto#signedbundle) [struct][struct] provides a gas-efficient way to verify message signatures. This approach is particularly useful for wallet contracts and other contracts that need secure user authorization.
+
+The `SignedBundle{:tact}` contains both the signature and the non-serialized data of the enclosing struct or message struct that is being signed, allowing for convenient verification with the [`SignedBundle.verifySignature(){:tact}`](/ref/core-crypto#signedbundleverifysignature) extension function.
+
+```tact
+contract Wallet(publicKey: Int as uint256) {
+    external(msg: SomeWalletOperation) {
+        // Verifying the signature before accepting the message
+        require(msg.bundle.verifySignature(self.publicKey), "Invalid signature");
+
+        // Now it's safe to accept it
+        acceptMessage();
+
+        // ...and proceed further...
+    }
+}
+
+message SomeWalletOperation {
+    // You must set the SignedBundle as the first field
+    bundle: SignedBundle;
+
+    // Some data to be signed
+    walletId: Int as int32;
+    seqno: Int as uint32;
+}
+```
+
 ## Sending messages
 
-### Prefer `message` and `cashback` to `self.forward`, `self.reply`, and `self.notify`
+### Prefer `message()` and `cashback()` to `self.forward()`, `self.reply()`, and `self.notify()`
 
 Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of [internal functions](/book/contracts#internal-functions) for any contract. Those internal functions are gas-expensive for the same reasons as stated earlier.
 
@@ -263,8 +347,8 @@ Moreover, if all you want is to forward the remaining value back to the sender, 
 self.forward(sender(), null, false, initOf SomeContract());
 
 // could be replaced with this
-let initState: initOf SomeContract();
-send(SendParameters{
+let initState = initOf SomeContract();
+send(SendParameters {
     to: sender(),
     mode: SendRemainingValue | SendIgnoreErrors,
     bounce: false,
@@ -278,11 +362,12 @@ send(SendParameters{
 self.reply(null);
 
 // should be replaced with this
-message(MessageParameters{
+message(MessageParameters {
     body: null,
     to: sender(),
     mode: SendRemainingValue | SendIgnoreErrors,
     bounce: true,
+    value: 0,
 });
 
 // And this
@@ -297,7 +382,7 @@ cashback(sender());
 There are many [message-sending functions](/book/send#message-sending-functions), and the [`deploy(){:tact}`](/ref/core-send#deploy) function is optimized for cheaper on-chain deployments compared to the [`send(){:tact}`](/ref/core-send#send) function.
 
 ```tact
-deploy(DeployParameters{
+deploy(DeployParameters {
     init: initOf SomeContract(), // with initial code and data of SomeContract
                                  // and with an empty message body
     mode: SendIgnoreErrors,      // skip the message in case of errors
@@ -310,7 +395,7 @@ deploy(DeployParameters{
 There are many [message-sending functions](/book/send#message-sending-functions), and the [`message(){:tact}`](/ref/core-send#message) function is optimized for cheaper non-deployment regular messages compared to the [`send(){:tact}`](/ref/core-send#send) function.
 
 ```tact
-message(MessageParameters{
+message(MessageParameters {
     to: addrOfSomeInitializedContract,
     value: ton("1"), // sending 1 Toncoin (1_000_000_000 nanoToncoin),
                      // with an empty message body

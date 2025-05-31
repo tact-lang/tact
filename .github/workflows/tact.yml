@@ -12,6 +12,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# All unset values default to none
+# https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#permissions
+permissions: read-all
+
 jobs:
   backwards-compat:
     strategy:
@@ -42,7 +46,7 @@ jobs:
           # Test some specific things for backwards compatibility.
           # It's important to restrain from using too much of Node.js 22+ features
           # until it goes into maintenance LTS state and majority of users catches up
-          yarn cross-env NODE_OPTIONS=--max_old_space_size=4096 jest isSubsetOf
+          yarn cross-env NODE_OPTIONS=--max_old_space_size=5120 jest isSubsetOf
           # Clean-up
           yarn cleanall
           yarn config delete ignore-engines
@@ -128,7 +132,7 @@ jobs:
       matrix:
         node-version: [22]
         os: [ubuntu-latest, windows-latest, macos-latest]
-        package-manager: [npm, yarn, pnpm, bun]
+        package-manager: [npm, yarn, bun]
         # follow-up ifs are for ensuring clean state at all times
     runs-on: ${{ matrix.os }}
     steps:
@@ -192,28 +196,6 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
-
-      - name: (pnpm) Test creation of new Blueprint projects
-        if: ${{ matrix.package-manager == 'pnpm' }}
-        run: |
-          # Installing the specific pnpm version to work around https://github.com/pnpm/pnpm/issues/5000
-          # and not fail suddenly when a release comes that fixes this
-          # NOTE: revisit and simplify this step if/when those bugs with pnpm are resolved
-          npm i -g pnpm@9.12.2
-          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
-          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || 'echo windows_noop' }}
-          pnpm setup -f
-          # To source .bashrc on Linux:
-          ${{ matrix.os == 'ubuntu-latest' && 'source ~/.bashrc' || 'echo noop' }}
-          # To expose stuff for pnpm directly on macOS (because otherwise the pre-installed Node.js version gets used):
-          ${{ matrix.os == 'macos-latest' && 'export PNPM_HOME=~/Library/pnpm; export PATH=$PNPM_HOME:$PATH' || 'echo noop' }}
-          pnpm link -g
-          cd ..
-          pnpm create ton@latest test-project --type tact-counter --contractName Counter
-          cd test-project
-          pnpm link -g @tact-lang/compiler
-          pnpm build
-          pnpm test
 
       - name: (bun) Test creation of new Blueprint projects
         if: ${{ matrix.package-manager == 'bun' }}

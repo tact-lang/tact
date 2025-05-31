@@ -31,7 +31,7 @@ const SendRemainingBalance: Int = 128;
 ///
 const SendOnlyEstimateFee: Int = 1024;
 
-/// **Deprecated** since Tact 1.6.5.
+/// **Deprecated** since Tact 1.6.5. Use `SendPayFwdFeesSeparately` instead.
 ///
 /// Pay forward fees separately from the message value.
 ///
@@ -159,17 +159,15 @@ asm fun message(params: MessageParameters) {
     STZEROES
     // → Stack state
     // s0: Builder
-    // s1: `data`
-    // s2: `code`
-    // s3: `body`
-    // s4: `mode`
+    // s1: `body`
+    // s2: `mode`
     STDICT
     ENDC
     SWAP
     SENDRAWMSG
 }
 
-/// Global function. Queues the message to be sent using a `SendParameters` Struct.
+/// Global function. Queues the message to be sent using a `SendParameters` struct.
 ///
 /// ```tact
 /// fun example() {
@@ -311,9 +309,9 @@ struct DeployParameters {
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Queues the contract deployment message to be sent using the `DeployParameters` Struct. Allows for cheaper on-chain deployments compared to the `send()` function.
+/// Queues the contract deployment message to be sent using the `DeployParameters` struct. Allows for cheaper on-chain deployments compared to the `send()` function.
 ///
-/// The `DeployParameters` Struct consists of the following fields:
+/// The `DeployParameters` struct consists of the following fields:
 /// * `mode: Int`, an 8-bit value that configures how to send a message, defaults to 0.
 /// * `body: Cell?`, optional message body as a `Cell`.
 /// * `value: Int`, the amount of nanoToncoins you want to send with the message.
@@ -462,9 +460,8 @@ asm fun deploy(params: DeployParameters) {
 /// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
 ///
 asm fun cashback(to: Address) {
-    16 PUSHINT       // 0x10, i.e. 0x18 but with bounce = false
     NEWC
-    6 STU            // .storeUint(0x10, 6)
+    x{42_} STSLICECONST // .storeUint(0x10, 6)
     STSLICE          // .storeAddress(to)
     0 PUSHINT        // 0
     111 STUR         // .storeUint(0, 111)
@@ -474,9 +471,7 @@ asm fun cashback(to: Address) {
     SENDRAWMSG
 }
 
-/// Global function. **Deprecated** since Tact 1.6.6.
-///
-/// Use `sendRawMessage()` instead.
+/// Global function. **Deprecated** since Tact 1.6.6. Use `sendRawMessage()` instead.
 ///
 /// Queues the message to be sent by specifying the complete `msg` cell and the message `mode`.
 ///
@@ -512,9 +507,7 @@ asm fun nativeSendMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 ///
 asm fun sendRawMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 
-/// Global function. **Deprecated** since Tact 1.6.6.
-///
-/// Use `sendRawMessageReturnForwardFee()` instead.
+/// Global function. **Deprecated** since Tact 1.6.6. Use `sendRawMessageReturnForwardFee()` instead.
 ///
 /// Similar to `sendRawMessage()`, but also calculates and returns the forward fee in nanoToncoin.
 ///

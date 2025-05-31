@@ -155,6 +155,9 @@ export const syntaxErrorSchema = <T, U>(
         fieldOnlyOneAs: () => {
             return handle(sub`Cannot use several "as" on a field type`);
         },
+        parameterOnlyOneAs: () => {
+            return handle(sub`Cannot use several "as" on a parameter type`);
+        },
         noOptionalFieldType: () => {
             return handle(sub`Field type cannot be optional`);
         },
@@ -174,6 +177,9 @@ export const syntaxErrorSchema = <T, U>(
             return handle(
                 sub`Assembly functions are only allowed at the module level - outside contracts or traits`,
             );
+        },
+        noSetLiterals: () => {
+            return handle(text(`Set literals not supported yet`));
         },
     };
 };

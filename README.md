@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/tact-lang/tact-docs/main/public/banner.jpeg" alt="" />
+![Tact language banner](https://raw.githubusercontent.com/tact-lang/tact/refs/heads/main/assets/banner.png)
 
 A next-gen smart contract programming language for TON Blockchain focused on efficiency and ease of development.
 Tact is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
@@ -97,6 +97,7 @@ See [Tact in production](https://github.com/tact-lang/awesome-tact#tact-in-produ
 
 - [Awesome Tact](https://github.com/tact-lang/awesome-tact)
 - [Tact By Example](https://tact-by-example.org/00-hello-world)
+- [DeFi Cookbook](https://github.com/tact-lang/defi-cookbook)
 - [Documentation](https://docs.tact-lang.org)
 - [Changelog](./dev-docs/CHANGELOG.md)
 
@@ -144,6 +145,7 @@ It will make the `tact` compiler available on your PATH, as well as:
   - Get it on the [Open VSX Registry](https://open-vsx.org/extension/tonstudio/vscode-tact).
   - Or install from the [`.vsix` files in nightly releases](https://github.com/tact-lang/tact-language-server/releases).
 - [Language Server (LSP Server)](https://github.com/tact-lang/tact-language-server) - Supports Sublime Text, (Neo)Vim, Helix, and other editors with LSP support.
+- [Intelli Tact](https://plugins.jetbrains.com/plugin/27290-tact) - Powerful and feature-rich plugin for JetBrains IDEs like WebStorm, IntelliJ IDEA, and others.
 - [tact.vim](https://github.com/tact-lang/tact.vim) - Vim 8+ plugin.
 - [tact-sublime](https://github.com/tact-lang/tact-sublime) - Sublime Text 4 package.
   - Get it on the [Package Control](https://packagecontrol.io/packages/Tact).

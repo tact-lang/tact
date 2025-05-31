@@ -388,7 +388,7 @@ contract Iteration {
         // Loop until the value of self.counter (over all the self.record entries)
         let i: Int = 0; // declare usual i for loop iterations
         while (i < self.counter) {
-           send(SendParameters{
+           send(SendParameters {
                 bounce: false,              // do not bounce back this message
                 to: self.record.get(i)!!,   // set the sender address, knowing that key i exists in the map
                 value: ton("0.0000001"),    // 100 nanoToncoins (nano-tons)
@@ -420,8 +420,6 @@ contract Iteration {
 :::
 
 :::note
-
-  本例改编自 [howardpen9/while-example-tact](https://github.com/howardpen9/while-example-tact/blob/de5807fcd20dba5f6a3748d112511477fb22bfcc/contracts/awesome.tact#L19C10-L19C10).
 
   查看 Cookbook 中有关 map 使用的其他示例：\
   [如何使用包裹在 Struct 中的 map 来模拟堆栈](/zh-cn/cookbook/data-structures#stack)\

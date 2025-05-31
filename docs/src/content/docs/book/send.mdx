@@ -7,7 +7,7 @@ import { Badge } from '@astrojs/starlight/components';
 
 TON Blockchain is message-based — to communicate with other contracts and to deploy new ones, you need to send messages.
 
-Messages in Tact are commonly composed using a built-in [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`, which consists of the following fields:
+Messages in Tact are commonly composed using a built-in [struct][struct] `SendParameters{:tact}`, which consists of the following fields:
 
 Field    | Type                   | Description
 :------- | :--------------------- | :----------
@@ -31,12 +31,12 @@ self.reply("Hello, World!".asComment()); // asComment converts a String to a Cel
 
 ## Send message
 
-If you need more advanced logic, you can use the `send(){:tact}` function and the `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs) directly.
+If you need more advanced logic, you can use the `send(){:tact}` function and the `SendParameters{:tact}` [struct][struct] directly.
 
 In fact, the previous example with [`.reply(){:tact}`](#send-simple-reply) can be made using the following call to the `send(){:tact}` function:
 
 ```tact
-send(SendParameters{
+send(SendParameters {
     // bounce is set to true by default
     to: sender(), // sending message back to the sender
     value: 0, // don't add Toncoin to the message...
@@ -50,7 +50,7 @@ Another example sends a message to the specified [`Address{:tact}`][p] with a `v
 ```tact
 let recipient: Address = address("...");
 let value: Int = ton("1");
-send(SendParameters{
+send(SendParameters {
     // bounce is set to true by default
     to: recipient,
     value: value,
@@ -73,12 +73,12 @@ To send a typed message, you can use the following code:
 ```tact
 let recipient: Address = address("...");
 let value: Int = ton("1");
-send(SendParameters{
+send(SendParameters {
     // bounce is set to true by default
     to: recipient,
     value: value,
     mode: SendIgnoreErrors, // skip the message in case of errors
-    body: SomeMessage{arg1: 123, arg2: 1234}.toCell(),
+    body: SomeMessage { arg1: 123, arg2: 1234 }.toCell(),
 });
 ```
 
@@ -90,7 +90,7 @@ To deploy a contract, you need to calculate its address and initial state with [
 let init: StateInit = initOf SecondContract(arg1, arg2);
 let address: Address = contractAddress(init);
 let value: Int = ton("1");
-send(SendParameters{
+send(SendParameters {
     // bounce is set to true by default
     to: address,
     value: value,
@@ -106,7 +106,7 @@ send(SendParameters{
 For cheaper on-chain deployments, prefer using the [`deploy(){:tact}`](/ref/core-send#deploy) function instead. It computes the address of the contract based on its initial code and data and efficiently composes the resulting message:
 
 ```tact
-deploy(DeployParameters{
+deploy(DeployParameters {
     // bounce is set to true by default
     init: initOf SecondContract(arg1, arg2), // initial code and data
     mode: SendIgnoreErrors, // skip the message in case of errors
@@ -117,7 +117,7 @@ deploy(DeployParameters{
 
 ## Outbound message processing
 
-Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in the [compute phase][compute], but are **not** sent in that phase. Instead, they are queued for execution in the [action phase][phases] in the order of their appearance in the compute phase.
+Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in the [compute phase][compute], but are **not** sent in that phase. Instead, they are queued for execution in the [action phase][phases] in the order of their appearance in the compute phase. The queue is called an _output action list_, which contains other actions such as [reservations](/ref/core-contextstate#nativereserve).
 
 Outgoing message sends may fail in the [action phase][phases] due to insufficient [action fees](https://docs.ton.org/develop/howto/fees-low-level#action-fee) or [forward fees][fwdfee], in which case they will not bounce and **will not revert** the transaction. This can happen because all values are calculated in the [compute phase][compute], all fees are computed by its end, and exceptions do not roll back the transaction during the action phase.
 
@@ -131,7 +131,7 @@ contract FailureIsNothingButAnotherStep {
     // All the funds it obtains are from inbound internal messages
     receive() {
         // 1st outbound message evaluated and queued (but not yet sent)
-        send(SendParameters{
+        send(SendParameters {
             to: sender(),
             value: ton("0.042"), // plus forward fee due to SendPayFwdFeesSeparately
             mode: SendIgnoreErrors | SendPayFwdFeesSeparately,
@@ -140,7 +140,7 @@ contract FailureIsNothingButAnotherStep {
 
         // 2nd outbound message evaluated and queued,
         // but not yet sent, and never will be!
-        send(SendParameters{
+        send(SendParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
@@ -177,7 +177,7 @@ contract IfItDiesItDies {
 
         // 2nd outbound message evaluated and queued,
         // but not yet sent, and never will be!
-        send(SendParameters{
+        send(SendParameters {
             to: sender(),
             value: 0,
             bounce: false, // brave and bold
@@ -223,7 +223,7 @@ contract MyPrecious {
 
         // 2nd outbound message evaluated and queued
         // with SendRemainingBalance mode
-        send(SendParameters{
+        send(SendParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingBalance, // because of the prior nativeReserve(),
@@ -267,6 +267,7 @@ Read more about all message-sending functions in the Reference:
 [p]: /book/types#primitive-types
 [int]: /book/integers
 [cell]: /book/cells#cells
+[struct]: /book/structs-and-messages#structs
 [opt]: /book/optionals
 [nano]: /book/integers#nanotoncoin
 

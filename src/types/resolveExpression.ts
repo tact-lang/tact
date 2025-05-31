@@ -14,6 +14,9 @@ import {
     getType,
     hasStaticConstant,
     hasStaticFunction,
+    resolveTypeRef,
+    getTypeOrUndefined,
+    verifyMapType,
 } from "@/types/resolveDescriptors";
 import type { FunctionParameter, TypeRef } from "@/types/types";
 import { printTypeRef, typeRefEquals } from "@/types/types";
@@ -23,6 +26,8 @@ import { GlobalFunctions } from "@/abi/global";
 import { isAssignable, moreGeneralType } from "@/types/subtyping";
 import { StructFunctions } from "@/abi/struct";
 import { prettyPrint } from "@/ast/ast-printer";
+import type { SrcInfo } from "@/grammar";
+import { ContractFunctions } from "@/abi/contracts";
 
 const store = createContextStore<{
     ast: Ast.Expression;
@@ -203,6 +208,51 @@ function resolveStructNew(
         kind: "ref",
         name: tp.name,
         optional: false,
+    });
+}
+
+function resolveMapLiteral(
+    exp: Ast.MapLiteral,
+    sctx: StatementContext,
+    ctx: CompilerContext,
+): CompilerContext {
+    const keyTy = getType(ctx, exp.type.keyType);
+    const valTy = getType(ctx, exp.type.valueType);
+    verifyMapType(exp.type, valTy.kind === "struct");
+    const keyFormalType = resolveTypeRef(ctx, exp.type.keyType);
+    const valueFormalType = resolveTypeRef(ctx, exp.type.valueType);
+
+    for (const { key, value } of exp.fields) {
+        ctx = resolveExpression(key, sctx, ctx);
+        ctx = resolveExpression(value, sctx, ctx);
+        const keyType = getExpType(ctx, key);
+        const valueType = getExpType(ctx, value);
+        if (!isAssignable(keyType, keyFormalType)) {
+            throwCompilationError(
+                `Key of type "${printTypeRef(keyType)}" cannot be used as a key for map with keys of type "${printTypeRef(keyFormalType)}"`,
+                key.loc,
+            );
+        }
+        if (!isAssignable(valueType, valueFormalType)) {
+            throwCompilationError(
+                `Value of type "${printTypeRef(valueType)}" cannot be used as a value for map with values of type "${printTypeRef(valueFormalType)}"`,
+                key.loc,
+            );
+        }
+    }
+
+    return registerExpType(ctx, exp, {
+        kind: "map",
+        key: keyTy.name,
+        keyAs:
+            exp.type.keyStorageType !== undefined
+                ? idText(exp.type.keyStorageType)
+                : null,
+        value: valTy.name,
+        valueAs:
+            exp.type.valueStorageType !== undefined
+                ? idText(exp.type.valueStorageType)
+                : null,
     });
 }
 
@@ -417,7 +467,7 @@ function resolveFieldAccess(
     ctx: CompilerContext,
 ): CompilerContext {
     // Resolve expression
-    ctx = resolveExpression(exp.aggregate, sctx, ctx);
+    ctx = resolveExpression(exp.aggregate, sctx, ctx, true);
 
     // Find target type and check for type
     const src = getExpType(ctx, exp.aggregate);
@@ -449,7 +499,7 @@ function resolveFieldAccess(
     const fieldIndex = srcT.fields.findIndex((v) => eqNames(v.name, exp.field));
     const field = fieldIndex !== -1 ? srcT.fields[fieldIndex] : undefined;
 
-    // If we found a field of bounced<T>, check if the field doesn't fit in 224 bytes and cannot be accessed
+    // If we found a field of bounced<T>, check if the field doesn't fit in 224 bits and cannot be accessed
     if (
         src.kind === "ref_bounced" &&
         field &&
@@ -457,15 +507,35 @@ function resolveFieldAccess(
     ) {
         if (srcT.fields.length === 1) {
             throwCompilationError(
-                `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes`,
+                `Maximum size of the bounced message is 224 bits, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bits`,
                 exp.field.loc,
             );
         }
 
         throwCompilationError(
-            `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes`,
+            `Maximum size of the bounced message is 224 bits, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bits`,
             exp.field.loc,
         );
+    }
+
+    if (src.kind === "ref_bounced" && field) {
+        if (field.type.kind === "map") {
+            throwCompilationError(
+                `Cannot access field of map type from bounced<${src.name}>`,
+                exp.field.loc,
+            );
+        }
+
+        if (field.type.kind === "ref") {
+            const name = field.type.name;
+            if (name === "Cell" || name === "Slice" || name === "Builder") {
+                const optional = field.type.optional ? "?" : "";
+                throwCompilationError(
+                    `Cannot access field of ${idTextErr(name + optional)} type from bounced<${src.name}>`,
+                    exp.field.loc,
+                );
+            }
+        }
     }
 
     const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
@@ -519,6 +589,13 @@ function checkParameterType(
     }
 }
 
+export function throwVarAddrHardDeprecateError(loc: SrcInfo) {
+    throwCompilationError(
+        `Using VarAddress since TVM 10 is mostly useless as it throws exit code 9 in many cases. Tact does not support VarAddress since 1.6.8 and it will be removed completely in future versions`,
+        loc,
+    );
+}
+
 function resolveStaticCall(
     exp: Ast.StaticCall,
     sctx: StatementContext,
@@ -542,6 +619,10 @@ function resolveStaticCall(
 
         // Register return type
         return registerExpType(ctx, exp, resolved);
+    }
+
+    if (exp.function.text === "parseVarAddress") {
+        throwVarAddrHardDeprecateError(exp.loc);
     }
 
     // Check if function exists
@@ -593,7 +674,7 @@ function resolveCall(
     ctx: CompilerContext,
 ): CompilerContext {
     // Resolve expression
-    ctx = resolveExpression(exp.self, sctx, ctx);
+    ctx = resolveExpression(exp.self, sctx, ctx, true);
 
     // Check if self is initialized
     if (
@@ -618,9 +699,29 @@ function resolveCall(
         const srcT = getType(ctx, src.name);
 
         // Check struct ABI
-        if (srcT.kind === "struct") {
-            if (StructFunctions.has(idText(exp.method))) {
-                const abi = StructFunctions.get(idText(exp.method))!;
+        if (srcT.kind === "struct" || srcT.kind === "contract") {
+            const abi =
+                srcT.kind === "struct"
+                    ? StructFunctions.get(idText(exp.method))
+                    : ContractFunctions.get(idText(exp.method));
+
+            if (abi) {
+                const isInstanceCall = exp.self.kind !== "id";
+                const isStaticCallFromType =
+                    exp.self.kind === "id" && exp.self.text === src.name;
+
+                if (abi.isStatic && isInstanceCall) {
+                    throwCompilationError(
+                        `Cannot call static method ${idTextErr(exp.method)} on an instance.`,
+                        exp.loc,
+                    );
+                }
+                if (!abi.isStatic && isStaticCallFromType) {
+                    throwCompilationError(
+                        `Cannot call instance method ${idTextErr(exp.method)} as a static one.`,
+                        exp.loc,
+                    );
+                }
                 const resolved = abi.resolve(
                     ctx,
                     [src, ...exp.args.map((v) => getExpType(ctx, v))],
@@ -843,6 +944,7 @@ export function resolveExpression(
     exp: Ast.Expression,
     sctx: StatementContext,
     ctx: CompilerContext,
+    allowTypeAsValue: boolean = false, // to allow Foo in Foo.bar() and disallow just Foo
 ) {
     switch (exp.kind) {
         case "boolean": {
@@ -873,6 +975,17 @@ export function resolveExpression(
         case "struct_instance": {
             return resolveStructNew(exp, sctx, ctx);
         }
+        case "map_literal": {
+            return resolveMapLiteral(exp, sctx, ctx);
+        }
+        case "map_value": {
+            return throwInternalCompilerError(
+                "Map value should never get here",
+            );
+        }
+        case "set_literal": {
+            return throwInternalCompilerError("Set literals are not supported");
+        }
         case "op_binary": {
             return resolveBinaryOp(exp, sctx, ctx);
         }
@@ -885,17 +998,27 @@ export function resolveExpression(
             if (!v) {
                 if (!hasStaticConstant(ctx, exp.text)) {
                     // Handle static struct method calls
-                    try {
-                        const t = getType(ctx, exp.text);
-                        if (t.kind === "struct") {
+                    const t = getTypeOrUndefined(ctx, exp.text);
+                    if (typeof t !== "undefined") {
+                        if (allowTypeAsValue) {
                             return registerExpType(ctx, exp, {
                                 kind: "ref",
                                 name: t.name,
                                 optional: false,
                             });
                         }
-                    } catch {
-                        // Ignore
+
+                        if (t?.kind === "struct") {
+                            throwCompilationError(
+                                `Add {} after "${exp.text}" to create an instance of the struct`,
+                                exp.loc,
+                            );
+                        }
+
+                        throwCompilationError(
+                            `Cannot use type "${exp.text}" as value`,
+                            exp.loc,
+                        );
                     }
 
                     // Handle possible field access and suggest to use self.field instead

@@ -7,24 +7,24 @@ import { shouldThrowOnTvmGetMethod } from "@/test/utils/throw";
 
 describe("stdlib", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<StdlibTest>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await StdlibTest.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             null,
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,
@@ -109,20 +109,6 @@ describe("stdlib", () => {
             BigInt(
                 "0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
             ),
-        );
-
-        const addrVar = await contract.getParseVarAddress(
-            beginCell()
-                .storeUint(6, 3)
-                .storeUint(123, 9)
-                .storeUint(234, 32)
-                .storeUint(345, 123)
-                .endCell()
-                .asSlice(),
-        );
-        expect(addrVar.workchain).toBe(234n);
-        expect(addrVar.address.asCell()).toEqualCell(
-            beginCell().storeUint(345, 123).endCell(),
         );
 
         const forceBasechainGood = await contract.getForceBasechain(

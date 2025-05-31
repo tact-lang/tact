@@ -97,6 +97,62 @@ contract MeSee {
 
 :::
 
+### inMsg
+
+<Badge text="Available since Tact 1.6.7" variant="tip" size="medium"/><p/>
+
+```tact
+fun inMsg(): Slice;
+```
+
+Returns the [`Slice{:tact}`][slice] with the original, raw body of the [received message](/book/receive).
+
+That `Slice{:tact}` can:
+
+* be empty, which means the contract has received an empty message body that is handled in the empty receiver `receive(){:tact}` or the catch-all slice receiver `receive(msg: Slice){:tact}`;
+* start with 4 zero bytes, which means the contract has received a text message that is handled in the relevant receiver:
+  * the exact text receiver `receive("message"){:tact}`,
+  * the catch-all string receiver `receive(msg: String){:tact}`,
+  * or the catch-all slice receiver `receive(msg: Slice){:tact}`;
+* start with 4 bytes of a non-zero message opcode that the corresponding binary receiver `receive(msg: MessageStruct){:tact}` or the catch-all slice receiver `receive(msg: Slice){:tact}` would handle.
+
+Usage examples:
+
+```tact
+// This contract defines various kinds of receivers in their
+// order of handling the corresponding incoming messages.
+contract OrderOfReceivers() {
+    receive() {
+        let body = inMsg();
+        body.bits(); // 0
+    }
+
+    receive("yeehaw!") {
+        let body = inMsg();
+        body.loadUint(32); // 0
+        body.hash() == "yeehaw!".asSlice().hash(); // true
+    }
+
+    receive(str: String) {
+        let body = inMsg();
+        body.loadUint(32); // 0
+        body == str.asSlice(); // true
+    }
+
+    receive(msg: Emergency) {
+        let body = inMsg();
+        body.preloadUint(32); // 911
+    }
+
+    receive(rawMsg: Slice) {
+        let body = inMsg();
+        body == rawMsg; // true
+    }
+}
+
+message(911) Emergency {}
+```
+
 ### context
 
 ```tact
@@ -254,21 +310,17 @@ let gas: Int = gasConsumed();
 
 ### nativeReserve
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun nativeReserve(amount: Int, mode: Int);
 ```
 
-Executes the native `RAWRESERVE` instruction with the specified amount and mode. The `RAWRESERVE` instruction creates an output action to reserve a specific amount of [nanoToncoin][nano] from the remaining balance of the account.
+Executes the [`RAWRESERVE`](https://docs.ton.org/v3/documentation/tvm/instructions#FB02) instruction with the specified `amount` and `mode`. It queues the reservation of the specific `amount` of [nanoToncoin][nano] from the remaining account balance per the given `mode`.
 
-The `RAWRESERVE` instruction takes two arguments:
-* `amount`: The number of [nanoToncoin][nano] to reserve.
-* `mode`: Determines the reservation behavior.
+The reservation action is queued to the _output action list_, which contains other actions such as [message sends](/book/send#outbound-message-processing). In fact, the `RAWRESERVE` instruction is roughly equivalent to creating an outbound message carrying the specified `amount` of nanoToncoin or `b - amount` of nanoToncoin, where `b` is the remaining balance, to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
 
-The `RAWRESERVE` instruction is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoin][nano] (or `b - amount` [nanoToncoin][nano], where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
-
-It is possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience, there's a set of constants you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+It is possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience, there is a set of constants you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on [base modes](#nativereserve-base-modes), [optional flags](#nativereserve-optional-flags), and how you can [combine them together](#nativereserve-combining-modes-with-flags).
 
 :::caution
 

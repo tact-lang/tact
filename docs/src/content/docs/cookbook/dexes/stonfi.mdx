@@ -27,7 +27,7 @@ Before going further, familiarize yourself with the following:
 
 Read more about swaps in the [STON.fi documentation](https://docs.ston.fi/docs/developer-section/api-reference-v2/example_swap).
 
-Swaps use the `StonfiSwap{:tact}` [Message][message] and the `SwapAdditionalData{:tact}` [Struct][struct]:
+Swaps use the `StonfiSwap{:tact}` [Message][message] and the `SwapAdditionalData{:tact}` [struct][struct]:
 
 ```tact
 /// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#swap-0x6664de2a
@@ -120,12 +120,10 @@ const FeeSwapToncoinToJetton: Int = ton("0.01") + ton("0.3");
 
 ```tact
 // CPI Router v2.1.0
-const RouterAddress: Address =
-    address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v");
+const RouterAddress: Address = address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v");
 
 // Router Jetton Wallet address
-const RouterJettonWallet: Address =
-    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
+const RouterJettonWallet: Address = address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
 
 /// NOTE: To calculate and provide the Jetton wallet address for the target user,
 ///       make sure to check the links after this code snippet.
@@ -134,20 +132,20 @@ fun jettonToJetton(myJettonWalletAddress: Address) {
     let offerAmount: Int = 100_000;
 
     // Prepare the payload
-    let forwardPayload = StonfiSwap{
+    let forwardPayload = StonfiSwap {
         otherTokenWallet: RouterJettonWallet,
         refundAddress: myAddress(),
         excessesAddress: myAddress(),
         // Deadline is set to 10,000 seconds from now
         deadline: now() + 10_000,
-        additionalData: SwapAdditionalData{ receiverAddress: myAddress() },
+        additionalData: SwapAdditionalData { receiverAddress: myAddress() },
     };
 
     // Start a swap with the message to the Jetton wallet
-    send(SendParameters{
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: FeeSwapJettonToJetton,
-        body: JettonTransfer{
+        body: JettonTransfer {
             queryId: 42,
             amount: offerAmount,
             destination: RouterAddress,
@@ -159,7 +157,7 @@ fun jettonToJetton(myJettonWalletAddress: Address) {
 }
 
 //
-// Helper Messages, Structs and constants described earlier on this page
+// Helper structures and constants described earlier on this page
 //
 
 message(0x6664de2a) StonfiSwap {
@@ -222,12 +220,10 @@ A Jetton to Toncoin swap is very similar to a [Jetton to Jetton swap](#swaps-jet
 
 ```tact
 // CPI Router v2.1.0
-const RouterAddress: Address =
-    address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v");
+const RouterAddress: Address = address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v");
 
 // Router's pTON address
-const RouterProxyTonWallet: Address =
-    address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
+const RouterProxyTonWallet: Address = address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
 
 /// NOTE: To calculate and provide the Jetton wallet address for the target user,
 ///       make sure to check links after this code snippet
@@ -236,20 +232,20 @@ fun jettonToToncoin(myJettonWalletAddress: Address) {
     let offerAmount: Int = 100_000;
 
     // Prepare the payload
-    let forwardPayload = StonfiSwap{
+    let forwardPayload = StonfiSwap {
         otherTokenWallet: RouterProxyTonWallet,
         refundAddress: myAddress(),
         excessesAddress: myAddress(),
         // Deadline is set to 10,000 seconds from now
         deadline: now() + 10_000,
-        additionalData: SwapAdditionalData{ receiverAddress: myAddress() },
+        additionalData: SwapAdditionalData { receiverAddress: myAddress() },
     };
 
     // Start a swap with the message to the Jetton wallet
-    send(SendParameters{
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: FeeSwapJettonToToncoin,
-        body: JettonTransfer{
+        body: JettonTransfer {
             queryId: 42,
             amount: offerAmount,
             destination: RouterAddress,
@@ -345,32 +341,30 @@ Notice that `ProxyToncoinTransfer{:tact}` is quite similar to `JettonTransfer{:t
 
 ```tact
 // Router's pTON wallet address
-const RouterProxyTonWallet: Address
-    = address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
+const RouterProxyTonWallet: Address = address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
 
 // Router's Jetton wallet address
-const RouterJettonWallet: Address =
-    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
+const RouterJettonWallet: Address = address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
 
 fun toncoinToJetton() {
     // Amount of Toncoin to swap
     let offerAmount: Int = 1_000;
 
     // Prepare the payload
-    let forwardPayload = StonfiSwap{
+    let forwardPayload = StonfiSwap {
         otherTokenWallet: RouterJettonWallet,
         refundAddress: myAddress(),
         excessesAddress: myAddress(),
         // Deadline is set to 10,000 seconds from now
         deadline: now() + 10_000,
-        additionalData: SwapAdditionalData{ receiverAddress: myAddress() },
+        additionalData: SwapAdditionalData { receiverAddress: myAddress() },
     };
 
     // Start a swap with the message to the proxy Toncoin wallet
-    send(SendParameters{
+    send(SendParameters {
         to: RouterProxyTonWallet,
         value: FeeSwapToncoinToJetton + offerAmount,
-        body: ProxyToncoinTransfer{
+        body: ProxyToncoinTransfer {
             tonAmount: offerAmount,
             refundAddress: myAddress(),
             forwardPayload: forwardPayload.toCell(),
@@ -379,7 +373,7 @@ fun toncoinToJetton() {
 }
 
 //
-// Helper Messages, Structs, and constants described earlier on this page
+// Helper structures and constants described earlier on this page
 //
 
 message(0x01f3835d) ProxyToncoinTransfer {
@@ -423,7 +417,7 @@ Read more about liquidity provision in the [STON.fi documentation](https://docs.
 
 STON.fi allows you to deposit liquidity by specifying only one type of token. The pool will automatically perform the swap and mint liquidity provider (LP) tokens. To do this, you need to set the `bothPositive` field of the `ProvideLiquidity{:tact}` [Message][message] to `false{:tact}`.
 
-Liquidity deposits use the `ProvideLiquidity{:tact}` [Message][message] and `ProvideLiquidityAdditionalData{:tact}` [Struct][struct]:
+Liquidity deposits use the `ProvideLiquidity{:tact}` [Message][message] and `ProvideLiquidityAdditionalData{:tact}` [struct][struct]:
 
 ```tact
 /// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#provide_lp-0x37c096df
@@ -504,16 +498,13 @@ const FeeSingleSideProvideLpToncoin: Int = ton("0.01") + ton("0.8");
 
 ```tact
 // CPI Router v2.1.0
-const RouterAddress: Address =
-    address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v");
+const RouterAddress: Address = address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v");
 
 // Router's pTON wallet address
-const RouterProxyTonWallet: Address =
-    address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
+const RouterProxyTonWallet: Address = address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
 
 // Router's Jetton wallet address
-const RouterJettonWallet: Address =
-    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK"); 
+const RouterJettonWallet: Address = address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
 
 /// NOTE: To calculate and provide the Jetton wallet address for the target user,
 ///       make sure to check the links after this code snippet.
@@ -522,22 +513,22 @@ fun jettonDeposit(myJettonWalletAddress: Address) {
     let offerAmount = 100_000;
 
     // Prepare the payload
-    let forwardPayload = ProvideLiquidity{
+    let forwardPayload = ProvideLiquidity {
         otherTokenWallet: RouterProxyTonWallet,
         refundAddress: myAddress(),
         excessesAddress: myAddress(),
         // Deadline is set to 1,000 seconds from now
         deadline: now() + 1_000,
-        additionalData: ProvideLiquidityAdditionalData{
+        additionalData: ProvideLiquidityAdditionalData {
             receiverAddress: myAddress(),
             bothPositive: false, // i.e., single side
         },
     };
 
-    send(SendParameters{
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: FeeSingleSideProvideLpJetton,
-        body: JettonTransfer{
+        body: JettonTransfer {
             queryId: 42,
             amount: offerAmount,
             destination: RouterAddress,
@@ -549,7 +540,7 @@ fun jettonDeposit(myJettonWalletAddress: Address) {
 }
 
 //
-// Helper Messages, Structs, and constants described earlier on this page
+// Helper structures and constants described earlier on this page
 //
 
 message(0x37c096df) ProvideLiquidity {
@@ -598,33 +589,31 @@ message(0xf8a7ea5) JettonTransfer {
 
 ```tact
 // Router's pTON wallet address
-const RouterProxyTonWallet: Address =
-    address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
+const RouterProxyTonWallet: Address = address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
 
 // Router's Jetton wallet address
-const RouterJettonWallet: Address =
-    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
+const RouterJettonWallet: Address = address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
 
 fun toncoinDeposit() {
     // Amount of Jettons for liquidity provisioning
     let offerAmount = 100_000;
 
     // Prepare the payload
-    let forwardPayload = ProvideLiquidity{
+    let forwardPayload = ProvideLiquidity {
         otherTokenWallet: RouterJettonWallet,
         refundAddress: myAddress(),
         excessesAddress: myAddress(),
         deadline: now() + 1000,
-        additionalData: ProvideLiquidityAdditionalData{
+        additionalData: ProvideLiquidityAdditionalData {
             receiverAddress: myAddress(),
             bothPositive: false, // i.e. single side
         },
     };
 
-    send(SendParameters{
+    send(SendParameters {
         to: RouterProxyTonWallet,
         value: FeeSingleSideProvideLpToncoin + offerAmount,
-        body: ProxyToncoinTransfer{
+        body: ProxyToncoinTransfer {
             queryId: 42,
             tonAmount: offerAmount,
             refundAddress: myAddress(),

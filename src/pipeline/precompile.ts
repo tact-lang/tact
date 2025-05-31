@@ -1,5 +1,8 @@
 import type { CompilerContext } from "@/context/context";
-import { resolveDescriptors } from "@/types/resolveDescriptors";
+import {
+    computeGlobalVariablesUsages,
+    resolveDescriptors,
+} from "@/types/resolveDescriptors";
 import { resolveAllocations } from "@/storage/resolveAllocation";
 import { openContext, parseModules } from "@/context/store";
 import { resolveStatements } from "@/types/resolveStatements";
@@ -12,6 +15,7 @@ import { getAstFactory } from "@/ast/ast-helpers";
 import { getParser } from "@/grammar";
 import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
 import { computeReceiversEffects } from "@/types/effects";
+import { setAstFactoryToStore } from "@/pipeline/ast-factory-store";
 
 export function precompile(
     ctx: CompilerContext,
@@ -21,6 +25,8 @@ export function precompile(
     parsedModules?: Ast.Module[],
 ) {
     const ast = getAstFactory();
+    setAstFactoryToStore(ctx, ast);
+
     const parser = getParser(ast);
 
     // Load all sources
@@ -60,6 +66,8 @@ export function precompile(
        it is hard to extract the call to evalConstantExpression in resolveSignatures.
     */
     evalComptimeExpressions(ctx, ast);
+
+    ctx = computeGlobalVariablesUsages(ctx);
 
     // This creates TLB-style type definitions
     ctx = resolveSignatures(ctx, ast);

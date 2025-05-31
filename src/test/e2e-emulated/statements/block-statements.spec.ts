@@ -6,23 +6,23 @@ import "@ton/test-utils";
 
 describe("block-statements", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<Test>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(await Test.fromInit());
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             { $$type: "Deploy", queryId: 0n },
         );
 
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,

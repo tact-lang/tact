@@ -37,7 +37,7 @@ type DeployParams = {
 
 describe("Deploy() correctness", () => {
     let blockchain: Blockchain;
-    let treasure: SandboxContract<TreasuryContract>;
+    let treasury: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<DeployContract>;
 
     async function checkCorrectness(params: DeployParams) {
@@ -50,7 +50,7 @@ describe("Deploy() correctness", () => {
             mode: params.mode,
         };
         const sendResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("1") },
             msgToSend,
         );
@@ -65,7 +65,7 @@ describe("Deploy() correctness", () => {
         msgToSend: DeployComparisonMsg | DeployComparisonNoBodyMsg,
     ) {
         const { transactions } = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("100") },
             msgToSend,
         );
@@ -73,7 +73,7 @@ describe("Deploy() correctness", () => {
         // Obtain the transaction that executed the deploy and send functions
         const tsx = ensureTransactionIsDefined(
             findTransaction(transactions, {
-                from: treasure.address,
+                from: treasury.address,
                 to: contract.address,
                 success: true,
             }),
@@ -104,19 +104,19 @@ describe("Deploy() correctness", () => {
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        treasure = await blockchain.treasury("treasure");
+        treasury = await blockchain.treasury("treasury");
 
         contract = blockchain.openContract(
             await DeployContract.fromInit(nextContractId()),
         );
 
         const deployResult = await contract.send(
-            treasure.getSender(),
+            treasury.getSender(),
             { value: toNano("10") },
             beginCell().endCell().asSlice(),
         );
         expect(deployResult.transactions).toHaveTransaction({
-            from: treasure.address,
+            from: treasury.address,
             to: contract.address,
             success: true,
             deploy: true,

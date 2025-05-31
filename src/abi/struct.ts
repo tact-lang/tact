@@ -1,14 +1,19 @@
 import { ops } from "@/generator/writers/ops";
 import { writeExpression } from "@/generator/writers/writeExpression";
-import { throwCompilationError } from "@/error/errors";
+import {
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "@/error/errors";
 import { getType } from "@/types/resolveDescriptors";
 import type { AbiFunction } from "@/abi/AbiFunction";
+import { messageOpcode } from "@/generator/writers/writeRouter";
 
 export const StructFunctions: Map<string, AbiFunction> = new Map([
     [
         "toCell",
         {
             name: "toCell",
+            isStatic: false,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError("toCell() expects no arguments", ref);
@@ -40,7 +45,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")})`;
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}, begin_cell())`;
             },
         },
     ],
@@ -48,6 +53,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "fromCell",
         {
             name: "fromCell",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
                     throwCompilationError(
@@ -104,9 +110,65 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         },
     ],
     [
+        "opcode",
+        {
+            name: "opcode",
+            isStatic: true,
+            resolve: (ctx, args, ref) => {
+                const [arg] = args;
+                if (typeof arg === "undefined" || args.length !== 1) {
+                    throwCompilationError("opcode() expects no arguments", ref);
+                }
+                if (arg.kind !== "ref") {
+                    throwCompilationError(
+                        `opcode() method can be used only for messages`,
+                        ref,
+                    );
+                }
+                const type = getType(ctx, arg.name);
+                if (type.kind !== "struct" || type.ast.kind === "struct_decl") {
+                    throwCompilationError(
+                        `opcode() method can be used only for messages`,
+                        ref,
+                    );
+                }
+                return { kind: "ref", name: "Int", optional: false };
+            },
+            generate: (ctx, args, _resolved, ref) => {
+                const [arg] = args;
+                if (typeof arg === "undefined" || args.length !== 1) {
+                    throwCompilationError("opcode() expects no arguments", ref);
+                }
+                if (arg.kind !== "ref") {
+                    throwCompilationError(
+                        `opcode() method can be used only for messages`,
+                        ref,
+                    );
+                }
+                const type = getType(ctx.ctx, arg.name);
+                if (type.kind !== "struct" || type.ast.kind === "struct_decl") {
+                    throwCompilationError(
+                        `opcode() method can be used only for messages`,
+                        ref,
+                    );
+                }
+
+                if (!type.header) {
+                    throwInternalCompilerError(
+                        `Invalid allocation: ${type.name}`,
+                        type.ast.name.loc,
+                    );
+                }
+
+                return messageOpcode(type.header);
+            },
+        },
+    ],
+    [
         "toSlice",
         {
             name: "toSlice",
+            isStatic: false,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError(
@@ -144,7 +206,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}).begin_parse()`;
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}, begin_cell()).begin_parse()`;
             },
         },
     ],
@@ -152,6 +214,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "fromSlice",
         {
             name: "fromSlice",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
                     throwCompilationError(
@@ -163,14 +226,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg1 = args[1]!;
                 if (arg0.kind !== "ref") {
                     throwCompilationError(
-                        "fromSlice() is implemented only for struct types",
+                        "fromSlice() is implemented only for struct/contract types",
                         ref,
                     );
                 }
                 const tp = getType(ctx, arg0.name);
                 if (tp.kind !== "struct") {
                     throwCompilationError(
-                        "fromSlice() is implemented only for struct types",
+                        "fromSlice() is implemented only for struct/contract types",
                         ref,
                     );
                 }
@@ -193,7 +256,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg1 = args[1]!;
                 if (arg0.kind !== "ref") {
                     throwCompilationError(
-                        "fromSlice() is implemented only for struct types",
+                        "fromSlice() is implemented only for struct/contract types",
                         ref,
                     );
                 }

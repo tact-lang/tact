@@ -30,7 +30,7 @@ Every operator in Tact forms an expression, but there's much more to uncover, as
 
 Literals represent values in Tact. These are fixed values—not variables—that you _literally_ provide in your code. All literals in Tact are expressions themselves.
 
-You can also call [extension functions](/book/functions#extension-function) defined on certain [primitive types][p] directly on their corresponding literal values:
+You can also call [extension functions](/book/functions#extensions) defined on certain [primitive types][p] directly on their corresponding literal values:
 
 ```tact
 // Calling toString() defined for Int on an integer literal:
@@ -170,6 +170,31 @@ if (var != null) {
 
 Read more about working with `null{:tact}` on the dedicated page: [Optionals](/book/optionals).
 
+### Map literals
+
+<Badge text="Available since Tact 1.6.7" variant="tip" size="medium"/><p/>
+
+Map literals create maps by enclosing a comma-delimited list of zero or more predefined key-value pairs in curly braces.
+
+```tact
+// A compile-time map literal
+let myMap: map<Int as uint8, Int as int13> = map<Int as uint8, Int as int13> {
+    // Key expression: Value expression
+    1 + 2: 10 * pow2(3), // key 3, value 80
+    1 + 3: 20 * pow2(4), // key 4, value 320
+};
+myMap.get(3)!!; // 80
+myMap.get(4)!!; // 320
+```
+
+Read more: [Initialize a map with a literal](/book/maps#initialize).
+
+:::note
+
+  Support for runtime initialization values that are not resolved at [compile-time](/ref/core-comptime) is planned for future Tact releases.
+
+:::
+
 ## Identifiers
 
 An identifier is a sequence of characters in the code that _identifies_ a [variable](/book/statements#let), [constant](/book/constants), [map](/book/maps), a [function](/book/functions), as well as a [Struct][s], [Message][m], [contract](/book/contracts), [trait](/book/types#traits), or their fields and methods. Identifiers are case-sensitive and not quoted.
@@ -199,10 +224,10 @@ struct StExample {
 
 fun example() {
     // Instance with default value of fieldInit
-    StExample{ fieldUninit: 2 };
+    StExample { fieldUninit: 2 };
 
     // Instance with both fields set
-    StExample{
+    StExample {
         fieldInit: 0,
         fieldUninit: 2, // trailing comma is allowed
     };
@@ -223,7 +248,7 @@ struct StExample {
 }
 
 fun example(): Int {
-    let struct: StExample = StExample{ fieldUninit: 2 }; // instantiation
+    let struct: StExample = StExample { fieldUninit: 2 }; // instantiation
 
     struct.fieldInit;          // access a field
     return struct.fieldUninit; // return field value from the function
@@ -232,7 +257,7 @@ fun example(): Int {
 
 ## Extension function call
 
-[Extension functions](/book/functions#extension-function) are defined only on specific types. They can be called similarly to method calls in many other languages:
+[Extension functions](/book/functions#extensions) are defined only on specific types. They can be called similarly to method calls in many other languages:
 
 ```tact
 42.toString(); // toString() is a stdlib function that is defined on Int type
@@ -240,13 +265,13 @@ fun example(): Int {
 
 ## Static function call
 
-A global [static function](/book/functions#global-static-functions) or an internal function of a [contract](/book/contracts) can be called from anywhere in the function body:
+A [global function](/book/functions#fun-global) or a [internal function](/book/functions#fun-internal) of a [contract](/book/contracts) can be called from anywhere in the function body:
 
 ```tact
 contract ExampleContract {
     receive() {
         now(); // now() is a static function of stdlib
-        let expiration: Int = now() + 1000; // operation and variable declaration
+        let expiration: Int = now() + 1000; // operation and variable definition
         expiration = self.answerQuestion(); // internal function
     }
     fun answerQuestion(): Int {
@@ -257,7 +282,7 @@ contract ExampleContract {
 
 ## `initOf` {#initof}
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 The expression `initOf{:tact}` computes the initial state, i.e., `StateInit{:tact}`, of a [contract](/book/contracts):
 
@@ -305,7 +330,7 @@ Field  | Type                  | Description
 ## `codeOf` {#codeof}
 
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 The expression `codeOf{:tact}` returns a [`Cell{:tact}`][cell] containing the code of a [contract](/book/contracts):

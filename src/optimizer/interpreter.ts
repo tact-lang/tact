@@ -1,4 +1,14 @@
-import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
+import {
+    Address,
+    beginCell,
+    BitString,
+    Cell,
+    Dictionary,
+    type DictionaryKey,
+    type DictionaryKeyTypes,
+    type DictionaryValue,
+    toNano,
+} from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import { crc32 } from "@/utils/crc32";
 import type * as Ast from "@/ast/ast";
@@ -37,14 +47,101 @@ import {
 import { divFloor, modFloor } from "@/optimizer/util";
 import { sha256 } from "@/utils/sha256";
 import { prettyPrint } from "@/ast/ast-printer";
+import {
+    type MapSerializerDescrKey,
+    type MapSerializerDescrValue,
+    mapSerializers,
+} from "@/bindings/typescript/serializers";
+import { getMapAbi } from "@/types/resolveABITypeRef";
+
+const minSignedInt = (nBits: number): bigint => -(2n ** (BigInt(nBits) - 1n));
+
+const maxSignedInt = (nBits: number): bigint => 2n ** (BigInt(nBits) - 1n) - 1n;
+
+const minUnsignedInt = (_nBits: number): bigint => 0n;
+
+const maxUnsignedInt = (nBits: number): bigint => 2n ** BigInt(nBits) - 1n;
+
+const minVarInt = (length: number): bigint =>
+    minSignedInt(8 * (2 ** length - 1));
+
+const maxVarInt = (length: number): bigint =>
+    maxSignedInt(8 * (2 ** length - 1));
+
+const minVarUint = (_length: number): bigint => 0n;
+
+const maxVarUint = (length: number): bigint =>
+    maxUnsignedInt(8 * (2 ** length - 1));
+
+type mapKeyOrValueIntFormat =
+    | { kind: "int"; bits: number }
+    | { kind: "uint"; bits: number }
+    | { kind: "varint"; length: number }
+    | { kind: "varuint"; length: number };
+
+const ensureMapIntKeyOrValRange = (
+    num: Ast.Number,
+    intFormat: mapKeyOrValueIntFormat,
+): Ast.Number => {
+    const val = num.value;
+    switch (intFormat.kind) {
+        case "int":
+            if (
+                minSignedInt(intFormat.bits) <= val &&
+                val <= maxSignedInt(intFormat.bits)
+            ) {
+                return num;
+            }
+            throwErrorConstEval(
+                `integer '${prettyPrint(num)}' does not fit into ${intFormat.bits}-bit signed integer type`,
+                num.loc,
+            );
+            break;
+        case "uint":
+            if (
+                minUnsignedInt(intFormat.bits) <= val &&
+                val <= maxUnsignedInt(intFormat.bits)
+            ) {
+                return num;
+            }
+            throwErrorConstEval(
+                `integer '${prettyPrint(num)}' does not fit into ${intFormat.bits}-bit unsigned integer type`,
+                num.loc,
+            );
+            break;
+        case "varint":
+            if (
+                minVarInt(intFormat.length) <= val &&
+                val <= maxVarInt(intFormat.length)
+            ) {
+                return num;
+            }
+            throwErrorConstEval(
+                `integer '${prettyPrint(num)}' does not fit into variable-length signed integer type with ${intFormat.length}-bit length`,
+                num.loc,
+            );
+            break;
+        case "varuint":
+            if (
+                minVarUint(intFormat.length) <= val &&
+                val <= maxVarUint(intFormat.length)
+            ) {
+                return num;
+            }
+            throwErrorConstEval(
+                `integer '${prettyPrint(num)}' does not fit into variable-length unsigned integer type with ${intFormat.length}-bit length`,
+                num.loc,
+            );
+    }
+};
 
 // TVM integers are signed 257-bit integers
-const minTvmInt: bigint = -(2n ** 256n);
-const maxTvmInt: bigint = 2n ** 256n - 1n;
+const minTvmInt: bigint = minSignedInt(257);
+const maxTvmInt: bigint = maxSignedInt(257);
 
 // Range allowed in repeat statements
-const minRepeatStatement: bigint = -(2n ** 256n); // Note it is the same as minimum for TVM
-const maxRepeatStatement: bigint = 2n ** 31n - 1n;
+const minRepeatStatement: bigint = minTvmInt; // Note it is the same as minimum for TVM
+const maxRepeatStatement: bigint = maxSignedInt(32);
 
 // Util factory methods
 // FIXME: pass util as argument
@@ -105,14 +202,14 @@ function ensureArgumentForEquality(val: Ast.Literal): Ast.Literal {
         case "string":
         case "slice":
             return val;
-        case "struct_value":
+        case "map_value":
+        case "struct_value": {
             throwErrorConstEval(
                 `struct ${prettyPrint(val)} cannot be an argument to == operator`,
                 val.loc,
             );
             break;
-        default:
-            throwInternalCompilerError("Unrecognized ast literal kind");
+        }
     }
 }
 
@@ -625,6 +722,48 @@ const defaultInterpreterConfig: InterpreterConfig = {
     maxLoopIterations: maxRepeatStatement,
 };
 
+type KeyExist = <R>(
+    cb: <K extends DictionaryKeyTypes>(
+        type: DictionaryKey<K>,
+        parse: (value: Ast.Literal, keyExprLoc: SrcInfo) => K,
+    ) => R,
+) => R;
+
+type ValueExist = <R>(
+    cb: <V>(
+        type: DictionaryValue<V>,
+        parse: (value: Ast.Literal, valueExprLoc: SrcInfo) => V,
+    ) => R,
+) => R;
+
+const expectNumber = (node: Ast.Literal, loc: SrcInfo): bigint => {
+    if (node.kind !== "number") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
+const expectAddress = (node: Ast.Literal, loc: SrcInfo): Address => {
+    if (node.kind !== "address") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
+const expectCell = (node: Ast.Literal, loc: SrcInfo): Cell => {
+    if (node.kind !== "cell") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
+const expectBool = (node: Ast.Literal, loc: SrcInfo): boolean => {
+    if (node.kind !== "boolean") {
+        return throwErrorConstEval("Unexpected expression type", loc);
+    }
+    return node.value;
+};
+
 /*
 Interprets Tact AST trees.
 The constructor receives an optional CompilerContext which includes
@@ -851,8 +990,14 @@ export class Interpreter {
                 return this.interpretFieldAccess(ast);
             case "static_call":
                 return this.interpretStaticCall(ast);
-            default:
-                throwInternalCompilerError("Unrecognized expression kind");
+            case "map_value":
+                return this.interpretMapValue(ast);
+            case "map_literal":
+                return this.interpretMapLiteral(ast);
+            case "set_literal":
+                return throwInternalCompilerError(
+                    "Set literals are not supported",
+                );
         }
     }
 
@@ -1077,6 +1222,128 @@ export class Interpreter {
     private interpretStructValue(ast: Ast.StructValue): Ast.StructValue {
         // Struct values are already simplified to their simplest form
         return ast;
+    }
+    private interpretMapValue(ast: Ast.MapValue): Ast.MapValue {
+        return ast;
+    }
+
+    private interpretMapLiteral(ast: Ast.MapLiteral): Ast.MapValue {
+        const keyTy = getType(this.context, ast.type.keyType);
+        const valTy = getType(this.context, ast.type.valueType);
+        const res = mapSerializers.abiMatcher(
+            getMapAbi(
+                {
+                    kind: "map",
+                    key: keyTy.name,
+                    keyAs:
+                        ast.type.keyStorageType !== undefined
+                            ? idText(ast.type.keyStorageType)
+                            : null,
+                    value: valTy.name,
+                    valueAs:
+                        ast.type.valueStorageType !== undefined
+                            ? idText(ast.type.valueStorageType)
+                            : null,
+                },
+                ast.loc,
+            ),
+        );
+        if (res === null) {
+            throwInternalCompilerError("Wrong map ABI");
+        }
+        const keyExist = this.getKeyParser(res.key);
+        const valueExist = this.getValueParser(res.value);
+        const bocHex = keyExist((keyType, parseKey) => {
+            return valueExist((valueType, parseValue) => {
+                if (ast.fields.length === 0) {
+                    return undefined;
+                }
+                let dict = Dictionary.empty(keyType, valueType);
+                for (const { key: keyExpr, value: valueExpr } of ast.fields) {
+                    const keyValue = this.interpretExpressionInternal(keyExpr);
+                    if (keyValue.kind === "number") {
+                        if (res.key.kind === "int" || res.key.kind === "uint") {
+                            ensureMapIntKeyOrValRange(keyValue, res.key);
+                        }
+                    }
+                    const dictKeyValue = parseKey(keyValue, keyExpr.loc);
+                    const valValue =
+                        this.interpretExpressionInternal(valueExpr);
+                    if (valValue.kind === "number") {
+                        if (
+                            res.value.kind === "int" ||
+                            res.value.kind === "uint" ||
+                            res.value.kind === "varint" ||
+                            res.value.kind === "varuint"
+                        ) {
+                            ensureMapIntKeyOrValRange(valValue, res.value);
+                        }
+                    }
+                    const dictValValue = parseValue(valValue, valueExpr.loc);
+                    dict = dict.set(dictKeyValue, dictValValue);
+                }
+                return beginCell()
+                    .storeDictDirect(dict)
+                    .endCell()
+                    .toBoc()
+                    .toString("hex");
+            });
+        });
+        return this.util.makeMapValue(bocHex, ast.type, ast.loc);
+    }
+
+    getKeyParser(src: MapSerializerDescrKey): KeyExist {
+        switch (src.kind) {
+            case "int": {
+                return (cb) =>
+                    cb(Dictionary.Keys.BigInt(src.bits), expectNumber);
+            }
+            case "uint": {
+                return (cb) =>
+                    cb(Dictionary.Keys.BigUint(src.bits), expectNumber);
+            }
+            case "address": {
+                return (cb) => cb(Dictionary.Keys.Address(), expectAddress);
+            }
+        }
+    }
+    getValueParser(src: MapSerializerDescrValue): ValueExist {
+        switch (src.kind) {
+            case "int": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigInt(src.bits), expectNumber);
+            }
+            case "uint": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigUint(src.bits), expectNumber);
+            }
+            case "varint": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigVarInt(src.length), expectNumber);
+            }
+            case "varuint": {
+                return (cb) =>
+                    cb(Dictionary.Values.BigVarUint(src.length), expectNumber);
+            }
+            case "address": {
+                return (cb) => cb(Dictionary.Values.Address(), expectAddress);
+            }
+            case "cell": {
+                return (cb) => cb(Dictionary.Values.Cell(), expectCell);
+            }
+            case "boolean": {
+                return (cb) => cb(Dictionary.Values.Bool(), expectBool);
+            }
+            case "struct": {
+                return (cb) =>
+                    cb(Dictionary.Values.Cell(), (_, loc) => {
+                        throwNonFatalErrorConstEval(
+                            "Cannot evaluate map with struct values",
+                            loc,
+                        );
+                    });
+            }
+        }
     }
 
     private interpretFieldAccess(ast: Ast.FieldAccess): Ast.Literal {

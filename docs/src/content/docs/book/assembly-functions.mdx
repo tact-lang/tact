@@ -112,11 +112,11 @@ asm fun identity(x: Int): Int { }
 asm fun bocchiThe(BOC: Cell): Cell { BOC }
 ```
 
-The parameters of arbitrary [Struct][struct] types are distributed over their fields, recursively flattened as the arguments are pushed onto the stack. In particular, the value of the first field of the [Struct][struct] is pushed first, the second is pushed second, and so on, so that the value of the first field is at the bottom of the stack and the value of the last is at the top. If there are nested structures inside those [Structs][struct], they're flattened in the same manner.
+The parameters of arbitrary [struct][struct] types are distributed over their fields, recursively flattened as the arguments are pushed onto the stack. In particular, the value of the first field of the struct is pushed first, the second is pushed second, and so on, so that the value of the first field is at the bottom of the stack and the value of the last is at the top. If there are nested structures inside those structs, they're flattened in the same manner.
 
 :::note
 
-  This behavior of [Structs][struct] is experimental and may change in future releases of Tact. When in doubt, prefer specifying multiple parameters over a single [Struct][struct] with many fields.
+  This behavior of [structs][struct] is experimental and may change in future releases of Tact. When in doubt, prefer specifying multiple parameters over a single struct with many fields.
 
 :::
 
@@ -135,20 +135,20 @@ asm fun mulOfSums(n: Nested): Int { ADD -ROT ADD MUL }
 
 // Action!
 fun showcase() {
-    sum(AB{ a: 27, b: 50 }); // 77
-    //      ↑      ↑
-    //      |      Pushed last, sits on top of the stack
-    //      Pushed first, sits at the bottom of the stack
+    sum(AB { a: 27, b: 50 }); // 77
+    //       ↑      ↑
+    //       |      Pushed last, sits on top of the stack
+    //       Pushed first, sits at the bottom of the stack
 
-    mulOfSums(Nested{ ab1: AB{ a: 1, b: 2 }, ab2: AB{ a: 3, b: 4 } }); // 21
-    //                         ↑     ↑                ↑     ↑
-    //                         |     |                |     Pushed last,
-    //                         |     |                |     sits on top of the stack
-    //                         |     |                Pushed second-to-last,
-    //                         |     |                sits below the top of the stack
-    //                         |     Pushed second,
-    //                         |     sits just above the bottom of the stack
-    //                         Pushed first, sits at the bottom of the stack
+    mulOfSums(Nested { ab1: AB { a: 1, b: 2 }, ab2: AB { a: 3, b: 4 } }); // 21
+    //                           ↑     ↑                 ↑     ↑
+    //                           |     |                 |     Pushed last,
+    //                           |     |                 |     sits on top of the stack
+    //                           |     |                 Pushed second-to-last,
+    //                           |     |                 sits below the top of the stack
+    //                           |     Pushed second,
+    //                           |     sits just above the bottom of the stack
+    //                           Pushed first, sits at the bottom of the stack
 }
 ```
 
@@ -173,7 +173,7 @@ Specifying a [primitive type][p], such as an [`Int{:tact}`][int] or a [`Cell{:ta
 asm fun push(x: Int): Cell { }
 ```
 
-Just like in [parameters](#conventions-parameters), arbitrary [Struct][struct] return types are distributed across their fields and recursively flattened in exactly the same order. The only differences are that they now capture values from the stack and do so in a right-to-left fashion — the last field of the [Struct][struct] grabs the topmost value from the stack, the second-to-last grabs the second from the top, and so on, so that the last field contains the value from the top of the stack and the first field contains the value from the bottom.
+Just like in [parameters](#conventions-parameters), arbitrary [struct][struct] return types are distributed across their fields and recursively flattened in exactly the same order. The only differences are that they now capture values from the stack and do so in a right-to-left fashion — the last field of the struct grabs the topmost value from the stack, the second-to-last grabs the second from the top, and so on, so that the last field contains the value from the top of the stack and the first field contains the value from the bottom.
 
 ```tact
 // Struct with two fields of type Int
@@ -184,7 +184,7 @@ struct MinMax { minVal: Int; maxVal: Int }
 asm fun minmax(a: Int, b: Int): MinMax { MINMAX }
 ```
 
-If the run-time type of some captured value doesn't match a specified field type of the [Struct][struct] or the nested [Structs][struct], if any, an exception with [exit code 7](/book/exit-codes#7) will be thrown: `Type check error`. Moreover, attempts to capture more values than there were on the stack throw an exception with [exit code 2](/book/exit-codes#2): `Stack underflow`.
+If the run-time type of some captured value doesn't match a specified field type of the [struct][struct] or the nested structs, if any, an exception with [exit code 7](/book/exit-codes#7) will be thrown: `Type check error`. Moreover, attempts to capture more values than there were on the stack throw an exception with [exit code 2](/book/exit-codes#2): `Stack underflow`.
 
 ```tact
 // Struct with way too many fields for the initial stack to handle
@@ -197,7 +197,7 @@ struct Handler { f1: Int; f2: Int; f3: Int; f4: Int; f5: Int; f6: Int; f7: Int }
 asm fun overHandler(): Handler { }
 ```
 
-As parameters and return values of assembly functions, [Structs][struct] can only have up to 16 fields. Each of these fields can in turn be declared as another [Struct][struct], where each of these nested structures can also only have up to 16 fields. This process can be repeated until there are a total of 256 fields of [primitive types][p] due to the [assembly function limitations](#limitations). This restriction also applies to the parameter list of assembly functions — you can only declare up to 16 parameters.
+As parameters and return values of assembly functions, [structs][struct] can only have up to 16 fields. Each of these fields can in turn be declared as another struct, where each of these nested structures can also only have up to 16 fields. This process can be repeated until there are a total of 256 fields of [primitive types][p] due to the [assembly function limitations](#limitations). This restriction also applies to the parameter list of assembly functions — you can only declare up to 16 parameters.
 
 ```tact
 // Seventeen fields
@@ -264,7 +264,7 @@ Considering arrangements, the evaluation flow of the assembly function can be th
 4. If a result arrangement is present, resulting values are reordered on the stack.
 5. The resulting values are captured (partially or fully) by the return type of the function.
 
-The argument arrangement has the syntax `asm(arg2 arg1)`, where `arg1` and `arg2` are some arguments of the function arranged in the order we want to push them onto the stack: `arg1` will be pushed first and placed at the bottom of the stack, while `arg2` will be pushed last and placed at the top of the stack. Arrangements are not limited to two arguments and operate on all parameters of the function. If there are any parameters of arbitrary [Struct][struct] types, their arrangement is done prior to their flattening.
+The argument arrangement has the syntax `asm(arg2 arg1)`, where `arg1` and `arg2` are some arguments of the function arranged in the order we want to push them onto the stack: `arg1` will be pushed first and placed at the bottom of the stack, while `arg2` will be pushed last and placed at the top of the stack. Arrangements are not limited to two arguments and operate on all parameters of the function. If there are any parameters of arbitrary [struct][struct] types, their arrangement is done prior to their flattening.
 
 ```tact
 // Changing the order of arguments to match the STDICT signature:
@@ -286,7 +286,7 @@ asm(-> 1 0) extends fun asmLoadCoins(self: Slice): SliceInt { LDVARUINT16 }
 //     | which is the topmost value on the stack
 //     Value of the stack register 1,
 //     which is the second-to-top value on the stack
-// And the return type `SliceInt`, which is the following Struct:
+// And the return type `SliceInt`, which is the following struct:
 struct SliceInt { s: Slice; val: Int }
 ```
 
@@ -301,7 +301,7 @@ asm(s len -> 1 0) fun asmLoadInt(len: Int, s: Slice): SliceInt { LDIX }
 //           | which is the topmost value on the stack
 //           Value of the stack register 1,
 //           which is the second-to-top value on the stack
-// And the return type `SliceInt`, which is the following Struct:
+// And the return type `SliceInt`, which is the following struct:
 struct SliceInt { s: Slice; val: Int }
 ```
 
@@ -398,7 +398,7 @@ asm fun myCode(): Cell { MYCODE }
 
 ### `mutates` consumes an extra value {#caveats-mutates}
 
-Specifying the [`mutates{:tact}`](/book/functions#mutation-functions) attribute, i.e. defining a mutation function, makes the assembly function consume one additional value deeper in the stack than the declared return values. Consider the following example:
+Specifying the [`mutates{:tact}`](/book/functions#mutates) attribute, i.e. defining a mutation function, makes the assembly function consume one additional value deeper in the stack than the declared return values. Consider the following example:
 
 ```tact
 asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
@@ -406,9 +406,9 @@ asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 
 Here, the `LDREF` instruction produces two stack entries: a [`Cell{:tact}`][cell] and a modified [`Slice{:tact}`][slice], in that order, with the [`Slice{:tact}`][slice] pushed on top of the stack. Then, the arrangement `-> 1 0{:tact}` inverts those values, making the [`Cell{:tact}`][cell] sit on top of the stack.
 
-Finally, the [`mutates{:tact}`](/book/functions#mutation-functions) attribute makes the function consume the deepest value on the stack, i.e. [`Slice{:tact}`][slice], and assigns it to `self{:tact}`, while returning the [`Cell{:tact}`][cell] value to the caller.
+Finally, the [`mutates{:tact}`](/book/functions#mutates) attribute makes the function consume the deepest value on the stack, i.e. [`Slice{:tact}`][slice], and assigns it to `self{:tact}`, while returning the [`Cell{:tact}`][cell] value to the caller.
 
-Overall, the [`mutates{:tact}`](/book/functions#mutation-functions) attribute can be useful in some cases, but you must remain vigilant when using it with assembly functions.
+Overall, the [`mutates{:tact}`](/book/functions#mutates) attribute can be useful in some cases, but you must remain vigilant when using it with assembly functions.
 
 :::caution
 
@@ -434,7 +434,7 @@ To reduce the number of stack-manipulating statements and to save gas, the order
 
 That's because assembly functions, unlike all others, require a certain order of values on the stack before and after their execution. If this order is disrupted, the entire logic of such functions can be broken immediately.
 
-Hence, when writing assembly functions, make sure you are not using the built-in [Structs] and [Messages] from Tact's library. If you want to target a specific structure, make a copy of it in your code, and then use that copy so that it won't be affected by future Tact updates.
+Hence, when writing assembly functions, make sure you are not using the built-in [structs][struct] and [Messages][message] from Tact's library. If you want to target a specific structure, make a copy of it in your code, and then use that copy so that it won't be affected by future Tact updates.
 
 ## Debugging {#debugging}
 
@@ -453,14 +453,14 @@ Read more about debugging Tact contracts on the dedicated page: [Debugging](/boo
 The following attributes can be specified:
 
 * `inline{:tact}` — does nothing, since assembly functions are always inlined.
-* [`extends{:tact}`](/book/functions#extension-function) — makes it an [extension function](/book/functions#extension-function).
-* [`mutates{:tact}`](/book/functions#mutation-functions) (along with [`extends{:tact}`](/book/functions#extension-function)) — makes it an [extension mutation function](/book/functions#mutation-functions).
+* [`extends{:tact}`](/book/functions#extensions) — makes it an [extension function](/book/functions#extensions).
+* [`mutates{:tact}`](/book/functions#mutates), along with [`extends{:tact}`](/book/functions#extensions) — makes it an [extension mutation function](/book/functions#mutates).
 
 These attributes _cannot_ be specified:
 
 * `abstract{:tact}` — assembly functions must have a defined body.
 * `virtual{:tact}` and `override{:tact}` — assembly functions cannot be defined within a contract or a trait.
-* [`get{:tact}`](/book/functions#getter-functions) — assembly functions cannot be [getters](/book/functions#getter-functions).
+* [`get{:tact}`](/book/functions#get) — assembly functions cannot be [getters](/book/functions#get).
 
 ```tact
 /// `Builder.storeCoins()` extension function
@@ -494,7 +494,7 @@ This notation omits type information and only implicitly describes the state of 
 // which helps visually map them onto parameters and return values
 ```
 
-When literals are involved, they'll be shown as is. Additionally, when values on the stack do not represent parameters or [Struct][struct] fields of the return type, only their type is given.
+When literals are involved, they'll be shown as is. Additionally, when values on the stack do not represent parameters or [struct][struct] fields of the return type, only their type is given.
 
 ### keccak256
 
@@ -538,7 +538,7 @@ asm fun keccak512(s: Slice): Hash512 {
     UNPAIR // could've used UNTUPLE in a more general case too
 }
 
-// Helper Struct
+// Helper struct
 struct Hash512 { h1: Int; h2: Int }
 ```
 
@@ -676,6 +676,7 @@ asm fun _onchainShaHashExt(): Int { HASHEXT_SHA256 }
 
 [p]: /book/types#primitive-types
 [struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
 [int]: /book/integers
 [cell]: /book/cells#cells
 [builder]: /book/cells#builders

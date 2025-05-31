@@ -10,6 +10,7 @@ import { resolveFuncType } from "@/generator/writers/resolveFuncType";
 import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack";
 import { funcIdOf } from "@/generator/writers/id";
 import {
+    constEval,
     writeExpression,
     writeExpressionInCondition,
     writePathExpression,
@@ -22,6 +23,7 @@ import { idTextErr, throwInternalCompilerError } from "@/error/errors";
 import { ppAsmShuffle } from "@/ast/ast-printer";
 import { zip } from "@/utils/array";
 import { binaryOperationFromAugmentedAssignOperation } from "@/ast/util";
+import type { CompilerContext } from "@/context/context";
 
 export function writeCastedExpression(
     expression: Ast.Expression,
@@ -206,6 +208,9 @@ export function writeStatement(
         }
         case "statement_expression": {
             const exp = writeExpression(f.expression, ctx);
+            if (exp === "") {
+                return;
+            }
             ctx.append(`${exp};`);
             return;
         }
@@ -557,6 +562,100 @@ export function writeStatement(
     throw Error("Unknown statement kind");
 }
 
+const isZero = (expr: Ast.Expression): boolean => {
+    return expr.kind === "number" && expr.value === 0n;
+};
+
+const rewriteWithIfNot = (
+    expr: Ast.Expression,
+    ctx: CompilerContext,
+): ["if" | "ifnot", Ast.Expression] => {
+    if (expr.kind === "op_unary" && expr.op === "!") {
+        // `if (~ cond)` => `ifnot (cond)`
+        return ["ifnot", expr.operand];
+    }
+
+    if (expr.kind === "op_binary" && (expr.op === "==" || expr.op === "!=")) {
+        // Skip optimization for optional refs
+        const leftExpType = getExpType(ctx, expr.left);
+        const rightExpType = getExpType(ctx, expr.right);
+        if (
+            (leftExpType.kind === "ref" && leftExpType.optional) ||
+            (rightExpType.kind === "ref" && rightExpType.optional)
+        ) {
+            return ["if", expr];
+        }
+
+        const left = constEval(expr.left, ctx);
+        const right = constEval(expr.right, ctx);
+
+        if (expr.op === "==") {
+            if (isZero(right)) {
+                // if (a == 0) => ifnot (a)
+                return ["ifnot", expr.left];
+            }
+            if (isZero(left)) {
+                // if (0 == a) => ifnot (a)
+                return ["ifnot", expr.right];
+            }
+        }
+
+        if (expr.op === "!=") {
+            if (isZero(right)) {
+                // if (a != 0) => if (a)
+                return ["if", expr.left];
+            }
+            if (isZero(left)) {
+                // if (0 != a) => if (a)
+                return ["if", expr.right];
+            }
+        }
+    }
+
+    return ["if", expr];
+};
+
+const extractThrowErrorCode = (
+    stmts: readonly Ast.Statement[],
+    ctx: CompilerContext,
+): Ast.Expression | undefined => {
+    const [stmt] = stmts;
+    if (
+        stmt?.kind === "statement_expression" &&
+        stmt.expression.kind === "static_call" &&
+        stmt.expression.function.text === "throw"
+    ) {
+        const arg = stmt.expression.args.at(0);
+        if (arg?.kind === "static_call" || arg?.kind === "method_call") {
+            // calls can change state, so we'll skip that for now
+            return undefined;
+        }
+
+        if (arg?.kind === "number") {
+            return arg;
+        }
+
+        if (arg === undefined) {
+            return undefined;
+        }
+
+        try {
+            return constEval(arg, ctx);
+        } catch {
+            return undefined;
+        }
+    }
+    return undefined;
+};
+
+const rewriteWithConditionalThrow = (f: Ast.StatementCondition) => {
+    const condition = f.condition;
+    if (condition.kind === "op_unary" && condition.op === "!") {
+        return { kind: "throw_unless", condition: condition.operand };
+    }
+    return { kind: "throw_if", condition };
+};
+
 // HACK ALERT: if `returns` is a string, it contains the code to invoke before returning from a receiver
 // this is used to save the contract state before returning
 function writeCondition(
@@ -566,8 +665,24 @@ function writeCondition(
     returns: TypeRef | null | string,
     ctx: WriterContext,
 ) {
+    const throwCode = extractThrowErrorCode(f.trueStatements, ctx.ctx);
+    const isAloneIf =
+        f.falseStatements === undefined || f.falseStatements.length === 0;
+
+    if (!elseif && isAloneIf && throwCode !== undefined) {
+        // if (cond) { throw(X) } => throw_if(X, cond)
+        // if (!cond) { throw(X) } => throw_unless(X, cond)
+        const { kind, condition } = rewriteWithConditionalThrow(f);
+        ctx.append(
+            `${kind}(${writeExpression(throwCode, ctx)}, ${writeExpression(condition, ctx)});`,
+        );
+        return;
+    }
+
+    const [ifKind, condition] = rewriteWithIfNot(f.condition, ctx.ctx);
+
     ctx.append(
-        `${elseif ? "} else" : ""}if (${writeExpressionInCondition(f.condition, ctx)}) {`,
+        `${elseif ? "} else" : ""}${ifKind} (${writeExpressionInCondition(condition, ctx)}) {`,
     );
     ctx.inIndent(() => {
         for (const s of f.trueStatements) {
