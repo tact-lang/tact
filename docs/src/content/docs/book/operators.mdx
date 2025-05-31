@@ -208,7 +208,7 @@ pow(2, 255) * pow(2, 255); // build error: integer overflow!
 
 #### Divide, `/` {#binary-divide}
 
-The binary slash (_division_) operator `/{:tact}` is used for integer division of two values, which truncates toward zero if the result is positive and away from zero if the result is negative. This is also called [rounding down](https://en.wikipedia.org/wiki/Rounding#Rounding_down) or rounding toward $-∞$.
+The binary slash (_division_) operator `/{:tact}` is used for integer division of two values. It rounds the result towards negative infinity (also known as floor division or rounding down). This means the quotient `q` is always `floor(x / y)`. The remainder `r` (where `x = q*y + r`) will have the same sign as the divisor `y` if `r` is not zero.
 
 An attempt to divide by zero results in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
 
@@ -218,12 +218,12 @@ It can only be applied to values of type [`Int{:tact}`][int]:
 let two: Int = 2;
 two / 2; // 1
 two / 1; // 2
--1 / 5;  // -1
--1 / -5; // 0
-1 / -5;  // -1
-1 / 5;   // 0
-6 / 5;   // 1, rounding down
--6 / 5;  // -2, rounding down (toward -∞)
+-1 / 5;  // -1 (floor(-0.2) = -1)
+-1 / -5; // 0  (floor(0.2) = 0)
+1 / -5;  // -1 (floor(-0.2) = -1)
+1 / 5;   // 0  (floor(0.2) = 0)
+6 / 5;   // 1  (floor(1.2) = 1)
+-6 / 5;  // -2 (floor(-1.2) = -2)
 ```
 
 :::note
