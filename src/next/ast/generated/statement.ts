@@ -144,8 +144,8 @@ export const CatchBlock = (
     catchStatements: readonly $.Statement[],
 ): $.CatchBlock =>
     Object.freeze({
-        catchName,
-        catchStatements,
+        name: catchName,
+        statements: catchStatements,
     });
 export type StatementTry = $.StatementTry;
 export const StatementTry = (

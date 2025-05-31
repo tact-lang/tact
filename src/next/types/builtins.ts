@@ -66,7 +66,7 @@ export const StringBuilder = Ast.TypeStringBuilder(r);
 export const MapType = (k: Ast.DecodedType, v: Ast.DecodedType) => Ast.DTypeMap(k, v, r);
 export const Maybe = (t: Ast.DecodedType) => Ast.DTypeMaybe(t, r)
 export const Unit = Ast.TypeUnit(r);
-export const StateInit = Ast.DTypeRef(Ast.TypeId("StateInit", r), [], r);
+export const StateInit = Ast.DTypeStateInit(r);
 
 export const builtinTypes = new Map([
     "Int", "Slice", "Cell", "Builder", "Void", "Null", "Bool",
@@ -76,14 +76,20 @@ export const builtinTypes = new Map([
 const ArithBin = (name: string) => {
     return Fn(name, { left: Int, right: Int }, Int);
 };
-const CompBin = (name: string) => {
-    return Fn(name, { left: Int, right: Int }, Bool);
-};
 const BoolBin = (name: string) => {
     return Fn(name, { left: Bool, right: Bool }, Bool);
 };
+const CompBin = (name: string) => {
+    return Fn(name, { left: Int, right: Int }, Bool);
+};
 const EqBin = (name: string) => {
     return GenericFn(name, ["T"], { left: Ref("T"), right: Ref("T") }, Bool);
+};
+const ArithAssign = (name: string) => {
+    return Fn(name, { left: Int, right: Int }, Void);
+};
+const BoolAssign = (name: string) => {
+    return Fn(name, { left: Bool, right: Bool }, Void);
 };
 
 export const builtinFunctions: Map<string, Ast.DecodedFnType> = new Map([
@@ -166,6 +172,23 @@ export const builtinBinary: Map<string, Ast.DecodedFnType> = new Map([
     // (left: Bool, right: Bool): Bool
     BoolBin("&&"),
     BoolBin("||"),
+]);
+
+export const builtinAugmented: Map<string, Ast.DecodedFnType> = new Map([
+    // (left: Int, right: Int): Void;
+    ArithAssign("+="),
+    ArithAssign("-="),
+    ArithAssign("*="),
+    ArithAssign("/="),
+    ArithAssign("%="),
+    ArithAssign("<<="),
+    ArithAssign(">>="),
+    ArithAssign("&="),
+    ArithAssign("|="),
+    ArithAssign("^="),
+    // (left: Bool, right: Bool): Void;
+    BoolAssign("&&="),
+    BoolAssign("||="),
 ]);
 
 export const getStaticBuiltin = (type: Ast.DecodedType): Map<string, Ast.DecodedFnType> => {

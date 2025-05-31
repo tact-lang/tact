@@ -1,4 +1,4 @@
-import type { DecodedExpression } from "@/next/ast/checked-expr";
+import type { DecodedExpression, LValue } from "@/next/ast/checked-expr";
 import type { Id, Loc, OptionalId, TypeId } from "@/next/ast/common";
 import type { AugmentedAssignOperation } from "@/next/ast/statement";
 
@@ -40,7 +40,7 @@ export type DStatementExpression = {
 
 export type DStatementAssign = {
     readonly kind: "statement_assign";
-    readonly path: DecodedExpression; // left-hand side of `=`
+    readonly path: LValue;
     readonly expression: DecodedExpression;
     readonly loc: Loc;
 };
@@ -48,7 +48,7 @@ export type DStatementAssign = {
 export type DStatementAugmentedAssign = {
     readonly kind: "statement_augmentedassign";
     readonly op: AugmentedAssignOperation;
-    readonly path: DecodedExpression;
+    readonly path: LValue;
     readonly expression: DecodedExpression;
     readonly loc: Loc;
 };
@@ -90,8 +90,8 @@ export type DStatementTry = {
 };
 
 export type DCatchBlock = {
-    readonly catchName: OptionalId;
-    readonly catchStatements: DStatementList;
+    readonly name: OptionalId;
+    readonly statements: DStatementList;
 };
 
 export type DStatementForEach = {

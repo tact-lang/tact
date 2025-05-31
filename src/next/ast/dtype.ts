@@ -1,5 +1,11 @@
+import type { TypeDeclRefable } from "@/next/ast/checked";
 import type { Loc, TypeId } from "@/next/ast/common";
 import type * as Ast from "@/next/ast/type";
+
+// TODO:
+// readonly tlb: Lazy<TlbType>
+// readonly effects: Lazy<Effects>
+// readonly ref: NoPrint<ContractSig>
 
 export type DecodedType =
     | DTypeRecover
@@ -20,6 +26,7 @@ export type DecodedType =
     | DTypeNull
     | DTypeBool
     | DTypeAddress
+    | DTypeStateInit
     | DTypeString
     | DTypeStringBuilder;
 
@@ -34,14 +41,20 @@ export type DTypeBool = Ast.TypeBool
 export type DTypeAddress = Ast.TypeAddress
 export type DTypeString = Ast.TypeString
 export type DTypeStringBuilder = Ast.TypeStringBuilder
+export type DTypeStateInit = Ast.TypeStateInit;
 
 export type DTypeRecover = {
     readonly kind: "recover";
 }
 
+export type NotDealiased = {
+    readonly kind: "NotDealiased";
+}
+
 export type DTypeRef = {
     readonly kind: "type_ref";
     readonly name: TypeId;
+    readonly type: TypeDeclRefable;
     readonly typeArgs: readonly DecodedType[];
     readonly loc: Loc;
 };
@@ -49,6 +62,7 @@ export type DTypeRef = {
 export type DTypeAliasRef = {
     readonly kind: "TypeAlias"
     readonly name: TypeId;
+    readonly type: NotDealiased | DecodedType;
     readonly typeArgs: readonly DecodedType[];
     readonly loc: Loc;
 }

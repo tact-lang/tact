@@ -1,3 +1,4 @@
+import type { TypeDeclRefable } from "@/next/ast/checked";
 import type { Loc, TypeId } from "@/next/ast/common";
 import type { DTypeParamRef } from "@/next/ast/dtype";
 import type * as Ast from "@/next/ast/type";
@@ -26,6 +27,7 @@ export type MethodGroundType =
     | MGTypeBool
     | MGTypeAddress
     | MGTypeString
+    | MGTypeStateInit
     | MGTypeStringBuilder;
 
 export type Ground<T> = T & {
@@ -41,6 +43,7 @@ export type MGTypeVoid = Ground<Ast.TypeVoid>
 export type MGTypeNull = Ground<Ast.TypeNull>
 export type MGTypeBool = Ground<Ast.TypeBool>
 export type MGTypeAddress = Ground<Ast.TypeAddress>
+export type MGTypeStateInit = Ground<Ast.TypeStateInit>
 export type MGTypeString = Ground<Ast.TypeString>
 export type MGTypeStringBuilder = Ground<Ast.TypeStringBuilder>
 
@@ -48,6 +51,7 @@ export type MGTypeRef = {
     readonly ground: "yes",
     readonly kind: "type_ref";
     readonly name: TypeId;
+    readonly type: TypeDeclRefable;
     readonly typeArgs: readonly MethodGroundType[];
     readonly loc: Loc;
 };
@@ -87,6 +91,7 @@ export type MVTypeRef = {
     readonly ground: "no",
     readonly kind: "type_ref";
     readonly name: TypeId;
+    readonly type: TypeDeclRefable;
     readonly typeArgs: readonly DTypeParamRef[];
     readonly loc: Loc;
 };

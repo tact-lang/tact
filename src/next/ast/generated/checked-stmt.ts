@@ -27,7 +27,7 @@ export const DStatementExpression = (expression: $e.DecodedExpression, loc: $c.L
 });
 export const isDStatementExpression = ($value: DStatementExpression) => $value.kind === "statement_expression";
 export type DStatementAssign = $.DStatementAssign;
-export const DStatementAssign = (path: $e.DecodedExpression, expression: $e.DecodedExpression, loc: $c.Loc): $.DStatementAssign => Object.freeze({
+export const DStatementAssign = (path: $e.LValue, expression: $e.DecodedExpression, loc: $c.Loc): $.DStatementAssign => Object.freeze({
     kind: "statement_assign",
     path,
     expression,
@@ -35,7 +35,7 @@ export const DStatementAssign = (path: $e.DecodedExpression, expression: $e.Deco
 });
 export const isDStatementAssign = ($value: DStatementAssign) => $value.kind === "statement_assign";
 export type DStatementAugmentedAssign = $.DStatementAugmentedAssign;
-export const DStatementAugmentedAssign = (op: $s.AugmentedAssignOperation, path: $e.DecodedExpression, expression: $e.DecodedExpression, loc: $c.Loc): $.DStatementAugmentedAssign => Object.freeze({
+export const DStatementAugmentedAssign = (op: $s.AugmentedAssignOperation, path: $e.LValue, expression: $e.DecodedExpression, loc: $c.Loc): $.DStatementAugmentedAssign => Object.freeze({
     kind: "statement_augmentedassign",
     op,
     path,
@@ -72,8 +72,8 @@ export const DStatementForEach = (keyName: $c.OptionalId, valueName: $c.Optional
 export const isDStatementForEach = ($value: DStatementForEach) => $value.kind === "statement_foreach";
 export type DCatchBlock = $.DCatchBlock;
 export const DCatchBlock = (catchName: $c.OptionalId, catchStatements: $.DStatementList): $.DCatchBlock => Object.freeze({
-    catchName,
-    catchStatements
+    name: catchName,
+    statements: catchStatements
 });
 export type DStatementTry = $.DStatementTry;
 export const DStatementTry = (statements: $.DStatementList, catchBlock: $.DCatchBlock | undefined, loc: $c.Loc): $.DStatementTry => Object.freeze({

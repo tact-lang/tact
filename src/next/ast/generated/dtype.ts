@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import type * as $ from "@/next/ast/dtype";
 import type * as $c from "@/next/ast/common";
+import { TypeDeclRefable } from "@/next/ast/checked";
 
 export type DTypeParamRef = $.DTypeParamRef;
 export const DTypeParamRef = (name: $c.TypeId, loc: $c.Loc): $.DTypeParamRef => Object.freeze({
@@ -46,17 +47,19 @@ export const DTypeMap = (key: $.DecodedType, value: $.DecodedType, loc: $c.Loc):
 });
 export const isDTypeMap = ($value: DTypeMap) => $value.kind === "map_type";
 export type DTypeAliasRef = $.DTypeAliasRef;
-export const DTypeAliasRef = (name: $c.TypeId, typeArgs: readonly $.DecodedType[], loc: $c.Loc): $.DTypeAliasRef => Object.freeze({
+export const DTypeAliasRef = (type: NotDealiased | DecodedType, name: $c.TypeId, typeArgs: readonly $.DecodedType[], loc: $c.Loc): $.DTypeAliasRef => Object.freeze({
     kind: "TypeAlias",
     name,
+    type,
     typeArgs,
     loc
 });
 export const isDTypeAliasRef = ($value: DTypeAliasRef) => $value.kind === "TypeAlias";
 export type DTypeRef = $.DTypeRef;
-export const DTypeRef = (name: $c.TypeId, typeArgs: readonly $.DecodedType[], loc: $c.Loc): $.DTypeRef => Object.freeze({
+export const DTypeRef = (name: $c.TypeId, type: TypeDeclRefable, typeArgs: readonly $.DecodedType[], loc: $c.Loc): $.DTypeRef => Object.freeze({
     kind: "type_ref",
     name,
+    type,
     typeArgs,
     loc
 });
@@ -64,6 +67,18 @@ export const isDTypeRef = ($value: DTypeRef) => $value.kind === "type_ref";
 export type DecodedType = $.DecodedType;
 export type DTypeRecover = $.DTypeRecover;
 export const DTypeRecover = (): $.DTypeRecover => Object.freeze({
-  kind: "recover"
+    kind: "recover"
 });
 export const isDTypeRecover = ($value: DTypeRecover) => $value.kind === "recover";
+export type DTypeStateInit = $.DTypeStateInit;
+export const DTypeStateInit = (loc: $c.Loc): $.DTypeStateInit => Object.freeze({
+    kind: "TypeStateInit",
+    loc
+});
+export const isDTypeStateInit = ($value: DTypeStateInit) => $value.kind === "TypeStateInit";
+
+export type NotDealiased = $.NotDealiased;
+export const NotDealiased = (): $.NotDealiased => Object.freeze({
+    kind: "NotDealiased"
+});
+export const isNotDealiased = ($value: NotDealiased) => $value.kind === "NotDealiased";

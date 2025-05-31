@@ -4,6 +4,8 @@ import type * as D from "@/next/ast/dtype";
 import type { BinaryOperation, NumberBase, UnaryOperation } from "@/next/ast/expression";
 import type { SelfType } from "@/next/ast/mtype";
 
+// TODO: put Self into main AST and parser
+
 export type TypeArgs = ReadonlyMap<string, D.DecodedType>;
 
 export type DecodedExpression =
@@ -11,6 +13,7 @@ export type DecodedExpression =
     | DOpUnary
     | DConditional
     | DMethodCall
+    | DThrowCall
     | DStaticCall
     | DStaticMethodCall
     | DFieldAccess
@@ -28,6 +31,32 @@ export type DecodedExpression =
     | DTensor
     | DMapLiteral
     | DSetLiteral;
+
+export type LValue =
+    | LVar
+    | LSelf
+    | LFieldAccess
+
+export type LSelf = {
+    readonly kind: "self";
+    readonly computedType: SelfType;
+    readonly loc: Loc;
+}
+
+export type LVar = {
+    readonly kind: "var";
+    readonly name: string;
+    readonly computedType: D.DecodedType;
+    readonly loc: Loc;
+};
+
+export type LFieldAccess = {
+    readonly kind: "field_access";
+    readonly aggregate: LValue;
+    readonly field: Id;
+    readonly computedType: D.DecodedType;
+    readonly loc: Loc;
+};
 
 export type DSelf = {
     readonly kind: "self";
@@ -107,6 +136,14 @@ export type DMethodCall = {
     readonly computedType: D.DecodedType;
     readonly loc: Loc;
 };
+
+export type DThrowCall = {
+    readonly kind: "throw_call";
+    readonly function: Id;
+    readonly args: readonly DecodedExpression[];
+    readonly computedType: D.DecodedType;
+    readonly loc: Loc;
+}
 
 // builtins or top-level (module) functions
 export type DStaticCall = {

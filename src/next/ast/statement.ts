@@ -103,8 +103,8 @@ export type StatementTry = {
 };
 
 export type CatchBlock = {
-    readonly catchName: OptionalId;
-    readonly catchStatements: readonly Statement[];
+    readonly name: OptionalId;
+    readonly statements: readonly Statement[];
 };
 
 export type StatementForEach = {

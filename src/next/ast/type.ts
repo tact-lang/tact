@@ -33,6 +33,7 @@ export type Type =
     | TypeNull
     | TypeBool
     | TypeAddress
+    | TypeStateInit
     | TypeString
     | TypeStringBuilder
     | TypeBounced
@@ -62,6 +63,11 @@ export type TypeBool = {
 
 export type TypeAddress = {
     readonly kind: "TypeAddress"
+    readonly loc: Loc;
+}
+
+export type TypeStateInit = {
+    readonly kind: "TypeStateInit"
     readonly loc: Loc;
 }
 

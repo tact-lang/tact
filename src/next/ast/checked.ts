@@ -35,6 +35,13 @@ export type TypeDeclSig =
     | MessageSig
     | UnionSig
 
+export type TypeDeclRefable =
+    | ContractSig
+    | TraitSig
+    | StructSig
+    | MessageSig
+    | UnionSig
+
 export type ConstSig = {
     readonly initializer: Lazy<Value>;
     readonly type: Lazy<DecodedType>;

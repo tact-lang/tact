@@ -196,3 +196,37 @@ export const DOpBinary = (op: $e.BinaryOperation, left: $.DecodedExpression, rig
 });
 export const isDOpBinary = ($value: DOpBinary) => $value.kind === "op_binary";
 export type DecodedExpression = $.DecodedExpression;
+export type DThrowCall = $.DThrowCall;
+export const DThrowCall = (function_: $c.Id, args: readonly $.DecodedExpression[], computedType: $d.DecodedType, loc: $c.Loc): $.DThrowCall => Object.freeze({
+    kind: "throw_call",
+    function: function_,
+    args,
+    computedType,
+    loc,
+});
+export const isDThrowCall = ($value: DThrowCall) => $value.kind === "throw_call";
+export type LVar = $.LVar;
+export const LVar = (name: string, computedType: $d.DecodedType, loc: $c.Loc): $.LVar => Object.freeze({
+  kind: "var",
+  name,
+  computedType,
+  loc
+});
+export const isLVar = ($value: LVar) => $value.kind === "var";
+export type LSelf = $.LSelf;
+export const LSelf = (computedType: SelfType, loc: $c.Loc): $.LSelf => Object.freeze({
+  kind: "self",
+  computedType,
+  loc
+});
+export const isLSelf = ($value: LSelf) => $value.kind === "self";
+export type LFieldAccess = $.LFieldAccess;
+export const LFieldAccess = (aggregate: $.LValue, field: $c.Id, computedType: $d.DecodedType, loc: $c.Loc): $.LFieldAccess => Object.freeze({
+  kind: "field_access",
+  aggregate,
+  field,
+  computedType,
+  loc
+});
+export const isLFieldAccess = ($value: LFieldAccess) => $value.kind === "field_access";
+export type LValue = $.LValue;

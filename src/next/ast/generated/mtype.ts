@@ -2,6 +2,7 @@
 import type * as $ from "@/next/ast/mtype";
 import type * as $c from "@/next/ast/common";
 import type * as $d from "@/next/ast/dtype";
+import type { TypeDeclRefable } from "@/next/ast/checked";
 
 export type MGTypeInt = $.MGTypeInt;
 export type MGTypeSlice = $.MGTypeSlice;
@@ -15,10 +16,11 @@ export type MGTypeAddress = $.MGTypeAddress;
 export type MGTypeString = $.MGTypeString;
 export type MGTypeStringBuilder = $.MGTypeStringBuilder;
 export type MGTypeRef = $.MGTypeRef;
-export const MGTypeRef = (name: $c.TypeId, typeArgs: readonly $.MethodGroundType[], loc: $c.Loc): $.MGTypeRef => Object.freeze({
+export const MGTypeRef = (name: $c.TypeId, type: TypeDeclRefable, typeArgs: readonly $.MethodGroundType[], loc: $c.Loc): $.MGTypeRef => Object.freeze({
     ground: "yes",
     kind: "type_ref",
     name,
+    type,
     typeArgs,
     loc
 });
@@ -57,10 +59,11 @@ export const MGTypeTensor = (typeArgs: readonly $.MethodGroundType[], loc: $c.Lo
 });
 export const isMGTypeTensor = ($value: MGTypeTensor) => $value.kind === "tensor_type";
 export type MVTypeRef = $.MVTypeRef;
-export const MVTypeRef = (name: $c.TypeId, typeArgs: readonly $d.DTypeParamRef[], loc: $c.Loc): $.MVTypeRef => Object.freeze({
+export const MVTypeRef = (name: $c.TypeId, type: TypeDeclRefable, typeArgs: readonly $d.DTypeParamRef[], loc: $c.Loc): $.MVTypeRef => Object.freeze({
     ground: "no",
     kind: "type_ref",
     name,
+    type,
     typeArgs,
     loc
 });

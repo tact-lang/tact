@@ -840,8 +840,8 @@ const parseStatementTry =
             return Ast.StatementTry(
                 parseStatements(body)(ctx),
                 {
-                    catchName: parseOptionalId(handler.name)(ctx),
-                    catchStatements: parseStatements(handler.body)(ctx),
+                    name: parseOptionalId(handler.name)(ctx),
+                    statements: parseStatements(handler.body)(ctx),
                 },
                 ctx.toRange(loc),
             );

@@ -217,3 +217,9 @@ export const MethodFnType = (typeParams: readonly $c.TypeId[], self: $.Type, arg
     args,
     returnType
 });
+export type TypeStateInit = $.TypeStateInit;
+export const TypeStateInit = (loc: $c.Loc): $.TypeStateInit => Object.freeze({
+    kind: "TypeStateInit",
+    loc
+});
+export const isTypeStateInit = ($value: TypeStateInit) => $value.kind === "TypeStateInit";

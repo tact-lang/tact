@@ -5,6 +5,27 @@ import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
 import { zip } from "@/utils/array";
 
+// type C<T> = map<int4, T>
+// type B<T, U> = [T, U]
+// type A<T> = B<T, C<T>>
+
+// head-first
+// A<X> -> B<X, C<X>> -> [X, C<X>] -> [X, map<int4, X>]
+
+// arg-first
+// A<X> -> B<X, C<X>> -> B<X, map<int4, X>> -> [X, map<int4, X>]
+
+// if head of the type is an alias
+//     substitute alias
+//     store head and args
+//     recurse
+// if head of the type is another type
+//     recurse on arguments
+
+// we never substitute into alias-cons (throwInternal)
+// substitution only happens into body of alias decl
+// body of alias decl is not dealiased, thus doesn't have alias-cons
+
 export const decodeTypeLazy = (
     typeParams: Ast.TypeParams,
     type: Ast.Type,
@@ -95,6 +116,7 @@ export function decodeType(
             case "TypeBool":
             case "TypeAddress":
             case "TypeString":
+            case "TypeStateInit":
             case "TypeStringBuilder": {
                 return type;
             }
@@ -181,17 +203,17 @@ export function decodeType(
                     }
                     case "contract": {
                         // this is a ground type reference
-                        return Ast.DTypeRef(type.name, [], type.loc);
+                        return Ast.DTypeRef(type.name, typeEntry.decl, [], type.loc);
                     }
                     case "struct":
                     case "message":
                     case "union": {
                         // this is a ground type reference
-                        return Ast.DTypeRef(type.name, args, type.loc);
+                        return Ast.DTypeRef(type.name, typeEntry.decl, args, type.loc);
                     }
                     case "alias": {
                         // this is an alias reference
-                        return Ast.DTypeAliasRef(type.name, args, type.loc);
+                        return Ast.DTypeAliasRef(Ast.NotDealiased(), type.name, args, type.loc);
                     }
                 }
             }
@@ -278,7 +300,7 @@ const dealiasTypeAux = (
             }
             case "type_ref": {
                 const args = yield* E.mapLog(type.typeArgs, rec);
-                return Ast.DTypeRef(type.name, args, type.loc);
+                return Ast.DTypeRef(type.name, type.type, args, type.loc);
             }
             case "TypeAlias": {
                 const alias = typeDecls.get(type.name.text);
@@ -287,11 +309,12 @@ const dealiasTypeAux = (
                 }
                 // NB! if we could decode alias once, there might be
                 //     a nested one too
-                return yield* rec(substitute(
+                const decoded = yield* rec(substitute(
                     yield* alias.decl.type(),
                     alias.decl.typeParams,
                     yield* E.mapLog(type.typeArgs, rec),
                 ));
+                return Ast.DTypeAliasRef(decoded, type.name, type.typeArgs, type.loc);
             }
             case "TypeParam": {
                 return type;
@@ -324,6 +347,7 @@ const dealiasTypeAux = (
             case "TypeAddress":
             case "TypeString":
             case "TypeStringBuilder":
+            case "TypeStateInit":
             case "TypeBounced": {
                 return type;
             }
@@ -333,6 +357,7 @@ const dealiasTypeAux = (
     return rec(type);
 };
 
+// NB! is substitute is used for something other than aliases, do not throwInternal on type.type
 const substitute = (
     type: Ast.DecodedType,
     params: Ast.TypeParams,
@@ -361,11 +386,14 @@ const substitute = (
             }
             case "type_ref": {
                 const args = recN(type.typeArgs);
-                return Ast.DTypeRef(type.name, args, type.loc);
+                return Ast.DTypeRef(type.name, type.type, args, type.loc);
             }
             case "TypeAlias": {
                 const args = recN(type.typeArgs);
-                return Ast.DTypeAliasRef(type.name, args, type.loc);
+                if (type.type.kind !== 'NotDealiased') {
+                    return throwInternal("Substitution must not happen into a type with resolved aliases");
+                }
+                return Ast.DTypeAliasRef(type.type, type.name, args, type.loc);
             }
             case "map_type": {
                 const key = rec(type.key);
@@ -396,6 +424,7 @@ const substitute = (
             case "TypeAddress":
             case "TypeString":
             case "TypeStringBuilder":
+            case "TypeStateInit":
             case "TypeBounced": {
                 return type;
             }
@@ -444,7 +473,12 @@ export function* instantiateStruct(
                 return undefined;
             }
             return {
-                type: Ast.DTypeRef(typeName, typeArgs, typeName.loc),
+                type: Ast.DTypeRef(
+                    typeName,
+                    decl.decl, 
+                    typeArgs, 
+                    typeName.loc,
+                ),
                 fields: decl.decl.fields
             };
         }
@@ -461,7 +495,12 @@ export function* instantiateStruct(
                 return undefined;
             }
             const type = yield* dealiasType(
-                Ast.DTypeAliasRef(typeName, typeArgs, typeName.loc),
+                Ast.DTypeAliasRef(
+                    Ast.NotDealiased(),
+                    typeName,
+                    typeArgs,
+                    typeName.loc,
+                ),
                 scopeRef,
             );
             if (type.kind !== 'type_ref') {
@@ -501,7 +540,33 @@ export function* assignType(
     computed: Ast.DecodedType,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<boolean> {
-
+    // export type MismatchTree = {
+    //     readonly to: Ty.LocType;
+    //     readonly from: Ty.LocType;
+    //     readonly children: MismatchTree[];
+    // }
+    // switch (to.kind) {
+    //     case 'TyBuilder':
+    //     case 'TyCell':
+    //     case 'TyInt':
+    //     case 'TySlice':
+    //     case "unit_type": {
+    //         return from.kind === to.kind;
+    //     }
+    //     case "tuple_type":
+    //     case "tensor_type": {
+    //         return from.kind === to.kind && assignAll(to.typeArgs, from.typeArgs, tree);
+    //     }
+    //     case "map_type": {
+    //         return isNull(from)
+    //             || from.kind === 'map_type' && assignToAux1(to.key, from.key, tree) && assignToAux1(to.value, from.value, tree);
+    //     }
+    //     case 'cons_type': {
+    //         return hasTypeParam(to.name.text) && to.typeArgs.length === 0
+    //             || to.name.text === 'Maybe' && isNull(from)
+    //             || from.kind === 'cons_type' && to.name.text === from.name.text && assignAll(to.typeArgs, from.typeArgs, tree);
+    //     }
+    // }
 }
 
 export function* mgu(

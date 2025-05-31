@@ -1,19 +1,18 @@
-() => E.WithLog<FlatType>
-
-export type Unifier = ReturnType<typeof createUnifier>
-export type LocalUnifier = ReturnType<Unifier["withParams"]>
-
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @typescript-eslint/no-base-to-string */
-import { makeVisitor, memo } from "@/utils/tricks";
-import type { Logger } from "@/error/logger-util";
-import type { Implicit, TactImport, TactSource } from "@/next/imports/source";
 import type * as Ast from "@/next/ast";
-import type { Loc } from "@/next/ast";
 import * as Ty from "@/next/scoping/generated/type";
 import { zip } from "@/utils/array";
 import { throwInternal } from "@/error/errors";
 import { type MismatchTree, TcErrors } from "@/next/scoping/errors";
+
+const VarGen = () => {
+    let nextId = 0;
+    return function freshTVar() {
+        const id = nextId++;
+        return Ast.VTypeVar(id);
+    };
+};
 
 // left: Either<T, U>
 // left: Int
@@ -198,47 +197,4 @@ const getExprChecker = (
         freshTVar,
         checkExpr,
     };
-};
-
-const substParams = (into: Ty.Type, params: readonly Ty.TypeId[], args: readonly Ty.Type[]) => {
-    return zip(params, args)
-        .reduce<Ty.Type>((type, [param, arg]) => {
-            return substParam(type, param.text, arg);
-        }, into);
-};
-
-const substParam = (into: Ty.Type, param: string, value: Ty.Type): Ty.Type => {
-    const rec = (into: Ty.Type): Ty.Type => {
-        switch (into.kind) {
-            case "ERROR":
-            case "type_var":
-            case "TyInt":
-            case "TySlice":
-            case "TyCell":
-            case "TyBuilder":
-            case "unit_type": {
-                return into;
-            }
-            case "cons_type": {
-                if (into.name.text !== param) {
-                    return Ty.TypeCons(into.name, into.typeArgs.map(arg => rec(arg)), into.loc);
-                }
-                if (into.typeArgs.length !== 0) {
-                    // err.noHkt(param)(into.loc);
-                }
-                return value;
-            }
-            case "map_type": {
-                return Ty.TypeMap(rec(into.key), rec(into.value), into.loc);
-            }
-            case "tuple_type": {
-                return Ty.TypeTuple(into.typeArgs.map(arg => rec(arg)), into.loc);
-            }
-            case "tensor_type": {
-                return Ty.TypeTensor(into.typeArgs.map(arg => rec(arg)), into.loc);
-            }
-        }
-    };
-
-    return rec(into);
 };

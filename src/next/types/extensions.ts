@@ -172,6 +172,7 @@ function areEqual(
         case "TypeBool":
         case "TypeAddress":
         case "TypeString":
+        case "TypeStateInit":
         case "TypeStringBuilder": {
             return prevSelf.kind === nextSelf.kind;
         }
@@ -263,6 +264,7 @@ function* decodeSelfType(
                     }
                     return Ast.MGTypeRef(
                         type.name,
+                        def.decl,
                         ground,
                         type.loc,
                     );
@@ -348,6 +350,7 @@ function* decodeSelfType(
         case "TypeBool":
         case "TypeAddress":
         case "TypeString":
+        case "TypeStateInit":
         case "TypeStringBuilder": {
             return {
                 ground: "yes",
@@ -392,6 +395,7 @@ function* toGroundType(
                     }
                     return Ast.MGTypeRef(
                         type.name,
+                        typeDecl.decl,
                         ground,
                         type.loc,
                     );
@@ -442,6 +446,7 @@ function* toGroundType(
         case "TypeBool":
         case "TypeAddress":
         case "TypeString":
+        case "TypeStateInit":
         case "TypeStringBuilder": {
             return {
                 ground: "yes",

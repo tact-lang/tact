@@ -24,6 +24,14 @@ export function* mapLog<T, U>(xs: readonly T[], f: (x: T) => WithLog<U>): WithLo
     return result;
 }
 
+export function* reduceLog<T, U>(xs: readonly T[], init: U, f: (acc: U, x: T) => WithLog<U>): WithLog<U> {
+    let acc = init;
+    for (const x of xs) {
+        acc = yield* f(acc, x);
+    }
+    return acc;
+}
+
 export function* filterLog<T>(xs: readonly T[], f: (x: T) => WithLog<boolean>): WithLog<T[]> {
     const result: T[] = [];
     for (const x of xs) {

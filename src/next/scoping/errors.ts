@@ -4,12 +4,6 @@ import type { Loc } from "@/next/ast";
 import type * as Ty from "@/next/scoping/generated/type";
 import { printType } from "@/next/scoping/print-type";
 
-export type MismatchTree = {
-    readonly to: Ty.LocType;
-    readonly from: Ty.LocType;
-    readonly children: MismatchTree[];
-}
-
 export const TcErrors = <M, R>(l: SourceLogger<M, R>) => ({
     shadowsImported: (name: string, prevPath: string, prevRange: Loc | Implicit) => (loc: Loc | Implicit) => {
         if (loc.kind !== 'range') {

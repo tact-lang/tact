@@ -247,6 +247,7 @@ export const InitFn = (params: $.Parameters, statements: readonly DecodedStateme
 export const isInitFn = ($value: InitFn) => $value.kind === "function";
 export type InitSig = $.InitSig;
 export type ContractSig = $.ContractSig;
+export type TypeDeclRefable = $.TypeDeclRefable;
 export const ContractSig = (attributes: readonly ContractAttribute[], init: $.InitSig, content: Lazy<$.ContractContent>): $.ContractSig => Object.freeze({
     kind: "contract",
     attributes,
