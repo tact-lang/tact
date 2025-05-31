@@ -5,7 +5,6 @@ import type * as Ast from "@/next/ast/type";
 // TODO:
 // readonly tlb: Lazy<TlbType>
 // readonly effects: Lazy<Effects>
-// readonly ref: NoPrint<ContractSig>
 
 export type DecodedType =
     | DTypeRecover

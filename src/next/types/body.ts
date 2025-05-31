@@ -204,6 +204,7 @@ function* getTypeTupleSize(
         case "TypeBool":
         case "TypeAddress":
         case "TypeString":
+        case "TypeStateInit":
         case "TypeStringBuilder":
         case "TypeNull": {
             return 1;

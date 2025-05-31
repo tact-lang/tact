@@ -5,6 +5,7 @@ import type { BinaryOperation, NumberBase, UnaryOperation } from "@/next/ast/exp
 import type { SelfType } from "@/next/ast/mtype";
 
 // TODO: put Self into main AST and parser
+// TODO: add effects
 
 export type TypeArgs = ReadonlyMap<string, D.DecodedType>;
 
