@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Code generation
+
+- Optimized optional global variables initialization: PR [#3326](https://github.com/tact-lang/tact/pull/3326)
+
 ### Docs
 
 - Described off-chain calls and mention exit code 11 for getters: PR [#3314](https://github.com/tact-lang/tact/pull/3314)
