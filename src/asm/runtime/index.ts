@@ -1,3 +1,4 @@
+export * as core from "@ton/core";
 export * from "@/asm/runtime/builder";
 export * from "@/asm/runtime/constructors";
 export * from "@/asm/runtime/instr";

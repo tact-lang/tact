@@ -1,4 +1,10 @@
-import { Step, TraceInfo } from "@/asm/trace";
+import {Step, TraceInfo} from "@/asm/trace";
+import {Cell} from "@ton/core";
+
+export type Coverage = {
+    readonly code: Cell;
+    readonly lines: readonly Line[];
+};
 
 export type Line = {
     readonly line: string;
@@ -170,6 +176,7 @@ export const isExecutableLine = (line: string): boolean => {
     return (
         !trimmed.includes("=>") && // dictionary
         trimmed !== "}" && // close braces
+        trimmed !== "]" && // close bracket
         !trimmed.includes("} {") && // IFREFELSEREF
         !trimmed.includes(";;") && // FunC comment line
         !trimmed.includes("#pragma ") &&
@@ -187,8 +194,9 @@ export const isExecutableLine = (line: string): boolean => {
 };
 
 export const generateCoverageSummary = (
-    lines: readonly Line[],
+    coverage: Coverage,
 ): CoverageSummary => {
+    const lines = coverage.lines;
     const totalExecutableLines = lines.filter((line) =>
         isExecutableLine(line.line),
     ).length;
@@ -244,5 +252,105 @@ export const generateCoverageSummary = (
         totalGas,
         totalHits,
         instructionStats,
+    };
+};
+
+export const mergeCoverages = (...coverages: readonly Coverage[]): Coverage => {
+    if (coverages.length === 0) {
+        return {
+            code: new Cell(),
+            lines: [],
+        };
+    }
+
+    let allLines: readonly Line[] = coverages[0]?.lines ?? [];
+    for (const coverage of coverages.slice(1)!) {
+        allLines = mergeTwoLines(allLines, coverage.lines);
+    }
+    return {
+        code: coverages[0]?.code ?? new Cell(),
+        lines: allLines,
+    };
+};
+
+export const mergeTwoLines = (
+    first: readonly Line[],
+    second: readonly Line[],
+): readonly Line[] => {
+    if (first.length !== second.length) return first;
+
+    const result: Line[] = [...first];
+
+    second.forEach((line, index) => {
+        const prev = result[index];
+        if (!prev) return;
+
+        if (prev.info.$ === "Uncovered" && line.info.$ === "Uncovered") {
+            // nothing changes
+            return;
+        }
+
+        if (prev.info.$ === "Skipped" && line.info.$ === "Skipped") {
+            // nothing changes
+            return;
+        }
+
+        if (prev.info.$ === "Uncovered" && line.info.$ === "Covered") {
+            // replace it with new data
+            result[index] = line;
+        }
+
+        if (prev.info.$ === "Covered" && line.info.$ === "Uncovered") {
+            // nothing changes
+            return;
+        }
+
+        if (prev.info.$ === "Covered" && line.info.$ === "Covered") {
+            result[index] = {
+                ...prev,
+                info: {
+                    ...prev.info,
+                    hits: prev.info.hits + line.info.hits,
+                    gasCosts: [...prev.info.gasCosts, ...line.info.gasCosts],
+                },
+            };
+        }
+    });
+
+    return result;
+};
+
+export const coverageToJson = (coverage: Coverage): string => {
+    const lines = coverage.lines;
+    return JSON.stringify({
+        code: coverage.code.toBoc().toString("hex"),
+        lines: lines.map((line, index) => {
+            if (line.info.$ === "Covered") {
+                return {
+                    lineNumber: index,
+                    line: line.line,
+                    info: {
+                        ...line.info,
+                    },
+                };
+            }
+            return {
+                lineNumber: index,
+                ...line,
+            };
+        }),
+    });
+};
+
+export const coverageFromJson = (string: string): Coverage => {
+    type CoverageJson = {
+        readonly code: string;
+        readonly lines: readonly Line[];
+    };
+
+    const data = JSON.parse(string) as CoverageJson;
+    return {
+        code: Cell.fromHex(data.code),
+        lines: data.lines
     };
 };

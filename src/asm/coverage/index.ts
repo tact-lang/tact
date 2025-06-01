@@ -3,43 +3,34 @@ import { compileCellWithMapping, decompileCell, Mapping } from "@/asm/runtime";
 import { print, parse } from "@/asm/text";
 import {
     createMappingInfo,
-    createTraceInfoPerTransaction,
+    createTraceInfoPerTransactionFromLogs,
+    createTraceInfoPerTransactionFromLogsArray,
     loadFuncMapping,
 } from "@/asm/trace";
 import {
     buildFuncLineInfo,
     buildLineInfo,
+    Coverage,
     generateCoverageSummary,
 } from "@/asm/coverage/data";
 import { readFileSync } from "node:fs";
 
-export function collectAsmCoverage(cell: Cell, logs: string) {
+export function collectAsmCoverage(cell: Cell, ...logs: string[]): Coverage {
     const [cleanCell, mapping] = recompileCell(cell, false);
     const info = createMappingInfo(mapping);
 
-    const traceInfos = createTraceInfoPerTransaction(logs, info, undefined);
+    const traceInfos = createTraceInfoPerTransactionFromLogsArray(
+        logs,
+        info,
+        undefined,
+    );
     const assembly = print(decompileCell(cleanCell));
     const combinedTrace = { steps: traceInfos.flatMap((trace) => trace.steps) };
     const combinedLines = buildLineInfo(combinedTrace, assembly);
-    const combinedSummary = generateCoverageSummary(combinedLines);
-    return { lines: combinedLines, summary: combinedSummary };
-}
-
-export function collectFuncCoverage(
-    cell: Cell,
-    logs: string,
-    funcSources: string,
-    funcMappingPath: string,
-) {
-    const [_, mapping] = recompileCell(cell, true);
-    const info = createMappingInfo(mapping);
-
-    const funcMapping = loadFuncMapping(readFileSync(funcMappingPath, "utf8"));
-    const traceInfos = createTraceInfoPerTransaction(logs, info, funcMapping);
-    const func = readFileSync(funcSources, "utf8");
-    const combinedLines = buildFuncLineInfo(traceInfos, func);
-    const combinedSummary = generateCoverageSummary(combinedLines);
-    return { lines: combinedLines, summary: combinedSummary };
+    return {
+        code: cell,
+        lines: combinedLines,
+    };
 }
 
 export const recompileCell = (

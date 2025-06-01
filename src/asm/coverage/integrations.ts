@@ -4,6 +4,7 @@ import {
     collectAsmCoverage,
     generateShortSummary,
     generateHtml,
+    generateCoverageSummary,
 } from "@/asm/coverage/index";
 import * as fs from "node:fs";
 import { Contract } from "@ton/core";
@@ -23,11 +24,12 @@ export const calculateCoverage = async (dir: string, contract: Contract) => {
 
     const logsString = parsedLogs.join("\n\nNext transaction\n\n");
 
-    const { lines, summary } = collectAsmCoverage(code, logsString);
+    const coverage = collectAsmCoverage(code, logsString);
+    const summary = generateCoverageSummary(coverage);
     const shortSummary = generateShortSummary(summary);
     console.log(shortSummary);
 
-    const report = generateHtml(lines);
+    const report = generateHtml(coverage);
     fs.writeFileSync(join(dir, `coverage-${nowTime()}.html`), report);
 };
 

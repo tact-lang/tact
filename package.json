@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
-  "name": "@tact-lang/compiler",
-  "version": "1.6.13",
+  "name": "tact-lang-compiler-dev-test",
+  "version": "1.6.13.5",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"
@@ -22,6 +22,7 @@
   "scripts": {
     "compare": "ts-node src/logs/compare-logs.infra.ts",
     "build:fast": "yarn clean && yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && tsc --project tsconfig.fast.json && yarn copy:stdlib && yarn copy:func && yarn to-relative",
+    "rebuild:fast": "tsc --project tsconfig.fast.json && yarn copy:stdlib && yarn copy:func && yarn to-relative",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=5120 tsc && yarn copy:stdlib && yarn copy:func && yarn to-relative",
     "gen:config": "ts-to-zod -k --skipValidation src/config/config.ts src/config/config.zod.ts",
     "gen:grammar": "pgen src/grammar/grammar.peggy -o src/grammar/grammar.ts",
@@ -148,8 +149,7 @@
     "typescript": "~5.6.2"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.dev-internal.org/"
+    "access": "public"
   },
   "packageManager": "yarn@1.22.22",
   "engines": {

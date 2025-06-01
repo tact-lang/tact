@@ -65,13 +65,11 @@ export const createTraceInfo = (
 };
 
 export const createTraceInfoPerTransaction = (
-    logs: string,
+    transactionLogs: LogEntry[][],
     mapping: MappingInfo,
-    funcMapping: undefined | FuncMapping,
-): TraceInfo[] => {
-    const transactionLogs = parseLogs(logs);
-
-    return transactionLogs.map((transactionLog): TraceInfo => {
+    funcMapping: FuncMapping | undefined,
+) =>
+    transactionLogs.map((transactionLog): TraceInfo => {
         const steps: Step[] = [];
 
         // handle cases where we have two instructions with offset 0
@@ -118,6 +116,23 @@ export const createTraceInfoPerTransaction = (
 
         return { steps };
     });
+
+export const createTraceInfoPerTransactionFromLogs = (
+    logs: string,
+    mapping: MappingInfo,
+    funcMapping: undefined | FuncMapping,
+): TraceInfo[] => {
+    const transactionLogs = parseLogs(logs);
+    return createTraceInfoPerTransaction(transactionLogs, mapping, funcMapping);
+};
+
+export const createTraceInfoPerTransactionFromLogsArray = (
+    logs: string[],
+    mapping: MappingInfo,
+    funcMapping: undefined | FuncMapping,
+): TraceInfo[] => {
+    const transactionLogs = logs.flatMap((log) => parseLogs(log));
+    return createTraceInfoPerTransaction(transactionLogs, mapping, funcMapping);
 };
 
 /**

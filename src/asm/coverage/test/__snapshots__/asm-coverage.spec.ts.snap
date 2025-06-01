@@ -2,7 +2,7 @@
 
 exports[`asm coverage dictionary 1`] = `
 "Coverage Summary:
-Lines: 4/8 (50.00%)
+Lines: 4/7 (57.14%)
 Total Gas: 283
 Total Hits: 4
 
@@ -22,7 +22,7 @@ Annotated Code:
  7 ✗ |         PUSHINT 5                        |           |
  8 ✗ |         INC                              |           |
  9   |     }                                    |           |
-10 ✗ | ]                                        |           |
+10   | ]                                        |           |
 11 ✓ | DICTIGETJMPZ                             | gas:226   | hits:1
 12 ✗ | THROWARG 11                              |           |
 13   |                                          |           |"
@@ -30,7 +30,7 @@ Annotated Code:
 
 exports[`asm coverage dictionary 2 1`] = `
 "Coverage Summary:
-Lines: 4/8 (50.00%)
+Lines: 4/7 (57.14%)
 Total Gas: 283
 Total Hits: 4
 
@@ -50,7 +50,7 @@ Annotated Code:
  7 ✓ |         PUSHINT 5                        | gas:18    | hits:1
  8 ✓ |         INC                              | gas:5     | hits:1
  9   |     }                                    |           |
-10 ✗ | ]                                        |           |
+10   | ]                                        |           |
 11 ✓ | DICTIGETJMPZ                             | gas:226   | hits:1
 12 ✗ | THROWARG 11                              |           |
 13   |                                          |           |"

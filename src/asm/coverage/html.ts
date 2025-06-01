@@ -1,4 +1,5 @@
 import {
+    Coverage,
     CoverageSummary,
     generateCoverageSummary,
     Line,
@@ -107,9 +108,10 @@ const generateInstructionRowsHtml = (summary: CoverageSummary): string => {
         .join("\n");
 };
 
-export const generateHtml = (lines: readonly Line[]): string => {
-    const summary = generateCoverageSummary(lines);
+export const generateHtml = (coverage: Coverage): string => {
+    const summary = generateCoverageSummary(coverage);
 
+    const lines = coverage.lines;
     const maxGas = Math.max(
         ...lines.map((line) =>
             line.info.$ === "Covered"

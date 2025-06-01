@@ -2,16 +2,15 @@
 // Test.fromCell(self.toCell()) = self
 //
 
-message NewContractData {
+message(0x112766e0) NewContractData {
     cell: Cell;
 }
 
 contract Test(
-  x: Int as uint32,
-  y: Int as uint32,
+    x: Int as uint32,
+    y: Int as uint32,
 ) {
-
-    receive() { }
+    receive() {}
 
     receive(msg: NewContractData) {
         let c = Test.fromCell(msg.cell);
@@ -22,9 +21,8 @@ contract Test(
     get fun state(): Test {
         return self;
     }
+
     get fun inverseLaw(): Bool {
         return (Test.fromCell(self.toCell())).toCell() == self.toCell();
     }
 }
-
-

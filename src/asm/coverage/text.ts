@@ -1,4 +1,9 @@
-import { CoverageSummary, InstructionStat, Line } from "@/asm/coverage/data";
+import {
+    Coverage,
+    CoverageSummary,
+    InstructionStat,
+    Line,
+} from "@/asm/coverage/data";
 import { calculateTotalGas } from "@/asm/coverage/html";
 
 export const generateShortSummary = (summary: CoverageSummary): string => {
@@ -11,9 +16,10 @@ export const generateShortSummary = (summary: CoverageSummary): string => {
 };
 
 export const generateTextReport = (
-    lines: readonly Line[],
+    coverage: Coverage,
     summary: CoverageSummary,
 ): string => {
+    const lines = coverage.lines;
     const maxLineNumberWidth = lines.length.toString().length;
 
     const annotatedLines = lines
