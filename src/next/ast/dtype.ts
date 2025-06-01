@@ -2,10 +2,6 @@ import type { TypeDeclRefable } from "@/next/ast/checked";
 import type { Loc, TypeId } from "@/next/ast/common";
 import type * as Ast from "@/next/ast/type";
 
-// TODO:
-// readonly tlb: Lazy<TlbType>
-// readonly effects: Lazy<Effects>
-
 export type DNotSet = {
     readonly kind: "not-set";
 }

@@ -36,3 +36,4 @@ export const mapLazy = <T, U>(f: Lazy<T>, g: (t: T) => U): Lazy<U> => {
 function* impossible<T>(): WithLog<T> {
     return throwInternal("Infinite loop in typechecker");
 }
+

@@ -500,7 +500,6 @@ function* lookupField(
                 yield ENoSuchField(fieldName.text, fieldName.loc);
                 return Ast.DTypeRecover();
             }
-            // TODO: resolveDescriptors > resolvePartialFields
             return yield* field.type();
         }
         case "recover":

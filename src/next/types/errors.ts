@@ -2,8 +2,6 @@ import { throwInternal } from "@/error/errors";
 import type { DecodedType, Loc, Via, ViaMember, ViaUser } from "@/next/ast";
 import type * as V from "@/next/ast/via";
 
-// TODO: move to src/next/ast/ to avoid an extra E.* everywhere
-
 export type WithLog<T> = Generator<TcError, T>
 
 export function runLog<T, R>(gen: Generator<T, R, unknown>): readonly [R, readonly T[]] {
