@@ -1,0 +1,45 @@
+name: Claude Auto Review
+
+on:
+  pull_request
+
+jobs:
+  auto-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate review with Claude
+        id: code-review
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          prompt_file: ".github/PROMPTS/review.txt"
+          allowed_tools: "View,GlobTool,GrepTool,Bash"  # keep it simple
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Extract and Comment PR Review
+        if: steps.code-review.outputs.conclusion == 'success'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const executionFile = '${{ steps.code-review.outputs.execution_file }}';
+            const executionLog = JSON.parse(fs.readFileSync(executionFile, 'utf8'));
+
+            const review = executionLog[executionLog.length - 1].result;
+
+            const res = await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              pull_number: context.issue.number,
+              event: 'COMMENT',    // or 'APPROVE' / 'REQUEST_CHANGES'
+              body: review
+            });
+
+            core.info(`✅  Review #${res.data.id} posted`);
