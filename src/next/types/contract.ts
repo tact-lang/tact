@@ -131,14 +131,6 @@ function* decodeInit(
             if (!param.initializer) {
                 yield ENoInitializerParams(param.loc);
             }
-            // TODO: support Foo { } syntax for contracts
-            // const lazyExpr = Ast.Lazy(function* () {
-            //     const expr = yield* decodeExpr(param.initializer, scopeRef)();
-            //     const computed = expr.computedType;
-            //     const ascribed = yield* decoded();
-            //     yield* assignType( ascribed, computed, scopeRef);
-            //     return yield* evalExpr(expr, scopeRef);
-            // });
             map.set(name, Ast.InitParam(decoded, undefined, param.loc));
         }
         return Ast.InitSimple(Ast.Ordered(order, map), init.loc);

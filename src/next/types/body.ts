@@ -150,8 +150,6 @@ function* getTypeTupleSize(
     type: Ast.DecodedType,
     scopeRef: () => Ast.Scope,
 ) {
-// TODO: mutating functions also return `self` arg (implicitly in Tact, but explicitly in FunC)
-    // retTupleSize += isMutating ? 1 : 0;
     switch (type.kind) {
         case "recover": {
             return undefined;

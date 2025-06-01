@@ -107,7 +107,6 @@ export type MethodCall = {
     readonly kind: "method_call";
     readonly self: Expression; // anything with a method
     readonly method: Id;
-    // readonly typeArgs: readonly Type[];
     readonly args: readonly Expression[];
     readonly loc: Loc;
 };

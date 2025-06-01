@@ -166,8 +166,6 @@ function* decodeGet(
                 return methodId.value;
             }
             // if evaluation failed, fallthrough to computing it
-        } else {
-            // TODO: yield EMismatch();
         }
     }
 

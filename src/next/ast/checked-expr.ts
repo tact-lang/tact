@@ -4,9 +4,6 @@ import type * as D from "@/next/ast/dtype";
 import type { BinaryOperation, NumberBase, UnaryOperation } from "@/next/ast/expression";
 import type { SelfType } from "@/next/ast/mtype";
 
-// TODO: put Self into main AST and parser
-// TODO: add effects
-
 export type TypeArgs = ReadonlyMap<string, D.DecodedType>;
 
 export type DecodedExpression =

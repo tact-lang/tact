@@ -432,7 +432,6 @@ export function* instantiateStruct(
             return undefined;
         }
         case "contract": {
-            // TODO: support Foo { } syntax for contracts
             yield ENotInstantiable(typeName.text, typeName.loc);
             return undefined;
         }
