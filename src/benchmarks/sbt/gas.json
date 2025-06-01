@@ -168,6 +168,19 @@
         "revoke": "3850",
         "take excess": "5577"
       }
+    },
+    {
+      "label": "1.6.13 with optimized opcode parsing for fallback and text receivers",
+      "pr": null,
+      "gas": {
+        "deploy": "4012",
+        "request owner": "4848",
+        "prove ownership": "5026",
+        "get static data": "4678",
+        "destroy": "6161",
+        "revoke": "3814",
+        "take excess": "5541"
+      }
     }
   ]
 }
