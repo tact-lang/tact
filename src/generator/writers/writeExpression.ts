@@ -470,19 +470,44 @@ const writeUnaryExpr =
  * NOTE: this branch resolves "a.b", where "a" is an expression and "b" is a field name
  */
 const writeFieldExpr =
-    (f: Ast.FieldAccess) =>
+    (f: Ast.FieldAccess, receiverType?: "internal" | "external" | "bounced") =>
     (wCtx: WriterContext): string => {
-        // Optimize Context().sender to sender()
-        // This is a special case to improve gas efficiency
+        // Optimize context() field accesses inside receivers
+        // Use local variables where possible for better efficiency
         if (
             f.aggregate.kind === "static_call" &&
             f.aggregate.function.text === "context" &&
-            f.aggregate.args.length === 0 &&
-            f.field.text === "sender"
+            f.aggregate.args.length === 0
         ) {
-            // Use sender() directly instead of context().sender
-            wCtx.used("__tact_context_get_sender");
-            return `__tact_context_get_sender()`;
+            const field = f.field.text;
+
+            // Check if we're in an internal receiver context
+            const currentContext = wCtx.currentContext();
+            const writerReceiverType = wCtx.currentReceiverType();
+            const isInternalReceiver =
+                currentContext === "internal-receiver" ||
+                receiverType === "internal" ||
+                writerReceiverType === "internal";
+
+            // Only use direct variable access inside internal receivers where variables exist
+            if (isInternalReceiver) {
+                if (field === "sender") {
+                    return "msg_sender_addr";
+                } else if (field === "value") {
+                    return "msg_value";
+                } else if (field === "bounceable") {
+                    return "msg_bounceable";
+                } else if (field === "raw") {
+                    return "cs";
+                }
+            } else {
+                // For external receivers, getters, and other contexts, use function calls
+                if (field === "sender") {
+                    wCtx.used("__tact_context_get_sender");
+                    return `__tact_context_get_sender()`;
+                }
+                // Other fields (value, bounceable, raw) fall through to default field access logic
+            }
         }
 
         // Resolve the type of the expression
@@ -931,6 +956,7 @@ const writeExpressionAux: (
 export function writeExpression(
     f: Ast.Expression,
     wCtx: WriterContext,
+    receiverType?: "internal" | "external" | "bounced",
 ): string {
     // literals and constant expressions are covered here
 
@@ -951,6 +977,10 @@ export function writeExpression(
         return writeValue(value, false, wCtx);
     } catch (error) {
         if (!(error instanceof TactConstEvalError) || error.fatal) throw error;
+    }
+
+    if (f.kind === "field_access") {
+        return writeFieldExpr(f, receiverType)(wCtx);
     }
 
     return writeExpressionAux(f)(wCtx);

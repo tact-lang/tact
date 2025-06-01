@@ -62,6 +62,7 @@ export function writeNonBouncedRouter(
     receivers: Receivers,
     contract: TypeDescription,
     wCtx: WriterContext,
+    receiverType: "internal" | "external" = "internal",
 ): void {
     // - Special case: there are no receivers at all
     if (
@@ -89,7 +90,13 @@ export function writeNonBouncedRouter(
 
     const writeBinaryReceivers = (msgOpcodeRemoved: boolean) => {
         receivers.binary.forEach((binRcv) => {
-            writeBinaryReceiver(binRcv, msgOpcodeRemoved, contract, wCtx);
+            writeBinaryReceiver(
+                binRcv,
+                msgOpcodeRemoved,
+                contract,
+                wCtx,
+                receiverType,
+            );
             wCtx.append();
         });
     };
@@ -151,7 +158,7 @@ export function writeNonBouncedRouter(
         const emptyRcv = receivers.empty;
         wCtx.append(";; Receive empty message");
         wCtx.inBlock("if ((op == 0) & (in_msg_length <= 32))", () => {
-            writeReceiverBody(emptyRcv, contract, wCtx);
+            writeReceiverBody(emptyRcv, contract, wCtx, receiverType);
         });
     }
 
@@ -163,6 +170,7 @@ export function writeNonBouncedRouter(
         typeof receivers.fallback !== "undefined",
         contract,
         wCtx,
+        receiverType,
     );
 
     if (typeof receivers.fallback !== "undefined") {
@@ -179,6 +187,7 @@ function writeBinaryReceiver(
     msgOpcodeRemoved: boolean,
     contract: TypeDescription,
     wCtx: WriterContext,
+    receiverType: "internal" | "external" | "bounced" = "internal",
 ): void {
     const selector = binaryReceiver.selector;
     if (
@@ -214,7 +223,7 @@ function writeBinaryReceiver(
             writeCellParser(allocation.root, type, 0, wCtx, name, "in_msg");
         }
 
-        writeReceiverBody(binaryReceiver, contract, wCtx);
+        writeReceiverBody(binaryReceiver, contract, wCtx, receiverType);
     });
 }
 
@@ -226,6 +235,7 @@ function writeCommentReceivers(
     fallbackReceiverExists: boolean,
     contract: TypeDescription,
     wCtx: WriterContext,
+    receiverType: "internal" | "external" = "internal",
 ): void {
     // - Special case: no text receivers at all
     if (
@@ -292,7 +302,7 @@ function writeCommentReceivers(
             wCtx.append(`;; Receive "${comment}" message`);
 
             wCtx.inBlock(`if (text_op == 0x${hash})`, () => {
-                writeReceiverBody(commentRcv, contract, wCtx);
+                writeReceiverBody(commentRcv, contract, wCtx, receiverType);
             });
         });
 
@@ -684,9 +694,10 @@ function writeReceiverBody(
     rcv: ReceiverDescription,
     contract: TypeDescription,
     wCtx: WriterContext,
+    receiverType: "internal" | "external" | "bounced" = "internal",
 ): void {
     for (const stmt of rcv.ast.statements) {
-        writeRcvStatement(stmt, rcv.effects, contract, wCtx);
+        writeRcvStatement(stmt, rcv.effects, contract, wCtx, receiverType);
     }
     wCtx.append(
         storeContractVariablesConditionally(rcv.effects, contract, wCtx),
@@ -715,6 +726,7 @@ function writeRcvStatement(
     rcvEffects: ReadonlySet<Effect>,
     contract: TypeDescription,
     wCtx: WriterContext,
+    receiverType: "internal" | "external" | "bounced" = "internal",
 ): void {
     // XXX: if this is the last return statement in the receiver, the user will get contract storage updated twice,
     // wasting gas, but this is a rare case and we don't want to complicate the code for this,
@@ -724,7 +736,7 @@ function writeRcvStatement(
         contract,
         wCtx,
     );
-    writeStatement(stmt, null, returns, wCtx);
+    writeStatement(stmt, null, returns, wCtx, receiverType);
 }
 
 export function messageOpcode(n: Ast.Number): string {

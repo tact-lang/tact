@@ -125,6 +125,15 @@
         "addPlugin": "7399",
         "pluginTransfer": "3709"
       }
+    },
+    {
+      "label": "1.6.13 with optimized context access",
+      "pr": null,
+      "gas": {
+        "externalTransfer": "3625",
+        "addPlugin": "7399",
+        "pluginTransfer": "3619"
+      }
     }
   ]
 }

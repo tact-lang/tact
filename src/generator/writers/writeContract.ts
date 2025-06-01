@@ -405,6 +405,8 @@ export function writeMainContract(
         wCtx.inBlock(
             "() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure",
             () => {
+                wCtx.setReceiverType("internal");
+                wCtx.context("internal-receiver");
                 wCtx.append();
                 wCtx.append(`;; Context`);
                 wCtx.append(`var cs = in_msg_cell.begin_parse();`);
@@ -435,6 +437,7 @@ export function writeMainContract(
                     contractReceivers.internal,
                     contract,
                     wCtx,
+                    "internal",
                 );
             },
         );
@@ -453,6 +456,8 @@ export function writeMainContract(
             wCtx.append();
 
             wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
+                wCtx.setReceiverType("external");
+                wCtx.context("external-receiver");
                 if (contract.globalVariables.has("inMsg")) {
                     wCtx.append(`__tact_in_msg = in_msg;`);
                 }
@@ -463,6 +468,7 @@ export function writeMainContract(
                     contractReceivers.external,
                     contract,
                     wCtx,
+                    "external",
                 );
             });
         }
