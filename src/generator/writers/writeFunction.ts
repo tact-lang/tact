@@ -29,9 +29,10 @@ export function writeCastedExpression(
     expression: Ast.Expression,
     to: TypeRef,
     ctx: WriterContext,
+    receiverType?: "internal" | "external" | "bounced",
 ) {
     const expr = getExpType(ctx.ctx, expression);
-    return cast(expr, to, writeExpression(expression, ctx), ctx); // Cast for nullable
+    return cast(expr, to, writeExpression(expression, ctx, receiverType), ctx); // Cast for nullable
 }
 
 function unwrapExternal(
@@ -68,6 +69,7 @@ export function writeStatement(
     self: string | null,
     returns: TypeRef | null | string,
     ctx: WriterContext,
+    receiverType?: "internal" | "external" | "bounced",
 ) {
     switch (f.kind) {
         case "statement_return": {
@@ -83,6 +85,7 @@ export function writeStatement(
                     f.expression,
                     returns,
                     ctx,
+                    receiverType,
                 );
 
                 // Return
@@ -114,7 +117,9 @@ export function writeStatement(
         case "statement_let": {
             // Underscore name case
             if (f.name.kind === "wildcard") {
-                ctx.append(`${writeExpression(f.expression, ctx)};`);
+                ctx.append(
+                    `${writeExpression(f.expression, ctx, receiverType)};`,
+                );
                 return;
             }
 
@@ -129,11 +134,11 @@ export function writeStatement(
                 if (tt.kind === "contract" || tt.kind === "struct") {
                     if (t.optional) {
                         ctx.append(
-                            `tuple ${funcIdOf(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`,
+                            `tuple ${funcIdOf(f.name)} = ${writeCastedExpression(f.expression, t, ctx, receiverType)};`,
                         );
                     } else {
                         ctx.append(
-                            `var ${resolveFuncTypeUnpack(t, funcIdOf(f.name), ctx)} = ${writeCastedExpression(f.expression, t, ctx)};`,
+                            `var ${resolveFuncTypeUnpack(t, funcIdOf(f.name), ctx)} = ${writeCastedExpression(f.expression, t, ctx, receiverType)};`,
                         );
                     }
                     return;
@@ -141,7 +146,7 @@ export function writeStatement(
             }
 
             ctx.append(
-                `${resolveFuncType(t, ctx)} ${funcIdOf(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`,
+                `${resolveFuncType(t, ctx)} ${funcIdOf(f.name)} = ${writeCastedExpression(f.expression, t, ctx, receiverType)};`,
             );
             return;
         }
@@ -163,14 +168,14 @@ export function writeStatement(
                 const tt = getType(ctx.ctx, t.name);
                 if (tt.kind === "contract" || tt.kind === "struct") {
                     ctx.append(
-                        `${resolveFuncTypeUnpack(t, path, ctx)} = ${writeCastedExpression(f.expression, t, ctx)};`,
+                        `${resolveFuncTypeUnpack(t, path, ctx)} = ${writeCastedExpression(f.expression, t, ctx, receiverType)};`,
                     );
                     return;
                 }
             }
 
             ctx.append(
-                `${path} = ${writeCastedExpression(f.expression, t, ctx)};`,
+                `${path} = ${writeCastedExpression(f.expression, t, ctx, receiverType)};`,
             );
             return;
         }
@@ -189,8 +194,8 @@ export function writeStatement(
             if (f.op === "&&=" || f.op === "||=") {
                 const rendered =
                     f.op === "&&="
-                        ? `(${path} ? ${writeExpression(f.expression, ctx)} : (false))`
-                        : `(${path} ? (true) : ${writeExpression(f.expression, ctx)})`;
+                        ? `(${path} ? ${writeExpression(f.expression, ctx, receiverType)} : (false))`
+                        : `(${path} ? (true) : ${writeExpression(f.expression, ctx, receiverType)})`;
 
                 ctx.append(`${path} = ${cast(t, t, rendered, ctx)};`);
                 return;
@@ -198,16 +203,16 @@ export function writeStatement(
 
             const op = binaryOperationFromAugmentedAssignOperation(f.op);
             ctx.append(
-                `${path} = ${cast(t, t, `${path} ${op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
+                `${path} = ${cast(t, t, `${path} ${op} ${writeExpression(f.expression, ctx, receiverType)}`, ctx)};`,
             );
             return;
         }
         case "statement_condition": {
-            writeCondition(f, self, false, returns, ctx);
+            writeCondition(f, self, false, returns, ctx, receiverType);
             return;
         }
         case "statement_expression": {
-            const exp = writeExpression(f.expression, ctx);
+            const exp = writeExpression(f.expression, ctx, receiverType);
             if (exp === "") {
                 return;
             }
@@ -220,7 +225,7 @@ export function writeStatement(
             );
             ctx.inIndent(() => {
                 for (const s of f.statements) {
-                    writeStatement(s, self, returns, ctx);
+                    writeStatement(s, self, returns, ctx, receiverType);
                 }
             });
             ctx.append(`}`);
@@ -230,7 +235,7 @@ export function writeStatement(
             ctx.append(`do {`);
             ctx.inIndent(() => {
                 for (const s of f.statements) {
-                    writeStatement(s, self, returns, ctx);
+                    writeStatement(s, self, returns, ctx, receiverType);
                 }
             });
             ctx.append(
@@ -239,10 +244,12 @@ export function writeStatement(
             return;
         }
         case "statement_repeat": {
-            ctx.append(`repeat (${writeExpression(f.iterations, ctx)}) {`);
+            ctx.append(
+                `repeat (${writeExpression(f.iterations, ctx, receiverType)}) {`,
+            );
             ctx.inIndent(() => {
                 for (const s of f.statements) {
-                    writeStatement(s, self, returns, ctx);
+                    writeStatement(s, self, returns, ctx, receiverType);
                 }
             });
             ctx.append(`}`);
@@ -252,7 +259,7 @@ export function writeStatement(
             ctx.append(`try {`);
             ctx.inIndent(() => {
                 for (const s of f.statements) {
-                    writeStatement(s, self, returns, ctx);
+                    writeStatement(s, self, returns, ctx, receiverType);
                 }
             });
 
@@ -267,7 +274,7 @@ export function writeStatement(
                 }
                 ctx.inIndent(() => {
                     for (const s of catchBlock.catchStatements!) {
-                        writeStatement(s, self, returns, ctx);
+                        writeStatement(s, self, returns, ctx, receiverType);
                     }
                 });
             } else {
@@ -335,7 +342,7 @@ export function writeStatement(
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_${vKind}`)}(${path}, ${bits}, ${key}${vBits});`,
@@ -349,7 +356,7 @@ export function writeStatement(
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_int`)}(${path}, ${bits}, ${key}, 1);`,
@@ -363,7 +370,7 @@ export function writeStatement(
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_cell`)}(${path}, ${bits}, ${key});`,
@@ -377,7 +384,7 @@ export function writeStatement(
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_slice`)}(${path}, ${bits}, ${key});`,
@@ -395,7 +402,7 @@ export function writeStatement(
                             `var ${resolveFuncTypeUnpack(t.value, funcIdOf(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${value}));`,
                         );
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_cell`)}(${path}, ${bits}, ${key});`,
@@ -428,7 +435,7 @@ export function writeStatement(
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vKind}`)}(${path}, 267, ${key}${vBits});`,
@@ -442,7 +449,7 @@ export function writeStatement(
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_int`)}(${path}, 267, ${key}, 1);`,
@@ -456,7 +463,7 @@ export function writeStatement(
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_cell`)}(${path}, 267, ${key});`,
@@ -470,7 +477,7 @@ export function writeStatement(
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_slice`)}(${path}, 267, ${key});`,
@@ -488,7 +495,7 @@ export function writeStatement(
                             `var ${resolveFuncTypeUnpack(t.value, funcIdOf(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${value}));`,
                         );
                         for (const s of f.statements) {
-                            writeStatement(s, self, returns, ctx);
+                            writeStatement(s, self, returns, ctx, receiverType);
                         }
                         ctx.append(
                             `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_cell`)}(${path}, 267, ${key});`,
@@ -547,13 +554,13 @@ export function writeStatement(
             });
 
             ctx.append(
-                `var (${leftHands.join(", ")}) = ${writeCastedExpression(f.expression, t, ctx)};`,
+                `var (${leftHands.join(", ")}) = ${writeCastedExpression(f.expression, t, ctx, receiverType)};`,
             );
             return;
         }
         case "statement_block": {
             for (const s of f.statements) {
-                writeStatement(s, self, returns, ctx);
+                writeStatement(s, self, returns, ctx, receiverType);
             }
             return;
         }
@@ -664,6 +671,7 @@ function writeCondition(
     elseif: boolean,
     returns: TypeRef | null | string,
     ctx: WriterContext,
+    receiverType?: "internal" | "external" | "bounced",
 ) {
     const throwCode = extractThrowErrorCode(f.trueStatements, ctx.ctx);
     const isAloneIf =
@@ -674,7 +682,7 @@ function writeCondition(
         // if (!cond) { throw(X) } => throw_unless(X, cond)
         const { kind, condition } = rewriteWithConditionalThrow(f);
         ctx.append(
-            `${kind}(${writeExpression(throwCode, ctx)}, ${writeExpression(condition, ctx)});`,
+            `${kind}(${writeExpression(throwCode, ctx, receiverType)}, ${writeExpression(condition, ctx, receiverType)});`,
         );
         return;
     }
@@ -686,19 +694,19 @@ function writeCondition(
     );
     ctx.inIndent(() => {
         for (const s of f.trueStatements) {
-            writeStatement(s, self, returns, ctx);
+            writeStatement(s, self, returns, ctx, receiverType);
         }
     });
     if (f.falseStatements && f.falseStatements.length > 0) {
         const [head, ...tail] = f.falseStatements;
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
         if (head && tail.length === 0 && head.kind === "statement_condition") {
-            writeCondition(head, self, true, returns, ctx);
+            writeCondition(head, self, true, returns, ctx, receiverType);
         } else {
             ctx.append(`} else {`);
             ctx.inIndent(() => {
                 for (const s of f.falseStatements!) {
-                    writeStatement(s, self, returns, ctx);
+                    writeStatement(s, self, returns, ctx, receiverType);
                 }
             });
             ctx.append(`}`);
@@ -837,7 +845,13 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
                     // Process statements
                     for (const s of fAst.statements) {
-                        writeStatement(s, returnsStr, f.returns, ctx);
+                        writeStatement(
+                            s,
+                            returnsStr,
+                            f.returns,
+                            ctx,
+                            undefined,
+                        );
                     }
 
                     // Auto append return

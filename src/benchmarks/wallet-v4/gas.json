@@ -125,6 +125,15 @@
         "addPlugin": "7399",
         "pluginTransfer": "3709"
       }
+    },
+    {
+      "label": "1.6.13 with optimized context access",
+      "pr": "https://github.com/tact-lang/tact/pull/3329",
+      "gas": {
+        "externalTransfer": "3625",
+        "addPlugin": "7399",
+        "pluginTransfer": "3619"
+      }
     }
   ]
 }

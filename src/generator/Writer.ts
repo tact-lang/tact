@@ -47,6 +47,11 @@ export class WriterContext {
     #nextId = 0;
     // #headers: string[] = [];
     #rendered: Set<string> = new Set();
+    private _currentReceiverType:
+        | "internal"
+        | "external"
+        | "bounced"
+        | undefined = undefined;
 
     constructor(ctx: CompilerContext, name: string) {
         this.ctx = ctx;
@@ -287,8 +292,18 @@ export class WriterContext {
         }
     }
 
-    currentContext() {
-        return this.#pendingName;
+    currentContext(): string {
+        return this.#pendingName ?? "";
+    }
+
+    currentReceiverType(): "internal" | "external" | "bounced" | undefined {
+        return this._currentReceiverType;
+    }
+
+    setReceiverType(
+        receiverType: "internal" | "external" | "bounced" | undefined,
+    ) {
+        this._currentReceiverType = receiverType;
     }
 
     //
