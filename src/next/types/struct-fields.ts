@@ -5,6 +5,7 @@ import * as E from "@/next/types/errors";
 import { evalExpr } from "@/next/types/expr-eval";
 import { decodeExpr } from "@/next/types/expression";
 import { assignType, decodeTypeLazy } from "@/next/types/type";
+import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* decodeFields(
     fields: readonly Ast.FieldDecl[],
@@ -40,7 +41,7 @@ export function* decodeFields(
             );
             const computed = expr.computedType;
             const ascribed = yield* ascribedType();
-            yield* assignType(expr.loc, ascribed, computed);
+            yield* assignType(expr.loc, emptyTypeParams, ascribed, computed, false);
             return yield* evalExpr(expr, scopeRef);
         }) : undefined;
 

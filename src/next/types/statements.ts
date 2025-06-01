@@ -7,29 +7,37 @@ import { throwInternal } from "@/error/errors";
 import { Bool, builtinAugmented, Int, Void } from "@/next/types/builtins";
 import { decodeExprCtx } from "@/next/types/expression";
 import { convertExprToLValue } from "@/next/types/lvalue";
-import { assignType, dealiasType, decodeType, decodeTypeLazy } from "@/next/types/type";
-import { getCallResult } from "@/next/types/type-fn";
+import { assignType, dealiasType, decodeType, decodeTypeLazy, checkFnCall } from "@/next/types/type";
+import { emptyEff, mergeEff, setHadAssign, setHadExit } from "@/next/types/effects";
+import { emptyTypeParams } from "@/next/types/type-params";
 
-export function decodeStatements(
+export function decodeStatementsLazy(
     statements: readonly Ast.Statement[],
     typeParams: Ast.TypeParams,
-    selfType: undefined | Ast.SelfType,
-    returnType: Ast.DecodedType,
-    required: undefined | ReadonlySet<string>,
+    selfTypeRef: () => undefined | Ast.SelfType,
+    returnType: Ast.Lazy<Ast.DecodedType>,
+    isInit: boolean,
     scopeRef: () => Ast.Scope,
 ) {
-    const ctx: Context = {
-        localScopeRef: new Map(),
-        required,
-        returnType,
-        scopeRef,
-        selfType,
-        typeParams,
-    };
-    return rec(statements, ctx, emptyEff);
+    return Ast.Lazy(function* () {
+        const selfType = selfTypeRef();
+        const required = isInit
+            ? yield* getRequired(selfType)
+            : undefined;
+        const ctx: Context = {
+            localScopeRef: new Map(),
+            required,
+            returnType: yield* returnType(),
+            scopeRef,
+            selfType,
+            typeParams,
+        };
+        const res = yield* decodeStmts(statements, ctx, emptyEff);
+        return Ast.StatementsAux(res.node, res.effects);
+    });
 }
 
-const rec: Decode<
+const decodeStmts: Decode<
     readonly Ast.Statement[],
     readonly Ast.DecodedStatement[]
 > = function* (nodes, ctx, eff) {
@@ -43,168 +51,6 @@ const rec: Decode<
     const [context, effects] = state;
     return Result(results, context, effects);
 };
-
-type Decode<T, U> = (
-    node: T,
-    context: Context, 
-    effects: Effects,
-) => E.WithLog<Result<U>>
-
-type Result<U> = {
-    readonly node: U;
-    readonly context: Context;
-    readonly effects: Effects;
-}
-const Result = <U>(
-    node: U,
-    context: Context,
-    effects: Effects,
-): Result<U> => Object.freeze({ node, context, effects });
-
-type Context = {
-    readonly scopeRef: () => Ast.Scope;
-    readonly selfType: Ast.SelfType | undefined;
-    readonly required: undefined | ReadonlySet<string>;
-    readonly typeParams: Ast.TypeParams;
-    readonly returnType: Ast.DecodedType;
-    readonly localScopeRef: ReadonlyMap<string, [Ast.DecodedType, Ast.Loc]>;
-}
-
-type Effects = {
-    readonly returnOrThrow: boolean;
-    readonly setSelfPaths: ReadonlySet<string>;
-}
-const Effects = (
-    returnOrThrow: boolean,
-    setSelfPaths: ReadonlySet<string>,
-): Effects => Object.freeze({ returnOrThrow, setSelfPaths })
-
-const emptyEff: Effects = Object.freeze({
-    returnOrThrow: false,
-    setSelfPaths: new Set<string>(),
-});
-
-// when two branches merge
-const mergeEff = (left: Effects, right: Effects): Effects => {
-    return Effects(
-        left.returnOrThrow && right.returnOrThrow,
-        new Set([...left.setSelfPaths].filter(p => right.setSelfPaths.has(p)))
-    );
-};
-
-// on every assign
-function* setHadAssign(
-    eff: Effects,
-    lvalue: Ast.LValue,
-): E.WithLog<Effects> {
-    const setSelfPaths = new Set(eff.setSelfPaths);
-    switch (lvalue.kind) {
-        case "self": {
-            // self = ...;
-            yield ENoSelfAssign(lvalue.loc);
-            break;
-        }
-        case "field_access": {
-            if (lvalue.aggregate.kind === 'self') {
-                // self.x = ...;
-                setSelfPaths.add(lvalue.field.text);
-            }
-            break;
-        }
-        case "var": {
-            // x = ...;
-        }
-    }
-    return Effects(eff.returnOrThrow, setSelfPaths);
-}
-const ENoSelfAssign = (loc: Ast.Loc): E.TcError => ({
-    loc,
-    descr: [
-        E.TEText(`Cannot assign to self`),
-    ],
-});
-
-// on every return or throw
-function* setHadExit(
-    eff: Effects, 
-    successful: boolean, 
-    required: undefined | ReadonlySet<string>,
-    returnLoc: Ast.Loc,
-): E.WithLog<Effects> {
-    if (successful && required) {
-        const missing = [...required].filter(p => !eff.setSelfPaths.has(p));
-        for (const fieldName of missing) {
-            yield EMissingSelfInit(fieldName, returnLoc);
-        }
-    }
-    return Effects(true, eff.setSelfPaths);
-}
-const EMissingSelfInit = (name: string, loc: Ast.Loc): E.TcError => ({
-    loc,
-    descr: [
-        E.TEText(`Field "self.${name}" is not initialized by this moment`),
-    ],
-});
-
-function* defineVar(
-    node: Ast.OptionalId, 
-    type: Ast.DecodedType, 
-    ctx: Context,
-): E.WithLog<Context> {
-    if (node.kind === 'wildcard') {
-        // there is nothing to define for a wildcard
-        return ctx;
-    }
-    
-    if (node.text === 'self') {
-        yield ENoDefineSelf(node.loc);
-        return ctx;
-    }
-    
-    const prev = ctx.localScopeRef.get(node.text);
-    if (prev) {
-        const [, prevLoc] = prev;
-        yield ERedefineVar(node.text, prevLoc, node.loc);
-        return ctx;
-    }
-
-    const constant = ctx.scopeRef().constants.get(node.text);
-    if (constant) {
-        const prevLoc = constant.via.defLoc;
-        yield EShadowConst(node.text, prevLoc, node.loc);
-        return ctx;
-    }
-
-    const localScopeRef = new Map(ctx.localScopeRef);
-    localScopeRef.set(node.text, [type, node.loc]);
-    return { ...ctx, localScopeRef };
-}
-const ENoDefineSelf = (loc: Ast.Loc): E.TcError => ({
-    loc,
-    descr: [
-        E.TEText(`Cannot define a variable "self"`),
-    ],
-});
-const ERedefineVar = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
-    loc: next,
-    descr: [
-        E.TEText(`Variable ${name} is already defined`),
-        E.TEText(`Defined at:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
-    ],
-});
-const EShadowConst = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
-    loc: next,
-    descr: [
-        E.TEText(`Variable ${name} shadows a global constant`),
-        E.TEText(`Defined at:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
-    ],
-});
 
 const decodeStatement: Decode<Ast.Statement, Ast.DecodedStatement> = function (stmt, ctx, eff) {
     switch (stmt.kind) {
@@ -229,7 +75,7 @@ const decodeLet: Decode<Ast.StatementLet, Ast.DStatementLet> = function* (node, 
     const result = Ast.DStatementLet(node.name, expr, node.loc);
     if (node.type) {
         const ascribed = yield* decodeType(ctx.typeParams, node.type, ctx.scopeRef().typeDecls)
-        yield* assignType(expr.loc, ascribed, expr.computedType);
+        yield* assignType(expr.loc, emptyTypeParams, ascribed, expr.computedType, false);
         const newCtx = yield* defineVar(node.name, ascribed, ctx);
         return Result(result, newCtx, eff);
     } else {
@@ -242,10 +88,10 @@ const decodeReturn: Decode<Ast.StatementReturn, Ast.DStatementReturn> = function
     const newEff = yield* setHadExit(eff, true, ctx.required, node.loc);
     if (node.expression) {
         const expr = yield* decodeExprCtx(node.expression, ctx);
-        yield* assignType(expr.loc, ctx.returnType, expr.computedType);
+        yield* assignType(expr.loc, emptyTypeParams, ctx.returnType, expr.computedType, false);
         return Result(Ast.DStatementReturn(expr, node.loc), ctx, newEff);
     } else {
-        yield* assignType(node.loc, ctx.returnType, Void);
+        yield* assignType(node.loc, emptyTypeParams, ctx.returnType, Void, false);
         return Result(Ast.DStatementReturn(undefined, node.loc), ctx, newEff);
     }
 };
@@ -265,7 +111,7 @@ const decodeAssign: Decode<Ast.StatementAssign, Ast.DStatementAssign | Ast.DStat
     const left = yield* decodeExprCtx(node.path, ctx);
     const path = yield* convertExprToLValue(left);
     if (path) {
-        yield* assignType(path.loc, path.computedType, right.computedType);
+        yield* assignType(path.loc, emptyTypeParams, path.computedType, right.computedType, false);
         const newEff = yield* setHadAssign(eff, path);
         return Result(Ast.DStatementAssign(path, right, node.loc), ctx, newEff);
     } else {
@@ -281,7 +127,14 @@ const decodeAssignAugmented: Decode<Ast.StatementAugmentedAssign, Ast.DStatement
     if (!fnType) {
         return throwInternal("Builtin operator is not in the map");
     }
-    yield* getCallResult(fnType, [left.computedType, right.computedType]);
+    yield* checkFnCall(
+        node.loc,
+        fnType, 
+        [
+            [left.loc, left.computedType],
+            [right.loc, right.computedType],
+        ],
+    );
     if (path) {
         const newEff = yield* setHadAssign(eff, path);
         return Result(Ast.DStatementAugmentedAssign(node.op, path, right, node.loc), ctx, newEff);
@@ -292,10 +145,10 @@ const decodeAssignAugmented: Decode<Ast.StatementAugmentedAssign, Ast.DStatement
 
 const decodeCondition: Decode<Ast.StatementCondition, Ast.DStatementCondition> = function* (node, ctx, eff) {
     const condition = yield* decodeExprCtx(node.condition, ctx);
-    yield* assignType(condition.loc, Bool, condition.computedType);
-    const trueRes = yield* rec(node.trueStatements, ctx, eff);
+    yield* assignType(condition.loc, emptyTypeParams, Bool, condition.computedType, false);
+    const trueRes = yield* decodeStmts(node.trueStatements, ctx, eff);
     if (node.falseStatements) {
-        const falseRes = yield* rec(node.falseStatements, ctx, eff);
+        const falseRes = yield* decodeStmts(node.falseStatements, ctx, eff);
         const newEff = mergeEff(trueRes.effects, falseRes.effects);
         return Result(Ast.DStatementCondition(condition, trueRes.node, falseRes.node, node.loc), ctx, newEff);
     } else {
@@ -306,8 +159,8 @@ const decodeCondition: Decode<Ast.StatementCondition, Ast.DStatementCondition> =
 
 const decodeWhile: Decode<Ast.StatementWhile, Ast.DStatementWhile> = function* (node, ctx, eff) {
     const condition = yield* decodeExprCtx(node.condition, ctx);
-    yield* assignType(condition.loc, Bool, condition.computedType);
-    const result = yield* rec(node.statements, ctx, eff);
+    yield* assignType(condition.loc, emptyTypeParams, Bool, condition.computedType, false);
+    const result = yield* decodeStmts(node.statements, ctx, eff);
     // might be executed zero times, so it doesn't matter
     // if it always returns, or assigns to `self`
     return Result(Ast.DStatementWhile(condition, result.node, node.loc), ctx, eff);
@@ -315,26 +168,26 @@ const decodeWhile: Decode<Ast.StatementWhile, Ast.DStatementWhile> = function* (
 
 const decodeUntil: Decode<Ast.StatementUntil, Ast.DStatementUntil> = function* (node, ctx, eff) {
     const condition = yield* decodeExprCtx(node.condition, ctx);
-    yield* assignType(condition.loc, Bool, condition.computedType);
-    const result = yield* rec(node.statements, ctx, eff);
+    yield* assignType(condition.loc, emptyTypeParams, Bool, condition.computedType, false);
+    const result = yield* decodeStmts(node.statements, ctx, eff);
     // until executes its body at least once
     return Result(Ast.DStatementUntil(condition, result.node, node.loc), ctx, result.effects);
 };
 
 const decodeRepeat: Decode<Ast.StatementRepeat, Ast.DStatementRepeat> = function* (node, ctx, eff) {
     const iterations = yield* decodeExprCtx(node.iterations, ctx);
-    yield* assignType(iterations.loc, Int, iterations.computedType);
-    const result = yield* rec(node.statements, ctx, eff);
+    yield* assignType(iterations.loc, emptyTypeParams, Int, iterations.computedType, false);
+    const result = yield* decodeStmts(node.statements, ctx, eff);
     // might be executed zero times, so it doesn't matter
     // if it always returns, or assigns to `self`
     return Result(Ast.DStatementRepeat(iterations, result.node, node.loc), ctx, eff);
 };
 
 const decodeTry: Decode<Ast.StatementTry, Ast.DStatementTry> = function* (node, ctx, eff) {
-    const tryRes = yield* rec(node.statements, ctx, eff);
+    const tryRes = yield* decodeStmts(node.statements, ctx, eff);
     if (node.catchBlock) {
         const newCtx = yield* defineVar(node.catchBlock.name, Int, ctx);
-        const catchRes = yield* rec(node.catchBlock.statements, newCtx, eff);
+        const catchRes = yield* decodeStmts(node.catchBlock.statements, newCtx, eff);
         const catchBlock = Ast.DCatchBlock(node.catchBlock.name, catchRes.node);
         const newEff = mergeEff(tryRes.effects, catchRes.effects);
         return Result(Ast.DStatementTry(tryRes.node, catchBlock, node.loc), ctx, newEff);
@@ -351,7 +204,7 @@ const decodeForeach: Decode<Ast.StatementForEach, Ast.DStatementForEach> = funct
         node.valueName,
         ctx,
     );
-    const result = yield* rec(node.statements, innerCtx, eff);
+    const result = yield* decodeStmts(node.statements, innerCtx, eff);
     return Result(Ast.DStatementForEach(node.keyName, node.valueName, map, result.node, node.loc), ctx, eff);
 };
 function* defineForVars(
@@ -391,7 +244,7 @@ const decodeDestruct: Decode<Ast.StatementDestruct, Ast.DStatementDestruct | Ast
     }
 
     const ascribed = Ast.DTypeRef(node.type, decl, typeArgs, node.loc);
-    yield* assignType(node.loc, ascribed, expr.computedType);
+    yield* assignType(node.loc, emptyTypeParams, ascribed, expr.computedType, false);
     
     // see checkFields in expression.ts
     const [fields, newCtx] = yield* checkFields(
@@ -527,6 +380,142 @@ const ENotDestructible = (name: string, prev: Ast.Loc): E.TcError => ({
 });
 
 const decodeBlock: Decode<Ast.StatementBlock, Ast.DStatementBlock> = function* (node, ctx, eff) {
-    const result = yield* rec(node.statements, ctx, eff);
+    const result = yield* decodeStmts(node.statements, ctx, eff);
     return Result(Ast.DStatementBlock(result.node, node.loc), ctx, result.effects);
 };
+
+type Decode<T, U> = (
+    node: T,
+    context: Context, 
+    effects: Ast.Effects,
+) => E.WithLog<Result<U>>
+
+type Result<U> = {
+    readonly node: U;
+    readonly context: Context;
+    readonly effects: Ast.Effects;
+}
+const Result = <U>(
+    node: U,
+    context: Context,
+    effects: Ast.Effects,
+): Result<U> => Object.freeze({ node, context, effects });
+
+type Context = {
+    readonly scopeRef: () => Ast.Scope;
+    readonly selfType: Ast.SelfType | undefined;
+    readonly required: undefined | ReadonlySet<string>;
+    readonly typeParams: Ast.TypeParams;
+    readonly returnType: Ast.DecodedType;
+    readonly localScopeRef: ReadonlyMap<string, [Ast.DecodedType, Ast.Loc]>;
+}
+
+function* defineVar(
+    node: Ast.OptionalId, 
+    type: Ast.DecodedType, 
+    ctx: Context,
+): E.WithLog<Context> {
+    if (node.kind === 'wildcard') {
+        // there is nothing to define for a wildcard
+        return ctx;
+    }
+    
+    if (node.text === 'self') {
+        yield ENoDefineSelf(node.loc);
+        return ctx;
+    }
+    
+    const prev = ctx.localScopeRef.get(node.text);
+    if (prev) {
+        const [, prevLoc] = prev;
+        yield ERedefineVar(node.text, prevLoc, node.loc);
+        return ctx;
+    }
+
+    const constant = ctx.scopeRef().constants.get(node.text);
+    if (constant) {
+        const prevLoc = constant.via.defLoc;
+        yield EShadowConst(node.text, prevLoc, node.loc);
+        return ctx;
+    }
+
+    const localScopeRef = new Map(ctx.localScopeRef);
+    localScopeRef.set(node.text, [type, node.loc]);
+    return { ...ctx, localScopeRef };
+}
+const ENoDefineSelf = (loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Cannot define a variable "self"`),
+    ],
+});
+const ERedefineVar = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+    loc: next,
+    descr: [
+        E.TEText(`Variable ${name} is already defined`),
+        E.TEText(`Defined at:`),
+        E.TECode(next),
+        E.TEText(`Previously defined at:`),
+        E.TECode(prev),
+    ],
+});
+const EShadowConst = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+    loc: next,
+    descr: [
+        E.TEText(`Variable ${name} shadows a global constant`),
+        E.TEText(`Defined at:`),
+        E.TECode(next),
+        E.TEText(`Previously defined at:`),
+        E.TECode(prev),
+    ],
+});
+
+function* getRequired(selfType: Ast.SelfType | undefined): E.WithLog<undefined | Set<string>> {
+    if (!selfType) {
+        return new Set();
+    }
+    const required: Set<string> = new Set();
+    switch (selfType.kind) {
+        case "type_ref": {
+            switch (selfType.type.kind) {
+                case "contract":
+                case "trait": {
+                    const { fieldish } = (yield* selfType.type.content());
+                    for (const [name, field] of fieldish.map) {
+                        if (field.decl.kind === 'field' && !field.decl.init) {
+                            required.add(name)
+                        }
+                    }
+                    return required;
+                }
+                case "struct":
+                case "message":
+                case "union": {
+                    // no requirement to fill self on these, because they have
+                    // no init()
+                    return required;
+                }
+            }
+            // linter needs this
+            return required;
+        }
+        case "map_type":
+        case "TypeMaybe":
+        case "tuple_type":
+        case "tensor_type":
+        case "TyInt":
+        case "TySlice":
+        case "TyCell":
+        case "TyBuilder":
+        case "unit_type":
+        case "TypeVoid":
+        case "TypeNull":
+        case "TypeBool":
+        case "TypeAddress":
+        case "TypeString":
+        case "TypeStateInit":
+        case "TypeStringBuilder": {
+            return undefined;
+        }
+    }
+}

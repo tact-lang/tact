@@ -8,6 +8,7 @@ import { decodeExpr } from "@/next/types/expression";
 import { checkFieldOverride } from "@/next/types/override";
 import { decodeConstantDef } from "@/next/types/constant-def";
 import { evalExpr } from "@/next/types/expr-eval";
+import { emptyTypeParams } from "@/next/types/type-params";
 
 type MaybeExpr = Ast.Lazy<Ast.Value> | undefined
 
@@ -130,7 +131,6 @@ export function* getFieldishGeneral(
             next.decl.type,
             nextVia,
             override,
-            scopeRef,
         );
 
         // we're all set to store this constant
@@ -166,22 +166,19 @@ function decodeField(
     const { initializer, type, loc } = field;
     const nextVia = Ast.ViaMemberOrigin(typeName, loc);
 
-    // contracts don't have type parameters
-    const typeParams = Ast.TypeParams([], new Set());
-
-    const decoded = decodeTypeLazy(typeParams, type, scopeRef);
+    const decoded = decodeTypeLazy(emptyTypeParams, type, scopeRef);
 
     const init = initializer && Ast.Lazy(function* () {
         const ascribed = yield* decoded();
         const expr = yield* decodeExpr(
-            typeParams,
+            emptyTypeParams,
             initializer,
             scopeRef,
             selfType,
             new Map(),
         );
         const computed = expr.computedType;
-        yield* assignType(loc, ascribed, computed);
+        yield* assignType(loc, emptyTypeParams, ascribed, computed, false);
         return yield* evalExpr(expr, scopeRef);
     });
 
@@ -210,9 +207,8 @@ function* decodeConstant(
     scopeRef: () => Ast.Scope,
     selfType: Ast.SelfType,
 ): E.WithLog<Ast.DeclMem<Ast.FieldConstSig<MaybeExpr>>> {
-    const typeParams = Ast.TypeParams([], new Set());
     if (init.kind === 'constant_decl') {
-        const type = decodeTypeLazy(typeParams, init.type, scopeRef);
+        const type = decodeTypeLazy(emptyTypeParams, init.type, scopeRef);
         return Ast.DeclMem(
             Ast.FieldConstSig(overridable, type, undefined),
             nextVia,
@@ -220,7 +216,7 @@ function* decodeConstant(
     } else {
         const [type, expr] = decodeConstantDef(
             nextVia.defLoc,
-            typeParams,
+            emptyTypeParams,
             init,
             scopeRef,
             selfType,

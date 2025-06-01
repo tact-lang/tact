@@ -9,8 +9,9 @@ import { getMethodsGeneral } from "@/next/types/methods";
 import { getReceivers } from "@/next/types/receivers";
 import { decodeDealiasTypeLazy, decodeTypeLazy } from "@/next/types/type";
 import { decodeParams } from "@/next/types/type-fn";
-import { decodeStatements } from "@/next/types/statements";
+import { decodeStatementsLazy } from "@/next/types/statements";
 import { Void } from "@/next/types/builtins";
+import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* decodeContract(
     contract: Ast.Contract,
@@ -25,6 +26,7 @@ export function* decodeContract(
     // to check init body in initLazy we have to know `self` from contentLazy
 
     const decodedInit = yield* decodeInit(
+        () => selfType,
         init,
         () => contentLazy(),
         scopeRef,
@@ -56,6 +58,7 @@ export function* decodeContract(
                 scopeRef,
             ),
             receivers: yield* getReceivers(
+                () => selfType,
                 name,
                 traits,
                 receivers,
@@ -68,16 +71,22 @@ export function* decodeContract(
 
     const contractSig = Ast.ContractSig(attributes, decodedInit, contentLazy);
 
+    const selfType = Ast.MVTypeRef(
+        contract.name,
+        contractSig,
+        [],
+        contract.loc,
+    );
+
     return contractSig;
 }
 
 function* decodeInit(
-    selfType: Ast.SelfType,
+    selfTypeRef: () => Ast.SelfType,
     init: Ast.Init | undefined,
     contentLazy: Ast.Lazy<Ast.ContractContent>,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.InitSig> {
-    const typeParams = Ast.TypeParams([], new Set());
     if (!init) {
         // no init
         const lazyInit = Ast.Lazy(function* () {
@@ -118,7 +127,7 @@ function* decodeInit(
 
         const map: Map<string, Ast.InitParam> = new Map();
         for (const [name, param] of paramMap) {
-            const decoded = decodeTypeLazy(typeParams, param.type, scopeRef)
+            const decoded = decodeTypeLazy(emptyTypeParams, param.type, scopeRef)
             if (!param.initializer) {
                 yield ENoInitializerParams(param.loc);
             }
@@ -137,23 +146,19 @@ function* decodeInit(
         const { params, statements } = init;
 
         const decodedParams = yield* decodeParams((type) => {
-            return decodeDealiasTypeLazy(typeParams, type, scopeRef);
+            return decodeDealiasTypeLazy(emptyTypeParams, type, scopeRef);
         }, params);
 
-        const body = yield* decodeStatements(
+        const body = decodeStatementsLazy(
             statements,
-            typeParams,
-            selfType,
-            Void,
-            yield* getRequired(selfType),
+            emptyTypeParams,
+            selfTypeRef,
+            function* () { return Void },
+            true,
             scopeRef,
         );
 
-        // TODO: make Lazy a builder
-        // (Lazy: LazyBuilder)
-        // Lazy(`body of ${name}`, function* (Lazy) { ... })
-
-        return Ast.InitFn(decodedParams, body.node);
+        return Ast.InitFn(decodedParams, body);
     }
 }
 const EDuplicateParam = (
@@ -186,56 +191,6 @@ const ENoInitializerEmpty = (
         E.TEText(`When there is no init() or contract parameters, all fields must have an initializer`),
     ],
 });
-
-function* getRequired(selfType: Ast.SelfType | undefined): E.WithLog<undefined | Set<string>> {
-    if (!selfType) {
-        return new Set();
-    }
-    const required: Set<string> = new Set();
-    switch (selfType.kind) {
-        case "type_ref": {
-            switch (selfType.type.kind) {
-                case "contract":
-                case "trait": {
-                    const { fieldish } = (yield* selfType.type.content());
-                    for (const [name, field] of fieldish.map) {
-                        if (field.decl.kind === 'field' && !field.decl.init) {
-                            required.add(name)
-                        }
-                    }
-                    return required;
-                }
-                case "struct":
-                case "message":
-                case "union": {
-                    // no requirement to fill self on these, because they have
-                    // no init()
-                    return required;
-                }
-            }
-            // linter needs this
-            return required;
-        }
-        case "map_type":
-        case "TypeMaybe":
-        case "tuple_type":
-        case "tensor_type":
-        case "TyInt":
-        case "TySlice":
-        case "TyCell":
-        case "TyBuilder":
-        case "unit_type":
-        case "TypeVoid":
-        case "TypeNull":
-        case "TypeBool":
-        case "TypeAddress":
-        case "TypeString":
-        case "TypeStateInit":
-        case "TypeStringBuilder": {
-            return undefined;
-        }
-    }
-}
 
 function* getMethodsFromContract(
     contractSig: Ast.ContractSig,

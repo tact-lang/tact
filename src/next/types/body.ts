@@ -3,7 +3,8 @@
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
 import { isSubsetOf } from "@/utils/isSubsetOf";
-import { decodeStatements } from "@/next/types/statements";
+import { decodeStatementsLazy } from "@/next/types/statements";
+import { emptyEff } from "@/next/types/effects";
 
 export function* decodeBody(
     node: Ast.FunctionalBody,
@@ -14,12 +15,24 @@ export function* decodeBody(
     switch (node.kind) {
         case "abstract_body": {
             yield ENoBody(loc)
-            return Ast.TactBody([]);
+            return Ast.TactBody(function* () {
+                return Ast.StatementsAux([], emptyEff);
+            });
         }
         case "regular_body": {
-            return Ast.TactBody(
-                decodeStatements(node.statements, scopeRef)
-            );
+            const selfTypeRef = () => {
+                return fnType.kind === 'DecodedMethodType'
+                    ? fnType.self
+                    : undefined;
+            };
+            return Ast.TactBody(decodeStatementsLazy(
+                node.statements,
+                fnType.typeParams,
+                selfTypeRef,
+                fnType.returnType,
+                true,
+                scopeRef,
+            ));
         }
         case "asm_body": {
             return Ast.FiftBody(

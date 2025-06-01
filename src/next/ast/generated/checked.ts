@@ -9,6 +9,7 @@ import type { Lazy } from "@/next/ast/lazy";
 import type { AsmInstruction, AsmShuffle, ContractAttribute } from "@/next/ast/root";
 import type { DecodedStatement } from "@/next/ast/checked-stmt";
 import type { Value } from "@/next/ast/value";
+import type { Effects } from "@/next/ast/effects";
 
 export type TypeParams = $.TypeParams;
 export const TypeParams = (order: readonly $c.TypeId[], set: ReadonlySet<string>): TypeParams => Object.freeze({
@@ -109,7 +110,7 @@ export const Parameters = (order: readonly $.Parameter[], set: ReadonlySet<strin
     set
 });
 export type TactBody = $.TactBody;
-export const TactBody = (statements: Lazy<readonly DecodedStatement[]>): $.TactBody => Object.freeze({
+export const TactBody = (statements: Lazy<StatementsAux>): $.TactBody => Object.freeze({
     kind: "tact",
     statements
 });
@@ -178,30 +179,30 @@ export const TraitSig = (content: Lazy<$.CommonSig<Lazy<Value> | undefined, $.Bo
 });
 export const isTraitSig = ($value: TraitSig) => $value.kind === "trait";
 export type MessageRecv = $.MessageRecv;
-export const MessageRecv = (name: $c.OptionalId, type_: $d.DTypeRef | $d.DTypeBounced, statements: Lazy<readonly DecodedStatement[]>): $.MessageRecv => Object.freeze({
+export const MessageRecv = (name: $c.OptionalId, type_: $d.DTypeRef | $d.DTypeBounced, statements: Lazy<StatementsAux>): $.MessageRecv => Object.freeze({
     kind: "binary",
     name,
     type: type_,
     statements
 });
 export type MessageAnyRecv = $.MessageAnyRecv;
-export const MessageAnyRecv = (name: $c.OptionalId, statements: Lazy<readonly DecodedStatement[]>): $.MessageAnyRecv => Object.freeze({
+export const MessageAnyRecv = (name: $c.OptionalId, statements: Lazy<StatementsAux>): $.MessageAnyRecv => Object.freeze({
     name,
     statements
 });
 export type StringRecv = $.StringRecv;
-export const StringRecv = (comment: string, statements: Lazy<readonly DecodedStatement[]>): $.StringRecv => Object.freeze({
+export const StringRecv = (comment: string, statements: Lazy<StatementsAux>): $.StringRecv => Object.freeze({
     kind: "string",
     comment,
     statements
 });
 export type StringAnyRecv = $.StringAnyRecv;
-export const StringAnyRecv = (name: $c.OptionalId, statements: Lazy<readonly DecodedStatement[]>): $.StringAnyRecv => Object.freeze({
+export const StringAnyRecv = (name: $c.OptionalId, statements: Lazy<StatementsAux>): $.StringAnyRecv => Object.freeze({
     name,
     statements
 });
 export type EmptyRecv = $.EmptyRecv;
-export const EmptyRecv = (statements: Lazy<readonly DecodedStatement[]>): $.EmptyRecv => Object.freeze({
+export const EmptyRecv = (statements: Lazy<StatementsAux>): $.EmptyRecv => Object.freeze({
     statements
 });
 export type OpcodeRecv = $.OpcodeRecv;
@@ -238,8 +239,12 @@ export const InitSimple = (fill: $.Ordered<$.InitParam>, loc: $c.Loc): $.InitSim
     loc
 });
 export const isInitSimple = ($value: InitSimple) => $value.kind === "simple";
+export type StatementsAux = $.StatementsAux 
+export const StatementsAux = (body: readonly DecodedStatement[], effects: Effects): $.StatementsAux => Object.freeze({
+    body, effects,
+});
 export type InitFn = $.InitFn;
-export const InitFn = (params: $.Parameters, statements: Lazy<readonly DecodedStatement[]>): $.InitFn => Object.freeze({
+export const InitFn = (params: $.Parameters, statements: Lazy<StatementsAux>): $.InitFn => Object.freeze({
     kind: "function",
     params,
     statements

@@ -45,6 +45,7 @@ export function* decodeTrait(
                 scopeRef,
             ),
             receivers: yield* getReceivers(
+                () => selfType,
                 name,
                 traits,
                 receivers,
@@ -56,6 +57,13 @@ export function* decodeTrait(
     });
 
     const traitSig = Ast.TraitSig(contentLazy);
+
+    const selfType = Ast.MVTypeRef(
+        trait.name,
+        traitSig,
+        [],
+        trait.loc,
+    );
 
     return traitSig;
 }

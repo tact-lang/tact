@@ -2,6 +2,7 @@ import * as Ast from "@/next/ast";
 import { assignType, decodeTypeLazy } from "@/next/types/type";
 import { decodeExpr } from "@/next/types/expression";
 import { evalExpr } from "@/next/types/expr-eval";
+import { emptyTypeParams } from "@/next/types/type-params";
 
 export function decodeConstantDef(
     defLoc: Ast.Loc,
@@ -25,7 +26,7 @@ export function decodeConstantDef(
             );
             const computed = expr.computedType;
             const ascribed = yield* ascribedType();
-            yield* assignType(defLoc, ascribed, computed);
+            yield* assignType(defLoc, emptyTypeParams, ascribed, computed, false);
             return yield* evalExpr(expr, scopeRef);
         });
         return [ascribedType, lazyExpr];

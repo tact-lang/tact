@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import type * as $ from "@/next/ast/dtype";
 import type * as $c from "@/next/ast/common";
-import { TypeDeclRefable } from "@/next/ast/checked";
+import type { TypeDeclRefable } from "@/next/ast/checked";
 
 export type DTypeParamRef = $.DTypeParamRef;
 export const DTypeParamRef = (name: $c.TypeId, loc: $c.Loc): $.DTypeParamRef => Object.freeze({
@@ -82,3 +82,8 @@ export const NotDealiased = (): $.NotDealiased => Object.freeze({
     kind: "NotDealiased"
 });
 export const isNotDealiased = ($value: NotDealiased) => $value.kind === "NotDealiased";
+export type DNotSet = $.DNotSet;
+export const DNotSet = (): $.DNotSet => Object.freeze({
+    kind: "not-set"
+});
+export const isDNotSet = ($value: DNotSet) => $value.kind === "not-set";

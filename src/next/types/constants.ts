@@ -4,6 +4,7 @@ import * as E from "@/next/types/errors";
 import type { TactSource } from "@/next/imports/source";
 import { builtinFunctions } from "@/next/types/builtins";
 import { decodeConstantDef } from "@/next/types/constant-def";
+import { emptyTypeParams } from "@/next/types/type-params";
 
 const errorKind = "function";
 
@@ -51,10 +52,9 @@ function* decodeConstant(
         const expr = function*() { return Ast.VNumber(0n, constant.loc); };
         return Ast.ConstSig(expr, type);
     } else {
-        const typeParams = Ast.TypeParams([], new Set());
         const [type, expr] = decodeConstantDef(
             loc,
-            typeParams,
+            emptyTypeParams,
             init,
             scopeRef,
             undefined,

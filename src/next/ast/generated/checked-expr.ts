@@ -143,6 +143,7 @@ export const DStaticMethodCall = (self: $c.TypeId, typeArgs: $.TypeArgs, functio
     loc
 });
 export const isDStaticMethodCall = ($value: DStaticMethodCall) => $value.kind === "static_method_call";
+export type TypeArgs = $.TypeArgs
 export type DStaticCall = $.DStaticCall;
 export const DStaticCall = (function_: $c.Id, typeArgs: $.TypeArgs, args: readonly $.DecodedExpression[], computedType: $d.DecodedType, loc: $c.Loc): $.DStaticCall => Object.freeze({
     kind: "static_call",

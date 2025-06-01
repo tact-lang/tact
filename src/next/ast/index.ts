@@ -11,4 +11,5 @@ export * from "@/next/ast/generated/checked-expr";
 export * from "@/next/ast/generated/checked-stmt";
 export * from "@/next/ast/generated/root";
 export * from "@/next/ast/generated/value";
+export * from "@/next/ast/generated/effects";
 export * from "@/next/ast/lazy";

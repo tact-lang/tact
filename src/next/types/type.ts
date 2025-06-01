@@ -2,30 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { throwInternal } from "@/error/errors";
 import * as Ast from "@/next/ast";
+import { messageBuiltin, structBuiltin } from "@/next/types/builtins";
 import * as E from "@/next/types/errors";
+import { emptyTypeParams } from "@/next/types/type-params";
 import { printType } from "@/next/types/type-print";
 import { zip } from "@/utils/array";
-
-// type C<T> = map<int4, T>
-// type B<T, U> = [T, U]
-// type A<T> = B<T, C<T>>
-
-// head-first
-// A<X> -> B<X, C<X>> -> [X, C<X>] -> [X, map<int4, X>]
-
-// arg-first
-// A<X> -> B<X, C<X>> -> B<X, map<int4, X>> -> [X, map<int4, X>]
-
-// if head of the type is an alias
-//     substitute alias
-//     store head and args
-//     recurse
-// if head of the type is another type
-//     recurse on arguments
-
-// we never substitute into alias-cons (throwInternal)
-// substitution only happens into body of alias decl
-// body of alias decl is not dealiased, thus doesn't have alias-cons
 
 export const decodeTypeLazy = (
     typeParams: Ast.TypeParams,
@@ -178,7 +159,7 @@ export function decodeType(
                         type.loc,
                     );
                 }
-                
+
                 const typeEntry = typeDecls.get(name);
 
                 // there is no such type at all!
@@ -310,7 +291,7 @@ const dealiasTypeAux = (
                 }
                 // NB! if we could decode alias once, there might be
                 //     a nested one too
-                const decoded = yield* rec(substitute(
+                const decoded = yield* rec(substituteTypeArgs(
                     yield* alias.decl.type(),
                     alias.decl.typeParams,
                     yield* E.mapLog(type.typeArgs, rec),
@@ -358,8 +339,8 @@ const dealiasTypeAux = (
     return rec(type);
 };
 
-// NB! is substitute is used for something other than aliases, do not throwInternal on type.type
-const substitute = (
+// NB! if substitute is used for something other than aliases, do not throwInternal on type.type
+export const substituteTypeArgs = (
     type: Ast.DecodedType,
     params: Ast.TypeParams,
     args: readonly Ast.DecodedType[],
@@ -375,7 +356,7 @@ const substitute = (
     const recN = (types: readonly Ast.DecodedType[]): readonly Ast.DecodedType[] => {
         return types.map(type => rec(type));
     };
-    
+
     const rec = (type: Ast.DecodedType): Ast.DecodedType => {
         switch (type.kind) {
             case "TypeParam": {
@@ -390,11 +371,13 @@ const substitute = (
                 return Ast.DTypeRef(type.name, type.type, args, type.loc);
             }
             case "TypeAlias": {
-                const args = recN(type.typeArgs);
-                if (type.type.kind !== 'NotDealiased') {
-                    return throwInternal("Substitution must not happen into a type with resolved aliases");
+                if (type.type.kind === 'NotDealiased') {
+                    const args = recN(type.typeArgs);
+                    return Ast.DTypeAliasRef(type.type, type.name, args, type.loc);
+                } else {
+                    const args = recN(type.typeArgs); // ??
+                    return Ast.DTypeAliasRef(rec(type.type), type.name, args, type.loc);
                 }
-                return Ast.DTypeAliasRef(type.type, type.name, args, type.loc);
             }
             case "map_type": {
                 const key = rec(type.key);
@@ -476,8 +459,8 @@ export function* instantiateStruct(
             return {
                 type: Ast.DTypeRef(
                     typeName,
-                    decl.decl, 
-                    typeArgs, 
+                    decl.decl,
+                    typeArgs,
                     typeName.loc,
                 ),
                 fields: decl.decl.fields
@@ -536,18 +519,75 @@ const ETypeArity = (name: string, loc: Ast.Loc, declArity: number, useArity: num
     ],
 });
 
+export function typeParamsToSubst(typeParams: Ast.TypeParams) {
+    const subst: Map<string, Ast.DNotSet | Ast.DecodedType> = new Map(
+        typeParams.order.map(name => [name.text, Ast.DNotSet()])
+    );
+    return subst;
+}
+
+export function* substToTypeArgMap(
+    loc: Ast.Loc,
+    subst: Map<string, Ast.DecodedType | Ast.DNotSet>
+): E.WithLog<undefined | Ast.TypeArgs> {
+    const res = substToTypeArgMapAux(subst);
+    if (res.ok) {
+        return res.args;
+    } else {
+        for (const name of res.names) {
+            yield EFreeTypeParam(name, loc);
+        }
+        return undefined;
+    }
+}
+
+function substToTypeArgMapAux(
+    subst: Map<string, Ast.DecodedType | Ast.DNotSet>
+): { ok: true, args: Ast.TypeArgs} | { ok: false, names: readonly string[] } {
+    const args: Map<string, Ast.DecodedType> = new Map();
+    const names: string[] = [];
+    for (const [name, type] of subst) {
+        if (type.kind === 'not-set') {
+            names.push(name);
+        } else {
+            args.set(name, type);
+        }
+    }
+    if (names.length > 0) {
+        return { ok: false, names };
+    } else {
+        return { ok: true, args };
+    }
+}
+
 export function* assignType(
     loc: Ast.Loc,
+    toFreeTypeParam: Ast.TypeParams,
     to: Ast.DecodedType,
     from: Ast.DecodedType,
-): E.WithLog<boolean> {
-    const result = assignTypeAux(to, from);
+    strict: boolean,
+): E.WithLog<undefined | Ast.TypeArgs> {
+    const subst = typeParamsToSubst(toFreeTypeParam);
+    const result = assignTypeAux(to, from, subst, strict);
     if (result.kind === 'failure') {
         yield EMismatch(result.tree, loc);
-        return false;
+        return undefined;
     }
-    return true;
+    return yield* substToTypeArgMap(loc, subst);
 }
+const EFreeTypeParam = (paramName: string, loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`No substitution for type parameter "${paramName}"`),
+    ],
+});
+const EMismatch = (tree: E.MatchTree, loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Type mismatch`),
+        E.TEMismatch(tree),
+    ],
+});
 
 type AssignResult = AssignSuccess | AssignFailure
 type AssignSuccess = {
@@ -562,12 +602,14 @@ const AssignFailure = (tree: E.MatchTree): AssignFailure => Object.freeze({ kind
 
 type Log = Generator<E.MatchTree, boolean>;
 
-function assignTypeAux(
+export function assignTypeAux(
     to: Ast.DecodedType,
     from: Ast.DecodedType,
+    subst: Map<string, Ast.DNotSet | Ast.DecodedType>,
+    strict: boolean,
 ) {
     function* recN(
-        tos: readonly Ast.DecodedType[], 
+        tos: readonly Ast.DecodedType[],
         froms: readonly Ast.DecodedType[],
     ): Log {
         if (tos.length !== froms.length) {
@@ -584,7 +626,7 @@ function assignTypeAux(
     }
 
     function* rec(
-        to: Ast.DecodedType, 
+        to: Ast.DecodedType,
         from: Ast.DecodedType,
     ): Log {
         const result = collectMismatches(to, from);
@@ -596,7 +638,7 @@ function assignTypeAux(
     }
 
     function collectMismatches(
-        to: Ast.DecodedType, 
+        to: Ast.DecodedType,
         from: Ast.DecodedType,
     ): AssignResult {
         const gen = check(to, from);
@@ -623,7 +665,7 @@ function assignTypeAux(
     }
 
     function* check(
-        to: Ast.DecodedType, 
+        to: Ast.DecodedType,
         from: Ast.DecodedType,
     ): Log {
         if (from.kind === 'TypeAlias') {
@@ -645,9 +687,17 @@ function assignTypeAux(
                 return yield* rec(to, from);
             }
             case "type_ref": {
-                return to.kind === from.kind &&
-                    to.name.text === from.name.text &&
-                    (yield* recN(to.typeArgs, from.typeArgs));
+                const typeVar = subst.get(to.name.text);
+                if (!typeVar) {
+                    return to.kind === from.kind &&
+                        to.name.text === from.name.text &&
+                        (yield* recN(to.typeArgs, from.typeArgs));
+                } else if (typeVar.kind === 'not-set') {
+                    subst.set(to.name.text, from);
+                    return true;
+                } else {
+                    return yield* rec(typeVar, from);
+                }
             }
             case "tuple_type":
             case "tensor_type": {
@@ -657,20 +707,20 @@ function assignTypeAux(
             case "TypeParam": {
                 return to.kind === from.kind &&
                     to.name.text === from.name.text;
-                }
+            }
             case "TypeBounced": {
                 return to.kind === from.kind &&
                     to.name.text === from.name.text;
             }
             case "TypeMaybe": {
-                return from.kind === 'TypeNull' ||
+                return !strict && from.kind === 'TypeNull' ||
                     to.kind === from.kind &&
                     (yield* rec(to.type, from.type));
             }
             case "map_type": {
-                return from.kind === 'TypeNull' ||
+                return !strict && from.kind === 'TypeNull' ||
                     to.kind === from.kind &&
-                    (yield* rec(to.key, from.key)) && 
+                    (yield* rec(to.key, from.key)) &&
                     (yield* rec(to.value, from.value));
             }
             case "TyInt":
@@ -692,13 +742,6 @@ function assignTypeAux(
 
     return collectMismatches(to, from);
 }
-const EMismatch = (tree: E.MatchTree, loc: Ast.Loc): E.TcError => ({
-    loc,
-    descr: [
-        E.TEText(`Type mismatch`),
-        E.TEMismatch(tree),
-    ],
-});
 
 export function* mgu(
     left: Ast.DecodedType,
@@ -723,11 +766,11 @@ export function* mgu(
             left = left.type;
             return yield* rec(left, left);
         }
-        const resultL = assignTypeAux(left, right);
+        const resultL = assignTypeAux(left, right, new Map(), false);
         if (resultL.kind === 'success') {
             return left;
         }
-        const resultR = assignTypeAux(right, left);
+        const resultR = assignTypeAux(right, left, new Map(), false);
         if (resultR.kind === 'success') {
             return right;
         }
@@ -748,5 +791,382 @@ const ENotUnifiable = (tree: E.MatchTree, loc: Ast.Loc): E.TcError => ({
     descr: [
         E.TEText(`Branches of condition have mismatched types`),
         E.TEMismatch(tree),
+    ],
+});
+
+export type CallResult = {
+    readonly returnType: Ast.DecodedType;
+    readonly typeArgMap: Ast.TypeArgs;
+}
+
+export function* checkFnCall(
+    loc: Ast.Loc,
+    fnType: Ast.DecodedFnType | Ast.DecodedMethodType,
+    args: readonly (readonly [Ast.Loc, Ast.DecodedType])[],
+): E.WithLog<CallResult> {
+    const { typeParams, params, returnType } = fnType;
+
+    const subst = typeParamsToSubst(typeParams);
+
+    for (const [index, { name, type, loc }] of params.order.entries()) {
+        const pair = args[index];
+        if (!pair) {
+            // not enough args
+            break;
+        }
+        const [argLoc, arg] = pair;
+        const result = assignTypeAux(
+            yield* type(),
+            arg,
+            subst,
+            false,
+        );
+        if (result.kind === 'failure') {
+            yield EMismatchArg(
+                getParamName(name, index), 
+                result.tree, 
+                argLoc,
+            );
+        }
+    }
+
+    // not enough or too many args
+    if (params.order.length !== args.length) {
+        yield EFnArity('Function', params.order.length, args.length, loc);
+    }
+
+    const typeArgsMap = yield* substToTypeArgMap(loc, subst);
+
+    if (!typeArgsMap) {
+        return {
+            returnType: Ast.DTypeRecover(),
+            typeArgMap: new Map(),
+        };
+    }
+
+    const typeArgs: Ast.DecodedType[] = [];
+    for (const param of typeParams.order) {
+        const arg = typeArgsMap.get(param.text);
+        if (!arg) {
+            return throwInternal("substToTypeArgMap lost param");
+        }
+        typeArgs.push(arg);
+    }
+
+    const retType = substituteTypeArgs(
+        yield* returnType(),
+        typeParams,
+        typeArgs,
+    );
+
+    return { returnType: retType, typeArgMap: typeArgsMap };
+}
+const EMismatchArg = (name: string, tree: E.MatchTree, loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`Type doesn't match type of parameter ${name}`),
+        E.TEMismatch(tree),
+    ],
+});
+
+function getParamName(name: Ast.OptionalId, index: number) {
+    return name.kind === 'id' ? name.text : `#${index + 1}`;
+}
+
+const EFnArity = (
+    kind: string,
+    expected: number,
+    got: number,
+    loc: Ast.Loc,
+): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`${kind} is expected to have ${expected} type arguments, got ${got}`),
+    ],
+});
+
+export function* checkFnCallWithArgs(
+    loc: Ast.Loc,
+    fnType: Ast.DecodedFnType | undefined,
+    ascribedTypeArgs: readonly Ast.DecodedType[],
+    args: readonly (readonly [Ast.Loc, Ast.DecodedType])[],
+): E.WithLog<CallResult> {
+    if (!fnType) {
+        yield ENoFunction(loc);
+        return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
+    }
+    if (ascribedTypeArgs.length === 0) {
+        return yield* checkFnCall(loc, fnType, args)
+    }
+    if (fnType.typeParams.order.length !== ascribedTypeArgs.length) {
+        return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
+    }
+    const result = yield* checkFnCall(
+        loc,
+        substFnType(fnType, ascribedTypeArgs),
+        args,
+    );
+    return {
+        returnType: result.returnType,
+        typeArgMap: new Map(
+            zip(fnType.typeParams.order, args)
+                .map(([name, [, type]]) => [name.text, type]),
+        ),
+    };
+}
+const ENoFunction = (loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`No such function`),
+        E.TECode(loc),
+    ],
+});
+
+function substFnType(
+    { typeParams, params, returnType }: Ast.DecodedFnType | Ast.DecodedMethodType,
+    args: readonly Ast.DecodedType[],
+) {
+    const order: Ast.Parameter[] = [];
+    for (const param of params.order) {
+        order.push(Ast.Parameter(
+            param.name,
+            Ast.Lazy(function* () {
+                return substituteTypeArgs(
+                    yield* param.type(),
+                    typeParams,
+                    args,
+                );
+            }),
+            param.loc,
+        ));
+    }
+    return Ast.DecodedFnType(
+        emptyTypeParams,
+        Ast.Parameters(
+            order,
+            params.set
+        ),
+        Ast.Lazy(function* () {
+            return substituteTypeArgs(
+                yield* returnType(),
+                typeParams,
+                args,
+            );
+        }),
+    );
+}
+
+export function* lookupMethod(
+    selfType: Ast.DecodedType,
+    method: Ast.Id,
+    args: readonly (readonly [Ast.Loc, Ast.DecodedType])[],
+    typeDecls: ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>,
+    extensions: ReadonlyMap<string, Ast.Lazy<readonly Ast.Decl<Ast.ExtSig>[]>>,
+): E.WithLog<CallResult>  {
+    if (selfType.kind === 'recover') {
+        return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
+    }
+    if (selfType.kind === 'TypeAlias') {
+        if (selfType.type.kind === 'NotDealiased') {
+            return throwInternal("Calling method on non-dealiased type")
+        }
+
+        return yield* lookupMethod(
+            selfType,
+            method,
+            args,
+            typeDecls,
+            extensions,
+        );
+    }
+
+    if (selfType.kind !== 'type_ref') {
+        return yield* lookupExts(
+            selfType,
+            method,
+            args,
+            extensions,
+        );
+    }
+
+    const selfDecl = typeDecls.get(selfType.name.text);
+    if (!selfDecl) {
+        yield ENoMethod(method.loc);
+        return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
+    }
+    
+    if (selfDecl.decl.kind === 'struct' || selfDecl.decl.kind === 'message') {
+        const builtinMap = selfDecl.decl.kind === 'struct'
+            ? structBuiltin
+            : messageBuiltin;
+        const builtin = builtinMap.get(method.text);
+        if (builtin) {
+            return yield* checkFnCall(method.loc, builtin, args);
+        }
+        return yield* lookupExts(
+            selfType,
+            method,
+            args,
+            extensions,
+        );
+    }
+    
+    if (selfDecl.decl.kind === 'contract' || selfDecl.decl.kind === 'trait') {
+        const content = yield* selfDecl.decl.content();
+        const met = content.methods.get(method.text);
+        if (!met) {
+            yield ENoMethod(method.loc);
+            return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
+        }
+        return yield* checkFnCall(
+            method.loc,
+            met.decl.type,
+            args
+        );
+    }
+
+    yield ENoMethod(method.loc);
+    return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
+}
+
+function* lookupExts(
+    selfType: Ast.DecodedType,
+    method: Ast.Id,
+    args: readonly (readonly [Ast.Loc, Ast.DecodedType])[],
+    extensions: ReadonlyMap<string, Ast.Lazy<readonly Ast.Decl<Ast.ExtSig>[]>>,
+) {
+    const lazyExts = extensions.get(method.text);
+    if (!lazyExts) {
+        yield ENoMethod(method.loc);
+        return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
+    }
+    const exts = yield* lazyExts();
+    const grounds: [Ast.DecodedMethodType, Ast.TypeArgs][] = []
+    const withVars: [Ast.DecodedMethodType, Ast.TypeArgs][] = []
+    for (const { decl } of exts) {
+        const subst = typeParamsToSubst(decl.type.typeParams);
+        const result = assignTypeAux(decl.type.self, selfType, subst, true);
+        if (result.kind !== 'success') {
+            continue;
+        }
+        const res = substToTypeArgMapAux(subst);
+        if (!res.ok) {
+            continue;
+        }
+        const into = decl.type.self.ground
+            ? grounds
+            : withVars;
+        into.push([decl.type, res.args]);
+    }
+    if (grounds.length > 1 || withVars.length > 1) {
+        return throwInternal("Overlapping methods were allowed");
+    }
+    const [ground] = grounds;
+    const [withVar] = withVars;
+    const either = ground || withVar;
+    if (!either) {
+        yield ENoMethod(method.loc);
+        return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
+    }
+    const [methodType, typeArgs] = either;
+    const result = yield* checkFnCall(
+        method.loc,
+        substFnType(
+            methodType,
+            typeArgsToParams(typeArgs, methodType.typeParams),
+        ),
+        args
+    );
+    return {
+        returnType: result.returnType,
+        typeArgMap: typeArgs,
+    };
+}
+
+function typeArgsToParams(
+    args: Ast.TypeArgs,
+    params: Ast.TypeParams,
+) {
+    const result: Ast.DecodedType[] = [];
+    for (const name of params.order) {
+        const arg = args.get(name.text);
+        if (!arg) {
+            return throwInternal("Lost type arguments");
+        }
+        result.push(arg);
+    }
+    return result;
+}
+
+const ENoMethod = (loc: Ast.Loc): E.TcError => ({
+    loc,
+    descr: [
+        E.TEText(`No such method`),
+        E.TECode(loc),
+    ],
+});
+
+export function* assignMethodType(
+    prev: Ast.DecodedMethodType,
+    next: Ast.DecodedMethodType,
+    prevVia: Ast.ViaMember,
+    nextVia: Ast.ViaMember
+): E.WithLog<void> {
+    const result = assignTypeAux(
+        yield* prev.returnType(), 
+        yield* next.returnType(), 
+        new Map(), 
+        true
+    );
+    if (result.kind === 'failure') {
+        yield EMismatchReturn(result.tree, prevVia.defLoc, nextVia.defLoc);
+        return undefined;
+    }
+    const prevArity = prev.params.order.length;
+    const nextArity = next.params.order.length;
+
+    for (const [index, [prevParam, nextParam]] of zip(prev.params.order, next.params.order).entries()) {
+        const result = assignTypeAux(
+            yield* prevParam.type(), 
+            yield* nextParam.type(), 
+            new Map(), 
+            true
+        );
+        if (result.kind === 'failure') {
+            yield EMismatchParam(
+                getParamName(nextParam.name, index),
+                result.tree, 
+                prevVia.defLoc, 
+                nextVia.defLoc,
+            );
+        }
+    }
+
+    if (prevArity !== nextArity) {
+        yield EFnArity('Method', prevArity, nextArity, nextVia.defLoc)
+    }
+}
+
+const EMismatchReturn = (tree: E.MatchTree, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+    loc: next,
+    descr: [
+        E.TEText(`Return type doesn't match with inherited method`),
+        E.TEMismatch(tree),
+        E.TEText(`Inherited from:`),
+        E.TECode(prev),
+        E.TEText(`Override at:`),
+        E.TECode(next),
+    ],
+});
+
+const EMismatchParam = (name: string, tree: E.MatchTree, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+    loc: next,
+    descr: [
+        E.TEText(`Type of parameter ${name} doesn't match with inherited method`),
+        E.TEMismatch(tree),
+        E.TEText(`Inherited from:`),
+        E.TECode(prev),
+        E.TEText(`Override at:`),
+        E.TECode(next),
     ],
 });

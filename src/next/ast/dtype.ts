@@ -6,6 +6,10 @@ import type * as Ast from "@/next/ast/type";
 // readonly tlb: Lazy<TlbType>
 // readonly effects: Lazy<Effects>
 
+export type DNotSet = {
+    readonly kind: "not-set";
+}
+
 export type DecodedType =
     | DTypeRecover
     | DTypeRef

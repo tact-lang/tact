@@ -8,21 +8,21 @@ import { evalExpr } from "@/next/types/expr-eval";
 import { decodeExpr } from "@/next/types/expression";
 import { decodeFields } from "@/next/types/struct-fields";
 import { assignType } from "@/next/types/type";
+import { emptyTypeParams } from "@/next/types/type-params";
 import { highest32ofSha256, sha256 } from "@/utils/sha256";
 
 export function* decodeMessage(
     message: Ast.MessageDecl,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.MessageSig> {
-    const typeParams = Ast.TypeParams([], new Set());
     const fields = yield* decodeFields(
         message.fields, 
-        typeParams, 
+        emptyTypeParams, 
         scopeRef,
     );
     const lazyExpr = Ast.Lazy(function* () {
         const opcode = yield* decodeOpcode(
-            typeParams,
+            emptyTypeParams,
             message.opcode,
             message.name.text,
             fields.order,
@@ -81,7 +81,7 @@ function* decodeOpcode(
             new Map(),
         );
         const computed = expr.computedType;
-        if (yield* assignType(opcode.loc, Int, computed)) {
+        if (yield* assignType(opcode.loc, emptyTypeParams, Int, computed, false)) {
             const result = yield* evalExpr(expr, scopeRef);
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (result.kind === 'number') {

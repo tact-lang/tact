@@ -1,6 +1,7 @@
 import type { DecodedStatement } from "@/next/ast/checked-stmt";
 import type { FuncId, Loc, OptionalId, TypeId } from "@/next/ast/common";
 import type { DecodedType, DTypeRef, DTypeBounced } from "@/next/ast/dtype";
+import type { Effects } from "@/next/ast/effects";
 import type { Lazy } from "@/next/ast/lazy";
 import type { SelfType } from "@/next/ast/mtype";
 import type { AsmInstruction, AsmShuffle, ContractAttribute } from "@/next/ast/root";
@@ -53,7 +54,12 @@ export type FnSig = {
     readonly body: Body;
 }
 
-export type Statements = Lazy<readonly DecodedStatement[]>;
+export type Statements = Lazy<StatementsAux>;
+
+export type StatementsAux = {
+    readonly body: readonly DecodedStatement[];
+    readonly effects: Effects;
+};
 
 export type Body = TactBody | FuncBody | FiftBody
 

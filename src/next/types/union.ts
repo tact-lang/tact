@@ -5,7 +5,7 @@ import * as E from "@/next/types/errors";
 import { evalExpr } from "@/next/types/expr-eval";
 import { decodeExpr } from "@/next/types/expression";
 import { assignType, decodeTypeLazy } from "@/next/types/type";
-import { decodeTypeParams } from "@/next/types/type-params";
+import { decodeTypeParams, emptyTypeParams } from "@/next/types/type-params";
 
 type Cons = {
     readonly fields: ReadonlyMap<string, Ast.InhFieldSig>;
@@ -46,7 +46,7 @@ export function* decodeUnion(
                 );
                 const computed = expr.computedType;
                 const ascribed = yield* ascribedType();
-                yield* assignType(expr.loc, ascribed, computed);
+                yield* assignType(expr.loc, emptyTypeParams, ascribed, computed, false);
                 return yield* evalExpr(expr, scopeRef);
             }) : undefined;
             const decoded = Ast.InhFieldSig(ascribedType, lazyExpr);

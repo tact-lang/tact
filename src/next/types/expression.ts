@@ -3,9 +3,9 @@ import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
 import { throwInternal } from "@/error/errors";
 import { Bool, builtinBinary, builtinFunctions, getStaticBuiltin, StateInit } from "@/next/types/builtins";
-import { assignType, dealiasType, decodeDealiasTypeLazy, decodeTypeLazy, decodeTypeMap, instantiateStruct, mgu } from "@/next/types/type";
-import { getCallResult, lookupFunction, lookupMethod } from "@/next/types/type-fn";
+import { assignType, dealiasType, decodeDealiasTypeLazy, decodeTypeLazy, decodeTypeMap, checkFnCall, instantiateStruct, checkFnCallWithArgs, mgu, lookupMethod } from "@/next/types/type";
 import { convertValueToExpr } from "@/next/types/value";
+import { emptyTypeParams } from "@/next/types/type-params";
 
 type Decode<T, U> = (node: T, ctx: Context) => E.WithLog<U>
 type Context = {
@@ -92,9 +92,9 @@ const decodeMapCons: Decode<Ast.MapLiteral, Ast.DMapLiteral> = function* (node, 
     const ascribed = yield* decodeTypeMap(ctx.typeParams, node.type, ctx.scopeRef);
     const fields = yield* E.mapLog(node.fields, function* (field) {
         const key = yield* decodeExprCtx(field.key, ctx);
-        yield* assignType(field.key.loc, ascribed.key, key.computedType);
+        yield* assignType(field.key.loc, emptyTypeParams, ascribed.key, key.computedType, false);
         const value = yield* decodeExprCtx(field.value, ctx);
-        yield* assignType(field.value.loc, ascribed.value, value.computedType);
+        yield* assignType(field.value.loc, emptyTypeParams, ascribed.value, value.computedType, false);
         return Ast.DMapField(key, value);
     });
     return Ast.DMapLiteral(ascribed, fields, node.loc);
@@ -149,8 +149,10 @@ function* checkFields(
             if (typeField) {
                 yield* assignType(
                     expr.loc,
+                    emptyTypeParams,
                     yield* typeField.type(),
                     expr.computedType,
+                    false,
                 );
             } else {
                 yield ENoSuchField(fieldName, arg.loc);
@@ -259,12 +261,16 @@ const decodeBinary: Decode<Ast.OpBinary, Ast.DOpBinary> = function* (node, ctx) 
     if (!fnType) {
         return throwInternal("Builtin operator is not in the map");
     }
-    const { returnType, typeArgs } = yield* getCallResult(
+    const { returnType, typeArgMap } = yield* checkFnCall(
+        node.loc,
         fnType,
-        [left.computedType, right.computedType],
+        [
+            [left.loc, left.computedType],
+            [right.loc, right.computedType]
+        ],
     );
     if (node.op === '==' || node.op === '!=') {
-        const typeArg = typeArgs.get("T");
+        const typeArg = typeArgMap.get("T");
         if (!typeArg) {
             return throwInternal("getCallResult produced incorrect substitution");
         }
@@ -272,7 +278,7 @@ const decodeBinary: Decode<Ast.OpBinary, Ast.DOpBinary> = function* (node, ctx) 
             yield ENoEquality(node.loc);
         }
     }
-    return Ast.DOpBinary(node.op, left, right, typeArgs, returnType, node.loc);
+    return Ast.DOpBinary(node.op, left, right, typeArgMap, returnType, node.loc);
 }
 const ENoEquality = (loc: Ast.Loc): E.TcError => ({
     loc,
@@ -318,17 +324,18 @@ const decodeUnary: Decode<Ast.OpUnary, Ast.DOpUnary> = function* (node, ctx) {
     if (!fnType) {
         return throwInternal("Builtin operator is not in the map");
     }
-    const { returnType, typeArgs } = yield* getCallResult(
+    const { returnType, typeArgMap } = yield* checkFnCall(
+        node.loc,
         fnType,
-        [operand.computedType],
+        [[operand.loc, operand.computedType]],
     );
     
-    return Ast.DOpUnary(node.op, operand, typeArgs, returnType, node.loc);
+    return Ast.DOpUnary(node.op, operand, typeArgMap, returnType, node.loc);
 }
 
 const decodeTernary: Decode<Ast.Conditional, Ast.DConditional> = function* (node, ctx) {
     const condition = yield* decodeExprCtx(node.condition, ctx);
-    yield* assignType(condition.loc, Bool, condition.computedType);
+    yield* assignType(condition.loc, emptyTypeParams, Bool, condition.computedType, false);
     const thenBranch = yield* decodeExprCtx(node.thenBranch, ctx);
     const elseBranch = yield* decodeExprCtx(node.elseBranch, ctx);
     const commonType = yield* mgu(thenBranch.computedType, elseBranch.computedType, node.loc);
@@ -340,14 +347,14 @@ const decodeMethodCall: Decode<Ast.MethodCall, Ast.DMethodCall> = function* (nod
     const args = yield* E.mapLog(node.args, arg => decodeExprCtx(arg, ctx));
 
     const { typeDecls, extensions } = ctx.scopeRef();
-    const { returnType, typeArgs } = yield* lookupMethod(
+    const { returnType, typeArgMap } = yield* lookupMethod(
         self.computedType,
-        node.method.text,
-        args.map(child => child.computedType),
+        node.method,
+        args.map(child => [child.loc, child.computedType]),
         typeDecls,
         extensions,
     );
-    return Ast.DMethodCall(self, node.method, args, typeArgs, returnType, node.loc);
+    return Ast.DMethodCall(self, node.method, args, typeArgMap, returnType, node.loc);
 }
 
 const decodeFunctionCall: Decode<Ast.StaticCall, Ast.DStaticCall | Ast.DThrowCall | Ast.DNumber> = function* (node, ctx) {
@@ -371,18 +378,19 @@ const decodeFunctionCall: Decode<Ast.StaticCall, Ast.DStaticCall | Ast.DThrowCal
     const globalFnType = ctx.scopeRef().functions.get(name.text)?.decl.type;
     const fnType = builtinFnType ?? globalFnType;
 
-    const { returnType, typeArgs } = yield* lookupFunction(
+    const { returnType, typeArgMap } = yield* checkFnCallWithArgs(
+        node.function.loc,
         fnType,
         yield* E.mapLog(node.typeArgs, function* (arg) {
             return yield* decodeDealiasTypeLazy(ctx.typeParams, arg, ctx.scopeRef)();
         }),
-        args.map(child => child.computedType),
+        args.map(child => [child.loc, child.computedType]),
     );
 
     if (name.text === 'throw' || name.text === 'nativeThrow') {
         return Ast.DThrowCall(name, args, returnType, node.loc);
     } else {
-        return Ast.DStaticCall(name, typeArgs, args, returnType, node.loc);
+        return Ast.DStaticCall(name, typeArgMap, args, returnType, node.loc);
     }
 }
 const EMismatchSha256 = (loc: Ast.Loc): E.TcError => ({
@@ -405,12 +413,13 @@ const decodeStaticMethodCall: Decode<Ast.StaticMethodCall, Ast.DStaticMethodCall
             yield EUndefinedStatic(node.function.text, node.loc);
             return Ast.DNull(Ast.TypeNull(node.loc), node.loc);
         }
-        const { returnType, typeArgs } = yield* lookupFunction(
+        const { returnType, typeArgMap } = yield* checkFnCallWithArgs(
+            node.loc,
             builtin,
             [],
-            args.map(child => child.computedType),
+            args.map(child => [child.loc, child.computedType]),
         );
-        return Ast.DStaticMethodCall(node.self, typeArgs, node.function, args, returnType, node.loc);
+        return Ast.DStaticMethodCall(node.self, typeArgMap, node.function, args, returnType, node.loc);
     } else {
         yield EUndefinedStatic(node.function.text, node.loc);
         return Ast.DNull(Ast.TypeNull(node.loc), node.loc);
@@ -528,12 +537,12 @@ const decodeInitOf: Decode<Ast.InitOf, Ast.DInitOf> = function* (node, ctx) {
         yield ENotContract(node.contract.text, node.loc);
         return Ast.DInitOf(node.contract, args, StateInit, node.loc);
     }
-    const typeParams = Ast.TypeParams([], new Set());
     const params = yield* initParams(contract.decl.init);
-    yield* lookupFunction(
-        Ast.DecodedFnType(typeParams, params, function*() { return StateInit; }),
+    yield* checkFnCallWithArgs(
+        node.loc,
+        Ast.DecodedFnType(emptyTypeParams, params, function*() { return StateInit; }),
         [],
-        args.map(child => child.computedType),
+        args.map(child => [child.loc, child.computedType]),
     );
     return Ast.DInitOf(node.contract, args, StateInit, node.loc);
 }

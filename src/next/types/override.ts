@@ -1,9 +1,7 @@
-/* eslint-disable require-yield */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
-import { assignType } from "@/next/types/type";
-import { assignMethodType } from "@/next/types/type-method";
+import { assignMethodType, assignType } from "@/next/types/type";
+import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* checkFieldOverride(
     name: string,
@@ -13,7 +11,6 @@ export function* checkFieldOverride(
     nextType: Ast.Lazy<Ast.DecodedType>,
     nextVia: Ast.ViaMember,
     override: boolean,
-    scopeRef: () => Ast.Scope,
 ): E.WithLog<void> {
     if (prev) {
         if (prev.decl.kind !== 'constant') {
@@ -29,8 +26,10 @@ export function* checkFieldOverride(
             // overriding constant
             yield* assignType(
                 nextVia.defLoc,
+                emptyTypeParams,
                 yield* prev.decl.type(),
                 yield* nextType(),
+                true,
             );
         }
     } else {
@@ -49,7 +48,6 @@ export function* checkMethodOverride(
     nextType: Ast.DecodedMethodType,
     nextVia: Ast.ViaMember,
     override: boolean,
-    scopeRef: () => Ast.Scope,
 ): E.WithLog<void> {
     if (prev) {
         if (override) {
@@ -63,7 +61,8 @@ export function* checkMethodOverride(
             yield* assignMethodType(
                 prev.decl.type,
                 nextType,
-                scopeRef,
+                prev.via,
+                nextVia,
             );
         }
     } else {

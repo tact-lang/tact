@@ -10,6 +10,7 @@ import { crc16 } from "@/utils/crc16";
 import { Int, tactMethodIds } from "@/next/types/builtins";
 import { evalExpr } from "@/next/types/expr-eval";
 import { assignType } from "@/next/types/type";
+import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* getMethodsGeneral(
     declSig: Ast.TraitSig | Ast.ContractSig,
@@ -54,7 +55,7 @@ export function* getMethodsGeneral(
         const selfType = Ast.MVTypeRef(typeName, declSig, [], loc);
         const methodType = Ast.DecodedMethodType(
             mutates,
-            decodedFn.typeParams,
+            emptyTypeParams,
             selfType,
             decodedFn.params,
             decodedFn.returnType,
@@ -68,14 +69,14 @@ export function* getMethodsGeneral(
             )
             : undefined;
         const getMethodId = decodeGetLazy(
-            decodedFn.typeParams, // FIXME: should `get` really get access to them?
+            emptyTypeParams,
             name,
             get,
             scopeRef,
             selfType,
         );
-        if (getMethodId && decodedFn.typeParams.order.length > 0) {
-            yield EGenericGetter(loc);
+        if (type.typeParams.length > 0) {
+            yield EGenericMethod(loc);
         }
 
         const prevInh = inherited.get(name.text);
@@ -90,7 +91,6 @@ export function* getMethodsGeneral(
             methodType,
             nextVia,
             override,
-            scopeRef,
         );
 
         const methodSig = Ast.MethodSig(
@@ -114,10 +114,10 @@ export function* getMethodsGeneral(
 
     return all;
 }
-const EGenericGetter = (loc: Ast.Loc): E.TcError => ({
+const EGenericMethod = (loc: Ast.Loc): E.TcError => ({
     loc,
     descr: [
-        E.TEText(`Getter method cannot be generic`),
+        E.TEText(`Method cannot be generic`),
     ],
 });
 
@@ -156,7 +156,7 @@ function* decodeGet(
             new Map(),
         );
         const type = expr.computedType;
-        if (yield* assignType(expr.loc, Int, type)) {
+        if (yield* assignType(expr.loc, emptyTypeParams, Int, type, false)) {
             const methodId = yield* evalExpr(expr, scopeRef);
             if (
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

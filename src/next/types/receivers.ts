@@ -1,9 +1,11 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
+import { Void } from "@/next/types/builtins";
 import * as E from "@/next/types/errors";
-import { decodeStatements } from "@/next/types/statements";
+import { decodeStatementsLazy } from "@/next/types/statements";
 import { decodeDealiasTypeLazy } from "@/next/types/type";
+import { emptyTypeParams } from "@/next/types/type-params";
 
 // const hash = commentPseudoOpcode(
 //     commentRcv.selector.comment,
@@ -12,6 +14,7 @@ import { decodeDealiasTypeLazy } from "@/next/types/type";
 // );
 
 export function* getReceivers(
+    selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
     receivers: readonly Ast.Receiver[],
@@ -48,13 +51,32 @@ export function* getReceivers(
         }
     }
     return {
-        bounce: yield* mergeBounce(typeName, impBounces, localBounces, scopeRef),
-        external: yield* mergeReceivers(typeName, impExternals, localExternals, scopeRef),
-        internal: yield* mergeReceivers(typeName, impInternals, localInternals, scopeRef),
+        bounce: yield* mergeBounce(
+            selfTypeRef, 
+            typeName, 
+            impBounces, 
+            localBounces, 
+            scopeRef,
+        ),
+        external: yield* mergeReceivers(
+            selfTypeRef, 
+            typeName, 
+            impExternals, 
+            localExternals, 
+            scopeRef,
+        ),
+        internal: yield* mergeReceivers(
+            selfTypeRef, 
+            typeName, 
+            impInternals, 
+            localInternals, 
+            scopeRef,
+        ),
     };
 }
 
 function* mergeReceivers(
+    selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
     imported: readonly Ast.Decl<Ast.RecvSig>[],
     local: Ast.DeclMem<readonly [Ast.ReceiverSubKind, readonly Ast.Statement[]]>[],
@@ -99,12 +121,18 @@ function* mergeReceivers(
 
     // local
     for (const { via, decl: [subKind, body] } of local) {
-        const statements = decodeStatements(body, scopeRef);
+        const statements = decodeStatementsLazy(
+            body,
+            emptyTypeParams,
+            selfTypeRef,
+            function* () { return Void; },
+            true,
+            scopeRef,
+        );
         switch (subKind.kind) {
             case "simple": {
                 const { name, type } = subKind.param;
-                const typeParams = Ast.TypeParams([], new Set());
-                const decoded = yield* decodeDealiasTypeLazy(typeParams, type, scopeRef)();
+                const decoded = yield* decodeDealiasTypeLazy(emptyTypeParams, type, scopeRef)();
                 if (decoded.kind === 'TySlice') {
                     if (allMessageAny) {
                         yield ERedefineReceiver("fallback binary", allMessageAny.via, via);
@@ -160,6 +188,7 @@ function* mergeReceivers(
 }
 
 function* mergeBounce(
+    selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
     imported: readonly Ast.Decl<Ast.BounceSig>[],
     local: readonly Ast.DeclMem<[Ast.TypedParameter, readonly Ast.Statement[]]>[],
@@ -187,9 +216,15 @@ function* mergeBounce(
     
     // local
     for (const { via, decl: [{ name, type }, body] } of local) {
-        const statements = decodeStatements(body, scopeRef);
-        const typeParams = Ast.TypeParams([], new Set());
-        const decoded = yield* decodeDealiasTypeLazy(typeParams, type, scopeRef)();
+        const statements = decodeStatementsLazy(
+            body,
+            emptyTypeParams,
+            selfTypeRef,
+            function* () { return Void; },
+            true,
+            scopeRef,
+        );
+        const decoded = yield* decodeDealiasTypeLazy(emptyTypeParams, type, scopeRef)();
         if (decoded.kind === 'TySlice') {
             if (allMessageAny) {
                 yield ERedefineReceiver("fallback binary", allMessageAny.via, via);
