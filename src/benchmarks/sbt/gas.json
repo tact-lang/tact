@@ -171,7 +171,7 @@
     },
     {
       "label": "1.6.13 with optimized opcode parsing for fallback and text receivers",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/3331",
       "gas": {
         "deploy": "4012",
         "request owner": "4848",
