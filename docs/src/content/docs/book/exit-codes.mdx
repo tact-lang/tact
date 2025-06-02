@@ -612,6 +612,8 @@ contract Dummy with Deployable {}
 
 If you try to send any message except for [`Deploy{:tact}`](/ref/stdlib-deploy#deploy), provided by [`@stdlib/deploy`](/ref/stdlib-deploy), the contract will not have a receiver for it and thus will throw an error with exit code $130$.
 
+This exit code is never thrown for mishandled or unrecognized [bounced messages](/book/bounced).
+
 <Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/> Access this exit code value 130 with the `TactExitCodeInvalidIncomingMessage` [constant][const].
 
 ### 131: Constraints error {#131}
