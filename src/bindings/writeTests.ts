@@ -1,10 +1,5 @@
 import { Writer } from "@/utils/Writer";
-import type {
-    ABIArgument,
-    ContractABI,
-    ABIReceiver,
-    ABIGetter,
-} from "@ton/core";
+import type { ABIArgument, ContractABI, ABIReceiver } from "@ton/core";
 import type { WrappersConstantDescription } from "@/bindings/writeTypescript";
 import type { CompilerContext } from "@/context/context";
 import type { TypeDescription } from "@/types/types";
@@ -20,18 +15,12 @@ function getReceiverFunctionName(receiver: ABIReceiver): string {
             name += "Empty";
             break;
         case "typed":
+            name += "Message";
             name += receiver.message.type ?? "Typed";
             break;
         case "text":
-            if (receiver.message.text) {
-                const cleanText = receiver.message.text.replace(
-                    /[^a-zA-Z0-9]/g,
-                    "",
-                );
-                name += cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
-            } else {
-                name += "Text";
-            }
+            name += "Text";
+            name += receiver.message.text ?? "Empty";
             break;
         case "any":
             name += "Any";
