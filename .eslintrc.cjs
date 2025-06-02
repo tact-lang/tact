@@ -7,7 +7,11 @@ module.exports = {
     ecmaVersion: 2020,
     project: "./tsconfig.eslint.json",
   },
-  ignorePatterns: ["*.cjs", "*.js"],
+  ignorePatterns: [
+    "*.cjs",
+    "*.js",
+    "**/output/*.stub.tests.ts"
+  ],
   plugins: ["@typescript-eslint", "jest", "import"],
   root: true,
   env: {
