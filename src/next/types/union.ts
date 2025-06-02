@@ -2,10 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
-import { evalExpr } from "@/next/types/expr-eval";
-import { decodeExpr } from "@/next/types/expression";
-import { assignType, decodeTypeLazy } from "@/next/types/type";
-import { decodeTypeParams, emptyTypeParams } from "@/next/types/type-params";
+import { decodeInitializerLazy } from "@/next/types/struct-fields";
+import {  decodeTypeLazy } from "@/next/types/type";
+import { decodeTypeParams } from "@/next/types/type-params";
 
 type Cons = {
     readonly fields: ReadonlyMap<string, Ast.InhFieldSig>;
@@ -13,6 +12,7 @@ type Cons = {
 }
 
 export function* decodeUnion(
+    Lazy: Ast.ThunkBuilder,
     union: Ast.UnionDecl,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.UnionSig> {
@@ -34,21 +34,23 @@ export function* decodeUnion(
                 const [, prevFieldLoc] = prevField;
                 yield EDuplicateField(fieldName, prevFieldLoc, field.name.loc)
             }
-            const ascribedType = decodeTypeLazy(typeParams, field.type, scopeRef);
-            const initializer = field.initializer;
-            const lazyExpr = initializer ? Ast.Lazy(function* () {
-                const expr = yield* decodeExpr(
-                    typeParams,
-                    initializer,
-                    scopeRef,
-                    undefined,
-                    new Map(),
-                );
-                const computed = expr.computedType;
-                const ascribed = yield* ascribedType();
-                yield* assignType(expr.loc, emptyTypeParams, ascribed, computed, false);
-                return yield* evalExpr(expr, scopeRef);
-            }) : undefined;
+            const ascribedType = decodeTypeLazy(
+                Lazy,
+                typeParams, 
+                field.type, 
+                scopeRef,
+            );
+
+            const lazyExpr = decodeInitializerLazy(
+                Lazy,
+                field.loc,
+                typeParams,
+                ascribedType,
+                field.initializer,
+                undefined,
+                scopeRef,
+            );
+
             const decoded = Ast.InhFieldSig(ascribedType, lazyExpr);
             fields.set(fieldName, [decoded, field.name.loc])
         }

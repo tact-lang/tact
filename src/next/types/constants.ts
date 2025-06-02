@@ -9,6 +9,7 @@ import { emptyTypeParams } from "@/next/types/type-params";
 const errorKind = "function";
 
 export function* decodeConstants(
+    Lazy: Ast.ThunkBuilder,
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
     scopeRef: () => Ast.Scope,
@@ -24,7 +25,7 @@ export function* decodeConstants(
             return [
                 c.name.text, 
                 Ast.Decl(
-                    yield* decodeConstant(c, scopeRef),
+                    yield* decodeConstant(Lazy, c, scopeRef),
                     Ast.ViaOrigin(c.loc, source)
                 ),
             ] as const;
@@ -42,17 +43,29 @@ export function* decodeConstants(
 }
 
 function* decodeConstant(
+    Lazy: Ast.ThunkBuilder,
     constant: Ast.Constant,
     scopeRef: () => Ast.Scope,
 ) {
     const { init, loc } = constant;
     if (init.kind === "constant_decl") {
         yield ETopLevelDecl(loc);
-        const type = function*() { return Ast.DTypeRecover(); };
-        const expr = function*() { return Ast.VNumber(0n, constant.loc); };
+        const type = Lazy({
+            loc: constant.loc,
+            context: [E.TEText("defining constant"), E.TECode(constant.loc)],
+            recover: Ast.DTypeRecover(),
+            callback: function*() { return Ast.DTypeRecover(); },
+        });
+        const expr = Lazy({
+            loc: constant.loc,
+            context: [E.TEText("defining constant"), E.TECode(constant.loc)],
+            recover: Ast.VNumber(0n, constant.loc),
+            callback: function*() { return Ast.VNumber(0n, constant.loc); },
+        });
         return Ast.ConstSig(expr, type);
     } else {
         const [type, expr] = decodeConstantDef(
+            Lazy,
             loc,
             emptyTypeParams,
             init,

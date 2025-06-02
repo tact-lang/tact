@@ -4,9 +4,9 @@ import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
 import { isSubsetOf } from "@/utils/isSubsetOf";
 import { decodeStatementsLazy } from "@/next/types/statements";
-import { emptyEff } from "@/next/types/effects";
 
 export function* decodeBody(
+    Lazy: Ast.ThunkBuilder,
     node: Ast.FunctionalBody,
     fnType: Ast.DecodedFnType | Ast.DecodedMethodType,
     loc: Ast.Loc,
@@ -15,9 +15,12 @@ export function* decodeBody(
     switch (node.kind) {
         case "abstract_body": {
             yield ENoBody(loc)
-            return Ast.TactBody(function* () {
-                return Ast.StatementsAux([], emptyEff);
-            });
+            return Ast.TactBody(Lazy({
+                callback: function* () { return undefined; },
+                context: [E.TEText("checking body of function")],
+                loc,
+                recover: undefined,
+            }));
         }
         case "regular_body": {
             const selfTypeRef = () => {
@@ -26,6 +29,8 @@ export function* decodeBody(
                     : undefined;
             };
             return Ast.TactBody(decodeStatementsLazy(
+                Lazy,
+                loc,
                 node.statements,
                 fnType.typeParams,
                 selfTypeRef,
@@ -36,12 +41,17 @@ export function* decodeBody(
         }
         case "asm_body": {
             return Ast.FiftBody(
-                checkShuffleLazy(
-                    node.shuffle,
-                    fnType,
+                Lazy({
+                    callback: () => checkShuffle(
+                        node.shuffle,
+                        fnType,
+                        loc,
+                        scopeRef,
+                    ),
+                    context: [E.TEText("checking shuffle")],
                     loc,
-                    scopeRef,
-                ),
+                    recover: undefined,
+                }),
                 node.instructions,
             );
         }
@@ -59,18 +69,6 @@ const ENoBody = (
         E.TEText(`Function must have a body`),
     ],
 });
-
-const checkShuffleLazy = (
-    shuffle: Ast.AsmShuffle,
-    fnType: Ast.DecodedFnType | Ast.DecodedMethodType,
-    loc: Ast.Loc,
-    scopeRef: () => Ast.Scope,
-) => Ast.Lazy(() => checkShuffle(
-    shuffle,
-    fnType,
-    loc,
-    scopeRef,
-));
 
 function* checkShuffle(
     shuffle: Ast.AsmShuffle,

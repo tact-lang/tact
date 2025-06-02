@@ -116,7 +116,7 @@ export const DInitOf = (contract: $c.TypeId, args: readonly $.DecodedExpression[
 });
 export const isDInitOf = ($value: DInitOf) => $value.kind === "init_of";
 export type DStructInstance = $.DStructInstance;
-export const DStructInstance = (fields: Ordered<DecodedExpression>, computedType: $d.DTypeRef | $d.DTypeRecover, loc: $c.Loc): $.DStructInstance => Object.freeze({
+export const DStructInstance = (fields: Ordered<undefined | DecodedExpression>, computedType: $d.DTypeRef | $d.DTypeRecover, loc: $c.Loc): $.DStructInstance => Object.freeze({
     kind: "struct_instance",
     fields,
     computedType,

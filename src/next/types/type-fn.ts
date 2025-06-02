@@ -7,12 +7,13 @@ import { decodeDealiasTypeLazy } from "@/next/types/type";
 import { recoverName } from "@/next/types/name";
 
 export function* decodeFnType(
+    Lazy: Ast.ThunkBuilder,
     { typeParams, params, returnType }: Ast.FnType,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.DecodedFnType> {
     const decodedTypeParams = yield* decodeTypeParams(typeParams);
     const dealias = (type: Ast.Type) => {
-        return decodeDealiasTypeLazy(decodedTypeParams, type, scopeRef);
+        return decodeDealiasTypeLazy(Lazy, decodedTypeParams, type, scopeRef);
     };
     return Ast.DecodedFnType(
         decodedTypeParams,
@@ -22,7 +23,7 @@ export function* decodeFnType(
 }
 
 export function* decodeParams(
-    dealias: (type: Ast.Type) => Ast.Lazy<Ast.DecodedType>,
+    dealias: (type: Ast.Type) => Ast.Thunk<Ast.DecodedType>,
     params: readonly Ast.TypedParameter[],
 ): E.WithLog<Ast.Parameters> {
     const order: Ast.Parameter[] = [];

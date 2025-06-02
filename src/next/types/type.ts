@@ -9,29 +9,41 @@ import { printType } from "@/next/types/type-print";
 import { zip } from "@/utils/array";
 
 export const decodeTypeLazy = (
+    Lazy: Ast.ThunkBuilder,
     typeParams: Ast.TypeParams,
     type: Ast.Type,
     scopeRef: () => Ast.Scope,
-) => Ast.Lazy(() => decodeType(
-    typeParams,
-    type,
-    scopeRef().typeDecls,
-));
-
-export const decodeDealiasTypeLazy = (
-    typeParams: Ast.TypeParams,
-    type: Ast.Type,
-    scopeRef: () => Ast.Scope,
-) => Ast.Lazy(function* () {
-    const decoded = yield* decodeType(
+) => Lazy({
+    callback: () => decodeType(
         typeParams,
         type,
         scopeRef().typeDecls,
-    );
-    return yield* dealiasTypeAux(
-        decoded,
-        scopeRef().typeDecls,
-    );
+    ),
+    context: [E.TEText("checking type"), E.TECode(type.loc)],
+    loc: type.loc,
+    recover: Ast.DTypeRecover(),
+});
+
+export const decodeDealiasTypeLazy = (
+    Lazy: Ast.ThunkBuilder,
+    typeParams: Ast.TypeParams,
+    type: Ast.Type,
+    scopeRef: () => Ast.Scope,
+) => Lazy({
+    callback: function* () {
+        const decoded = yield* decodeType(
+            typeParams,
+            type,
+            scopeRef().typeDecls,
+        );
+        return yield* dealiasTypeAux(
+            decoded,
+            scopeRef().typeDecls,
+        );
+    },
+    context: [E.TEText("checking type"), E.TECode(type.loc)],
+    loc: type.loc,
+    recover: Ast.DTypeRecover(),
 });
 
 export function* dealiasType(
@@ -885,6 +897,7 @@ const EFnArity = (
 });
 
 export function* checkFnCallWithArgs(
+    Lazy: Ast.ThunkBuilder,
     loc: Ast.Loc,
     fnType: Ast.DecodedFnType | undefined,
     ascribedTypeArgs: readonly Ast.DecodedType[],
@@ -902,7 +915,7 @@ export function* checkFnCallWithArgs(
     }
     const result = yield* checkFnCall(
         loc,
-        substFnType(fnType, ascribedTypeArgs),
+        substFnType(Lazy, loc, fnType, ascribedTypeArgs),
         args,
     );
     return {
@@ -922,19 +935,26 @@ const ENoFunction = (loc: Ast.Loc): E.TcError => ({
 });
 
 function substFnType(
+    Lazy: Ast.ThunkBuilder,
+    fnLoc: Ast.Loc,
     { typeParams, params, returnType }: Ast.DecodedFnType | Ast.DecodedMethodType,
     args: readonly Ast.DecodedType[],
 ) {
     const order: Ast.Parameter[] = [];
-    for (const param of params.order) {
+    for (const [index, param] of params.order.entries()) {
         order.push(Ast.Parameter(
             param.name,
-            Ast.Lazy(function* () {
-                return substituteTypeArgs(
-                    yield* param.type(),
-                    typeParams,
-                    args,
-                );
+            Lazy({
+                callback: function* () {
+                    return substituteTypeArgs(
+                        yield* param.type(),
+                        typeParams,
+                        args,
+                    );
+                },
+                context: [E.TEText(`substituting into parameter ${getParamName(param.name, index)}`)],
+                loc: param.loc,
+                recover: Ast.DTypeRecover(),
             }),
             param.loc,
         ));
@@ -945,22 +965,28 @@ function substFnType(
             order,
             params.set
         ),
-        Ast.Lazy(function* () {
-            return substituteTypeArgs(
-                yield* returnType(),
-                typeParams,
-                args,
-            );
+        Lazy({
+            callback: function* () {
+                return substituteTypeArgs(
+                    yield* returnType(),
+                    typeParams,
+                    args,
+                );
+            },
+            context: [E.TEText(`substituting into return type`)],
+            loc: fnLoc,
+            recover: Ast.DTypeRecover(),
         }),
     );
 }
 
 export function* lookupMethod(
+    Lazy: Ast.ThunkBuilder,
     selfType: Ast.DecodedType,
     method: Ast.Id,
     args: readonly (readonly [Ast.Loc, Ast.DecodedType])[],
     typeDecls: ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>,
-    extensions: ReadonlyMap<string, Ast.Lazy<readonly Ast.Decl<Ast.ExtSig>[]>>,
+    extensions: ReadonlyMap<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>>,
 ): E.WithLog<CallResult>  {
     if (selfType.kind === 'recover') {
         return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
@@ -971,6 +997,7 @@ export function* lookupMethod(
         }
 
         return yield* lookupMethod(
+            Lazy,
             selfType,
             method,
             args,
@@ -981,6 +1008,7 @@ export function* lookupMethod(
 
     if (selfType.kind !== 'type_ref') {
         return yield* lookupExts(
+            Lazy,
             selfType,
             method,
             args,
@@ -1003,6 +1031,7 @@ export function* lookupMethod(
             return yield* checkFnCall(method.loc, builtin, args);
         }
         return yield* lookupExts(
+            Lazy,
             selfType,
             method,
             args,
@@ -1029,10 +1058,11 @@ export function* lookupMethod(
 }
 
 function* lookupExts(
+    Lazy: Ast.ThunkBuilder,
     selfType: Ast.DecodedType,
     method: Ast.Id,
     args: readonly (readonly [Ast.Loc, Ast.DecodedType])[],
-    extensions: ReadonlyMap<string, Ast.Lazy<readonly Ast.Decl<Ast.ExtSig>[]>>,
+    extensions: ReadonlyMap<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>>,
 ) {
     const lazyExts = extensions.get(method.text);
     if (!lazyExts) {
@@ -1071,6 +1101,8 @@ function* lookupExts(
     const result = yield* checkFnCall(
         method.loc,
         substFnType(
+            Lazy,
+            method.loc,
             methodType,
             typeArgsToParams(typeArgs, methodType.typeParams),
         ),

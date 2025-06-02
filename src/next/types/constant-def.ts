@@ -1,23 +1,27 @@
+/* eslint-disable no-inner-declarations */
 import * as Ast from "@/next/ast";
 import { assignType, decodeTypeLazy } from "@/next/types/type";
 import { decodeExpr } from "@/next/types/expression";
 import { evalExpr } from "@/next/types/expr-eval";
 import { emptyTypeParams } from "@/next/types/type-params";
+import * as E from "@/next/types/errors";
 
 export function decodeConstantDef(
+    Lazy: Ast.ThunkBuilder,
     defLoc: Ast.Loc,
     typeParams: Ast.TypeParams,
     { type, initializer }: Ast.ConstantDef,
     scopeRef: () => Ast.Scope,
     selfType: undefined | Ast.SelfType,
-): [Ast.Lazy<Ast.DecodedType>, Ast.Lazy<Ast.Value>] {
+): [Ast.Thunk<Ast.DecodedType>, Ast.Thunk<Ast.Value | undefined>] {
     if (type) {
         // if there is an ascribed type, that's the one we return
-        const ascribedType = decodeTypeLazy(typeParams, type, scopeRef);
+        const ascribedType = decodeTypeLazy(Lazy, typeParams, type, scopeRef);
         // also we have to check that it's the expected type prior to
         // evaluating the expression
-        const lazyExpr = Ast.Lazy(function* () {
+        function* evaluate(Lazy: Ast.ThunkBuilder) {
             const expr = yield* decodeExpr(
+                Lazy,
                 typeParams,
                 initializer,
                 scopeRef,
@@ -28,26 +32,47 @@ export function decodeConstantDef(
             const ascribed = yield* ascribedType();
             yield* assignType(defLoc, emptyTypeParams, ascribed, computed, false);
             return yield* evalExpr(expr, scopeRef);
+        }
+        const lazyExpr = Lazy({
+            loc: defLoc,
+            context: [E.TEText("evaluating expression")],
+            recover: undefined,
+            callback: evaluate,
         });
         return [ascribedType, lazyExpr];
     } else {
         // first we decode expression
-        const expr = Ast.Lazy(function* () {
-            return yield* decodeExpr(
+        const expr = Lazy({
+            callback: (Lazy) => decodeExpr(
+                Lazy,
                 typeParams,
                 initializer,
                 scopeRef,
                 selfType,
                 new Map(),
-            );
+            ),
+            context: [E.TEText("parsing expression")],
+            loc: defLoc,
+            recover: undefined,
         });
         // then we evaluate it without any other checks
-        const lazyExpr = Ast.Lazy(function* () {
-            return yield* evalExpr(yield* expr(), scopeRef);
+        const lazyExpr = Lazy({
+            callback: function* () {
+                const ast = yield* expr();
+                return ast && (yield* evalExpr(ast, scopeRef));
+            },
+            context: [E.TEText("evaluating expression")],
+            loc: defLoc,
+            recover: undefined,
         });
         // resulting type is whatever the type expression has
-        const computedType = Ast.Lazy(function* () {
-            return (yield* expr()).computedType;
+        const computedType = Lazy({
+            callback: function* () {
+                return (yield* expr())?.computedType ?? Ast.DTypeRecover();
+            },
+            context: [],
+            loc: defLoc,
+            recover: Ast.DTypeRecover(),
         });
         return [computedType, lazyExpr];
     }

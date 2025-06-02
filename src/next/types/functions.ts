@@ -10,6 +10,7 @@ import { decodeBody } from "@/next/types/body";
 const errorKind = "function";
 
 export function* decodeFunctions(
+    Lazy: Ast.ThunkBuilder,
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
     scopeRef: () => Ast.Scope,
@@ -28,7 +29,7 @@ export function* decodeFunctions(
             return [
                 fn.name.text, 
                 Ast.Decl(
-                    yield* decodeFunction(fn, scopeRef),
+                    yield* decodeFunction(Lazy, fn, scopeRef),
                     Ast.ViaOrigin(fn.loc, source)
                 )
             ] as const;
@@ -56,14 +57,15 @@ export function* decodeFunctions(
 }
 
 function* decodeFunction(
+    Lazy: Ast.ThunkBuilder,
     fn: Ast.Function,
     scopeRef: () => Ast.Scope,
 ) {
     const { type, inline, body, loc } = fn;
-    const fnType = yield* decodeFnType(type, scopeRef);
+    const fnType = yield* decodeFnType(Lazy, type, scopeRef);
     return Ast.FnSig(
         fnType,
         inline,
-        yield* decodeBody(body, fnType, loc, scopeRef),
+        yield* decodeBody(Lazy, body, fnType, loc, scopeRef),
     );
 }

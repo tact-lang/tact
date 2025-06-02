@@ -3,16 +3,16 @@
 import * as Ast from "@/next/ast";
 import * as E from "@/next/types/errors";
 import { throwInternal } from "@/error/errors";
-import { assignType, decodeTypeLazy } from "@/next/types/type";
-import { decodeExpr } from "@/next/types/expression";
+import { decodeTypeLazy } from "@/next/types/type";
 import { checkFieldOverride } from "@/next/types/override";
 import { decodeConstantDef } from "@/next/types/constant-def";
-import { evalExpr } from "@/next/types/expr-eval";
 import { emptyTypeParams } from "@/next/types/type-params";
+import { decodeInitializerLazy } from "@/next/types/struct-fields";
 
-type MaybeExpr = Ast.Lazy<Ast.Value> | undefined
+type MaybeExpr = Ast.Thunk<Ast.Value | undefined> | undefined
 
 export function* getFieldishGeneral(
+    Lazy: Ast.ThunkBuilder,
     traitSigRef: Ast.TraitSig | Ast.ContractSig,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
@@ -73,6 +73,7 @@ export function* getFieldishGeneral(
 
         // decode field
         all.set(name.text, decodeField(
+            Lazy,
             typeName.text,
             field,
             scopeRef,
@@ -117,6 +118,7 @@ export function* getFieldishGeneral(
 
         // get the definition
         const next = yield* decodeConstant(
+            Lazy,
             init,
             overridable,
             nextVia,
@@ -158,6 +160,7 @@ export function* getFieldishGeneral(
 }
 
 function decodeField(
+    Lazy: Ast.ThunkBuilder,
     typeName: string,
     field: Ast.FieldDecl,
     scopeRef: () => Ast.Scope,
@@ -166,21 +169,17 @@ function decodeField(
     const { initializer, type, loc } = field;
     const nextVia = Ast.ViaMemberOrigin(typeName, loc);
 
-    const decoded = decodeTypeLazy(emptyTypeParams, type, scopeRef);
+    const decoded = decodeTypeLazy(Lazy, emptyTypeParams, type, scopeRef);
 
-    const init = initializer && Ast.Lazy(function* () {
-        const ascribed = yield* decoded();
-        const expr = yield* decodeExpr(
-            emptyTypeParams,
-            initializer,
-            scopeRef,
-            selfType,
-            new Map(),
-        );
-        const computed = expr.computedType;
-        yield* assignType(loc, emptyTypeParams, ascribed, computed, false);
-        return yield* evalExpr(expr, scopeRef);
-    });
+    const init = decodeInitializerLazy(
+        Lazy,
+        field.loc,
+        emptyTypeParams,
+        decoded,
+        initializer,
+        selfType,
+        scopeRef,
+    );
 
     // decode field
     return Ast.DeclMem(
@@ -201,6 +200,7 @@ const EMustCopyField = (
 });
 
 function* decodeConstant(
+    Lazy: Ast.ThunkBuilder,
     init: Ast.ConstantInit,
     overridable: boolean,
     nextVia: Ast.ViaMember,
@@ -208,13 +208,14 @@ function* decodeConstant(
     selfType: Ast.SelfType,
 ): E.WithLog<Ast.DeclMem<Ast.FieldConstSig<MaybeExpr>>> {
     if (init.kind === 'constant_decl') {
-        const type = decodeTypeLazy(emptyTypeParams, init.type, scopeRef);
+        const type = decodeTypeLazy(Lazy, emptyTypeParams, init.type, scopeRef);
         return Ast.DeclMem(
             Ast.FieldConstSig(overridable, type, undefined),
             nextVia,
         );
     } else {
         const [type, expr] = decodeConstantDef(
+            Lazy,
             nextVia.defLoc,
             emptyTypeParams,
             init,

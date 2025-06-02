@@ -7,13 +7,8 @@ import { decodeStatementsLazy } from "@/next/types/statements";
 import { decodeDealiasTypeLazy } from "@/next/types/type";
 import { emptyTypeParams } from "@/next/types/type-params";
 
-// const hash = commentPseudoOpcode(
-//     commentRcv.selector.comment,
-//     receivers.fallback !== "undefined",
-//     commentRcv.ast.loc,
-// );
-
 export function* getReceivers(
+    Lazy: Ast.ThunkBuilder,
     selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
@@ -52,6 +47,7 @@ export function* getReceivers(
     }
     return {
         bounce: yield* mergeBounce(
+            Lazy,
             selfTypeRef, 
             typeName, 
             impBounces, 
@@ -59,6 +55,7 @@ export function* getReceivers(
             scopeRef,
         ),
         external: yield* mergeReceivers(
+            Lazy,
             selfTypeRef, 
             typeName, 
             impExternals, 
@@ -66,6 +63,7 @@ export function* getReceivers(
             scopeRef,
         ),
         internal: yield* mergeReceivers(
+            Lazy,
             selfTypeRef, 
             typeName, 
             impInternals, 
@@ -76,6 +74,7 @@ export function* getReceivers(
 }
 
 function* mergeReceivers(
+    Lazy: Ast.ThunkBuilder,
     selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
     imported: readonly Ast.Decl<Ast.RecvSig>[],
@@ -122,17 +121,24 @@ function* mergeReceivers(
     // local
     for (const { via, decl: [subKind, body] } of local) {
         const statements = decodeStatementsLazy(
+            Lazy,
+            via.defLoc,
             body,
             emptyTypeParams,
             selfTypeRef,
-            function* () { return Void; },
+            Lazy({
+                callback: function* () { return Void; },
+                context: [],
+                loc: via.defLoc,
+                recover: Void,
+            }),
             true,
             scopeRef,
         );
         switch (subKind.kind) {
             case "simple": {
                 const { name, type } = subKind.param;
-                const decoded = yield* decodeDealiasTypeLazy(emptyTypeParams, type, scopeRef)();
+                const decoded = yield* decodeDealiasTypeLazy(Lazy, emptyTypeParams, type, scopeRef)();
                 if (decoded.kind === 'TySlice') {
                     if (allMessageAny) {
                         yield ERedefineReceiver("fallback binary", allMessageAny.via, via);
@@ -188,6 +194,7 @@ function* mergeReceivers(
 }
 
 function* mergeBounce(
+    Lazy: Ast.ThunkBuilder,
     selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
     imported: readonly Ast.Decl<Ast.BounceSig>[],
@@ -217,14 +224,21 @@ function* mergeBounce(
     // local
     for (const { via, decl: [{ name, type }, body] } of local) {
         const statements = decodeStatementsLazy(
+            Lazy,
+            via.defLoc,
             body,
             emptyTypeParams,
             selfTypeRef,
-            function* () { return Void; },
+            Lazy({
+                callback: function* () { return Void; },
+                context: [],
+                loc: via.defLoc,
+                recover: Void,
+            }),
             true,
             scopeRef,
         );
-        const decoded = yield* decodeDealiasTypeLazy(emptyTypeParams, type, scopeRef)();
+        const decoded = yield* decodeDealiasTypeLazy(Lazy, emptyTypeParams, type, scopeRef)();
         if (decoded.kind === 'TySlice') {
             if (allMessageAny) {
                 yield ERedefineReceiver("fallback binary", allMessageAny.via, via);

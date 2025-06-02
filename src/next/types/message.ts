@@ -12,30 +12,38 @@ import { emptyTypeParams } from "@/next/types/type-params";
 import { highest32ofSha256, sha256 } from "@/utils/sha256";
 
 export function* decodeMessage(
+    Lazy: Ast.ThunkBuilder,
     message: Ast.MessageDecl,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.MessageSig> {
     const fields = yield* decodeFields(
+        Lazy,
         message.fields, 
         emptyTypeParams, 
         scopeRef,
     );
-    const lazyExpr = Ast.Lazy(function* () {
-        const opcode = yield* decodeOpcode(
-            emptyTypeParams,
-            message.opcode,
-            message.name.text,
-            fields.order,
-            scopeRef,
-        );
-        if (opcode === 0n) {
-            yield EZero(message.loc);
-        } else if (opcode < 0n) {
-            yield ENegative(message.loc);
-        } else if (opcode > 0xffff_ffff) {
-            yield ETooLarge(message.loc);
-        }
-        return opcode;
+    const lazyExpr = Lazy({
+        callback: function* (Lazy) {
+            const opcode = yield* decodeOpcode(
+                Lazy,
+                emptyTypeParams,
+                message.opcode,
+                message.name.text,
+                fields.order,
+                scopeRef,
+            );
+            if (opcode === 0n) {
+                yield EZero(message.loc);
+            } else if (opcode < 0n) {
+                yield ENegative(message.loc);
+            } else if (opcode > 0xffff_ffff) {
+                yield ETooLarge(message.loc);
+            }
+            return opcode;
+        },
+        context: [E.TEText("computing opcode")],
+        loc: message.loc,
+        recover: undefined,
     });
 
     return Ast.MessageSig(lazyExpr, fields);
@@ -66,6 +74,7 @@ const ETooLarge = (
 });
 
 function* decodeOpcode(
+    Lazy: Ast.ThunkBuilder,
     typeParams: Ast.TypeParams, 
     opcode: Ast.Expression | undefined,
     messageName: string,
@@ -74,6 +83,7 @@ function* decodeOpcode(
 ) {
     if (opcode) {
         const expr = yield* decodeExpr(
+            Lazy,
             typeParams,
             opcode,
             scopeRef,

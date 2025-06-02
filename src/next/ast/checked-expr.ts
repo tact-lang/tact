@@ -1,4 +1,4 @@
-import type { Ordered } from "@/next/ast/checked";
+import type { Ordered, Recover } from "@/next/ast/checked";
 import type { Id, Loc, TypeId } from "@/next/ast/common";
 import type * as D from "@/next/ast/dtype";
 import type { BinaryOperation, NumberBase, UnaryOperation } from "@/next/ast/expression";
@@ -165,7 +165,7 @@ export type DStaticMethodCall = {
 
 export type DStructInstance = {
     readonly kind: "struct_instance";
-    readonly fields: Ordered<DecodedExpression>;
+    readonly fields: Ordered<Recover<DecodedExpression>>;
     readonly computedType: D.DTypeRef | D.DTypeRecover;
     readonly loc: Loc;
 };

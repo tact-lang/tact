@@ -12,28 +12,36 @@ import { emptyEff, mergeEff, setHadAssign, setHadExit } from "@/next/types/effec
 import { emptyTypeParams } from "@/next/types/type-params";
 
 export function decodeStatementsLazy(
+    Lazy: Ast.ThunkBuilder,
+    loc: Ast.Loc,
     statements: readonly Ast.Statement[],
     typeParams: Ast.TypeParams,
     selfTypeRef: () => undefined | Ast.SelfType,
-    returnType: Ast.Lazy<Ast.DecodedType>,
+    returnType: Ast.Thunk<Ast.DecodedType>,
     isInit: boolean,
     scopeRef: () => Ast.Scope,
 ) {
-    return Ast.Lazy(function* () {
-        const selfType = selfTypeRef();
-        const required = isInit
-            ? yield* getRequired(selfType)
-            : undefined;
-        const ctx: Context = {
-            localScopeRef: new Map(),
-            required,
-            returnType: yield* returnType(),
-            scopeRef,
-            selfType,
-            typeParams,
-        };
-        const res = yield* decodeStmts(statements, ctx, emptyEff);
-        return Ast.StatementsAux(res.node, res.effects);
+    return Lazy({
+        callback: function* (Lazy) {
+            const selfType = selfTypeRef();
+            const required = isInit
+                ? yield* getRequired(selfType)
+                : undefined;
+            const ctx: Context = {
+                Lazy,
+                localScopeRef: new Map(),
+                required,
+                returnType: yield* returnType(),
+                scopeRef,
+                selfType,
+                typeParams,
+            };
+            const res = yield* decodeStmts(statements, ctx, emptyEff);
+            return Ast.StatementsAux(res.node, res.effects);
+        },
+        context: [E.TEText("checking statements")],
+        loc,
+        recover: undefined,
     });
 }
 
@@ -235,7 +243,7 @@ const decodeDestruct: Decode<Ast.StatementDestruct, Ast.DStatementDestruct | Ast
     const expr = yield* decodeExprCtx(node.expression, ctx);
 
     const typeArgs = yield* E.mapLog(node.typeArgs, function* (arg) {
-        return yield* decodeTypeLazy(ctx.typeParams, arg, ctx.scopeRef)();
+        return yield* decodeTypeLazy(ctx.Lazy, ctx.typeParams, arg, ctx.scopeRef)();
     });
 
     const decl = yield* findStruct(node.type, typeArgs, ctx.scopeRef);
@@ -402,6 +410,7 @@ const Result = <U>(
 ): Result<U> => Object.freeze({ node, context, effects });
 
 type Context = {
+    readonly Lazy: Ast.ThunkBuilder,
     readonly scopeRef: () => Ast.Scope;
     readonly selfType: Ast.SelfType | undefined;
     readonly required: undefined | ReadonlySet<string>;

@@ -52,12 +52,13 @@ function* tcSource(
     // source for current file
     source: TactSource,
 ): E.WithLog<Ast.Scope> {
+    const Lazy = Ast.thunkBuilder;
     const scopeRef = () => scope;
     const scope: Ast.Scope = {
-        typeDecls: yield* decodeTypeDecls(imported, source, scopeRef),
-        functions: yield* decodeFunctions(imported, source, scopeRef),
-        constants: yield* decodeConstants(imported, source, scopeRef),
-        extensions: decodeExtensions(imported, source, scopeRef),
+        typeDecls: yield* decodeTypeDecls(Lazy, imported, source, scopeRef),
+        functions: yield* decodeFunctions(Lazy, imported, source, scopeRef),
+        constants: yield* decodeConstants(Lazy, imported, source, scopeRef),
+        extensions: decodeExtensions(Lazy, imported, source, scopeRef),
     }
     return scope;
 }

@@ -8,10 +8,6 @@ export const tactMethodIds = [113617n, 115390n, 121275n];
 
 const r = Ast.Builtin();
 
-const FakeLazy = <T>(t: T): Ast.Lazy<T> => function* () {
-    return t;
-};
-
 const TypeParams = (typeParams: readonly string[]): Ast.TypeParams => {
     const arr = typeParams.map(name => Ast.TypeId(name, r));
     return Ast.TypeParams(arr, new Set(typeParams));
@@ -21,7 +17,7 @@ const Params = (params: Record<string, Ast.DecodedType>): Ast.Parameters => {
     const order: Ast.Parameter[] = [];
     const set: Set<string> = new Set();
     for (const [name, type] of Object.entries(params)) {
-        order.push(Ast.Parameter(Ast.Id(name, r), FakeLazy(type), r));
+        order.push(Ast.Parameter(Ast.Id(name, r), Ast.FakeThunk(type), r));
         set.add(name);
     }
     return Ast.Parameters(order, set);
@@ -37,7 +33,7 @@ const GenericFn = (name: string, typeParams: readonly string[], params: Record<s
     return [name, Ast.DecodedFnType(
         TypeParams(typeParams),
         Params(params),
-        FakeLazy(returnType),
+        Ast.FakeThunk(returnType),
     )];
 };
 const Fn = (name: string, params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedFnType] => {
@@ -49,7 +45,7 @@ const MapMethod = (name: string, mutates: boolean, params: Record<string, Ast.De
         TypeParams(["K", "V"]),
         mapType,
         Params(params),
-        FakeLazy(returnType),
+        Ast.FakeThunk(returnType),
     )];
 };
 

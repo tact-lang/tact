@@ -6,9 +6,9 @@ import { emptyTypeParams } from "@/next/types/type-params";
 export function* checkFieldOverride(
     name: string,
     prev: Ast.DeclMem<Ast.Fieldish<
-        Ast.Lazy<Ast.Value> | undefined
+        Ast.Thunk<Ast.Recover<Ast.Value>> | undefined
     >> | undefined,
-    nextType: Ast.Lazy<Ast.DecodedType>,
+    nextType: Ast.Thunk<Ast.DecodedType>,
     nextVia: Ast.ViaMember,
     override: boolean,
 ): E.WithLog<void> {

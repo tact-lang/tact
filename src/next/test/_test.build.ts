@@ -9,7 +9,7 @@ import type { ResolvedImport } from "@/next/imports/source";
 
 export const runTest = async (path: string): Promise<string> => {
     let types: unknown;
-    const result = await runServer(async (log) => {
+    await runServer(async (log) => {
         await log.recover(async (log) => {
             // const result = await buildNoStdlib(log, path);
             const result = await buildE2E(log, path);
@@ -18,11 +18,10 @@ export const runTest = async (path: string): Promise<string> => {
                 return;
             }
 
-            const tcResult = typecheck(result);
-            types = tcResult;
+            types = typecheck(result);
         });
     });
-    return toJs({ types, result });
+    return toJs(types);
 };
 
 export const buildE2E = async <M>(

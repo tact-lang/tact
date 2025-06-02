@@ -9,6 +9,7 @@ import { emptyTypeParams } from "@/next/types/type-params";
 
 type Decode<T, U> = (node: T, ctx: Context) => E.WithLog<U>
 type Context = {
+    readonly Lazy: Ast.ThunkBuilder,
     readonly scopeRef: () => Ast.Scope;
     readonly selfType: Ast.SelfType | undefined;
     readonly typeParams: Ast.TypeParams;
@@ -16,6 +17,7 @@ type Context = {
 }
 
 export function decodeExpr(
+    Lazy: Ast.ThunkBuilder,
     typeParams: Ast.TypeParams,
     node: Ast.Expression,
     scopeRef: () => Ast.Scope,
@@ -23,6 +25,7 @@ export function decodeExpr(
     localScopeRef: ReadonlyMap<string, [Ast.DecodedType, Ast.Loc]>,
 ): E.WithLog<Ast.DecodedExpression> {
     return decodeExprCtx(node, {
+        Lazy,
         typeParams,
         scopeRef,
         selfType,
@@ -106,7 +109,7 @@ const decodeSetCons: Decode<Ast.SetLiteral, Ast.DSetLiteral> = function* () {
 
 const decodeStructCons: Decode<Ast.StructInstance, Ast.DStructInstance> = function* (node, ctx) {
     const typeArgs = yield* E.mapLog(node.typeArgs, function* (arg) {
-        return yield* decodeTypeLazy(ctx.typeParams, arg, ctx.scopeRef)();
+        return yield* decodeTypeLazy(ctx.Lazy, ctx.typeParams, arg, ctx.scopeRef)();
     });
     const instance = yield* instantiateStruct(
         node.type,
@@ -163,7 +166,7 @@ function* checkFields(
     }
 
     if (typeFields) {
-        const result: Map<string, Ast.DecodedExpression> = new Map();
+        const result: Map<string, Ast.Recover<Ast.DecodedExpression>> = new Map();
         for (const fieldName of typeFields.order) {
             const field = typeFields.map.get(fieldName);
             if (!field) {
@@ -173,14 +176,16 @@ function* checkFields(
             if (fieldInst) {
                 result.set(fieldName, fieldInst);
             } else if (field.init) {
-                const inst = convertValueToExpr(yield* field.init());
-                result.set(fieldName, inst);
+                const value = yield* field.init();
+                if (value) {
+                    const inst = convertValueToExpr(value);
+                    result.set(fieldName, inst);
+                } else {
+                    result.set(fieldName, undefined);
+                }
             } else {
                 yield EMissingField(fieldName, loc);
-                result.set(fieldName, Ast.DNull(
-                    Ast.TypeNull(loc),
-                    loc,
-                ));
+                result.set(fieldName, undefined);
             }
         }
         return Ast.Ordered(typeFields.order, result)
@@ -348,6 +353,7 @@ const decodeMethodCall: Decode<Ast.MethodCall, Ast.DMethodCall> = function* (nod
 
     const { typeDecls, extensions } = ctx.scopeRef();
     const { returnType, typeArgMap } = yield* lookupMethod(
+        ctx.Lazy,
         self.computedType,
         node.method,
         args.map(child => [child.loc, child.computedType]),
@@ -379,10 +385,16 @@ const decodeFunctionCall: Decode<Ast.StaticCall, Ast.DStaticCall | Ast.DThrowCal
     const fnType = builtinFnType ?? globalFnType;
 
     const { returnType, typeArgMap } = yield* checkFnCallWithArgs(
+        ctx.Lazy,
         node.function.loc,
         fnType,
         yield* E.mapLog(node.typeArgs, function* (arg) {
-            return yield* decodeDealiasTypeLazy(ctx.typeParams, arg, ctx.scopeRef)();
+            return yield* decodeDealiasTypeLazy(
+                ctx.Lazy,
+                ctx.typeParams, 
+                arg, 
+                ctx.scopeRef
+            )();
         }),
         args.map(child => [child.loc, child.computedType]),
     );
@@ -414,6 +426,7 @@ const decodeStaticMethodCall: Decode<Ast.StaticMethodCall, Ast.DStaticMethodCall
             return Ast.DNull(Ast.TypeNull(node.loc), node.loc);
         }
         const { returnType, typeArgMap } = yield* checkFnCallWithArgs(
+            ctx.Lazy,
             node.loc,
             builtin,
             [],
@@ -538,8 +551,18 @@ const decodeInitOf: Decode<Ast.InitOf, Ast.DInitOf> = function* (node, ctx) {
     }
     const params = yield* initParams(contract.decl.init);
     yield* checkFnCallWithArgs(
+        ctx.Lazy,
         node.loc,
-        Ast.DecodedFnType(emptyTypeParams, params, function*() { return StateInit; }),
+        Ast.DecodedFnType(
+            emptyTypeParams, 
+            params,
+            ctx.Lazy({
+                callback: function*() { return StateInit; },
+                context: [E.TEText("checking initOf expression")],
+                loc: node.loc,
+                recover: StateInit,
+            })
+        ),
         [],
         args.map(child => [child.loc, child.computedType]),
     );

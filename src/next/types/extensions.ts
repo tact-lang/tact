@@ -9,24 +9,30 @@ import { builtinMethods } from "@/next/types/builtins";
 import type { TactSource } from "@/next/imports/source";
 
 export function decodeExtensions(
+    Lazy: Ast.ThunkBuilder,
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
     scopeRef: () => Ast.Scope,
-): ReadonlyMap<string, Ast.Lazy<readonly Ast.Decl<Ast.ExtSig>[]>> {
-    const allExts: Map<string, Ast.Lazy<readonly Ast.Decl<Ast.ExtSig>[]>[]> = new Map();
+): ReadonlyMap<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>> {
+    const allExts: Map<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>[]> = new Map();
 
     // imported
     for (const { globals, importedBy } of imported) {
         for (const [name, lazyExts] of globals.extensions) {
             const map = allExts.get(name) ?? [];
             allExts.set(name, map);
-            map.push(function* () {
-                const exts = yield* lazyExts();
-                return exts.map(ext => Ast.Decl(
-                    ext.decl,
-                    Ast.ViaImport(importedBy, ext.via),
-                ));
-            });
+            map.push(Lazy({
+                callback: function* () {
+                    const exts = yield* lazyExts();
+                    return exts.map(ext => Ast.Decl(
+                        ext.decl,
+                        Ast.ViaImport(importedBy, ext.via),
+                    ));
+                },
+                context: [E.TEText(`importing extension method ${name}`)],
+                loc: Ast.Builtin(),
+                recover: [],
+            }));
         }
     }
 
@@ -35,43 +41,55 @@ export function decodeExtensions(
         const name = ext.fun.name.text;
         const map = allExts.get(name) ?? [];
         allExts.set(name, map);
-        map.push(function* () {
-            const decoded = yield* decodeExt(ext, scopeRef);
-            if (!decoded) {
-                return [];
-            }
-            return [Ast.Decl(
-                decoded,
-                Ast.ViaOrigin(ext.fun.loc, source),
-            )];
-        });
+        map.push(Lazy({
+            callback: function* (Lazy) {
+                const decoded = yield* decodeExt(Lazy, ext, scopeRef);
+                if (!decoded) {
+                    return [];
+                }
+                return [Ast.Decl(
+                    decoded,
+                    Ast.ViaOrigin(ext.fun.loc, source),
+                )];
+            },
+            context: [
+                E.TEText(`defining extension method ${ext.fun.name.text}`)
+            ],
+            loc: ext.fun.loc,
+            recover: [],
+        }));
     }
 
-    const result: Map<string, Ast.Lazy<Ast.Decl<Ast.ExtSig>[]>> = new Map();
+    const result: Map<string, Ast.Thunk<Ast.Decl<Ast.ExtSig>[]>> = new Map();
     for (const [name, exts] of allExts) {
         // checking method overlap is only possible when all the types
         // can be resolved
-        result.set(name, Ast.Lazy(function* () {
-            // force all thunks
-            const all: Ast.Decl<Ast.ExtSig>[] = [];
-            for (const lazyExt of exts) {
-                const exts = yield* lazyExt();
-                all.push(...exts);
-            }
-
-            // check overlap and deduplicate
-            const prevs: Ast.Decl<Ast.ExtSig>[] = [];
-            for (const ext of all) {
-                const builtin = builtinMethods.get(name);
-                if (builtin && !isCompatible(builtin, ext.decl.type)) {
-                    yield EMethodOverlap(name, Ast.ViaBuiltin(), ext.via);
-                    continue;
+        result.set(name, Lazy({
+            callback: function* () {
+                // force all thunks
+                const all: Ast.Decl<Ast.ExtSig>[] = [];
+                for (const lazyExt of exts) {
+                    const exts = yield* lazyExt();
+                    all.push(...exts);
                 }
-                if (yield* areCompatible(name, prevs, ext)) {
-                    prevs.push(ext);
+    
+                // check overlap and deduplicate
+                const prevs: Ast.Decl<Ast.ExtSig>[] = [];
+                for (const ext of all) {
+                    const builtin = builtinMethods.get(name);
+                    if (builtin && !isCompatible(builtin, ext.decl.type)) {
+                        yield EMethodOverlap(name, Ast.ViaBuiltin(), ext.via);
+                        continue;
+                    }
+                    if (yield* areCompatible(name, prevs, ext)) {
+                        prevs.push(ext);
+                    }
                 }
-            }
-            return prevs;
+                return prevs;
+            },
+            context: [E.TEText(`merging extensions methods with name ${name}`)],
+            loc: Ast.Builtin(),
+            recover: [],
         }));
     }
 
@@ -79,15 +97,17 @@ export function decodeExtensions(
 }
 
 function* decodeExt(
+    Lazy: Ast.ThunkBuilder,
     node: Ast.Extension,
     scopeRef: () => Ast.Scope,
 ) {
     const { selfType, mutates, fun } = node;
     const { type, body, inline, loc } = fun;
     
-    const decodedFn = yield* decodeFnType(type, scopeRef);
+    const decodedFn = yield* decodeFnType(Lazy, type, scopeRef);
 
     const lazySelf = decodeDealiasTypeLazy(
+        Lazy,
         decodedFn.typeParams,
         selfType,
         scopeRef,
@@ -107,6 +127,7 @@ function* decodeExt(
     );
 
     const decodedBody = yield* decodeBody(
+        Lazy,
         body,
         methodType,
         loc,

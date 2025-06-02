@@ -8,6 +8,7 @@ import { getMethodsGeneral } from "@/next/types/methods";
 import { getReceivers } from "@/next/types/receivers";
 
 export function* decodeTrait(
+    Lazy: Ast.ThunkBuilder,
     trait: Ast.Trait,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.TraitSig> {
@@ -21,39 +22,47 @@ export function* decodeTrait(
     }
 
     // delayed until we get all traits and init
-    const contentLazy = Ast.Lazy(function* () {
-        const traits = yield* getInheritedTraits(
-            trait.traits,
-            scopeRef,
-        );
-
-        // const contentRef = () => content;
-        const content: Ast.TraitContent = {
-            fieldish: yield* getFieldishGeneral(
-                traitSig,
-                name,
-                traits,
-                constants,
-                fields,
+    const contentLazy = Lazy({
+        callback: function* (Lazy) {
+            const traits = yield* getInheritedTraits(
+                trait.traits,
                 scopeRef,
-            ),
-            methods: yield* getMethodsGeneral(
-                traitSig,
-                name,
-                traits,
-                methods,
-                scopeRef,
-            ),
-            receivers: yield* getReceivers(
-                () => selfType,
-                name,
-                traits,
-                receivers,
-                scopeRef,
-            ),
-        };
-
-        return content;
+            );
+    
+            // const contentRef = () => content;
+            const content: Ast.TraitContent = {
+                fieldish: yield* getFieldishGeneral(
+                    Lazy,
+                    traitSig,
+                    name,
+                    traits,
+                    constants,
+                    fields,
+                    scopeRef,
+                ),
+                methods: yield* getMethodsGeneral(
+                    Lazy,
+                    traitSig,
+                    name,
+                    traits,
+                    methods,
+                    scopeRef,
+                ),
+                receivers: yield* getReceivers(
+                    Lazy,
+                    () => selfType,
+                    name,
+                    traits,
+                    receivers,
+                    scopeRef,
+                ),
+            };
+    
+            return content;
+        },
+        context: [E.TEText("checking inner scope of trait")],
+        loc,
+        recover,
     });
 
     const traitSig = Ast.TraitSig(contentLazy);
@@ -76,3 +85,26 @@ const ENoAttributes = (
         E.TEText(`Traits cannot have attributes`),
     ],
 });
+
+const recover: Ast.TraitContent = {
+    fieldish: Ast.Ordered([], new Map()),
+    methods: new Map(),
+    receivers: {
+        bounce: {
+            message: [],
+            messageAny: undefined,
+        },
+        internal: {
+            message: [],
+            messageAny: undefined,
+            stringAny: undefined,
+            empty: undefined,
+        },
+        external: {
+            message: [],
+            messageAny: undefined,
+            stringAny: undefined,
+            empty: undefined,
+        },
+    },
+};

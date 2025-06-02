@@ -14,6 +14,7 @@ import { decodeUnion } from "@/next/types/union";
 const errorKind = 'type';
 
 export function* decodeTypeDecls(
+    Lazy: Ast.ThunkBuilder,
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
     scopeRef: () => Ast.Scope,
@@ -32,7 +33,7 @@ export function* decodeTypeDecls(
             return new Map([[
                 decl.name.text,
                 Ast.Decl(
-                    yield* decodeTypeDecl(decl, scopeRef),
+                    yield* decodeTypeDecl(Lazy, decl, scopeRef),
                     via,
                 ),
             ]]);
@@ -63,27 +64,28 @@ export function* decodeTypeDecls(
 }
 
 function* decodeTypeDecl(
+    Lazy: Ast.ThunkBuilder,
     decl: Ast.TypeDecl,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.TypeDeclSig> {
     switch (decl.kind) {
         case "alias_decl": {
-            return yield* decodeAlias(decl, scopeRef);
+            return yield* decodeAlias(Lazy, decl, scopeRef);
         }
         case "contract": {
-            return yield* decodeContract(decl, scopeRef);
+            return yield* decodeContract(Lazy, decl, scopeRef);
         }
         case "trait": {
-            return yield* decodeTrait(decl, scopeRef);
+            return yield* decodeTrait(Lazy, decl, scopeRef);
         }
         case "struct_decl": {
-            return yield* decodeStruct(decl, scopeRef);
+            return yield* decodeStruct(Lazy, decl, scopeRef);
         }
         case "message_decl": {
-            return yield* decodeMessage(decl, scopeRef);
+            return yield* decodeMessage(Lazy, decl, scopeRef);
         }
         case "union_decl": {
-            return yield* decodeUnion(decl, scopeRef);
+            return yield* decodeUnion(Lazy, decl, scopeRef);
         }
     }
 }

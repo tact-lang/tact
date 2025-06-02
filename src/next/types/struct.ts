@@ -6,10 +6,16 @@ import { decodeFields } from "@/next/types/struct-fields";
 import { decodeTypeParams } from "@/next/types/type-params";
 
 export function* decodeStruct(
+    Lazy: Ast.ThunkBuilder,
     struct: Ast.StructDecl,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.StructSig> {
     const typeParams = yield* decodeTypeParams(struct.typeParams);
-    const fields = yield* decodeFields(struct.fields, typeParams, scopeRef);
+    const fields = yield* decodeFields(
+        Lazy,
+        struct.fields, 
+        typeParams, 
+        scopeRef,
+    );
     return Ast.StructSig(typeParams, fields);
 }

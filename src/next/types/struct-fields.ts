@@ -8,6 +8,7 @@ import { assignType, decodeTypeLazy } from "@/next/types/type";
 import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* decodeFields(
+    Lazy: Ast.ThunkBuilder,
     fields: readonly Ast.FieldDecl[],
     typeParams: Ast.TypeParams,
     scopeRef: () => Ast.Scope,
@@ -26,24 +27,21 @@ export function* decodeFields(
         }
 
         const ascribedType = decodeTypeLazy(
+            Lazy,
             typeParams,
             field.type,
             scopeRef,
         );
 
-        const lazyExpr = initializer ? Ast.Lazy(function* () {
-            const expr = yield* decodeExpr(
-                typeParams,
-                initializer,
-                scopeRef,
-                undefined,
-                new Map(),
-            );
-            const computed = expr.computedType;
-            const ascribed = yield* ascribedType();
-            yield* assignType(expr.loc, emptyTypeParams, ascribed, computed, false);
-            return yield* evalExpr(expr, scopeRef);
-        }) : undefined;
+        const lazyExpr = decodeInitializerLazy(
+            Lazy,
+            loc,
+            typeParams,
+            ascribedType,
+            initializer,
+            undefined,
+            scopeRef,
+        );
 
         order.push(name);
         all.set(name, [loc, Ast.InhFieldSig(ascribedType, lazyExpr)]);
@@ -51,6 +49,39 @@ export function* decodeFields(
 
     const map = new Map([...all].map(([name, [, field]]) => [name, field]));
     return Ast.Ordered(order, map);
+}
+
+export function decodeInitializerLazy(
+    Lazy: Ast.ThunkBuilder,
+    loc: Ast.Loc,
+    typeParams: Ast.TypeParams,
+    ascribedType: Ast.Thunk<Ast.DecodedType>,
+    initializer: Ast.Expression | undefined,
+    selfType: undefined | Ast.SelfType,
+    scopeRef: () => Ast.Scope,
+) {
+    if (!initializer) {
+        return undefined;
+    }
+    return Lazy({
+        callback: function* (Lazy) {
+            const expr = yield* decodeExpr(
+                Lazy,
+                typeParams,
+                initializer,
+                scopeRef,
+                selfType,
+                new Map(),
+            );
+            const computed = expr.computedType;
+            const ascribed = yield* ascribedType();
+            yield* assignType(expr.loc, emptyTypeParams, ascribed, computed, false);
+            return yield* evalExpr(expr, scopeRef);
+        },
+        context: [E.TEText("evaluating initial field value")],
+        loc,
+        recover: undefined,
+    });
 }
 
 const EDuplicateField = (

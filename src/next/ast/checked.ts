@@ -2,7 +2,7 @@ import type { DecodedStatement } from "@/next/ast/checked-stmt";
 import type { FuncId, Loc, OptionalId, TypeId } from "@/next/ast/common";
 import type { DecodedType, DTypeRef, DTypeBounced } from "@/next/ast/dtype";
 import type { Effects } from "@/next/ast/effects";
-import type { Lazy } from "@/next/ast/lazy";
+import type { Thunk } from "@/next/ast/lazy";
 import type { SelfType } from "@/next/ast/mtype";
 import type { AsmInstruction, AsmShuffle, ContractAttribute } from "@/next/ast/root";
 import type { Value } from "@/next/ast/value";
@@ -20,13 +20,15 @@ export type Scope = {
     readonly typeDecls: ReadonlyMap<string, Decl<TypeDeclSig>>;
     readonly functions: ReadonlyMap<string, Decl<FnSig>>;
     readonly constants: ReadonlyMap<string, Decl<ConstSig>>;
-    readonly extensions: ReadonlyMap<string, Lazy<readonly Decl<ExtSig>[]>>;
+    readonly extensions: ReadonlyMap<string, Thunk<readonly Decl<ExtSig>[]>>;
 }
 
 export type Decl<T> = {
     readonly decl: T;
     readonly via: ViaUser;
 }
+
+export type Recover<T> = T | undefined
 
 export type TypeDeclSig =
     | AliasSig
@@ -44,8 +46,8 @@ export type TypeDeclRefable =
     | UnionSig
 
 export type ConstSig = {
-    readonly initializer: Lazy<Value>;
-    readonly type: Lazy<DecodedType>;
+    readonly initializer: Thunk<Recover<Value>>;
+    readonly type: Thunk<DecodedType>;
 }
 
 export type FnSig = {
@@ -54,7 +56,7 @@ export type FnSig = {
     readonly body: Body;
 }
 
-export type Statements = Lazy<StatementsAux>;
+export type Statements = Thunk<Recover<StatementsAux>>;
 
 export type StatementsAux = {
     readonly body: readonly DecodedStatement[];
@@ -73,7 +75,7 @@ export type FuncBody = {
 };
 export type FiftBody = {
     readonly kind: "fift";
-    readonly shuffle: Lazy<AsmShuffle>;
+    readonly shuffle: Thunk<Recover<AsmShuffle>>;
     readonly instructions: readonly AsmInstruction[];
 };
 
@@ -86,7 +88,7 @@ export type ExtSig = {
 export type AliasSig = {
     readonly kind: 'alias';
     readonly typeParams: TypeParams;
-    readonly type: Lazy<DecodedType>;
+    readonly type: Thunk<DecodedType>;
 }
 
 export type InitSig =
@@ -97,7 +99,7 @@ export type InitEmpty = {
     readonly kind: 'empty';
     // initOf() would take 0 parameters
     // values to fill all the fields
-    readonly fill: Lazy<Ordered<Lazy<Value>>>;
+    readonly fill: Thunk<Recover<Ordered<Thunk<Recover<Value>>>>>;
 }
 export type InitSimple = {
     readonly kind: 'simple';
@@ -113,8 +115,8 @@ export type InitFn = {
     readonly statements: Statements;
 }
 export type InitParam = {
-    readonly type: Lazy<DecodedType>;
-    readonly init: undefined | Lazy<Value>;
+    readonly type: Thunk<DecodedType>;
+    readonly init: undefined | Thunk<Recover<Value>>;
     readonly loc: Loc;
 }
 
@@ -122,18 +124,18 @@ export type ContractSig = {
     readonly kind: 'contract';
     readonly attributes: readonly ContractAttribute[];
     readonly init: InitSig;
-    readonly content: Lazy<ContractContent>;
+    readonly content: Thunk<ContractContent>;
 }
 export type ContractContent = CommonSig<
-    Lazy<Value>,
+    Thunk<Recover<Value>>,
     Body
 >
 export type TraitSig = {
     readonly kind: 'trait';
-    readonly content: Lazy<TraitContent>;
+    readonly content: Thunk<TraitContent>;
 }
 export type TraitContent = CommonSig<
-    Lazy<Value> | undefined,
+    Thunk<Recover<Value>> | undefined,
     Body | undefined
 >
 export type CommonSig<Expr, Body> = {
@@ -150,13 +152,13 @@ export type Receivers = {
 export type Fieldish<Expr> = InhFieldSig | FieldConstSig<Expr>;
 export type InhFieldSig = {
     readonly kind: 'field';
-    readonly type: Lazy<DecodedType>
-    readonly init: Lazy<Value> | undefined;
+    readonly type: Thunk<DecodedType>
+    readonly init: Thunk<Recover<Value>> | undefined;
 }
 export type FieldConstSig<Expr> = {
     readonly kind: 'constant';
     readonly overridable: boolean;
-    readonly type: Lazy<DecodedType>;
+    readonly type: Thunk<DecodedType>;
     readonly init: Expr;
 }
 
@@ -165,7 +167,7 @@ export type MethodSig<Body> = {
     readonly type: DecodedMethodType;
     readonly inline: boolean;
     readonly body: Body;
-    readonly getMethodId: Lazy<bigint> | undefined;
+    readonly getMethodId: Thunk<Recover<bigint>> | undefined;
 }
 
 export type BounceSig = {
@@ -219,7 +221,7 @@ export type StructSig = {
 
 export type MessageSig = {
     readonly kind: "message";
-    readonly opcode: Lazy<bigint>;
+    readonly opcode: Thunk<Recover<bigint>>;
     readonly fields: Ordered<InhFieldSig>;
 }
 
@@ -233,7 +235,7 @@ export type DecodedFnType = {
     readonly kind: "DecodedFnType";
     readonly typeParams: TypeParams;
     readonly params: Parameters;
-    readonly returnType: Lazy<DecodedType>,
+    readonly returnType: Thunk<DecodedType>,
 }
 
 export type DecodedMethodType = {
@@ -242,12 +244,12 @@ export type DecodedMethodType = {
     readonly typeParams: TypeParams;
     readonly self: SelfType;
     readonly params: Parameters;
-    readonly returnType: Lazy<DecodedType>,
+    readonly returnType: Thunk<DecodedType>,
 }
 
 export type DecodedParameter = {
     readonly name: OptionalId;
-    readonly type: Lazy<DecodedType>;
+    readonly type: Thunk<DecodedType>;
     readonly loc: Loc;
 };
 
@@ -263,7 +265,7 @@ export type Parameters = {
 
 export type Parameter = {
     readonly name: OptionalId;
-    readonly type: Lazy<DecodedType>;
+    readonly type: Thunk<DecodedType>;
     readonly loc: Loc;
 };
 

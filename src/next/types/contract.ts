@@ -14,6 +14,7 @@ import { Void } from "@/next/types/builtins";
 import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* decodeContract(
+    Lazy: Ast.ThunkBuilder,
     contract: Ast.Contract,
     scopeRef: () => Ast.Scope,
 ) {
@@ -26,47 +27,57 @@ export function* decodeContract(
     // to check init body in initLazy we have to know `self` from contentLazy
 
     const decodedInit = yield* decodeInit(
+        Lazy,
+        contract.loc,
         () => selfType,
         init,
-        () => contentLazy(),
+        () => contentLazy,
         scopeRef,
     );
 
     // delayed until we get all traits and init
-    const contentLazy: Ast.Lazy<Ast.ContractContent> = Ast.Lazy(function* () {
-        const traits = yield* getInheritedTraits(
-            contract.traits,
-            scopeRef,
-        );
-
-        // const contentRef = () => content;
-        const content: Ast.ContractContent = {
-            fieldish: yield* getFieldishFromContract(
-                contractSig,
-                name,
-                traits,
-                decodedInit,
-                constants,
-                fields,
+    const contentLazy: Ast.Thunk<Ast.ContractContent> = Lazy({
+        callback: function* (Lazy) {
+            const traits = yield* getInheritedTraits(
+                contract.traits,
                 scopeRef,
-            ),
-            methods: yield* getMethodsFromContract(
-                contractSig,
-                name,
-                traits,
-                methods,
-                scopeRef,
-            ),
-            receivers: yield* getReceivers(
-                () => selfType,
-                name,
-                traits,
-                receivers,
-                scopeRef,
-            ),
-        };
-
-        return content;
+            );
+    
+            // const contentRef = () => content;
+            const content: Ast.ContractContent = {
+                fieldish: yield* getFieldishFromContract(
+                    Lazy,
+                    contractSig,
+                    name,
+                    traits,
+                    decodedInit,
+                    constants,
+                    fields,
+                    scopeRef,
+                ),
+                methods: yield* getMethodsFromContract(
+                    Lazy,
+                    contractSig,
+                    name,
+                    traits,
+                    methods,
+                    scopeRef,
+                ),
+                receivers: yield* getReceivers(
+                    Lazy,
+                    () => selfType,
+                    name,
+                    traits,
+                    receivers,
+                    scopeRef,
+                ),
+            };
+    
+            return content;
+        },
+        context: [E.TEText("checking scope of contract")],
+        loc: contract.loc,
+        recover,
     });
 
     const contractSig = Ast.ContractSig(attributes, decodedInit, contentLazy);
@@ -82,33 +93,40 @@ export function* decodeContract(
 }
 
 function* decodeInit(
+    Lazy: Ast.ThunkBuilder,
+    contractLoc: Ast.Loc,
     selfTypeRef: () => Ast.SelfType,
     init: Ast.Init | undefined,
-    contentLazy: Ast.Lazy<Ast.ContractContent>,
+    contentLazy: () => Ast.Thunk<Ast.ContractContent>,
     scopeRef: () => Ast.Scope,
 ): E.WithLog<Ast.InitSig> {
     if (!init) {
         // no init
-        const lazyInit = Ast.Lazy(function* () {
-            const order: string[] = [];
-            const map: Map<string, Ast.Lazy<Ast.Value>> = new Map();
-            const { fieldish } = (yield* contentLazy());
-            for (const name of fieldish.order) {
-                const f = fieldish.map.get(name);
-                if (!f) {
-                    return throwInternal("Missing field");
-                }
-                if (f.decl.kind === 'field') {
-                    const init = f.decl.init;
-                    if (init) {
-                        order.push(name);
-                        map.set(name, init);
-                    } else {
-                        yield ENoInitializerEmpty(f.via.defLoc);
+        const lazyInit = Lazy({
+            callback: function* () {
+                const order: string[] = [];
+                const map: Map<string, Ast.Thunk<Ast.Recover<Ast.Value>>> = new Map();
+                const { fieldish } = yield* contentLazy()();
+                for (const name of fieldish.order) {
+                    const f = fieldish.map.get(name);
+                    if (!f) {
+                        return throwInternal("Missing field");
+                    }
+                    if (f.decl.kind === 'field') {
+                        const init = f.decl.init;
+                        if (init) {
+                            order.push(name);
+                            map.set(name, init);
+                        } else {
+                            yield ENoInitializerEmpty(f.via.defLoc);
+                        }
                     }
                 }
-            }
-            return Ast.Ordered(order, map);
+                return Ast.Ordered(order, map);
+            },
+            context: [E.TEText("computing parameters of empty init")],
+            loc: contractLoc,
+            recover: undefined,
         });
         return Ast.InitEmpty(lazyInit);
     } else if (init.kind === 'init_params') {
@@ -127,7 +145,7 @@ function* decodeInit(
 
         const map: Map<string, Ast.InitParam> = new Map();
         for (const [name, param] of paramMap) {
-            const decoded = decodeTypeLazy(emptyTypeParams, param.type, scopeRef)
+            const decoded = decodeTypeLazy(Lazy, emptyTypeParams, param.type, scopeRef)
             if (!param.initializer) {
                 yield ENoInitializerParams(param.loc);
             }
@@ -138,14 +156,21 @@ function* decodeInit(
         const { params, statements } = init;
 
         const decodedParams = yield* decodeParams((type) => {
-            return decodeDealiasTypeLazy(emptyTypeParams, type, scopeRef);
+            return decodeDealiasTypeLazy(Lazy, emptyTypeParams, type, scopeRef);
         }, params);
 
         const body = decodeStatementsLazy(
+            Lazy,
+            init.loc,
             statements,
             emptyTypeParams,
             selfTypeRef,
-            function* () { return Void },
+            Lazy({
+                callback: function* () { return Void; },
+                context: [],
+                loc: init.loc,
+                recover: Void,
+            }),
             true,
             scopeRef,
         );
@@ -185,6 +210,7 @@ const ENoInitializerEmpty = (
 });
 
 function* getMethodsFromContract(
+    Lazy: Ast.ThunkBuilder,
     contractSig: Ast.ContractSig,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
@@ -192,6 +218,7 @@ function* getMethodsFromContract(
     scopeRef: () => Ast.Scope
 ): E.WithLog<ReadonlyMap<string, Ast.DeclMem<Ast.MethodSig<Ast.Body>>>> {
     const res = yield* getMethodsGeneral(
+        Lazy,
         contractSig,
         typeName, 
         traits, 
@@ -218,6 +245,7 @@ function* getMethodsFromContract(
 }
 
 function* getFieldishFromContract(
+    Lazy: Ast.ThunkBuilder,
     contractSig: Ast.ContractSig,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
@@ -225,8 +253,9 @@ function* getFieldishFromContract(
     constants: readonly Ast.FieldConstant[],
     fields: readonly Ast.FieldDecl[],
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.Value>>>>> {
+): E.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>>> {
     const res = yield* getFieldishGeneral(
+        Lazy,
         contractSig,
         typeName, 
         traits, 
@@ -236,7 +265,7 @@ function* getFieldishFromContract(
     );
     
     const order: string[] = [];
-    const map: Map<string, Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.Value>>>> = new Map();
+    const map: Map<string, Ast.DeclMem<Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>> = new Map();
     for (const name of res.order) {
         const field = res.map.get(name);
         if (!field) {
@@ -256,7 +285,7 @@ function* getFieldishFromContract(
     }
 
     if (init.kind === 'simple') {
-        const map: Map<string, Ast.DeclMem<Ast.Fieldish<Ast.Lazy<Ast.Value>>>> = new Map();
+        const map: Map<string, Ast.DeclMem<Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>> = new Map();
         if (order.length !== 0) {
             yield EFieldsTwice(init.loc);
         }
@@ -291,3 +320,26 @@ const EAbstract = (
         E.TEViaMember(next),
     ],
 });
+
+const recover: Ast.ContractContent = {
+    fieldish: Ast.Ordered([], new Map()),
+    methods: new Map(),
+    receivers: {
+        bounce: {
+            message: [],
+            messageAny: undefined,
+        },
+        external: {
+            empty: undefined,
+            message: [],
+            messageAny: undefined,
+            stringAny: undefined,
+        },
+        internal: {
+            empty: undefined,
+            message: [],
+            messageAny: undefined,
+            stringAny: undefined,
+        },
+    },
+};

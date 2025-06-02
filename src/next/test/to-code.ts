@@ -1,3 +1,5 @@
+import { isThunk, printSym } from "@/next/ast";
+
 function isValidId(key: string) {
     return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key);
 }
@@ -74,9 +76,24 @@ export function toJs(value: unknown): string {
             case "symbol": return [val.description ? `Symbol(${JSON.stringify(val.description)})` : 'Symbol()'];
             case "undefined": return ['undefined'];
             case "object": return val === null ? ["null"] : showObject(val);
-            case "function": return [`new Function(${val.toString()})`];
+            case "function": return showFunction(val);
         }
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    const showFunction = (val: Function): readonly string[] => {
+        if (!isThunk(val)) {
+            return [`new Function(${val.toString()})`];
+        }
+        const result = val[printSym]();
+        if (result === 'waiting') {
+            return [`Waiting()`];
+        } else if (result === 'running') {
+            return [`Running()`];
+        } else {
+            return show(result);
+        }
+    };
 
     const showObject = (val: object): readonly string[] => {
         if (val instanceof Date) {

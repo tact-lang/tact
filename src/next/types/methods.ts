@@ -13,6 +13,7 @@ import { assignType } from "@/next/types/type";
 import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* getMethodsGeneral(
+    Lazy: Ast.ThunkBuilder,
     declSig: Ast.TraitSig | Ast.ContractSig,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.TraitContent>[],
@@ -51,7 +52,7 @@ export function* getMethodsGeneral(
         const { name, inline, type, body, loc } = fun;
         const nextVia = Ast.ViaMemberOrigin(typeName.text, loc);
 
-        const decodedFn = yield* decodeFnType(type, scopeRef);
+        const decodedFn = yield* decodeFnType(Lazy, type, scopeRef);
         const selfType = Ast.MVTypeRef(typeName, declSig, [], loc);
         const methodType = Ast.DecodedMethodType(
             mutates,
@@ -62,6 +63,7 @@ export function* getMethodsGeneral(
         );
         const decodedBody = body.kind !== 'abstract_body'
             ? yield* decodeBody(
+                Lazy,
                 body,
                 methodType,
                 loc,
@@ -69,6 +71,7 @@ export function* getMethodsGeneral(
             )
             : undefined;
         const getMethodId = decodeGetLazy(
+            Lazy,
             emptyTypeParams,
             name,
             get,
@@ -122,25 +125,33 @@ const EGenericMethod = (loc: Ast.Loc): E.TcError => ({
 });
 
 function decodeGetLazy(
+    Lazy: Ast.ThunkBuilder,
     typeParams: Ast.TypeParams, 
     fnName: Ast.Id,
     get: Ast.GetAttribute | undefined,
     scopeRef: () => Ast.Scope,
     selfType: Ast.SelfType,
-): undefined | Ast.Lazy<bigint> {
+): undefined | Ast.Thunk<bigint | undefined> {
     if (!get) {
         return undefined;
     }
-    return Ast.Lazy(() => decodeGet(
-        typeParams, 
-        fnName, 
-        get, 
-        scopeRef, 
-        selfType,
-    ));
+    return Lazy({
+        callback: (Lazy) => decodeGet(
+            Lazy,
+            typeParams, 
+            fnName, 
+            get, 
+            scopeRef, 
+            selfType,
+        ),
+        context: [E.TEText("checking get() opcode")],
+        loc: get.loc,
+        recover: undefined,
+    });
 }
 
 function* decodeGet(
+    Lazy: Ast.ThunkBuilder,
     typeParams: Ast.TypeParams,
     fnName: Ast.Id,
     get: Ast.GetAttribute,
@@ -149,6 +160,7 @@ function* decodeGet(
 ): E.WithLog<bigint> {
     if (get.methodId) {
         const expr = yield* decodeExpr(
+            Lazy,
             typeParams,
             get.methodId,
             scopeRef,
