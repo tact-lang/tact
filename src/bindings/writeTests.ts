@@ -20,7 +20,13 @@ function getReceiverFunctionName(receiver: ABIReceiver): string {
             break;
         case "text":
             name += "Text";
-            name += receiver.message.text ?? "Empty";
+            if (receiver.message.text) {
+                const cleanText = receiver.message.text.replace(
+                    /[^a-zA-Z0-9]/g,
+                    "",
+                );
+                name += cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
+            }
             break;
         case "any":
             name += "Any";
