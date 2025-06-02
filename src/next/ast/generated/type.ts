@@ -83,10 +83,7 @@ export const TypeCell = (format: $.RemFormat, loc: $c.Loc): $.TypeCell =>
     });
 export const isTypeCell = ($value: TypeCell) => $value.kind === "TyCell";
 export type TypeBuilder = $.TypeBuilder;
-export const TypeBuilder = (
-    format: $.RemFormat,
-    loc: $c.Loc,
-): $.TypeBuilder =>
+export const TypeBuilder = (format: $.RemFormat, loc: $c.Loc): $.TypeBuilder =>
     Object.freeze({
         kind: "TyBuilder",
         format,
@@ -149,77 +146,107 @@ export const TypeMap = (key: $.Type, value: $.Type, loc: $c.Loc): $.TypeMap =>
 export const isTypeMap = ($value: TypeMap) => $value.kind === "map_type";
 
 export type TypeVoid = $.TypeVoid;
-export const TypeVoid = (loc: $c.Loc): $.TypeVoid => Object.freeze({
-    kind: "TypeVoid",
-    loc
-});
+export const TypeVoid = (loc: $c.Loc): $.TypeVoid =>
+    Object.freeze({
+        kind: "TypeVoid",
+        loc,
+    });
 export const isTypeVoid = ($value: TypeVoid) => $value.kind === "TypeVoid";
 export type TypeNull = $.TypeNull;
-export const TypeNull = (loc: $c.Loc): $.TypeNull => Object.freeze({
-    kind: "TypeNull",
-    loc
-});
+export const TypeNull = (loc: $c.Loc): $.TypeNull =>
+    Object.freeze({
+        kind: "TypeNull",
+        loc,
+    });
 export const isTypeNull = ($value: TypeNull) => $value.kind === "TypeNull";
 export type TypeBool = $.TypeBool;
-export const TypeBool = (loc: $c.Loc): $.TypeBool => Object.freeze({
-    kind: "TypeBool",
-    loc
-});
+export const TypeBool = (loc: $c.Loc): $.TypeBool =>
+    Object.freeze({
+        kind: "TypeBool",
+        loc,
+    });
 export const isTypeBool = ($value: TypeBool) => $value.kind === "TypeBool";
 export type TypeAddress = $.TypeAddress;
-export const TypeAddress = (loc: $c.Loc): $.TypeAddress => Object.freeze({
-    kind: "TypeAddress",
-    loc
-});
-export const isTypeAddress = ($value: TypeAddress) => $value.kind === "TypeAddress";
+export const TypeAddress = (loc: $c.Loc): $.TypeAddress =>
+    Object.freeze({
+        kind: "TypeAddress",
+        loc,
+    });
+export const isTypeAddress = ($value: TypeAddress) =>
+    $value.kind === "TypeAddress";
 export type TypeString = $.TypeString;
-export const TypeString = (loc: $c.Loc): $.TypeString => Object.freeze({
-    kind: "TypeString",
-    loc
-});
-export const isTypeString = ($value: TypeString) => $value.kind === "TypeString";
+export const TypeString = (loc: $c.Loc): $.TypeString =>
+    Object.freeze({
+        kind: "TypeString",
+        loc,
+    });
+export const isTypeString = ($value: TypeString) =>
+    $value.kind === "TypeString";
 export type TypeStringBuilder = $.TypeStringBuilder;
-export const TypeStringBuilder = (loc: $c.Loc): $.TypeStringBuilder => Object.freeze({
-    kind: "TypeStringBuilder",
-    loc
-});
-export const isTypeStringBuilder = ($value: TypeStringBuilder) => $value.kind === "TypeStringBuilder";
+export const TypeStringBuilder = (loc: $c.Loc): $.TypeStringBuilder =>
+    Object.freeze({
+        kind: "TypeStringBuilder",
+        loc,
+    });
+export const isTypeStringBuilder = ($value: TypeStringBuilder) =>
+    $value.kind === "TypeStringBuilder";
 export type TypeBounced = $.TypeBounced;
-export const TypeBounced = (type_: $.Type, loc: $c.Loc): $.TypeBounced => Object.freeze({
-    kind: "TypeBounced",
-    type: type_,
-    loc
-});
-export const isTypeBounced = ($value: TypeBounced) => $value.kind === "TypeBounced";
+export const TypeBounced = (type_: $.Type, loc: $c.Loc): $.TypeBounced =>
+    Object.freeze({
+        kind: "TypeBounced",
+        type: type_,
+        loc,
+    });
+export const isTypeBounced = ($value: TypeBounced) =>
+    $value.kind === "TypeBounced";
 export type TypeMaybe = $.TypeMaybe;
-export const TypeMaybe = (type_: $.Type, loc: $c.Loc): $.TypeMaybe => Object.freeze({
-    kind: "TypeMaybe",
-    type: type_,
-    loc
-});
+export const TypeMaybe = (type_: $.Type, loc: $c.Loc): $.TypeMaybe =>
+    Object.freeze({
+        kind: "TypeMaybe",
+        type: type_,
+        loc,
+    });
 export const isTypeMaybe = ($value: TypeMaybe) => $value.kind === "TypeMaybe";
 export type TypedParameter = $.TypedParameter;
-export const TypedParameter = (name: $c.OptionalId, type_: $.Type, loc: $c.Loc): $.TypedParameter => Object.freeze({
-    name,
-    type: type_,
-    loc
-});
+export const TypedParameter = (
+    name: $c.OptionalId,
+    type_: $.Type,
+    loc: $c.Loc,
+): $.TypedParameter =>
+    Object.freeze({
+        name,
+        type: type_,
+        loc,
+    });
 export type FnType = $.FnType;
-export const FnType = (typeParams: readonly $c.TypeId[], params: readonly $.TypedParameter[], returnType: $.Type): $.FnType => Object.freeze({
-    typeParams,
-    params,
-    returnType
-});
+export const FnType = (
+    typeParams: readonly $c.TypeId[],
+    params: readonly $.TypedParameter[],
+    returnType: $.Type,
+): $.FnType =>
+    Object.freeze({
+        typeParams,
+        params,
+        returnType,
+    });
 export type MethodFnType = $.MethodFnType;
-export const MethodFnType = (typeParams: readonly $c.TypeId[], self: $.Type, args: readonly $.TypedParameter[], returnType: $.Type): $.MethodFnType => Object.freeze({
-    typeParams,
-    self,
-    args,
-    returnType
-});
+export const MethodFnType = (
+    typeParams: readonly $c.TypeId[],
+    self: $.Type,
+    args: readonly $.TypedParameter[],
+    returnType: $.Type,
+): $.MethodFnType =>
+    Object.freeze({
+        typeParams,
+        self,
+        args,
+        returnType,
+    });
 export type TypeStateInit = $.TypeStateInit;
-export const TypeStateInit = (loc: $c.Loc): $.TypeStateInit => Object.freeze({
-    kind: "TypeStateInit",
-    loc
-});
-export const isTypeStateInit = ($value: TypeStateInit) => $value.kind === "TypeStateInit";
+export const TypeStateInit = (loc: $c.Loc): $.TypeStateInit =>
+    Object.freeze({
+        kind: "TypeStateInit",
+        loc,
+    });
+export const isTypeStateInit = ($value: TypeStateInit) =>
+    $value.kind === "TypeStateInit";

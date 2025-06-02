@@ -10,7 +10,7 @@ import { decodeStruct } from "@/next/types/struct";
 import { decodeMessage } from "@/next/types/message";
 import { decodeUnion } from "@/next/types/union";
 
-const errorKind = 'type';
+const errorKind = "type";
 
 export function* decodeTypeDecls(
     Lazy: Ast.ThunkBuilder,
@@ -18,26 +18,27 @@ export function* decodeTypeDecls(
     source: TactSource,
     scopeRef: () => Ast.Scope,
 ): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>> {
-    const importedSigs = imported.map(({ globals, importedBy }) => (
-        new Map(
-            globals.typeDecls.entries()
-                .map(([name, s]) => [name, Ast.Decl(s.decl, Ast.ViaImport(importedBy, s.via))])
-        )
-    ));
-
-    const localSigs = yield* Ast.mapLog(
-        source.items.types,
-        function* (decl) {
-            const via = Ast.ViaOrigin(decl.loc, source);
-            return new Map([[
-                decl.name.text,
-                Ast.Decl(
-                    yield* decodeTypeDecl(Lazy, decl, scopeRef),
-                    via,
-                ),
-            ]]);
-        },
+    const importedSigs = imported.map(
+        ({ globals, importedBy }) =>
+            new Map(
+                globals.typeDecls
+                    .entries()
+                    .map(([name, s]) => [
+                        name,
+                        Ast.Decl(s.decl, Ast.ViaImport(importedBy, s.via)),
+                    ]),
+            ),
     );
+
+    const localSigs = yield* Ast.mapLog(source.items.types, function* (decl) {
+        const via = Ast.ViaOrigin(decl.loc, source);
+        return new Map([
+            [
+                decl.name.text,
+                Ast.Decl(yield* decodeTypeDecl(Lazy, decl, scopeRef), via),
+            ],
+        ]);
+    });
 
     const prev: Map<string, Ast.Decl<Ast.TypeDeclSig>> = new Map();
     for (const next of [...importedSigs, ...localSigs]) {
@@ -45,17 +46,27 @@ export function* decodeTypeDecls(
             const prevItem = prev.get(name);
             // defined in compiler
             if (builtinTypes.has(name)) {
-                yield Ast.ERedefine(errorKind, name, Ast.ViaBuiltin(), nextItem.via);
+                yield Ast.ERedefine(
+                    errorKind,
+                    name,
+                    Ast.ViaBuiltin(),
+                    nextItem.via,
+                );
                 continue;
             }
             // not defined yet; define it now
-            if (typeof prevItem === 'undefined') {
+            if (typeof prevItem === "undefined") {
                 prev.set(name, nextItem);
                 continue;
             }
             // already defined, and it's not a diamond situation
             if (prevItem.via.source !== nextItem.via.source) {
-                yield Ast.ERedefine(errorKind, name, prevItem.via, nextItem.via);
+                yield Ast.ERedefine(
+                    errorKind,
+                    name,
+                    prevItem.via,
+                    nextItem.via,
+                );
             }
         }
     }

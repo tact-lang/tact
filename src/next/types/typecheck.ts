@@ -4,7 +4,11 @@
 // import { logDeep } from "@/utils/log-deep.build";
 import * as Ast from "@/next/ast";
 import { memo } from "@/utils/tricks";
-import type { ResolvedImport, TactImport, TactSource } from "@/next/imports/source";
+import type {
+    ResolvedImport,
+    TactImport,
+    TactSource,
+} from "@/next/imports/source";
 import { decodeTypeDecls } from "@/next/types/typedecl";
 import { decodeFunctions } from "@/next/types/functions";
 import { decodeConstants } from "@/next/types/constants";
@@ -14,15 +18,16 @@ export const typecheck = (root: TactSource): [Ast.Scope, Ast.TcError[]] => {
     const allErrors: Ast.TcError[] = [];
 
     const recur = memo((source: TactSource): Ast.Scope => {
-        const [value, errors] = Ast.runLog(tcSource(
-            // leave only imports of .tact
-            onlyTactImports(source.imports)
-                .map(importedBy => ({
+        const [value, errors] = Ast.runLog(
+            tcSource(
+                // leave only imports of .tact
+                onlyTactImports(source.imports).map((importedBy) => ({
                     globals: recur(importedBy.source),
                     importedBy,
                 })),
-            source,
-        ));
+                source,
+            ),
+        );
         // `recur` is called only once on every source
         // this ensures errors from every source get counted
         // only once
@@ -33,12 +38,14 @@ export const typecheck = (root: TactSource): [Ast.Scope, Ast.TcError[]] => {
     return [recur(root), allErrors];
 };
 
-const onlyTactImports = (imports: readonly ResolvedImport[]): readonly TactImport[] => {
+const onlyTactImports = (
+    imports: readonly ResolvedImport[],
+): readonly TactImport[] => {
     // typescript narrowing doesn't properly apply to filter,
     // so we need this helper
     const result: TactImport[] = [];
     for (const imp of imports) {
-        if (imp.kind === 'tact') {
+        if (imp.kind === "tact") {
             result.push(imp);
         }
     }
@@ -58,6 +65,6 @@ function* tcSource(
         functions: yield* decodeFunctions(Lazy, imported, source, scopeRef),
         constants: yield* decodeConstants(Lazy, imported, source, scopeRef),
         extensions: decodeExtensions(Lazy, imported, source, scopeRef),
-    }
+    };
     return scope;
 }

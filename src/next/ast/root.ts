@@ -1,10 +1,4 @@
-import type {
-    FuncId,
-    Id,
-    Loc,
-    TypeId,
-    Language,
-} from "@/next/ast/common";
+import type { FuncId, Id, Loc, TypeId, Language } from "@/next/ast/common";
 import type { Expression, Number, String } from "@/next/ast/expression";
 import type { Statement } from "@/next/ast/statement";
 import type { FnType, Type, TypedParameter } from "@/next/ast/type";
@@ -26,7 +20,7 @@ export type ModuleItems = {
     readonly constants: readonly Constant[];
     readonly extensions: readonly Extension[];
     readonly types: readonly TypeDecl[];
-}
+};
 export type TypeDecl =
     | StructDecl
     | MessageDecl
@@ -154,7 +148,7 @@ export type FieldConstant = {
     readonly overridable: boolean;
     readonly override: boolean;
     readonly body: Constant;
-}
+};
 export type Constant = {
     readonly kind: "constant";
     readonly name: Id;

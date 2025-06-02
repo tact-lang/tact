@@ -19,7 +19,11 @@ type Options<M> = {
 /**
  * Create file system that proxies requests to real file system
  */
-export function createProxyFs<M>({ log, root, isReadonly }: Options<M>): Cursor {
+export function createProxyFs<M>({
+    log,
+    root,
+    isReadonly,
+}: Options<M>): Cursor {
     const errors = FsErrors(log);
 
     function builder(currPath: RelativePath): Cursor {

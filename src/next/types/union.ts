@@ -2,13 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
 import { decodeInitializerLazy } from "@/next/types/struct-fields";
-import {  decodeTypeLazy } from "@/next/types/type";
+import { decodeTypeLazy } from "@/next/types/type";
 import { decodeTypeParams } from "@/next/types/type-params";
 
 type Cons = {
     readonly fields: ReadonlyMap<string, Ast.InhFieldSig>;
     readonly loc: Ast.Loc;
-}
+};
 
 export function* decodeUnion(
     Lazy: Ast.ThunkBuilder,
@@ -16,13 +16,13 @@ export function* decodeUnion(
     scopeRef: () => Ast.Scope,
 ): Ast.WithLog<Ast.UnionSig> {
     const typeParams = yield* decodeTypeParams(union.typeParams);
-    
+
     const cases: Map<string, Cons> = new Map();
     for (const cons of union.cases) {
         const caseName = cons.name.text;
         const prevCons = cases.get(caseName);
         if (prevCons) {
-            yield EDuplicateCons(caseName, prevCons.loc, cons.name.loc)
+            yield EDuplicateCons(caseName, prevCons.loc, cons.name.loc);
             continue;
         }
         const fields: Map<string, [Ast.InhFieldSig, Ast.Loc]> = new Map();
@@ -31,12 +31,12 @@ export function* decodeUnion(
             const prevField = fields.get(fieldName);
             if (prevField) {
                 const [, prevFieldLoc] = prevField;
-                yield EDuplicateField(fieldName, prevFieldLoc, field.name.loc)
+                yield EDuplicateField(fieldName, prevFieldLoc, field.name.loc);
             }
             const ascribedType = decodeTypeLazy(
                 Lazy,
-                typeParams, 
-                field.type, 
+                typeParams,
+                field.type,
                 scopeRef,
             );
 
@@ -51,12 +51,12 @@ export function* decodeUnion(
             );
 
             const decoded = Ast.InhFieldSig(ascribedType, lazyExpr);
-            fields.set(fieldName, [decoded, field.name.loc])
+            fields.set(fieldName, [decoded, field.name.loc]);
         }
         cases.set(caseName, {
             fields: new Map([...fields].map(([name, [type]]) => [name, type])),
             loc: cons.name.loc,
-        })
+        });
     }
 
     const map = new Map([...cases].map(([name, { fields }]) => [name, fields]));

@@ -4,7 +4,7 @@ import type * as Ast from "@/next/ast/type";
 
 export type DNotSet = {
     readonly kind: "not-set";
-}
+};
 
 export type DecodedType =
     | DTypeRecover
@@ -29,26 +29,26 @@ export type DecodedType =
     | DTypeString
     | DTypeStringBuilder;
 
-export type DTypeInt = Ast.TypeInt
-export type DTypeSlice = Ast.TypeSlice
-export type DTypeCell = Ast.TypeCell
-export type DTypeBuilder = Ast.TypeBuilder
-export type DTypeUnit = Ast.TypeUnit
-export type DTypeVoid = Ast.TypeVoid
-export type DTypeNull = Ast.TypeNull
-export type DTypeBool = Ast.TypeBool
-export type DTypeAddress = Ast.TypeAddress
-export type DTypeString = Ast.TypeString
-export type DTypeStringBuilder = Ast.TypeStringBuilder
+export type DTypeInt = Ast.TypeInt;
+export type DTypeSlice = Ast.TypeSlice;
+export type DTypeCell = Ast.TypeCell;
+export type DTypeBuilder = Ast.TypeBuilder;
+export type DTypeUnit = Ast.TypeUnit;
+export type DTypeVoid = Ast.TypeVoid;
+export type DTypeNull = Ast.TypeNull;
+export type DTypeBool = Ast.TypeBool;
+export type DTypeAddress = Ast.TypeAddress;
+export type DTypeString = Ast.TypeString;
+export type DTypeStringBuilder = Ast.TypeStringBuilder;
 export type DTypeStateInit = Ast.TypeStateInit;
 
 export type DTypeRecover = {
     readonly kind: "recover";
-}
+};
 
 export type NotDealiased = {
     readonly kind: "NotDealiased";
-}
+};
 
 export type DTypeRef = {
     readonly kind: "type_ref";
@@ -61,31 +61,31 @@ export type DTypeRef = {
 };
 
 export type DTypeAliasRef = {
-    readonly kind: "TypeAlias"
+    readonly kind: "TypeAlias";
     readonly name: TypeId;
     readonly type: NotDealiased | DecodedType;
     readonly typeArgs: readonly DecodedType[];
     readonly loc: Loc;
-}
+};
 
 export type DTypeParamRef = {
-    readonly kind: "TypeParam"
+    readonly kind: "TypeParam";
     readonly name: TypeId;
     readonly loc: Loc;
-}
+};
 
 export type DTypeBounced = {
-    readonly kind: "TypeBounced"
+    readonly kind: "TypeBounced";
     // name of the message type
     readonly name: TypeId;
     readonly loc: Loc;
-}
+};
 
 export type DTypeMaybe = {
-    readonly kind: "TypeMaybe"
+    readonly kind: "TypeMaybe";
     readonly type: DecodedType;
     readonly loc: Loc;
-}
+};
 
 export type DTypeMap = {
     readonly kind: "map_type";

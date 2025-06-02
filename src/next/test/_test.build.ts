@@ -24,24 +24,15 @@ export const runTest = async (path: string): Promise<string> => {
     return toJs(types);
 };
 
-export const buildE2E = async <M>(
-    log: Logger<M, void>,
-    path: string,
-) => {
+export const buildE2E = async <M>(log: Logger<M, void>, path: string) => {
     const reader = await ProjectReader(log);
     if (!reader) {
         return;
     }
-    return await reader.read(
-        dirname(path),
-        basename(path),
-    );
-}
+    return await reader.read(dirname(path), basename(path));
+};
 
-export const buildNoStdlib = async <M>(
-    log: Logger<M, void>,
-    path: string,
-) => {
+export const buildNoStdlib = async <M>(log: Logger<M, void>, path: string) => {
     const project = createProxyFs({
         log,
         root: dirname(path),
@@ -55,7 +46,7 @@ export const buildNoStdlib = async <M>(
             log,
             files: new Map(),
             isReadonly: true,
-            root: fromString('.'),
+            root: fromString("."),
         }),
         implicits,
         root: basename(path),

@@ -23,11 +23,8 @@ export function* decodeTrait(
     // delayed until we get all traits and init
     const contentLazy = Lazy({
         callback: function* (Lazy) {
-            const traits = yield* getInheritedTraits(
-                trait.traits,
-                scopeRef,
-            );
-    
+            const traits = yield* getInheritedTraits(trait.traits, scopeRef);
+
             // const contentRef = () => content;
             const content: Ast.TraitContent = {
                 fieldish: yield* getFieldishGeneral(
@@ -56,7 +53,7 @@ export function* decodeTrait(
                     scopeRef,
                 ),
             };
-    
+
             return content;
         },
         context: [Ast.TEText("checking inner scope of trait")],
@@ -66,23 +63,14 @@ export function* decodeTrait(
 
     const traitSig = Ast.TraitSig(contentLazy);
 
-    const selfType = Ast.MVTypeRef(
-        trait.name,
-        traitSig,
-        [],
-        trait.loc,
-    );
+    const selfType = Ast.MVTypeRef(trait.name, traitSig, [], trait.loc);
 
     return traitSig;
 }
 
-const ENoAttributes = (
-    loc: Ast.Loc,
-): Ast.TcError => ({
+const ENoAttributes = (loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Traits cannot have attributes`),
-    ],
+    descr: [Ast.TEText(`Traits cannot have attributes`)],
 });
 
 const recover: Ast.TraitContent = {

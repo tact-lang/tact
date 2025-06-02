@@ -74,7 +74,13 @@ export function decodeInitializerLazy(
             );
             const computed = expr.computedType;
             const ascribed = yield* ascribedType();
-            yield* assignType(expr.loc, emptyTypeParams, ascribed, computed, false);
+            yield* assignType(
+                expr.loc,
+                emptyTypeParams,
+                ascribed,
+                computed,
+                false,
+            );
             return yield* evalExpr(expr, scopeRef);
         },
         context: [Ast.TEText("evaluating initial field value")],

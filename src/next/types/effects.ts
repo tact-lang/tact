@@ -6,10 +6,15 @@ export const emptyEff: Ast.Effects = Object.freeze({
 });
 
 // when two branches merge
-export const mergeEff = (left: Ast.Effects, right: Ast.Effects): Ast.Effects => {
+export const mergeEff = (
+    left: Ast.Effects,
+    right: Ast.Effects,
+): Ast.Effects => {
     return Ast.Effects(
         left.returnOrThrow && right.returnOrThrow,
-        new Set([...left.setSelfPaths].filter(p => right.setSelfPaths.has(p)))
+        new Set(
+            [...left.setSelfPaths].filter((p) => right.setSelfPaths.has(p)),
+        ),
     );
 };
 
@@ -26,7 +31,7 @@ export function* setHadAssign(
             break;
         }
         case "field_access": {
-            if (lvalue.aggregate.kind === 'self') {
+            if (lvalue.aggregate.kind === "self") {
                 // self.x = ...;
                 setSelfPaths.add(lvalue.field.text);
             }
@@ -40,20 +45,18 @@ export function* setHadAssign(
 }
 const ENoSelfAssign = (loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Cannot assign to self`),
-    ],
+    descr: [Ast.TEText(`Cannot assign to self`)],
 });
 
 // on every return or throw
 export function* setHadExit(
-    eff: Ast.Effects, 
-    successful: boolean, 
+    eff: Ast.Effects,
+    successful: boolean,
     required: undefined | ReadonlySet<string>,
     returnLoc: Ast.Loc,
 ): Ast.WithLog<Ast.Effects> {
     if (successful && required) {
-        const missing = [...required].filter(p => !eff.setSelfPaths.has(p));
+        const missing = [...required].filter((p) => !eff.setSelfPaths.has(p));
         for (const fieldName of missing) {
             yield EMissingSelfInit(fieldName, returnLoc);
         }

@@ -4,14 +4,14 @@ function isValidId(key: string) {
     return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key);
 }
 
-const pad = (s: readonly string[]) => s.map(s => "  " + s);
+const pad = (s: readonly string[]) => s.map((s) => "  " + s);
 
 function concat(s: readonly string[], t: readonly string[]): readonly string[] {
     const [last, ...init] = [...s].reverse();
     const [head, ...tail] = t;
-    if (typeof last === 'undefined') {
+    if (typeof last === "undefined") {
         return t;
-    } else if (typeof head === 'undefined') {
+    } else if (typeof head === "undefined") {
         return s;
     } else {
         return [...init.reverse(), last + head, ...tail];
@@ -28,26 +28,33 @@ const braced = (l: string, code: readonly string[], r: string) => {
 };
 
 export function toJs(value: unknown): string {
-    const counts: Map<unknown, 'exists' | { name: string }> = new Map();
+    const counts: Map<unknown, "exists" | { name: string }> = new Map();
     const order: Map<string, readonly string[]> = new Map();
     let nextId = 0;
     function countUsages(val: unknown) {
-        if (typeof val !== 'object' || val === null || val instanceof Date || val instanceof RegExp) {
+        if (
+            typeof val !== "object" ||
+            val === null ||
+            val instanceof Date ||
+            val instanceof RegExp
+        ) {
             return;
         }
         const newCount = counts.get(val);
         if (!newCount) {
-            counts.set(val, 'exists');
-            const items = 
-                Array.isArray(val) ? val :
-                val instanceof Map ? val.entries().flatMap((kv) => kv) :
-                val instanceof Set ? [...val] :
-                Object.entries(val)
-            
+            counts.set(val, "exists");
+            const items = Array.isArray(val)
+                ? val
+                : val instanceof Map
+                  ? val.entries().flatMap((kv) => kv)
+                  : val instanceof Set
+                    ? [...val]
+                    : Object.entries(val);
+
             for (const item of items) {
                 countUsages(item);
             }
-        } else if (newCount === 'exists') {
+        } else if (newCount === "exists") {
             const name = `x${++nextId}`;
             counts.set(val, { name });
         }
@@ -55,7 +62,7 @@ export function toJs(value: unknown): string {
 
     function show(val: unknown): readonly string[] {
         const count = counts.get(val);
-        if (typeof count !== 'object') {
+        if (typeof count !== "object") {
             return showAny(val);
         }
         if (!order.has(count.name)) {
@@ -69,14 +76,26 @@ export function toJs(value: unknown): string {
 
     function showAny(val: unknown): readonly string[] {
         switch (typeof val) {
-            case "string": return [JSON.stringify(val)];
-            case "number": return [String(val)];
-            case "boolean": return [String(val)];
-            case "bigint": return [val.toString() + 'n'];
-            case "symbol": return [val.description ? `Symbol(${JSON.stringify(val.description)})` : 'Symbol()'];
-            case "undefined": return ['undefined'];
-            case "object": return val === null ? ["null"] : showObject(val);
-            case "function": return showFunction(val);
+            case "string":
+                return [JSON.stringify(val)];
+            case "number":
+                return [String(val)];
+            case "boolean":
+                return [String(val)];
+            case "bigint":
+                return [val.toString() + "n"];
+            case "symbol":
+                return [
+                    val.description
+                        ? `Symbol(${JSON.stringify(val.description)})`
+                        : "Symbol()",
+                ];
+            case "undefined":
+                return ["undefined"];
+            case "object":
+                return val === null ? ["null"] : showObject(val);
+            case "function":
+                return showFunction(val);
         }
     }
 
@@ -86,9 +105,9 @@ export function toJs(value: unknown): string {
             return [`new Function(${val.toString()})`];
         }
         const result = val[printSym]();
-        if (result === 'waiting') {
+        if (result === "waiting") {
             return [`Waiting()`];
-        } else if (result === 'running') {
+        } else if (result === "running") {
             return [`Running()`];
         } else {
             return show(result);
@@ -104,51 +123,49 @@ export function toJs(value: unknown): string {
         }
         if (Array.isArray(val)) {
             return braced(
-                '[',
+                "[",
                 val.flatMap((item) => {
                     return concat(show(item), [","]);
                 }),
-                ']',
+                "]",
             );
         }
         if (val instanceof Map) {
             return braced(
-                'new Map([',
+                "new Map([",
                 [...val.entries()].flatMap(([k, v]) => {
                     return concatAll([["["], show(k), [", "], show(v), ["],"]]);
                 }),
-                '])',
+                "])",
             );
         }
         if (val instanceof Set) {
             return braced(
-                'new Set([',
+                "new Set([",
                 [...val].flatMap((k) => {
                     return concat(show(k), [","]);
                 }),
-                '])',
+                "])",
             );
         }
         return braced(
-            '{',
+            "{",
             Object.entries(val).flatMap(([k, v]) => {
                 const keyRep = isValidId(k) ? k : JSON.stringify(k);
                 return concatAll([[keyRep], [": "], show(v), [","]]);
             }),
-            '}',
+            "}",
         );
     };
 
     countUsages(value);
     const res = show(value);
 
-    const code = [...order.entries()].flatMap(([varName, code]) => {
-        return concatAll([
-            [`const ${varName} = `],
-            code,
-            [";"],
-        ]);
-    }).join('\n');
+    const code = [...order.entries()]
+        .flatMap(([varName, code]) => {
+            return concatAll([[`const ${varName} = `], code, [";"]]);
+        })
+        .join("\n");
 
-    return `${code ? `${code}\n\n` : ''}export default ${res.join('\n')};\n`;
+    return `${code ? `${code}\n\n` : ""}export default ${res.join("\n")};\n`;
 }

@@ -8,7 +8,7 @@ import { decodeConstantDef } from "@/next/types/constant-def";
 import { emptyTypeParams } from "@/next/types/type-params";
 import { decodeInitializerLazy } from "@/next/types/struct-fields";
 
-type MaybeExpr = Ast.Thunk<Ast.Value | undefined> | undefined
+type MaybeExpr = Ast.Thunk<Ast.Value | undefined> | undefined;
 
 export function* getFieldishGeneral(
     Lazy: Ast.ThunkBuilder,
@@ -20,18 +20,20 @@ export function* getFieldishGeneral(
     scopeRef: () => Ast.Scope,
 ): Ast.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<MaybeExpr>>>> {
     // collect all inherited fields and constants
-    const inherited: Map<string, Ast.DeclMem<Ast.Fieldish<MaybeExpr>>> = new Map();
-    for (const { via, decl: { fieldish } } of traits) {
+    const inherited: Map<
+        string,
+        Ast.DeclMem<Ast.Fieldish<MaybeExpr>>
+    > = new Map();
+    for (const {
+        via,
+        decl: { fieldish },
+    } of traits) {
         for (const name of fieldish.order) {
             const field = fieldish.map.get(name);
             if (!field) {
                 return throwInternal("Field was lost");
             }
-            const nextVia = Ast.ViaMemberTrait(
-                name,
-                via.defLoc,
-                field.via,
-            );
+            const nextVia = Ast.ViaMemberTrait(name, via.defLoc, field.via);
             const prev = inherited.get(name);
             if (prev) {
                 yield Ast.ERedefineMember(name, prev.via, nextVia);
@@ -41,12 +43,7 @@ export function* getFieldishGeneral(
         }
     }
 
-    const selfType = Ast.MVTypeRef(
-        typeName,
-        traitSigRef,
-        [],
-        typeName.loc,
-    )
+    const selfType = Ast.MVTypeRef(typeName, traitSigRef, [], typeName.loc);
 
     // in which order fields were defined
     const order: string[] = [];
@@ -71,13 +68,10 @@ export function* getFieldishGeneral(
         order.push(name.text);
 
         // decode field
-        all.set(name.text, decodeField(
-            Lazy,
-            typeName.text,
-            field,
-            scopeRef,
-            selfType,
-        ));
+        all.set(
+            name.text,
+            decodeField(Lazy, typeName.text, field, scopeRef, selfType),
+        );
 
         // check if this field was inherited
         const prevInh = inherited.get(name.text);
@@ -85,7 +79,7 @@ export function* getFieldishGeneral(
             // remember that this inherited field was handled
             overridden.add(name.text);
 
-            if (prevInh.decl.kind !== 'field') {
+            if (prevInh.decl.kind !== "field") {
                 // cannot override constant with field
                 yield Ast.ERedefineMember(name.text, prevInh.via, nextVia);
             }
@@ -124,7 +118,7 @@ export function* getFieldishGeneral(
             scopeRef,
             selfType,
         );
-        
+
         // check that override/abstract/virtual modifiers are correct
         yield* checkFieldOverride(
             name.text,
@@ -143,7 +137,7 @@ export function* getFieldishGeneral(
         if (overridden.has(name)) {
             continue;
         }
-        if (field.decl.kind === 'field') {
+        if (field.decl.kind === "field") {
             // fields must always be redefined
             yield EMustCopyField(name, field.via);
         } else {
@@ -181,19 +175,15 @@ function decodeField(
     );
 
     // decode field
-    return Ast.DeclMem(
-        Ast.InhFieldSig(decoded, init),
-        nextVia,
-    );
+    return Ast.DeclMem(Ast.InhFieldSig(decoded, init), nextVia);
 }
 
-const EMustCopyField = (
-    name: string,
-    prev: Ast.ViaMember,
-): Ast.TcError => ({
+const EMustCopyField = (name: string, prev: Ast.ViaMember): Ast.TcError => ({
     loc: prev.defLoc,
     descr: [
-        Ast.TEText(`Field "${name}" was defined in parent trait, but never mentioned`),
+        Ast.TEText(
+            `Field "${name}" was defined in parent trait, but never mentioned`,
+        ),
         Ast.TEViaMember(prev),
     ],
 });
@@ -206,7 +196,7 @@ function* decodeConstant(
     scopeRef: () => Ast.Scope,
     selfType: Ast.SelfType,
 ): Ast.WithLog<Ast.DeclMem<Ast.FieldConstSig<MaybeExpr>>> {
-    if (init.kind === 'constant_decl') {
+    if (init.kind === "constant_decl") {
         const type = decodeTypeLazy(Lazy, emptyTypeParams, init.type, scopeRef);
         return Ast.DeclMem(
             Ast.FieldConstSig(overridable, type, undefined),
@@ -221,9 +211,6 @@ function* decodeConstant(
             scopeRef,
             selfType,
         );
-        return Ast.DeclMem(
-            Ast.FieldConstSig(overridable, type, expr),
-            nextVia,
-        );
+        return Ast.DeclMem(Ast.FieldConstSig(overridable, type, expr), nextVia);
     }
 }

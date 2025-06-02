@@ -3,15 +3,15 @@ import type { Loc, OptionalId, TypeId } from "@/next/ast/common";
 export type FnType = {
     readonly typeParams: readonly TypeId[];
     readonly params: readonly TypedParameter[];
-    readonly returnType: Type,
-}
+    readonly returnType: Type;
+};
 
 export type MethodFnType = {
     readonly typeParams: readonly TypeId[];
     readonly self: Type;
     readonly args: readonly TypedParameter[];
-    readonly returnType: Type,
-}
+    readonly returnType: Type;
+};
 
 export type TypedParameter = {
     readonly name: OptionalId;
@@ -47,51 +47,51 @@ export type TypeCons = {
 };
 
 export type TypeVoid = {
-    readonly kind: "TypeVoid"
+    readonly kind: "TypeVoid";
     readonly loc: Loc;
-}
+};
 
 export type TypeNull = {
-    readonly kind: "TypeNull"
+    readonly kind: "TypeNull";
     readonly loc: Loc;
-}
+};
 
 export type TypeBool = {
-    readonly kind: "TypeBool"
+    readonly kind: "TypeBool";
     readonly loc: Loc;
-}
+};
 
 export type TypeAddress = {
-    readonly kind: "TypeAddress"
+    readonly kind: "TypeAddress";
     readonly loc: Loc;
-}
+};
 
 export type TypeStateInit = {
-    readonly kind: "TypeStateInit"
+    readonly kind: "TypeStateInit";
     readonly loc: Loc;
-}
+};
 
 export type TypeString = {
-    readonly kind: "TypeString"
+    readonly kind: "TypeString";
     readonly loc: Loc;
-}
+};
 
 export type TypeStringBuilder = {
-    readonly kind: "TypeStringBuilder"
+    readonly kind: "TypeStringBuilder";
     readonly loc: Loc;
-}
+};
 
 export type TypeBounced = {
-    readonly kind: "TypeBounced"
+    readonly kind: "TypeBounced";
     readonly type: Type;
     readonly loc: Loc;
-}
+};
 
 export type TypeMaybe = {
-    readonly kind: "TypeMaybe"
+    readonly kind: "TypeMaybe";
     readonly type: Type;
     readonly loc: Loc;
-}
+};
 
 export type TypeInt = {
     readonly kind: "TyInt";

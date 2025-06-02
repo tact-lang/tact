@@ -24,49 +24,58 @@ export function* getReceivers(
         impBounces.push(Ast.Decl(bounce, via));
     }
 
-    const localInternals: Ast.DeclMem<[Ast.ReceiverSubKind, readonly Ast.Statement[]]>[] = [];
-    const localExternals: Ast.DeclMem<[Ast.ReceiverSubKind, readonly Ast.Statement[]]>[] = [];
-    const localBounces: Ast.DeclMem<[Ast.TypedParameter, readonly Ast.Statement[]]>[] = [];
+    const localInternals: Ast.DeclMem<
+        [Ast.ReceiverSubKind, readonly Ast.Statement[]]
+    >[] = [];
+    const localExternals: Ast.DeclMem<
+        [Ast.ReceiverSubKind, readonly Ast.Statement[]]
+    >[] = [];
+    const localBounces: Ast.DeclMem<
+        [Ast.TypedParameter, readonly Ast.Statement[]]
+    >[] = [];
     for (const receiver of receivers) {
         const { selector, statements, loc } = receiver;
         const via = Ast.ViaMemberOrigin(typeName.text, loc);
         switch (selector.kind) {
             case "internal":
             case "external": {
-                const arr = selector.kind === 'internal'
-                    ? localInternals
-                    : localExternals;
+                const arr =
+                    selector.kind === "internal"
+                        ? localInternals
+                        : localExternals;
                 arr.push(Ast.DeclMem([selector.subKind, statements], via));
                 continue;
             }
             case "bounce": {
-                localBounces.push(Ast.DeclMem([selector.param, statements], via));
+                localBounces.push(
+                    Ast.DeclMem([selector.param, statements], via),
+                );
             }
         }
     }
     return {
         bounce: yield* mergeBounce(
             Lazy,
-            selfTypeRef, 
-            typeName, 
-            impBounces, 
-            localBounces, 
+            selfTypeRef,
+            typeName,
+            impBounces,
+            localBounces,
             scopeRef,
         ),
         external: yield* mergeReceivers(
             Lazy,
-            selfTypeRef, 
-            typeName, 
-            impExternals, 
-            localExternals, 
+            selfTypeRef,
+            typeName,
+            impExternals,
+            localExternals,
             scopeRef,
         ),
         internal: yield* mergeReceivers(
             Lazy,
-            selfTypeRef, 
-            typeName, 
-            impInternals, 
-            localInternals, 
+            selfTypeRef,
+            typeName,
+            impInternals,
+            localInternals,
             scopeRef,
         ),
     };
@@ -77,7 +86,9 @@ function* mergeReceivers(
     selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
     imported: readonly Ast.Decl<Ast.RecvSig>[],
-    local: Ast.DeclMem<readonly [Ast.ReceiverSubKind, readonly Ast.Statement[]]>[],
+    local: Ast.DeclMem<
+        readonly [Ast.ReceiverSubKind, readonly Ast.Statement[]]
+    >[],
     scopeRef: () => Ast.Scope,
 ): Ast.WithLog<Ast.RecvSig> {
     const allMessage: Ast.DeclMem<Ast.OpcodeRecv>[] = [];
@@ -89,27 +100,51 @@ function* mergeReceivers(
     for (const { via: viaTrait, decl } of imported) {
         const { message, messageAny, stringAny, empty } = decl;
         for (const { via, decl } of message) {
-            const nextVia = Ast.ViaMemberTrait(typeName.text, viaTrait.defLoc, via);
+            const nextVia = Ast.ViaMemberTrait(
+                typeName.text,
+                viaTrait.defLoc,
+                via,
+            );
             // we don't check for duplicates in receivers here, because
             // the thing that matters is they have different opcodes
             allMessage.push(Ast.DeclMem(decl, nextVia));
         }
         if (messageAny) {
-            const nextVia = Ast.ViaMemberTrait(typeName.text, viaTrait.defLoc, messageAny.via);
+            const nextVia = Ast.ViaMemberTrait(
+                typeName.text,
+                viaTrait.defLoc,
+                messageAny.via,
+            );
             if (allMessageAny) {
-                yield ERedefineReceiver("fallback binary", allMessageAny.via, nextVia);
+                yield ERedefineReceiver(
+                    "fallback binary",
+                    allMessageAny.via,
+                    nextVia,
+                );
             }
             allMessageAny = Ast.DeclMem(messageAny.decl, nextVia);
         }
         if (stringAny) {
-            const nextVia = Ast.ViaMemberTrait(typeName.text, viaTrait.defLoc, stringAny.via);
+            const nextVia = Ast.ViaMemberTrait(
+                typeName.text,
+                viaTrait.defLoc,
+                stringAny.via,
+            );
             if (allStringAny) {
-                yield ERedefineReceiver("fallback string", allStringAny.via, nextVia);
+                yield ERedefineReceiver(
+                    "fallback string",
+                    allStringAny.via,
+                    nextVia,
+                );
             }
             allStringAny = Ast.DeclMem(stringAny.decl, nextVia);
         }
         if (empty) {
-            const nextVia = Ast.ViaMemberTrait(typeName.text, viaTrait.defLoc, empty.via);
+            const nextVia = Ast.ViaMemberTrait(
+                typeName.text,
+                viaTrait.defLoc,
+                empty.via,
+            );
             if (allEmpty) {
                 yield ERedefineReceiver("empty", allEmpty.via, nextVia);
             }
@@ -118,7 +153,10 @@ function* mergeReceivers(
     }
 
     // local
-    for (const { via, decl: [subKind, body] } of local) {
+    for (const {
+        via,
+        decl: [subKind, body],
+    } of local) {
         const statements = decodeStatementsLazy(
             Lazy,
             via.defLoc,
@@ -126,7 +164,9 @@ function* mergeReceivers(
             emptyTypeParams,
             selfTypeRef,
             Lazy({
-                callback: function* () { return Void; },
+                callback: function* () {
+                    return Void;
+                },
                 context: [],
                 loc: via.defLoc,
                 recover: Void,
@@ -137,28 +177,43 @@ function* mergeReceivers(
         switch (subKind.kind) {
             case "simple": {
                 const { name, type } = subKind.param;
-                const decoded = yield* decodeDealiasTypeLazy(Lazy, emptyTypeParams, type, scopeRef)();
-                if (decoded.kind === 'TySlice') {
+                const decoded = yield* decodeDealiasTypeLazy(
+                    Lazy,
+                    emptyTypeParams,
+                    type,
+                    scopeRef,
+                )();
+                if (decoded.kind === "TySlice") {
                     if (allMessageAny) {
-                        yield ERedefineReceiver("fallback binary", allMessageAny.via, via);
+                        yield ERedefineReceiver(
+                            "fallback binary",
+                            allMessageAny.via,
+                            via,
+                        );
                     }
                     allMessageAny = Ast.DeclMem(
                         Ast.MessageAnyRecv(name, statements),
                         via,
                     );
-                } else if (decoded.kind === 'TypeString') {
+                } else if (decoded.kind === "TypeString") {
                     if (allStringAny) {
-                        yield ERedefineReceiver("fallback string", allStringAny.via, via);
+                        yield ERedefineReceiver(
+                            "fallback string",
+                            allStringAny.via,
+                            via,
+                        );
                     }
                     allStringAny = Ast.DeclMem(
                         Ast.StringAnyRecv(name, statements),
                         via,
                     );
-                } else if (decoded.kind === 'type_ref') {
-                    allMessage.push(Ast.DeclMem(
-                        Ast.MessageRecv(name, decoded, statements),
-                        via,
-                    ));
+                } else if (decoded.kind === "type_ref") {
+                    allMessage.push(
+                        Ast.DeclMem(
+                            Ast.MessageRecv(name, decoded, statements),
+                            via,
+                        ),
+                    );
                 } else {
                     yield EInvalidRecv(via.defLoc);
                 }
@@ -166,19 +221,22 @@ function* mergeReceivers(
             }
             case "fallback": {
                 if (allEmpty) {
-                    yield ERedefineReceiver("fallback string", allEmpty.via, via);
+                    yield ERedefineReceiver(
+                        "fallback string",
+                        allEmpty.via,
+                        via,
+                    );
                 }
-                allEmpty = Ast.DeclMem(
-                    Ast.EmptyRecv(statements),
-                    via,
-                );
+                allEmpty = Ast.DeclMem(Ast.EmptyRecv(statements), via);
                 continue;
             }
             case "comment": {
-                allMessage.push(Ast.DeclMem(
-                    Ast.StringRecv(subKind.comment.value, statements),
-                    via,
-                ));
+                allMessage.push(
+                    Ast.DeclMem(
+                        Ast.StringRecv(subKind.comment.value, statements),
+                        via,
+                    ),
+                );
                 continue;
             }
         }
@@ -197,31 +255,51 @@ function* mergeBounce(
     selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
     imported: readonly Ast.Decl<Ast.BounceSig>[],
-    local: readonly Ast.DeclMem<[Ast.TypedParameter, readonly Ast.Statement[]]>[],
-    scopeRef: () => Ast.Scope
+    local: readonly Ast.DeclMem<
+        [Ast.TypedParameter, readonly Ast.Statement[]]
+    >[],
+    scopeRef: () => Ast.Scope,
 ): Ast.WithLog<Ast.BounceSig> {
     const allMessage: Ast.DeclMem<Ast.MessageRecv>[] = [];
     let allMessageAny: undefined | Ast.DeclMem<Ast.MessageAnyRecv>;
-    
+
     // imported
-    for (const { via: viaTrait, decl: { message, messageAny } } of imported) {
+    for (const {
+        via: viaTrait,
+        decl: { message, messageAny },
+    } of imported) {
         for (const { via, decl } of message) {
-            const nextVia = Ast.ViaMemberTrait(typeName.text, viaTrait.defLoc, via);
+            const nextVia = Ast.ViaMemberTrait(
+                typeName.text,
+                viaTrait.defLoc,
+                via,
+            );
             // we don't check for duplicates in receivers here, because
             // the thing that matters is they have different opcodes
             allMessage.push(Ast.DeclMem(decl, nextVia));
         }
         if (messageAny) {
-            const nextVia = Ast.ViaMemberTrait(typeName.text, viaTrait.defLoc, messageAny.via);
+            const nextVia = Ast.ViaMemberTrait(
+                typeName.text,
+                viaTrait.defLoc,
+                messageAny.via,
+            );
             if (allMessageAny) {
-                yield ERedefineReceiver("fallback binary", allMessageAny.via, nextVia);
+                yield ERedefineReceiver(
+                    "fallback binary",
+                    allMessageAny.via,
+                    nextVia,
+                );
             }
             allMessageAny = Ast.DeclMem(messageAny.decl, nextVia);
         }
     }
-    
+
     // local
-    for (const { via, decl: [{ name, type }, body] } of local) {
+    for (const {
+        via,
+        decl: [{ name, type }, body],
+    } of local) {
         const statements = decodeStatementsLazy(
             Lazy,
             via.defLoc,
@@ -229,7 +307,9 @@ function* mergeBounce(
             emptyTypeParams,
             selfTypeRef,
             Lazy({
-                callback: function* () { return Void; },
+                callback: function* () {
+                    return Void;
+                },
                 context: [],
                 loc: via.defLoc,
                 recover: Void,
@@ -237,37 +317,48 @@ function* mergeBounce(
             true,
             scopeRef,
         );
-        const decoded = yield* decodeDealiasTypeLazy(Lazy, emptyTypeParams, type, scopeRef)();
-        if (decoded.kind === 'TySlice') {
+        const decoded = yield* decodeDealiasTypeLazy(
+            Lazy,
+            emptyTypeParams,
+            type,
+            scopeRef,
+        )();
+        if (decoded.kind === "TySlice") {
             if (allMessageAny) {
-                yield ERedefineReceiver("fallback binary", allMessageAny.via, via);
+                yield ERedefineReceiver(
+                    "fallback binary",
+                    allMessageAny.via,
+                    via,
+                );
             }
             allMessageAny = Ast.DeclMem(
                 Ast.MessageAnyRecv(name, statements),
                 via,
             );
-        } else if (decoded.kind === 'type_ref' || decoded.kind === 'TypeBounced') {
-            allMessage.push(Ast.DeclMem(
-                Ast.MessageRecv(name, decoded, statements),
-                via,
-            ));
+        } else if (
+            decoded.kind === "type_ref" ||
+            decoded.kind === "TypeBounced"
+        ) {
+            allMessage.push(
+                Ast.DeclMem(Ast.MessageRecv(name, decoded, statements), via),
+            );
         } else {
             yield EInvalidRecv(via.defLoc);
         }
     }
-    
+
     return {
         message: allMessage,
         messageAny: allMessageAny,
     };
 }
 
-const EInvalidRecv = (
-    loc: Ast.Loc,
-): Ast.TcError => ({
+const EInvalidRecv = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        Ast.TEText(`Receiver's parameter must be a message type, Slice, or String`),
+        Ast.TEText(
+            `Receiver's parameter must be a message type, Slice, or String`,
+        ),
     ],
 });
 

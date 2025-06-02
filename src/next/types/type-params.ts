@@ -3,7 +3,9 @@ import { recoverName } from "@/next/types/name";
 
 export const emptyTypeParams = Ast.TypeParams([], new Set());
 
-export function* decodeTypeParams(ids: readonly Ast.TypeId[]): Ast.WithLog<Ast.TypeParams> {
+export function* decodeTypeParams(
+    ids: readonly Ast.TypeId[],
+): Ast.WithLog<Ast.TypeParams> {
     const set: Set<string> = new Set();
     const order: Ast.TypeId[] = [];
 
@@ -23,9 +25,5 @@ export function* decodeTypeParams(ids: readonly Ast.TypeId[]): Ast.WithLog<Ast.T
 
 const EDuplicateTypeParam = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Duplicate type parameter "${name}"`),
-    ],
+    descr: [Ast.TEText(`Duplicate type parameter "${name}"`)],
 });
-
-

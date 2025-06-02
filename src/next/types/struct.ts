@@ -12,8 +12,8 @@ export function* decodeStruct(
     const typeParams = yield* decodeTypeParams(struct.typeParams);
     const fields = yield* decodeFields(
         Lazy,
-        struct.fields, 
-        typeParams, 
+        struct.fields,
+        typeParams,
         scopeRef,
     );
     return Ast.StructSig(typeParams, fields);

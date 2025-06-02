@@ -117,7 +117,7 @@ export type DStatementDestruct = {
 export type DestructPattern = {
     readonly field: Id;
     readonly variable: OptionalId;
-}
+};
 
 export type DStatementBlock = {
     readonly kind: "statement_block";

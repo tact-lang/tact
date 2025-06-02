@@ -29,7 +29,13 @@ export function decodeConstantDef(
             );
             const computed = expr.computedType;
             const ascribed = yield* ascribedType();
-            yield* assignType(defLoc, emptyTypeParams, ascribed, computed, false);
+            yield* assignType(
+                defLoc,
+                emptyTypeParams,
+                ascribed,
+                computed,
+                false,
+            );
             return yield* evalExpr(expr, scopeRef);
         }
         const lazyExpr = Lazy({
@@ -42,14 +48,15 @@ export function decodeConstantDef(
     } else {
         // first we decode expression
         const expr = Lazy({
-            callback: (Lazy) => decodeExpr(
-                Lazy,
-                typeParams,
-                initializer,
-                scopeRef,
-                selfType,
-                new Map(),
-            ),
+            callback: (Lazy) =>
+                decodeExpr(
+                    Lazy,
+                    typeParams,
+                    initializer,
+                    scopeRef,
+                    selfType,
+                    new Map(),
+                ),
             context: [Ast.TEText("parsing expression")],
             loc: defLoc,
             recover: undefined,

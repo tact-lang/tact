@@ -3,9 +3,10 @@ import type * as $ from "@/next/ast/common";
 import { hideProperty } from "@/utils/tricks";
 export type Loc = $.Loc;
 export type Builtin = $.Builtin;
-export const Builtin = (): $.Builtin => Object.freeze({
-    kind: "builtin"
-});
+export const Builtin = (): $.Builtin =>
+    Object.freeze({
+        kind: "builtin",
+    });
 export const isBuiltin = ($value: Builtin) => $value.kind === "builtin";
 export type Range = $.Range;
 export const Range = (
@@ -21,8 +22,8 @@ export const Range = (
         path,
         code,
     };
-    hideProperty(result, 'code');
-    hideProperty(result, 'path');
+    hideProperty(result, "code");
+    hideProperty(result, "path");
     return Object.freeze(result);
 };
 export type Id = $.Id;

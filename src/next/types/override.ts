@@ -4,15 +4,17 @@ import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* checkFieldOverride(
     name: string,
-    prev: Ast.DeclMem<Ast.Fieldish<
-        Ast.Thunk<Ast.Recover<Ast.Value>> | undefined
-    >> | undefined,
+    prev:
+        | Ast.DeclMem<
+              Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>> | undefined>
+          >
+        | undefined,
     nextType: Ast.Thunk<Ast.DecodedType>,
     nextVia: Ast.ViaMember,
     override: boolean,
 ): Ast.WithLog<void> {
     if (prev) {
-        if (prev.decl.kind !== 'constant') {
+        if (prev.decl.kind !== "constant") {
             // cannot override field with constant
             yield Ast.ERedefineMember(name, prev.via, nextVia);
         } else if (override) {
@@ -96,7 +98,9 @@ const ENeedAbstract = (
 ): Ast.TcError => ({
     loc: next.defLoc,
     descr: [
-        Ast.TEText(`To override "${name}" it has to be "virtual" or "abstract"`),
+        Ast.TEText(
+            `To override "${name}" it has to be "virtual" or "abstract"`,
+        ),
         Ast.TEText(`First defined at`),
         Ast.TEViaMember(prev),
         Ast.TEText(`Redefined at`),
@@ -104,10 +108,7 @@ const ENeedAbstract = (
     ],
 });
 
-const EEmptyOverride = (
-    name: string,
-    next: Ast.ViaMember,
-): Ast.TcError => ({
+const EEmptyOverride = (name: string, next: Ast.ViaMember): Ast.TcError => ({
     loc: next.defLoc,
     descr: [
         Ast.TEText(`To override "${name}" it has to exist`),

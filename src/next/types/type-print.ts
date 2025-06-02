@@ -11,13 +11,13 @@ export function printType(node: Ast.DecodedType, allowRecover: boolean) {
                 return undefined;
             }
         }
-        return results.join(', ');
+        return results.join(", ");
     }
 
     function rec(node: Ast.DecodedType): undefined | string {
         switch (node.kind) {
             case "recover": {
-                return allowRecover ? '$ERROR' : undefined;
+                return allowRecover ? "$ERROR" : undefined;
             }
             case "type_ref":
             case "TypeAlias": {
@@ -50,7 +50,7 @@ export function printType(node: Ast.DecodedType, allowRecover: boolean) {
                 return typeArgs && `[${typeArgs}]`;
             }
             case "TyInt": {
-                return `Int${printIntFormat(node.format)}`
+                return `Int${printIntFormat(node.format)}`;
             }
             case "TySlice": {
                 return `Slice${printSliceFormat(node.format)}`;
@@ -92,16 +92,23 @@ export function printType(node: Ast.DecodedType, allowRecover: boolean) {
 }
 
 const printIntFormat = (format: Ast.IntFormat): string => {
-    if (format.kind === 'FInt' && format.sign === 'signed' && format.width === 257) {
-        return '';
+    if (
+        format.kind === "FInt" &&
+        format.sign === "signed" &&
+        format.width === 257
+    ) {
+        return "";
     }
-    return " as " + (format.kind === 'FVarInt' ? "var" : "")
-        + (format.sign === 'unsigned' ? 'uint' : 'int')
-        + (format.kind === 'FVarInt' ? format.width : format.width.toString());
+    return (
+        " as " +
+        (format.kind === "FVarInt" ? "var" : "") +
+        (format.sign === "unsigned" ? "uint" : "int") +
+        (format.kind === "FVarInt" ? format.width : format.width.toString())
+    );
 };
 
 const printSliceFormat = (format: Ast.SliceFormat): string => {
-    if (format.kind === 'SFBits') {
+    if (format.kind === "SFBits") {
         // FIXME: bits not divisible by 8
         return ` as bytes${format.bits >> 3}`;
     } else {
@@ -111,7 +118,9 @@ const printSliceFormat = (format: Ast.SliceFormat): string => {
 
 const printRemFormat = (format: Ast.RemFormat): string => {
     switch (format.kind) {
-        case "SFRemaining": return ` as remaining`;
-        case "SFDefault": return ``;
+        case "SFRemaining":
+            return ` as remaining`;
+        case "SFDefault":
+            return ``;
     }
 };

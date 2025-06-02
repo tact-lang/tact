@@ -13,40 +13,42 @@ export function* decodeBody(
 ): Ast.WithLog<Ast.Body> {
     switch (node.kind) {
         case "abstract_body": {
-            yield ENoBody(loc)
-            return Ast.TactBody(Lazy({
-                callback: function* () { return undefined; },
-                context: [Ast.TEText("checking body of function")],
-                loc,
-                recover: undefined,
-            }));
+            yield ENoBody(loc);
+            return Ast.TactBody(
+                Lazy({
+                    callback: function* () {
+                        return undefined;
+                    },
+                    context: [Ast.TEText("checking body of function")],
+                    loc,
+                    recover: undefined,
+                }),
+            );
         }
         case "regular_body": {
             const selfTypeRef = () => {
-                return fnType.kind === 'DecodedMethodType'
+                return fnType.kind === "DecodedMethodType"
                     ? fnType.self
                     : undefined;
             };
-            return Ast.TactBody(decodeStatementsLazy(
-                Lazy,
-                loc,
-                node.statements,
-                fnType.typeParams,
-                selfTypeRef,
-                fnType.returnType,
-                true,
-                scopeRef,
-            ));
+            return Ast.TactBody(
+                decodeStatementsLazy(
+                    Lazy,
+                    loc,
+                    node.statements,
+                    fnType.typeParams,
+                    selfTypeRef,
+                    fnType.returnType,
+                    true,
+                    scopeRef,
+                ),
+            );
         }
         case "asm_body": {
             return Ast.FiftBody(
                 Lazy({
-                    callback: () => checkShuffle(
-                        node.shuffle,
-                        fnType,
-                        loc,
-                        scopeRef,
-                    ),
+                    callback: () =>
+                        checkShuffle(node.shuffle, fnType, loc, scopeRef),
                     context: [Ast.TEText("checking shuffle")],
                     loc,
                     recover: undefined,
@@ -60,13 +62,9 @@ export function* decodeBody(
     }
 }
 
-const ENoBody = (
-    loc: Ast.Loc,
-): Ast.TcError => ({
+const ENoBody = (loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Function must have a body`),
-    ],
+    descr: [Ast.TEText(`Function must have a body`)],
 });
 
 function* checkShuffle(
@@ -107,15 +105,14 @@ function* checkShuffle(
         if (shuffleRetSet.size !== ret.length) {
             yield EDuplicateRet(loc);
         }
-        
-        const retTupleSize = yield* getRetTupleSize(
-            fnType,
-            scopeRef,
-        );
 
-        if (typeof retTupleSize !== 'undefined') {
+        const retTupleSize = yield* getRetTupleSize(fnType, scopeRef);
+
+        if (typeof retTupleSize !== "undefined") {
             const returnValueSet = new Set([
-                ...Array(retTupleSize).keys().map(x => BigInt(x))
+                ...Array(retTupleSize)
+                    .keys()
+                    .map((x) => BigInt(x)),
             ]);
 
             if (!isSubsetOf(returnValueSet, shuffleRetSet)) {
@@ -127,7 +124,7 @@ function* checkShuffle(
             }
         }
     }
-    
+
     return shuffle;
 }
 
@@ -137,16 +134,13 @@ function* getRetTupleSize(
 ): Ast.WithLog<undefined | number> {
     const type = yield* returnType();
     const baseSize = yield* getTypeTupleSize(type, scopeRef);
-    if (typeof baseSize === 'undefined') {
+    if (typeof baseSize === "undefined") {
         return undefined;
     }
-    return baseSize + (kind === 'DecodedMethodType' ? 1 : 0);
+    return baseSize + (kind === "DecodedMethodType" ? 1 : 0);
 }
 
-function* getTypeTupleSize(
-    type: Ast.DecodedType,
-    scopeRef: () => Ast.Scope,
-) {
+function* getTypeTupleSize(type: Ast.DecodedType, scopeRef: () => Ast.Scope) {
     switch (type.kind) {
         case "recover": {
             return undefined;
@@ -225,37 +219,35 @@ function* getTypeTupleSize(
 
 const EDuplicateArgs = (loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Argument rearrangement cannot have duplicates`),
-    ],
+    descr: [Ast.TEText(`Argument rearrangement cannot have duplicates`)],
 });
 
 const EWildcardArgs = (loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Argument rearrangement cannot use wildcards`),
-    ],
+    descr: [Ast.TEText(`Argument rearrangement cannot use wildcards`)],
 });
 
 const EMissingArgs = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        Ast.TEText(`Argument rearrangement must mention all function parameters`),
+        Ast.TEText(
+            `Argument rearrangement must mention all function parameters`,
+        ),
     ],
 });
 
 const EExtraArgs = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        Ast.TEText(`Argument rearrangement must mention only function parameters`),
+        Ast.TEText(
+            `Argument rearrangement must mention only function parameters`,
+        ),
     ],
 });
 
 const EDuplicateRet = (loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Return rearrangement cannot have duplicates`),
-    ],
+    descr: [Ast.TEText(`Return rearrangement cannot have duplicates`)],
 });
 
 const EMissingRet = (loc: Ast.Loc): Ast.TcError => ({
@@ -268,6 +260,8 @@ const EMissingRet = (loc: Ast.Loc): Ast.TcError => ({
 const EExtraRet = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        Ast.TEText(`Return rearrangement must mention only function parameters`),
+        Ast.TEText(
+            `Return rearrangement must mention only function parameters`,
+        ),
     ],
 });

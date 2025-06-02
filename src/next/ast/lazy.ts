@@ -2,27 +2,27 @@
 import type { Loc } from "@/next/ast/common";
 import * as E from "@/next/ast/errors";
 
-type Result<T> = 'waiting' | 'running' | readonly [T];
+type Result<T> = "waiting" | "running" | readonly [T];
 
 export const printSym = Symbol("print");
 
 export type Thunk<T> = {
-    [printSym]: () => Result<T>
-} & (() => E.WithLog<T>)
+    [printSym]: () => Result<T>;
+} & (() => E.WithLog<T>);
 
 function Thunk<T>(
     force: () => E.WithLog<T>,
     onOccurs: () => E.WithLog<T>,
 ): Thunk<T> {
-    let result: Result<T> = 'waiting';
+    let result: Result<T> = "waiting";
     function* delayed() {
-        if (typeof result !== 'string') {
+        if (typeof result !== "string") {
             return result[0];
         }
-        if (result === 'running') {
+        if (result === "running") {
             return yield* onOccurs();
         }
-        result = 'running';
+        result = "running";
         const output = yield* force();
         result = [output];
         return output;
@@ -44,25 +44,22 @@ export const FakeThunk = <T>(t: T): Thunk<T> => {
 };
 
 type Options<T> = {
-    readonly loc: Loc,
-    readonly context: readonly E.TELine[],
-    readonly recover: T,
-    readonly callback: (
-        builder: ThunkBuilder
-    ) => E.WithLog<T>
-}
+    readonly loc: Loc;
+    readonly context: readonly E.TELine[];
+    readonly recover: T;
+    readonly callback: (builder: ThunkBuilder) => E.WithLog<T>;
+};
 
-export type ThunkBuilder = <T>(
-    options: Options<T>
-) => Thunk<T>;
+export type ThunkBuilder = <T>(options: Options<T>) => Thunk<T>;
 
 const makeBuilder = (allContext: readonly E.TELine[]): ThunkBuilder => {
     return function addThunk<T>(options: Options<T>): Thunk<T> {
         return Thunk(
             function force() {
-                const nextBuilder = makeBuilder(
-                    [...options.context, ...allContext]
-                );
+                const nextBuilder = makeBuilder([
+                    ...options.context,
+                    ...allContext,
+                ]);
                 return options.callback(nextBuilder);
             },
             function* onOccurs() {
@@ -75,10 +72,7 @@ const makeBuilder = (allContext: readonly E.TELine[]): ThunkBuilder => {
 
 const EOccurs = (loc: Loc, context: readonly E.TELine[]): E.TcError => ({
     loc,
-    descr: [
-        E.TEText(`Recursive definition`),
-        ...context,
-    ],
+    descr: [E.TEText(`Recursive definition`), ...context],
 });
 
 export const thunkBuilder = makeBuilder([]);

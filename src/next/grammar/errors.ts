@@ -57,7 +57,9 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
         return l.at(loc).error(l.text`Expression is not callable`);
     },
     noGenericMethods: () => (loc: Range) => {
-        return l.at(loc).error(l.text`Cannot pass type arguments to generic method`);
+        return l
+            .at(loc)
+            .error(l.text`Cannot pass type arguments to generic method`);
     },
     noBouncedWithoutArg: () => (loc: Range) => {
         return l
@@ -168,7 +170,9 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
         return l.at(loc).error(l.text`"as" cannot be nested`);
     },
     typeArity: (name: string, expected: number) => (loc: Range) => {
-        return l.at(loc).error(l.text`${name}<> expects ${String(expected)} arguments`);
+        return l
+            .at(loc)
+            .error(l.text`${name}<> expects ${String(expected)} arguments`);
     },
     wrongVarIntSize: () => (loc: Range) => {
         return l.at(loc).error(l.text`Varint can only be 16 or 32 bits wide`);
@@ -219,10 +223,18 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
         return l.at(loc).error(l.text`set<V> takes exactly one type argument`);
     },
     abstractVirtual: () => (loc: Range) => {
-        return l.at(loc).error(l.text`"abstract" and "virtual" attributes cannot be used at the same time`);
+        return l
+            .at(loc)
+            .error(
+                l.text`"abstract" and "virtual" attributes cannot be used at the same time`,
+            );
     },
     abstractOverride: () => (loc: Range) => {
-        return l.at(loc).error(l.text`"abstract" and "override" attributes cannot be used at the same time`);
+        return l
+            .at(loc)
+            .error(
+                l.text`"abstract" and "override" attributes cannot be used at the same time`,
+            );
     },
     globalGetter: () => (loc: Range) => {
         return l
@@ -263,11 +275,7 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
             );
     },
     tooMuchInit: () => (loc: Range) => {
-        return l
-            .at(loc)
-            .error(
-                l.text`Init function was already defined`,
-            );
+        return l.at(loc).error(l.text`Init function was already defined`);
     },
     initFnAndParams: () => (loc: Range) => {
         return l
@@ -277,25 +285,15 @@ export const SyntaxErrors = <M, R>(l: SourceLogger<M, R>) => ({
             );
     },
     abstractWithBody: () => (loc: Range) => {
-        return l
-            .at(loc)
-            .error(
-                l.text`Abstract declaration cannot have a body`,
-            );
+        return l.at(loc).error(l.text`Abstract declaration cannot have a body`);
     },
     noBodyNoAbstract: () => (loc: Range) => {
         return l
             .at(loc)
-            .error(
-                l.text`Declaration without a body must be abstract`,
-            );
+            .error(l.text`Declaration without a body must be abstract`);
     },
     mustBeGeneric: () => (loc: Range) => {
-        return l
-            .at(loc)
-            .error(
-                l.text`This type must be generic`,
-            );
+        return l.at(loc).error(l.text`This type must be generic`);
     },
 });
 

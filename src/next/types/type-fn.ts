@@ -29,12 +29,8 @@ export function* decodeParams(
     const set: Set<string> = new Set();
     for (const param of params) {
         const name = yield* decodeParamName(param.name, set);
-        order.push(Ast.Parameter(
-            param.name,
-            dealias(param.type),
-            param.loc,
-        ));
-        if (typeof name !== 'undefined') {
+        order.push(Ast.Parameter(param.name, dealias(param.type), param.loc));
+        if (typeof name !== "undefined") {
             set.add(name);
         }
     }
@@ -45,7 +41,7 @@ function* decodeParamName(
     node: Ast.OptionalId,
     set: ReadonlySet<string>,
 ): Ast.WithLog<string | undefined> {
-    if (node.kind === 'wildcard') {
+    if (node.kind === "wildcard") {
         return undefined;
     }
     const name = node.text;
@@ -58,7 +54,5 @@ function* decodeParamName(
 
 const EDuplicateParam = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Duplicate parameter "${name}"`),
-    ],
+    descr: [Ast.TEText(`Duplicate parameter "${name}"`)],
 });

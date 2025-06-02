@@ -16,23 +16,25 @@ export function* decodeFunctions(
 ): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.FnSig>>> {
     const allFnSigs = [
         // imported
-        ...imported.flatMap(({ globals, importedBy }) => (
-            [...globals.functions]
-                .map(([name, fn]) => [
-                    name,
-                    Ast.Decl(fn.decl, Ast.ViaImport(importedBy, fn.via)),
-                ] as const)
-        )),
+        ...imported.flatMap(({ globals, importedBy }) =>
+            [...globals.functions].map(
+                ([name, fn]) =>
+                    [
+                        name,
+                        Ast.Decl(fn.decl, Ast.ViaImport(importedBy, fn.via)),
+                    ] as const,
+            ),
+        ),
         // local
-        ...yield* Ast.mapLog(source.items.functions, function* (fn) {
+        ...(yield* Ast.mapLog(source.items.functions, function* (fn) {
             return [
-                fn.name.text, 
+                fn.name.text,
                 Ast.Decl(
                     yield* decodeFunction(Lazy, fn, scopeRef),
-                    Ast.ViaOrigin(fn.loc, source)
-                )
+                    Ast.ViaOrigin(fn.loc, source),
+                ),
             ] as const;
-        }),
+        })),
     ];
 
     // remove duplicates and builtins

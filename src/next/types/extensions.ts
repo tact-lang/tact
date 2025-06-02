@@ -13,25 +13,30 @@ export function decodeExtensions(
     source: TactSource,
     scopeRef: () => Ast.Scope,
 ): ReadonlyMap<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>> {
-    const allExts: Map<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>[]> = new Map();
+    const allExts: Map<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>[]> =
+        new Map();
 
     // imported
     for (const { globals, importedBy } of imported) {
         for (const [name, lazyExts] of globals.extensions) {
             const map = allExts.get(name) ?? [];
             allExts.set(name, map);
-            map.push(Lazy({
-                callback: function* () {
-                    const exts = yield* lazyExts();
-                    return exts.map(ext => Ast.Decl(
-                        ext.decl,
-                        Ast.ViaImport(importedBy, ext.via),
-                    ));
-                },
-                context: [Ast.TEText(`importing extension method ${name}`)],
-                loc: Ast.Builtin(),
-                recover: [],
-            }));
+            map.push(
+                Lazy({
+                    callback: function* () {
+                        const exts = yield* lazyExts();
+                        return exts.map((ext) =>
+                            Ast.Decl(
+                                ext.decl,
+                                Ast.ViaImport(importedBy, ext.via),
+                            ),
+                        );
+                    },
+                    context: [Ast.TEText(`importing extension method ${name}`)],
+                    loc: Ast.Builtin(),
+                    recover: [],
+                }),
+            );
         }
     }
 
@@ -40,56 +45,68 @@ export function decodeExtensions(
         const name = ext.fun.name.text;
         const map = allExts.get(name) ?? [];
         allExts.set(name, map);
-        map.push(Lazy({
-            callback: function* (Lazy) {
-                const decoded = yield* decodeExt(Lazy, ext, scopeRef);
-                if (!decoded) {
-                    return [];
-                }
-                return [Ast.Decl(
-                    decoded,
-                    Ast.ViaOrigin(ext.fun.loc, source),
-                )];
-            },
-            context: [
-                Ast.TEText(`defining extension method ${ext.fun.name.text}`)
-            ],
-            loc: ext.fun.loc,
-            recover: [],
-        }));
+        map.push(
+            Lazy({
+                callback: function* (Lazy) {
+                    const decoded = yield* decodeExt(Lazy, ext, scopeRef);
+                    if (!decoded) {
+                        return [];
+                    }
+                    return [
+                        Ast.Decl(decoded, Ast.ViaOrigin(ext.fun.loc, source)),
+                    ];
+                },
+                context: [
+                    Ast.TEText(
+                        `defining extension method ${ext.fun.name.text}`,
+                    ),
+                ],
+                loc: ext.fun.loc,
+                recover: [],
+            }),
+        );
     }
 
     const result: Map<string, Ast.Thunk<Ast.Decl<Ast.ExtSig>[]>> = new Map();
     for (const [name, exts] of allExts) {
         // checking method overlap is only possible when all the types
         // can be resolved
-        result.set(name, Lazy({
-            callback: function* () {
-                // force all thunks
-                const all: Ast.Decl<Ast.ExtSig>[] = [];
-                for (const lazyExt of exts) {
-                    const exts = yield* lazyExt();
-                    all.push(...exts);
-                }
-    
-                // check overlap and deduplicate
-                const prevs: Ast.Decl<Ast.ExtSig>[] = [];
-                for (const ext of all) {
-                    const builtin = builtinMethods.get(name);
-                    if (builtin && !isCompatible(builtin, ext.decl.type)) {
-                        yield EMethodOverlap(name, Ast.ViaBuiltin(), ext.via);
-                        continue;
+        result.set(
+            name,
+            Lazy({
+                callback: function* () {
+                    // force all thunks
+                    const all: Ast.Decl<Ast.ExtSig>[] = [];
+                    for (const lazyExt of exts) {
+                        const exts = yield* lazyExt();
+                        all.push(...exts);
                     }
-                    if (yield* areCompatible(name, prevs, ext)) {
-                        prevs.push(ext);
+
+                    // check overlap and deduplicate
+                    const prevs: Ast.Decl<Ast.ExtSig>[] = [];
+                    for (const ext of all) {
+                        const builtin = builtinMethods.get(name);
+                        if (builtin && !isCompatible(builtin, ext.decl.type)) {
+                            yield EMethodOverlap(
+                                name,
+                                Ast.ViaBuiltin(),
+                                ext.via,
+                            );
+                            continue;
+                        }
+                        if (yield* areCompatible(name, prevs, ext)) {
+                            prevs.push(ext);
+                        }
                     }
-                }
-                return prevs;
-            },
-            context: [Ast.TEText(`merging extensions methods with name ${name}`)],
-            loc: Ast.Builtin(),
-            recover: [],
-        }));
+                    return prevs;
+                },
+                context: [
+                    Ast.TEText(`merging extensions methods with name ${name}`),
+                ],
+                loc: Ast.Builtin(),
+                recover: [],
+            }),
+        );
     }
 
     return result;
@@ -102,7 +119,7 @@ function* decodeExt(
 ) {
     const { selfType, mutates, fun } = node;
     const { type, body, inline, loc } = fun;
-    
+
     const decodedFn = yield* decodeFnType(Lazy, type, scopeRef);
 
     const lazySelf = decodeDealiasTypeLazy(
@@ -116,7 +133,7 @@ function* decodeExt(
     if (!self) {
         return undefined;
     }
-    
+
     const methodType = Ast.DecodedMethodType(
         mutates,
         decodedFn.typeParams,
@@ -171,15 +188,17 @@ function isCompatible(
 ) {
     const prevSelf = prev.self;
     const nextSelf = next.self;
-    return prevSelf.kind !== nextSelf.kind ||
-        prevSelf.ground === 'yes' &&
-        nextSelf.ground === 'yes' &&
-        !areEqual(prevSelf, nextSelf);
+    return (
+        prevSelf.kind !== nextSelf.kind ||
+        (prevSelf.ground === "yes" &&
+            nextSelf.ground === "yes" &&
+            !areEqual(prevSelf, nextSelf))
+    );
 }
 
 function areEqual(
     prevSelf: Ast.MethodGroundType,
-    nextSelf: Ast.MethodGroundType
+    nextSelf: Ast.MethodGroundType,
 ): boolean {
     switch (prevSelf.kind) {
         case "TyInt":
@@ -197,25 +216,33 @@ function areEqual(
             return prevSelf.kind === nextSelf.kind;
         }
         case "type_ref": {
-            return prevSelf.kind === nextSelf.kind &&
+            return (
+                prevSelf.kind === nextSelf.kind &&
                 prevSelf.name.text === nextSelf.name.text &&
-                allEqual(prevSelf.typeArgs, nextSelf.typeArgs);
+                allEqual(prevSelf.typeArgs, nextSelf.typeArgs)
+            );
         }
         case "map_type": {
-            return prevSelf.kind === nextSelf.kind &&
+            return (
+                prevSelf.kind === nextSelf.kind &&
                 allEqual(
                     [prevSelf.key, prevSelf.value],
                     [nextSelf.key, nextSelf.value],
-                );
+                )
+            );
         }
         case "TypeMaybe": {
-            return prevSelf.kind === nextSelf.kind &&
-                areEqual(prevSelf.type, prevSelf.type);
+            return (
+                prevSelf.kind === nextSelf.kind &&
+                areEqual(prevSelf.type, prevSelf.type)
+            );
         }
         case "tuple_type":
         case "tensor_type": {
-            return prevSelf.kind === nextSelf.kind &&
-                allEqual(prevSelf.typeArgs, nextSelf.typeArgs);
+            return (
+                prevSelf.kind === nextSelf.kind &&
+                allEqual(prevSelf.typeArgs, nextSelf.typeArgs)
+            );
         }
     }
 }
@@ -238,11 +265,11 @@ function* decodeSelfType(
         case "type_ref": {
             const def = scopeRef().typeDecls.get(type.name.text);
             if (!def) {
-                return throwInternal("Decoder returned broken reference")
+                return throwInternal("Decoder returned broken reference");
             }
             switch (def.decl.kind) {
                 case "alias": {
-                    return throwInternal("Decoder returned broken reference")
+                    return throwInternal("Decoder returned broken reference");
                 }
                 case "contract":
                 case "trait": {
@@ -252,11 +279,13 @@ function* decodeSelfType(
                 case "struct":
                 case "message":
                 case "union": {
-                    const allVars = type.typeArgs.filter(arg => {
-                        return arg.kind === 'TypeParam';
+                    const allVars = type.typeArgs.filter((arg) => {
+                        return arg.kind === "TypeParam";
                     });
                     if (type.typeArgs.length === allVars.length) {
-                        const argNames = new Set(allVars.map(v => v.name.text));
+                        const argNames = new Set(
+                            allVars.map((v) => v.name.text),
+                        );
                         if (argNames.size !== allVars.length) {
                             // type variables are not distinct
                             yield EBadMethodType(type.loc);
@@ -267,7 +296,7 @@ function* decodeSelfType(
                             def.decl,
                             allVars,
                             type.loc,
-                        );    
+                        );
                     }
                     if (type.typeArgs.length > 0 && allVars.length > 0) {
                         // has vars, but it's not all the parameters
@@ -283,12 +312,7 @@ function* decodeSelfType(
                         }
                         ground.push(result);
                     }
-                    return Ast.MGTypeRef(
-                        type.name,
-                        def.decl,
-                        ground,
-                        type.loc,
-                    );
+                    return Ast.MGTypeRef(type.name, def.decl, ground, type.loc);
                 }
             }
             // somehow typescript wants this
@@ -302,12 +326,11 @@ function* decodeSelfType(
             return undefined;
         }
         case "map_type": {
-            if (type.key.kind === 'TypeParam' && type.value.kind === 'TypeParam') {
-                return Ast.MVTypeMap(
-                    type.key,
-                    type.value,
-                    type.loc,
-                );
+            if (
+                type.key.kind === "TypeParam" &&
+                type.value.kind === "TypeParam"
+            ) {
+                return Ast.MVTypeMap(type.key, type.value, type.loc);
             }
             const ground = yield* toGroundType(type, scopeRef);
             if (!ground) {
@@ -321,11 +344,8 @@ function* decodeSelfType(
             return undefined;
         }
         case "TypeMaybe": {
-            if (type.type.kind === 'TypeParam') {
-                return Ast.MVTypeMaybe(
-                    type.type,
-                    type.loc,
-                );
+            if (type.type.kind === "TypeParam") {
+                return Ast.MVTypeMaybe(type.type, type.loc);
             }
             const ground = yield* toGroundType(type, scopeRef);
             if (!ground) {
@@ -334,25 +354,21 @@ function* decodeSelfType(
             }
             return ground;
         }
-        case "tensor_type": 
+        case "tensor_type":
         case "tuple_type": {
-            const mvCons = type.kind === 'tuple_type'
-                ? Ast.MVTypeTuple
-                : Ast.MVTypeTensor;
-            const allVars = type.typeArgs.filter(arg => {
-                return arg.kind === 'TypeParam';
+            const mvCons =
+                type.kind === "tuple_type" ? Ast.MVTypeTuple : Ast.MVTypeTensor;
+            const allVars = type.typeArgs.filter((arg) => {
+                return arg.kind === "TypeParam";
             });
             if (type.typeArgs.length === allVars.length) {
-                const argNames = new Set(allVars.map(v => v.name.text));
+                const argNames = new Set(allVars.map((v) => v.name.text));
                 if (argNames.size !== allVars.length) {
                     // type variables are not distinct
                     yield EBadMethodType(type.loc);
                     return undefined;
                 }
-                return mvCons(
-                    allVars,
-                    type.loc,
-                );    
+                return mvCons(allVars, type.loc);
             }
             const ground = yield* toGroundType(type, scopeRef);
             if (!ground) {
@@ -392,7 +408,7 @@ function* toGroundType(
         case "type_ref": {
             const typeDecl = scopeRef().typeDecls.get(type.name.text);
             if (!typeDecl) {
-                return throwInternal("Decoder returned broken reference")
+                return throwInternal("Decoder returned broken reference");
             }
             switch (typeDecl.decl.kind) {
                 case "contract":
@@ -401,7 +417,7 @@ function* toGroundType(
                     return undefined;
                 }
                 case "alias": {
-                    return throwInternal("Decoder returned broken reference")
+                    return throwInternal("Decoder returned broken reference");
                 }
                 case "struct":
                 case "message":
@@ -444,17 +460,23 @@ function* toGroundType(
             return child && Ast.MGTypeMaybe(child, type.loc);
         }
         case "tuple_type": {
-            const children = yield* Ast.mapLog(type.typeArgs, function* (child) {
-                const result = yield* toGroundType(child, scopeRef);
-                return result ? [result] : [];
-            });
+            const children = yield* Ast.mapLog(
+                type.typeArgs,
+                function* (child) {
+                    const result = yield* toGroundType(child, scopeRef);
+                    return result ? [result] : [];
+                },
+            );
             return Ast.MGTypeTuple(children.flat(), type.loc);
         }
         case "tensor_type": {
-            const children = yield* Ast.mapLog(type.typeArgs, function* (child) {
-                const result = yield* toGroundType(child, scopeRef);
-                return result ? [result] : [];
-            });
+            const children = yield* Ast.mapLog(
+                type.typeArgs,
+                function* (child) {
+                    const result = yield* toGroundType(child, scopeRef);
+                    return result ? [result] : [];
+                },
+            );
             return Ast.MGTypeTensor(children.flat(), type.loc);
         }
         case "TyInt":
@@ -477,20 +499,15 @@ function* toGroundType(
     }
 }
 
-const EBadMethodType = (
-    loc: Ast.Loc,
-): Ast.TcError => ({
+const EBadMethodType = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        Ast.TEText(`Type of self must either have no type parameters, or be a generic type with distinct type parameters`),
+        Ast.TEText(
+            `Type of self must either have no type parameters, or be a generic type with distinct type parameters`,
+        ),
     ],
 });
-const ENoMethods = (
-    kind: string,
-    loc: Ast.Loc,
-): Ast.TcError => ({
+const ENoMethods = (kind: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Cannot define methods on ${kind}`),
-    ],
+    descr: [Ast.TEText(`Cannot define methods on ${kind}`)],
 });

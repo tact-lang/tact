@@ -9,7 +9,7 @@ export const tactMethodIds = [113617n, 115390n, 121275n];
 const r = Ast.Builtin();
 
 const TypeParams = (typeParams: readonly string[]): Ast.TypeParams => {
-    const arr = typeParams.map(name => Ast.TypeId(name, r));
+    const arr = typeParams.map((name) => Ast.TypeId(name, r));
     return Ast.TypeParams(arr, new Set(typeParams));
 };
 
@@ -29,24 +29,44 @@ const Ref = (name: string): Ast.DTypeParamRef => {
 
 const mapType = Ast.MVTypeMap(Ref("K"), Ref("V"), r);
 
-const GenericFn = (name: string, typeParams: readonly string[], params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedFnType] => {
-    return [name, Ast.DecodedFnType(
-        TypeParams(typeParams),
-        Params(params),
-        Ast.FakeThunk(returnType),
-    )];
+const GenericFn = (
+    name: string,
+    typeParams: readonly string[],
+    params: Record<string, Ast.DecodedType>,
+    returnType: Ast.DecodedType,
+): [string, Ast.DecodedFnType] => {
+    return [
+        name,
+        Ast.DecodedFnType(
+            TypeParams(typeParams),
+            Params(params),
+            Ast.FakeThunk(returnType),
+        ),
+    ];
 };
-const Fn = (name: string, params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedFnType] => {
+const Fn = (
+    name: string,
+    params: Record<string, Ast.DecodedType>,
+    returnType: Ast.DecodedType,
+): [string, Ast.DecodedFnType] => {
     return GenericFn(name, [], params, returnType);
 };
-const MapMethod = (name: string, mutates: boolean, params: Record<string, Ast.DecodedType>, returnType: Ast.DecodedType): [string, Ast.DecodedMethodType] => {
-    return [name, Ast.DecodedMethodType(
-        mutates,
-        TypeParams(["K", "V"]),
-        mapType,
-        Params(params),
-        Ast.FakeThunk(returnType),
-    )];
+const MapMethod = (
+    name: string,
+    mutates: boolean,
+    params: Record<string, Ast.DecodedType>,
+    returnType: Ast.DecodedType,
+): [string, Ast.DecodedMethodType] => {
+    return [
+        name,
+        Ast.DecodedMethodType(
+            mutates,
+            TypeParams(["K", "V"]),
+            mapType,
+            Params(params),
+            Ast.FakeThunk(returnType),
+        ),
+    ];
 };
 
 export const Int = Ast.TypeInt(Ast.IFInt("signed", 257, r), r);
@@ -59,15 +79,28 @@ export const Bool = Ast.TypeBool(r);
 export const Address = Ast.TypeAddress(r);
 export const String = Ast.TypeString(r);
 export const StringBuilder = Ast.TypeStringBuilder(r);
-export const MapType = (k: Ast.DecodedType, v: Ast.DecodedType) => Ast.DTypeMap(k, v, r);
-export const Maybe = (t: Ast.DecodedType) => Ast.DTypeMaybe(t, r)
+export const MapType = (k: Ast.DecodedType, v: Ast.DecodedType) =>
+    Ast.DTypeMap(k, v, r);
+export const Maybe = (t: Ast.DecodedType) => Ast.DTypeMaybe(t, r);
 export const Unit = Ast.TypeUnit(r);
 export const StateInit = Ast.DTypeStateInit(r);
 
-export const builtinTypes = new Map([
-    "Int", "Slice", "Cell", "Builder", "Void", "Null", "Bool",
-    "Address", "String", "StringBuilder", "Map", "Maybe"
-].map(s => [s, s]));
+export const builtinTypes = new Map(
+    [
+        "Int",
+        "Slice",
+        "Cell",
+        "Builder",
+        "Void",
+        "Null",
+        "Bool",
+        "Address",
+        "String",
+        "StringBuilder",
+        "Map",
+        "Maybe",
+    ].map((s) => [s, s]),
+);
 
 const ArithBin = (name: string) => {
     return Fn(name, { left: Int, right: Int }, Int);
@@ -187,13 +220,15 @@ export const builtinAugmented: Map<string, Ast.DecodedFnType> = new Map([
     BoolAssign("||="),
 ]);
 
-export const getStaticBuiltin = (type: Ast.DecodedType): Map<string, Ast.DecodedFnType> => {
+export const getStaticBuiltin = (
+    type: Ast.DecodedType,
+): Map<string, Ast.DecodedFnType> => {
     return new Map([
         // Foo.fromSlice(slice: Slice)
         Fn("fromSlice", { slice: Slice }, type),
         // Foo.fromSlice(cell: Cell)
         Fn("fromCell", { cell: Cell }, type),
-    ])
+    ]);
 };
 
 export const structBuiltin = new Map([
@@ -209,5 +244,5 @@ export const messageBuiltin = new Map([
     // Foo.toCell(): Cell
     Fn("toCell", {}, Cell),
     // Foo.opcode(): Int
-    Fn("opcode", {}, Int)
+    Fn("opcode", {}, Int),
 ]);

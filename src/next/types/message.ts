@@ -17,8 +17,8 @@ export function* decodeMessage(
 ): Ast.WithLog<Ast.MessageSig> {
     const fields = yield* decodeFields(
         Lazy,
-        message.fields, 
-        emptyTypeParams, 
+        message.fields,
+        emptyTypeParams,
         scopeRef,
     );
     const lazyExpr = Lazy({
@@ -47,34 +47,22 @@ export function* decodeMessage(
 
     return Ast.MessageSig(lazyExpr, fields);
 }
-const EZero = (
-    next: Ast.Loc,
-): Ast.TcError => ({
+const EZero = (next: Ast.Loc): Ast.TcError => ({
     loc: next,
-    descr: [
-        Ast.TEText(`Zero opcode is reserved for text comments`),
-    ],
+    descr: [Ast.TEText(`Zero opcode is reserved for text comments`)],
 });
-const ENegative = (
-    next: Ast.Loc,
-): Ast.TcError => ({
+const ENegative = (next: Ast.Loc): Ast.TcError => ({
     loc: next,
-    descr: [
-        Ast.TEText(`Opcode must be positive`),
-    ],
+    descr: [Ast.TEText(`Opcode must be positive`)],
 });
-const ETooLarge = (
-    next: Ast.Loc,
-): Ast.TcError => ({
+const ETooLarge = (next: Ast.Loc): Ast.TcError => ({
     loc: next,
-    descr: [
-        Ast.TEText(`Opcode is too large`),
-    ],
+    descr: [Ast.TEText(`Opcode is too large`)],
 });
 
 function* decodeOpcode(
     Lazy: Ast.ThunkBuilder,
-    typeParams: Ast.TypeParams, 
+    typeParams: Ast.TypeParams,
     opcode: Ast.Expression | undefined,
     messageName: string,
     fieldsNames: readonly string[],
@@ -90,13 +78,15 @@ function* decodeOpcode(
             new Map(),
         );
         const computed = expr.computedType;
-        if (yield* assignType(opcode.loc, emptyTypeParams, Int, computed, false)) {
+        if (
+            yield* assignType(opcode.loc, emptyTypeParams, Int, computed, false)
+        ) {
             const result = yield* evalExpr(expr, scopeRef);
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (result.kind === 'number') {
-                return result.value
+            if (result.kind === "number") {
+                return result.value;
             } else {
-                return throwInternal("Const eval returned non-number for Int")
+                return throwInternal("Const eval returned non-number for Int");
             }
         }
     }

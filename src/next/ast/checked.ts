@@ -4,7 +4,11 @@ import type { DecodedType, DTypeRef, DTypeBounced } from "@/next/ast/dtype";
 import type { Effects } from "@/next/ast/effects";
 import type { Thunk } from "@/next/ast/lazy";
 import type { SelfType } from "@/next/ast/mtype";
-import type { AsmInstruction, AsmShuffle, ContractAttribute } from "@/next/ast/root";
+import type {
+    AsmInstruction,
+    AsmShuffle,
+    ContractAttribute,
+} from "@/next/ast/root";
 import type { Value } from "@/next/ast/value";
 import type { ViaMember, ViaUser } from "@/next/ast/via";
 import type { TactImport } from "@/next/imports/source";
@@ -14,21 +18,21 @@ export type SourceCheckResult = {
     readonly importedBy: TactImport;
     // scopes that were computed from this file
     readonly globals: Scope;
-}
+};
 
 export type Scope = {
     readonly typeDecls: ReadonlyMap<string, Decl<TypeDeclSig>>;
     readonly functions: ReadonlyMap<string, Decl<FnSig>>;
     readonly constants: ReadonlyMap<string, Decl<ConstSig>>;
     readonly extensions: ReadonlyMap<string, Thunk<readonly Decl<ExtSig>[]>>;
-}
+};
 
 export type Decl<T> = {
     readonly decl: T;
     readonly via: ViaUser;
-}
+};
 
-export type Recover<T> = T | undefined
+export type Recover<T> = T | undefined;
 
 export type TypeDeclSig =
     | AliasSig
@@ -36,25 +40,25 @@ export type TypeDeclSig =
     | TraitSig
     | StructSig
     | MessageSig
-    | UnionSig
+    | UnionSig;
 
 export type TypeDeclRefable =
     | ContractSig
     | TraitSig
     | StructSig
     | MessageSig
-    | UnionSig
+    | UnionSig;
 
 export type ConstSig = {
     readonly initializer: Thunk<Recover<Value>>;
     readonly type: Thunk<DecodedType>;
-}
+};
 
 export type FnSig = {
     readonly type: DecodedFnType;
     readonly inline: boolean;
     readonly body: Body;
-}
+};
 
 export type Statements = Thunk<Recover<StatementsAux>>;
 
@@ -63,7 +67,7 @@ export type StatementsAux = {
     readonly effects: Effects;
 };
 
-export type Body = TactBody | FuncBody | FiftBody
+export type Body = TactBody | FuncBody | FiftBody;
 
 export type TactBody = {
     readonly kind: "tact";
@@ -83,84 +87,78 @@ export type ExtSig = {
     readonly type: DecodedMethodType;
     readonly inline: boolean;
     readonly body: Body;
-}
+};
 
 export type AliasSig = {
-    readonly kind: 'alias';
+    readonly kind: "alias";
     readonly typeParams: TypeParams;
     readonly type: Thunk<DecodedType>;
-}
+};
 
-export type InitSig =
-    | InitEmpty
-    | InitSimple
-    | InitFn
+export type InitSig = InitEmpty | InitSimple | InitFn;
 export type InitEmpty = {
-    readonly kind: 'empty';
+    readonly kind: "empty";
     // initOf() would take 0 parameters
     // values to fill all the fields
     readonly fill: Thunk<Recover<Ordered<Thunk<Recover<Value>>>>>;
-}
+};
 export type InitSimple = {
-    readonly kind: 'simple';
+    readonly kind: "simple";
     // initOf() takes these parameters and
     // sets them into correspondingly named fields
     readonly fill: Ordered<InitParam>;
     readonly loc: Loc;
-}
+};
 export type InitFn = {
-    readonly kind: 'function';
+    readonly kind: "function";
     // here we just specify the function
     readonly params: Parameters;
     readonly statements: Statements;
-}
+};
 export type InitParam = {
     readonly type: Thunk<DecodedType>;
     readonly init: undefined | Thunk<Recover<Value>>;
     readonly loc: Loc;
-}
+};
 
 export type ContractSig = {
-    readonly kind: 'contract';
+    readonly kind: "contract";
     readonly attributes: readonly ContractAttribute[];
     readonly init: InitSig;
     readonly content: Thunk<ContractContent>;
-}
-export type ContractContent = CommonSig<
-    Thunk<Recover<Value>>,
-    Body
->
+};
+export type ContractContent = CommonSig<Thunk<Recover<Value>>, Body>;
 export type TraitSig = {
-    readonly kind: 'trait';
+    readonly kind: "trait";
     readonly content: Thunk<TraitContent>;
-}
+};
 export type TraitContent = CommonSig<
     Thunk<Recover<Value>> | undefined,
     Body | undefined
->
+>;
 export type CommonSig<Expr, Body> = {
     readonly fieldish: Ordered<DeclMem<Fieldish<Expr>>>;
     readonly methods: ReadonlyMap<string, DeclMem<MethodSig<Body>>>;
     readonly receivers: Receivers;
-}
+};
 export type Receivers = {
     readonly bounce: BounceSig;
     readonly internal: RecvSig;
     readonly external: RecvSig;
-}
+};
 
 export type Fieldish<Expr> = InhFieldSig | FieldConstSig<Expr>;
 export type InhFieldSig = {
-    readonly kind: 'field';
-    readonly type: Thunk<DecodedType>
+    readonly kind: "field";
+    readonly type: Thunk<DecodedType>;
     readonly init: Thunk<Recover<Value>> | undefined;
-}
+};
 export type FieldConstSig<Expr> = {
-    readonly kind: 'constant';
+    readonly kind: "constant";
     readonly overridable: boolean;
     readonly type: Thunk<DecodedType>;
     readonly init: Expr;
-}
+};
 
 export type MethodSig<Body> = {
     readonly overridable: boolean;
@@ -168,13 +166,13 @@ export type MethodSig<Body> = {
     readonly inline: boolean;
     readonly body: Body;
     readonly getMethodId: Thunk<Recover<bigint>> | undefined;
-}
+};
 
 export type BounceSig = {
     // NB! can't compute opcodes until all receivers are present
     readonly message: readonly DeclMem<MessageRecv>[];
     readonly messageAny: undefined | DeclMem<MessageAnyRecv>;
-}
+};
 
 export type RecvSig = {
     // NB! can't compute opcodes until all receivers are present
@@ -182,7 +180,7 @@ export type RecvSig = {
     readonly messageAny: undefined | DeclMem<MessageAnyRecv>;
     readonly stringAny: undefined | DeclMem<StringAnyRecv>;
     readonly empty: undefined | DeclMem<EmptyRecv>;
-}
+};
 
 export type OpcodeRecv = MessageRecv | StringRecv;
 export type MessageRecv = {
@@ -190,53 +188,53 @@ export type MessageRecv = {
     readonly name: OptionalId;
     readonly type: DTypeRef | DTypeBounced;
     readonly statements: Statements;
-}
+};
 export type MessageAnyRecv = {
     readonly name: OptionalId;
     readonly statements: Statements;
-}
+};
 export type StringRecv = {
     readonly kind: "string";
     readonly comment: string;
     readonly statements: Statements;
-}
+};
 export type StringAnyRecv = {
     readonly name: OptionalId;
     readonly statements: Statements;
-}
+};
 export type EmptyRecv = {
     readonly statements: Statements;
-}
+};
 
 export type DeclMem<T> = {
     readonly decl: T;
     readonly via: ViaMember;
-}
+};
 
 export type StructSig = {
     readonly kind: "struct";
     readonly typeParams: TypeParams;
     readonly fields: Ordered<InhFieldSig>;
-}
+};
 
 export type MessageSig = {
     readonly kind: "message";
     readonly opcode: Thunk<Recover<bigint>>;
     readonly fields: Ordered<InhFieldSig>;
-}
+};
 
 export type UnionSig = {
     readonly kind: "union";
     readonly typeParams: TypeParams;
     readonly cases: ReadonlyMap<string, ReadonlyMap<string, InhFieldSig>>;
-}
+};
 
 export type DecodedFnType = {
     readonly kind: "DecodedFnType";
     readonly typeParams: TypeParams;
     readonly params: Parameters;
-    readonly returnType: Thunk<DecodedType>,
-}
+    readonly returnType: Thunk<DecodedType>;
+};
 
 export type DecodedMethodType = {
     readonly kind: "DecodedMethodType";
@@ -244,8 +242,8 @@ export type DecodedMethodType = {
     readonly typeParams: TypeParams;
     readonly self: SelfType;
     readonly params: Parameters;
-    readonly returnType: Thunk<DecodedType>,
-}
+    readonly returnType: Thunk<DecodedType>;
+};
 
 export type DecodedParameter = {
     readonly name: OptionalId;
@@ -256,12 +254,12 @@ export type DecodedParameter = {
 export type Ordered<T> = {
     readonly order: readonly string[];
     readonly map: ReadonlyMap<string, T>;
-}
+};
 
 export type Parameters = {
     readonly order: readonly Parameter[];
     readonly set: ReadonlySet<string>;
-}
+};
 
 export type Parameter = {
     readonly name: OptionalId;
@@ -272,4 +270,4 @@ export type Parameter = {
 export type TypeParams = {
     readonly order: readonly TypeId[];
     readonly set: ReadonlySet<string>;
-}
+};

@@ -4,7 +4,13 @@ import { parentPath, createMemoryFs, createProxyFs } from "@/next/fs";
 import { getFiles } from "@/next/stdlib";
 import type { Cursor } from "@/next/fs";
 import type { AnyLogger, Logger, SourceLogger } from "@/error/logger-util";
-import type { FuncImport, Implicit, ResolvedImport, TactImport, TactSource } from "@/next/imports/source";
+import type {
+    FuncImport,
+    Implicit,
+    ResolvedImport,
+    TactImport,
+    TactSource,
+} from "@/next/imports/source";
 import type { ModuleItems, Loc } from "@/next/ast";
 import { hideProperty } from "@/utils/tricks";
 
@@ -61,7 +67,7 @@ export const readSource = async <M>({
                 imports.push(FuncImport(code, loc));
             }
         }
-        return { kind: 'tact', path, code, imports, items };
+        return { kind: "tact", path, code, imports, items };
     };
 
     const resolveSource = async (
@@ -132,7 +138,7 @@ export const ProjectReader = async <M>(log: Logger<M, void>) => {
                 kind: "tact",
                 source: stdStd,
                 loc: {
-                    kind: 'implicit',
+                    kind: "implicit",
                 },
             },
         ];
@@ -150,18 +156,23 @@ export const ProjectReader = async <M>(log: Logger<M, void>) => {
 
 const TactImport = (source: TactSource, loc: Loc | Implicit) => {
     const result: TactImport = { kind: "tact", source, loc };
-    hideProperty(result, 'source');
+    hideProperty(result, "source");
     return result;
 };
 
 const FuncImport = (code: string, loc: Loc) => {
     const result: FuncImport = { kind: "func", code, loc };
-    hideProperty(result, 'code');
+    hideProperty(result, "code");
     return result;
 };
 
-const TactSource = (path: string, code: string, imports: readonly ResolvedImport[], items: ModuleItems) => {
-    const result: TactSource = { kind: 'tact', path, code, imports, items };
-    hideProperty(result, 'code');
+const TactSource = (
+    path: string,
+    code: string,
+    imports: readonly ResolvedImport[],
+    items: ModuleItems,
+) => {
+    const result: TactSource = { kind: "tact", path, code, imports, items };
+    hideProperty(result, "code");
     return result;
 };

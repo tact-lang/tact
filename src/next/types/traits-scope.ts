@@ -16,33 +16,21 @@ export function* getInheritedTraits(
             continue;
         }
         const { via, decl: traitDecl } = decl;
-        if (traitDecl.kind !== 'trait') {
+        if (traitDecl.kind !== "trait") {
             yield EOnlyTraits(trait.loc);
             continue;
         }
-        prevTraits.push(Ast.Decl(
-            yield* traitDecl.content(),
-            via,
-        ));
+        prevTraits.push(Ast.Decl(yield* traitDecl.content(), via));
     }
     return prevTraits;
 }
 
-const EUndefinedTrait = (
-    name: string,
-    loc: Ast.Loc,
-): Ast.TcError => ({
+const EUndefinedTrait = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Traits "${name}" is not defined`),
-    ],
+    descr: [Ast.TEText(`Traits "${name}" is not defined`)],
 });
 
-const EOnlyTraits = (
-    loc: Ast.Loc,
-): Ast.TcError => ({
+const EOnlyTraits = (loc: Ast.Loc): Ast.TcError => ({
     loc,
-    descr: [
-        Ast.TEText(`Can only inherit traits`),
-    ],
+    descr: [Ast.TEText(`Can only inherit traits`)],
 });

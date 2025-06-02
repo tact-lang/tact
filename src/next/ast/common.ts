@@ -10,7 +10,7 @@ export type Range = {
     readonly end: number;
     readonly path: string;
     readonly code: string;
-}
+};
 
 export type OptionalId = Id | Wildcard;
 

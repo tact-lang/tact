@@ -22,4 +22,4 @@ export type FuncImport = {
 
 export type Implicit = {
     readonly kind: "implicit";
-}
+};

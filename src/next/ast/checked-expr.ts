@@ -1,7 +1,11 @@
 import type { Ordered, Recover } from "@/next/ast/checked";
 import type { Id, Loc, TypeId } from "@/next/ast/common";
 import type * as D from "@/next/ast/dtype";
-import type { BinaryOperation, NumberBase, UnaryOperation } from "@/next/ast/expression";
+import type {
+    BinaryOperation,
+    NumberBase,
+    UnaryOperation,
+} from "@/next/ast/expression";
 import type { SelfType } from "@/next/ast/mtype";
 
 export type TypeArgs = ReadonlyMap<string, D.DecodedType>;
@@ -30,16 +34,13 @@ export type DecodedExpression =
     | DMapLiteral
     | DSetLiteral;
 
-export type LValue =
-    | LVar
-    | LSelf
-    | LFieldAccess
+export type LValue = LVar | LSelf | LFieldAccess;
 
 export type LSelf = {
     readonly kind: "self";
     readonly computedType: SelfType;
     readonly loc: Loc;
-}
+};
 
 export type LVar = {
     readonly kind: "var";
@@ -60,7 +61,7 @@ export type DSelf = {
     readonly kind: "self";
     readonly computedType: SelfType;
     readonly loc: Loc;
-}
+};
 
 export type DVar = {
     readonly kind: "var";
@@ -141,7 +142,7 @@ export type DThrowCall = {
     readonly args: readonly DecodedExpression[];
     readonly computedType: D.DecodedType;
     readonly loc: Loc;
-}
+};
 
 // builtins or top-level (module) functions
 export type DStaticCall = {

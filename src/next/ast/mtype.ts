@@ -31,24 +31,24 @@ export type MethodGroundType =
     | MGTypeStringBuilder;
 
 export type Ground<T> = T & {
-    readonly ground: "yes",
-}
+    readonly ground: "yes";
+};
 
-export type MGTypeInt = Ground<Ast.TypeInt>
-export type MGTypeSlice = Ground<Ast.TypeSlice>
-export type MGTypeCell = Ground<Ast.TypeCell>
-export type MGTypeBuilder = Ground<Ast.TypeBuilder>
-export type MGTypeUnit = Ground<Ast.TypeUnit>
-export type MGTypeVoid = Ground<Ast.TypeVoid>
-export type MGTypeNull = Ground<Ast.TypeNull>
-export type MGTypeBool = Ground<Ast.TypeBool>
-export type MGTypeAddress = Ground<Ast.TypeAddress>
-export type MGTypeStateInit = Ground<Ast.TypeStateInit>
-export type MGTypeString = Ground<Ast.TypeString>
-export type MGTypeStringBuilder = Ground<Ast.TypeStringBuilder>
+export type MGTypeInt = Ground<Ast.TypeInt>;
+export type MGTypeSlice = Ground<Ast.TypeSlice>;
+export type MGTypeCell = Ground<Ast.TypeCell>;
+export type MGTypeBuilder = Ground<Ast.TypeBuilder>;
+export type MGTypeUnit = Ground<Ast.TypeUnit>;
+export type MGTypeVoid = Ground<Ast.TypeVoid>;
+export type MGTypeNull = Ground<Ast.TypeNull>;
+export type MGTypeBool = Ground<Ast.TypeBool>;
+export type MGTypeAddress = Ground<Ast.TypeAddress>;
+export type MGTypeStateInit = Ground<Ast.TypeStateInit>;
+export type MGTypeString = Ground<Ast.TypeString>;
+export type MGTypeStringBuilder = Ground<Ast.TypeStringBuilder>;
 
 export type MGTypeRef = {
-    readonly ground: "yes",
+    readonly ground: "yes";
     readonly kind: "type_ref";
     readonly name: TypeId;
     readonly type: TypeDeclRefable;
@@ -58,10 +58,10 @@ export type MGTypeRef = {
 
 export type MGTypeMaybe = {
     readonly ground: "yes";
-    readonly kind: "TypeMaybe"
+    readonly kind: "TypeMaybe";
     readonly type: MethodGroundType;
     readonly loc: Loc;
-}
+};
 
 export type MGTypeMap = {
     readonly ground: "yes";
@@ -85,10 +85,8 @@ export type MGTypeTensor = {
     readonly loc: Loc;
 };
 
-
-
 export type MVTypeRef = {
-    readonly ground: "no",
+    readonly ground: "no";
     readonly kind: "type_ref";
     readonly name: TypeId;
     readonly type: TypeDeclRefable;
@@ -97,14 +95,14 @@ export type MVTypeRef = {
 };
 
 export type MVTypeMaybe = {
-    readonly ground: "no",
-    readonly kind: "TypeMaybe"
+    readonly ground: "no";
+    readonly kind: "TypeMaybe";
     readonly type: DTypeParamRef;
     readonly loc: Loc;
-}
+};
 
 export type MVTypeMap = {
-    readonly ground: "no",
+    readonly ground: "no";
     readonly kind: "map_type";
     readonly key: DTypeParamRef;
     readonly value: DTypeParamRef;
@@ -112,14 +110,14 @@ export type MVTypeMap = {
 };
 
 export type MVTypeTuple = {
-    readonly ground: "no",
+    readonly ground: "no";
     readonly kind: "tuple_type";
     readonly typeArgs: readonly DTypeParamRef[];
     readonly loc: Loc;
 };
 
 export type MVTypeTensor = {
-    readonly ground: "no",
+    readonly ground: "no";
     readonly kind: "tensor_type";
     readonly typeArgs: readonly DTypeParamRef[];
     readonly loc: Loc;
