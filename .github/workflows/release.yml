@@ -1,6 +1,7 @@
 name: Bump version in dependency repositories
 
 on:
+  workflow_dispatch: {}
   release:
     types: [published]
 
@@ -8,7 +9,7 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: Send repository_dispatch to web-ide
         uses: peter-evans/repository-dispatch@v3
