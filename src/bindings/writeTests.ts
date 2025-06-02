@@ -43,10 +43,6 @@ function getReceiverFunctionName(receiver: ABIReceiver): string {
     return name;
 }
 
-function getGetterFunctionName(getter: ABIGetter): string {
-    return getter.name.charAt(0).toUpperCase() + getter.name.slice(1);
-}
-
 export function writeTests(
     abi: ContractABI,
     _ctx: CompilerContext,
@@ -99,8 +95,7 @@ export function writeTests(
             w.write("// Test getters");
             if (abi.getters && abi.getters.length > 0) {
                 for (const getter of abi.getters) {
-                    const getterName = getGetterFunctionName(getter);
-                    w.write(`getterTest${getterName}(fromInit);`);
+                    w.write(`getterTest${getter.name}(fromInit);`);
                 }
             }
         });
@@ -181,8 +176,7 @@ export function writeTests(
     // Generate tests for getters
     if (abi.getters && abi.getters.length > 0) {
         for (const getter of abi.getters) {
-            const getterName = getGetterFunctionName(getter);
-            generateBody("getterTest" + getterName, getterName);
+            generateBody("getterTest" + getter.name, getter.name);
         }
     }
 
