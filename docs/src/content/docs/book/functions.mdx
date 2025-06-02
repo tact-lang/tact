@@ -483,6 +483,12 @@ contract ManyFields(
 }
 ```
 
+Keep in mind that getters can obtain the contract's data only off-chain. However, for one contract to retrieve data from another contract on-chain, it must exchange messages with it. Since communication is asynchronous, the received data might become irrelevant or invalid because, by the time the message with that data reaches your contract, the actual state of variables on another contract might have changed already.
+
+Thus, efficient data exchange is only feasible in contract systems where you have control over the source code of all contracts or when the interface and behavior of some contracts are defined strictly according to some [standards](https://github.com/ton-blockchain/teps), such as [Jettons](/cookbook/jettons) or [NFTs](/cookbook/nfts).
+
+Even in such cases, contracts on TON exchange messages as signals to perform a certain action on or with the sent data but never merely to read the state of another contract.
+
 ### Method IDs
 
 Like other functions in TON contracts, getters have their _unique_ associated function selectors, which are 19-bit signed integer identifiers commonly called [_method IDs_](#low-level-representation).
@@ -532,6 +538,14 @@ contract AntiPositive() {
     }
 }
 ```
+
+### Off-chain calls
+
+You can call getter functions off-chain by using either a [proxy HTTP API](https://docs.ton.org/v3/guidelines/dapps/apis-sdks/ton-http-apis) or a [secure ADNL API](https://docs.ton.org/v3/guidelines/dapps/apis-sdks/ton-adnl-apis) for direct connections to TON nodes. For your convenience, there are many [SDKs for various general-purpose programming languages](https://docs.ton.org/v3/guidelines/dapps/apis-sdks/sdk). And to call getter functions locally, use the Tact-generated [contract wrapper class](/book/debug#wrappers-contract).
+
+Notice that in those APIs and SDKs, getters are often referred to as _get methods_, as they are, in fact, callable methods of contracts that behave somewhat similarly to get methods in many object-oriented programming languages.
+
+If the contract is already deployed to the testnet or the mainnet, some TON Blockchain explorers allow you to call get methods directly from their interface, providing their names and input stack arguments. As with other ways of calling getters, if you try to call a non-existent getter, an [exit code 11](/book/exit-codes#11) will be thrown: `"Unknown" error`.
 
 ## `init` — constructor function {#init}
 

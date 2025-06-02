@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+
+- Described off-chain calls and mention exit code 11 for getters: PR [#3314](https://github.com/tact-lang/tact/pull/3314)
+- Remarked the futility of synchronous on-chain data retrieval patterns for getters: PR [#3316](https://github.com/tact-lang/tact/pull/3316)
+
+## [1.6.13] - 2025-05-29
+
 ### Language features
 
 - Support `fromCell()` and `fromSlice()` methods on contract types: PR [#3305](https://github.com/tact-lang/tact/pull/3305)

@@ -374,7 +374,9 @@ contract DictPic {
 
 ### 11: "Unknown" error {#11}
 
-Described in the [TVM][tvm] docs as "Unknown error, may be thrown by user programs," although most commonly used for problems with queuing a message send or problems with [get-methods](https://docs.ton.org/develop/smart-contracts/guidelines/get-methods).
+Described in the [TVM][tvm] docs as "Unknown error, may be thrown by user programs," although most commonly used for problems with queuing a message send or problems with [getters](/book/functions#get).
+
+In particular, if you try to send an ill-formed message on-chain or to call a non-existent getter function off-chain, an exit code 11 will be thrown.
 
 ```tact
 try {
