@@ -113,6 +113,7 @@ export function writeTests(
     w.write(`const globalSetup = async (fromInit: ${FromInit}) => {`);
     w.inIndent(() => {
         w.append("const blockchain = await Blockchain.create();");
+        w.append("// @ts-ignore");
         w.append(`const contract = await blockchain.openContract(await fromInit(
         // TODO: implement default values
     ));
