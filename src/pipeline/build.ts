@@ -14,6 +14,7 @@ import type { TypeDescription } from "@/types/types";
 import { doPackaging } from "@/pipeline/packaging";
 import { doBindings } from "@/pipeline/bindings";
 import { doReports } from "@/pipeline/reports";
+import { doTests } from "@/pipeline/tests";
 import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
 import * as Stdlib from "@/stdlib/stdlib";
 
@@ -141,6 +142,11 @@ export async function build(args: {
 
     const bindingsRes = doBindings(bCtx, packages);
     if (!bindingsRes) {
+        return BuildFail(bCtx.errorMessages);
+    }
+
+    const testsRes = doTests(bCtx, packages);
+    if (!testsRes) {
         return BuildFail(bCtx.errorMessages);
     }
 
