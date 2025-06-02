@@ -1,5 +1,6 @@
 import { throwInternal } from "@/error/errors";
-import type { DecodedType, Loc, Via, ViaMember, ViaUser } from "@/next/ast";
+import type { DecodedType } from "@/next/ast/dtype";
+import type { Loc } from "@/next/ast/common";
 import type * as V from "@/next/ast/via";
 
 export type WithLog<T> = Generator<TcError, T>
@@ -43,7 +44,7 @@ export function* filterLog<T>(xs: readonly T[], f: (x: T) => WithLog<boolean>): 
     return result;
 }
 
-export function* toMap<V extends { via: ViaUser }>(
+export function* toMap<V extends { via: V.ViaUser }>(
     kind: string,
     xs: readonly (readonly [string, V])[],
 ): WithLog<Map<string, V>> {
@@ -121,7 +122,7 @@ export const viaToRange = ({ imports, defLoc: definedAt }: V.ViaUser): Loc => {
     return throwInternal("Implicit import shadows something. Duplicates in stdlib?");
 };
 
-export const ERedefine = (kind: string, name: string, prev: Via, next: ViaUser): TcError => ({
+export const ERedefine = (kind: string, name: string, prev: V.Via, next: V.ViaUser): TcError => ({
     loc: viaToRange(next),
     descr: [
         TEText(`There already is a ${kind} "${name}" from`),
@@ -131,8 +132,8 @@ export const ERedefine = (kind: string, name: string, prev: Via, next: ViaUser):
 
 export const ERedefineMember = (
     name: string,
-    prev: ViaMember,
-    next: ViaMember,
+    prev: V.ViaMember,
+    next: V.ViaMember,
 ): TcError => ({
     loc: next.defLoc,
     descr: [

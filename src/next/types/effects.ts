@@ -1,5 +1,4 @@
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 
 export const emptyEff: Ast.Effects = Object.freeze({
     returnOrThrow: false,
@@ -18,7 +17,7 @@ export const mergeEff = (left: Ast.Effects, right: Ast.Effects): Ast.Effects => 
 export function* setHadAssign(
     eff: Ast.Effects,
     lvalue: Ast.LValue,
-): E.WithLog<Ast.Effects> {
+): Ast.WithLog<Ast.Effects> {
     const setSelfPaths = new Set(eff.setSelfPaths);
     switch (lvalue.kind) {
         case "self": {
@@ -39,10 +38,10 @@ export function* setHadAssign(
     }
     return Ast.Effects(eff.returnOrThrow, setSelfPaths);
 }
-const ENoSelfAssign = (loc: Ast.Loc): E.TcError => ({
+const ENoSelfAssign = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Cannot assign to self`),
+        Ast.TEText(`Cannot assign to self`),
     ],
 });
 
@@ -52,7 +51,7 @@ export function* setHadExit(
     successful: boolean, 
     required: undefined | ReadonlySet<string>,
     returnLoc: Ast.Loc,
-): E.WithLog<Ast.Effects> {
+): Ast.WithLog<Ast.Effects> {
     if (successful && required) {
         const missing = [...required].filter(p => !eff.setSelfPaths.has(p));
         for (const fieldName of missing) {
@@ -61,9 +60,9 @@ export function* setHadExit(
     }
     return Ast.Effects(true, eff.setSelfPaths);
 }
-const EMissingSelfInit = (name: string, loc: Ast.Loc): E.TcError => ({
+const EMissingSelfInit = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Field "self.${name}" is not initialized by this moment`),
+        Ast.TEText(`Field "self.${name}" is not initialized by this moment`),
     ],
 });

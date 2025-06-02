@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { throwInternal } from "@/error/errors";
 import { decodeTypeLazy } from "@/next/types/type";
 import { checkFieldOverride } from "@/next/types/override";
@@ -19,7 +18,7 @@ export function* getFieldishGeneral(
     constants: readonly Ast.FieldConstant[],
     fields: readonly Ast.FieldDecl[],
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<MaybeExpr>>>> {
+): Ast.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<MaybeExpr>>>> {
     // collect all inherited fields and constants
     const inherited: Map<string, Ast.DeclMem<Ast.Fieldish<MaybeExpr>>> = new Map();
     for (const { via, decl: { fieldish } } of traits) {
@@ -35,7 +34,7 @@ export function* getFieldishGeneral(
             );
             const prev = inherited.get(name);
             if (prev) {
-                yield E.ERedefineMember(name, prev.via, nextVia);
+                yield Ast.ERedefineMember(name, prev.via, nextVia);
             } else {
                 inherited.set(name, Ast.DeclMem(field.decl, nextVia));
             }
@@ -65,7 +64,7 @@ export function* getFieldishGeneral(
         const prev = all.get(name.text);
         if (prev) {
             // duplicate local field
-            yield E.ERedefineMember(name.text, prev.via, nextVia);
+            yield Ast.ERedefineMember(name.text, prev.via, nextVia);
         }
 
         // remember order of fields
@@ -88,7 +87,7 @@ export function* getFieldishGeneral(
 
             if (prevInh.decl.kind !== 'field') {
                 // cannot override constant with field
-                yield E.ERedefineMember(name.text, prevInh.via, nextVia);
+                yield Ast.ERedefineMember(name.text, prevInh.via, nextVia);
             }
         }
     }
@@ -101,7 +100,7 @@ export function* getFieldishGeneral(
         const prev = all.get(name.text);
         if (prev) {
             // duplicate local constant
-            yield E.ERedefineMember(name.text, prev.via, nextVia);
+            yield Ast.ERedefineMember(name.text, prev.via, nextVia);
         }
 
         // we mostly need this for technical reasons:
@@ -191,11 +190,11 @@ function decodeField(
 const EMustCopyField = (
     name: string,
     prev: Ast.ViaMember,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: prev.defLoc,
     descr: [
-        E.TEText(`Field "${name}" was defined in parent trait, but never mentioned`),
-        E.TEViaMember(prev),
+        Ast.TEText(`Field "${name}" was defined in parent trait, but never mentioned`),
+        Ast.TEViaMember(prev),
     ],
 });
 
@@ -206,7 +205,7 @@ function* decodeConstant(
     nextVia: Ast.ViaMember,
     scopeRef: () => Ast.Scope,
     selfType: Ast.SelfType,
-): E.WithLog<Ast.DeclMem<Ast.FieldConstSig<MaybeExpr>>> {
+): Ast.WithLog<Ast.DeclMem<Ast.FieldConstSig<MaybeExpr>>> {
     if (init.kind === 'constant_decl') {
         const type = decodeTypeLazy(Lazy, emptyTypeParams, init.type, scopeRef);
         return Ast.DeclMem(

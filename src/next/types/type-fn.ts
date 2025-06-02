@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { decodeTypeParams } from "@/next/types/type-params";
 import { decodeDealiasTypeLazy } from "@/next/types/type";
 import { recoverName } from "@/next/types/name";
@@ -10,7 +9,7 @@ export function* decodeFnType(
     Lazy: Ast.ThunkBuilder,
     { typeParams, params, returnType }: Ast.FnType,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.DecodedFnType> {
+): Ast.WithLog<Ast.DecodedFnType> {
     const decodedTypeParams = yield* decodeTypeParams(typeParams);
     const dealias = (type: Ast.Type) => {
         return decodeDealiasTypeLazy(Lazy, decodedTypeParams, type, scopeRef);
@@ -25,7 +24,7 @@ export function* decodeFnType(
 export function* decodeParams(
     dealias: (type: Ast.Type) => Ast.Thunk<Ast.DecodedType>,
     params: readonly Ast.TypedParameter[],
-): E.WithLog<Ast.Parameters> {
+): Ast.WithLog<Ast.Parameters> {
     const order: Ast.Parameter[] = [];
     const set: Set<string> = new Set();
     for (const param of params) {
@@ -45,7 +44,7 @@ export function* decodeParams(
 function* decodeParamName(
     node: Ast.OptionalId,
     set: ReadonlySet<string>,
-): E.WithLog<string | undefined> {
+): Ast.WithLog<string | undefined> {
     if (node.kind === 'wildcard') {
         return undefined;
     }
@@ -57,9 +56,9 @@ function* decodeParamName(
     return recoverName(name, set);
 }
 
-const EDuplicateParam = (name: string, loc: Ast.Loc): E.TcError => ({
+const EDuplicateParam = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Duplicate parameter "${name}"`),
+        Ast.TEText(`Duplicate parameter "${name}"`),
     ],
 });

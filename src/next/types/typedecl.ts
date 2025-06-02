@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import type { TactSource } from "@/next/imports/source";
 import { builtinTypes } from "@/next/types/builtins";
 import { decodeAlias } from "@/next/types/alias";
@@ -18,7 +17,7 @@ export function* decodeTypeDecls(
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
     scopeRef: () => Ast.Scope,
-): E.WithLog<ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>> {
+): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>> {
     const importedSigs = imported.map(({ globals, importedBy }) => (
         new Map(
             globals.typeDecls.entries()
@@ -26,7 +25,7 @@ export function* decodeTypeDecls(
         )
     ));
 
-    const localSigs = yield* E.mapLog(
+    const localSigs = yield* Ast.mapLog(
         source.items.types,
         function* (decl) {
             const via = Ast.ViaOrigin(decl.loc, source);
@@ -46,7 +45,7 @@ export function* decodeTypeDecls(
             const prevItem = prev.get(name);
             // defined in compiler
             if (builtinTypes.has(name)) {
-                yield E.ERedefine(errorKind, name, Ast.ViaBuiltin(), nextItem.via);
+                yield Ast.ERedefine(errorKind, name, Ast.ViaBuiltin(), nextItem.via);
                 continue;
             }
             // not defined yet; define it now
@@ -56,7 +55,7 @@ export function* decodeTypeDecls(
             }
             // already defined, and it's not a diamond situation
             if (prevItem.via.source !== nextItem.via.source) {
-                yield E.ERedefine(errorKind, name, prevItem.via, nextItem.via);
+                yield Ast.ERedefine(errorKind, name, prevItem.via, nextItem.via);
             }
         }
     }
@@ -67,7 +66,7 @@ function* decodeTypeDecl(
     Lazy: Ast.ThunkBuilder,
     decl: Ast.TypeDecl,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.TypeDeclSig> {
+): Ast.WithLog<Ast.TypeDeclSig> {
     switch (decl.kind) {
         case "alias_decl": {
             return yield* decodeAlias(Lazy, decl, scopeRef);

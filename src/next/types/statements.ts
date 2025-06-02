@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { throwInternal } from "@/error/errors";
 import { Bool, builtinAugmented, Int, Void } from "@/next/types/builtins";
 import { decodeExprCtx } from "@/next/types/expression";
@@ -39,7 +38,7 @@ export function decodeStatementsLazy(
             const res = yield* decodeStmts(statements, ctx, emptyEff);
             return Ast.StatementsAux(res.node, res.effects);
         },
-        context: [E.TEText("checking statements")],
+        context: [Ast.TEText("checking statements")],
         loc,
         recover: undefined,
     });
@@ -220,7 +219,7 @@ function* defineForVars(
     keyName: Ast.OptionalId,
     valueName: Ast.OptionalId,
     ctx: Context,
-): E.WithLog<Context> {
+): Ast.WithLog<Context> {
     if (type.kind === 'map_type') {
         const ctxKey = yield* defineVar(keyName, type.key, ctx);
         const ctxKV = yield* defineVar(valueName, type.value, ctxKey);
@@ -242,7 +241,7 @@ function* defineForVars(
 const decodeDestruct: Decode<Ast.StatementDestruct, Ast.DStatementDestruct | Ast.DStatementExpression> = function* (node, ctx, eff) {
     const expr = yield* decodeExprCtx(node.expression, ctx);
 
-    const typeArgs = yield* E.mapLog(node.typeArgs, function* (arg) {
+    const typeArgs = yield* Ast.mapLog(node.typeArgs, function* (arg) {
         return yield* decodeTypeLazy(ctx.Lazy, ctx.typeParams, arg, ctx.scopeRef)();
     });
 
@@ -271,7 +270,7 @@ function* checkFields(
     declFields: Ast.Ordered<Ast.InhFieldSig>,
     ignoreUnspecifiedFields: boolean,
     ctx: Context,
-): E.WithLog<readonly [Ast.Ordered<Ast.DestructPattern>, Context]> {
+): Ast.WithLog<readonly [Ast.Ordered<Ast.DestructPattern>, Context]> {
     const order: string[] = [];
     const map: Map<string, [Ast.DestructPattern, Ast.Loc]> = new Map();
     for (const [field, variable] of stmtFields) {
@@ -316,28 +315,28 @@ function* checkFields(
     );
     return [Ast.Ordered(order, result), ctx];
 }
-const EMissingField = (name: string, prev: Ast.Loc): E.TcError => ({
+const EMissingField = (name: string, prev: Ast.Loc): Ast.TcError => ({
     loc: prev,
     descr: [
-        E.TEText(`Value for field "${name}" is missing`),
-        E.TECode(prev),
+        Ast.TEText(`Value for field "${name}" is missing`),
+        Ast.TECode(prev),
     ],
 });
-const ENoSuchField = (name: string, next: Ast.Loc): E.TcError => ({
+const ENoSuchField = (name: string, next: Ast.Loc): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`There is no field "${name}"`),
-        E.TECode(next),
+        Ast.TEText(`There is no field "${name}"`),
+        Ast.TECode(next),
     ],
 });
-const EDuplicateField = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+const EDuplicateField = (name: string, prev: Ast.Loc, next: Ast.Loc): Ast.TcError => ({
     loc: prev,
     descr: [
-        E.TEText(`Duplicate field "${name}"`),
-        E.TEText(`Defined at:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
+        Ast.TEText(`Duplicate field "${name}"`),
+        Ast.TEText(`Defined at:`),
+        Ast.TECode(next),
+        Ast.TEText(`Previously defined at:`),
+        Ast.TECode(prev),
     ],
 });
 function* findStruct(
@@ -379,11 +378,11 @@ function* findStruct(
         }
     }
 }
-const ENotDestructible = (name: string, prev: Ast.Loc): E.TcError => ({
+const ENotDestructible = (name: string, prev: Ast.Loc): Ast.TcError => ({
     loc: prev,
     descr: [
-        E.TEText(`Type "${name}" doesn't `),
-        E.TECode(prev),
+        Ast.TEText(`Type "${name}" doesn't `),
+        Ast.TECode(prev),
     ],
 });
 
@@ -396,7 +395,7 @@ type Decode<T, U> = (
     node: T,
     context: Context, 
     effects: Ast.Effects,
-) => E.WithLog<Result<U>>
+) => Ast.WithLog<Result<U>>
 
 type Result<U> = {
     readonly node: U;
@@ -423,7 +422,7 @@ function* defineVar(
     node: Ast.OptionalId, 
     type: Ast.DecodedType, 
     ctx: Context,
-): E.WithLog<Context> {
+): Ast.WithLog<Context> {
     if (node.kind === 'wildcard') {
         // there is nothing to define for a wildcard
         return ctx;
@@ -452,34 +451,34 @@ function* defineVar(
     localScopeRef.set(node.text, [type, node.loc]);
     return { ...ctx, localScopeRef };
 }
-const ENoDefineSelf = (loc: Ast.Loc): E.TcError => ({
+const ENoDefineSelf = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Cannot define a variable "self"`),
+        Ast.TEText(`Cannot define a variable "self"`),
     ],
 });
-const ERedefineVar = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+const ERedefineVar = (name: string, prev: Ast.Loc, next: Ast.Loc): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Variable ${name} is already defined`),
-        E.TEText(`Defined at:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
+        Ast.TEText(`Variable ${name} is already defined`),
+        Ast.TEText(`Defined at:`),
+        Ast.TECode(next),
+        Ast.TEText(`Previously defined at:`),
+        Ast.TECode(prev),
     ],
 });
-const EShadowConst = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+const EShadowConst = (name: string, prev: Ast.Loc, next: Ast.Loc): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Variable ${name} shadows a global constant`),
-        E.TEText(`Defined at:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
+        Ast.TEText(`Variable ${name} shadows a global constant`),
+        Ast.TEText(`Defined at:`),
+        Ast.TECode(next),
+        Ast.TEText(`Previously defined at:`),
+        Ast.TECode(prev),
     ],
 });
 
-function* getRequired(selfType: Ast.SelfType | undefined): E.WithLog<undefined | Set<string>> {
+function* getRequired(selfType: Ast.SelfType | undefined): Ast.WithLog<undefined | Set<string>> {
     if (!selfType) {
         return new Set();
     }

@@ -3,7 +3,6 @@
 import { throwInternal } from "@/error/errors";
 import * as Ast from "@/next/ast";
 import { Int } from "@/next/types/builtins";
-import * as E from "@/next/types/errors";
 import { evalExpr } from "@/next/types/expr-eval";
 import { decodeExpr } from "@/next/types/expression";
 import { decodeFields } from "@/next/types/struct-fields";
@@ -15,7 +14,7 @@ export function* decodeMessage(
     Lazy: Ast.ThunkBuilder,
     message: Ast.MessageDecl,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.MessageSig> {
+): Ast.WithLog<Ast.MessageSig> {
     const fields = yield* decodeFields(
         Lazy,
         message.fields, 
@@ -41,7 +40,7 @@ export function* decodeMessage(
             }
             return opcode;
         },
-        context: [E.TEText("computing opcode")],
+        context: [Ast.TEText("computing opcode")],
         loc: message.loc,
         recover: undefined,
     });
@@ -50,26 +49,26 @@ export function* decodeMessage(
 }
 const EZero = (
     next: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Zero opcode is reserved for text comments`),
+        Ast.TEText(`Zero opcode is reserved for text comments`),
     ],
 });
 const ENegative = (
     next: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Opcode must be positive`),
+        Ast.TEText(`Opcode must be positive`),
     ],
 });
 const ETooLarge = (
     next: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Opcode is too large`),
+        Ast.TEText(`Opcode is too large`),
     ],
 });
 

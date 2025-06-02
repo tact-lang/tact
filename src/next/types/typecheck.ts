@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable require-yield */
 // import { logDeep } from "@/utils/log-deep.build";
-import * as E from "@/next/types/errors";
 import * as Ast from "@/next/ast";
 import { memo } from "@/utils/tricks";
 import type { ResolvedImport, TactImport, TactSource } from "@/next/imports/source";
@@ -11,11 +10,11 @@ import { decodeFunctions } from "@/next/types/functions";
 import { decodeConstants } from "@/next/types/constants";
 import { decodeExtensions } from "@/next/types/extensions";
 
-export const typecheck = (root: TactSource): [Ast.Scope, E.TcError[]] => {
-    const allErrors: E.TcError[] = [];
+export const typecheck = (root: TactSource): [Ast.Scope, Ast.TcError[]] => {
+    const allErrors: Ast.TcError[] = [];
 
     const recur = memo((source: TactSource): Ast.Scope => {
-        const [value, errors] = E.runLog(tcSource(
+        const [value, errors] = Ast.runLog(tcSource(
             // leave only imports of .tact
             onlyTactImports(source.imports)
                 .map(importedBy => ({
@@ -51,7 +50,7 @@ function* tcSource(
     imported: readonly Ast.SourceCheckResult[],
     // source for current file
     source: TactSource,
-): E.WithLog<Ast.Scope> {
+): Ast.WithLog<Ast.Scope> {
     const Lazy = Ast.thunkBuilder;
     const scopeRef = () => scope;
     const scope: Ast.Scope = {

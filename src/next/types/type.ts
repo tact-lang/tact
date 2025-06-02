@@ -3,7 +3,6 @@
 import { throwInternal } from "@/error/errors";
 import * as Ast from "@/next/ast";
 import { messageBuiltin, structBuiltin } from "@/next/types/builtins";
-import * as E from "@/next/types/errors";
 import { emptyTypeParams } from "@/next/types/type-params";
 import { printType } from "@/next/types/type-print";
 import { zip } from "@/utils/array";
@@ -19,7 +18,7 @@ export const decodeTypeLazy = (
         type,
         scopeRef().typeDecls,
     ),
-    context: [E.TEText("checking type"), E.TECode(type.loc)],
+    context: [Ast.TEText("checking type"), Ast.TECode(type.loc)],
     loc: type.loc,
     recover: Ast.DTypeRecover(),
 });
@@ -41,7 +40,7 @@ export const decodeDealiasTypeLazy = (
             scopeRef().typeDecls,
         );
     },
-    context: [E.TEText("checking type"), E.TECode(type.loc)],
+    context: [Ast.TEText("checking type"), Ast.TECode(type.loc)],
     loc: type.loc,
     recover: Ast.DTypeRecover(),
 });
@@ -86,7 +85,7 @@ export function decodeType(
     // decode all the types in an array
     function* recN(
         types: readonly Ast.Type[],
-    ): E.WithLog<readonly Ast.DecodedType[]> {
+    ): Ast.WithLog<readonly Ast.DecodedType[]> {
         const results: Ast.DecodedType[] = [];
         for (const type of types) {
             const result = yield* rec(type);
@@ -98,7 +97,7 @@ export function decodeType(
     // decode a type
     function* rec(
         type: Ast.Type,
-    ): E.WithLog<Ast.DecodedType> {
+    ): Ast.WithLog<Ast.DecodedType> {
         switch (type.kind) {
             case "unit_type":
             case "TyInt":
@@ -232,20 +231,20 @@ const getArity = (decl: Ast.TypeDeclSig): number => {
 
 const EBouncedMessage = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Only message types can be bounced<>`),
+        Ast.TEText(`Only message types can be bounced<>`),
     ],
 });
 
 const ETypeNotFound = (
     name: string,
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Type "${name}" is not defined`),
+        Ast.TEText(`Type "${name}" is not defined`),
     ],
 });
 
@@ -254,7 +253,7 @@ function* matchArity(
     got: number,
     expected: number,
     loc: Ast.Loc,
-): E.WithLog<boolean> {
+): Ast.WithLog<boolean> {
     const result = got === expected;
     if (!result) {
         yield EArity(name, expected, got, loc);
@@ -267,19 +266,19 @@ const EArity = (
     expected: number,
     got: number,
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Type "${name}" is expected to have ${expected} type arguments, got ${got}`),
+        Ast.TEText(`Type "${name}" is expected to have ${expected} type arguments, got ${got}`),
     ],
 });
 
 const ETraitNotType = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Traits cannot be used as types`),
+        Ast.TEText(`Traits cannot be used as types`),
     ],
 });
 
@@ -287,13 +286,13 @@ const dealiasTypeAux = (
     type: Ast.DecodedType,
     typeDecls: ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>,
 ) => {
-    function* rec(type: Ast.DecodedType): E.WithLog<Ast.DecodedType> {
+    function* rec(type: Ast.DecodedType): Ast.WithLog<Ast.DecodedType> {
         switch (type.kind) {
             case "recover": {
                 return type;
             }
             case "type_ref": {
-                const args = yield* E.mapLog(type.typeArgs, rec);
+                const args = yield* Ast.mapLog(type.typeArgs, rec);
                 return Ast.DTypeRef(type.name, type.type, args, type.loc);
             }
             case "TypeAlias": {
@@ -306,7 +305,7 @@ const dealiasTypeAux = (
                 const decoded = yield* rec(substituteTypeArgs(
                     yield* alias.decl.type(),
                     alias.decl.typeParams,
-                    yield* E.mapLog(type.typeArgs, rec),
+                    yield* Ast.mapLog(type.typeArgs, rec),
                 ));
                 return Ast.DTypeAliasRef(decoded, type.name, type.typeArgs, type.loc);
             }
@@ -323,11 +322,11 @@ const dealiasTypeAux = (
                 return Ast.DTypeMaybe(args, type.loc);
             }
             case "tuple_type": {
-                const args = yield* E.mapLog(type.typeArgs, rec);
+                const args = yield* Ast.mapLog(type.typeArgs, rec);
                 return Ast.DTypeTuple(args, type.loc);
             }
             case "tensor_type": {
-                const args = yield* E.mapLog(type.typeArgs, rec);
+                const args = yield* Ast.mapLog(type.typeArgs, rec);
                 return Ast.DTypeTensor(args, type.loc);
             }
             case "TyInt":
@@ -436,7 +435,7 @@ export function* instantiateStruct(
     // NB! these are type params from enclosing scope
     typeParams: Ast.TypeParams,
     scopeRef: () => Ast.Scope,
-): E.WithLog<undefined | { type: Ast.DTypeRef, fields: Ast.Ordered<Ast.InhFieldSig> }> {
+): Ast.WithLog<undefined | { type: Ast.DTypeRef, fields: Ast.Ordered<Ast.InhFieldSig> }> {
     const decl = scopeRef().typeDecls.get(typeName.text);
     switch (decl?.decl.kind) {
         case undefined: {
@@ -511,22 +510,22 @@ export function* instantiateStruct(
         }
     }
 }
-const ENoSuchType = (name: string, loc: Ast.Loc): E.TcError => ({
+const ENoSuchType = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Type ${name} is not defined`),
+        Ast.TEText(`Type ${name} is not defined`),
     ],
 });
-const ENotInstantiable = (name: string, loc: Ast.Loc): E.TcError => ({
+const ENotInstantiable = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Cannot create value of type ${name}`),
+        Ast.TEText(`Cannot create value of type ${name}`),
     ],
 });
-const ETypeArity = (name: string, loc: Ast.Loc, declArity: number, useArity: number): E.TcError => ({
+const ETypeArity = (name: string, loc: Ast.Loc, declArity: number, useArity: number): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Type ${name} expects ${declArity} arguments, got ${useArity}`),
+        Ast.TEText(`Type ${name} expects ${declArity} arguments, got ${useArity}`),
     ],
 });
 
@@ -540,7 +539,7 @@ export function typeParamsToSubst(typeParams: Ast.TypeParams) {
 export function* substToTypeArgMap(
     loc: Ast.Loc,
     subst: Map<string, Ast.DecodedType | Ast.DNotSet>
-): E.WithLog<undefined | Ast.TypeArgs> {
+): Ast.WithLog<undefined | Ast.TypeArgs> {
     const res = substToTypeArgMapAux(subst);
     if (res.ok) {
         return res.args;
@@ -577,7 +576,7 @@ export function* assignType(
     to: Ast.DecodedType,
     from: Ast.DecodedType,
     strict: boolean,
-): E.WithLog<undefined | Ast.TypeArgs> {
+): Ast.WithLog<undefined | Ast.TypeArgs> {
     const subst = typeParamsToSubst(toFreeTypeParam);
     const result = assignTypeAux(to, from, subst, strict);
     if (result.kind === 'failure') {
@@ -586,17 +585,17 @@ export function* assignType(
     }
     return yield* substToTypeArgMap(loc, subst);
 }
-const EFreeTypeParam = (paramName: string, loc: Ast.Loc): E.TcError => ({
+const EFreeTypeParam = (paramName: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`No substitution for type parameter "${paramName}"`),
+        Ast.TEText(`No substitution for type parameter "${paramName}"`),
     ],
 });
-const EMismatch = (tree: E.MatchTree, loc: Ast.Loc): E.TcError => ({
+const EMismatch = (tree: Ast.MatchTree, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Type mismatch`),
-        E.TEMismatch(tree),
+        Ast.TEText(`Type mismatch`),
+        Ast.TEMismatch(tree),
     ],
 });
 
@@ -607,11 +606,11 @@ type AssignSuccess = {
 const AssignSuccess = (): AssignSuccess => Object.freeze({ kind: 'success' });
 type AssignFailure = {
     readonly kind: 'failure';
-    readonly tree: E.MatchTree;
+    readonly tree: Ast.MatchTree;
 }
-const AssignFailure = (tree: E.MatchTree): AssignFailure => Object.freeze({ kind: 'failure', tree });
+const AssignFailure = (tree: Ast.MatchTree): AssignFailure => Object.freeze({ kind: 'failure', tree });
 
-type Log = Generator<E.MatchTree, boolean>;
+type Log = Generator<Ast.MatchTree, boolean>;
 
 export function assignTypeAux(
     to: Ast.DecodedType,
@@ -653,7 +652,7 @@ export function assignTypeAux(
         from: Ast.DecodedType,
     ): AssignResult {
         const gen = check(to, from);
-        const results: E.MatchTree[] = [];
+        const results: Ast.MatchTree[] = [];
         for (; ;) {
             const res = gen.next();
             if (!res.done) {
@@ -671,7 +670,7 @@ export function assignTypeAux(
                 // because it resulted from another error
                 return AssignSuccess();
             }
-            return AssignFailure(E.MatchTree(to, from, results));
+            return AssignFailure(Ast.MatchTree(to, from, results));
         }
     }
 
@@ -758,11 +757,11 @@ export function* mgu(
     left: Ast.DecodedType,
     right: Ast.DecodedType,
     loc: Ast.Loc,
-): E.WithLog<Ast.DecodedType> {
+): Ast.WithLog<Ast.DecodedType> {
     function* rec(
         left: Ast.DecodedType,
         right: Ast.DecodedType,
-    ): E.WithLog<Ast.DecodedType> {
+    ): Ast.WithLog<Ast.DecodedType> {
         if (right.kind === 'TypeAlias') {
             if (right.type.kind === 'NotDealiased') {
                 return throwInternal("Decoder returned aliased type");
@@ -797,11 +796,11 @@ export function* mgu(
 
     return yield* rec(left, right);
 }
-const ENotUnifiable = (tree: E.MatchTree, loc: Ast.Loc): E.TcError => ({
+const ENotUnifiable = (tree: Ast.MatchTree, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Branches of condition have mismatched types`),
-        E.TEMismatch(tree),
+        Ast.TEText(`Branches of condition have mismatched types`),
+        Ast.TEMismatch(tree),
     ],
 });
 
@@ -814,7 +813,7 @@ export function* checkFnCall(
     loc: Ast.Loc,
     fnType: Ast.DecodedFnType | Ast.DecodedMethodType,
     args: readonly (readonly [Ast.Loc, Ast.DecodedType])[],
-): E.WithLog<CallResult> {
+): Ast.WithLog<CallResult> {
     const { typeParams, params, returnType } = fnType;
 
     const subst = typeParamsToSubst(typeParams);
@@ -872,11 +871,11 @@ export function* checkFnCall(
 
     return { returnType: retType, typeArgMap: typeArgsMap };
 }
-const EMismatchArg = (name: string, tree: E.MatchTree, loc: Ast.Loc): E.TcError => ({
+const EMismatchArg = (name: string, tree: Ast.MatchTree, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Type doesn't match type of parameter ${name}`),
-        E.TEMismatch(tree),
+        Ast.TEText(`Type doesn't match type of parameter ${name}`),
+        Ast.TEMismatch(tree),
     ],
 });
 
@@ -889,10 +888,10 @@ const EFnArity = (
     expected: number,
     got: number,
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`${kind} is expected to have ${expected} type arguments, got ${got}`),
+        Ast.TEText(`${kind} is expected to have ${expected} type arguments, got ${got}`),
     ],
 });
 
@@ -902,7 +901,7 @@ export function* checkFnCallWithArgs(
     fnType: Ast.DecodedFnType | undefined,
     ascribedTypeArgs: readonly Ast.DecodedType[],
     args: readonly (readonly [Ast.Loc, Ast.DecodedType])[],
-): E.WithLog<CallResult> {
+): Ast.WithLog<CallResult> {
     if (!fnType) {
         yield ENoFunction(loc);
         return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
@@ -926,11 +925,11 @@ export function* checkFnCallWithArgs(
         ),
     };
 }
-const ENoFunction = (loc: Ast.Loc): E.TcError => ({
+const ENoFunction = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`No such function`),
-        E.TECode(loc),
+        Ast.TEText(`No such function`),
+        Ast.TECode(loc),
     ],
 });
 
@@ -952,7 +951,7 @@ function substFnType(
                         args,
                     );
                 },
-                context: [E.TEText(`substituting into parameter ${getParamName(param.name, index)}`)],
+                context: [Ast.TEText(`substituting into parameter ${getParamName(param.name, index)}`)],
                 loc: param.loc,
                 recover: Ast.DTypeRecover(),
             }),
@@ -973,7 +972,7 @@ function substFnType(
                     args,
                 );
             },
-            context: [E.TEText(`substituting into return type`)],
+            context: [Ast.TEText(`substituting into return type`)],
             loc: fnLoc,
             recover: Ast.DTypeRecover(),
         }),
@@ -987,7 +986,7 @@ export function* lookupMethod(
     args: readonly (readonly [Ast.Loc, Ast.DecodedType])[],
     typeDecls: ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>,
     extensions: ReadonlyMap<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>>,
-): E.WithLog<CallResult>  {
+): Ast.WithLog<CallResult>  {
     if (selfType.kind === 'recover') {
         return { returnType: Ast.DTypeRecover(), typeArgMap: new Map() };
     }
@@ -1129,11 +1128,11 @@ function typeArgsToParams(
     return result;
 }
 
-const ENoMethod = (loc: Ast.Loc): E.TcError => ({
+const ENoMethod = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`No such method`),
-        E.TECode(loc),
+        Ast.TEText(`No such method`),
+        Ast.TECode(loc),
     ],
 });
 
@@ -1142,7 +1141,7 @@ export function* assignMethodType(
     next: Ast.DecodedMethodType,
     prevVia: Ast.ViaMember,
     nextVia: Ast.ViaMember
-): E.WithLog<void> {
+): Ast.WithLog<void> {
     const result = assignTypeAux(
         yield* prev.returnType(), 
         yield* next.returnType(), 
@@ -1178,26 +1177,26 @@ export function* assignMethodType(
     }
 }
 
-const EMismatchReturn = (tree: E.MatchTree, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+const EMismatchReturn = (tree: Ast.MatchTree, prev: Ast.Loc, next: Ast.Loc): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Return type doesn't match with inherited method`),
-        E.TEMismatch(tree),
-        E.TEText(`Inherited from:`),
-        E.TECode(prev),
-        E.TEText(`Override at:`),
-        E.TECode(next),
+        Ast.TEText(`Return type doesn't match with inherited method`),
+        Ast.TEMismatch(tree),
+        Ast.TEText(`Inherited from:`),
+        Ast.TECode(prev),
+        Ast.TEText(`Override at:`),
+        Ast.TECode(next),
     ],
 });
 
-const EMismatchParam = (name: string, tree: E.MatchTree, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+const EMismatchParam = (name: string, tree: Ast.MatchTree, prev: Ast.Loc, next: Ast.Loc): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Type of parameter ${name} doesn't match with inherited method`),
-        E.TEMismatch(tree),
-        E.TEText(`Inherited from:`),
-        E.TECode(prev),
-        E.TEText(`Override at:`),
-        E.TECode(next),
+        Ast.TEText(`Type of parameter ${name} doesn't match with inherited method`),
+        Ast.TEMismatch(tree),
+        Ast.TEText(`Inherited from:`),
+        Ast.TECode(prev),
+        Ast.TEText(`Override at:`),
+        Ast.TECode(next),
     ],
 });

@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { evalExpr } from "@/next/types/expr-eval";
 import { decodeExpr } from "@/next/types/expression";
 import { assignType, decodeTypeLazy } from "@/next/types/type";
@@ -78,7 +77,7 @@ export function decodeInitializerLazy(
             yield* assignType(expr.loc, emptyTypeParams, ascribed, computed, false);
             return yield* evalExpr(expr, scopeRef);
         },
-        context: [E.TEText("evaluating initial field value")],
+        context: [Ast.TEText("evaluating initial field value")],
         loc,
         recover: undefined,
     });
@@ -88,13 +87,13 @@ const EDuplicateField = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Duplicate field ${name}`),
-        E.TEText(`New definition:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
+        Ast.TEText(`Duplicate field ${name}`),
+        Ast.TEText(`New definition:`),
+        Ast.TECode(next),
+        Ast.TEText(`Previously defined at:`),
+        Ast.TECode(prev),
     ],
 });

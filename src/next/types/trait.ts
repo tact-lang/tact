@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { getFieldishGeneral } from "@/next/types/fields";
 import { getInheritedTraits } from "@/next/types/traits-scope";
 import { getMethodsGeneral } from "@/next/types/methods";
@@ -11,7 +10,7 @@ export function* decodeTrait(
     Lazy: Ast.ThunkBuilder,
     trait: Ast.Trait,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.TraitSig> {
+): Ast.WithLog<Ast.TraitSig> {
     const { attributes, declarations, name, loc } = trait;
     const { constants, fields, methods, receivers } = declarations;
 
@@ -60,7 +59,7 @@ export function* decodeTrait(
     
             return content;
         },
-        context: [E.TEText("checking inner scope of trait")],
+        context: [Ast.TEText("checking inner scope of trait")],
         loc,
         recover,
     });
@@ -79,10 +78,10 @@ export function* decodeTrait(
 
 const ENoAttributes = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Traits cannot have attributes`),
+        Ast.TEText(`Traits cannot have attributes`),
     ],
 });
 

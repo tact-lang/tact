@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { decodeInitializerLazy } from "@/next/types/struct-fields";
 import {  decodeTypeLazy } from "@/next/types/type";
 import { decodeTypeParams } from "@/next/types/type-params";
@@ -15,7 +14,7 @@ export function* decodeUnion(
     Lazy: Ast.ThunkBuilder,
     union: Ast.UnionDecl,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.UnionSig> {
+): Ast.WithLog<Ast.UnionSig> {
     const typeParams = yield* decodeTypeParams(union.typeParams);
     
     const cases: Map<string, Cons> = new Map();
@@ -68,14 +67,14 @@ const EDuplicateCons = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Duplicate union case "${name}"`),
-        E.TEText(`Defined at:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
+        Ast.TEText(`Duplicate union case "${name}"`),
+        Ast.TEText(`Defined at:`),
+        Ast.TECode(next),
+        Ast.TEText(`Previously defined at:`),
+        Ast.TECode(prev),
     ],
 });
 
@@ -83,13 +82,13 @@ const EDuplicateField = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Duplicate field "${name}"`),
-        E.TEText(`Defined at:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
+        Ast.TEText(`Duplicate field "${name}"`),
+        Ast.TEText(`Defined at:`),
+        Ast.TECode(next),
+        Ast.TEText(`Previously defined at:`),
+        Ast.TECode(prev),
     ],
 });

@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { decodeBody } from "@/next/types/body";
 import { decodeFnType } from "@/next/types/type-fn";
 import { checkMethodOverride } from "@/next/types/override";
@@ -19,7 +18,7 @@ export function* getMethodsGeneral(
     traits: readonly Ast.Decl<Ast.TraitContent>[],
     methods: readonly Ast.Method[],
     scopeRef: () => Ast.Scope,
-): E.WithLog<ReadonlyMap<string, Ast.DeclMem<Ast.MethodSig<Ast.Body | undefined>>>> {
+): Ast.WithLog<ReadonlyMap<string, Ast.DeclMem<Ast.MethodSig<Ast.Body | undefined>>>> {
     // collect all inherited methods
     const inherited: Map<string, Ast.DeclMem<Ast.MethodSig<Ast.Body | undefined>>> = new Map();
     for (const { via, decl: { methods } } of traits) {
@@ -31,7 +30,7 @@ export function* getMethodsGeneral(
             );
             const prev = inherited.get(name);
             if (prev) {
-                yield E.ERedefineMember(name, prev.via, nextVia);
+                yield Ast.ERedefineMember(name, prev.via, nextVia);
             } else {
                 inherited.set(name, Ast.DeclMem(
                     method.decl,
@@ -117,10 +116,10 @@ export function* getMethodsGeneral(
 
     return all;
 }
-const EGenericMethod = (loc: Ast.Loc): E.TcError => ({
+const EGenericMethod = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Method cannot be generic`),
+        Ast.TEText(`Method cannot be generic`),
     ],
 });
 
@@ -144,7 +143,7 @@ function decodeGetLazy(
             scopeRef, 
             selfType,
         ),
-        context: [E.TEText("checking get() opcode")],
+        context: [Ast.TEText("checking get() opcode")],
         loc: get.loc,
         recover: undefined,
     });
@@ -157,7 +156,7 @@ function* decodeGet(
     get: Ast.GetAttribute,
     scopeRef: () => Ast.Scope,
     selfType: Ast.SelfType,
-): E.WithLog<bigint> {
+): Ast.WithLog<bigint> {
     if (get.methodId) {
         const expr = yield* decodeExpr(
             Lazy,
@@ -212,21 +211,21 @@ function* checkMethodId(methodId: bigint, loc: Ast.Loc) {
     }
 }
 
-const EBadId = (loc: Ast.Loc): E.TcError => ({
+const EBadId = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Method ids must fit 19-bit signed integer range`),
+        Ast.TEText(`Method ids must fit 19-bit signed integer range`),
     ],
 });
-const EReservedTvmId = (loc: Ast.Loc): E.TcError => ({
+const EReservedTvmId = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Method ids cannot overlap with the TVM reserved ids: -4, -3, -2, -1, 0 ... 2^14 - 1`),
+        Ast.TEText(`Method ids cannot overlap with the TVM reserved ids: -4, -3, -2, -1, 0 ... 2^14 - 1`),
     ],
 });
-const EReservedTactId = (loc: Ast.Loc, tactMethodIds: readonly bigint[]): E.TcError => ({
+const EReservedTactId = (loc: Ast.Loc, tactMethodIds: readonly bigint[]): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Method ids cannot overlap with Tact reserved method ids: ${tactMethodIds.map((n) => n.toString()).join(", ")}`),
+        Ast.TEText(`Method ids cannot overlap with Tact reserved method ids: ${tactMethodIds.map((n) => n.toString()).join(", ")}`),
     ],
 });

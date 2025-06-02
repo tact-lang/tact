@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import type { TactSource } from "@/next/imports/source";
 import { builtinFunctions } from "@/next/types/builtins";
 import { decodeFnType } from "@/next/types/type-fn";
@@ -14,7 +13,7 @@ export function* decodeFunctions(
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
     scopeRef: () => Ast.Scope,
-): E.WithLog<ReadonlyMap<string, Ast.Decl<Ast.FnSig>>> {
+): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.FnSig>>> {
     const allFnSigs = [
         // imported
         ...imported.flatMap(({ globals, importedBy }) => (
@@ -25,7 +24,7 @@ export function* decodeFunctions(
                 ] as const)
         )),
         // local
-        ...yield* E.mapLog(source.items.functions, function* (fn) {
+        ...yield* Ast.mapLog(source.items.functions, function* (fn) {
             return [
                 fn.name.text, 
                 Ast.Decl(
@@ -41,7 +40,7 @@ export function* decodeFunctions(
     for (const [name, sig] of allFnSigs) {
         const isBuiltin = builtinFunctions.has(name);
         if (isBuiltin) {
-            yield E.ERedefine(errorKind, name, Ast.ViaBuiltin(), sig.via);
+            yield Ast.ERedefine(errorKind, name, Ast.ViaBuiltin(), sig.via);
             continue;
         }
         const prev = filteredSigs.get(name);
@@ -50,7 +49,7 @@ export function* decodeFunctions(
             continue;
         }
         if (prev.via.source !== sig.via.source) {
-            yield E.ERedefine(errorKind, name, sig.via, prev.via);
+            yield Ast.ERedefine(errorKind, name, sig.via, prev.via);
         }
     }
     return filteredSigs;

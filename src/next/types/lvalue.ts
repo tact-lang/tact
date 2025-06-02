@@ -1,8 +1,7 @@
 /* eslint-disable require-yield */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 
-export function* convertExprToLValue(node: Ast.DecodedExpression): E.WithLog<undefined | Ast.LValue> {
+export function* convertExprToLValue(node: Ast.DecodedExpression): Ast.WithLog<undefined | Ast.LValue> {
     switch (node.kind) {
         case "field_access": {
             const aggregate = yield* convertExprToLValue(node.aggregate);
@@ -43,10 +42,10 @@ export function* convertExprToLValue(node: Ast.DecodedExpression): E.WithLog<und
     }
 }
 
-const ENotLValue = (prev: Ast.Loc): E.TcError => ({
+const ENotLValue = (prev: Ast.Loc): Ast.TcError => ({
     loc: prev,
     descr: [
-        E.TEText(`This expression cannot be used on the left side of assignment`),
-        E.TECode(prev),
+        Ast.TEText(`This expression cannot be used on the left side of assignment`),
+        Ast.TECode(prev),
     ],
 });

@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { isSubsetOf } from "@/utils/isSubsetOf";
 import { decodeStatementsLazy } from "@/next/types/statements";
 
@@ -11,13 +10,13 @@ export function* decodeBody(
     fnType: Ast.DecodedFnType | Ast.DecodedMethodType,
     loc: Ast.Loc,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.Body> {
+): Ast.WithLog<Ast.Body> {
     switch (node.kind) {
         case "abstract_body": {
             yield ENoBody(loc)
             return Ast.TactBody(Lazy({
                 callback: function* () { return undefined; },
-                context: [E.TEText("checking body of function")],
+                context: [Ast.TEText("checking body of function")],
                 loc,
                 recover: undefined,
             }));
@@ -48,7 +47,7 @@ export function* decodeBody(
                         loc,
                         scopeRef,
                     ),
-                    context: [E.TEText("checking shuffle")],
+                    context: [Ast.TEText("checking shuffle")],
                     loc,
                     recover: undefined,
                 }),
@@ -63,10 +62,10 @@ export function* decodeBody(
 
 const ENoBody = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Function must have a body`),
+        Ast.TEText(`Function must have a body`),
     ],
 });
 
@@ -135,7 +134,7 @@ function* checkShuffle(
 function* getRetTupleSize(
     { kind, returnType }: Ast.DecodedFnType | Ast.DecodedMethodType,
     scopeRef: () => Ast.Scope,
-): E.WithLog<undefined | number> {
+): Ast.WithLog<undefined | number> {
     const type = yield* returnType();
     const baseSize = yield* getTypeTupleSize(type, scopeRef);
     if (typeof baseSize === 'undefined') {
@@ -224,51 +223,51 @@ function* getTypeTupleSize(
     }
 }
 
-const EDuplicateArgs = (loc: Ast.Loc): E.TcError => ({
+const EDuplicateArgs = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Argument rearrangement cannot have duplicates`),
+        Ast.TEText(`Argument rearrangement cannot have duplicates`),
     ],
 });
 
-const EWildcardArgs = (loc: Ast.Loc): E.TcError => ({
+const EWildcardArgs = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Argument rearrangement cannot use wildcards`),
+        Ast.TEText(`Argument rearrangement cannot use wildcards`),
     ],
 });
 
-const EMissingArgs = (loc: Ast.Loc): E.TcError => ({
+const EMissingArgs = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Argument rearrangement must mention all function parameters`),
+        Ast.TEText(`Argument rearrangement must mention all function parameters`),
     ],
 });
 
-const EExtraArgs = (loc: Ast.Loc): E.TcError => ({
+const EExtraArgs = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Argument rearrangement must mention only function parameters`),
+        Ast.TEText(`Argument rearrangement must mention only function parameters`),
     ],
 });
 
-const EDuplicateRet = (loc: Ast.Loc): E.TcError => ({
+const EDuplicateRet = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Return rearrangement cannot have duplicates`),
+        Ast.TEText(`Return rearrangement cannot have duplicates`),
     ],
 });
 
-const EMissingRet = (loc: Ast.Loc): E.TcError => ({
+const EMissingRet = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Return rearrangement must mention all function parameters`),
+        Ast.TEText(`Return rearrangement must mention all function parameters`),
     ],
 });
 
-const EExtraRet = (loc: Ast.Loc): E.TcError => ({
+const EExtraRet = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Return rearrangement must mention only function parameters`),
+        Ast.TEText(`Return rearrangement must mention only function parameters`),
     ],
 });

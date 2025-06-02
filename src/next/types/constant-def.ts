@@ -4,7 +4,6 @@ import { assignType, decodeTypeLazy } from "@/next/types/type";
 import { decodeExpr } from "@/next/types/expression";
 import { evalExpr } from "@/next/types/expr-eval";
 import { emptyTypeParams } from "@/next/types/type-params";
-import * as E from "@/next/types/errors";
 
 export function decodeConstantDef(
     Lazy: Ast.ThunkBuilder,
@@ -35,7 +34,7 @@ export function decodeConstantDef(
         }
         const lazyExpr = Lazy({
             loc: defLoc,
-            context: [E.TEText("evaluating expression")],
+            context: [Ast.TEText("evaluating expression")],
             recover: undefined,
             callback: evaluate,
         });
@@ -51,7 +50,7 @@ export function decodeConstantDef(
                 selfType,
                 new Map(),
             ),
-            context: [E.TEText("parsing expression")],
+            context: [Ast.TEText("parsing expression")],
             loc: defLoc,
             recover: undefined,
         });
@@ -61,7 +60,7 @@ export function decodeConstantDef(
                 const ast = yield* expr();
                 return ast && (yield* evalExpr(ast, scopeRef));
             },
-            context: [E.TEText("evaluating expression")],
+            context: [Ast.TEText("evaluating expression")],
             loc: defLoc,
             recover: undefined,
         });

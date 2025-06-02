@@ -1,13 +1,12 @@
 /* eslint-disable require-yield */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { throwInternal } from "@/error/errors";
 import { Bool, builtinBinary, builtinFunctions, getStaticBuiltin, StateInit } from "@/next/types/builtins";
 import { assignType, dealiasType, decodeDealiasTypeLazy, decodeTypeLazy, decodeTypeMap, checkFnCall, instantiateStruct, checkFnCallWithArgs, mgu, lookupMethod } from "@/next/types/type";
 import { convertValueToExpr } from "@/next/types/value";
 import { emptyTypeParams } from "@/next/types/type-params";
 
-type Decode<T, U> = (node: T, ctx: Context) => E.WithLog<U>
+type Decode<T, U> = (node: T, ctx: Context) => Ast.WithLog<U>
 type Context = {
     readonly Lazy: Ast.ThunkBuilder,
     readonly scopeRef: () => Ast.Scope;
@@ -23,7 +22,7 @@ export function decodeExpr(
     scopeRef: () => Ast.Scope,
     selfType: Ast.SelfType | undefined,
     localScopeRef: ReadonlyMap<string, [Ast.DecodedType, Ast.Loc]>,
-): E.WithLog<Ast.DecodedExpression> {
+): Ast.WithLog<Ast.DecodedExpression> {
     return decodeExprCtx(node, {
         Lazy,
         typeParams,
@@ -80,20 +79,20 @@ const decodeBooleanCons: Decode<Ast.Boolean, Ast.DBoolean> = function* (node) {
 }
 
 const decodeTupleCons: Decode<Ast.Tuple, Ast.DTuple> = function* (node, ctx) {
-    const children = yield* E.mapLog(node.children, child => decodeExprCtx(child, ctx));
+    const children = yield* Ast.mapLog(node.children, child => decodeExprCtx(child, ctx));
     const args = children.map(child => child.computedType);
     return Ast.DTuple(children, Ast.DTypeTuple(args, node.loc), node.loc);
 }
 
 const decodeTensorCons: Decode<Ast.Tensor, Ast.DTensor> = function* (node, ctx) {
-    const children = yield* E.mapLog(node.children, child => decodeExprCtx(child, ctx));
+    const children = yield* Ast.mapLog(node.children, child => decodeExprCtx(child, ctx));
     const args = children.map(child => child.computedType);
     return Ast.DTensor(children, Ast.DTypeTensor(args, node.loc), node.loc);
 }
 
 const decodeMapCons: Decode<Ast.MapLiteral, Ast.DMapLiteral> = function* (node, ctx) {
     const ascribed = yield* decodeTypeMap(ctx.typeParams, node.type, ctx.scopeRef);
-    const fields = yield* E.mapLog(node.fields, function* (field) {
+    const fields = yield* Ast.mapLog(node.fields, function* (field) {
         const key = yield* decodeExprCtx(field.key, ctx);
         yield* assignType(field.key.loc, emptyTypeParams, ascribed.key, key.computedType, false);
         const value = yield* decodeExprCtx(field.value, ctx);
@@ -108,7 +107,7 @@ const decodeSetCons: Decode<Ast.SetLiteral, Ast.DSetLiteral> = function* () {
 }
 
 const decodeStructCons: Decode<Ast.StructInstance, Ast.DStructInstance> = function* (node, ctx) {
-    const typeArgs = yield* E.mapLog(node.typeArgs, function* (arg) {
+    const typeArgs = yield* Ast.mapLog(node.typeArgs, function* (arg) {
         return yield* decodeTypeLazy(ctx.Lazy, ctx.typeParams, arg, ctx.scopeRef)();
     });
     const instance = yield* instantiateStruct(
@@ -193,28 +192,28 @@ function* checkFields(
         return Ast.Ordered([...map.keys()], map)
     }
 }
-const EMissingField = (name: string, prev: Ast.Loc): E.TcError => ({
+const EMissingField = (name: string, prev: Ast.Loc): Ast.TcError => ({
     loc: prev,
     descr: [
-        E.TEText(`Value for field "${name}" is missing`),
-        E.TECode(prev),
+        Ast.TEText(`Value for field "${name}" is missing`),
+        Ast.TECode(prev),
     ],
 });
-const ENoSuchField = (name: string, next: Ast.Loc): E.TcError => ({
+const ENoSuchField = (name: string, next: Ast.Loc): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`There is no field "${name}"`),
-        E.TECode(next),
+        Ast.TEText(`There is no field "${name}"`),
+        Ast.TECode(next),
     ],
 });
-const EDuplicateField = (name: string, prev: Ast.Loc, next: Ast.Loc): E.TcError => ({
+const EDuplicateField = (name: string, prev: Ast.Loc, next: Ast.Loc): Ast.TcError => ({
     loc: prev,
     descr: [
-        E.TEText(`Duplicate field "${name}"`),
-        E.TEText(`Defined at:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
+        Ast.TEText(`Duplicate field "${name}"`),
+        Ast.TEText(`Defined at:`),
+        Ast.TECode(next),
+        Ast.TEText(`Previously defined at:`),
+        Ast.TECode(prev),
     ],
 });
 
@@ -229,17 +228,17 @@ const decodeVar: Decode<Ast.Var, Ast.DVar | Ast.DSelf> = function* (node, ctx) {
     yield ENoSelf(node.loc);
     return Ast.DVar(node.name, Ast.TypeNull(node.loc), node.loc);
 };
-const ENoSelf = (loc: Ast.Loc): E.TcError => ({
+const ENoSelf = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`"self" is not allowed here`),
+        Ast.TEText(`"self" is not allowed here`),
     ],
 });
 function* lookupVar(
     name: string,
     loc: Ast.Loc,
     ctx: Context,
-): E.WithLog<Ast.DecodedType> {
+): Ast.WithLog<Ast.DecodedType> {
     const local = ctx.localScopeRef.get(name);
     if (local) {
         const [type] = local;
@@ -252,10 +251,10 @@ function* lookupVar(
     yield EUndefined(name, loc);
     return Ast.DTypeRecover();
 }
-const EUndefined = (name: string, loc: Ast.Loc): E.TcError => ({
+const EUndefined = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Variable "${name}" not defined`),
+        Ast.TEText(`Variable "${name}" not defined`),
     ],
 });
 
@@ -285,10 +284,10 @@ const decodeBinary: Decode<Ast.OpBinary, Ast.DOpBinary> = function* (node, ctx) 
     }
     return Ast.DOpBinary(node.op, left, right, typeArgMap, returnType, node.loc);
 }
-const ENoEquality = (loc: Ast.Loc): E.TcError => ({
+const ENoEquality = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Equality on this type is not supported`),
+        Ast.TEText(`Equality on this type is not supported`),
     ],
 });
 const supportsEquality = (common: Ast.DecodedType): boolean => {
@@ -349,7 +348,7 @@ const decodeTernary: Decode<Ast.Conditional, Ast.DConditional> = function* (node
 
 const decodeMethodCall: Decode<Ast.MethodCall, Ast.DMethodCall> = function* (node, ctx) {
     const self = yield* decodeExprCtx(node.self, ctx);
-    const args = yield* E.mapLog(node.args, arg => decodeExprCtx(arg, ctx));
+    const args = yield* Ast.mapLog(node.args, arg => decodeExprCtx(arg, ctx));
 
     const { typeDecls, extensions } = ctx.scopeRef();
     const { returnType, typeArgMap } = yield* lookupMethod(
@@ -366,7 +365,7 @@ const decodeMethodCall: Decode<Ast.MethodCall, Ast.DMethodCall> = function* (nod
 const decodeFunctionCall: Decode<Ast.StaticCall, Ast.DStaticCall | Ast.DThrowCall | Ast.DNumber> = function* (node, ctx) {
     const name = node.function;
 
-    const args = yield* E.mapLog(node.args, arg => decodeExprCtx(arg, ctx));
+    const args = yield* Ast.mapLog(node.args, arg => decodeExprCtx(arg, ctx));
 
     if (name.text === 'sha256') {
         const [arg] = args;
@@ -388,7 +387,7 @@ const decodeFunctionCall: Decode<Ast.StaticCall, Ast.DStaticCall | Ast.DThrowCal
         ctx.Lazy,
         node.function.loc,
         fnType,
-        yield* E.mapLog(node.typeArgs, function* (arg) {
+        yield* Ast.mapLog(node.typeArgs, function* (arg) {
             return yield* decodeDealiasTypeLazy(
                 ctx.Lazy,
                 ctx.typeParams, 
@@ -405,10 +404,10 @@ const decodeFunctionCall: Decode<Ast.StaticCall, Ast.DStaticCall | Ast.DThrowCal
         return Ast.DStaticCall(name, typeArgMap, args, returnType, node.loc);
     }
 }
-const EMismatchSha256 = (loc: Ast.Loc): E.TcError => ({
+const EMismatchSha256 = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`sha256() takes either Slice or String`),
+        Ast.TEText(`sha256() takes either Slice or String`),
     ],
 });
 
@@ -416,7 +415,7 @@ const decodeStaticMethodCall: Decode<Ast.StaticMethodCall, Ast.DStaticMethodCall
     if (node.typeArgs.length > 0) {
         yield EFunctionArity(node.loc);
     }
-    const args = yield* E.mapLog(node.args, arg => decodeExprCtx(arg, ctx));
+    const args = yield* Ast.mapLog(node.args, arg => decodeExprCtx(arg, ctx));
     const selfDecl = ctx.scopeRef().typeDecls.get(node.self.text);
     if (selfDecl?.decl.kind === 'struct' || selfDecl?.decl.kind === 'message') {
         const builtins = getStaticBuiltin(Ast.DTypeRef(node.self, selfDecl.decl, [], node.loc));
@@ -438,16 +437,16 @@ const decodeStaticMethodCall: Decode<Ast.StaticMethodCall, Ast.DStaticMethodCall
         return Ast.DNull(Ast.TypeNull(node.loc), node.loc);
     }
 }
-const EUndefinedStatic = (name: string, loc: Ast.Loc): E.TcError => ({
+const EUndefinedStatic = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Static method ${name} doesn't exist`),
+        Ast.TEText(`Static method ${name} doesn't exist`),
     ],
 });
-const EFunctionArity = (loc: Ast.Loc): E.TcError => ({
+const EFunctionArity = (loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Function doesn't take any generic arguments`),
+        Ast.TEText(`Function doesn't take any generic arguments`),
     ],
 });
 
@@ -462,7 +461,7 @@ function* lookupField(
     selfType: Ast.DecodedType,
     fieldName: Ast.Id,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.DecodedType> {
+): Ast.WithLog<Ast.DecodedType> {
     switch (selfType.kind) {
         case "type_ref": {
             const decl = selfType.type;
@@ -543,7 +542,7 @@ function* lookupField(
 }
 
 const decodeInitOf: Decode<Ast.InitOf, Ast.DInitOf> = function* (node, ctx) {
-    const args = yield* E.mapLog(node.args, arg => decodeExprCtx(arg, ctx));
+    const args = yield* Ast.mapLog(node.args, arg => decodeExprCtx(arg, ctx));
     const contract = ctx.scopeRef().typeDecls.get(node.contract.text);
     if (contract?.decl.kind !== 'contract') {
         yield ENotContract(node.contract.text, node.loc);
@@ -558,7 +557,7 @@ const decodeInitOf: Decode<Ast.InitOf, Ast.DInitOf> = function* (node, ctx) {
             params,
             ctx.Lazy({
                 callback: function*() { return StateInit; },
-                context: [E.TEText("checking initOf expression")],
+                context: [Ast.TEText("checking initOf expression")],
                 loc: node.loc,
                 recover: StateInit,
             })
@@ -603,9 +602,9 @@ const decodeCodeOf: Decode<Ast.CodeOf, Ast.DCodeOf> = function* (node, ctx) {
     }
     return Ast.DCodeOf(node.contract, Ast.TypeCell(Ast.SFDefault(node.loc), node.loc), node.loc);
 }
-const ENotContract = (name: string, loc: Ast.Loc): E.TcError => ({
+const ENotContract = (name: string, loc: Ast.Loc): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`"${name}" is not a contract`),
+        Ast.TEText(`"${name}" is not a contract`),
     ],
 });

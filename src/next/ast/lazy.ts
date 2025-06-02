@@ -1,6 +1,6 @@
 /* eslint-disable require-yield */
 import type { Loc } from "@/next/ast/common";
-import * as E from "@/next/types/errors";
+import * as E from "@/next/ast/errors";
 
 type Result<T> = 'waiting' | 'running' | readonly [T];
 

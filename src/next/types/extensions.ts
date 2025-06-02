@@ -1,5 +1,4 @@
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { zip } from "@/utils/array";
 import { throwInternal } from "@/error/errors";
 import { decodeFnType } from "@/next/types/type-fn";
@@ -29,7 +28,7 @@ export function decodeExtensions(
                         Ast.ViaImport(importedBy, ext.via),
                     ));
                 },
-                context: [E.TEText(`importing extension method ${name}`)],
+                context: [Ast.TEText(`importing extension method ${name}`)],
                 loc: Ast.Builtin(),
                 recover: [],
             }));
@@ -53,7 +52,7 @@ export function decodeExtensions(
                 )];
             },
             context: [
-                E.TEText(`defining extension method ${ext.fun.name.text}`)
+                Ast.TEText(`defining extension method ${ext.fun.name.text}`)
             ],
             loc: ext.fun.loc,
             recover: [],
@@ -87,7 +86,7 @@ export function decodeExtensions(
                 }
                 return prevs;
             },
-            context: [E.TEText(`merging extensions methods with name ${name}`)],
+            context: [Ast.TEText(`merging extensions methods with name ${name}`)],
             loc: Ast.Builtin(),
             recover: [],
         }));
@@ -141,7 +140,7 @@ function* areCompatible(
     name: string,
     prevs: readonly Ast.Decl<Ast.ExtSig>[],
     next: Ast.Decl<Ast.ExtSig>,
-): E.WithLog<boolean> {
+): Ast.WithLog<boolean> {
     for (const prev of prevs) {
         const prevType = prev.decl.type;
         const nextType = next.decl.type;
@@ -158,11 +157,11 @@ const EMethodOverlap = (
     name: string,
     prev: Ast.Via,
     next: Ast.ViaUser,
-): E.TcError => ({
-    loc: E.viaToRange(next),
+): Ast.TcError => ({
+    loc: Ast.viaToRange(next),
     descr: [
-        E.TEText(`Method "${name}" overlaps previously defined method`),
-        E.TEVia(prev),
+        Ast.TEText(`Method "${name}" overlaps previously defined method`),
+        Ast.TEVia(prev),
     ],
 });
 
@@ -231,7 +230,7 @@ function allEqual(
 function* decodeSelfType(
     type: Ast.DecodedType,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.SelfType | undefined> {
+): Ast.WithLog<Ast.SelfType | undefined> {
     switch (type.kind) {
         case "recover": {
             return undefined;
@@ -385,7 +384,7 @@ function* decodeSelfType(
 function* toGroundType(
     type: Ast.DecodedType,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.MethodGroundType | undefined> {
+): Ast.WithLog<Ast.MethodGroundType | undefined> {
     switch (type.kind) {
         case "recover": {
             return undefined;
@@ -445,14 +444,14 @@ function* toGroundType(
             return child && Ast.MGTypeMaybe(child, type.loc);
         }
         case "tuple_type": {
-            const children = yield* E.mapLog(type.typeArgs, function* (child) {
+            const children = yield* Ast.mapLog(type.typeArgs, function* (child) {
                 const result = yield* toGroundType(child, scopeRef);
                 return result ? [result] : [];
             });
             return Ast.MGTypeTuple(children.flat(), type.loc);
         }
         case "tensor_type": {
-            const children = yield* E.mapLog(type.typeArgs, function* (child) {
+            const children = yield* Ast.mapLog(type.typeArgs, function* (child) {
                 const result = yield* toGroundType(child, scopeRef);
                 return result ? [result] : [];
             });
@@ -480,18 +479,18 @@ function* toGroundType(
 
 const EBadMethodType = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Type of self must either have no type parameters, or be a generic type with distinct type parameters`),
+        Ast.TEText(`Type of self must either have no type parameters, or be a generic type with distinct type parameters`),
     ],
 });
 const ENoMethods = (
     kind: string,
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Cannot define methods on ${kind}`),
+        Ast.TEText(`Cannot define methods on ${kind}`),
     ],
 });

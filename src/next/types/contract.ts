@@ -1,7 +1,6 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 import { throwInternal } from "@/error/errors";
 import { getFieldishGeneral } from "@/next/types/fields";
 import { getInheritedTraits } from "@/next/types/traits-scope";
@@ -75,7 +74,7 @@ export function* decodeContract(
     
             return content;
         },
-        context: [E.TEText("checking scope of contract")],
+        context: [Ast.TEText("checking scope of contract")],
         loc: contract.loc,
         recover,
     });
@@ -99,7 +98,7 @@ function* decodeInit(
     init: Ast.Init | undefined,
     contentLazy: () => Ast.Thunk<Ast.ContractContent>,
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.InitSig> {
+): Ast.WithLog<Ast.InitSig> {
     if (!init) {
         // no init
         const lazyInit = Lazy({
@@ -124,7 +123,7 @@ function* decodeInit(
                 }
                 return Ast.Ordered(order, map);
             },
-            context: [E.TEText("computing parameters of empty init")],
+            context: [Ast.TEText("computing parameters of empty init")],
             loc: contractLoc,
             recover: undefined,
         });
@@ -182,30 +181,30 @@ const EDuplicateParam = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: next,
     descr: [
-        E.TEText(`Contract parameter ${name} was already defined`),
-        E.TEText(`New definition:`),
-        E.TECode(next),
-        E.TEText(`Previously defined at:`),
-        E.TECode(prev),
+        Ast.TEText(`Contract parameter ${name} was already defined`),
+        Ast.TEText(`New definition:`),
+        Ast.TECode(next),
+        Ast.TEText(`Previously defined at:`),
+        Ast.TECode(prev),
     ],
 });
 const ENoInitializerParams = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Contract parameters cannot have an initializer`),
+        Ast.TEText(`Contract parameters cannot have an initializer`),
     ],
 });
 const ENoInitializerEmpty = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`When there is no init() or contract parameters, all fields must have an initializer`),
+        Ast.TEText(`When there is no init() or contract parameters, all fields must have an initializer`),
     ],
 });
 
@@ -216,7 +215,7 @@ function* getMethodsFromContract(
     traits: readonly Ast.Decl<Ast.TraitContent>[],
     methods: readonly Ast.Method[],
     scopeRef: () => Ast.Scope
-): E.WithLog<ReadonlyMap<string, Ast.DeclMem<Ast.MethodSig<Ast.Body>>>> {
+): Ast.WithLog<ReadonlyMap<string, Ast.DeclMem<Ast.MethodSig<Ast.Body>>>> {
     const res = yield* getMethodsGeneral(
         Lazy,
         contractSig,
@@ -253,7 +252,7 @@ function* getFieldishFromContract(
     constants: readonly Ast.FieldConstant[],
     fields: readonly Ast.FieldDecl[],
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>>> {
+): Ast.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>>> {
     const res = yield* getFieldishGeneral(
         Lazy,
         contractSig,
@@ -303,21 +302,21 @@ function* getFieldishFromContract(
 }
 const EFieldsTwice = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Cannot define other fields when using contract parameters`),
+        Ast.TEText(`Cannot define other fields when using contract parameters`),
     ],
 });
 const EAbstract = (
     kind: string,
     name: string,
     next: Ast.ViaMember,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: next.defLoc,
     descr: [
-        E.TEText(`Contract ${kind} "${name}" must have an initializer`),
-        E.TEViaMember(next),
+        Ast.TEText(`Contract ${kind} "${name}" must have an initializer`),
+        Ast.TEViaMember(next),
     ],
 });
 

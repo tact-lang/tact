@@ -1,12 +1,11 @@
 /* eslint-disable require-yield */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
-import * as E from "@/next/types/errors";
 
 export function* getInheritedTraits(
     traits: readonly Ast.TypeId[],
     scopeRef: () => Ast.Scope,
-): E.WithLog<readonly Ast.Decl<Ast.TraitContent>[]> {
+): Ast.WithLog<readonly Ast.Decl<Ast.TraitContent>[]> {
     const decls = scopeRef().typeDecls;
     const prevTraits: Ast.Decl<Ast.TraitContent>[] = [];
     for (const trait of traits) {
@@ -32,18 +31,18 @@ export function* getInheritedTraits(
 const EUndefinedTrait = (
     name: string,
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Traits "${name}" is not defined`),
+        Ast.TEText(`Traits "${name}" is not defined`),
     ],
 });
 
 const EOnlyTraits = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Can only inherit traits`),
+        Ast.TEText(`Can only inherit traits`),
     ],
 });

@@ -12,3 +12,4 @@ export * from "@/next/ast/generated/root";
 export * from "@/next/ast/generated/value";
 export * from "@/next/ast/generated/effects";
 export * from "@/next/ast/lazy";
+export * from "@/next/ast/errors";

@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
 import { Void } from "@/next/types/builtins";
-import * as E from "@/next/types/errors";
 import { decodeStatementsLazy } from "@/next/types/statements";
 import { decodeDealiasTypeLazy } from "@/next/types/type";
 import { emptyTypeParams } from "@/next/types/type-params";
@@ -14,7 +13,7 @@ export function* getReceivers(
     traits: readonly Ast.Decl<Ast.TraitContent>[],
     receivers: readonly Ast.Receiver[],
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.Receivers> {
+): Ast.WithLog<Ast.Receivers> {
     const impExternals: Ast.Decl<Ast.RecvSig>[] = [];
     const impInternals: Ast.Decl<Ast.RecvSig>[] = [];
     const impBounces: Ast.Decl<Ast.BounceSig>[] = [];
@@ -80,7 +79,7 @@ function* mergeReceivers(
     imported: readonly Ast.Decl<Ast.RecvSig>[],
     local: Ast.DeclMem<readonly [Ast.ReceiverSubKind, readonly Ast.Statement[]]>[],
     scopeRef: () => Ast.Scope,
-): E.WithLog<Ast.RecvSig> {
+): Ast.WithLog<Ast.RecvSig> {
     const allMessage: Ast.DeclMem<Ast.OpcodeRecv>[] = [];
     let allMessageAny: undefined | Ast.DeclMem<Ast.MessageAnyRecv>;
     let allStringAny: undefined | Ast.DeclMem<Ast.StringAnyRecv>;
@@ -200,7 +199,7 @@ function* mergeBounce(
     imported: readonly Ast.Decl<Ast.BounceSig>[],
     local: readonly Ast.DeclMem<[Ast.TypedParameter, readonly Ast.Statement[]]>[],
     scopeRef: () => Ast.Scope
-): E.WithLog<Ast.BounceSig> {
+): Ast.WithLog<Ast.BounceSig> {
     const allMessage: Ast.DeclMem<Ast.MessageRecv>[] = [];
     let allMessageAny: undefined | Ast.DeclMem<Ast.MessageAnyRecv>;
     
@@ -265,10 +264,10 @@ function* mergeBounce(
 
 const EInvalidRecv = (
     loc: Ast.Loc,
-): E.TcError => ({
+): Ast.TcError => ({
     loc,
     descr: [
-        E.TEText(`Receiver's parameter must be a message type, Slice, or String`),
+        Ast.TEText(`Receiver's parameter must be a message type, Slice, or String`),
     ],
 });
 
@@ -276,13 +275,13 @@ const ERedefineReceiver = (
     kind: string,
     prev: Ast.ViaMember,
     next: Ast.ViaMember,
-): E.TcError => ({
+): Ast.TcError => ({
     loc: next.defLoc,
     descr: [
-        E.TEText(`There already is a ${kind} receiver`),
-        E.TEText(`First defined at`),
-        E.TEViaMember(prev),
-        E.TEText(`Redefined at`),
-        E.TEViaMember(next),
+        Ast.TEText(`There already is a ${kind} receiver`),
+        Ast.TEText(`First defined at`),
+        Ast.TEViaMember(prev),
+        Ast.TEText(`Redefined at`),
+        Ast.TEViaMember(next),
     ],
 });
