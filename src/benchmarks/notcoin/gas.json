@@ -98,6 +98,15 @@
         "burn": "11739",
         "discovery": "5818"
       }
+    },
+    {
+      "label": "1.6.13 with precompiled gas consumption",
+      "pr": "https://github.com/tact-lang/tact/pull/3344",
+      "gas": {
+        "transfer": "15671",
+        "burn": "12027",
+        "discovery": "5818"
+      }
     }
   ]
 }
