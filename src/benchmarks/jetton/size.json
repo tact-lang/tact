@@ -179,6 +179,16 @@
         "wallet cells": "15",
         "wallet bits": "7772"
       }
+    },
+    {
+      "label": "1.6.13 with preview of deep selector hack",
+      "pr": null,
+      "size": {
+        "minter cells": "26",
+        "minter bits": "14009",
+        "wallet cells": "14",
+        "wallet bits": "7764"
+      }
     }
   ]
 }

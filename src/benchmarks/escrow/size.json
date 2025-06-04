@@ -111,6 +111,14 @@
         "cells": "20",
         "bits": "10919"
       }
+    },
+    {
+      "label": "1.6.13 with preview of deep selector hack",
+      "pr": null,
+      "size": {
+        "cells": "19",
+        "bits": "10919"
+      }
     }
   ]
 }
