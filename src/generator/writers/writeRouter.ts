@@ -130,15 +130,15 @@ export function writeNonBouncedRouter(
         receivers.comment.length > 0 ||
         typeof receivers.commentFallback !== "undefined";
 
-    wCtx.append("int op = 0;");
     wCtx.append("int in_msg_length = slice_bits(in_msg);");
-    wCtx.inBlock("if (in_msg_length >= 32)", () => {
-        wCtx.append(`op = in_msg${opcodeReader}(32);`);
-
-        if (doesHaveTextReceivers) {
+    wCtx.append(
+        `int op = (in_msg_length >= 32) ? in_msg${opcodeReader}(32) : 0;`,
+    );
+    if (doesHaveTextReceivers) {
+        wCtx.inBlock("if (in_msg_length >= 32)", () => {
             writeBinaryReceivers(opcodeReader === "~load_uint");
-        }
-    });
+        });
+    }
 
     // NOTE: It should be more efficient to write all binary receivers inside
     //       `in_msg_length` length if-check regardless of text receivers,
