@@ -11,18 +11,27 @@ import {
   createHighlighter,
   createWasmOnigEngine,
 } from 'shiki';
+import { ExpressiveCodeTheme } from '@astrojs/starlight/expressive-code';
 import fs from 'node:fs';
 
 // Import custom grammars
-const grammar_tact = JSON.parse(fs.readFileSync(new URL('grammars/grammar-tact.json', import.meta.url), 'utf-8'));
-const grammar_func = JSON.parse(fs.readFileSync(new URL('grammars/grammar-func.json', import.meta.url), 'utf-8'));
+const grammarTact = JSON.parse(fs.readFileSync(new URL('./grammars/grammar-tact.json', import.meta.url), 'utf-8'));
+const grammarFunc = JSON.parse(fs.readFileSync(new URL('./grammars/grammar-func.json', import.meta.url), 'utf-8'));
+
+// Import custom themes
+const oneLightMod = ExpressiveCodeTheme.fromJSONString(fs.readFileSync(new URL('./themes/one-light-mod.jsonc', import.meta.url), 'utf-8'));
 
 /**
- * Highlight inline code tags with Shiki
+ * Highlight inline code tags with Shiki.
  *
+ * @typedef {{
+     themeDark: 'one-dark-pro' | ExpressiveCodeTheme | import('shiki').BundledTheme;
+     themeLight: typeof oneLightMod | import('shiki').BundledTheme;
+   }} Options
+ * @param {Readonly<Options> | null | undefined} options
  * @returns Transform.
  */
-export default function rehypeInlineCodeHighlighting() {
+export default function rehypeInlineCodeHighlighting(options) {
   /**
    * @param {Root} tree
    * @return {undefined}
@@ -30,6 +39,12 @@ export default function rehypeInlineCodeHighlighting() {
   return async function(tree) {
     /** @type {{node: import('hast').Element, lang: string, code: string}[]} */
     const nodesToProcess = [];
+
+    /** @type {Readonly<Options>} */
+    const optConfig = options ?? {
+      themeDark: 'one-dark-pro',
+      themeLight: oneLightMod,
+    };
 
     visit(tree, 'element', function(node, _num, parent) {
       if (node.tagName === 'code'
@@ -52,7 +67,7 @@ export default function rehypeInlineCodeHighlighting() {
 
     // Prepare Shiki
     const hl = await createHighlighter({
-      themes: ['one-dark-pro', 'one-light'], // TODO: abstract away
+      themes: [optConfig.themeDark, optConfig.themeLight],
       langs: [
         // ...Object.keys(bundledLanguages),
         bundledLanguages.javascript,
@@ -64,8 +79,8 @@ export default function rehypeInlineCodeHighlighting() {
         bundledLanguages.bat,
         bundledLanguages.batch,
         bundledLanguages.powershell,
-        grammar_tact,
-        grammar_func,
+        grammarTact,
+        grammarFunc,
       ],
       // TODO: Made the 'name' lowercase in the TextMate grammars
       langAlias: { fc: 'func' },
@@ -76,12 +91,14 @@ export default function rehypeInlineCodeHighlighting() {
     for (let i = 0; i < nodesToProcess.length; i += 1) {
       const res = hl.codeToHast(nodesToProcess[i].code.trim(), {
         lang: nodesToProcess[i].lang,
-        theme: 'one-dark-pro', // TODO: move out
-        // theme: 'one-light',
         structure: 'inline',
+        themes: {
+          dark: optConfig.themeDark,
+          light: optConfig.themeLight,
+        },
+        defaultColor: false,
       });
       nodesToProcess[i].node.children = res.children;
-      // console.log(nodesToProcess[i].node);
     }
 
     // TODO: hoist preparation elsewhere?
