@@ -67,8 +67,8 @@ export function writeTests(
             '{ Blockchain, createShardAccount } from "@ton/sandbox"',
         ],
         receivers: abi.receivers?.map(getReceiverFunctionName) ?? [],
-        getters: abi.getters?.map(g => g.name) ?? [],
-        receiverBlocks: (abi.receivers ?? []).map(r => {
+        getters: abi.getters?.map((g) => g.name) ?? [],
+        receiverBlocks: (abi.receivers ?? []).map((r) => {
             const fn = getReceiverFunctionName(r);
             return `const test${fn}: TestCase = (fromInit) => {
     describe("${fn}", () => {
@@ -86,7 +86,7 @@ export function writeTests(
 };
 `;
         }),
-        getterBlocks: (abi.getters ?? []).map(g => {
+        getterBlocks: (abi.getters ?? []).map((g) => {
             const fn = g.name;
             return `const getterTest${fn}: TestCase = (fromInit) => {
     describe("${fn}", () => {
