@@ -149,6 +149,16 @@
         "internalTransfer": "5724",
         "extensionTransfer": "4656"
       }
+    },
+    {
+      "label": "1.6.13 with optimized optional globals",
+      "pr": "https://github.com/tact-lang/tact/pull/3327",
+      "gas": {
+        "externalTransfer": "4965",
+        "addExtension": "5628",
+        "internalTransfer": "5722",
+        "extensionTransfer": "4654"
+      }
     }
   ]
 }

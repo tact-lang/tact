@@ -16,6 +16,7 @@ import {
     writeSerializer,
 } from "@/generator/writers/writeSerialization";
 import { writeStdlib } from "@/generator/writers/writeStdlib";
+import { enabledOptimizedChildCode } from "@/config/features";
 import { writeAccessors } from "@/generator/writers/writeAccessors";
 import type { ContractABI } from "@ton/core";
 import { writeFunction } from "@/generator/writers/writeFunction";
@@ -116,8 +117,18 @@ export async function writeProgram(
         globalVariables.push("global slice __tact_context_sender;");
     }
 
-    globalVariables.push("global cell __tact_child_contract_codes;");
-    globalVariables.push("global int __tact_randomized;");
+    const needsChildCodes =
+        contract.dependsOn.length > 0 && !enabledOptimizedChildCode(ctx);
+    if (needsChildCodes) {
+        globalVariables.push("global cell __tact_child_contract_codes;");
+    }
+
+    const needsRandom = functions.some(
+        (f) => f.name === "__tact_prepare_random",
+    );
+    if (needsRandom) {
+        globalVariables.push("global int __tact_randomized;");
+    }
 
     if (contract.globalVariables.has("inMsg")) {
         globalVariables.push("global slice __tact_in_msg;");
