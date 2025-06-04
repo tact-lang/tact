@@ -100,11 +100,11 @@
       }
     },
     {
-      "label": "1.6.13 with reordered __tact_store_address_opt arguments",
-      "pr": "https://github.com/tact-lang/tact/pull/3333",
+      "label": "1.6.13 with precompiled gas consumption",
+      "pr": "https://github.com/tact-lang/tact/pull/3344",
       "gas": {
-        "transfer": "15377",
-        "burn": "11739",
+        "transfer": "15671",
+        "burn": "12027",
         "discovery": "5818"
       }
     }
