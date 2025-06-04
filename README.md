@@ -100,6 +100,7 @@ See [Tact in production](https://github.com/tact-lang/awesome-tact#tact-in-produ
 - [DeFi Cookbook](https://github.com/tact-lang/defi-cookbook)
 - [Documentation](https://docs.tact-lang.org)
 - [Changelog](./dev-docs/CHANGELOG.md)
+- [Documentation changelog](./dev-docs/CHANGELOG-DOCS.md)
 
 ## Installation
 
