@@ -1422,10 +1422,10 @@
   resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.30.0.tgz#8af17d60bee83d8b9a7050516b4b3286e12e5445"
   integrity sha512-fFqwZrMT0KVdWmc/GieBbV0xrs58bx+JUbcHTq/fGLP8dNAKqbnX9ddIT1jA0N8WFOIIAF9MDw0CeIc6h0C8tA==
 
-"@ton/test-utils@^0.5.0":
-  version "0.5.0"
-  resolved "https://npm.dev-internal.org/@ton/test-utils/-/test-utils-0.5.0.tgz#ca28fa8bba7c927db05074920481abf058e3c261"
-  integrity sha512-cwP8xMia3mW9W5KQkswcEA18GR1WwoTdJXKyPNiaxqx8QxCVvzzlqNj7dq4abz10HakLStuKySyMWOa4pwMR8w==
+"@ton/test-utils@^0.7.0":
+  version "0.7.0"
+  resolved "https://npm.dev-internal.org/@ton/test-utils/-/test-utils-0.7.0.tgz#c70dd68f5155edfc68482ea1050fda73511f0c92"
+  integrity sha512-c0izUKncMqC+zKOHzILO1/l0gWKwCeEP1PtgtCvdPRiTE0WfDxeLEc1gMAl6DQOGeMoLD4Wv4HnR4R72v5Oagw==
   dependencies:
     node-inspect-extracted "^2.0.0"
 
