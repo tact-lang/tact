@@ -1,0 +1,27 @@
+name: Reward
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  reward:
+    name: Reward
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: the-ton-tech/toolchain/reward@v1.3.0
+        with:
+          activity_id: 38 # https://society.ton.org/contribute-to-tact-compiler
+          xps_min: 0
+          xps_max: 15000
+          # (optional) label for marking the rewarded PR
+          # on_reward_label: rewarded # if label "rewarded" exist
+          # Credentials of TON Society Platform
+          society_api_key: ${{ secrets.SOCIETY_API_KEY }}
+          society_partner_id: ${{ secrets.SOCIETY_PARTNER_ID }}
+          # GitHub token used to read PR details and post comments/labels
+          github_token: ${{ secrets.GITHUB_TOKEN }}
