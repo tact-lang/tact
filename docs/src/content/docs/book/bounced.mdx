@@ -46,12 +46,6 @@ This behavior is unlike the non-bounced messages such as regular internal or ext
 
 ## Bounced message receiver
 
-:::caution
-
-  Bounced text messages are not supported yet.
-
-:::
-
 To receive a bounced message, define a `bounced(){:tact}` [receiver function](/book/contracts#receiver-functions) in your [contract](/book/contracts) or a [trait](/book/types#traits):
 
 ```tact {2-4}
@@ -62,9 +56,15 @@ contract MyContract {
 }
 ```
 
+:::note
+
+  There is no special receiver for bounced text messages yet. To process them, use the [fallback `Slice{:tact}` bounced receiver](#fallback).
+
+:::
+
 ## Fallback bounced message receiver {#fallback}
 
-To process bounced messages manually, you can use a fallback definition that handles a raw [`Slice{:tact}`](/book/cells#slices) directly. Note that such a receiver will get **all** the bounced messages produced by your contract:
+To process bounced messages manually, you can use a fallback catch-all definition that handles a raw [`Slice{:tact}`](/book/cells#slices) directly. Note that such a receiver will get **all** the bounced messages produced by your contract:
 
 ```tact /rawMsg: Slice/
 contract MyContract {
@@ -73,5 +73,7 @@ contract MyContract {
     }
 }
 ```
+
+On TON, bounced message bodies have a 32 bits prefix, where all bits are set, i.e., with `0xFFFFFFFF{:tact}`. However, since that prefix is always the same for all bounced messages, Tact cuts it off for your convenience, keeping only the remaining 256 bits of the payload, which usually starts with a 32-bit message opcode.
 
 [message]: /book/structs-and-messages#messages

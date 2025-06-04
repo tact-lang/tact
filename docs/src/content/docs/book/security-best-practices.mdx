@@ -271,6 +271,7 @@ contract Sample(
 ) {
     external(msg: MsgWithSignedData) {
         require(msg.bundle.verifySignature(self.publicKey), "Invalid signature");
+        require(msg.seqno == self.seqno, "Invalid seqno");
         acceptMessage();
         self.seqno += 1;
         sendRawMessage(msg.rawMsg, 0);
