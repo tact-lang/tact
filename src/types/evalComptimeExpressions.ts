@@ -36,6 +36,28 @@ function initializeConstants(
     }
 }
 
+function registerAndCheckMethodId(
+    f: FunctionDescription,
+    ctx: CompilerContext,
+    currentContractIds: Map<number, string>,
+    allIds: Map<number, string>,
+    astF: FactoryAst,
+) {
+    const util = getAstUtil(astF);
+    const methodId = getMethodId(f, ctx, util);
+    const existing = currentContractIds.get(methodId);
+    if (existing) {
+        throwCompilationError(
+            `Method ID collision: getter '${f.name}' has the same method ID ${methodId} as getter '${existing}'\nPick a different getter name or explicit method ID to avoid collisions`,
+            f.ast.name.loc,
+        );
+    } else {
+        f.methodId = methodId;
+        currentContractIds.set(methodId, f.name);
+        allIds.set(methodId, f.name);
+    }
+}
+
 export function evalComptimeExpressions(
     ctx: CompilerContext,
     astF: FactoryAst,
@@ -85,6 +107,7 @@ export function evalComptimeExpressions(
     initializeConstants(staticConstants, ctx, util);
 
     // Evaluate getter method IDs and check for collisions
+    const allMethodIds: Map<number, string> = new Map();
     for (const t of getAllTypes(ctx)) {
         const methodIds: Map<number, string> = new Map();
         for (const f of t.functions.values()) {
@@ -94,17 +117,7 @@ export function evalComptimeExpressions(
                 f.ast.kind !== "asm_function_def" &&
                 f.isGetter
             ) {
-                const methodId = getMethodId(f, ctx, util);
-                const existing = methodIds.get(methodId);
-                if (existing) {
-                    throwCompilationError(
-                        `Method ID collision: getter '${f.name}' has the same method ID ${methodId} as getter '${existing}'\nPick a different getter name or explicit method ID to avoid collisions`,
-                        f.ast.name.loc,
-                    );
-                } else {
-                    f.methodId = methodId;
-                    methodIds.set(methodId, f.name);
-                }
+                registerAndCheckMethodId(f, ctx, methodIds, allMethodIds, astF);
             }
         }
     }
@@ -112,8 +125,12 @@ export function evalComptimeExpressions(
     // FIXME: We need to do this hack to check shift operators. The code in the callback function checkShiftOperators
     // was previously in resolveExpressions.
     // Remove these calls to traverse and function checkShiftOperators once the partial evaluator is active.
-    getAllStaticFunctions(ctx).forEach((fDesc) => {
-        traverse(fDesc.ast, (n) => {
+    getAllStaticFunctions(ctx).forEach((f) => {
+        if (f.isGetter) {
+            registerAndCheckMethodId(f, ctx, new Map(), allMethodIds, astF);
+        }
+
+        traverse(f.ast, (n) => {
             checkShiftOperators(ctx, util, n);
         });
     });

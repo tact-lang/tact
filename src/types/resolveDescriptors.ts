@@ -906,16 +906,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
         }
 
-        // Check for common
-        if (a.kind === "function_def" || a.kind === "asm_function_def") {
-            if (isGetter && !self) {
-                throwCompilationError(
-                    "Getters must be defined within a contract",
-                    isGetter.loc,
-                );
-            }
-        }
-
         // Check for getter
         if (isInline && isGetter) {
             throwCompilationError("Getters cannot be inline", isInline.loc);

@@ -83,6 +83,9 @@ export async function writeProgram(
     headers.push(``);
     // const sortedHeaders = [...functions].sort((a, b) => a.name.localeCompare(b.name));
     for (const f of functions) {
+        if (f.methodId !== null) {
+            continue;
+        }
         if (f.code.kind === "generic" && f.signature) {
             headers.push(`;; ${f.name}`);
             let sig = f.signature;

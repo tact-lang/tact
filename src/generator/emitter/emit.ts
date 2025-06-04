@@ -38,7 +38,11 @@ export function emit(args: {
                         sig = `${sig} inline_ref`;
                     }
 
-                    res += `${sig} {\n${createPadded(f.code.code)}\n}`;
+                    const methodId = f.methodId
+                        ? ` method_id(${f.methodId})`
+                        : "";
+
+                    res += `${sig}${methodId} {\n${createPadded(f.code.code)}\n}`;
                 } else if (f.code.kind === "asm") {
                     let sig = f.signature;
                     if (f.flags.has("impure")) {

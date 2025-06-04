@@ -26,6 +26,7 @@ export type WrittenFunction = {
     code: Body;
     signature: string;
     flags: Set<Flag>;
+    methodId: number | null;
     depends: Set<string>;
     comment: string | null;
     context: string | null;
@@ -40,6 +41,7 @@ export class WriterContext {
     #pendingCode: Body | null = null;
     #pendingDepends: Set<string> | null = null;
     #pendingName: string | null = null;
+    #pendingMethodId: number | null = null;
     #pendingSignature: string | null = null;
     #pendingFlags: Set<Flag> | null = null;
     #pendingComment: string | null = null;
@@ -106,7 +108,7 @@ export class WriterContext {
                 }
             };
             visit("$main");
-            all = all.filter((v) => used.has(v.name));
+            all = all.filter((v) => used.has(v.name) || v.methodId !== null);
         }
 
         // Sort functions
@@ -149,6 +151,7 @@ export class WriterContext {
             const w = this.#pendingWriter;
             const d = this.#pendingDepends;
             const n = this.#pendingName;
+            const i = this.#pendingMethodId;
             const s = this.#pendingSignature;
             const f = this.#pendingFlags;
             const c = this.#pendingCode;
@@ -157,6 +160,7 @@ export class WriterContext {
             this.#pendingDepends = null;
             this.#pendingWriter = null;
             this.#pendingName = null;
+            this.#pendingMethodId = null;
             this.#pendingSignature = null;
             this.#pendingFlags = null;
             this.#pendingCode = null;
@@ -167,6 +171,7 @@ export class WriterContext {
             this.#pendingDepends = d;
             this.#pendingWriter = w;
             this.#pendingName = n;
+            this.#pendingMethodId = i;
             this.#pendingFlags = f;
             this.#pendingCode = c;
             this.#pendingComment = cc;
@@ -181,6 +186,7 @@ export class WriterContext {
         this.#pendingName = name;
         this.#pendingSignature = null;
         this.#pendingFlags = new Set();
+        this.#pendingMethodId = null;
         this.#pendingCode = null;
         this.#pendingComment = null;
         this.#pendingContext = null;
@@ -188,6 +194,7 @@ export class WriterContext {
         const depends = this.#pendingDepends;
         const signature = this.#pendingSignature!;
         const flags = this.#pendingFlags;
+        const methodId = this.#pendingMethodId;
         const code = this.#pendingCode;
         const comment = this.#pendingComment;
         const context = this.#pendingContext;
@@ -210,6 +217,7 @@ export class WriterContext {
             depends,
             signature,
             flags,
+            methodId,
             comment,
             context,
         });
@@ -261,6 +269,14 @@ export class WriterContext {
             this.#pendingFlags!.add(flag);
         } else {
             throw new Error(`Flag can be set only inside function`);
+        }
+    }
+
+    methodId(id: number) {
+        if (this.#pendingName) {
+            this.#pendingMethodId = id;
+        } else {
+            throw new Error(`method id can be set only inside function`);
         }
     }
 

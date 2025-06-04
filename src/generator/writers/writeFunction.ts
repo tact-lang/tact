@@ -808,6 +808,9 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             ctx.fun(name, () => {
                 ctx.signature(`${returns} ${name}(${params.join(", ")})`);
                 ctx.flag("impure");
+                if (f.isGetter && f.methodId && f.self === null) {
+                    ctx.methodId(f.methodId!);
+                }
                 if (enabledInline(ctx.ctx) || f.isInline) {
                     ctx.flag("inline");
                 }
