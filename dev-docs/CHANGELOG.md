@@ -13,11 +13,6 @@ The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOC
 
 - Reordered arguments of the `__tact_store_address_opt` function to optimize gas consumption: PR [#3333](https://github.com/tact-lang/tact/pull/3333)
 
-### Docs
-
-- Described off-chain calls and mention exit code 11 for getters: PR [#3314](https://github.com/tact-lang/tact/pull/3314)
-- Remarked the futility of synchronous on-chain data retrieval patterns for getters: PR [#3316](https://github.com/tact-lang/tact/pull/3316)
-
 ## [1.6.13] - 2025-05-29
 
 ### Language features
