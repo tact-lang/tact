@@ -67,6 +67,13 @@ function statementEffects(
             );
         }
         case "statement_return": {
+            if (
+                stmt.expression?.kind === "id" &&
+                stmt.expression.text === "self"
+            ) {
+                // special case for getters with single `return self`
+                return new Set<Effect>(["contractStorageRead"]);
+            }
             return stmt.expression
                 ? expressionEffects(
                       stmt.expression,
@@ -192,9 +199,6 @@ function expressionEffects(
 ): ReadonlySet<Effect> {
     switch (expr.kind) {
         case "id": {
-            if (expr.text === "self") {
-                return new Set<Effect>(["contractStorageRead"]);
-            }
             return new Set<Effect>();
         }
         case "field_access": {

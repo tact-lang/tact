@@ -97,7 +97,6 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
       {
         "comment": "rewrite in a contract method",
         "effects": Set {
-          "contractStorageRead",
           "contractStorageWrite",
         },
         "kind": "internal-comment",
@@ -105,7 +104,6 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
       {
         "comment": "transitively modifying contract method",
         "effects": Set {
-          "contractStorageRead",
           "contractStorageWrite",
         },
         "kind": "internal-comment",
@@ -113,8 +111,8 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
       {
         "comment": "read and modify in a contract method",
         "effects": Set {
-          "contractStorageRead",
           "contractStorageWrite",
+          "contractStorageRead",
         },
         "kind": "internal-comment",
       },
@@ -129,7 +127,6 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
         "comment": "asm function modifies contract storage via assigning to \`self\`: swapStorage",
         "effects": Set {
           "contractStorageWrite",
-          "contractStorageRead",
         },
         "kind": "internal-comment",
       },
@@ -172,38 +169,33 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
       },
       {
         "comment": "non-modifying recursive contract method",
-        "effects": Set {
-          "contractStorageRead",
-        },
+        "effects": Set {},
         "kind": "internal-comment",
       },
       {
         "comment": "modifying recursive contract method",
         "effects": Set {
-          "contractStorageRead",
           "contractStorageWrite",
+          "contractStorageRead",
         },
         "kind": "internal-comment",
       },
       {
         "comment": "modifying recursive external contract method",
         "effects": Set {
-          "contractStorageRead",
           "contractStorageWrite",
+          "contractStorageRead",
         },
         "kind": "internal-comment",
       },
       {
         "comment": "non-modifying mutually recursive contract methods",
-        "effects": Set {
-          "contractStorageRead",
-        },
+        "effects": Set {},
         "kind": "internal-comment",
       },
       {
         "comment": "modifying mutually recursive contract methods",
         "effects": Set {
-          "contractStorageRead",
           "contractStorageWrite",
         },
         "kind": "internal-comment",
@@ -211,16 +203,13 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
       {
         "comment": "modifying getter as a contract method",
         "effects": Set {
-          "contractStorageRead",
           "contractStorageWrite",
         },
         "kind": "internal-comment",
       },
       {
         "comment": "non-modifying getter as a contract method",
-        "effects": Set {
-          "contractStorageRead",
-        },
+        "effects": Set {},
         "kind": "internal-comment",
       },
       {
