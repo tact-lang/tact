@@ -13,8 +13,8 @@ import { highest32ofSha256, sha256 } from "@/utils/sha256";
 export function* decodeMessage(
     Lazy: Ast.ThunkBuilder,
     message: Ast.MessageDecl,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.MessageSig> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CMessage> {
     const fields = yield* decodeFields(
         Lazy,
         message.fields,
@@ -45,7 +45,7 @@ export function* decodeMessage(
         recover: undefined,
     });
 
-    return Ast.MessageSig(lazyExpr, fields);
+    return Ast.CMessage(lazyExpr, fields);
 }
 const EZero = (next: Ast.Loc): Ast.TcError => ({
     loc: next,
@@ -62,11 +62,11 @@ const ETooLarge = (next: Ast.Loc): Ast.TcError => ({
 
 function* decodeOpcode(
     Lazy: Ast.ThunkBuilder,
-    typeParams: Ast.TypeParams,
+    typeParams: Ast.CTypeParams,
     opcode: Ast.Expression | undefined,
     messageName: string,
     fieldsNames: readonly string[],
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ) {
     if (opcode) {
         const expr = yield* decodeExpr(
@@ -77,11 +77,11 @@ function* decodeOpcode(
             undefined,
             new Map(),
         );
-        const computed = expr.computedType;
+        const computed = expr.value.computedType;
         if (
             yield* assignType(opcode.loc, emptyTypeParams, Int, computed, false)
         ) {
-            const result = yield* evalExpr(expr, scopeRef);
+            const result = yield* evalExpr(expr.value, scopeRef);
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (result.kind === "number") {
                 return result.value;

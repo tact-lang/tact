@@ -7,14 +7,14 @@ import { recoverName } from "@/next/types/name";
 
 export function* decodeFnType(
     Lazy: Ast.ThunkBuilder,
-    { typeParams, params, returnType }: Ast.FnType,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.DecodedFnType> {
+    { typeParams, params, returnType }: Ast.TFunction,
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CTypeFunction> {
     const decodedTypeParams = yield* decodeTypeParams(typeParams);
     const dealias = (type: Ast.Type) => {
         return decodeDealiasTypeLazy(Lazy, decodedTypeParams, type, scopeRef);
     };
-    return Ast.DecodedFnType(
+    return Ast.CTypeFunction(
         decodedTypeParams,
         yield* decodeParams(dealias, params),
         dealias(returnType),
@@ -22,19 +22,19 @@ export function* decodeFnType(
 }
 
 export function* decodeParams(
-    dealias: (type: Ast.Type) => Ast.Thunk<Ast.DecodedType>,
+    dealias: (type: Ast.Type) => Ast.Thunk<Ast.CType>,
     params: readonly Ast.TypedParameter[],
-): Ast.WithLog<Ast.Parameters> {
-    const order: Ast.Parameter[] = [];
+): Ast.WithLog<Ast.CParameters> {
+    const order: Ast.CParameter[] = [];
     const set: Set<string> = new Set();
     for (const param of params) {
         const name = yield* decodeParamName(param.name, set);
-        order.push(Ast.Parameter(param.name, dealias(param.type), param.loc));
+        order.push(Ast.CParameter(param.name, dealias(param.type), param.loc));
         if (typeof name !== "undefined") {
             set.add(name);
         }
     }
-    return Ast.Parameters(order, set);
+    return Ast.CParameters(order, set);
 }
 
 function* decodeParamName(

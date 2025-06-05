@@ -1,5 +1,5 @@
 import type { Id, Loc, TypeId } from "@/next/ast/common";
-import type { Type, TypeMap } from "@/next/ast/type";
+import type { Type, TMap } from "@/next/ast/type";
 
 export type Expression =
     | OpBinary
@@ -146,7 +146,7 @@ export type StructFieldInitializer = {
 
 export type MapLiteral = {
     readonly kind: "map_literal";
-    readonly type: TypeMap;
+    readonly type: TMap;
     readonly fields: readonly MapField[];
     readonly loc: Loc;
 };

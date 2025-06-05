@@ -1,8 +1,8 @@
 import type { Effects } from "@/next/ast/effects";
-import type { DecodedStatement } from "@/next/ast/checked-stmt";
+import type { LStmt } from "@/next/ast/lowered-stmt";
 import type { FuncId, Loc, OptionalId, TypeId } from "@/next/ast/common";
-import type { DecodedType, DTypeRef, DTypeBounced } from "@/next/ast/dtype";
-import type { SelfType } from "@/next/ast/mtype";
+import type { LType, LTypeRef, LTypeBounced } from "@/next/ast/lowered-type";
+import type { SelfType } from "@/next/ast/type-self";
 import type {
     AsmInstruction,
     AsmShuffle,
@@ -10,7 +10,7 @@ import type {
 } from "@/next/ast/root";
 import type { Value } from "@/next/ast/value";
 
-export type LAst = {
+export type LSource = {
     readonly typeDecls: ReadonlyMap<string, LTypeDeclSig>;
     readonly functions: ReadonlyMap<string, LFnSig>;
     readonly constants: ReadonlyMap<string, LConstSig>;
@@ -27,7 +27,7 @@ export type LTypeDeclSig =
 
 export type LConstSig = {
     readonly initializer: Value;
-    readonly type: DecodedType;
+    readonly type: LType;
 };
 
 export type LFnSig = {
@@ -37,7 +37,7 @@ export type LFnSig = {
 };
 
 export type LStatements = {
-    readonly body: readonly DecodedStatement[];
+    readonly body: readonly LStmt[];
     readonly effects: Effects;
 };
 
@@ -66,7 +66,7 @@ export type LExtSig = {
 export type LAliasSig = {
     readonly kind: "alias";
     readonly typeParams: LTypeParams;
-    readonly type: DecodedType;
+    readonly type: LType;
 };
 
 export type LInitSig = LInitEmpty | LInitSimple | LInitFn;
@@ -90,7 +90,7 @@ export type LInitFn = {
     readonly statements: LStatements;
 };
 export type LInitParam = {
-    readonly type: DecodedType;
+    readonly type: LType;
     readonly init: undefined | Value;
     readonly loc: Loc;
 };
@@ -121,13 +121,13 @@ export type LReceivers = {
 export type LFieldish<Expr> = LInhFieldSig | LFieldConstSig<Expr>;
 export type LInhFieldSig = {
     readonly kind: "field";
-    readonly type: DecodedType;
+    readonly type: LType;
     readonly init: Value | undefined;
 };
 export type LFieldConstSig<Expr> = {
     readonly kind: "constant";
     readonly overridable: boolean;
-    readonly type: DecodedType;
+    readonly type: LType;
     readonly init: Expr;
 };
 
@@ -157,7 +157,7 @@ export type LOpcodeRecv = LMessageRecv | LStringRecv;
 export type LMessageRecv = {
     readonly kind: "binary";
     readonly name: OptionalId;
-    readonly type: DTypeRef | DTypeBounced;
+    readonly type: LTypeRef | LTypeBounced;
     readonly statements: LStatements;
 };
 export type LMessageAnyRecv = {
@@ -199,7 +199,7 @@ export type LDecodedFnType = {
     readonly kind: "DecodedFnType";
     readonly typeParams: LTypeParams;
     readonly params: LParameters;
-    readonly returnType: DecodedType;
+    readonly returnType: LType;
 };
 
 export type LDecodedMethodType = {
@@ -208,12 +208,12 @@ export type LDecodedMethodType = {
     readonly typeParams: LTypeParams;
     readonly self: SelfType;
     readonly params: LParameters;
-    readonly returnType: DecodedType;
+    readonly returnType: LType;
 };
 
 export type LDecodedParameter = {
     readonly name: OptionalId;
-    readonly type: DecodedType;
+    readonly type: LType;
     readonly loc: Loc;
 };
 
@@ -229,7 +229,7 @@ export type LParameters = {
 
 export type LParameter = {
     readonly name: OptionalId;
-    readonly type: DecodedType;
+    readonly type: LType;
     readonly loc: Loc;
 };
 

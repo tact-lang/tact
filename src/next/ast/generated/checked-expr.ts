@@ -2,14 +2,14 @@
 import type { Ordered } from "@/next/ast/checked";
 import type * as $ from "@/next/ast/checked-expr";
 import type * as $c from "@/next/ast/common";
-import type * as $d from "@/next/ast/dtype";
+import type * as $d from "@/next/ast/checked-type";
 import type * as $e from "@/next/ast/expression";
-import type { SelfType } from "@/next/ast/mtype";
+import type { SelfType } from "@/next/ast/type-self";
 
 export type DCodeOf = $.DCodeOf;
 export const DCodeOf = (
     contract: $c.TypeId,
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DCodeOf =>
     Object.freeze({
@@ -23,7 +23,7 @@ export type DNumber = $.DNumber;
 export const DNumber = (
     base: $e.NumberBase,
     value: bigint,
-    computedType: $d.DTypeInt,
+    computedType: $d.CTBasic,
     loc: $c.Loc,
 ): $.DNumber =>
     Object.freeze({
@@ -37,7 +37,7 @@ export const isDNumber = ($value: DNumber) => $value.kind === "number";
 export type DBoolean = $.DBoolean;
 export const DBoolean = (
     value: boolean,
-    computedType: $d.DTypeBool,
+    computedType: $d.CTBasic,
     loc: $c.Loc,
 ): $.DBoolean =>
     Object.freeze({
@@ -48,7 +48,7 @@ export const DBoolean = (
     });
 export const isDBoolean = ($value: DBoolean) => $value.kind === "boolean";
 export type DNull = $.DNull;
-export const DNull = (computedType: $d.DTypeNull, loc: $c.Loc): $.DNull =>
+export const DNull = (computedType: $d.CTBasic, loc: $c.Loc): $.DNull =>
     Object.freeze({
         kind: "null",
         computedType,
@@ -58,7 +58,7 @@ export const isDNull = ($value: DNull) => $value.kind === "null";
 export type DString = $.DString;
 export const DString = (
     value: string,
-    computedType: $d.DTypeString,
+    computedType: $d.CTBasic,
     loc: $c.Loc,
 ): $.DString =>
     Object.freeze({
@@ -71,7 +71,7 @@ export const isDString = ($value: DString) => $value.kind === "string";
 export type DVar = $.DVar;
 export const DVar = (
     name: string,
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DVar =>
     Object.freeze({
@@ -90,7 +90,7 @@ export const DSelf = (computedType: SelfType, loc: $c.Loc): $.DSelf =>
     });
 export const isDSelf = ($value: DSelf) => $value.kind === "self";
 export type DUnit = $.DUnit;
-export const DUnit = (computedType: $d.DTypeUnit, loc: $c.Loc): $.DUnit =>
+export const DUnit = (computedType: $d.CTBasic, loc: $c.Loc): $.DUnit =>
     Object.freeze({
         kind: "unit",
         computedType,
@@ -99,8 +99,8 @@ export const DUnit = (computedType: $d.DTypeUnit, loc: $c.Loc): $.DUnit =>
 export const isDUnit = ($value: DUnit) => $value.kind === "unit";
 export type DSetLiteral = $.DSetLiteral;
 export const DSetLiteral = (
-    valueType: $d.DecodedType,
-    computedType: $d.DecodedType,
+    valueType: $d.CType,
+    computedType: $d.CType,
     fields: readonly $.DecodedExpression[],
     loc: $c.Loc,
 ): $.DSetLiteral =>
@@ -124,7 +124,7 @@ export const DMapField = (
     });
 export type DMapLiteral = $.DMapLiteral;
 export const DMapLiteral = (
-    computedType: $d.DTypeMap,
+    computedType: $d.CTMap,
     fields: readonly $.DMapField[],
     loc: $c.Loc,
 ): $.DMapLiteral =>
@@ -139,7 +139,7 @@ export const isDMapLiteral = ($value: DMapLiteral) =>
 export type DTensor = $.DTensor;
 export const DTensor = (
     children: readonly $.DecodedExpression[],
-    computedType: $d.DTypeTensor,
+    computedType: $d.CTTensor,
     loc: $c.Loc,
 ): $.DTensor =>
     Object.freeze({
@@ -152,7 +152,7 @@ export const isDTensor = ($value: DTensor) => $value.kind === "tensor";
 export type DTuple = $.DTuple;
 export const DTuple = (
     children: readonly $.DecodedExpression[],
-    computedType: $d.DTypeTuple,
+    computedType: $d.CTTuple,
     loc: $c.Loc,
 ): $.DTuple =>
     Object.freeze({
@@ -166,7 +166,7 @@ export type DInitOf = $.DInitOf;
 export const DInitOf = (
     contract: $c.TypeId,
     args: readonly $.DecodedExpression[],
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DInitOf =>
     Object.freeze({
@@ -180,7 +180,7 @@ export const isDInitOf = ($value: DInitOf) => $value.kind === "init_of";
 export type DStructInstance = $.DStructInstance;
 export const DStructInstance = (
     fields: Ordered<undefined | DecodedExpression>,
-    computedType: $d.DTypeRef | $d.DTypeRecover,
+    computedType: $d.CTRef | $d.CTRecover,
     loc: $c.Loc,
 ): $.DStructInstance =>
     Object.freeze({
@@ -195,7 +195,7 @@ export type DFieldAccess = $.DFieldAccess;
 export const DFieldAccess = (
     aggregate: $.DecodedExpression,
     field: $c.Id,
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DFieldAccess =>
     Object.freeze({
@@ -213,7 +213,7 @@ export const DStaticMethodCall = (
     typeArgs: $.TypeArgs,
     function_: $c.Id,
     args: readonly $.DecodedExpression[],
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DStaticMethodCall =>
     Object.freeze({
@@ -233,7 +233,7 @@ export const DStaticCall = (
     function_: $c.Id,
     typeArgs: $.TypeArgs,
     args: readonly $.DecodedExpression[],
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DStaticCall =>
     Object.freeze({
@@ -252,7 +252,7 @@ export const DMethodCall = (
     method: $c.Id,
     args: readonly $.DecodedExpression[],
     typeArgs: $.TypeArgs,
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DMethodCall =>
     Object.freeze({
@@ -271,7 +271,7 @@ export const DConditional = (
     condition: $.DecodedExpression,
     thenBranch: $.DecodedExpression,
     elseBranch: $.DecodedExpression,
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DConditional =>
     Object.freeze({
@@ -288,8 +288,8 @@ export type DOpUnary = $.DOpUnary;
 export const DOpUnary = (
     op: $e.UnaryOperation,
     operand: $.DecodedExpression,
-    typeArgs: ReadonlyMap<string, $d.DecodedType>,
-    computedType: $d.DecodedType,
+    typeArgs: ReadonlyMap<string, $d.CType>,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DOpUnary =>
     Object.freeze({
@@ -306,8 +306,8 @@ export const DOpBinary = (
     op: $e.BinaryOperation,
     left: $.DecodedExpression,
     right: $.DecodedExpression,
-    typeArgs: ReadonlyMap<string, $d.DecodedType>,
-    computedType: $d.DecodedType,
+    typeArgs: ReadonlyMap<string, $d.CType>,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.DOpBinary =>
     Object.freeze({
@@ -321,26 +321,10 @@ export const DOpBinary = (
     });
 export const isDOpBinary = ($value: DOpBinary) => $value.kind === "op_binary";
 export type DecodedExpression = $.DecodedExpression;
-export type DThrowCall = $.DThrowCall;
-export const DThrowCall = (
-    function_: $c.Id,
-    args: readonly $.DecodedExpression[],
-    computedType: $d.DecodedType,
-    loc: $c.Loc,
-): $.DThrowCall =>
-    Object.freeze({
-        kind: "throw_call",
-        function: function_,
-        args,
-        computedType,
-        loc,
-    });
-export const isDThrowCall = ($value: DThrowCall) =>
-    $value.kind === "throw_call";
 export type LVar = $.LVar;
 export const LVar = (
     name: string,
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.LVar =>
     Object.freeze({
@@ -362,7 +346,7 @@ export type LFieldAccess = $.LFieldAccess;
 export const LFieldAccess = (
     aggregate: $.LValue,
     field: $c.Id,
-    computedType: $d.DecodedType,
+    computedType: $d.CType,
     loc: $c.Loc,
 ): $.LFieldAccess =>
     Object.freeze({

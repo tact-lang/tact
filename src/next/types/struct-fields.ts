@@ -9,11 +9,11 @@ import { emptyTypeParams } from "@/next/types/type-params";
 export function* decodeFields(
     Lazy: Ast.ThunkBuilder,
     fields: readonly Ast.FieldDecl[],
-    typeParams: Ast.TypeParams,
-    scopeRef: () => Ast.Scope,
+    typeParams: Ast.CTypeParams,
+    scopeRef: () => Ast.CSource,
 ) {
     const order: string[] = [];
-    const all: Map<string, [Ast.Loc, Ast.InhFieldSig]> = new Map();
+    const all: Map<string, [Ast.Loc, Ast.CField]> = new Map();
     for (const field of fields) {
         const { initializer, loc } = field;
         const name = field.name.text;
@@ -43,7 +43,7 @@ export function* decodeFields(
         );
 
         order.push(name);
-        all.set(name, [loc, Ast.InhFieldSig(ascribedType, lazyExpr)]);
+        all.set(name, [loc, Ast.CField(ascribedType, lazyExpr)]);
     }
 
     const map = new Map([...all].map(([name, [, field]]) => [name, field]));
@@ -53,11 +53,11 @@ export function* decodeFields(
 export function decodeInitializerLazy(
     Lazy: Ast.ThunkBuilder,
     loc: Ast.Loc,
-    typeParams: Ast.TypeParams,
-    ascribedType: Ast.Thunk<Ast.DecodedType>,
+    typeParams: Ast.CTypeParams,
+    ascribedType: Ast.Thunk<Ast.CType>,
     initializer: Ast.Expression | undefined,
     selfType: undefined | Ast.SelfType,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ) {
     if (!initializer) {
         return undefined;
@@ -72,16 +72,16 @@ export function decodeInitializerLazy(
                 selfType,
                 new Map(),
             );
-            const computed = expr.computedType;
+            const computed = expr.value.computedType;
             const ascribed = yield* ascribedType();
             yield* assignType(
-                expr.loc,
+                expr.value.loc,
                 emptyTypeParams,
                 ascribed,
                 computed,
                 false,
             );
-            return yield* evalExpr(expr, scopeRef);
+            return yield* evalExpr(expr.value, scopeRef);
         },
         context: [Ast.TEText("evaluating initial field value")],
         loc,

@@ -259,7 +259,7 @@ export const MapField = (key: $.Expression, value: $.Expression): $.MapField =>
     });
 export type MapLiteral = $.MapLiteral;
 export const MapLiteral = (
-    type_: $t.TypeMap,
+    type_: $t.TMap,
     fields: readonly $.MapField[],
     loc: $c.Loc,
 ): $.MapLiteral =>

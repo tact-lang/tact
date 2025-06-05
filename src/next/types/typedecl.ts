@@ -16,8 +16,8 @@ export function* decodeTypeDecls(
     Lazy: Ast.ThunkBuilder,
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.TypeDeclSig>>> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.CTypeDecl>>> {
     const importedSigs = imported.map(
         ({ globals, importedBy }) =>
             new Map(
@@ -40,7 +40,7 @@ export function* decodeTypeDecls(
         ]);
     });
 
-    const prev: Map<string, Ast.Decl<Ast.TypeDeclSig>> = new Map();
+    const prev: Map<string, Ast.Decl<Ast.CTypeDecl>> = new Map();
     for (const next of [...importedSigs, ...localSigs]) {
         for (const [name, nextItem] of next) {
             const prevItem = prev.get(name);
@@ -76,8 +76,8 @@ export function* decodeTypeDecls(
 function* decodeTypeDecl(
     Lazy: Ast.ThunkBuilder,
     decl: Ast.TypeDecl,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.TypeDeclSig> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CTypeDecl> {
     switch (decl.kind) {
         case "alias_decl": {
             return yield* decodeAlias(Lazy, decl, scopeRef);

@@ -10,13 +10,13 @@ export function* getReceivers(
     Lazy: Ast.ThunkBuilder,
     selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
-    traits: readonly Ast.Decl<Ast.TraitContent>[],
+    traits: readonly Ast.Decl<Ast.CTraitMembers>[],
     receivers: readonly Ast.Receiver[],
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.Receivers> {
-    const impExternals: Ast.Decl<Ast.RecvSig>[] = [];
-    const impInternals: Ast.Decl<Ast.RecvSig>[] = [];
-    const impBounces: Ast.Decl<Ast.BounceSig>[] = [];
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CReceivers> {
+    const impExternals: Ast.Decl<Ast.CReceiver>[] = [];
+    const impInternals: Ast.Decl<Ast.CReceiver>[] = [];
+    const impBounces: Ast.Decl<Ast.CBounce>[] = [];
     for (const { via, decl } of traits) {
         const { external, internal, bounce } = decl.receivers;
         impExternals.push(Ast.Decl(external, via));
@@ -85,16 +85,16 @@ function* mergeReceivers(
     Lazy: Ast.ThunkBuilder,
     selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
-    imported: readonly Ast.Decl<Ast.RecvSig>[],
+    imported: readonly Ast.Decl<Ast.CReceiver>[],
     local: Ast.DeclMem<
         readonly [Ast.ReceiverSubKind, readonly Ast.Statement[]]
     >[],
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.RecvSig> {
-    const allMessage: Ast.DeclMem<Ast.OpcodeRecv>[] = [];
-    let allMessageAny: undefined | Ast.DeclMem<Ast.MessageAnyRecv>;
-    let allStringAny: undefined | Ast.DeclMem<Ast.StringAnyRecv>;
-    let allEmpty: undefined | Ast.DeclMem<Ast.EmptyRecv>;
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CReceiver> {
+    const allMessage: Ast.DeclMem<Ast.CReceiverOpcode>[] = [];
+    let allMessageAny: undefined | Ast.DeclMem<Ast.CReceiverMessageAny>;
+    let allStringAny: undefined | Ast.DeclMem<Ast.CReceiverStringAny>;
+    let allEmpty: undefined | Ast.DeclMem<Ast.CReceiverEmpty>;
 
     // imported
     for (const { via: viaTrait, decl } of imported) {
@@ -183,7 +183,7 @@ function* mergeReceivers(
                     type,
                     scopeRef,
                 )();
-                if (decoded.kind === "TySlice") {
+                if (decoded.kind === "basic" && decoded.type.kind === "TySlice") {
                     if (allMessageAny) {
                         yield ERedefineReceiver(
                             "fallback binary",
@@ -192,10 +192,10 @@ function* mergeReceivers(
                         );
                     }
                     allMessageAny = Ast.DeclMem(
-                        Ast.MessageAnyRecv(name, statements),
+                        Ast.CReceiverMessageAny(name, statements),
                         via,
                     );
-                } else if (decoded.kind === "TypeString") {
+                } else if (decoded.kind === "basic" && decoded.type.kind === "TypeString") {
                     if (allStringAny) {
                         yield ERedefineReceiver(
                             "fallback string",
@@ -204,13 +204,13 @@ function* mergeReceivers(
                         );
                     }
                     allStringAny = Ast.DeclMem(
-                        Ast.StringAnyRecv(name, statements),
+                        Ast.CReceiverStringAny(name, statements),
                         via,
                     );
                 } else if (decoded.kind === "type_ref") {
                     allMessage.push(
                         Ast.DeclMem(
-                            Ast.MessageRecv(name, decoded, statements),
+                            Ast.CReceiverMessage(name, decoded, statements),
                             via,
                         ),
                     );
@@ -227,13 +227,13 @@ function* mergeReceivers(
                         via,
                     );
                 }
-                allEmpty = Ast.DeclMem(Ast.EmptyRecv(statements), via);
+                allEmpty = Ast.DeclMem(Ast.CReceiverEmpty(statements), via);
                 continue;
             }
             case "comment": {
                 allMessage.push(
                     Ast.DeclMem(
-                        Ast.StringRecv(subKind.comment.value, statements),
+                        Ast.CReceiverString(subKind.comment.value, statements),
                         via,
                     ),
                 );
@@ -254,14 +254,14 @@ function* mergeBounce(
     Lazy: Ast.ThunkBuilder,
     selfTypeRef: () => Ast.SelfType,
     typeName: Ast.TypeId,
-    imported: readonly Ast.Decl<Ast.BounceSig>[],
+    imported: readonly Ast.Decl<Ast.CBounce>[],
     local: readonly Ast.DeclMem<
         [Ast.TypedParameter, readonly Ast.Statement[]]
     >[],
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.BounceSig> {
-    const allMessage: Ast.DeclMem<Ast.MessageRecv>[] = [];
-    let allMessageAny: undefined | Ast.DeclMem<Ast.MessageAnyRecv>;
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CBounce> {
+    const allMessage: Ast.DeclMem<Ast.CReceiverMessage>[] = [];
+    let allMessageAny: undefined | Ast.DeclMem<Ast.CReceiverMessageAny>;
 
     // imported
     for (const {
@@ -323,7 +323,7 @@ function* mergeBounce(
             type,
             scopeRef,
         )();
-        if (decoded.kind === "TySlice") {
+        if (decoded.kind === "basic" && decoded.type.kind === "TySlice") {
             if (allMessageAny) {
                 yield ERedefineReceiver(
                     "fallback binary",
@@ -332,7 +332,7 @@ function* mergeBounce(
                 );
             }
             allMessageAny = Ast.DeclMem(
-                Ast.MessageAnyRecv(name, statements),
+                Ast.CReceiverMessageAny(name, statements),
                 via,
             );
         } else if (
@@ -340,7 +340,7 @@ function* mergeBounce(
             decoded.kind === "TypeBounced"
         ) {
             allMessage.push(
-                Ast.DeclMem(Ast.MessageRecv(name, decoded, statements), via),
+                Ast.DeclMem(Ast.CReceiverMessage(name, decoded, statements), via),
             );
         } else {
             yield EInvalidRecv(via.defLoc);

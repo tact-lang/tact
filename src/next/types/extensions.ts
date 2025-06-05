@@ -11,9 +11,9 @@ export function decodeExtensions(
     Lazy: Ast.ThunkBuilder,
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
-    scopeRef: () => Ast.Scope,
-): ReadonlyMap<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>> {
-    const allExts: Map<string, Ast.Thunk<readonly Ast.Decl<Ast.ExtSig>[]>[]> =
+    scopeRef: () => Ast.CSource,
+): ReadonlyMap<string, Ast.Thunk<readonly Ast.Decl<Ast.CExtension>[]>> {
+    const allExts: Map<string, Ast.Thunk<readonly Ast.Decl<Ast.CExtension>[]>[]> =
         new Map();
 
     // imported
@@ -67,7 +67,7 @@ export function decodeExtensions(
         );
     }
 
-    const result: Map<string, Ast.Thunk<Ast.Decl<Ast.ExtSig>[]>> = new Map();
+    const result: Map<string, Ast.Thunk<Ast.Decl<Ast.CExtension>[]>> = new Map();
     for (const [name, exts] of allExts) {
         // checking method overlap is only possible when all the types
         // can be resolved
@@ -76,14 +76,14 @@ export function decodeExtensions(
             Lazy({
                 callback: function* () {
                     // force all thunks
-                    const all: Ast.Decl<Ast.ExtSig>[] = [];
+                    const all: Ast.Decl<Ast.CExtension>[] = [];
                     for (const lazyExt of exts) {
                         const exts = yield* lazyExt();
                         all.push(...exts);
                     }
 
                     // check overlap and deduplicate
-                    const prevs: Ast.Decl<Ast.ExtSig>[] = [];
+                    const prevs: Ast.Decl<Ast.CExtension>[] = [];
                     for (const ext of all) {
                         const builtin = builtinMethods.get(name);
                         if (builtin && !isCompatible(builtin, ext.decl.type)) {
@@ -115,7 +115,7 @@ export function decodeExtensions(
 function* decodeExt(
     Lazy: Ast.ThunkBuilder,
     node: Ast.Extension,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ) {
     const { selfType, mutates, fun } = node;
     const { type, body, inline, loc } = fun;
@@ -134,7 +134,7 @@ function* decodeExt(
         return undefined;
     }
 
-    const methodType = Ast.DecodedMethodType(
+    const methodType = Ast.CTypeMethod(
         mutates,
         decodedFn.typeParams,
         self,
@@ -150,13 +150,13 @@ function* decodeExt(
         scopeRef,
     );
 
-    return Ast.ExtSig(methodType, inline, decodedBody);
+    return Ast.CExtension(methodType, inline, decodedBody);
 }
 
 function* areCompatible(
     name: string,
-    prevs: readonly Ast.Decl<Ast.ExtSig>[],
-    next: Ast.Decl<Ast.ExtSig>,
+    prevs: readonly Ast.Decl<Ast.CExtension>[],
+    next: Ast.Decl<Ast.CExtension>,
 ): Ast.WithLog<boolean> {
     for (const prev of prevs) {
         const prevType = prev.decl.type;
@@ -183,8 +183,8 @@ const EMethodOverlap = (
 });
 
 function isCompatible(
-    prev: Ast.DecodedMethodType,
-    next: Ast.DecodedMethodType,
+    prev: Ast.CTypeMethod,
+    next: Ast.CTypeMethod,
 ) {
     const prevSelf = prev.self;
     const nextSelf = next.self;
@@ -197,23 +197,13 @@ function isCompatible(
 }
 
 function areEqual(
-    prevSelf: Ast.MethodGroundType,
-    nextSelf: Ast.MethodGroundType,
+    prevSelf: Ast.SelfTypeGround,
+    nextSelf: Ast.SelfTypeGround,
 ): boolean {
     switch (prevSelf.kind) {
-        case "TyInt":
-        case "TySlice":
-        case "TyCell":
-        case "TyBuilder":
-        case "unit_type":
-        case "TypeVoid":
-        case "TypeNull":
-        case "TypeBool":
-        case "TypeAddress":
-        case "TypeString":
-        case "TypeStateInit":
-        case "TypeStringBuilder": {
-            return prevSelf.kind === nextSelf.kind;
+        case "basic": {
+            return prevSelf.kind === nextSelf.kind &&
+                prevSelf.type.kind === nextSelf.type.kind;
         }
         case "type_ref": {
             return (
@@ -248,15 +238,15 @@ function areEqual(
 }
 
 function allEqual(
-    prevs: readonly Ast.MethodGroundType[],
-    nexts: readonly Ast.MethodGroundType[],
+    prevs: readonly Ast.SelfTypeGround[],
+    nexts: readonly Ast.SelfTypeGround[],
 ): boolean {
     return zip(prevs, nexts).every(([prev, next]) => areEqual(prev, next));
 }
 
 function* decodeSelfType(
-    type: Ast.DecodedType,
-    scopeRef: () => Ast.Scope,
+    type: Ast.CType,
+    scopeRef: () => Ast.CSource,
 ): Ast.WithLog<Ast.SelfType | undefined> {
     switch (type.kind) {
         case "recover": {
@@ -291,7 +281,7 @@ function* decodeSelfType(
                             yield EBadMethodType(type.loc);
                             return undefined;
                         }
-                        return Ast.MVTypeRef(
+                        return Ast.SVTRef(
                             type.name,
                             def.decl,
                             allVars,
@@ -303,7 +293,7 @@ function* decodeSelfType(
                         yield EBadMethodType(type.loc);
                         return undefined;
                     }
-                    const ground: Ast.MethodGroundType[] = [];
+                    const ground: Ast.SelfTypeGround[] = [];
                     for (const arg of type.typeArgs) {
                         const result = yield* toGroundType(arg, scopeRef);
                         if (!result) {
@@ -312,7 +302,7 @@ function* decodeSelfType(
                         }
                         ground.push(result);
                     }
-                    return Ast.MGTypeRef(type.name, def.decl, ground, type.loc);
+                    return Ast.SGTRef(type.name, def.decl, ground, type.loc);
                 }
             }
             // somehow typescript wants this
@@ -330,7 +320,7 @@ function* decodeSelfType(
                 type.key.kind === "TypeParam" &&
                 type.value.kind === "TypeParam"
             ) {
-                return Ast.MVTypeMap(type.key, type.value, type.loc);
+                return Ast.SVTMap(type.key, type.value, type.loc);
             }
             const ground = yield* toGroundType(type, scopeRef);
             if (!ground) {
@@ -345,7 +335,7 @@ function* decodeSelfType(
         }
         case "TypeMaybe": {
             if (type.type.kind === "TypeParam") {
-                return Ast.MVTypeMaybe(type.type, type.loc);
+                return Ast.SVTMaybe(type.type, type.loc);
             }
             const ground = yield* toGroundType(type, scopeRef);
             if (!ground) {
@@ -357,7 +347,7 @@ function* decodeSelfType(
         case "tensor_type":
         case "tuple_type": {
             const mvCons =
-                type.kind === "tuple_type" ? Ast.MVTypeTuple : Ast.MVTypeTensor;
+                type.kind === "tuple_type" ? Ast.SVTTuple : Ast.SVTTensor;
             const allVars = type.typeArgs.filter((arg) => {
                 return arg.kind === "TypeParam";
             });
@@ -377,30 +367,16 @@ function* decodeSelfType(
             }
             return ground;
         }
-        case "TyInt":
-        case "TySlice":
-        case "TyCell":
-        case "TyBuilder":
-        case "unit_type":
-        case "TypeVoid":
-        case "TypeNull":
-        case "TypeBool":
-        case "TypeAddress":
-        case "TypeString":
-        case "TypeStateInit":
-        case "TypeStringBuilder": {
-            return {
-                ground: "yes",
-                ...type,
-            };
+        case "basic": {
+            return Ast.SGTBasic(type.type, type.loc);
         }
     }
 }
 
 function* toGroundType(
-    type: Ast.DecodedType,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.MethodGroundType | undefined> {
+    type: Ast.CType,
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.SelfTypeGround | undefined> {
     switch (type.kind) {
         case "recover": {
             return undefined;
@@ -422,7 +398,7 @@ function* toGroundType(
                 case "struct":
                 case "message":
                 case "union": {
-                    const ground: Ast.MethodGroundType[] = [];
+                    const ground: Ast.SelfTypeGround[] = [];
                     for (const arg of type.typeArgs) {
                         const result = yield* toGroundType(arg, scopeRef);
                         if (!result) {
@@ -430,7 +406,7 @@ function* toGroundType(
                         }
                         ground.push(result);
                     }
-                    return Ast.MGTypeRef(
+                    return Ast.SGTRef(
                         type.name,
                         typeDecl.decl,
                         ground,
@@ -450,14 +426,14 @@ function* toGroundType(
         case "map_type": {
             const key = yield* toGroundType(type.key, scopeRef);
             const value = yield* toGroundType(type.value, scopeRef);
-            return key && value && Ast.MGTypeMap(key, value, type.loc);
+            return key && value && Ast.SGTMap(key, value, type.loc);
         }
         case "TypeBounced": {
             return undefined;
         }
         case "TypeMaybe": {
             const child = yield* toGroundType(type.type, scopeRef);
-            return child && Ast.MGTypeMaybe(child, type.loc);
+            return child && Ast.SGTMaybe(child, type.loc);
         }
         case "tuple_type": {
             const children = yield* Ast.mapLog(
@@ -467,7 +443,7 @@ function* toGroundType(
                     return result ? [result] : [];
                 },
             );
-            return Ast.MGTypeTuple(children.flat(), type.loc);
+            return Ast.SGTTuple(children.flat(), type.loc);
         }
         case "tensor_type": {
             const children = yield* Ast.mapLog(
@@ -477,24 +453,10 @@ function* toGroundType(
                     return result ? [result] : [];
                 },
             );
-            return Ast.MGTypeTensor(children.flat(), type.loc);
+            return Ast.SGTTensor(children.flat(), type.loc);
         }
-        case "TyInt":
-        case "TySlice":
-        case "TyCell":
-        case "TyBuilder":
-        case "unit_type":
-        case "TypeVoid":
-        case "TypeNull":
-        case "TypeBool":
-        case "TypeAddress":
-        case "TypeString":
-        case "TypeStateInit":
-        case "TypeStringBuilder": {
-            return {
-                ground: "yes",
-                ...type,
-            };
+        case "basic": {
+            return Ast.SGTBasic(type.type, type.loc);
         }
     }
 }

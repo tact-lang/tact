@@ -1,7 +1,7 @@
 import type * as Ast from "@/next/ast";
 
-export function printType(node: Ast.DecodedType, allowRecover: boolean) {
-    function recN(nodes: readonly Ast.DecodedType[]): undefined | string {
+export function printType(node: Ast.CType, allowRecover: boolean) {
+    function recN(nodes: readonly Ast.CType[]): undefined | string {
         const results: string[] = [];
         for (const node of nodes) {
             const result = rec(node);
@@ -14,7 +14,7 @@ export function printType(node: Ast.DecodedType, allowRecover: boolean) {
         return results.join(", ");
     }
 
-    function rec(node: Ast.DecodedType): undefined | string {
+    function rec(node: Ast.CType): undefined | string {
         switch (node.kind) {
             case "recover": {
                 return allowRecover ? "$ERROR" : undefined;
@@ -49,47 +49,55 @@ export function printType(node: Ast.DecodedType, allowRecover: boolean) {
                 const typeArgs = recN(node.typeArgs);
                 return typeArgs && `[${typeArgs}]`;
             }
-            case "TyInt": {
-                return `Int${printIntFormat(node.format)}`;
-            }
-            case "TySlice": {
-                return `Slice${printSliceFormat(node.format)}`;
-            }
-            case "TyCell": {
-                return `Cell${printRemFormat(node.format)}`;
-            }
-            case "TyBuilder": {
-                return `Builder${printRemFormat(node.format)}`;
-            }
-            case "unit_type": {
-                return `()`;
-            }
-            case "TypeVoid": {
-                return `Void`;
-            }
-            case "TypeNull": {
-                return `Null`;
-            }
-            case "TypeBool": {
-                return `Bool`;
-            }
-            case "TypeAddress": {
-                return `Address`;
-            }
-            case "TypeStateInit": {
-                return `StateInit`;
-            }
-            case "TypeString": {
-                return `String`;
-            }
-            case "TypeStringBuilder": {
-                return `StringBuilder`;
+            case "basic": {
+                return printBasic(node.type)
             }
         }
     }
 
     return rec(node);
 }
+
+const printBasic = (node: Ast.BasicType): string => {
+    switch (node.kind) {
+        case "TyInt": {
+            return `Int${printIntFormat(node.format)}`;
+        }
+        case "TySlice": {
+            return `Slice${printSliceFormat(node.format)}`;
+        }
+        case "TyCell": {
+            return `Cell${printRemFormat(node.format)}`;
+        }
+        case "TyBuilder": {
+            return `Builder${printRemFormat(node.format)}`;
+        }
+        case "unit_type": {
+            return `()`;
+        }
+        case "TypeVoid": {
+            return `Void`;
+        }
+        case "TypeNull": {
+            return `Null`;
+        }
+        case "TypeBool": {
+            return `Bool`;
+        }
+        case "TypeAddress": {
+            return `Address`;
+        }
+        case "TypeStateInit": {
+            return `StateInit`;
+        }
+        case "TypeString": {
+            return `String`;
+        }
+        case "TypeStringBuilder": {
+            return `StringBuilder`;
+        }
+    }
+};
 
 const printIntFormat = (format: Ast.IntFormat): string => {
     if (

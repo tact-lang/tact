@@ -1,9 +1,9 @@
 import type { DecodedStatement } from "@/next/ast/checked-stmt";
 import type { FuncId, Loc, OptionalId, TypeId } from "@/next/ast/common";
-import type { DecodedType, DTypeRef, DTypeBounced } from "@/next/ast/dtype";
+import type { CType, CTRef, CTBounced } from "@/next/ast/checked-type";
 import type { Effects } from "@/next/ast/effects";
 import type { Thunk } from "@/next/ast/lazy";
-import type { SelfType } from "@/next/ast/mtype";
+import type { SelfType } from "@/next/ast/type-self";
 import type {
     AsmInstruction,
     AsmShuffle,
@@ -17,14 +17,14 @@ export type SourceCheckResult = {
     // import that lead to reading this file
     readonly importedBy: TactImport;
     // scopes that were computed from this file
-    readonly globals: Scope;
+    readonly globals: CSource;
 };
 
-export type Scope = {
-    readonly typeDecls: ReadonlyMap<string, Decl<TypeDeclSig>>;
-    readonly functions: ReadonlyMap<string, Decl<FnSig>>;
-    readonly constants: ReadonlyMap<string, Decl<ConstSig>>;
-    readonly extensions: ReadonlyMap<string, Thunk<readonly Decl<ExtSig>[]>>;
+export type CSource = {
+    readonly typeDecls: ReadonlyMap<string, Decl<CTypeDecl>>;
+    readonly functions: ReadonlyMap<string, Decl<CFunction>>;
+    readonly constants: ReadonlyMap<string, Decl<CConstant>>;
+    readonly extensions: ReadonlyMap<string, Thunk<readonly Decl<CExtension>[]>>;
 };
 
 export type Decl<T> = {
@@ -34,176 +34,176 @@ export type Decl<T> = {
 
 export type Recover<T> = T | undefined;
 
-export type TypeDeclSig =
-    | AliasSig
-    | ContractSig
-    | TraitSig
-    | StructSig
-    | MessageSig
-    | UnionSig;
+export type CTypeDecl =
+    | CAlias
+    | CContract
+    | CTraitSig
+    | CStruct
+    | CMessage
+    | CUnion;
 
-export type TypeDeclRefable =
-    | ContractSig
-    | TraitSig
-    | StructSig
-    | MessageSig
-    | UnionSig;
+export type CTypeDeclRefable =
+    | CContract
+    | CTraitSig
+    | CStruct
+    | CMessage
+    | CUnion;
 
-export type ConstSig = {
+export type CConstant = {
     readonly initializer: Thunk<Recover<Value>>;
-    readonly type: Thunk<DecodedType>;
+    readonly type: Thunk<CType>;
 };
 
-export type FnSig = {
-    readonly type: DecodedFnType;
+export type CFunction = {
+    readonly type: CTypeFunction;
     readonly inline: boolean;
-    readonly body: Body;
+    readonly body: CBody;
 };
 
-export type Statements = Thunk<Recover<StatementsAux>>;
+export type CStatements = Thunk<Recover<CStatementsAux>>;
 
-export type StatementsAux = {
+export type CStatementsAux = {
     readonly body: readonly DecodedStatement[];
     readonly effects: Effects;
 };
 
-export type Body = TactBody | FuncBody | FiftBody;
+export type CBody = CTactBody | CFuncBody | CFiftBody;
 
-export type TactBody = {
+export type CTactBody = {
     readonly kind: "tact";
-    readonly statements: Statements;
+    readonly statements: CStatements;
 };
-export type FuncBody = {
+export type CFuncBody = {
     readonly kind: "func";
     readonly nativeName: FuncId;
 };
-export type FiftBody = {
+export type CFiftBody = {
     readonly kind: "fift";
     readonly shuffle: Thunk<Recover<AsmShuffle>>;
     readonly instructions: readonly AsmInstruction[];
 };
 
-export type ExtSig = {
-    readonly type: DecodedMethodType;
+export type CExtension = {
+    readonly type: CTypeMethod;
     readonly inline: boolean;
-    readonly body: Body;
+    readonly body: CBody;
 };
 
-export type AliasSig = {
+export type CAlias = {
     readonly kind: "alias";
-    readonly typeParams: TypeParams;
-    readonly type: Thunk<DecodedType>;
+    readonly typeParams: CTypeParams;
+    readonly type: Thunk<CType>;
 };
 
-export type InitSig = InitEmpty | InitSimple | InitFn;
-export type InitEmpty = {
+export type CInitSig = CInitEmpty | CInitSimple | CInitFn;
+export type CInitEmpty = {
     readonly kind: "empty";
     // initOf() would take 0 parameters
     // values to fill all the fields
     readonly fill: Thunk<Recover<Ordered<Thunk<Recover<Value>>>>>;
 };
-export type InitSimple = {
+export type CInitSimple = {
     readonly kind: "simple";
     // initOf() takes these parameters and
     // sets them into correspondingly named fields
-    readonly fill: Ordered<InitParam>;
+    readonly fill: Ordered<CInitParam>;
     readonly loc: Loc;
 };
-export type InitFn = {
+export type CInitFn = {
     readonly kind: "function";
     // here we just specify the function
-    readonly params: Parameters;
-    readonly statements: Statements;
+    readonly params: CParameters;
+    readonly statements: CStatements;
 };
-export type InitParam = {
-    readonly type: Thunk<DecodedType>;
+export type CInitParam = {
+    readonly type: Thunk<CType>;
     readonly init: undefined | Thunk<Recover<Value>>;
     readonly loc: Loc;
 };
 
-export type ContractSig = {
+export type CContract = {
     readonly kind: "contract";
     readonly attributes: readonly ContractAttribute[];
-    readonly init: InitSig;
-    readonly content: Thunk<ContractContent>;
+    readonly init: CInitSig;
+    readonly content: Thunk<CContractMembers>;
 };
-export type ContractContent = CommonSig<Thunk<Recover<Value>>, Body>;
-export type TraitSig = {
+export type CContractMembers = CMembers<Thunk<Recover<Value>>, CBody>;
+export type CTraitSig = {
     readonly kind: "trait";
-    readonly content: Thunk<TraitContent>;
+    readonly content: Thunk<CTraitMembers>;
 };
-export type TraitContent = CommonSig<
+export type CTraitMembers = CMembers<
     Thunk<Recover<Value>> | undefined,
-    Body | undefined
+    CBody | undefined
 >;
-export type CommonSig<Expr, Body> = {
-    readonly fieldish: Ordered<DeclMem<Fieldish<Expr>>>;
-    readonly methods: ReadonlyMap<string, DeclMem<MethodSig<Body>>>;
-    readonly receivers: Receivers;
+export type CMembers<Expr, Body> = {
+    readonly fieldish: Ordered<DeclMem<CFieldish<Expr>>>;
+    readonly methods: ReadonlyMap<string, DeclMem<CMethod<Body>>>;
+    readonly receivers: CReceivers;
 };
-export type Receivers = {
-    readonly bounce: BounceSig;
-    readonly internal: RecvSig;
-    readonly external: RecvSig;
+export type CReceivers = {
+    readonly bounce: CBounce;
+    readonly internal: CReceiver;
+    readonly external: CReceiver;
 };
 
-export type Fieldish<Expr> = InhFieldSig | FieldConstSig<Expr>;
-export type InhFieldSig = {
+export type CFieldish<Expr> = CField | CFieldConstant<Expr>;
+export type CField = {
     readonly kind: "field";
-    readonly type: Thunk<DecodedType>;
+    readonly type: Thunk<CType>;
     readonly init: Thunk<Recover<Value>> | undefined;
 };
-export type FieldConstSig<Expr> = {
+export type CFieldConstant<Expr> = {
     readonly kind: "constant";
     readonly overridable: boolean;
-    readonly type: Thunk<DecodedType>;
+    readonly type: Thunk<CType>;
     readonly init: Expr;
 };
 
-export type MethodSig<Body> = {
+export type CMethod<Body> = {
     readonly overridable: boolean;
-    readonly type: DecodedMethodType;
+    readonly type: CTypeMethod;
     readonly inline: boolean;
     readonly body: Body;
     readonly getMethodId: Thunk<Recover<bigint>> | undefined;
 };
 
-export type BounceSig = {
+export type CBounce = {
     // NB! can't compute opcodes until all receivers are present
-    readonly message: readonly DeclMem<MessageRecv>[];
-    readonly messageAny: undefined | DeclMem<MessageAnyRecv>;
+    readonly message: readonly DeclMem<CReceiverMessage>[];
+    readonly messageAny: undefined | DeclMem<CReceiverMessageAny>;
 };
 
-export type RecvSig = {
+export type CReceiver = {
     // NB! can't compute opcodes until all receivers are present
-    readonly message: readonly DeclMem<OpcodeRecv>[];
-    readonly messageAny: undefined | DeclMem<MessageAnyRecv>;
-    readonly stringAny: undefined | DeclMem<StringAnyRecv>;
-    readonly empty: undefined | DeclMem<EmptyRecv>;
+    readonly message: readonly DeclMem<CReceiverOpcode>[];
+    readonly messageAny: undefined | DeclMem<CReceiverMessageAny>;
+    readonly stringAny: undefined | DeclMem<CReceiverStringAny>;
+    readonly empty: undefined | DeclMem<CReceiverEmpty>;
 };
 
-export type OpcodeRecv = MessageRecv | StringRecv;
-export type MessageRecv = {
+export type CReceiverOpcode = CReceiverMessage | CReceiverString;
+export type CReceiverMessage = {
     readonly kind: "binary";
     readonly name: OptionalId;
-    readonly type: DTypeRef | DTypeBounced;
-    readonly statements: Statements;
+    readonly type: CTRef | CTBounced;
+    readonly statements: CStatements;
 };
-export type MessageAnyRecv = {
+export type CReceiverMessageAny = {
     readonly name: OptionalId;
-    readonly statements: Statements;
+    readonly statements: CStatements;
 };
-export type StringRecv = {
+export type CReceiverString = {
     readonly kind: "string";
     readonly comment: string;
-    readonly statements: Statements;
+    readonly statements: CStatements;
 };
-export type StringAnyRecv = {
+export type CReceiverStringAny = {
     readonly name: OptionalId;
-    readonly statements: Statements;
+    readonly statements: CStatements;
 };
-export type EmptyRecv = {
-    readonly statements: Statements;
+export type CReceiverEmpty = {
+    readonly statements: CStatements;
 };
 
 export type DeclMem<T> = {
@@ -211,43 +211,43 @@ export type DeclMem<T> = {
     readonly via: ViaMember;
 };
 
-export type StructSig = {
+export type CStruct = {
     readonly kind: "struct";
-    readonly typeParams: TypeParams;
-    readonly fields: Ordered<InhFieldSig>;
+    readonly typeParams: CTypeParams;
+    readonly fields: Ordered<CField>;
 };
 
-export type MessageSig = {
+export type CMessage = {
     readonly kind: "message";
     readonly opcode: Thunk<Recover<bigint>>;
-    readonly fields: Ordered<InhFieldSig>;
+    readonly fields: Ordered<CField>;
 };
 
-export type UnionSig = {
+export type CUnion = {
     readonly kind: "union";
-    readonly typeParams: TypeParams;
-    readonly cases: ReadonlyMap<string, ReadonlyMap<string, InhFieldSig>>;
+    readonly typeParams: CTypeParams;
+    readonly cases: ReadonlyMap<string, ReadonlyMap<string, CField>>;
 };
 
-export type DecodedFnType = {
+export type CTypeFunction = {
     readonly kind: "DecodedFnType";
-    readonly typeParams: TypeParams;
-    readonly params: Parameters;
-    readonly returnType: Thunk<DecodedType>;
+    readonly typeParams: CTypeParams;
+    readonly params: CParameters;
+    readonly returnType: Thunk<CType>;
 };
 
-export type DecodedMethodType = {
+export type CTypeMethod = {
     readonly kind: "DecodedMethodType";
     readonly mutates: boolean;
-    readonly typeParams: TypeParams;
+    readonly typeParams: CTypeParams;
     readonly self: SelfType;
-    readonly params: Parameters;
-    readonly returnType: Thunk<DecodedType>;
+    readonly params: CParameters;
+    readonly returnType: Thunk<CType>;
 };
 
-export type DecodedParameter = {
+export type CParameter = {
     readonly name: OptionalId;
-    readonly type: Thunk<DecodedType>;
+    readonly type: Thunk<CType>;
     readonly loc: Loc;
 };
 
@@ -256,18 +256,12 @@ export type Ordered<T> = {
     readonly map: ReadonlyMap<string, T>;
 };
 
-export type Parameters = {
-    readonly order: readonly Parameter[];
+export type CParameters = {
+    readonly order: readonly CParameter[];
     readonly set: ReadonlySet<string>;
 };
 
-export type Parameter = {
-    readonly name: OptionalId;
-    readonly type: Thunk<DecodedType>;
-    readonly loc: Loc;
-};
-
-export type TypeParams = {
+export type CTypeParams = {
     readonly order: readonly TypeId[];
     readonly set: ReadonlySet<string>;
 };

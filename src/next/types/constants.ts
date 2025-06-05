@@ -11,8 +11,8 @@ export function* decodeConstants(
     Lazy: Ast.ThunkBuilder,
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.ConstSig>>> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.CConstant>>> {
     const allConstSigs = [
         // imported
         ...imported.flatMap(({ globals, importedBy }) =>
@@ -52,7 +52,7 @@ export function* decodeConstants(
 function* decodeConstant(
     Lazy: Ast.ThunkBuilder,
     constant: Ast.Constant,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ) {
     const { init, loc } = constant;
     if (init.kind === "constant_decl") {
@@ -63,9 +63,9 @@ function* decodeConstant(
                 Ast.TEText("defining constant"),
                 Ast.TECode(constant.loc),
             ],
-            recover: Ast.DTypeRecover(),
+            recover: Ast.CTypeRecover(),
             callback: function* () {
-                return Ast.DTypeRecover();
+                return Ast.CTypeRecover();
             },
         });
         const expr = Lazy({
@@ -79,7 +79,7 @@ function* decodeConstant(
                 return Ast.VNumber(0n, constant.loc);
             },
         });
-        return Ast.ConstSig(expr, type);
+        return Ast.CConstant(expr, type);
     } else {
         const [type, expr] = decodeConstantDef(
             Lazy,
@@ -89,7 +89,7 @@ function* decodeConstant(
             scopeRef,
             undefined,
         );
-        return Ast.ConstSig(expr, type);
+        return Ast.CConstant(expr, type);
     }
 }
 

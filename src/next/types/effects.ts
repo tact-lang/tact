@@ -1,71 +1,73 @@
 import * as Ast from "@/next/ast";
+// import { hasStorageAccess } from "@/next/types/expression";
 
-export const emptyEff: Ast.Effects = Object.freeze({
-    returnOrThrow: false,
-    setSelfPaths: new Set<string>(),
-});
+//               op                 read/write    throw
+// 42            empty              false         false
+// a ? b : c     a prod (b sum c)   a | b | c     a | (b & c)
+// f(a, b)       a prod b           a | b         a | b
+// a && b        a cond b           a | b         a
+// a || b        a cond b           a | b         a
 
-// when two branches merge
-export const mergeEff = (
+// true true      a b
+// true false     a b
+// false true     a
+// false false    a
+
+export const emptyEff = Ast.Effects(
+    false, 
+    false, 
+    false, 
+    new Set<string>(),
+);
+
+export const allEff = (
+    effs: readonly Ast.Effects[],
+) => Ast.Effects(
+    effs.some(eff => eff.mayRead),
+    effs.some(eff => eff.mayWrite),
+    // if any of args throws, expr throws
+    effs.some(eff => eff.mustThrow),
+    new Set(effs.flatMap(eff => [...eff.mustSetSelf])),
+);
+
+export const anyEff = (
+    effs: readonly Ast.Effects[],
+) => Ast.Effects(
+    effs.some(eff => eff.mayRead),
+    effs.some(eff => eff.mayWrite),
+    // if all of branches throw, expr throws
+    effs.every(eff => eff.mustThrow),
+    new Set(effs.flatMap(eff => [...eff.mustSetSelf])),
+);
+
+export const shortCircuitEff = (
     left: Ast.Effects,
     right: Ast.Effects,
-): Ast.Effects => {
-    return Ast.Effects(
-        left.returnOrThrow && right.returnOrThrow,
-        new Set(
-            [...left.setSelfPaths].filter((p) => right.setSelfPaths.has(p)),
-        ),
-    );
-};
+) => Ast.Effects(
+    left.mayRead || right.mayRead,
+    left.mayWrite || right.mayWrite,
+    // only if condition throws, we know it must throw
+    // if condition doesn't throw, we can never evaluate second arg,
+    // and it's not guaranteed to throw
+    left.mustThrow,
+    new Set([...left.mustSetSelf, ...right.mustSetSelf]),
+);
 
-// on every assign
-export function* setHadAssign(
-    eff: Ast.Effects,
-    lvalue: Ast.LValue,
-): Ast.WithLog<Ast.Effects> {
-    const setSelfPaths = new Set(eff.setSelfPaths);
-    switch (lvalue.kind) {
-        case "self": {
-            // self = ...;
-            yield ENoSelfAssign(lvalue.loc);
-            break;
-        }
-        case "field_access": {
-            if (lvalue.aggregate.kind === "self") {
-                // self.x = ...;
-                setSelfPaths.add(lvalue.field.text);
-            }
-            break;
-        }
-        case "var": {
-            // x = ...;
-        }
-    }
-    return Ast.Effects(eff.returnOrThrow, setSelfPaths);
-}
-const ENoSelfAssign = (loc: Ast.Loc): Ast.TcError => ({
-    loc,
-    descr: [Ast.TEText(`Cannot assign to self`)],
-});
+export const exitEff = (eff: Ast.Effects): Ast.Effects => ({ ...eff, mustThrow: true });
+export const assignEff = (eff: Ast.Effects): Ast.Effects => ({ ...eff, mustThrow: true });
 
-// on every return or throw
-export function* setHadExit(
-    eff: Ast.Effects,
-    successful: boolean,
-    required: undefined | ReadonlySet<string>,
-    returnLoc: Ast.Loc,
-): Ast.WithLog<Ast.Effects> {
-    if (successful && required) {
-        const missing = [...required].filter((p) => !eff.setSelfPaths.has(p));
-        for (const fieldName of missing) {
-            yield EMissingSelfInit(fieldName, returnLoc);
-        }
+export function hasStorageAccess(node: Ast.DecodedExpression, selfType: Ast.SelfType | undefined): boolean {
+    // looking for `self.x.y.z`
+    if (node.kind === 'field_access') {
+        return hasStorageAccess(node.aggregate, selfType);
+    } else if (node.kind === 'self') {
+        return Boolean(
+            selfType &&
+            selfType.kind === 'type_ref' &&
+            (selfType.type.kind === 'contract' || selfType.type.kind === 'trait')
+        );
+    } else {
+        return false;
     }
-    return Ast.Effects(true, eff.setSelfPaths);
 }
-const EMissingSelfInit = (name: string, loc: Ast.Loc): Ast.TcError => ({
-    loc,
-    descr: [
-        Ast.TEText(`Field "self.${name}" is not initialized by this moment`),
-    ],
-});
+

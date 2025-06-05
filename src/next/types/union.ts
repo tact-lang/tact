@@ -6,15 +6,15 @@ import { decodeTypeLazy } from "@/next/types/type";
 import { decodeTypeParams } from "@/next/types/type-params";
 
 type Cons = {
-    readonly fields: ReadonlyMap<string, Ast.InhFieldSig>;
+    readonly fields: ReadonlyMap<string, Ast.CField>;
     readonly loc: Ast.Loc;
 };
 
 export function* decodeUnion(
     Lazy: Ast.ThunkBuilder,
     union: Ast.UnionDecl,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.UnionSig> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CUnion> {
     const typeParams = yield* decodeTypeParams(union.typeParams);
 
     const cases: Map<string, Cons> = new Map();
@@ -25,7 +25,7 @@ export function* decodeUnion(
             yield EDuplicateCons(caseName, prevCons.loc, cons.name.loc);
             continue;
         }
-        const fields: Map<string, [Ast.InhFieldSig, Ast.Loc]> = new Map();
+        const fields: Map<string, [Ast.CField, Ast.Loc]> = new Map();
         for (const field of cons.fields) {
             const fieldName = field.name.text;
             const prevField = fields.get(fieldName);
@@ -50,7 +50,7 @@ export function* decodeUnion(
                 scopeRef,
             );
 
-            const decoded = Ast.InhFieldSig(ascribedType, lazyExpr);
+            const decoded = Ast.CField(ascribedType, lazyExpr);
             fields.set(fieldName, [decoded, field.name.loc]);
         }
         cases.set(caseName, {
@@ -60,7 +60,7 @@ export function* decodeUnion(
     }
 
     const map = new Map([...cases].map(([name, { fields }]) => [name, fields]));
-    return Ast.UnionSig(typeParams, map);
+    return Ast.CUnion(typeParams, map);
 }
 
 const EDuplicateCons = (

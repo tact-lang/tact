@@ -4,10 +4,10 @@ import * as Ast from "@/next/ast";
 
 export function* getInheritedTraits(
     traits: readonly Ast.TypeId[],
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<readonly Ast.Decl<Ast.TraitContent>[]> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<readonly Ast.Decl<Ast.CTraitMembers>[]> {
     const decls = scopeRef().typeDecls;
-    const prevTraits: Ast.Decl<Ast.TraitContent>[] = [];
+    const prevTraits: Ast.Decl<Ast.CTraitMembers>[] = [];
     for (const trait of traits) {
         const name = trait.text;
         const decl = decls.get(name);

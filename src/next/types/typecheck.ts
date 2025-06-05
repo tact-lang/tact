@@ -14,10 +14,10 @@ import { decodeFunctions } from "@/next/types/functions";
 import { decodeConstants } from "@/next/types/constants";
 import { decodeExtensions } from "@/next/types/extensions";
 
-export const typecheck = (root: TactSource): [Ast.Scope, Ast.TcError[]] => {
+export const typecheck = (root: TactSource): [Ast.CSource, Ast.TcError[]] => {
     const allErrors: Ast.TcError[] = [];
 
-    const recur = memo((source: TactSource): Ast.Scope => {
+    const recur = memo((source: TactSource): Ast.CSource => {
         const [value, errors] = Ast.runLog(
             tcSource(
                 // leave only imports of .tact
@@ -57,14 +57,18 @@ function* tcSource(
     imported: readonly Ast.SourceCheckResult[],
     // source for current file
     source: TactSource,
-): Ast.WithLog<Ast.Scope> {
+): Ast.WithLog<Ast.CSource> {
     const Lazy = Ast.thunkBuilder;
     const scopeRef = () => scope;
-    const scope: Ast.Scope = {
+    const scope: Ast.CSource = {
         typeDecls: yield* decodeTypeDecls(Lazy, imported, source, scopeRef),
         functions: yield* decodeFunctions(Lazy, imported, source, scopeRef),
         constants: yield* decodeConstants(Lazy, imported, source, scopeRef),
         extensions: decodeExtensions(Lazy, imported, source, scopeRef),
     };
     return scope;
+}
+
+function lowerSource(node: Ast.CSource) {
+
 }

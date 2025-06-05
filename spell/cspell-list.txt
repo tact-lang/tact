@@ -216,6 +216,7 @@ Topup
 Tradoor
 Trunov
 typechecker
+typedecl
 udict
 uintptr
 uints

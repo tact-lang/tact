@@ -8,36 +8,36 @@ export const tactMethodIds = [113617n, 115390n, 121275n];
 
 const r = Ast.Builtin();
 
-const TypeParams = (typeParams: readonly string[]): Ast.TypeParams => {
+const TypeParams = (typeParams: readonly string[]): Ast.CTypeParams => {
     const arr = typeParams.map((name) => Ast.TypeId(name, r));
-    return Ast.TypeParams(arr, new Set(typeParams));
+    return Ast.CTypeParams(arr, new Set(typeParams));
 };
 
-const Params = (params: Record<string, Ast.DecodedType>): Ast.Parameters => {
-    const order: Ast.Parameter[] = [];
+const Params = (params: Record<string, Ast.CType>): Ast.CParameters => {
+    const order: Ast.CParameter[] = [];
     const set: Set<string> = new Set();
     for (const [name, type] of Object.entries(params)) {
-        order.push(Ast.Parameter(Ast.Id(name, r), Ast.FakeThunk(type), r));
+        order.push(Ast.CParameter(Ast.Id(name, r), Ast.FakeThunk(type), r));
         set.add(name);
     }
-    return Ast.Parameters(order, set);
+    return Ast.CParameters(order, set);
 };
 
-const Ref = (name: string): Ast.DTypeParamRef => {
-    return Ast.DTypeParamRef(Ast.TypeId(name, r), r);
+const Ref = (name: string): Ast.CTypeParamRef => {
+    return Ast.CTypeParamRef(Ast.TypeId(name, r), r);
 };
 
-const mapType = Ast.MVTypeMap(Ref("K"), Ref("V"), r);
+const mapType = Ast.SVTMap(Ref("K"), Ref("V"), r);
 
 const GenericFn = (
     name: string,
     typeParams: readonly string[],
-    params: Record<string, Ast.DecodedType>,
-    returnType: Ast.DecodedType,
-): [string, Ast.DecodedFnType] => {
+    params: Record<string, Ast.CType>,
+    returnType: Ast.CType,
+): [string, Ast.CTypeFunction] => {
     return [
         name,
-        Ast.DecodedFnType(
+        Ast.CTypeFunction(
             TypeParams(typeParams),
             Params(params),
             Ast.FakeThunk(returnType),
@@ -46,20 +46,20 @@ const GenericFn = (
 };
 const Fn = (
     name: string,
-    params: Record<string, Ast.DecodedType>,
-    returnType: Ast.DecodedType,
-): [string, Ast.DecodedFnType] => {
+    params: Record<string, Ast.CType>,
+    returnType: Ast.CType,
+): [string, Ast.CTypeFunction] => {
     return GenericFn(name, [], params, returnType);
 };
 const MapMethod = (
     name: string,
     mutates: boolean,
-    params: Record<string, Ast.DecodedType>,
-    returnType: Ast.DecodedType,
-): [string, Ast.DecodedMethodType] => {
+    params: Record<string, Ast.CType>,
+    returnType: Ast.CType,
+): [string, Ast.CTypeMethod] => {
     return [
         name,
-        Ast.DecodedMethodType(
+        Ast.CTypeMethod(
             mutates,
             TypeParams(["K", "V"]),
             mapType,
@@ -69,21 +69,21 @@ const MapMethod = (
     ];
 };
 
-export const Int = Ast.TypeInt(Ast.IFInt("signed", 257, r), r);
-export const Slice = Ast.TypeSlice(Ast.SFDefault(r), r);
-export const Cell = Ast.TypeCell(Ast.SFDefault(r), r);
-export const Builder = Ast.TypeBuilder(Ast.SFDefault(r), r);
-export const Void = Ast.TypeVoid(r);
-export const Null = Ast.TypeNull(r);
-export const Bool = Ast.TypeBool(r);
-export const Address = Ast.TypeAddress(r);
-export const String = Ast.TypeString(r);
-export const StringBuilder = Ast.TypeStringBuilder(r);
-export const MapType = (k: Ast.DecodedType, v: Ast.DecodedType) =>
-    Ast.DTypeMap(k, v, r);
-export const Maybe = (t: Ast.DecodedType) => Ast.DTypeMaybe(t, r);
-export const Unit = Ast.TypeUnit(r);
-export const StateInit = Ast.DTypeStateInit(r);
+export const Int = Ast.CTBasic(Ast.TInt(Ast.IFInt("signed", 257, r), r), r);
+export const Slice = Ast.CTBasic(Ast.TSlice(Ast.SFDefault(r), r), r);
+export const Cell = Ast.CTBasic(Ast.TCell(Ast.SFDefault(r), r), r);
+export const Builder = Ast.CTBasic(Ast.TBuilder(Ast.SFDefault(r), r), r);
+export const Void = Ast.CTBasic(Ast.TVoid(r), r);
+export const Null = Ast.CTBasic(Ast.TNull(r), r);
+export const Bool = Ast.CTBasic(Ast.TBool(r), r);
+export const Address = Ast.CTBasic(Ast.TAddress(r), r);
+export const String = Ast.CTBasic(Ast.TString(r), r);
+export const StringBuilder = Ast.CTBasic(Ast.TStringBuilder(r), r);
+export const MapType = (k: Ast.CType, v: Ast.CType) =>
+    Ast.CTypeMap(k, v, r);
+export const Maybe = (t: Ast.CType) => Ast.CTypeMaybe(t, r);
+export const Unit = Ast.TUnit(r);
+export const StateInit = Ast.CTBasic(Ast.TStateInit(r), r);
 
 export const builtinTypes = new Map(
     [
@@ -121,7 +121,7 @@ const BoolAssign = (name: string) => {
     return Fn(name, { left: Bool, right: Bool }, Void);
 };
 
-export const builtinFunctions: Map<string, Ast.DecodedFnType> = new Map([
+export const builtinFunctions: Map<string, Ast.CTypeFunction> = new Map([
     // dump<T>(arg: T): Void
     GenericFn("dump", ["T"], { data: Ref("T") }, Void),
     // ton(value: String): Int
@@ -149,7 +149,7 @@ export const builtinFunctions: Map<string, Ast.DecodedFnType> = new Map([
     // sha256(data: Slice | String): Int
 ]);
 
-export const builtinMethods: Map<string, Ast.DecodedMethodType> = new Map([
+export const builtinMethods: Map<string, Ast.CTypeMethod> = new Map([
     // set(key: K, value: V): void
     MapMethod("set", true, { key: Ref("K"), value: Ref("V") }, Void),
     // get(key: K): Maybe<V>
@@ -170,7 +170,7 @@ export const builtinMethods: Map<string, Ast.DecodedMethodType> = new Map([
     MapMethod("replaceGet", true, { key: Ref("K"), value: Ref("V") }, mapType),
 ]);
 
-export const builtinUnary: Map<string, Ast.DecodedFnType> = new Map([
+export const builtinUnary: Map<string, Ast.CTypeFunction> = new Map([
     Fn("+", { arg: Int }, Int),
     Fn("-", { arg: Int }, Int),
     Fn("~", { arg: Int }, Int),
@@ -178,7 +178,7 @@ export const builtinUnary: Map<string, Ast.DecodedFnType> = new Map([
     GenericFn("!!", ["T"], { arg: Maybe(Ref("T")) }, Ref("T")),
 ]);
 
-export const builtinBinary: Map<string, Ast.DecodedFnType> = new Map([
+export const builtinBinary: Map<string, Ast.CTypeFunction> = new Map([
     // (left: Int, right: Int): Int
     ArithBin("+"),
     ArithBin("-"),
@@ -203,7 +203,7 @@ export const builtinBinary: Map<string, Ast.DecodedFnType> = new Map([
     BoolBin("||"),
 ]);
 
-export const builtinAugmented: Map<string, Ast.DecodedFnType> = new Map([
+export const builtinAugmented: Map<string, Ast.CTypeFunction> = new Map([
     // (left: Int, right: Int): Void;
     ArithAssign("+="),
     ArithAssign("-="),
@@ -221,8 +221,8 @@ export const builtinAugmented: Map<string, Ast.DecodedFnType> = new Map([
 ]);
 
 export const getStaticBuiltin = (
-    type: Ast.DecodedType,
-): Map<string, Ast.DecodedFnType> => {
+    type: Ast.CType,
+): Map<string, Ast.CTypeFunction> => {
     return new Map([
         // Foo.fromSlice(slice: Slice)
         Fn("fromSlice", { slice: Slice }, type),
@@ -231,6 +231,7 @@ export const getStaticBuiltin = (
     ]);
 };
 
+// TODO: convert into methods, use `mutates` from them in `lookupMethod`
 export const structBuiltin = new Map([
     // Foo.toSlice(): Slice
     Fn("toSlice", {}, Slice),

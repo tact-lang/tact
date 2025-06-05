@@ -9,8 +9,8 @@ import { getReceivers } from "@/next/types/receivers";
 export function* decodeTrait(
     Lazy: Ast.ThunkBuilder,
     trait: Ast.Trait,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.TraitSig> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CTraitSig> {
     const { attributes, declarations, name, loc } = trait;
     const { constants, fields, methods, receivers } = declarations;
 
@@ -26,7 +26,7 @@ export function* decodeTrait(
             const traits = yield* getInheritedTraits(trait.traits, scopeRef);
 
             // const contentRef = () => content;
-            const content: Ast.TraitContent = {
+            const content: Ast.CTraitMembers = {
                 fieldish: yield* getFieldishGeneral(
                     Lazy,
                     traitSig,
@@ -61,9 +61,9 @@ export function* decodeTrait(
         recover,
     });
 
-    const traitSig = Ast.TraitSig(contentLazy);
+    const traitSig = Ast.CTraitSig(contentLazy);
 
-    const selfType = Ast.MVTypeRef(trait.name, traitSig, [], trait.loc);
+    const selfType = Ast.SVTRef(trait.name, traitSig, [], trait.loc);
 
     return traitSig;
 }
@@ -73,7 +73,7 @@ const ENoAttributes = (loc: Ast.Loc): Ast.TcError => ({
     descr: [Ast.TEText(`Traits cannot have attributes`)],
 });
 
-const recover: Ast.TraitContent = {
+const recover: Ast.CTraitMembers = {
     fieldish: Ast.Ordered([], new Map()),
     methods: new Map(),
     receivers: {

@@ -8,11 +8,11 @@ import { emptyTypeParams } from "@/next/types/type-params";
 export function decodeConstantDef(
     Lazy: Ast.ThunkBuilder,
     defLoc: Ast.Loc,
-    typeParams: Ast.TypeParams,
+    typeParams: Ast.CTypeParams,
     { type, initializer }: Ast.ConstantDef,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
     selfType: undefined | Ast.SelfType,
-): [Ast.Thunk<Ast.DecodedType>, Ast.Thunk<Ast.Value | undefined>] {
+): [Ast.Thunk<Ast.CType>, Ast.Thunk<Ast.Value | undefined>] {
     if (type) {
         // if there is an ascribed type, that's the one we return
         const ascribedType = decodeTypeLazy(Lazy, typeParams, type, scopeRef);
@@ -27,7 +27,7 @@ export function decodeConstantDef(
                 selfType,
                 new Map(),
             );
-            const computed = expr.computedType;
+            const computed = expr.value.computedType;
             const ascribed = yield* ascribedType();
             yield* assignType(
                 defLoc,
@@ -36,7 +36,7 @@ export function decodeConstantDef(
                 computed,
                 false,
             );
-            return yield* evalExpr(expr, scopeRef);
+            return yield* evalExpr(expr.value, scopeRef);
         }
         const lazyExpr = Lazy({
             loc: defLoc,
@@ -65,7 +65,7 @@ export function decodeConstantDef(
         const lazyExpr = Lazy({
             callback: function* () {
                 const ast = yield* expr();
-                return ast && (yield* evalExpr(ast, scopeRef));
+                return ast && (yield* evalExpr(ast.value, scopeRef));
             },
             context: [Ast.TEText("evaluating expression")],
             loc: defLoc,
@@ -74,11 +74,11 @@ export function decodeConstantDef(
         // resulting type is whatever the type expression has
         const computedType = Lazy({
             callback: function* () {
-                return (yield* expr())?.computedType ?? Ast.DTypeRecover();
+                return (yield* expr())?.value.computedType ?? Ast.CTypeRecover();
             },
             context: [],
             loc: defLoc,
-            recover: Ast.DTypeRecover(),
+            recover: Ast.CTypeRecover(),
         });
         return [computedType, lazyExpr];
     }

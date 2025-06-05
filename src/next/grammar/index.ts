@@ -341,52 +341,52 @@ const parseStructInstance =
     };
 
 const parseBouncedArgs =
-    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TypeBounced> =>
+    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TBounced> =>
     (ctx) => {
         const args = parseList(typeArgs);
         const [head] = args;
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (args.length !== 1 || !head) {
             ctx.err.typeArity("bounced", 1)(range);
-            return Ast.TypeBounced(
-                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+            return Ast.TBounced(
+                Ast.TCons(Ast.TypeId("ERROR", range), [], range),
                 range,
             );
         }
-        return Ast.TypeBounced(parseType(head)(ctx), range);
+        return Ast.TBounced(parseType(head)(ctx), range);
     };
 
 const parseMaybeArgs =
-    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TypeMaybe> =>
+    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TMaybe> =>
     (ctx) => {
         const args = parseList(typeArgs);
         const [head] = args;
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (args.length !== 1 || !head) {
             ctx.err.typeArity("Maybe", 1)(range);
-            return Ast.TypeMaybe(
-                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+            return Ast.TMaybe(
+                Ast.TCons(Ast.TypeId("ERROR", range), [], range),
                 range,
             );
         }
-        return Ast.TypeMaybe(parseType(head)(ctx), range);
+        return Ast.TMaybe(parseType(head)(ctx), range);
     };
 
 const parseMapArgs =
-    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TypeMap> =>
+    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TMap> =>
     (ctx) => {
         const args = parseList(typeArgs);
         const [keyType, valueType] = args;
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (args.length !== 2 || !keyType || !valueType) {
             ctx.err.mapArgCount()(range);
-            return Ast.TypeMap(
-                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
-                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+            return Ast.TMap(
+                Ast.TCons(Ast.TypeId("ERROR", range), [], range),
+                Ast.TCons(Ast.TypeId("ERROR", range), [], range),
                 range,
             );
         }
-        return Ast.TypeMap(
+        return Ast.TMap(
             parseType(keyType)(ctx),
             parseType(valueType)(ctx),
             range,
@@ -414,22 +414,22 @@ const parseMapField =
     };
 
 const parseSetArgs =
-    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TypeMap> =>
+    (typeArgs: $ast.typeArgs, range: Ast.Range): Handler<Ast.TMap> =>
     (ctx) => {
         const args = parseList(typeArgs);
         const [valueType] = args;
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (args.length !== 1 || !valueType) {
             ctx.err.setArgCount()(range);
-            return Ast.TypeMap(
-                Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
-                Ast.TypeUnit(range),
+            return Ast.TMap(
+                Ast.TCons(Ast.TypeId("ERROR", range), [], range),
+                Ast.TBasic(Ast.TUnit(range), range),
                 range,
             );
         }
-        return Ast.TypeMap(
+        return Ast.TMap(
             parseType(valueType)(ctx),
-            Ast.TypeUnit(range),
+            Ast.TBasic(Ast.TUnit(range), range),
             range,
         );
     };
@@ -1011,17 +1011,17 @@ const parseTypeStorage =
     ({ child: storage, loc }: $ast.TypeStorage): Handler<Ast.Type> =>
     (ctx) => {
         const range = ctx.toRange(loc);
-        const fallback = Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+        const fallback = Ast.TCons(Ast.TypeId("ERROR", range), [], range);
         if (storage.$ === "CoinsStorage") {
-            return Ast.TypeInt(
+            return Ast.TBasic(Ast.TInt(
                 Ast.IFVarInt("unsigned", "16", ctx.toRange(storage.loc)),
                 range,
-            );
+            ), range);
         } else if (storage.$ === "IntStorage") {
             const width = parseInt(storage.width, 10);
             if (storage.isVar) {
                 if (width === 16) {
-                    return Ast.TypeInt(
+                    return Ast.TBasic(Ast.TInt(
                         Ast.IFVarInt(
                             typeof storage.isUnsigned === "undefined"
                                 ? "signed"
@@ -1030,9 +1030,9 @@ const parseTypeStorage =
                             ctx.toRange(storage.loc),
                         ),
                         range,
-                    );
+                    ), range);
                 } else if (width === 32) {
-                    return Ast.TypeInt(
+                    return Ast.TBasic(Ast.TInt(
                         Ast.IFVarInt(
                             typeof storage.isUnsigned === "undefined"
                                 ? "signed"
@@ -1041,27 +1041,27 @@ const parseTypeStorage =
                             ctx.toRange(storage.loc),
                         ),
                         range,
-                    );
+                    ), range);
                 } else {
                     ctx.err.wrongVarIntSize()(range);
                     return fallback;
                 }
             } else if (storage.isUnsigned) {
                 if (1 <= width && width <= 256) {
-                    return Ast.TypeInt(
+                    return Ast.TBasic(Ast.TInt(
                         Ast.IFInt("unsigned", width, range),
                         range,
-                    );
+                    ), range);
                 } else {
                     ctx.err.wrongUIntSize()(range);
                     return fallback;
                 }
             } else {
                 if (1 <= width && width <= 257) {
-                    return Ast.TypeInt(
+                    return Ast.TBasic(Ast.TInt(
                         Ast.IFInt("signed", width, range),
                         range,
-                    );
+                    ), range);
                 } else {
                     ctx.err.wrongIntSize()(range);
                     return fallback;
@@ -1069,12 +1069,12 @@ const parseTypeStorage =
             }
         } else if (storage.$ === "RemainingStorage") {
             ctx.err.rawRemaining()(range);
-            return Ast.TypeSlice(Ast.SFRemaining(range), range);
+            return Ast.TBasic(Ast.TSlice(Ast.SFRemaining(range), range), range);
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (storage.$ === "BytesStorage") {
             const width = parseInt(storage.width, 10);
             if (width === 32 || width === 64) {
-                return Ast.TypeSlice(Ast.SFBits(width * 8, range), range);
+                return Ast.TBasic(Ast.TSlice(Ast.SFBits(width * 8, range), range), range);
             } else {
                 ctx.err.wrongSliceSize()(range);
                 return fallback;
@@ -1092,96 +1092,10 @@ const applyFormat =
         asLoc: Ast.Range,
     ): Handler<Ast.Type> =>
     (ctx) => {
-        const fallback = Ast.TypeCons(Ast.TypeId("ERROR", asLoc), [], asLoc);
-        if (type.kind === "TyInt") {
-            if (storage.$ === "CoinsStorage") {
-                return Ast.TypeInt(
-                    Ast.IFVarInt("unsigned", "16", ctx.toRange(storage.loc)),
-                    type.loc,
-                );
-            } else if (storage.$ === "IntStorage") {
-                const width = parseInt(storage.width, 10);
-                if (storage.isVar) {
-                    if (width === 16) {
-                        return Ast.TypeInt(
-                            Ast.IFVarInt(
-                                typeof storage.isUnsigned === "undefined"
-                                    ? "signed"
-                                    : "unsigned",
-                                "16",
-                                ctx.toRange(storage.loc),
-                            ),
-                            type.loc,
-                        );
-                    } else if (width === 32) {
-                        return Ast.TypeInt(
-                            Ast.IFVarInt(
-                                typeof storage.isUnsigned === "undefined"
-                                    ? "signed"
-                                    : "unsigned",
-                                "32",
-                                ctx.toRange(storage.loc),
-                            ),
-                            type.loc,
-                        );
-                    } else {
-                        ctx.err.wrongVarIntSize()(asLoc);
-                        return fallback;
-                    }
-                } else if (storage.isUnsigned) {
-                    if (1 <= width && width <= 256) {
-                        return Ast.TypeInt(
-                            Ast.IFInt("unsigned", width, asLoc),
-                            type.loc,
-                        );
-                    } else {
-                        ctx.err.wrongUIntSize()(asLoc);
-                        return fallback;
-                    }
-                } else {
-                    if (1 <= width && width <= 257) {
-                        return Ast.TypeInt(
-                            Ast.IFInt("signed", width, asLoc),
-                            type.loc,
-                        );
-                    } else {
-                        ctx.err.wrongIntSize()(asLoc);
-                        return fallback;
-                    }
-                }
-            } else {
-                ctx.err.wrongFormat("Integer")(asLoc);
-                return fallback;
-            }
-        } else if (type.kind === "TySlice") {
-            if (storage.$ === "RemainingStorage") {
-                return Ast.TypeSlice(Ast.SFRemaining(asLoc), type.loc);
-            } else if (storage.$ === "BytesStorage") {
-                const width = parseInt(storage.width, 10);
-                if (width === 32 || width === 64) {
-                    return Ast.TypeSlice(
-                        Ast.SFBits(width * 8, asLoc),
-                        type.loc,
-                    );
-                } else {
-                    ctx.err.wrongSliceSize()(asLoc);
-                    return fallback;
-                }
-            } else {
-                ctx.err.wrongFormat("Slice")(asLoc);
-                return fallback;
-            }
-        } else if (type.kind === "TyCell" || type.kind === "TyBuilder") {
-            if (storage.$ === "RemainingStorage") {
-                const Type =
-                    type.kind === "TyCell" ? Ast.TypeCell : Ast.TypeBuilder;
-                return Type(Ast.SFRemaining(asLoc), type.loc);
-            } else {
-                ctx.err.wrongFormat(
-                    type.kind === "TyCell" ? "Cell" : "Builder",
-                )(asLoc);
-                return fallback;
-            }
+        const fallback = Ast.TCons(Ast.TypeId("ERROR", asLoc), [], asLoc);
+        if (type.kind === "basic") {
+            const basic = applyBasic(type.type, storage, asLoc)(ctx);
+            return basic ? Ast.TBasic(basic, type.loc) : fallback;
         } else if (type.kind === "cons_type" && type.name.text === "Maybe") {
             // NB! Compatibility with old code that allowed `Int? as int32`
             //     instead of `(Int as int32)?`
@@ -1190,7 +1104,7 @@ const applyFormat =
                 return throwInternal("Maybe can only have one argument");
             }
             const result = applyFormat(arg, storage, asLoc)(ctx);
-            return Ast.TypeCons(type.name, [result], type.loc);
+            return Ast.TCons(type.name, [result], type.loc);
         } else {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (type.loc.kind !== "range") {
@@ -1201,6 +1115,111 @@ const applyFormat =
         }
     };
 
+const applyBasic = (
+    type: Ast.BasicType,
+    storage: $ast.storage,
+    asLoc: Ast.Range,
+): Handler<Ast.BasicType | undefined> =>
+(ctx) => {
+    if (type.kind === "TyInt") {
+        if (storage.$ === "CoinsStorage") {
+            return Ast.TInt(
+                Ast.IFVarInt("unsigned", "16", ctx.toRange(storage.loc)),
+                type.loc,
+            );
+        } else if (storage.$ === "IntStorage") {
+            const width = parseInt(storage.width, 10);
+            if (storage.isVar) {
+                if (width === 16) {
+                    return Ast.TInt(
+                        Ast.IFVarInt(
+                            typeof storage.isUnsigned === "undefined"
+                                ? "signed"
+                                : "unsigned",
+                            "16",
+                            ctx.toRange(storage.loc),
+                        ),
+                        type.loc,
+                    );
+                } else if (width === 32) {
+                    return Ast.TInt(
+                        Ast.IFVarInt(
+                            typeof storage.isUnsigned === "undefined"
+                                ? "signed"
+                                : "unsigned",
+                            "32",
+                            ctx.toRange(storage.loc),
+                        ),
+                        type.loc,
+                    );
+                } else {
+                    ctx.err.wrongVarIntSize()(asLoc);
+                    return undefined;
+                }
+            } else if (storage.isUnsigned) {
+                if (1 <= width && width <= 256) {
+                    return Ast.TInt(
+                        Ast.IFInt("unsigned", width, asLoc),
+                        type.loc,
+                    );
+                } else {
+                    ctx.err.wrongUIntSize()(asLoc);
+                    return undefined;
+                }
+            } else {
+                if (1 <= width && width <= 257) {
+                    return Ast.TInt(
+                        Ast.IFInt("signed", width, asLoc),
+                        type.loc,
+                    );
+                } else {
+                    ctx.err.wrongIntSize()(asLoc);
+                    return undefined;
+                }
+            }
+        } else {
+            ctx.err.wrongFormat("Integer")(asLoc);
+            return undefined;
+        }
+    } else if (type.kind === "TySlice") {
+        if (storage.$ === "RemainingStorage") {
+            return Ast.TSlice(Ast.SFRemaining(asLoc), type.loc);
+        } else if (storage.$ === "BytesStorage") {
+            const width = parseInt(storage.width, 10);
+            if (width === 32 || width === 64) {
+                return Ast.TSlice(
+                    Ast.SFBits(width * 8, asLoc),
+                    type.loc,
+                );
+            } else {
+                ctx.err.wrongSliceSize()(asLoc);
+                return undefined;
+            }
+        } else {
+            ctx.err.wrongFormat("Slice")(asLoc);
+            return undefined;
+        }
+    } else if (type.kind === "TyCell" || type.kind === "TyBuilder") {
+        if (storage.$ === "RemainingStorage") {
+            const Type =
+                type.kind === "TyCell" ? Ast.TCell : Ast.TBuilder;
+            return Type(Ast.SFRemaining(asLoc), type.loc);
+        } else {
+            ctx.err.wrongFormat(
+                type.kind === "TyCell" ? "Cell" : "Builder",
+            )(asLoc);
+            return undefined;
+        }
+    } else {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (type.loc.kind !== "range") {
+            return throwInternal("Non-range in parser");
+        }
+        ctx.err.cannotHaveFormat()(type.loc);
+        return undefined;
+    }
+};
+
 const parseTypeAs =
     ({ type, as, loc }: $ast.TypeAs): Handler<Ast.Type> =>
     (ctx) => {
@@ -1210,7 +1229,7 @@ const parseTypeAs =
         }
         if (as.length > 1) {
             ctx.err.duplicateAs()(ctx.toRange(loc));
-            return Ast.TypeCons(
+            return Ast.TCons(
                 Ast.TypeId("ERROR", ctx.toRange(loc)),
                 [],
                 ctx.toRange(loc),
@@ -1233,9 +1252,9 @@ const parseTypeGeneric =
             return parseMaybeArgs(args, range)(ctx);
         } else if (builtinTypes.has(name.name)) {
             ctx.err.typeArity(name.name, 0)(range);
-            return Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+            return Ast.TCons(Ast.TypeId("ERROR", range), [], range);
         } else {
-            return Ast.TypeCons(
+            return Ast.TCons(
                 Ast.TypeId(name.name, ctx.toRange(name.loc)),
                 map(parseList(args), parseTypeAs)(ctx),
                 range,
@@ -1247,7 +1266,7 @@ const parseTypeOptional =
     ({ type, optionals }: $ast.TypeOptional): Handler<Ast.Type> =>
     (ctx) => {
         return optionals.reduce((acc, optional) => {
-            return Ast.TypeCons(
+            return Ast.TCons(
                 Ast.TypeId("Maybe", ctx.toRange(optional.loc)),
                 [acc],
                 ctx.toRange(optional.loc),
@@ -1261,40 +1280,40 @@ const parseTypeRegular =
         const range = ctx.toRange(child.loc);
         switch (child.name) {
             case "Int":
-                return Ast.TypeInt(Ast.IFInt("signed", 257, range), range);
+                return Ast.TBasic(Ast.TInt(Ast.IFInt("signed", 257, range), range), range);
             case "Slice":
-                return Ast.TypeSlice(Ast.SFDefault(range), range);
+                return Ast.TBasic(Ast.TSlice(Ast.SFDefault(range), range), range);
             case "Cell":
-                return Ast.TypeCell(Ast.SFDefault(range), range);
+                return Ast.TBasic(Ast.TCell(Ast.SFDefault(range), range), range);
             case "Builder":
-                return Ast.TypeBuilder(Ast.SFDefault(range), range);
+                return Ast.TBasic(Ast.TBuilder(Ast.SFDefault(range), range), range);
             case "Void":
-                return Ast.TypeVoid(range);
+                return Ast.TBasic(Ast.TVoid(range), range);
             case "Null":
-                return Ast.TypeNull(range);
+                return Ast.TBasic(Ast.TNull(range), range);
             case "Bool":
-                return Ast.TypeBool(range);
+                return Ast.TBasic(Ast.TBool(range), range);
             case "Address":
-                return Ast.TypeAddress(range);
+                return Ast.TBasic(Ast.TAddress(range), range);
             case "String":
-                return Ast.TypeString(range);
+                return Ast.TBasic(Ast.TString(range), range);
             case "StringBuilder":
-                return Ast.TypeStringBuilder(range);
+                return Ast.TBasic(Ast.TStringBuilder(range), range);
             case "Bounced":
                 ctx.err.mustBeGeneric()(range);
-                return Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+                return Ast.TCons(Ast.TypeId("ERROR", range), [], range);
             case "Maybe":
                 ctx.err.mustBeGeneric()(range);
-                return Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+                return Ast.TCons(Ast.TypeId("ERROR", range), [], range);
             default:
-                return Ast.TypeCons(parseTypeId(child)(ctx), [], range);
+                return Ast.TCons(parseTypeId(child)(ctx), [], range);
         }
     };
 
 const parseTypeTensor =
     ({ head, tail, loc }: $ast.TypeTensor): Handler<Ast.Type> =>
     (ctx) => {
-        return Ast.TypeTensor(
+        return Ast.TTensor(
             map([head, ...tail], parseType)(ctx),
             ctx.toRange(loc),
         );
@@ -1303,7 +1322,7 @@ const parseTypeTensor =
 const parseTypeTuple =
     ({ types, loc }: $ast.TypeTuple): Handler<Ast.Type> =>
     (ctx) => {
-        return Ast.TypeTuple(
+        return Ast.TTuple(
             map(parseList(types), parseType)(ctx),
             ctx.toRange(loc),
         );
@@ -1312,7 +1331,8 @@ const parseTypeTuple =
 const parseTypeUnit =
     ({ loc }: $ast.TypeUnit): Handler<Ast.Type> =>
     (ctx) => {
-        return Ast.TypeUnit(ctx.toRange(loc));
+        const range = ctx.toRange(loc);
+        return Ast.TBasic(Ast.TUnit(range), range);
     };
 
 type RawType =
@@ -1474,12 +1494,12 @@ const parseAsmFunctionRaw =
         return Ast.Function(
             !!parseNamedAttr("inline")(node.attributes)(ctx),
             parseId(node.name)(ctx),
-            Ast.FnType(
+            Ast.TFunction(
                 map(parseList(node.typeParams), parseTypeId)(ctx),
                 map(parseList(node.parameters), parseParameter)(ctx),
                 node.returnType
                     ? parseType(node.returnType)(ctx)
-                    : Ast.TypeVoid(range),
+                    : Ast.TBasic(Ast.TVoid(range), range),
             ),
             Ast.AsmBody(parseAsmShuffle(node.shuffle)(ctx), [
                 node.instructions.trim(),
@@ -1549,7 +1569,7 @@ const parseConstant =
             } else {
                 ctx.err.constDeclNoType()(range);
                 return Ast.ConstantDecl(
-                    Ast.TypeCons(Ast.TypeId("ERROR", range), [], range),
+                    Ast.TCons(Ast.TypeId("ERROR", range), [], range),
                 );
             }
         })();
@@ -1647,12 +1667,12 @@ const parseFunctionRaw =
         return Ast.Function(
             !!parseNamedAttr("inline")(node.attributes)(ctx),
             parseId(node.name)(ctx),
-            Ast.FnType(
+            Ast.TFunction(
                 map(parseList(node.typeParams), parseTypeId)(ctx),
                 map(parseList(node.parameters), parseParameter)(ctx),
                 node.returnType
                     ? parseType(node.returnType)(ctx)
-                    : Ast.TypeVoid(range),
+                    : Ast.TBasic(Ast.TVoid(range), range),
             ),
             node.body.$ === "FunctionDeclaration"
                 ? Ast.AbstractBody()
@@ -1695,7 +1715,7 @@ const parseExtension =
             ) {
                 const range = ctx.toRange(node.loc);
                 ctx.err.extendsSelf()(range);
-                return Ast.TypeCons(Ast.TypeId("ERROR", range), [], range);
+                return Ast.TCons(Ast.TypeId("ERROR", range), [], range);
             }
             return first.type;
         })();
@@ -1758,10 +1778,10 @@ const parseNativeFunctionDecl =
         return Ast.Function(
             !!parseNamedAttr("inline")(attributes)(ctx),
             parseId(name)(ctx),
-            Ast.FnType(
+            Ast.TFunction(
                 map(parseList(typeParams), parseTypeId)(ctx),
                 map(parseList(parameters), parseParameter)(ctx),
-                returnType ? parseType(returnType)(ctx) : Ast.TypeVoid(range),
+                returnType ? parseType(returnType)(ctx) : Ast.TBasic(Ast.TVoid(range), range),
             ),
             Ast.NativeBody(parseFuncId(nativeName)(ctx)),
             range,

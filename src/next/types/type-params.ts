@@ -1,11 +1,11 @@
 import * as Ast from "@/next/ast";
 import { recoverName } from "@/next/types/name";
 
-export const emptyTypeParams = Ast.TypeParams([], new Set());
+export const emptyTypeParams = Ast.CTypeParams([], new Set());
 
 export function* decodeTypeParams(
     ids: readonly Ast.TypeId[],
-): Ast.WithLog<Ast.TypeParams> {
+): Ast.WithLog<Ast.CTypeParams> {
     const set: Set<string> = new Set();
     const order: Ast.TypeId[] = [];
 
@@ -20,7 +20,7 @@ export function* decodeTypeParams(
         }
     }
 
-    return Ast.TypeParams(ids, set);
+    return Ast.CTypeParams(ids, set);
 }
 
 const EDuplicateTypeParam = (name: string, loc: Ast.Loc): Ast.TcError => ({

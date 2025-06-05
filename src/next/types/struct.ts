@@ -7,8 +7,8 @@ import { decodeTypeParams } from "@/next/types/type-params";
 export function* decodeStruct(
     Lazy: Ast.ThunkBuilder,
     struct: Ast.StructDecl,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.StructSig> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CStruct> {
     const typeParams = yield* decodeTypeParams(struct.typeParams);
     const fields = yield* decodeFields(
         Lazy,
@@ -16,5 +16,5 @@ export function* decodeStruct(
         typeParams,
         scopeRef,
     );
-    return Ast.StructSig(typeParams, fields);
+    return Ast.CStruct(typeParams, fields);
 }

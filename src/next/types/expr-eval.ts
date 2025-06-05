@@ -4,7 +4,7 @@ import * as Ast from "@/next/ast";
 
 export function* evalExpr(
     expr: Ast.DecodedExpression,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ): Ast.WithLog<Ast.Value> {
     return Ast.VNumber(0n, expr.loc);
 }

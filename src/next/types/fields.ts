@@ -12,17 +12,17 @@ type MaybeExpr = Ast.Thunk<Ast.Value | undefined> | undefined;
 
 export function* getFieldishGeneral(
     Lazy: Ast.ThunkBuilder,
-    traitSigRef: Ast.TraitSig | Ast.ContractSig,
+    traitSigRef: Ast.CTraitSig | Ast.CContract,
     typeName: Ast.TypeId,
-    traits: readonly Ast.Decl<Ast.TraitContent>[],
+    traits: readonly Ast.Decl<Ast.CTraitMembers>[],
     constants: readonly Ast.FieldConstant[],
     fields: readonly Ast.FieldDecl[],
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.Ordered<Ast.DeclMem<Ast.Fieldish<MaybeExpr>>>> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.Ordered<Ast.DeclMem<Ast.CFieldish<MaybeExpr>>>> {
     // collect all inherited fields and constants
     const inherited: Map<
         string,
-        Ast.DeclMem<Ast.Fieldish<MaybeExpr>>
+        Ast.DeclMem<Ast.CFieldish<MaybeExpr>>
     > = new Map();
     for (const {
         via,
@@ -43,13 +43,13 @@ export function* getFieldishGeneral(
         }
     }
 
-    const selfType = Ast.MVTypeRef(typeName, traitSigRef, [], typeName.loc);
+    const selfType = Ast.SVTRef(typeName, traitSigRef, [], typeName.loc);
 
     // in which order fields were defined
     const order: string[] = [];
 
     // collection of all defined fields and constants
-    const all: Map<string, Ast.DeclMem<Ast.Fieldish<MaybeExpr>>> = new Map();
+    const all: Map<string, Ast.DeclMem<Ast.CFieldish<MaybeExpr>>> = new Map();
 
     // whether inherited field/constant was defined locally
     const overridden: Set<string> = new Set();
@@ -156,7 +156,7 @@ function decodeField(
     Lazy: Ast.ThunkBuilder,
     typeName: string,
     field: Ast.FieldDecl,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
     selfType: Ast.SelfType,
 ) {
     const { initializer, type, loc } = field;
@@ -175,7 +175,7 @@ function decodeField(
     );
 
     // decode field
-    return Ast.DeclMem(Ast.InhFieldSig(decoded, init), nextVia);
+    return Ast.DeclMem(Ast.CField(decoded, init), nextVia);
 }
 
 const EMustCopyField = (name: string, prev: Ast.ViaMember): Ast.TcError => ({
@@ -193,13 +193,13 @@ function* decodeConstant(
     init: Ast.ConstantInit,
     overridable: boolean,
     nextVia: Ast.ViaMember,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
     selfType: Ast.SelfType,
-): Ast.WithLog<Ast.DeclMem<Ast.FieldConstSig<MaybeExpr>>> {
+): Ast.WithLog<Ast.DeclMem<Ast.CFieldConstant<MaybeExpr>>> {
     if (init.kind === "constant_decl") {
         const type = decodeTypeLazy(Lazy, emptyTypeParams, init.type, scopeRef);
         return Ast.DeclMem(
-            Ast.FieldConstSig(overridable, type, undefined),
+            Ast.CFieldConstant(overridable, type, undefined),
             nextVia,
         );
     } else {
@@ -211,6 +211,6 @@ function* decodeConstant(
             scopeRef,
             selfType,
         );
-        return Ast.DeclMem(Ast.FieldConstSig(overridable, type, expr), nextVia);
+        return Ast.DeclMem(Ast.CFieldConstant(overridable, type, expr), nextVia);
     }
 }

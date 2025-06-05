@@ -6,10 +6,10 @@ export function* checkFieldOverride(
     name: string,
     prev:
         | Ast.DeclMem<
-              Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>> | undefined>
+              Ast.CFieldish<Ast.Thunk<Ast.Recover<Ast.Value>> | undefined>
           >
         | undefined,
-    nextType: Ast.Thunk<Ast.DecodedType>,
+    nextType: Ast.Thunk<Ast.CType>,
     nextVia: Ast.ViaMember,
     override: boolean,
 ): Ast.WithLog<void> {
@@ -45,8 +45,8 @@ export function* checkFieldOverride(
 
 export function* checkMethodOverride(
     name: string,
-    prev: Ast.DeclMem<Ast.MethodSig<Ast.Body | undefined>> | undefined,
-    nextType: Ast.DecodedMethodType,
+    prev: Ast.DeclMem<Ast.CMethod<Ast.CBody | undefined>> | undefined,
+    nextType: Ast.CTypeMethod,
     nextVia: Ast.ViaMember,
     override: boolean,
 ): Ast.WithLog<void> {

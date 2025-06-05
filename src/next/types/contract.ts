@@ -15,7 +15,7 @@ import { emptyTypeParams } from "@/next/types/type-params";
 export function* decodeContract(
     Lazy: Ast.ThunkBuilder,
     contract: Ast.Contract,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ) {
     const { name, attributes, declarations, init } = contract;
     const { constants, fields, methods, receivers } = declarations;
@@ -35,12 +35,12 @@ export function* decodeContract(
     );
 
     // delayed until we get all traits and init
-    const contentLazy: Ast.Thunk<Ast.ContractContent> = Lazy({
+    const contentLazy: Ast.Thunk<Ast.CContractMembers> = Lazy({
         callback: function* (Lazy) {
             const traits = yield* getInheritedTraits(contract.traits, scopeRef);
 
             // const contentRef = () => content;
-            const content: Ast.ContractContent = {
+            const content: Ast.CContractMembers = {
                 fieldish: yield* getFieldishFromContract(
                     Lazy,
                     contractSig,
@@ -76,9 +76,9 @@ export function* decodeContract(
         recover,
     });
 
-    const contractSig = Ast.ContractSig(attributes, decodedInit, contentLazy);
+    const contractSig = Ast.CContract(attributes, decodedInit, contentLazy);
 
-    const selfType = Ast.MVTypeRef(
+    const selfType = Ast.SVTRef(
         contract.name,
         contractSig,
         [],
@@ -93,9 +93,9 @@ function* decodeInit(
     contractLoc: Ast.Loc,
     selfTypeRef: () => Ast.SelfType,
     init: Ast.Init | undefined,
-    contentLazy: () => Ast.Thunk<Ast.ContractContent>,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.InitSig> {
+    contentLazy: () => Ast.Thunk<Ast.CContractMembers>,
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CInitSig> {
     if (!init) {
         // no init
         const lazyInit = Lazy({
@@ -127,7 +127,7 @@ function* decodeInit(
             loc: contractLoc,
             recover: undefined,
         });
-        return Ast.InitEmpty(lazyInit);
+        return Ast.CInitEmpty(lazyInit);
     } else if (init.kind === "init_params") {
         const order: string[] = [];
         const paramMap: Map<string, Ast.FieldDecl> = new Map();
@@ -142,7 +142,7 @@ function* decodeInit(
             }
         }
 
-        const map: Map<string, Ast.InitParam> = new Map();
+        const map: Map<string, Ast.CInitParam> = new Map();
         for (const [name, param] of paramMap) {
             const decoded = decodeTypeLazy(
                 Lazy,
@@ -153,9 +153,9 @@ function* decodeInit(
             if (!param.initializer) {
                 yield ENoInitializerParams(param.loc);
             }
-            map.set(name, Ast.InitParam(decoded, undefined, param.loc));
+            map.set(name, Ast.CInitParam(decoded, undefined, param.loc));
         }
-        return Ast.InitSimple(Ast.Ordered(order, map), init.loc);
+        return Ast.CInitSimple(Ast.Ordered(order, map), init.loc);
     } else {
         const { params, statements } = init;
 
@@ -181,7 +181,7 @@ function* decodeInit(
             scopeRef,
         );
 
-        return Ast.InitFn(decodedParams, body);
+        return Ast.CInitFn(decodedParams, body);
     }
 }
 const EDuplicateParam = (
@@ -213,12 +213,12 @@ const ENoInitializerEmpty = (loc: Ast.Loc): Ast.TcError => ({
 
 function* getMethodsFromContract(
     Lazy: Ast.ThunkBuilder,
-    contractSig: Ast.ContractSig,
+    contractSig: Ast.CContract,
     typeName: Ast.TypeId,
-    traits: readonly Ast.Decl<Ast.TraitContent>[],
+    traits: readonly Ast.Decl<Ast.CTraitMembers>[],
     methods: readonly Ast.Method[],
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<ReadonlyMap<string, Ast.DeclMem<Ast.MethodSig<Ast.Body>>>> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<ReadonlyMap<string, Ast.DeclMem<Ast.CMethod<Ast.CBody>>>> {
     const res = yield* getMethodsGeneral(
         Lazy,
         contractSig,
@@ -228,7 +228,7 @@ function* getMethodsFromContract(
         scopeRef,
     );
 
-    const map: Map<string, Ast.DeclMem<Ast.MethodSig<Ast.Body>>> = new Map();
+    const map: Map<string, Ast.DeclMem<Ast.CMethod<Ast.CBody>>> = new Map();
     for (const [name, { via, decl: method }] of res) {
         if (method.body) {
             // have to recreate DeclMem, because TS doesn't
@@ -245,15 +245,15 @@ function* getMethodsFromContract(
 
 function* getFieldishFromContract(
     Lazy: Ast.ThunkBuilder,
-    contractSig: Ast.ContractSig,
+    contractSig: Ast.CContract,
     typeName: Ast.TypeId,
-    traits: readonly Ast.Decl<Ast.TraitContent>[],
-    init: Ast.InitSig,
+    traits: readonly Ast.Decl<Ast.CTraitMembers>[],
+    init: Ast.CInitSig,
     constants: readonly Ast.FieldConstant[],
     fields: readonly Ast.FieldDecl[],
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ): Ast.WithLog<
-    Ast.Ordered<Ast.DeclMem<Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>>
+    Ast.Ordered<Ast.DeclMem<Ast.CFieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>>
 > {
     const res = yield* getFieldishGeneral(
         Lazy,
@@ -268,7 +268,7 @@ function* getFieldishFromContract(
     const order: string[] = [];
     const map: Map<
         string,
-        Ast.DeclMem<Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>
+        Ast.DeclMem<Ast.CFieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>
     > = new Map();
     for (const name of res.order) {
         const field = res.map.get(name);
@@ -294,7 +294,7 @@ function* getFieldishFromContract(
     if (init.kind === "simple") {
         const map: Map<
             string,
-            Ast.DeclMem<Ast.Fieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>
+            Ast.DeclMem<Ast.CFieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>
         > = new Map();
         if (order.length !== 0) {
             yield EFieldsTwice(init.loc);
@@ -304,7 +304,7 @@ function* getFieldishFromContract(
             map.set(
                 name,
                 Ast.DeclMem(
-                    Ast.InhFieldSig(param.type, param.init),
+                    Ast.CField(param.type, param.init),
                     Ast.ViaMemberOrigin(typeName.text, param.loc),
                 ),
             );
@@ -332,7 +332,7 @@ const EAbstract = (
     ],
 });
 
-const recover: Ast.ContractContent = {
+const recover: Ast.CContractMembers = {
     fieldish: Ast.Ordered([], new Map()),
     methods: new Map(),
     receivers: {

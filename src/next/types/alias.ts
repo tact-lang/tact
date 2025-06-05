@@ -7,10 +7,10 @@ import { decodeTypeLazy } from "@/next/types/type";
 export function* decodeAlias(
     Lazy: Ast.ThunkBuilder,
     { typeParams, type }: Ast.AliasDecl,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.AliasSig> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CAlias> {
     const decodedParams = yield* decodeTypeParams(typeParams);
-    return Ast.AliasSig(
+    return Ast.CAlias(
         decodedParams,
         decodeTypeLazy(Lazy, decodedParams, type, scopeRef),
     );

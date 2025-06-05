@@ -13,18 +13,18 @@ import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* getMethodsGeneral(
     Lazy: Ast.ThunkBuilder,
-    declSig: Ast.TraitSig | Ast.ContractSig,
+    declSig: Ast.CTraitSig | Ast.CContract,
     typeName: Ast.TypeId,
-    traits: readonly Ast.Decl<Ast.TraitContent>[],
+    traits: readonly Ast.Decl<Ast.CTraitMembers>[],
     methods: readonly Ast.Method[],
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ): Ast.WithLog<
-    ReadonlyMap<string, Ast.DeclMem<Ast.MethodSig<Ast.Body | undefined>>>
+    ReadonlyMap<string, Ast.DeclMem<Ast.CMethod<Ast.CBody | undefined>>>
 > {
     // collect all inherited methods
     const inherited: Map<
         string,
-        Ast.DeclMem<Ast.MethodSig<Ast.Body | undefined>>
+        Ast.DeclMem<Ast.CMethod<Ast.CBody | undefined>>
     > = new Map();
     for (const {
         via,
@@ -44,7 +44,7 @@ export function* getMethodsGeneral(
     // collection of all defined methods
     const all: Map<
         string,
-        Ast.DeclMem<Ast.MethodSig<Ast.Body | undefined>>
+        Ast.DeclMem<Ast.CMethod<Ast.CBody | undefined>>
     > = new Map();
 
     // whether inherited field/constant was defined locally
@@ -56,9 +56,9 @@ export function* getMethodsGeneral(
         const nextVia = Ast.ViaMemberOrigin(typeName.text, loc);
 
         const decodedFn = yield* decodeFnType(Lazy, type, scopeRef);
-        const selfType = Ast.MVTypeRef(typeName, declSig, [], loc);
-        const methodType = Ast.DecodedMethodType(
-            mutates,
+        const selfType = Ast.SVTRef(typeName, declSig, [], loc);
+        const methodType = Ast.CTypeMethod(
+            true, // always mutates
             emptyTypeParams,
             selfType,
             decodedFn.params,
@@ -94,7 +94,7 @@ export function* getMethodsGeneral(
             override,
         );
 
-        const methodSig = Ast.MethodSig(
+        const methodSig = Ast.CMethod(
             overridable,
             methodType,
             inline,
@@ -122,10 +122,10 @@ const EGenericMethod = (loc: Ast.Loc): Ast.TcError => ({
 
 function decodeGetLazy(
     Lazy: Ast.ThunkBuilder,
-    typeParams: Ast.TypeParams,
+    typeParams: Ast.CTypeParams,
     fnName: Ast.Id,
     get: Ast.GetAttribute | undefined,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
     selfType: Ast.SelfType,
 ): undefined | Ast.Thunk<bigint | undefined> {
     if (!get) {
@@ -142,10 +142,10 @@ function decodeGetLazy(
 
 function* decodeGet(
     Lazy: Ast.ThunkBuilder,
-    typeParams: Ast.TypeParams,
+    typeParams: Ast.CTypeParams,
     fnName: Ast.Id,
     get: Ast.GetAttribute,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
     selfType: Ast.SelfType,
 ): Ast.WithLog<bigint> {
     if (get.methodId) {
@@ -157,13 +157,13 @@ function* decodeGet(
             selfType,
             new Map(),
         );
-        const type = expr.computedType;
-        if (yield* assignType(expr.loc, emptyTypeParams, Int, type, false)) {
-            const methodId = yield* evalExpr(expr, scopeRef);
+        const type = expr.value.computedType;
+        if (yield* assignType(expr.value.loc, emptyTypeParams, Int, type, false)) {
+            const methodId = yield* evalExpr(expr.value, scopeRef);
             if (
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 methodId.kind === "number" &&
-                (yield* checkMethodId(methodId.value, expr.loc))
+                (yield* checkMethodId(methodId.value, expr.value.loc))
             ) {
                 return methodId.value;
             }

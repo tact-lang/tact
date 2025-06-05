@@ -12,8 +12,8 @@ export function* decodeFunctions(
     Lazy: Ast.ThunkBuilder,
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.FnSig>>> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.CFunction>>> {
     const allFnSigs = [
         // imported
         ...imported.flatMap(({ globals, importedBy }) =>
@@ -38,7 +38,7 @@ export function* decodeFunctions(
     ];
 
     // remove duplicates and builtins
-    const filteredSigs: Map<string, Ast.Decl<Ast.FnSig>> = new Map();
+    const filteredSigs: Map<string, Ast.Decl<Ast.CFunction>> = new Map();
     for (const [name, sig] of allFnSigs) {
         const isBuiltin = builtinFunctions.has(name);
         if (isBuiltin) {
@@ -60,11 +60,11 @@ export function* decodeFunctions(
 function* decodeFunction(
     Lazy: Ast.ThunkBuilder,
     fn: Ast.Function,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ) {
     const { type, inline, body, loc } = fn;
     const fnType = yield* decodeFnType(Lazy, type, scopeRef);
-    return Ast.FnSig(
+    return Ast.CFunction(
         fnType,
         inline,
         yield* decodeBody(Lazy, body, fnType, loc, scopeRef),

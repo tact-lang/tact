@@ -4,6 +4,21 @@ import * as Ast from "@/next/ast";
 export function* convertExprToLValue(
     node: Ast.DecodedExpression,
 ): Ast.WithLog<undefined | Ast.LValue> {
+    const result = yield* convertExprToLValueAux(node);
+    if (result?.kind === 'self') {
+        yield ENoSelfAssign(node.loc);
+        return undefined;
+    }
+    return result;
+}
+const ENoSelfAssign = (loc: Ast.Loc): Ast.TcError => ({
+    loc,
+    descr: [Ast.TEText(`Cannot assign to self`)],
+});
+
+function* convertExprToLValueAux(
+    node: Ast.DecodedExpression,
+): Ast.WithLog<undefined | Ast.LValue> {
     switch (node.kind) {
         case "field_access": {
             const aggregate = yield* convertExprToLValue(node.aggregate);
@@ -29,7 +44,6 @@ export function* convertExprToLValue(
         case "op_unary":
         case "conditional":
         case "method_call":
-        case "throw_call":
         case "static_call":
         case "static_method_call":
         case "struct_instance":
@@ -46,7 +60,6 @@ export function* convertExprToLValue(
         }
     }
 }
-
 const ENotLValue = (prev: Ast.Loc): Ast.TcError => ({
     loc: prev,
     descr: [

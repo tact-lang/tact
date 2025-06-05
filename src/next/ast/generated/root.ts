@@ -77,7 +77,7 @@ export type Function = $.Function;
 export const Function = (
     inline: boolean,
     name: $c.Id,
-    type_: $t.FnType,
+    type_: $t.TFunction,
     body: $.FunctionalBody,
     loc: $c.Loc,
 ): $.Function =>

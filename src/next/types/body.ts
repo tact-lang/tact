@@ -7,14 +7,14 @@ import { decodeStatementsLazy } from "@/next/types/statements";
 export function* decodeBody(
     Lazy: Ast.ThunkBuilder,
     node: Ast.FunctionalBody,
-    fnType: Ast.DecodedFnType | Ast.DecodedMethodType,
+    fnType: Ast.CTypeFunction | Ast.CTypeMethod,
     loc: Ast.Loc,
-    scopeRef: () => Ast.Scope,
-): Ast.WithLog<Ast.Body> {
+    scopeRef: () => Ast.CSource,
+): Ast.WithLog<Ast.CBody> {
     switch (node.kind) {
         case "abstract_body": {
             yield ENoBody(loc);
-            return Ast.TactBody(
+            return Ast.CTactBody(
                 Lazy({
                     callback: function* () {
                         return undefined;
@@ -31,7 +31,7 @@ export function* decodeBody(
                     ? fnType.self
                     : undefined;
             };
-            return Ast.TactBody(
+            return Ast.CTactBody(
                 decodeStatementsLazy(
                     Lazy,
                     loc,
@@ -45,7 +45,7 @@ export function* decodeBody(
             );
         }
         case "asm_body": {
-            return Ast.FiftBody(
+            return Ast.CFiftBody(
                 Lazy({
                     callback: () =>
                         checkShuffle(node.shuffle, fnType, loc, scopeRef),
@@ -57,7 +57,7 @@ export function* decodeBody(
             );
         }
         case "native_body": {
-            return Ast.FuncBody(node.nativeName);
+            return Ast.CFuncBody(node.nativeName);
         }
     }
 }
@@ -69,9 +69,9 @@ const ENoBody = (loc: Ast.Loc): Ast.TcError => ({
 
 function* checkShuffle(
     shuffle: Ast.AsmShuffle,
-    fnType: Ast.DecodedFnType | Ast.DecodedMethodType,
+    fnType: Ast.CTypeFunction | Ast.CTypeMethod,
     loc: Ast.Loc,
-    scopeRef: () => Ast.Scope,
+    scopeRef: () => Ast.CSource,
 ) {
     const { args, ret } = shuffle;
     if (args.length !== 0) {
@@ -129,8 +129,8 @@ function* checkShuffle(
 }
 
 function* getRetTupleSize(
-    { kind, returnType }: Ast.DecodedFnType | Ast.DecodedMethodType,
-    scopeRef: () => Ast.Scope,
+    { kind, returnType }: Ast.CTypeFunction | Ast.CTypeMethod,
+    scopeRef: () => Ast.CSource,
 ): Ast.WithLog<undefined | number> {
     const type = yield* returnType();
     const baseSize = yield* getTypeTupleSize(type, scopeRef);
@@ -140,7 +140,7 @@ function* getRetTupleSize(
     return baseSize + (kind === "DecodedMethodType" ? 1 : 0);
 }
 
-function* getTypeTupleSize(type: Ast.DecodedType, scopeRef: () => Ast.Scope) {
+function* getTypeTupleSize(type: Ast.CType, scopeRef: () => Ast.CSource) {
     switch (type.kind) {
         case "recover": {
             return undefined;
@@ -198,21 +198,27 @@ function* getTypeTupleSize(type: Ast.DecodedType, scopeRef: () => Ast.Scope) {
         case "tensor_type": {
             return type.typeArgs.length;
         }
-        case "TyInt":
-        case "TySlice":
-        case "TyCell":
-        case "TyBuilder":
-        case "unit_type":
-        case "TypeBool":
-        case "TypeAddress":
-        case "TypeString":
-        case "TypeStateInit":
-        case "TypeStringBuilder":
-        case "TypeNull": {
-            return 1;
-        }
-        case "TypeVoid": {
-            return 0;
+        case "basic": {
+            switch (type.type.kind) {
+                case "TypeStateInit": {
+                    return 2;
+                }
+                case "TyInt":
+                case "TySlice":
+                case "TyCell":
+                case "TyBuilder":
+                case "unit_type":
+                case "TypeBool":
+                case "TypeAddress":
+                case "TypeString":
+                case "TypeStringBuilder":
+                case "TypeNull": {
+                    return 1;
+                }
+                case "TypeVoid": {
+                    return 0;
+                }
+            }
         }
     }
 }

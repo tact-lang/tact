@@ -9,7 +9,7 @@ export function convertValueToExpr(node: Ast.Value): Ast.DecodedExpression {
             return Ast.DNumber(
                 "10",
                 node.value,
-                Ast.TypeInt(Ast.IFInt("signed", 257, node.loc), node.loc),
+                Ast.TBasic(Ast.TInt(Ast.IFInt("signed", 257, node.loc), node.loc), node.loc),
                 node.loc,
             );
         }

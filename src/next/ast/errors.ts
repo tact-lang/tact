@@ -1,5 +1,5 @@
 import { throwInternal } from "@/error/errors";
-import type { DecodedType } from "@/next/ast/dtype";
+import type { CType } from "@/next/ast/checked-type";
 import type { Loc } from "@/next/ast/common";
 import type * as V from "@/next/ast/via";
 
@@ -118,13 +118,13 @@ export const TEMismatch = (tree: MatchTree): TEMismatch => ({
 });
 
 export type MatchTree = {
-    readonly expected: DecodedType;
-    readonly got: DecodedType;
+    readonly expected: CType;
+    readonly got: CType;
     readonly children: readonly MatchTree[];
 };
 export const MatchTree = (
-    expected: DecodedType,
-    got: DecodedType,
+    expected: CType,
+    got: CType,
     children: readonly MatchTree[],
 ): MatchTree => ({ expected, got, children });
 
