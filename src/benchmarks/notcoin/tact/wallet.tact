@@ -18,26 +18,38 @@ const JETTON_WALLET_INIT_STATE_CELLS: Int = 3;
 const BURN_NOTIFICATION_BITS: Int = 754;
 const BURN_NOTIFICATION_CELLS: Int = 1;
 
+asm fun getPrecompiledGasConsumption(): Int? { GETPRECOMPILEDGAS }
+
 inline fun checkAmountIsEnoughToTransfer(msgValue: Int, forwardTonAmount: Int, fwdFee: Int) {
     let fwdCount = 1 + sign(forwardTonAmount);
+
+    let precompiledGas = getPrecompiledGasConsumption();
+    let sendGas = precompiledGas == null ? getComputeFee(SEND_TRANSFER_GAS_CONSUMPTION, false) : precompiledGas!!;
+    let receiveGas = precompiledGas == null ? getComputeFee(RECEIVE_TRANSFER_GAS_CONSUMPTION, false) : precompiledGas!!;
 
     throwUnless(
         705,
         msgValue > fwdCount * fwdFee +
+                   forwardTonAmount +
                    getSimpleForwardFee(JETTON_WALLET_INIT_STATE_CELLS, JETTON_WALLET_INIT_STATE_BITS, false) +
-                   getComputeFee(SEND_TRANSFER_GAS_CONSUMPTION, false) +
-                   getComputeFee(RECEIVE_TRANSFER_GAS_CONSUMPTION, false) +
+                   sendGas +
+                   receiveGas +
                    getStorageFee(JETTON_WALLET_CELLS, JETTON_WALLET_BITS, MIN_STORAGE_DURATION, false),
     );
 }
 
 inline fun checkAmountIsEnoughToBurn(msgValue: Int) {
+    let precompiledGas = getPrecompiledGasConsumption();
+
+    let sendGas = precompiledGas == null ? getComputeFee(SEND_BURN_GAS_CONSUMPTION, false) : precompiledGas!!;
+    let receiveGas = precompiledGas == null ? getComputeFee(RECEIVE_BURN_GAS_CONSUMPTION, false) : precompiledGas!!;
+
     throwUnless(
         705,
         msgValue >
         getForwardFee(BURN_NOTIFICATION_CELLS, BURN_NOTIFICATION_BITS, false) +
-        getComputeFee(SEND_BURN_GAS_CONSUMPTION, false) +
-        getComputeFee(RECEIVE_BURN_GAS_CONSUMPTION, false),
+        sendGas +
+        receiveGas,
     );
 }
 
