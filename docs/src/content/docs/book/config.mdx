@@ -498,6 +498,41 @@ If set to `true{:json}`, enables the generation of the `lazy_deployment_complete
 }
 ```
 
+#### `skipTestGeneration` {#options-skipTestGeneration}
+
+<Badge text="Available since Tact 1.6.14" variant="tip" size="medium"/><p/>
+
+`false{:json}` by default.
+
+If set to `true{:json}`, disables automatic generation of test files. By default, Tact generates test stubs for all contracts in the `tests/` subdirectory of the output folder.
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./contract.tact",
+      "output": "./output",
+      "options": {
+        "skipTestGeneration": true
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "skipTestGeneration": true
+      }
+    }
+  ]
+}
+```
+
+:::note
+
+  Read more about test generation: [Test Generation](/book/tests).
+
+:::
+
 ### `verbose` {#projects-verbose}
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -595,7 +630,8 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overri
           "alwaysSaveContractData": true,
           "internalExternalReceiversOutsideMethodsMap": true
         },
-        "enableLazyDeploymentCompletedGetter": true
+        "enableLazyDeploymentCompletedGetter": true,
+        "skipTestGeneration": true
       }
     }
   ]

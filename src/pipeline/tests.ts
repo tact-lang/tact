@@ -33,6 +33,7 @@ export function doTests(bCtx: BuildContext, packages: Packages): boolean {
             );
             const testsPath = project.resolve(
                 config.output,
+                "tests",
                 config.name + "_" + pkg.name + ".stub.tests.ts",
             );
             project.writeFile(testsPath, testsCode);

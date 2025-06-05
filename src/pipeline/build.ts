@@ -145,9 +145,11 @@ export async function build(args: {
         return BuildFail(bCtx.errorMessages);
     }
 
-    const testsRes = doTests(bCtx, packages);
-    if (!testsRes) {
-        return BuildFail(bCtx.errorMessages);
+    if (!bCtx.config.options?.skipTestGeneration) {
+        const testsRes = doTests(bCtx, packages);
+        if (!testsRes) {
+            return BuildFail(bCtx.errorMessages);
+        }
     }
 
     const reportsRes = doReports(bCtx, packages);

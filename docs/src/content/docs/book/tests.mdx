@@ -1,0 +1,209 @@
+---
+title: Test Generation
+description: "Automatic test generation for Tact smart contracts"
+prev:
+  link: /book/compile
+  label: Compilation
+---
+
+import { Badge, Tabs, TabItem } from '@astrojs/starlight/components';
+
+The Tact compiler automatically generates test stubs for each compiled contract. These files contain the basic structure for testing your contracts using TypeScript and the TON blockchain sandbox.
+
+## Automatic test generation {#automatic-generation}
+
+By default, during each compilation, Tact creates test files for all contracts in the project. These tests are saved to the `tests/` directory inside the output folder specified in the [configuration](/book/config#projects-output).
+
+### Generated file structure {#file-structure}
+
+For each contract, a file is created with the name following the template:
+```
+{project_name}_{contract_name}.stub.tests.ts
+```
+
+For example, if you have a project named `MyProject` and a contract `Counter`, the following file will be created:
+```
+MyProject_Counter.stub.tests.ts
+```
+
+### Test content {#test-content}
+
+Generated tests include:
+
+- Imports of necessary modules for testing
+- Basic blockchain sandbox setup
+- Test stubs for the main contract functions
+- Examples of sending messages and state verification
+
+Example of generated test:
+
+```typescript
+import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
+import { Cell, toNano } from '@ton/core';
+import { Counter } from '../wrappers/Counter';
+import '@ton/test-utils';
+import { compile } from '@ton/blueprint';
+
+describe('Counter', () => {
+    let code: Cell;
+
+    beforeAll(async () => {
+        code = await compile('Counter');
+    });
+
+    let blockchain: Blockchain;
+    let counter: SandboxContract<Counter>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+
+        counter = blockchain.openContract(Counter.createFromConfig({}, code));
+
+        const deployer = await blockchain.treasury('deployer');
+
+        const deployResult = await counter.sendDeploy(deployer.getSender(), toNano('0.05'));
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: counter.address,
+            deploy: true,
+            success: true,
+        });
+    });
+
+    it('should deploy', async () => {
+        // the check is done inside beforeEach
+        // blockchain and counter are ready to use
+    });
+});
+```
+
+## Test generation configuration {#configuration}
+
+### Disabling test generation {#disable-generation}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+If you don't want to automatically generate tests, you can disable this feature by adding the `skipTestGeneration` option to your [project configuration](/book/config):
+
+```json filename="tact.config.json"
+{
+  "projects": [
+    {
+      "name": "MyProject",
+      "path": "./contracts/contract.tact",
+      "output": "./build",
+      "options": {
+        "skipTestGeneration": true
+      }
+    }
+  ]
+}
+```
+
+### Output directory customization {#output-directory}
+
+Tests are always saved to the `tests/` subdirectory inside the folder specified in the [`output`](/book/config#projects-output) field:
+
+```json filename="tact.config.json"
+{
+  "projects": [
+    {
+      "name": "MyProject", 
+      "path": "./contracts/contract.tact",
+      "output": "./build"  // Tests will be in ./build/tests/
+    }
+  ]
+}
+```
+
+## Using generated tests {#using-tests}
+
+Generated tests serve as a starting point for writing comprehensive tests for your contract. They include:
+
+### Basic setup {#basic-setup}
+
+1. **Blockchain sandbox** — local TON blockchain emulation for testing
+2. **Contract compilation** — automatic compilation of contract code
+3. **Deployment** — example of contract deployment in the test environment
+
+### Extending tests {#extending-tests}
+
+After generating basic tests, you can:
+
+- Add tests for all methods of your contract
+- Verify different interaction scenarios
+- Test edge cases and error handling
+- Check gas consumption
+
+Example of extended test:
+
+```typescript
+it('should increment counter', async () => {
+    const initialValue = await counter.getValue();
+    
+    const incrementResult = await counter.sendIncrement(
+        deployer.getSender(), 
+        toNano('0.01')
+    );
+    
+    expect(incrementResult.transactions).toHaveTransaction({
+        from: deployer.address,
+        to: counter.address,
+        success: true,
+    });
+    
+    const newValue = await counter.getValue();
+    expect(newValue).toBe(initialValue + 1n);
+});
+```
+
+### Copying test templates {#copying-templates}
+
+Since generated test files are overwritten on each compilation, you should copy them to a separate location for customization:
+
+1. **Copy the entire tests directory** from `output/tests/` to your project's test directory
+2. **Rename the files** to remove the `.stub` suffix 
+3. **Customize the tests** according to your contract's specific needs
+
+For example:
+```shell
+# Copy generated tests to your project's test directory
+cp -r ./build/tests/ ./tests/
+
+# Rename files to remove .stub suffix
+mv ./tests/MyProject_Counter.stub.tests.ts ./tests/MyProject_Counter.tests.ts
+```
+
+This way, your customized tests won't be overwritten during subsequent compilations.
+
+## Blueprint integration {#blueprint-integration}
+
+In [Blueprint][bp] projects, generated tests automatically integrate with the existing testing infrastructure. Files are saved to the project's standard `tests/` directory.
+
+To run tests, use:
+
+```shell
+yarn test
+# or
+npm test
+```
+
+## Best practices {#best-practices}
+
+1. **Don't edit generated files directly** — they will be overwritten on the next compilation
+2. **Use as templates** — copy the code to separate files for customization
+3. **Cover all methods** — ensure all public contract methods are tested
+4. **Test edge cases** — verify behavior with unexpected input data
+5. **Copy from output/tests** — regularly copy updated test templates to your custom test directory
+
+:::tip
+
+Generated tests are an excellent starting point, but don't forget to adapt them to your contract's specifics and add additional checks. Remember to copy test files from `output/tests/` to preserve your customizations.
+
+:::
+
+[bp]: https://github.com/ton-org/blueprint
+[boc]: /book/cells#cells-boc
+[struct]: /book/structs-and-messages#structs  
+[message]: /book/structs-and-messages#messages 

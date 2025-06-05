@@ -208,6 +208,7 @@ export default defineConfig({
 							link: 'book/compile#',
 						},
 						{ slug: 'book/compile' },
+						{ slug: 'book/tests' },
 						{ slug: 'book/debug' },
 						{ slug: 'book/deploy' },
 						{ slug: 'book/upgrades' },

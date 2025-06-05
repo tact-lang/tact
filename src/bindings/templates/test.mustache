@@ -5,27 +5,23 @@
 import {{{.}}};
 {{/imports}}
 
-export type FromInit{{contractName}} = typeof {{contractName}}.fromInit;
-
-export type TestCase = (fromInit: FromInit{{contractName}}) => void;
-
-export const test{{contractName}} = (fromInit: FromInit{{contractName}}) => {
+export const test{{contractName}} = () => {
     describe("{{contractName}} Contract", () => {
         // Test receivers
 {{#receivers}}
-        test{{.}}(fromInit);
+        test{{.}}();
 {{/receivers}}
         // Test getters
 {{#getters}}
-        getterTest{{.}}(fromInit);
+        getterTest{{.}}();
 {{/getters}}
     });
 };
 
-const globalSetup = async (fromInit: FromInit{{contractName}}) => {
+const globalSetup = async () => {
     const blockchain = await Blockchain.create();
     // @ts-ignore
-    const contract = await blockchain.openContract(await fromInit(
+    const contract = await blockchain.openContract(await {{contractName}}.fromInit(
         // TODO: implement default values
     ));
         
@@ -50,5 +46,3 @@ const globalSetup = async (fromInit: FromInit{{contractName}}) => {
 {{#getterBlocks}}
 {{{.}}}
 {{/getterBlocks}}
-// entry point
-test{{contractName}}({{contractName}}.fromInit.bind({{contractName}})); 
