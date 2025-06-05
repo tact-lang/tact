@@ -3,7 +3,7 @@
 exports[`dump should dump values correctly in a receiver 1`] = `
 "#DEBUG#: File src/test/e2e-emulated/debug/dump.tact:2:5:
 #DEBUG#: dumpStack()
-#DEBUG#: stack(1 values) : 10999604800 
+#DEBUG#: stack(1 values) : 10999608800 
 #DEBUG#: File src/test/e2e-emulated/debug/dump.tact:3:5:
 #DEBUG#: dump("Hello world!")
 #DEBUG#: Hello world!
@@ -21,13 +21,13 @@ exports[`dump should dump values correctly in a receiver 1`] = `
 #DEBUG#: null
 #DEBUG#: File src/test/e2e-emulated/debug/dump.tact:8:5:
 #DEBUG#: dump(myAddress())
-#DEBUG#: EQBW6PMGWgu6Gmg_pFckrGpQxm2ImeVELrquQXN0FaneV9fj
+#DEBUG#: EQAYSBn4dL2rIRLPJQjZ6HxxMxOqbUitcOEyKpoJIECqejE9
 #DEBUG#: File src/test/e2e-emulated/debug/dump.tact:10:5:
 #DEBUG#: dump(address)
 #DEBUG#: EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N
 #DEBUG#: File src/test/e2e-emulated/debug/dump.tact:11:5:
 #DEBUG#: dump(myBalance())
-#DEBUG#: 10999604800
+#DEBUG#: 10999608800
 #DEBUG#: File src/test/e2e-emulated/debug/dump.tact:15:5:
 #DEBUG#: dump(maybeBool1)
 #DEBUG#: null

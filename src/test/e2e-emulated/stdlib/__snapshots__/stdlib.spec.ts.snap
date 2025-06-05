@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`stdlib should execute stdlib methods correctly: Gas consumed in segGasLimit() 1`] = `3881`;
+exports[`stdlib should execute stdlib methods correctly: Gas consumed in segGasLimit() 1`] = `3827`;
 
-exports[`stdlib should execute stdlib methods correctly: tvm_2023_07Upgrade 1`] = `1439`;
+exports[`stdlib should execute stdlib methods correctly: tvm_2023_07Upgrade 1`] = `1385`;

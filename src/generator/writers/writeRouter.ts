@@ -29,7 +29,7 @@ import { prettyPrint } from "@/ast/ast-printer";
 import { escapeUnicodeControlCodes } from "@/utils/text";
 import { writeCellParser } from "@/generator/writers/writeSerialization";
 
-type ContractReceivers = {
+export type ContractReceivers = {
     readonly internal: Receivers;
     readonly external: Receivers;
     readonly bounced: BouncedReceivers;

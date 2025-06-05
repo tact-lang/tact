@@ -269,6 +269,16 @@
         "approveTon": "6608",
         "cancelTon": "4509"
       }
+    },
+    {
+      "label": "1.6.13 with preview of deep selector hack",
+      "pr": null,
+      "gas": {
+        "fundingTon": "4029",
+        "changeCode": "4154",
+        "approveTon": "6516",
+        "cancelTon": "4417"
+      }
     }
   ]
 }

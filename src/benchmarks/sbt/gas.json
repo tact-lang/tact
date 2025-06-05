@@ -168,6 +168,19 @@
         "revoke": "3850",
         "take excess": "5577"
       }
+    },
+    {
+      "label": "1.6.13 with preview of deep selector hack",
+      "pr": null,
+      "gas": {
+        "deploy": "4028",
+        "request owner": "4764",
+        "prove ownership": "4970",
+        "get static data": "4694",
+        "destroy": "6205",
+        "revoke": "3858",
+        "take excess": "5485"
+      }
     }
   ]
 }

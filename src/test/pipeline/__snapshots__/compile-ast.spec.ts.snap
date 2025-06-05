@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`compilation of ASTs should compile AST to BoC 1`] = `"b5ee9c7201010301004b000114ff00f4a413f4bcf2c80b01015ed330d072d721d200d200fa4021103450556f04f86101f862ed44d0d2000195d4d4596c128e8330db3ce25bdcf2c082020014f82ac87001ca006d30c9"`;
+exports[`compilation of ASTs should compile AST to BoC 1`] = `"b5ee9c72010103010051000114ff00f4a413f4bcf2c80b01016ad3ff0020f2d80b30d072d721d200d200fa4021103450556f04f86101f862ed44d0d2000195d4d4596c128e8330db3ce25bdcf2c082020014f82ac87001ca006d30c9"`;
 
 exports[`compilation of ASTs should compile AST to BoC 2`] = `
 ""Asm.fif" include
@@ -8,6 +8,9 @@ PROGRAM{
   DECLPROC recv_internal
   DECLPROC ?fun_ref_bd34c99d66d48f62
   recv_internal PROC:<{
+    SETCP0
+    DUP
+    11 THROWARGIF
     DROP
     CTOS
     TWO
