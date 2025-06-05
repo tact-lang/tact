@@ -1139,6 +1139,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         return {
             name: idText(a.name),
             self: self,
+            effects: new Set(),
             origin,
             params,
             returns,

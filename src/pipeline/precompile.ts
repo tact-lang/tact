@@ -14,7 +14,10 @@ import type * as Ast from "@/ast/ast";
 import { getAstFactory } from "@/ast/ast-helpers";
 import { getParser } from "@/grammar";
 import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
-import { computeReceiversEffects } from "@/types/effects";
+import {
+    computeGettersEffects,
+    computeReceiversEffects,
+} from "@/types/effects";
 import { setAstFactoryToStore } from "@/pipeline/ast-factory-store";
 
 export function precompile(
@@ -80,6 +83,7 @@ export function precompile(
 
     // To use in code generation to decide if a receiver needs to call the contract storage function
     computeReceiversEffects(ctx);
+    computeGettersEffects(ctx);
 
     // Prepared context
     return ctx;
