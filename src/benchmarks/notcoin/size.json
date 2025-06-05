@@ -119,6 +119,16 @@
         "wallet cells": "13",
         "wallet bits": "7708"
       }
+    },
+    {
+      "label": "1.6.13 with precompiled gas consumption",
+      "pr": "https://github.com/tact-lang/tact/pull/3344",
+      "size": {
+        "minter cells": "29",
+        "minter bits": "15983",
+        "wallet cells": "13",
+        "wallet bits": "8020"
+      }
     }
   ]
 }

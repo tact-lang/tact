@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { ExpressiveCodeTheme } from '@astrojs/starlight/expressive-code';
 import fs from 'node:fs';
 
 // Allows changing heading ids
@@ -83,7 +84,9 @@ export default defineConfig({
 			editLink: { baseUrl: 'https://github.com/tact-lang/tact/edit/main/docs/' },
 			tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
 			expressiveCode: {
-				themes: ['one-dark-pro', 'one-light'],
+				themes: ['one-dark-pro', ExpressiveCodeTheme.fromJSONString(
+					fs.readFileSync(new URL(`./themes/one-light-mod.jsonc`, import.meta.url), 'utf-8')
+				)],
 				useStarlightDarkModeSwitch: true,
 				useStarlightUiThemeColors: true,
 				shiki: {
