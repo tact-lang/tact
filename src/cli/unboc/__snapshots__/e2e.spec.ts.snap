@@ -41,19 +41,7 @@ PROGRAM{
     130 THROW
   }>
   ?fun_78250 PROC:<{
-    PUSHROOT
-    CTOS
-    1 LDI
-    DROP
-    <{
-      NULL
-    }> PUSHCONT
-    <{
-      NULL
-    }> PUSHCONT
-    IFELSE
     ?fun_ref_92183b49329bb4e4 INLINECALLDICT
-    NIP
   }>
   ?fun_ref_92183b49329bb4e4 PROCREF:<{
     x{68656C6C6F20776F726C64} PUSHSLICE
@@ -104,19 +92,7 @@ PROGRAM{
     130 THROW                                     // 0xF2C4_ 105_
   }>
   ?fun_78250 PROC:<{
-    PUSHROOT                                      // 0xED4 4
-    CTOS                                          // 0xD0
-    1 LDI                                         // 0xD2 00
-    DROP                                          // 0x3 0
-    <{
-      NULL                                        // 0x6D
-    }> PUSHCONT                                   // 0x9 6D
-    <{
-      NULL                                        // 0x6D
-    }> PUSHCONT                                   // 0x9 6D
-    IFELSE                                        // 0xE2
     ?fun_ref_92183b49329bb4e4 INLINECALLDICT      // 0x
-    NIP                                           // 0x3 1
   }>
   ?fun_ref_92183b49329bb4e4 PROCREF:<{
     x{68656C6C6F20776F726C64} PUSHSLICE           // 0x8B 68656C6C6F20776F726C64
@@ -167,19 +143,7 @@ PROGRAM{
     130 THROW
   }>
   ?fun_78250 PROC:<{
-    c4 PUSHCTR
-    CTOS
-    1 LDI
-    s0 POP
-    <{
-      NULL
-    }> PUSHCONT
-    <{
-      NULL
-    }> PUSHCONT
-    IFELSE
     ?fun_ref_92183b49329bb4e4 INLINECALLDICT
-    s1 POP
   }>
   ?fun_ref_92183b49329bb4e4 PROCREF:<{
     x{68656C6C6F20776F726C64} PUSHSLICE
@@ -229,21 +193,9 @@ PROGRAM{
     130 THROW
   }>
   ?fun_78250 PROC:<{
-    PUSHROOT
-    CTOS
-    1 LDI
-    DROP
-    <{
-      NULL
-    }> PUSHCONT
-    <{
-      NULL
-    }> PUSHCONT
-    IFELSE
     <{
       x{68656C6C6F20776F726C64} PUSHSLICE
     }>c CALLREF
-    NIP
   }>
 }END>c
 ",

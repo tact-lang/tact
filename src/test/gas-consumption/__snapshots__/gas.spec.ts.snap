@@ -10,19 +10,19 @@ exports[`benchmarks benchmark BaseTrait: gas used for ReplyMessage 1`] = `3460`;
 
 exports[`benchmarks benchmark cashback: gas used cashback 1`] = `3337`;
 
-exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `750n`;
+exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `467n`;
 
-exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `754n`;
+exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `471n`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `850n`;
+exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `567n`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1502n`;
+exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1219n`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `858n`;
+exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `575n`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `858n`;
+exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `575n`;
 
-exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2516n`;
+exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2233n`;
 
 exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `3837`;
 
@@ -32,7 +32,7 @@ exports[`benchmarks benchmark functions: code size 1`] = `170`;
 
 exports[`benchmarks benchmark functions: gas used 1`] = `1979`;
 
-exports[`benchmarks benchmark log: gas used log 1`] = `1884n`;
+exports[`benchmarks benchmark log: gas used log 1`] = `1583n`;
 
 exports[`benchmarks benchmark readFwdFee: code size 1`] = `116`;
 

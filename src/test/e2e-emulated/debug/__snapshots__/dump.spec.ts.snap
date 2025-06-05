@@ -21,7 +21,7 @@ exports[`dump should dump values correctly in a receiver 1`] = `
 #DEBUG#: null
 #DEBUG#: File src/test/e2e-emulated/debug/dump.tact:8:5:
 #DEBUG#: dump(myAddress())
-#DEBUG#: EQBW6PMGWgu6Gmg_pFckrGpQxm2ImeVELrquQXN0FaneV9fj
+#DEBUG#: EQBjxpkme_eJbq3iA1P8jsSg_kXovxILliGWM1d-QyR4xguF
 #DEBUG#: File src/test/e2e-emulated/debug/dump.tact:10:5:
 #DEBUG#: dump(address)
 #DEBUG#: EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N
