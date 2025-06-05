@@ -15,7 +15,7 @@ The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOC
 
 ### Release contributors
 
-- [Novus Nota](https://github.com/novusnota)
+- [Petr Makhnev](https://github.com/i582)
 
 ## [1.6.13] - 2025-05-29
 
