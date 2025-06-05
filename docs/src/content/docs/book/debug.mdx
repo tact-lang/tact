@@ -129,6 +129,57 @@ For testing smart contracts, it uses the [Sandbox][sb], a local TON Blockchain e
 
 Whenever you create a new [Blueprint][bp] project or use the `blueprint create` command inside an existing project, it creates a new contract along with a test suite file for it.
 
+### Using generated test stubs {#tests-using-stubs}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+Tact automatically generates test stubs for each compiled contract during the [compilation process](/book/compile#test-stubs). These generated test files serve as excellent starting points for writing comprehensive tests.
+
+To use the generated test stubs:
+
+1. **Copy the generated tests** from the `output/tests/` directory to your project's `tests/` directory:
+   ```shell
+   cp -r ./build/tests/ ./tests/
+   ```
+
+2. **Rename the files** to remove the `.stub` suffix:
+   ```shell  
+   mv ./tests/MyProject_Counter.stub.tests.ts ./tests/MyProject_Counter.tests.ts
+   ```
+
+3. **Customize the tests** according to your contract's specific needs. The generated stubs include:
+   - Basic blockchain sandbox setup
+   - Contract deployment tests
+   - Example usage of [TypeScript wrappers](#tests-wrappers)
+
+4. **Extend with additional test cases** to cover all your contract's functionality:
+
+```typescript
+it('should increment counter', async () => {
+    const initialValue = await counter.getValue();
+    
+    const incrementResult = await counter.sendIncrement(
+        deployer.getSender(), 
+        toNano('0.01')
+    );
+    
+    expect(incrementResult.transactions).toHaveTransaction({
+        from: deployer.address,
+        to: counter.address,
+        success: true,
+    });
+    
+    const newValue = await counter.getValue();
+    expect(newValue).toBe(initialValue + 1n);
+});
+```
+
+:::tip
+
+Since generated test files are overwritten on each compilation, always copy them to a separate location before customizing. This ensures your test modifications are preserved.
+
+:::
+
 Those files are placed in the `tests/` folder and executed with [Jest][jest]. By default, all tests run unless you specify a specific group or test closure. For other options, refer to the brief documentation in the Jest CLI: `jest --help`.
 
 ### Structure of test files {#tests-structure}
