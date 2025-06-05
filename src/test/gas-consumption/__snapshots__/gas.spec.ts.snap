@@ -1,85 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`benchmarks benchmark BaseTrait: code size 1`] = `352`;
+exports[`benchmarks benchmark BaseTrait: code size 1`] = `348`;
 
-exports[`benchmarks benchmark BaseTrait: gas used for ForwardMessage 1`] = `3586`;
+exports[`benchmarks benchmark BaseTrait: gas used for ForwardMessage 1`] = `3558`;
 
-exports[`benchmarks benchmark BaseTrait: gas used for NotifyMessage 1`] = `3393`;
+exports[`benchmarks benchmark BaseTrait: gas used for NotifyMessage 1`] = `3365`;
 
-exports[`benchmarks benchmark BaseTrait: gas used for ReplyMessage 1`] = `3460`;
+exports[`benchmarks benchmark BaseTrait: gas used for ReplyMessage 1`] = `3432`;
 
-exports[`benchmarks benchmark cashback: gas used cashback 1`] = `3337`;
+exports[`benchmarks benchmark cashback: gas used cashback 1`] = `3309`;
 
-exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `750n`;
+exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `696n`;
 
-exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `754n`;
+exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `700n`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `850n`;
+exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `796n`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1502n`;
+exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1448n`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `858n`;
+exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `804n`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `858n`;
+exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `804n`;
 
-exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2516n`;
+exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2462n`;
 
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `3837`;
+exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `3809`;
 
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1505`;
+exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1477`;
 
-exports[`benchmarks benchmark functions: code size 1`] = `170`;
+exports[`benchmarks benchmark functions: code size 1`] = `166`;
 
-exports[`benchmarks benchmark functions: gas used 1`] = `1979`;
+exports[`benchmarks benchmark functions: gas used 1`] = `1951`;
 
-exports[`benchmarks benchmark log: gas used log 1`] = `1884n`;
+exports[`benchmarks benchmark log: gas used log 1`] = `1830n`;
 
-exports[`benchmarks benchmark readFwdFee: code size 1`] = `116`;
+exports[`benchmarks benchmark readFwdFee: code size 1`] = `112`;
 
-exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1968`;
+exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1940`;
 
-exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2154`;
+exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2062`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2155`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2063`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2157`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2065`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2154`;
+exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2062`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2155`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2063`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2157`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2065`;
 
-exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1975`;
+exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1883`;
 
-exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `1975`;
+exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `1883`;
 
-exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `1975`;
+exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `1883`;
 
-exports[`benchmarks benchmark sqrt via geom mean: code size 1`] = `265`;
+exports[`benchmarks benchmark sqrt via geom mean: code size 1`] = `261`;
 
-exports[`benchmarks benchmark sqrt via geom mean: gas used for value 0 1`] = `2086`;
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 0 1`] = `2058`;
 
-exports[`benchmarks benchmark sqrt via geom mean: gas used for value 100 1`] = `2978`;
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 100 1`] = `2950`;
 
-exports[`benchmarks benchmark sqrt via geom mean: gas used for value 1000000000 1`] = `2978`;
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 1000000000 1`] = `2950`;
 
-exports[`benchmarks benchmark sqrt via geom mean: gas used for value 10000000000 1`] = `3185`;
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 10000000000 1`] = `3157`;
 
-exports[`benchmarks benchmark sqrt via geom mean: gas used for value 57896044618658097711785492504343953926634992332820282019728792003956564819968 1`] = `3806`;
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 57896044618658097711785492504343953926634992332820282019728792003956564819968 1`] = `3778`;
 
-exports[`benchmarks benchmark sqrt via geom mean: gas used for value 115792089237316195423570985008687907853269984665640564039457584007913129639935 1`] = `2564`;
+exports[`benchmarks benchmark sqrt via geom mean: gas used for value 115792089237316195423570985008687907853269984665640564039457584007913129639935 1`] = `2536`;
 
-exports[`benchmarks benchmark sqrt: code size 1`] = `265`;
+exports[`benchmarks benchmark sqrt: code size 1`] = `261`;
 
-exports[`benchmarks benchmark sqrt: gas used for value 0 1`] = `1916`;
+exports[`benchmarks benchmark sqrt: gas used for value 0 1`] = `1888`;
 
-exports[`benchmarks benchmark sqrt: gas used for value 100 1`] = `3305`;
+exports[`benchmarks benchmark sqrt: gas used for value 100 1`] = `3277`;
 
-exports[`benchmarks benchmark sqrt: gas used for value 1000000000 1`] = `3398`;
+exports[`benchmarks benchmark sqrt: gas used for value 1000000000 1`] = `3370`;
 
-exports[`benchmarks benchmark sqrt: gas used for value 10000000000 1`] = `3398`;
+exports[`benchmarks benchmark sqrt: gas used for value 10000000000 1`] = `3370`;
 
-exports[`benchmarks benchmark sqrt: gas used for value 57896044618658097711785492504343953926634992332820282019728792003956564819968 1`] = `3711`;
+exports[`benchmarks benchmark sqrt: gas used for value 57896044618658097711785492504343953926634992332820282019728792003956564819968 1`] = `3683`;
 
-exports[`benchmarks benchmark sqrt: gas used for value 115792089237316195423570985008687907853269984665640564039457584007913129639935 1`] = `3711`;
+exports[`benchmarks benchmark sqrt: gas used for value 115792089237316195423570985008687907853269984665640564039457584007913129639935 1`] = `3683`;

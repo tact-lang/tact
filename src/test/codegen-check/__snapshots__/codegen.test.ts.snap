@@ -561,8 +561,7 @@ _ %asSlice() method_id(68231) {
 ;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
 (slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
 
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
+() fake_recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     ;; Context
     var cs = in_msg_cell.begin_parse();
     cs~skip_bits(2);
@@ -637,82 +636,173 @@ _ %asSlice() method_id(68231) {
 }
 
 
+() _prepare_@tempdict() impure asm
+"""
+variable @tempdict @procdict @ @tempdict !
+// -- f
+{ @tempdict @ null? } : @tempdict-empty?
+
+// proc_flags -- f
+{ 0x1a and 2 = } : need-remove-proc?
+
+// proc_idx --
+{ @tempdict @ @procdictkeylen idict- drop @tempdict ! } : @tempdict@remove-proc
+
+// proc_idx proc_flags --
+{ 
+  need-remove-proc?
+  { @tempdict@remove-proc }
+  { drop }
+  cond
+} : process-proc-info
+
+// --
+{
+  // remove unused procedures
+  @procinfo @ @procdictkeylen
+  { 16 i@ process-proc-info -1 }
+  idictforeach drop
+
+  // remove recv_internal and recv_external
+  0 @tempdict@remove-proc
+  -1 @tempdict@remove-proc
+} : prepare-dict
+
+prepare-dict 
+""";
+
+
+() _internal_selector_part() impure asm
+"""
+<b 0 @zcount u, // fix c2 SAVE SAMEALTSAVE
+
+SETCP0
+@tempdict-empty?
+{ DUP 11 THROWARGIF }
+{   
+    // selector
+    <{
+        @tempdict @ @procdictkeylen DICTPUSHCONST
+        DICTIGETJMPZ
+        11 THROWARG
+    }> PUSHCONT // selector cont
+    s1 s(-1) s(-1) PUXCPU // selector selector cont cont
+    c3 POP // selector selector cont
+    IFJMP // selector
+    DROP 
+}
+cond
+
+swap b> <s @zcount @cut-zeroes s, // fix c2 SAVE SAMEALTSAVE
+""";
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    _prepare_@tempdict();
+    _internal_selector_part();
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    cs~skip_bits(2);
+    var msg_bounceable = cs~load_int(1);
+    var msg_bounced = cs~load_int(1);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var ($self'field, $self'value, $self'data, $self'mapping) = $MainContract$_contract_load();
+    
+    ;; Handle bounced messages
+    if (msg_bounced) { return (); }
+    int op = 0;
+    int in_msg_length = slice_bits(in_msg);
+    if (in_msg_length >= 32) {
+        op = in_msg~load_uint(32);
+        ;; Receive Bin message
+        if (op == 0x2) {
+            var $m = empty_tuple();
+            throw_unless(53588, (0x2 == 2));
+            $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+            return ();
+        }
+        
+        ;; Receive Message1 message
+        if (op == 3110385022) {
+            var $msg'a = in_msg~load_int(257);
+            throw($msg'a);
+            $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+            return ();
+        }
+        
+        ;; Receive Message2 message
+        if (op == 797349837) {
+            var $msg'value = in_msg~load_ref();
+            var $msg'value2 = in_msg~load_ref().begin_parse();
+            int $sc_1 = 10;
+            int $sc_2 = 20;
+            int $in_msg = ($sc_1 + $sc_2);
+            throw_if($in_msg, ($in_msg == 0));
+            throw(($Cell$_fun_depth($msg'value) + $Slice$_fun_depth($msg'value2)));
+            $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+            return ();
+        }
+        
+        ;; Receive Message3 message
+        if (op == 1120645875) {
+            var $msg'val1 = in_msg~load_int(257);
+            var $msg'val2 = in_msg~load_int(257);
+            var $msg'val3 = in_msg~load_int(257);
+            slice sc_1 = in_msg~load_ref().begin_parse();
+            var $msg'val4 = sc_1~load_int(257);
+            var $msg'val5 = sc_1~load_int(257);
+            var $msg'val6 = sc_1~load_int(257);
+            throw(((((($msg'val1 + $msg'val2) + $msg'val3) + $msg'val4) + $msg'val5) + $msg'val6));
+            $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+            return ();
+        }
+        
+    }
+    ;; Empty Receiver and Text Receivers
+    var text_op = slice_hash(in_msg);
+    ;; Receive "Text\\x00receiver\\x01.\\x0aThis \\x07 is \\x0d a \\x1f test \\x7f comment \\x9f with \\x08 bad \\x0c chars" message
+    if (text_op == 0x384726d137b7c49fbc0d7801f7781fe550ac11c0c968cd9fb66c25c2a00e1365) {
+        $MainContract$_contract_store(($self'field, $self'value, $self'data, $self'mapping));
+        return ();
+    }
+    ;; Throw if not handled
+    throw(130);
+}
+
 () __tact_selector_hack_asm() impure asm """
-@atend @ 1 {
+    variable @dict
+    variable @internal
+    variable @external
+
+    { <s ref@ @dict ! } : init-dict
+    {  0 @dict @ @procdictkeylen idict@ { \`empty } ifnot @internal ! } : init-internal
+    { -1 @dict @ @procdictkeylen idict@ { \`empty } ifnot @external ! } : init-external
+
+    {
+        init-dict
+        init-internal
+        init-external
+
+    } : init-variables
+
+    { @external @ \`empty eq? not } : has-external
+
+    { @internal @ s, } : internal,
+    { @external @ s, } : external,
+
+    @atend @ 1 {
         execute current@ context@ current!
         {
-            // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
-            // We want to extract recv_internal/recv_external from the dict and select needed function
-            // not by jumping to the needed function by it's index, but by using usual IF statements.
-
-            }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
-
-            <{ // Start of the new code builder
-                SETCP0
-                // Swap the new code builder with the previous code, now we have previous code on top of the stack
-                swap
-                // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
-                <s ref@
-
-                // Extract the recv_internal from the dict
-                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot
-                swap
-
-                // Delete the recv_internal from the dict
-                0 swap @procdictkeylen idict- drop
-                // Delete the recv_external from the dict (it's okay if it's not there)
-                -1 swap @procdictkeylen idict- drop
-                // Delete the __tact_selector_hack from the dict
-                65535 swap @procdictkeylen idict- drop
-
-                // Bring the code builder from the bottom of the stack
-                // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
-                depth 1- roll
-                // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
-                swap
-
-                // Check if the dict is empty
-                dup null?
-                // Store a copy of this flag in the bottom of the stack
-                dup depth 1- -roll
-                {
-                    // If the dict is empty, just drop it (it will be null if it's empty)
-                    drop
-                }
-                {
-                    // If the dict is not empty, prepare continuation to be stored in c3
-                    <{
-                        // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
-                        swap @procdictkeylen DICTPUSHCONST
-                        // Jump to the needed function by it's index
-                        DICTIGETJMPZ
-                        // If such key is not found, throw 11 along with the key as an argument
-                        11 THROWARG
-                    }> PUSHCONT
-                    // Store the continuation in c3
-                    c3 POP
-                } cond
-
-                // Function id is on top of the (runtime) stack
-                DUP IFNOTJMP:<{
-                    // place recv_internal here
-                    DROP swap @addop
-                }>
-
-                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
-                depth 1- roll
-                {
-                    // If the dict is empty, throw 11
-                    11 THROWARG
-                }
-                {
-                    // If the dict is not empty, jump to continuation from c3
-                    c3 PUSH JMPX
-                } cond
-            }> b>
-        } : }END>c
-        current@ context! current!
-    } does @atend !
+            }END> b> init-variables
+                <{
+                    has-external { external, } { internal, } cond
+                }> b>
+            } : }END>c
+            current@ context! current!
+        } does @atend !
 """;
 
 () __tact_selector_hack() method_id(65535) {
