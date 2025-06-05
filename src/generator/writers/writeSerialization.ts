@@ -177,7 +177,7 @@ function writeSerializerField(
             if (op.optional) {
                 ctx.used(`__tact_store_address_opt`);
                 ctx.append(
-                    `build_${gen} = __tact_store_address_opt(build_${gen}, ${fieldName});`,
+                    `build_${gen} = __tact_store_address_opt(${fieldName}, build_${gen});`,
                 );
             } else {
                 ctx.append(
