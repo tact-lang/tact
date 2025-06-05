@@ -132,7 +132,7 @@
     },
     {
       "label": "1.6.13 without load contract state if it is not used",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/3364",
       "size": {
         "minter cells": "29",
         "minter bits": "15839",

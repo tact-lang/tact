@@ -9,6 +9,14 @@ The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOC
 
 ## [Unreleased]
 
+### Code generation
+
+- Don't load contract state unless getter reads or writes it: PR [#3364](https://github.com/tact-lang/tact/pull/3364)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+
 ## [1.6.13] - 2025-05-29
 
 ### Language features
