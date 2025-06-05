@@ -23,6 +23,24 @@ export function computeReceiversEffects(ctx: CompilerContext) {
     }
 }
 
+export function computeGettersEffects(ctx: CompilerContext) {
+    for (const type of getAllTypes(ctx)) {
+        if (type.kind === "contract") {
+            for (const [, getter] of type.functions) {
+                if (!getter.isGetter) continue;
+
+                if (getter.ast.kind === "function_def") {
+                    getter.effects = statementListEffects(
+                        getter.ast.statements,
+                        new Set<Ast.Id>(),
+                        ctx,
+                    );
+                }
+            }
+        }
+    }
+}
+
 function statementListEffects(
     statements: readonly Ast.Statement[],
     processedContractMethods: ReadonlySet<Ast.Id>,
@@ -174,6 +192,9 @@ function expressionEffects(
 ): ReadonlySet<Effect> {
     switch (expr.kind) {
         case "id": {
+            if (expr.text === "self") {
+                return new Set<Effect>(["contractStorageRead"]);
+            }
             return new Set<Effect>();
         }
         case "field_access": {

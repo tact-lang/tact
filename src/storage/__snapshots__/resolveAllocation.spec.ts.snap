@@ -2262,6 +2262,7 @@ exports[`resolveAllocation should write program 1`] = `
             "return": undefined,
             "statements": [],
           },
+          "effects": Set {},
           "isAbstract": false,
           "isGetter": false,
           "isInline": false,

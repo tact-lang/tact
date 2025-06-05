@@ -95,6 +95,7 @@ export type FunctionDescription = {
     isAbstract: boolean;
     isInline: boolean;
     self: TypeRef | null;
+    effects: ReadonlySet<Effect>;
     returns: TypeRef;
     params: FunctionParameter[];
     ast:
