@@ -714,7 +714,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             ? [getType(ctx.ctx, f.self.name), f.self.optional]
             : [null, false];
 
-    const isNonMutatingGetter =
+    const isGetterWithStateUsage =
         f.isGetter &&
         !f.effects.has("contractStorageRead") &&
         !f.effects.has("contractStorageWrite");
@@ -724,21 +724,21 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     const returnsOriginal = returns;
     let returnsStr: string | null;
     if (self && f.isMutating) {
-        if (isNonMutatingGetter) {
+        if (isGetterWithStateUsage) {
             // dp nothing
         } else if (f.returns.kind !== "void") {
             returns = `(${resolveFuncType(self, ctx)}, ${returns})`;
         } else {
             returns = `(${resolveFuncType(self, ctx)}, ())`;
         }
-        returnsStr = isNonMutatingGetter
+        returnsStr = isGetterWithStateUsage
             ? "" // return only value
             : resolveFuncTypeUnpack(self, funcIdOf("self"), ctx);
     }
 
     // Resolve function descriptor
     const params: string[] = [];
-    if (self && !isNonMutatingGetter) {
+    if (self && !isGetterWithStateUsage) {
         params.push(
             resolveFuncType(self, ctx, isSelfOpt) + " " + funcIdOf("self"),
         );
@@ -825,7 +825,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 }
                 ctx.body(() => {
                     // Unpack self
-                    if (self && !isSelfOpt && !isNonMutatingGetter) {
+                    if (self && !isSelfOpt && !isGetterWithStateUsage) {
                         ctx.append(
                             `var (${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)}) = ${funcIdOf("self")};`,
                         );
