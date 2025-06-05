@@ -154,10 +154,10 @@
       "label": "1.6.13 with preview of deep selector hack",
       "pr": null,
       "gas": {
-        "externalTransfer": "4779",
-        "addExtension": "5442",
-        "internalTransfer": "5914",
-        "extensionTransfer": "4846"
+        "externalTransfer": "4771",
+        "addExtension": "5434",
+        "internalTransfer": "5822",
+        "extensionTransfer": "4726"
       }
     }
   ]

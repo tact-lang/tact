@@ -112,9 +112,9 @@
       "label": "1.6.13 with preview of deep selector hack",
       "pr": null,
       "gas": {
-        "transfer": "15327",
-        "burn": "11911",
-        "discovery": "5700"
+        "transfer": "15323",
+        "burn": "11907",
+        "discovery": "5698"
       }
     }
   ]

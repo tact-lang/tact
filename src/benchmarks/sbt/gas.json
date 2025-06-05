@@ -173,13 +173,13 @@
       "label": "1.6.13 with preview of deep selector hack",
       "pr": null,
       "gas": {
-        "deploy": "4030",
-        "request owner": "4766",
-        "prove ownership": "4972",
-        "get static data": "4696",
-        "destroy": "6207",
-        "revoke": "3860",
-        "take excess": "5487"
+        "deploy": "4028",
+        "request owner": "4764",
+        "prove ownership": "4970",
+        "get static data": "4694",
+        "destroy": "6205",
+        "revoke": "3858",
+        "take excess": "5485"
       }
     }
   ]
