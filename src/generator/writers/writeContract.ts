@@ -16,8 +16,9 @@ import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack
 import { writeValue } from "@/generator/writers/writeExpression";
 import { writeGetter, writeStatement } from "@/generator/writers/writeFunction";
 import { writeInterfaces } from "@/generator/writers/writeInterfaces";
+import type {
+    ContractReceivers} from "@/generator/writers/writeRouter";
 import {
-    ContractReceivers,
     groupContractReceivers,
     writeBouncedRouter,
     writeLoadOpcode,
@@ -416,63 +417,16 @@ function writeContractReseivers(
     writeLoadOpcode(contractReceivers.internal, wCtx);
     wCtx.append();
 
-    // TODO: use prepare-dict (fift-level hack) instead of @procdict
-    wCtx.append(`
-() _inject_internal() impure asm
-"""
-<{
-    @procdict @ @procdictkeylen DICTPUSHCONST
-    DICTIGETJMPZ
-    11 THROWARG
-}> PUSHCONT
-c3 POP
-DUP IFJMP:<{ c3 PUSH JMPX }> DROP
-""";
-
-`);
-
-    if (!hasExternal) {
-        // Render fake internal receiver for setting using-flag for used procedures (fift-level hack)
-        wCtx.inBlock(
-            "() fake_recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure",
-            () => {
-                wCtx.append();
-                writeInternalBody(contract, contractReceivers, wCtx);
-            },
-        );
-        wCtx.append();
-    }
-
-    // Render internal receiver
+    // Render fake internal receiver for setting using-flag for used procedures (fift-level hack)
     wCtx.inBlock(
-        "() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure",
+        "() fake_recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure",
         () => {
-            wCtx.append();
-            if (!hasExternal) {
-                wCtx.append(`_inject_internal();`);
-            }
             writeInternalBody(contract, contractReceivers, wCtx);
         },
     );
+    wCtx.append();
 
     if (hasExternal) {
-        // TODO: use prepare-dict (fift-level hack) instead of @procdict
-        wCtx.append(`
-() _inject_external() impure asm
-"""
-DUP -1 EQINT <{ 
-<{
-    @procdict @ @procdictkeylen DICTPUSHCONST
-    DICTIGETJMPZ
-    11 THROWARG
-}> PUSHCONT
-c3 POP
-DUP IFJMP:<{ c3 PUSH JMPX }> DROP
-recv_internal INLINECALL
-}>c IFNOTJMPREF DROP
-""";
-`);
-
         writeLoadOpcode(contractReceivers.external, wCtx);
         wCtx.append();
 
@@ -480,11 +434,99 @@ recv_internal INLINECALL
         wCtx.inBlock("() fake_recv_external(slice in_msg) impure", () => {
             writeExternalBody(contract, contractReceivers, wCtx);
         });
+        wCtx.append();
+    }
+
+    wCtx.append(`
+() _prepare_@tempdict() impure asm
+"""
+variable @tempdict @procdict @ @tempdict !
+// -- f
+{ @tempdict @ null? } : @tempdict-empty?
+
+// proc_flags -- f
+{ 0x1a and 2 = } : need-remove-proc?
+
+// proc_idx --
+{ @tempdict @ @procdictkeylen idict- drop @tempdict ! } : @tempdict@remove-proc
+
+// proc_idx proc_flags --
+{ 
+  need-remove-proc?
+  { @tempdict@remove-proc }
+  { drop }
+  cond
+} : process-proc-info
+
+// --
+{
+  // remove unused procedures
+  @procinfo @ @procdictkeylen
+  { 16 i@ process-proc-info -1 }
+  idictforeach drop
+
+  // remove recv_internal and recv_external
+  0 @tempdict@remove-proc
+  -1 @tempdict@remove-proc
+} : prepare-dict
+
+prepare-dict 
+""";
+`);
+
+    wCtx.append(`
+() _internal_selector_part() impure asm
+"""
+<b 0 @zcount u, // fix c2 SAVE SAMEALTSAVE
+
+${!hasExternal ? "SETCP0" : ""}
+@tempdict-empty?
+{ DUP 11 THROWARGIF }
+{   
+    // selector
+    <{
+        @tempdict @ @procdictkeylen DICTPUSHCONST
+        DICTIGETJMPZ
+        11 THROWARG
+    }> PUSHCONT // selector cont
+    s1 s(-1) s(-1) PUXCPU // selector selector cont cont
+    c3 POP // selector selector cont
+    IFJMP // selector
+    DROP 
+}
+cond
+
+swap b> <s @zcount @cut-zeroes s, // fix c2 SAVE SAMEALTSAVE
+""";
+`);
+
+    // Render internal receiver
+    wCtx.inBlock(
+        "() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure",
+        () => {
+            wCtx.append(`_prepare_@tempdict();`);
+            wCtx.append(`_internal_selector_part();`);
+            writeInternalBody(contract, contractReceivers, wCtx);
+        },
+    );
+
+    if (hasExternal) {
+        wCtx.append(`
+() _external_selector_part() impure asm
+"""
+<b 0 @zcount u, // fix c2 SAVE SAMEALTSAVE
+
+SETCP0 DUP INC <{ recv_internal INLINECALL }>c IFJMPREF DROP
+
+swap b> <s @zcount @cut-zeroes s, // fix c2 SAVE SAMEALTSAVE
+""";
+`);
 
         // Render external receiver
         wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
-            wCtx.append(`_inject_external();`);
-
+            wCtx.inBlock("", () => {
+                wCtx.append(`_external_selector_part();`);
+            });
             writeExternalBody(contract, contractReceivers, wCtx);
         });
     }
@@ -565,50 +607,17 @@ export function writeMainContract(
 
     } : init-variables
 
-
     { @external @ \`empty eq? not } : has-external
-
 
     { @internal @ s, } : internal,
     { @external @ s, } : external,
-
-    { 
-        @dict @
-        0 swap @procdictkeylen idict- drop
-        -1 swap @procdictkeylen idict- drop
-        65535 swap @procdictkeylen idict- drop
-        @dict !
-    } : clean-dict
-
-
-    { @dict @ null? } : dict-empty?
-
-
-    { @dict @ @procdictkeylen { swap . csr. -1 } idictforeach drop cr } : what-keys?
-
-    
-    { @internal @ ref@+ drop <b @dict @ ref, swap s, b> <s @internal ! } : internal-update-dict
-    { @external @ ref@+ <s ref@+ drop <b @dict @ ref, swap s, b> <b swap ref, swap s, b> <s @external ! } : external-update-dict
-
-    
 
     @atend @ 1 {
         execute current@ context@ current!
         {
             }END> b> init-variables
-
-                // what-keys?
-                clean-dict
-
-                // what-keys?
-
-                has-external { external-update-dict } { internal-update-dict } cond
-                
-
-                <{ // builder
-                 SETCP0
+                <{
                     has-external { external, } { internal, } cond
-                    
                 }> b>
             } : }END>c
             current@ context! current!
