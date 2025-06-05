@@ -991,6 +991,7 @@ export function writeGetter(f: FunctionDescription, wCtx: WriterContext) {
         const call = `${wCtx.used(ops.extension(self.name, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")})`;
 
         if (
+            f.isGetter &&
             !f.effects.has("contractStorageRead") &&
             !f.effects.has("contractStorageWrite")
         ) {
