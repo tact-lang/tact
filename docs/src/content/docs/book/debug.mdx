@@ -129,6 +129,8 @@ For testing smart contracts, it uses the [Sandbox][sb], a local TON Blockchain e
 
 Whenever you create a new [Blueprint][bp] project or use the `blueprint create` command inside an existing project, it creates a new contract along with a test suite file for it.
 
+Those files are placed in the `tests/` folder and executed with [Jest][jest]. By default, all tests run unless you specify a specific group or test closure. For other options, refer to the brief documentation in the Jest CLI: `jest --help`.
+
 ### Using generated test stubs {#tests-using-stubs}
 
 <Badge text="Available since Tact 1.6.14" variant="tip" size="medium"/><p/>
