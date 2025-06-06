@@ -154,8 +154,10 @@ prando
 quadtree
 quadtrees
 RANDU
+Reentrancy
 rangle
 rawslice
+reentrancy
 renamer
 replaceget
 respecifying
