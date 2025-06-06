@@ -133,7 +133,7 @@ Some statements, such as [`let{:tact}`](#let) or [`return{:tact}`](#return), mus
 
 ## Expression
 
-An expression statement is an expression used in a place where a statement is expected. The expression is evaluated, and its result is discarded. Therefore, it makes sense only for expressions that have side effects, such as executing a function or updating a variable.
+An expression statement is an expression used in a place where a statement is expected. The expression is evaluated, and its result is discarded. Therefore, it makes sense only for expressions that have side effects, such as [printing to the debug console](/ref/core-debug#dump) or executing an [extension mutation function](/book/functions#mutates).
 
 ```tact
 dump(2 + 2); // stdlib function
