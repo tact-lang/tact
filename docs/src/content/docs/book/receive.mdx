@@ -48,7 +48,7 @@ contract MyContract {
 
 In a contract, the order of declaration of receivers has no effect on how receivers process messages. Hence, changing the order of receivers in the above contract produces an equivalent contract.
 
-Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then when a message with the comment `"message"{:tact}` arrives, it will be processed by `receive(str: String){:tact}`.
+Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then when a message with the comment `"message"{:tact}` arrives, it will be processed by `receive(str: String){:tact}`. yet, the message with an empty comment `""{:tact}` will be processed by the empty body receiver, `receive(){:tact}`.
 
 Note that the receiver `receive(msg: Slice){:tact}` acts as a fallback that catches all messages that did not match previous receivers in the execution order list.
 
