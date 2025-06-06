@@ -460,14 +460,6 @@ Disable automatic test generation by adding the `skipTestGeneration` option to y
 
 Since generated test files are overwritten on each compilation, copy them to a separate location before customization:
 
-```shell
-# Copy generated tests to your project's test directory
-cp -r ./build/tests/ ./tests/
-
-# Rename files to remove .stub suffix  
-mv ./tests/MyProject_Counter.stub.tests.ts ./tests/MyProject_Counter.tests.ts
-```
-
 :::note
 
   See how to use the generated tests for [debugging and testing your contracts](/book/debug#tests-using-stubs).
