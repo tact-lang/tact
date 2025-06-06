@@ -142,9 +142,11 @@ contract Sample(
         acceptMessage();
 
         // Since we have done all the checks we can now safely increase the number,
-        // and commit the state of persistent data and output actions.
+        // then commit the state of persistent data and output actions,
+        // and, finally, save that state early, before any further actions take place.
         self.seqno += 1;
         commit();
+        setData(self.toCell());
 
         // And now you can safely do something with the rest of the message,
         // knowing that the `self.seqno` change will not be reverted in case of errors
@@ -156,6 +158,8 @@ contract Sample(
     // which forwards the remaining value back to the sender
     receive() { cashback(sender()) }
 }
+
+asm fun setData(data: Cell) { c4 POP }
 ```
 
 :::tip[Hey there!]
