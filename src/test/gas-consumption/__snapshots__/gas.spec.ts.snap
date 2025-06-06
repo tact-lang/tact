@@ -10,19 +10,19 @@ exports[`benchmarks benchmark BaseTrait: gas used for ReplyMessage 1`] = `3432`;
 
 exports[`benchmarks benchmark cashback: gas used cashback 1`] = `3309`;
 
-exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `696n`;
+exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `654n`;
 
-exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `700n`;
+exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `658n`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `796n`;
+exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `754n`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1448n`;
+exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1406n`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `804n`;
+exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `762n`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `804n`;
+exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `762n`;
 
-exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2462n`;
+exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2420n`;
 
 exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `3809`;
 
@@ -32,29 +32,29 @@ exports[`benchmarks benchmark functions: code size 1`] = `166`;
 
 exports[`benchmarks benchmark functions: gas used 1`] = `1951`;
 
-exports[`benchmarks benchmark log: gas used log 1`] = `1830n`;
+exports[`benchmarks benchmark log: gas used log 1`] = `1788n`;
 
 exports[`benchmarks benchmark readFwdFee: code size 1`] = `112`;
 
 exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1940`;
 
-exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2062`;
+exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2020`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2063`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2021`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2065`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2023`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2062`;
+exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2020`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2063`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2021`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2065`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2023`;
 
-exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1883`;
+exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1841`;
 
-exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `1883`;
+exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `1841`;
 
-exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `1883`;
+exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `1841`;
 
 exports[`benchmarks benchmark sqrt via geom mean: code size 1`] = `261`;
 
