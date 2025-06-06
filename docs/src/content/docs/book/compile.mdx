@@ -419,78 +419,27 @@ export class Playground implements Contract {
 
 ### Test generation, `.stub.tests.ts` {#test-stubs}
 
-<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6.14" variant="tip" size="medium"/><p/>
 
-By default, Tact automatically generates test stubs for each compiled contract. These files provide a basic structure for testing your contracts using TypeScript and the TON blockchain sandbox.
+By default, Tact automatically generates test stubs for each compiled contract. These files provide a basic testing structure using TypeScript and the TON blockchain sandbox, serving as a starting point for comprehensive contract testing.
 
 #### Generated file structure {#test-file-structure}
 
-Test stubs are saved to the `tests/` subdirectory inside the output folder specified in the [configuration](/book/config#projects-output). For each contract, a file is created with the name following the template:
+Test stubs are saved to the `tests/` subdirectory inside the output folder specified in the [configuration](/book/config#projects-output). Each contract gets its own test file named:
 
 ```
 {project_name}_{contract_name}.stub.tests.ts
 ```
 
-For example, if you have a project named `MyProject` and a contract `Counter`, the following file will be created:
-```
-build/tests/MyProject_Counter.stub.tests.ts
-```
+For example: `build/tests/MyProject_Counter.stub.tests.ts`
 
 #### Test content {#test-stub-content}
 
-Generated test stubs include:
-
-- Imports of necessary modules for testing
-- Basic blockchain sandbox setup  
-- Test stubs for contract deployment
-- Examples using the [TypeScript wrappers](#wrap-ts)
-
-Example of a generated test stub:
-
-```typescript
-import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
-import { Cell, toNano } from '@ton/core';
-import { Counter } from '../wrappers/Counter';
-import '@ton/test-utils';
-import { compile } from '@ton/blueprint';
-
-describe('Counter', () => {
-    let code: Cell;
-
-    beforeAll(async () => {
-        code = await compile('Counter');
-    });
-
-    let blockchain: Blockchain;
-    let counter: SandboxContract<Counter>;
-
-    beforeEach(async () => {
-        blockchain = await Blockchain.create();
-
-        counter = blockchain.openContract(Counter.createFromConfig({}, code));
-
-        const deployer = await blockchain.treasury('deployer');
-
-        const deployResult = await counter.sendDeploy(deployer.getSender(), toNano('0.05'));
-
-        expect(deployResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: counter.address,
-            deploy: true,
-            success: true,
-        });
-    });
-
-    it('should deploy', async () => {
-        // the check is done inside beforeEach
-        // blockchain and counter are ready to use
-    });
-});
-```
+Generated test stubs include basic blockchain sandbox setup, contract deployment tests, and examples using the [TypeScript wrappers](#wrap-ts). They provide a foundation for testing contract functionality with proper imports and configuration.
 
 #### Configuration {#test-generation-config}
 
-You can disable automatic test generation by adding the `skipTestGeneration` option to your [project configuration](/book/config):
+Disable automatic test generation by adding the `skipTestGeneration` option to your [project configuration](/book/config):
 
 ```json filename="tact.config.json"
 {
@@ -509,7 +458,7 @@ You can disable automatic test generation by adding the `skipTestGeneration` opt
 
 #### Using test stubs {#using-test-stubs}
 
-Since generated test files are overwritten on each compilation, you should copy them to a separate location for customization:
+Since generated test files are overwritten on each compilation, copy them to a separate location before customization:
 
 ```shell
 # Copy generated tests to your project's test directory
@@ -519,11 +468,9 @@ cp -r ./build/tests/ ./tests/
 mv ./tests/MyProject_Counter.stub.tests.ts ./tests/MyProject_Counter.tests.ts
 ```
 
-This way, your customized tests won't be overwritten during subsequent compilations.
-
 :::note
 
-  See how to use the generated tests for [debugging and testing your contracts](/book/debug#tests).
+  See how to use the generated tests for [debugging and testing your contracts](/book/debug#tests-using-stubs).
 
 :::
 
