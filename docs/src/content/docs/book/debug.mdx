@@ -131,6 +131,30 @@ Whenever you create a new [Blueprint][bp] project or use the `blueprint create` 
 
 Those files are placed in the `tests/` folder and executed with [Jest][jest]. By default, all tests run unless you specify a specific group or test closure. For other options, refer to the brief documentation in the Jest CLI: `jest --help`.
 
+### Using generated test stubs {#tests-using-stubs}
+
+<Badge text="Available since Tact 1.6.14" variant="tip" size="medium"/><p/>
+
+Tact automatically generates test stubs for each compiled contract during the [compilation process](/book/compile#test-stubs). These generated test files serve as excellent starting points for writing comprehensive tests.
+
+To use the generated test stubs:
+
+1. Copy them from the `tests/` subdirectory inside the output directory specified in your [`tact.config.json`](/book/config#projects-output).
+
+2. Customize them according to the specific needs of your contract. The generated stubs include:
+
+  * Basic [Sandbox][sb] setup
+  * Contract deployment tests
+  * Example use of [TypeScript wrappers](#tests-wrappers)
+
+3. Extend with additional test cases. The generated tests are intended as a starting point, not a complete test suite.
+
+:::caution
+
+  Since generated test files are overwritten on each compilation, always copy them to a separate location **before customizing**. This ensures your test modifications are preserved.
+
+:::
+
 ### Structure of test files {#tests-structure}
 
 Let's say we have a contract named `Playground`, written in the `contracts/playground.tact` file. If we've created that contract through [Blueprint][bp], it also created a `tests/Playground.spec.ts` test suite file for us.
