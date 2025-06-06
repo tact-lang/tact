@@ -56,7 +56,7 @@ export function writeStdlib(ctx: WriterContext): void {
 
     ctx.fun("__tact_store_address_opt", () => {
         ctx.signature(
-            `builder __tact_store_address_opt(builder b, slice address)`,
+            `builder __tact_store_address_opt(slice address, builder b)`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");

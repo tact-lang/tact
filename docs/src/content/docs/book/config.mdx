@@ -23,7 +23,7 @@ A [JSON schema](https://json-schema.org/) file is available for editors to provi
 
 Simply add the `$schema` field at the top of your configuration file:
 
-```json filename="tact.config.json" {2}
+```json title="tact.config.json" {2}
 {
   "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects": []
@@ -34,7 +34,7 @@ Simply add the `$schema` field at the top of your configuration file:
 
 A list of Tact projects with respective compilation options. Each `.tact` file represents its own Tact project.
 
-```json filename="tact.config.json" {3,4}
+```json title="tact.config.json" {3,4}
 {
   "projects": [
     { },
@@ -49,7 +49,7 @@ The name of the project. All generated files are prefixed with it.
 
 In [Blueprint][bp], `name` refers to the name of the contract itself.
 
-```json filename="tact.config.json" {4,7}
+```json title="tact.config.json" {4,7}
 {
   "projects": [
     {
@@ -68,7 +68,7 @@ Path to the project's Tact file. You can specify only one Tact file per project.
 
 In [Blueprint][bp], the `path` field is superseded by the `target` field in `wrappers/ContractName.compile.ts` by default, or in `compilables/ContractName.compile.ts` if you have the `separateCompilables` option set in [`blueprint.config.ts`][bp-config].
 
-```json filename="tact.config.json" {5}
+```json title="tact.config.json" {5}
 {
   "projects": [
     {
@@ -85,7 +85,7 @@ Path to the directory where all generated files will be placed.
 
 In [Blueprint][bp], the `output` field is not used, and all generated files are always placed in `build/ProjectName/`.
 
-```json filename="tact.config.json" {6}
+```json title="tact.config.json" {6}
 {
   "projects": [
     {
@@ -103,7 +103,7 @@ Compilation options for the project.
 
 In [Blueprint][bp], these options act as defaults unless modified in `wrappers/ContractName.compile.ts` by default, or in `compilables/ContractName.compile.ts` if you have the `separateCompilables` option set in [`blueprint.config.ts`][bp-config].
 
-```json filename="tact.config.json" {7,11}
+```json title="tact.config.json" {7,11}
 {
   "projects": [
     {
@@ -128,7 +128,7 @@ If set to `true{:json}`, enables debug output for a contract and allows the usag
 
 The `debug` mode implies the activation of the [`nullChecks`](#safety-nullchecks) safety option.
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -161,7 +161,7 @@ The `debug` mode implies the activation of the [`nullChecks`](#safety-nullchecks
 
 If set to `true{:json}`, enables support for [external](/book/external) message receivers.
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -194,7 +194,7 @@ If set to `true{:json}`, enables support for [external](/book/external) message 
 
 If set to `true{:json}`, enables the generation of a [getter](/book/contracts#getter-functions) with IPFS links describing the contract's ABI.
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -227,7 +227,7 @@ If set to `true{:json}`, enables the generation of a [getter](/book/contracts#ge
 
 If set to `true{:json}`, enables the generation of a [getter](/book/contracts#getter-functions) with a list of interfaces provided by the contract.
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -258,7 +258,7 @@ If set to `true{:json}`, enables the generation of a [getter](/book/contracts#ge
 
 Experimental options that might be removed in the future. Use with caution!
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -285,7 +285,7 @@ Experimental options that might be removed in the future. Use with caution!
 
 If set to `true{:json}`, enables inlining of all functions in contracts. This can reduce gas usage at the cost of larger contracts.
 
-```json filename="tact.config.json" {9,17}
+```json title="tact.config.json" {9,17}
 {
   "projects": [
     {
@@ -316,7 +316,7 @@ If set to `true{:json}`, enables inlining of all functions in contracts. This ca
 
 Options that affect the safety of contracts.
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -347,7 +347,7 @@ If set to `true{:json}`, enables runtime null checks on the arguments of the unw
 
 Null checks are always enabled in [`debug`](#options-debug) mode.
 
-```json filename="tact.config.json" {9,17}
+```json title="tact.config.json" {9,17}
 {
   "projects": [
     {
@@ -378,7 +378,7 @@ Null checks are always enabled in [`debug`](#options-debug) mode.
 
 Options that affect the optimization of contracts.
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -409,7 +409,7 @@ If set to `false{:json}`, saves the contract state at the end of a receiver exec
 
 This option can be used to provide an extra safety level or for debugging.
 
-```json filename="tact.config.json" {9,17}
+```json title="tact.config.json" {9,17}
 {
   "projects": [
     {
@@ -440,11 +440,11 @@ This option can be used to provide an extra safety level or for debugging.
 
 `true{:json}` by default.
 
-If set to `true{:json}`, stores internal and external receivers outside the methods map.
+If set to `true{:json}`, stores internal and external receivers outside the [methods map](/book/functions#low-level-representation).
 
 When enabled, it saves gas but can cause the contract to be incorrectly recognized and misparsed by some explorers and user wallets.
 
-```json filename="tact.config.json" {9,17}
+```json title="tact.config.json" {9,17}
 {
   "projects": [
     {
@@ -477,7 +477,7 @@ When enabled, it saves gas but can cause the contract to be incorrectly recogniz
 
 If set to `true{:json}`, enables the generation of the `lazy_deployment_completed(){:tact}` getter. This option has no effect if [contract parameters](/book/contracts#parameters) are declared.
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -541,7 +541,7 @@ If set to `true{:json}`, disables automatic generation of test files. By default
 
 Sets the verbosity level — higher values produce more output.
 
-```json filename="tact.config.json" {7}
+```json title="tact.config.json" {7}
 {
   "projects": [
     {
@@ -567,7 +567,7 @@ Value                            | Description
 
 In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overridden.
 
-```json filename="tact.config.json" {7,13}
+```json title="tact.config.json" {7,13}
 {
   "projects": [
     {
@@ -588,7 +588,7 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overri
 
 ## Full example
 
-```json filename="tact.config.json" copy=false
+```json title="tact.config.json" copy=false
 {
   "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects": [
