@@ -11,6 +11,29 @@ Additionally, the Tact compiler has a versatile set of standard libraries which 
 
   All imported code is combined together with yours, so it's important to avoid name collisions and always double-check the sources!
 
+  Moreover, imports are transitive and are always automatically exported — if an `a.tact` imports `b.tact`, which in turn imports `c.tact`, then all the definitions from `c.tact` are immediately accessible in `a.tact` without an explicit import of `c.tact` to it.
+
+  ```tact title="c.tact"
+  trait StatelessGetters {
+      get fun bar(): Int { return 42 }
+      get fun baz(): Int { return 43 }
+  }
+  ```
+
+  ```tact title="b.tact"
+  import "c.tact";
+  ```
+
+  ```tact title="a.tact"
+  import "b.tact";
+
+  // Definitions available in "c.tact" are now available in this file
+  // due to their transitive import from the "b.tact" file.
+  contract Transitive() with StatelessGetters {}
+  ```
+
+  This behavior may change in future major releases.
+
 :::
 
 ## Import Tact code
