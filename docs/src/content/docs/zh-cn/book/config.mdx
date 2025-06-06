@@ -19,7 +19,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 只需在配置文件顶部添加 `$schema` 字段即可：
 
-```json filename="tact.config.json" {2}
+```json title="tact.config.json" {2}
 {
   "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects": []
@@ -30,7 +30,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 带有相应编译选项的 Tact 项目列表。 每个 `.tact` 文件都代表自己的 Tact 项目。 每个 `.tact` 文件都代表自己的 Tact 项目。
 
-```json filename="tact.config.json" {3,4}
+```json title="tact.config.json" {3,4}
 {
   "projects": [
     { },
@@ -45,7 +45,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 在[Blueprint][bp]中，`name`指的是合约本身的名称。
 
-```json filename="tact.config.json" {4,7}
+```json title="tact.config.json" {4,7}
 {
   "projects": [
     {
@@ -64,7 +64,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 在 [Blueprint][bp]中，`path` 被`wrapper/ContractName.compile 中的`target`字段所取代。 默认情况下，或在“compilables/ContractName.compile.ts”中，如果你有 `separateCompilables`，则在 [`blueprint.config.ts\`][bp-config] 中设置的选项。
 
-```json filename="tact.config.json" {5}
+```json title="tact.config.json" {5}
 {
   "projects": [
     {
@@ -81,7 +81,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 在 [Blueprint][bp] 中，`output` 未被使用，并且所有生成的文件总是放在 `build/ProjectName/` 中。
 
-```json filename="tact.config.json" {6}
+```json title="tact.config.json" {6}
 {
   "projects": [
     {
@@ -99,7 +99,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 在[Blueprint][bp]中，它们作为默认设置，除非在`wrappers/ContractName.compile.ts`中修改为默认设置，或者在`compilables/ContractName.compile.ts`中修改（如果您在[`blueprint.config.ts`][bp-config]中设置了`separateCompilables`选项）。
 
-```json filename="tact.config.json" {7,11}
+```json title="tact.config.json" {7,11}
 {
   "projects": [
     {
@@ -122,7 +122,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 如果设置为`true{:json}`，则启用合约的调试输出，并允许使用[`dump(){:tact}`](/zh-cn/ref/core-debug#dump)函数，这对[调试目的](/zh-cn/book/debug)很有用。 启用此选项后，合约将报告它是在调试模式下使用 `supported_interfaces` 方法编译的。
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -155,7 +155,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 如果设置为 `true{:json}`，则启用 [masterchain](/zh-cn/book/masterchain) 支持。
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -188,7 +188,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 如果设置为 `true{:json}`，则启用对 [external](/zh-cn/book/external) 消息接收器的支持。
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -221,7 +221,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 如果设置为 `true{:json}`，则可生成带有描述合约 ABI 的 IPFS 链接的[getter](/zh-cn/book/contracts#getter-functions)。
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -254,7 +254,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 如果设置为 `true{:json}`，则可生成包含合约所提供接口列表的 [getter](/zh-cn/book/contracts#getter-functions)。
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -285,7 +285,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 将来可能会取消的试验性选项。 谨慎使用！
 
-```json filename="tact.config.json" {8,14}
+```json title="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -312,7 +312,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 如果设置为`true{:json}`，则启用合约中所有函数的内联。 这可以减少Gas使用，但代价是合约更大。
 
-```json filename="tact.config.json" {9,17}
+```json title="tact.config.json" {9,17}
 {
   "projects": [
     {
@@ -350,7 +350,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 在 [Blueprint][bp] 中，`mode` 始终设置为`"full"{:json}`，且不可覆盖。
 
-```json filename="tact.config.json" {7,13}
+```json title="tact.config.json" {7,13}
 {
   "projects": [
     {
@@ -371,7 +371,7 @@ description: Tact编译器的行为可以通过其配置文件自定义：
 
 ## Full example
 
-```json filename="tact.config.json" copy=false
+```json title="tact.config.json" copy=false
 {
   "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects": [
