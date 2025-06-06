@@ -1,9 +1,9 @@
-import * as fs from "fs/promises";
-import * as path from "path";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import * as glob from "glob";
 
 const cp = async (fromGlob: string, toPath: string) => {
-    for (const file of glob.sync(path.join(fromGlob, "**/*"))) {
+    for (const file of glob.sync(path.join(fromGlob, "**/*"), { windowsPathsNoEscape: true })) {
         const relPath = path.relative(fromGlob, file);
         const pathTo = path.join(toPath, relPath);
         const stat = await fs.stat(file);
