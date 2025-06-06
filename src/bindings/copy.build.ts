@@ -3,7 +3,9 @@ import * as path from "node:path";
 import * as glob from "glob";
 
 const cp = async (fromGlob: string, toPath: string) => {
-    for (const file of glob.sync(path.join(fromGlob, "**/*"), { windowsPathsNoEscape: true })) {
+    for (const file of glob.sync(path.join(fromGlob, "**/*"), {
+        windowsPathsNoEscape: true,
+    })) {
         const relPath = path.relative(fromGlob, file);
         const pathTo = path.join(toPath, relPath);
         const stat = await fs.stat(file);
