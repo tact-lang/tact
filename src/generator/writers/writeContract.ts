@@ -16,8 +16,7 @@ import { resolveFuncTypeUnpack } from "@/generator/writers/resolveFuncTypeUnpack
 import { writeValue } from "@/generator/writers/writeExpression";
 import { writeGetter, writeStatement } from "@/generator/writers/writeFunction";
 import { writeInterfaces } from "@/generator/writers/writeInterfaces";
-import type {
-    ContractReceivers} from "@/generator/writers/writeRouter";
+import type { ContractReceivers } from "@/generator/writers/writeRouter";
 import {
     groupContractReceivers,
     writeBouncedRouter,
@@ -393,7 +392,7 @@ function writeExternalBody(
     writeNonBouncedRouter(contractReceivers.external, contract, wCtx);
 }
 
-function writeContractReseivers(
+function writeContractReseiversSelectorHack(
     contract: TypeDescription,
     contractReceivers: ContractReceivers,
     wCtx: WriterContext,
@@ -406,16 +405,14 @@ function writeContractReseivers(
         typeof contractReceivers.external.fallback === "undefined"
     );
 
-    // const hasInternal = !(
-    //     contractReceivers.internal.binary.length === 0 &&
-    //     contractReceivers.internal.comment.length === 0 &&
-    //     typeof contractReceivers.internal.commentFallback === "undefined" &&
-    //     typeof contractReceivers.internal.empty === "undefined" &&
-    //     typeof contractReceivers.internal.fallback === "undefined"
-    // );
-
+    // Load opcodes
     writeLoadOpcode(contractReceivers.internal, wCtx);
     wCtx.append();
+
+    if (hasExternal) {
+        writeLoadOpcode(contractReceivers.external, wCtx);
+        wCtx.append();
+    }
 
     // Render fake internal receiver for setting using-flag for used procedures (fift-level hack)
     wCtx.inBlock(
@@ -427,9 +424,6 @@ function writeContractReseivers(
     wCtx.append();
 
     if (hasExternal) {
-        writeLoadOpcode(contractReceivers.external, wCtx);
-        wCtx.append();
-
         // Render fake external receiver for setting using-flag for used procedures (fift-level hack)
         wCtx.inBlock("() fake_recv_external(slice in_msg) impure", () => {
             writeExternalBody(contract, contractReceivers, wCtx);
@@ -437,40 +431,84 @@ function writeContractReseivers(
         wCtx.append();
     }
 
+    // Prepare @getters and @procs
     wCtx.append(`
-() _prepare_@tempdict() impure asm
+() _prepare_dicts() impure asm
 """
-variable @tempdict @procdict @ @tempdict !
-// -- f
-{ @tempdict @ null? } : @tempdict-empty?
+-65533 =: fake_recv_internal
+-65534 =: fake_recv_external
+
+variable @tempdict
+variable @getters
+variable @procs
+variable @has-external
+
+{ @procdict @ @tempdict ! } : @tempdict!init
+{ fake_recv_external @tempdict @ @procdictkeylen idict@ dup { nip } if @has-external ! } : @has-external!init
+
+{
+    @tempdict!init
+    @has-external!init
+} : init-variables
+
 
 // proc_flags -- f
-{ 0x1a and 2 = } : need-remove-proc?
+{ 0x1a and 2 = } : (proc_flags)is-unused?
+// proc_idx -- f
+{ 65535 > } : (proc_idx)is-getter?
+
+// f(key value) dict keylen --
+{ rot 1 { execute -1 } does idictforeach drop } : *idict@foreach
+// f(key value) --
+{ @tempdict @ @procdictkeylen *idict@foreach } : @tempdict@foreach
+{ @procinfo @ @procdictkeylen *idict@foreach } : @procinfo@foreach
+
+
+// key value --
+{ swap @getters @ @procdictkeylen idict! drop @getters ! } : @getters!set-proc
+{ swap @procs @ @procdictkeylen idict! drop @procs ! } : @procs!set-proc
+
+// -- f
+{ @getters @ null? } : @getters@empty?
+{ @procs @ null? } : @procs@empty?
 
 // proc_idx --
-{ @tempdict @ @procdictkeylen idict- drop @tempdict ! } : @tempdict@remove-proc
+{ @tempdict @ @procdictkeylen idict- drop @tempdict ! } : @tempdict!remove-proc
 
 // proc_idx proc_flags --
 { 
-  need-remove-proc?
-  { @tempdict@remove-proc }
-  { drop }
-  cond
-} : process-proc-info
+    (proc_flags)is-unused?
+    { @tempdict!remove-proc }
+    { drop }
+    cond
+} : @tempdict!remove-proc-if-unused
 
 // --
 {
-  // remove unused procedures
-  @procinfo @ @procdictkeylen
-  { 16 i@ process-proc-info -1 }
-  idictforeach drop
+    { 16 i@ @tempdict!remove-proc-if-unused }
+    @procinfo@foreach
 
-  // remove recv_internal and recv_external
-  0 @tempdict@remove-proc
-  -1 @tempdict@remove-proc
-} : prepare-dict
+    fake_recv_internal @tempdict!remove-proc
+    fake_recv_external @tempdict!remove-proc
+    recv_internal @tempdict!remove-proc
+    recv_external @tempdict!remove-proc
+} : @tempdict!remove-unused-procs
 
-prepare-dict 
+// --
+{
+    @tempdict!remove-unused-procs
+
+    {
+        over (proc_idx)is-getter?
+        { @getters!set-proc }
+        { @procs!set-proc }
+        cond
+    }
+    @tempdict@foreach
+} : prepare-dicts
+
+init-variables
+prepare-dicts
 """;
 `);
 
@@ -480,17 +518,28 @@ prepare-dict
 <b 0 @zcount u, // fix c2 SAVE SAMEALTSAVE
 
 ${!hasExternal ? "SETCP0" : ""}
-@tempdict-empty?
-{ DUP 11 THROWARGIF }
-{   
-    // selector
+
+// set c3
+@procs@empty? @has-external @ or
+{
     <{
-        @tempdict @ @procdictkeylen DICTPUSHCONST
+        @procs @ @procdictkeylen DICTPUSHCONST
         DICTIGETJMPZ
         11 THROWARG
-    }> PUSHCONT // selector cont
-    s1 s(-1) s(-1) PUXCPU // selector selector cont cont
-    c3 POP // selector selector cont
+    }> PUSHCONT
+    c3 POP
+} ifnot
+
+// selector
+@getters@empty?
+{ DUP 11 THROWARGIF }
+{   
+    DUP // selector selector
+    <{
+        @getters @ @procdictkeylen DICTPUSHCONST
+        DICTIGETJMPZ
+        11 THROWARG
+    }> PUSHCONT // selector selector cont
     IFJMP // selector
     DROP 
 }
@@ -504,7 +553,7 @@ swap b> <s @zcount @cut-zeroes s, // fix c2 SAVE SAMEALTSAVE
     wCtx.inBlock(
         "() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure",
         () => {
-            wCtx.append(`_prepare_@tempdict();`);
+            wCtx.append(`_prepare_dicts();`);
             wCtx.append(`_internal_selector_part();`);
             writeInternalBody(contract, contractReceivers, wCtx);
         },
@@ -516,7 +565,21 @@ swap b> <s @zcount @cut-zeroes s, // fix c2 SAVE SAMEALTSAVE
 """
 <b 0 @zcount u, // fix c2 SAVE SAMEALTSAVE
 
-SETCP0 DUP INC <{ recv_internal INLINECALL }>c IFJMPREF DROP
+SETCP0
+
+// set c3
+@procs@empty?
+{
+    <{
+        @procs @ @procdictkeylen DICTPUSHCONST
+        DICTIGETJMPZ
+        11 THROWARG
+    }> PUSHCONT
+    c3 POP
+} ifnot
+
+// selector
+DUP INC <{ recv_internal INLINECALL }>c IFJMPREF DROP
 
 swap b> <s @zcount @cut-zeroes s, // fix c2 SAVE SAMEALTSAVE
 """;
@@ -529,6 +592,82 @@ swap b> <s @zcount @cut-zeroes s, // fix c2 SAVE SAMEALTSAVE
             });
             writeExternalBody(contract, contractReceivers, wCtx);
         });
+    }
+
+    wCtx.append(`
+() __tact_selector_hack_asm() impure asm """
+    variable @tempdict
+    variable @internal
+    variable @external
+
+    { <s ref@ @tempdict ! } : @tempdict!init
+    {  0 @tempdict @ @procdictkeylen idict@ { \`empty } ifnot @internal ! } : @internal!init
+    { -1 @tempdict @ @procdictkeylen idict@ { \`empty } ifnot @external ! } : @external!init
+    
+    // code_cell --
+    {
+        @tempdict!init
+        @internal!init
+        @external!init
+
+    } : init-variables
+
+    { @external @ \`empty eq? not } : has-external
+
+    // store words
+    { @internal @ s, } : internal,
+    { @external @ s, } : external,
+
+    @atend @ 1 {
+        execute current@ context@ current!
+        {
+            }END> b> init-variables
+                <{
+                    has-external { external, } { internal, } cond 
+                }> b>
+            } : }END>c
+            current@ context! current!
+        } does @atend !
+""";`);
+
+    wCtx.append(`
+() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}`);
+}
+
+function writeContractReseivers(
+    contract: TypeDescription,
+    contractReceivers: ContractReceivers,
+    wCtx: WriterContext,
+) {
+    const hasExternal = !(
+        contractReceivers.external.binary.length === 0 &&
+        contractReceivers.external.comment.length === 0 &&
+        typeof contractReceivers.external.commentFallback === "undefined" &&
+        typeof contractReceivers.external.empty === "undefined" &&
+        typeof contractReceivers.external.fallback === "undefined"
+    );
+
+    writeLoadOpcode(contractReceivers.internal, wCtx);
+    wCtx.append();
+
+    wCtx.inBlock(
+        "() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure",
+        () => {
+            writeInternalBody(contract, contractReceivers, wCtx);
+        },
+    );
+    wCtx.append();
+
+    if (hasExternal) {
+        writeLoadOpcode(contractReceivers.external, wCtx);
+        wCtx.append();
+
+        wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
+            writeExternalBody(contract, contractReceivers, wCtx);
+        });
+        wCtx.append();
     }
 }
 
@@ -586,48 +725,15 @@ export function writeMainContract(
 
         const contractReceivers = groupContractReceivers(contract);
 
-        writeContractReseivers(contract, contractReceivers, wCtx);
-
         // fift injection, protected by a feature flag
         if (enabledInternalExternalReceiversOutsideMethodsMap(wCtx.ctx)) {
-            wCtx.append(`
-() __tact_selector_hack_asm() impure asm """
-    variable @dict
-    variable @internal
-    variable @external
-
-    { <s ref@ @dict ! } : init-dict
-    {  0 @dict @ @procdictkeylen idict@ { \`empty } ifnot @internal ! } : init-internal
-    { -1 @dict @ @procdictkeylen idict@ { \`empty } ifnot @external ! } : init-external
-
-    {
-        init-dict
-        init-internal
-        init-external
-
-    } : init-variables
-
-    { @external @ \`empty eq? not } : has-external
-
-    { @internal @ s, } : internal,
-    { @external @ s, } : external,
-
-    @atend @ 1 {
-        execute current@ context@ current!
-        {
-            }END> b> init-variables
-                <{
-                    has-external { external, } { internal, } cond
-                }> b>
-            } : }END>c
-            current@ context! current!
-        } does @atend !
-""";`);
-
-            wCtx.append(`
-() __tact_selector_hack() method_id(65535) {
-    return __tact_selector_hack_asm();
-}`);
+            writeContractReseiversSelectorHack(
+                contract,
+                contractReceivers,
+                wCtx,
+            );
+        } else {
+            writeContractReseivers(contract, contractReceivers, wCtx);
         }
     });
 }
