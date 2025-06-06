@@ -372,9 +372,24 @@ Commits the current state of [registers][registers] `c4` (persistent data) and `
 
 Usage example:
 
-```tact {1}
-commit();  // now, transaction is considered "successful"
-throw(42); // and this won't fail it
+```tact {12}
+contract WalletV4(
+    seqno: Int as uint32,
+    // ...other parameters...
+) {
+    // ...
+    external(_: Slice) {
+        // ...various prior checks...
+
+        acceptMessage();
+        self.seqno += 1;
+        setData(self.toCell());
+        commit(); //  now, transaction is considered "successful"
+        throw(42); // and this won't fail it
+    }
+}
+
+asm fun setData(data: Cell) { c4 POP }
 ```
 
 ## Blockchain state
