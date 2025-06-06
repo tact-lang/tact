@@ -67,16 +67,16 @@ const fromInitItem = (
     itemIndex: bigint,
 ) => {
     const nftData = loadFunCNFTBoc();
-    const __code = Cell.fromBoc(nftData.bocItem)[0]!;
+    const code = Cell.fromBoc(nftData.bocItem)[0]!;
 
-    const __data = beginCell()
+    const data = beginCell()
         .storeUint(itemIndex, 64)
         .storeAddress(collectionAddress)
         .endCell();
 
-    const __gen_init = { code: __code, data: __data };
-    const address = contractAddress(0, __gen_init);
-    return Promise.resolve(new NFTItem(address, __gen_init));
+    const init = { code, data };
+    const address = contractAddress(0, init);
+    return Promise.resolve(new NFTItem(address, init));
 };
 
 export const run = (
