@@ -596,7 +596,7 @@ export type ImportPath = {
 
 // This is different from ItemOrigin, because relative import
 // from standard library is still import with origin: "stdlib"
-export type ImportType = "stdlib" | "relative";
+export type ImportType = "stdlib" | "relative" | "package";
 
 // A String is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
 export type String = {
