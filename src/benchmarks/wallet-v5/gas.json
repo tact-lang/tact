@@ -156,8 +156,8 @@
       "gas": {
         "externalTransfer": "4771",
         "addExtension": "5434",
-        "internalTransfer": "5822",
-        "extensionTransfer": "4726"
+        "internalTransfer": "5862",
+        "extensionTransfer": "4794"
       }
     }
   ]

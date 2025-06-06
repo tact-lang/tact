@@ -194,10 +194,10 @@
       "label": "1.6.13 with preview of deep selector hack",
       "pr": null,
       "gas": {
-        "transfer": "6887",
-        "get static data": "4332",
-        "deploy nft": "10233",
-        "batch deploy nft": "644746"
+        "transfer": "6845",
+        "get static data": "4290",
+        "deploy nft": "10149",
+        "batch deploy nft": "640504"
       }
     }
   ]
