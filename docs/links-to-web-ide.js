@@ -35,7 +35,7 @@ export default function remarkLinksToWebIDE() {
       const lines = src.split('\n');
       if (lines.length <= 1) { return undefined; }
 
-      // Only allow pages in the Cookbook plus some cheat sheat pages from the Book
+      // Only allow pages in the Cookbook plus some cheat sheet pages from the Book
       // NOTE: This limitation can be lifted in the future if there's popular demand
       const notCookbook = file.path.indexOf('docs/cookbook') === -1;
       const notLearnXY = file.path.indexOf('learn-tact-in-y-minutes') === -1;

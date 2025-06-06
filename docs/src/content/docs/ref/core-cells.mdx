@@ -2113,6 +2113,80 @@ contract Example {
 
 :::
 
+## Contract.fromCell
+
+<Badge text="Available since Tact 1.6.13" variant="tip" size="medium"/><p/>
+
+```tact
+fun fromCell(cell: Cell): Contract;
+```
+
+Extension function for any [contract][contract] type.
+
+Converts a [`Cell{:tact}`][cell] into the specified contract struct and returns it.
+
+Usage example:
+
+```tact
+contract GuessCoinContract {
+    probably: Int as coins = 42;
+    nothing: Int as coins = 27;
+
+    receive() { cashback(sender()) }
+}
+
+fun directParse(payload: Cell): GuessCoinContract {
+    return GuessCoinContract.fromCell(payload);
+}
+
+fun cautiousParse(payload: Cell): GuessCoinContract? {
+    let coin: GuessCoinContract? = null;
+    try {
+        coin = GuessCoinContract.fromCell(payload);
+    } catch (e) {
+        dump("Cell payload doesn't match GuessCoinContract struct!");
+    }
+    return coin;
+}
+```
+
+## Contract.fromSlice
+
+<Badge text="Available since Tact 1.6.13" variant="tip" size="medium"/><p/>
+
+```tact
+fun fromSlice(slice: Slice): Contract;
+```
+
+Extension function for any [contract][contract] type.
+
+Converts a [`Slice{:tact}`][slice] into the specified contract struct and returns it.
+
+Usage example:
+
+```tact
+contract GuessCoinContract {
+    probably: Int as coins = 42;
+    nothing: Int as coins = 27;
+
+    receive() { cashback(sender()) }
+}
+
+fun directParse(payload: Slice): GuessCoinContract {
+    return GuessCoinContract.fromSlice(payload);
+}
+
+fun cautiousParse(payload: Slice): GuessCoinContract? {
+    let coin: GuessCoinContract? = null;
+    try {
+        coin = GuessCoinContract.fromSlice(payload);
+    } catch (e) {
+        dump("Slice payload doesn't match GuessCoinContract struct!");
+    }
+    return coin;
+}
+```
+
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers

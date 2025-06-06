@@ -5,7 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOCS.md).
+
 ## [Unreleased]
+
+### Code generation
+
+- Reordered arguments of the `__tact_store_address_opt` function to optimize gas consumption: PR [#3333](https://github.com/tact-lang/tact/pull/3333)
+
+## [1.6.13] - 2025-05-29
+
+### Language features
+
+- Support `fromCell()` and `fromSlice()` methods on contract types: PR [#3305](https://github.com/tact-lang/tact/pull/3305)
+
+### Release contributors
+
+- [Anton Trunov](https://github.com/anton-trunov)
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.6.12] - 2025-05-27
 
