@@ -8,6 +8,8 @@ prev:
 
 TON is a distributed blockchain, which means that communication between contracts is performed by sending and receiving messages. The most common type of message is the internal message - a message sent from one contract (or a wallet) to another.
 
+Re-entrancy of messages is possible — when processing a message, a contract might get another identically composed one. Read more about it here: [Preventing front-running with signature verification](https://docs.tact-lang.org/book/security-best-practices/#preventing-front-running-with-signature-verification).
+
 ## Receive internal messages
 
 To receive a message of the required type, you need to declare a receiver function. For example, `receive("increment"){:tact}`. This notation means the declaration of a receiver function that will be called when a text with the value `"increment"{:tact}` is sent to the contract. The function body can modify the state of the contract and send messages to other contracts. It is impossible to call a receiver directly. If you need to reuse some logic, you can declare a function and call it from the receiver.
