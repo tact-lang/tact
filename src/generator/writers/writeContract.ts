@@ -416,7 +416,7 @@ function writeContractReseiversSelectorHack(
 
     // Render fake internal receiver for setting using-flag for used procedures (fift-level hack)
     wCtx.inBlock(
-        "() fake_recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure",
+        "() fake_recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure method_id(-65533)",
         () => {
             writeInternalBody(contract, contractReceivers, wCtx);
         },
@@ -425,9 +425,12 @@ function writeContractReseiversSelectorHack(
 
     if (hasExternal) {
         // Render fake external receiver for setting using-flag for used procedures (fift-level hack)
-        wCtx.inBlock("() fake_recv_external(slice in_msg) impure", () => {
-            writeExternalBody(contract, contractReceivers, wCtx);
-        });
+        wCtx.inBlock(
+            "() fake_recv_external(slice in_msg) impure method_id(-65534)",
+            () => {
+                writeExternalBody(contract, contractReceivers, wCtx);
+            },
+        );
         wCtx.append();
     }
 
@@ -517,7 +520,7 @@ prepare-dicts
 """
 <b 0 @zcount u, // fix c2 SAVE SAMEALTSAVE
 
-${!hasExternal ? "SETCP0" : ""}
+@has-external @ { SETCP0 } ifnot
 
 // set c3
 @procs@empty? @has-external @ or
@@ -631,7 +634,7 @@ swap b> <s @zcount @cut-zeroes s, // fix c2 SAVE SAMEALTSAVE
 """;`);
 
     wCtx.append(`
-() __tact_selector_hack() method_id(65535) {
+() __tact_selector_hack() method_id(-65535) {
     return __tact_selector_hack_asm();
 }`);
 }

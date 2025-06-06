@@ -561,7 +561,7 @@ _ %asSlice() method_id(68231) {
 ;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
 (slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
 
-() fake_recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+() fake_recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure method_id(-65533) {
     ;; Context
     var cs = in_msg_cell.begin_parse();
     cs~skip_bits(2);
@@ -719,7 +719,7 @@ prepare-dicts
 """
 <b 0 @zcount u, // fix c2 SAVE SAMEALTSAVE
 
-SETCP0
+@has-external @ { SETCP0 } ifnot
 
 // set c3
 @procs@empty? @has-external @ or
@@ -861,7 +861,7 @@ swap b> <s @zcount @cut-zeroes s, // fix c2 SAVE SAMEALTSAVE
         } does @atend !
 """;
 
-() __tact_selector_hack() method_id(65535) {
+() __tact_selector_hack() method_id(-65535) {
     return __tact_selector_hack_asm();
 }"
 `;
