@@ -425,13 +425,9 @@ By default, Tact automatically generates test stubs for each compiled contract. 
 
 #### Generated file structure {#test-file-structure}
 
-Test stubs are saved to the `tests/` subdirectory inside the output folder specified in the [configuration](/book/config#projects-output). Each contract gets its own test file named:
+Test stubs are saved to the `tests/` subdirectory inside the output folder specified in the [configuration](/book/config#projects-output). Each contract gets its test file named as `{project_name}_{contract_name}.stub.tests.ts`.
 
-```
-{project_name}_{contract_name}.stub.tests.ts
-```
-
-For example: `build/tests/MyProject_Counter.stub.tests.ts`
+For example: `build/tests/MyProject_Counter.stub.tests.ts`, where `build/` is the output folder.
 
 #### Test content {#test-stub-content}
 
