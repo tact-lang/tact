@@ -285,7 +285,7 @@ contract VibeCheck {
 
 要构建一个 [`cellent{:tact}`][cell], 使用 [`Builder{:tact}`][builder] 如果尝试存储的数据超过 $1023$ 位，或对其他cell的引用超过 $4$ ，则会出现退出码为 $8$ 的错误："`Cell overflow`。
 
-这个错误可以由[手动construction](/zh-cn/book/cells#cnp-manual y) 通过[relevant `.loadSomething()`方法](/zh-cn/ref/core-cells) 或[使用结构和消息及其方便方法](/zh-cn/book/cells#cnp-structs) 触发。
+这个错误可以由[手动construction](/zh-cn/book/cells#cnp-manual y) 通过[relevant `Builder.storeSomething(){:tact}`方法](/zh-cn/ref/core-cells) 或[使用结构和消息及其方便方法](/zh-cn/book/cells#cnp-structs) 触发。
 
 ```tact
 // Too much bits
@@ -323,7 +323,7 @@ try {
 
 若要解析[`cell{:tact}`][cell]，请使用 [`slice{:tact}`][slice] 如果你试图加载比`slice{:tact}`更多的数据或引用，则退出码 $9$ 的错误就会抛出：“cell下溢”。
 
-此错误的最常见原因是cell的预期内存布局和实际内存布局不匹配， 因此建议[使用结构和消息进行解析](/zh-cn/book/cells#cnp-structs) ，而不是[手动解析](/zh-cn/book/cells#cnp-manually) 通过 [relevant `. oadSomething()` 方法](/zh-cn/ref/core-cells)。
+此错误的最常见原因是cell的预期内存布局和实际内存布局不匹配， 因此建议[使用结构和消息进行解析](/zh-cn/book/cells#cnp-structs) ，而不是[手动解析](/zh-cn/book/cells#cnp-manually) 通过 [relevant `Slice.loadSomething(){:tact}`方法](/zh-cn/ref/core-cells)。
 
 ```tact
 // Too few bits
