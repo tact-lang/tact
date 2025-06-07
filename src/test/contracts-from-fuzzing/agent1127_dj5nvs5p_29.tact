@@ -1,0 +1,9 @@
+contract ManyTypes(
+  i: Int,
+  b: Bool,
+  s: String,
+  sl: Slice,
+  a: Address,
+  c: Cell,
+  sb: Builder,
+) {}

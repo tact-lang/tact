@@ -1,0 +1,13 @@
+contract OnlyOptions {
+    x: Int?;
+    y: Bool?;
+    z: Address?;
+    s: String?;
+
+    init() {
+        self.x = 1;
+        self.y = null;
+        self.z = null;
+        self.s = null;
+    }
+}

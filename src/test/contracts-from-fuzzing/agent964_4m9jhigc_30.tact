@@ -1,0 +1,11 @@
+contract MultiOptionals {
+  a: Int?;
+  b: Bool?;
+  c: String?;
+
+  init() {
+    self.a = 50;
+    self.b = true;
+    self.c = null;
+  }
+}

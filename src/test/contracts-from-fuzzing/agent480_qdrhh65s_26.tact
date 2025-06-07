@@ -1,0 +1,3 @@
+contract ImplicitNullOptStr {
+    description: String?;
+}

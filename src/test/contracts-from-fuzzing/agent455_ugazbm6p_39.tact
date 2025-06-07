@@ -1,0 +1,1 @@
+contract X { receive() { ((((((1 + 2)))))); } }

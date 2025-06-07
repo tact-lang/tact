@@ -1,0 +1,14 @@
+contract ParamSyntaxTest(
+    a: Int,
+    b: Bool,
+    c: Address,
+    d: String,
+    e: Cell,
+    f: Slice,
+    g: Int?,
+    h: Bool?,
+    i: Address?,
+    j: String?,
+    k: Cell?,
+    l: Slice?,
+) {}

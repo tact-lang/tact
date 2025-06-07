@@ -1,0 +1,16 @@
+contract ContractWithLongParamList(
+    a: Int,
+    b: Bool,
+    c: String,
+    d: Address,
+    e: Cell,
+    f: Builder,
+    g: Slice,
+    h: Int?,
+    i: Bool?,
+    j: String?,
+    k: Address?,
+    l: Cell?,
+    m: Builder?,
+    n: Slice?
+) {}

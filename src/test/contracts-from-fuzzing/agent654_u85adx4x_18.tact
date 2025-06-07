@@ -1,0 +1,26 @@
+// Test many primitive fields with serialization options
+contract TestContract {
+    a: Int as uint8;
+    b: Int as uint16;
+    c: Int as uint32;
+    d: Int as uint64;
+    e: Int as int8;
+    f: Int as int16;
+    g: Int as int32;
+    h: Int as int64;
+    flag: Bool;
+    opt: Int?;
+
+    init() {
+        self.a = 1;
+        self.b = 2;
+        self.c = 3;
+        self.d = 4;
+        self.e = -1;
+        self.f = -2;
+        self.g = -3;
+        self.h = -4;
+        self.flag = true;
+        self.opt = null;
+    }
+}

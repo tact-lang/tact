@@ -1,0 +1,1 @@
+contract C { fun t(a: Int,) : Int { return a; } receive() { self.t(1); } }

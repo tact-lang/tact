@@ -1,0 +1,1 @@
+asm fun primitiveAlone(): Int { 43 }

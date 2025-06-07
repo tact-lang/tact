@@ -1,0 +1,3 @@
+contract OptNoDefault {
+  field: Int?;
+}

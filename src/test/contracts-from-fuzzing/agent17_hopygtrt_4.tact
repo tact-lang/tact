@@ -1,0 +1,1 @@
+contract D { fun f(a: Int, ) {} }

@@ -1,0 +1,1 @@
+contract X(abc: Int, ) {}

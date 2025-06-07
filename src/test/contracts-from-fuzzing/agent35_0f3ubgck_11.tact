@@ -1,0 +1,1 @@
+contract T() { const X: Int = 42 }

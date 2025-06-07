@@ -1,0 +1,3 @@
+contract OptionalStringNoValue {
+    val: String?;
+}

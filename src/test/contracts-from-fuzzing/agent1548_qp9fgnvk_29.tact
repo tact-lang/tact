@@ -1,0 +1,10 @@
+contract Test(
+    x: Int,
+    y: String,
+    z: Bool,
+    o: Int?,
+    p: String?,
+    q: Bool?,
+    r: Int,
+    s: String
+) {}

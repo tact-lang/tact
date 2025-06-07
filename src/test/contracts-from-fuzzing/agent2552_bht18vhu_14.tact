@@ -1,0 +1,7 @@
+struct Stringy {
+    s: String = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+}
+
+contract BigStringInStruct {
+    struc: Stringy = Stringy{};
+}

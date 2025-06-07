@@ -1,0 +1,1 @@
+contract Test(owner: Address, count: Int,) {}

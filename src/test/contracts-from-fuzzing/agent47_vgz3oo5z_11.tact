@@ -1,0 +1,2 @@
+/* comment /* nested */
+fun test() {}

@@ -1,0 +1,3 @@
+contract EmptyContractWithInit {
+    init() {}
+}

@@ -1,0 +1,1 @@
+asm(c self) extends fun asmStoreDict(self: Builder, c: Cell?): Builder { STDICT }

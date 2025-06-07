@@ -1,0 +1,3 @@
+contract ImplicitNull {
+    testOpt: Bool?;
+}

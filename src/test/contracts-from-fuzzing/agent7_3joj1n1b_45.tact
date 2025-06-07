@@ -1,0 +1,1 @@
+primitive F00;

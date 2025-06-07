@@ -1,0 +1,13 @@
+contract ManyInts {
+    a0: Int; a1: Int; a2: Int; a3: Int; a4: Int;
+    a5: Int; a6: Int; a7: Int; a8: Int; a9: Int;
+    a10: Int; a11: Int; a12: Int; a13: Int; a14: Int;
+    a15: Int; a16: Int; a17: Int; a18: Int; a19: Int;
+
+    init() {
+        self.a0=0; self.a1=0; self.a2=0; self.a3=0; self.a4=0;
+        self.a5=0; self.a6=0; self.a7=0; self.a8=0; self.a9=0;
+        self.a10=0; self.a11=0; self.a12=0; self.a13=0; self.a14=0;
+        self.a15=0; self.a16=0; self.a17=0; self.a18=0; self.a19=0;
+    }
+}

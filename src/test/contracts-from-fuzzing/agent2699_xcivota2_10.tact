@@ -1,0 +1,36 @@
+struct S1 {
+    f1: Bool;
+}
+
+struct S2 {
+    f2: S1;
+}
+
+struct S3 {
+    f3: S2;
+}
+
+struct S4 {
+    f4: S3;
+}
+
+struct S5 {
+    f5: S4;
+}
+
+contract ThinDeepNested {
+    field: S5;
+    init() {
+        self.field = S5{
+            f5: S4{
+                f4: S3{
+                    f3: S2{
+                        f2: S1{
+                            f1: true,
+                        },
+                    },
+                },
+            },
+        };
+    }
+}

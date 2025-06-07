@@ -1,0 +1,1 @@
+contract Test { fun test (_abc: Int): Int { return 1; } }

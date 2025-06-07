@@ -1,0 +1,1 @@
+asm fun badPrimitive(): Int { 43 }

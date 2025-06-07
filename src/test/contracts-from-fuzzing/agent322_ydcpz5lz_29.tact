@@ -1,0 +1,1 @@
+contract Test(param1: Int, param2: Bool, param3: String?, param4: Address) {}

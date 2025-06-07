@@ -1,0 +1,1 @@
+contract TestString { receive() { let empty: String = ""; } }
