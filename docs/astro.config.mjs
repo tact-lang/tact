@@ -153,10 +153,7 @@ export default defineConfig({
 					},
 					items: [
 						{ slug: 'book' },
-						{
-							slug: 'book/learn-tact-in-y-minutes',
-							badge: { variant: 'tip', text: 'new' },
-						},
+						{ slug: 'book/learn-tact-in-y-minutes' },
 						// NOTE: saved for coming from other blockchains / languages
 						// {
 						// 	label: 'Cheatsheets',
@@ -190,7 +187,10 @@ export default defineConfig({
 						{ slug: 'book/expressions' },
 						{ slug: 'book/statements' },
 						{ slug: 'book/constants' },
-						{ slug: 'book/functions' },
+						{
+							slug: 'book/functions',
+							badge: { variant: 'tip', text: 'new' },
+						},
 						{ slug: 'book/assembly-functions' },
 						{
 							label: 'Communication',
