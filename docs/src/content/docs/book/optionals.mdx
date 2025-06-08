@@ -124,7 +124,7 @@ struct Wasp {
 Optionals can have serialization annotations provided after the `as{:tact}` keyword and have all the same serialization options as their encapsulated primitive or struct types. As such, the optional [`Int?{:tact}`](/book/integers) type has the most serialization formats available.
 
 ```tact
-contract IntResting(
+contract Interesting(
     // Persistent state variables (contract parameters)
     maybeOneByte: Int? as int8, // takes either 1 (when null) or 9 (when not null) bits
     maybeTwoBytes: Int? as int16, // takes either 1 or 17 bits

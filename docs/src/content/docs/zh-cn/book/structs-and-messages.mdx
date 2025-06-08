@@ -279,7 +279,7 @@ message(0x2A) ArbitraryMessage {}
 
 fun lawTwo() {
     // Using 32 bits to store 42 just so this cellInst can be
-    // re-used for working with both ArbitraryStruct and ArbitraryMessage
+    // reused for working with both ArbitraryStruct and ArbitraryMessage
     let cellInst = beginCell().storeUint(42, 32).endCell();
 
     ArbitraryStruct.fromCell(cellInst).toCell();  // = cellInst
