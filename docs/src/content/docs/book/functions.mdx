@@ -928,7 +928,7 @@ extends fun doWith(self: Slice) {}
 
 All functions return a value. If the function does not have an explicit return type specified, it has an implicit return type of `void` — a pseudo-value that represents "nothing" in the Tact compiler. This also applies to the functions that do not allow specifying a return type, such as [receivers](#receivers) or [`init(){:tact}`](#init).
 
-Moreover, execution of any function can be ended prematurely with the [`return{:tact}` statement](/book/statements#return). This is also true for the [receiver functions](#receivers) and [`init(){:tact}`], where empty `return{:tact}` statements are allowed.
+Moreover, execution of any function can be ended prematurely with the [`return{:tact}` statement](/book/statements#return). This is also true for receiver functions and `init(){:tact}` function, where empty `return{:tact}` statements are allowed.
 
 ```tact
 contract GreedyCashier(owner: Address) {
