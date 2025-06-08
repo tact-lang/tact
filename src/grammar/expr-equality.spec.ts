@@ -15,7 +15,7 @@ const valueExpressions: Test[] = [
     { expr1: "false", expr2: "null", equality: false },
     { expr1: "false", expr2: "g", equality: false },
     { expr1: '"one"', expr2: '"one"', equality: true },
-    { expr1: '"one"', expr2: '"own"', equality: false },
+    { expr1: '"one"', expr2: '"onw"', equality: false },
     { expr1: '"one"', expr2: "null", equality: false },
     { expr1: '"one"', expr2: "g", equality: false },
     { expr1: "null", expr2: "null", equality: true },
