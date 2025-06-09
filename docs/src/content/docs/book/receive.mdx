@@ -48,7 +48,7 @@ contract MyContract {
 
 In a contract, the order of declaration of receivers has no effect on how receivers process messages. Hence, changing the order of receivers in the above contract produces an equivalent contract.
 
-Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then when a message with the comment `"message"{:tact}` arrives, it will be processed by `receive(str: String){:tact}`.
+Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then when a message with the comment `"message"{:tact}` arrives, it will be processed by `receive(str: String){:tact}`. yet, the message with an empty comment `""{:tact}` will be processed by the empty body receiver, `receive(){:tact}`.
 
 Processing and distinguishing the text receivers, like the comment receiver `receive("..."){:tact}` and the string receiver `receive(str: String){:tact}`, costs significantly more gas than processing binary ones, such as `receive(){:tact}` or `receive(msg: MyMessage){:tact}`. Thus, it is recommended to [prefer binary receivers to text receivers](/book/gas-best-practices#prefer-binary-receivers-to-text-receivers).
 
