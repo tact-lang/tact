@@ -224,8 +224,8 @@ Both keys and values can be arbitrary compile-time expressions as long as their 
 ```tact
 fun getExchangesList(): map<Address, Cell> {
     return map<Address, Cell> {
-        address("UQD5vcDeRhwaLgAvralVC7sJXI-fc2aNcMUXqcx-BQ-OWi5c"): "One Known eXchange".asCell(),
-        address("UQABGo8KCza3ea8DNHMnSWZmbRzW-05332eTdfvW-XDQEmnJ"): "yRacket".asCell(),
+        address("UQD5vcDeRhwaLgAvralVC7sJXI-fc2aNcMUXqcx-BQ-OWi5c"): "One Known eXchange".asComment(),
+        address("UQABGo8KCza3ea8DNHMnSWZmbRzW-05332eTdfvW-XDQEmnJ"): "yRacket".asComment(),
     };
 }
 ```

@@ -113,7 +113,7 @@
           }
         },
         {
-          "comment": "One or more @inteface() before traits and contracts",
+          "comment": "One or more @interface() before traits and contracts",
           "begin": "(?<!\\.)(@interface)\\s*(\\()",
           "beginCaptures": {
             "1": {

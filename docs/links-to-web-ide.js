@@ -31,7 +31,7 @@ export default function remarkLinksToWebIDE() {
       let src = node.value.trim();
       if (src.length > maxAllowedCharacters) { return undefined; }
 
-      // Disallow single-line code blocks as they pose very little value and they're often represent function signatures in the Reference section
+      // Disallow single-line code blocks as they pose very little value and they often represent function signatures in the Reference section
       const lines = src.split('\n');
       if (lines.length <= 1) { return undefined; }
 
@@ -53,7 +53,7 @@ export default function remarkLinksToWebIDE() {
       for (let i = 0; i < lines.length; i += 1) {
         // Same regex as in scripts/typecheck-examples.js
         const matchRes = lines[i].match(/^\s*(?:import|primitive|const|asm|fun|extends|mutates|virtual|override|inline|abstract|@name|@interface|contract|trait|struct|message)\b/);
-        // TODO: Unite the regexes when Tact 2.0 arrives (or if some new module-level item arrives, or via try/catch and re-using compiler's parser)
+        // TODO: Unite the regexes when Tact 2.0 arrives (or if some new module-level item arrives, or via try/catch and reusing compiler's parser)
 
         if (matchRes !== null) {
           hasModuleItems = true;
