@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { ExpressiveCodeTheme } from '@astrojs/starlight/expressive-code';
 import fs from 'node:fs';
 
 // Allows changing heading ids
@@ -83,7 +84,9 @@ export default defineConfig({
 			editLink: { baseUrl: 'https://github.com/tact-lang/tact/edit/main/docs/' },
 			tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 4 },
 			expressiveCode: {
-				themes: ['one-dark-pro', 'one-light'],
+				themes: ['one-dark-pro', ExpressiveCodeTheme.fromJSONString(
+					fs.readFileSync(new URL(`./themes/one-light-mod.jsonc`, import.meta.url), 'utf-8')
+				)],
 				useStarlightDarkModeSwitch: true,
 				useStarlightUiThemeColors: true,
 				shiki: {
@@ -150,10 +153,7 @@ export default defineConfig({
 					},
 					items: [
 						{ slug: 'book' },
-						{
-							slug: 'book/learn-tact-in-y-minutes',
-							badge: { variant: 'tip', text: 'new' },
-						},
+						{ slug: 'book/learn-tact-in-y-minutes' },
 						// NOTE: saved for coming from other blockchains / languages
 						// {
 						// 	label: 'Cheatsheets',
@@ -187,7 +187,10 @@ export default defineConfig({
 						{ slug: 'book/expressions' },
 						{ slug: 'book/statements' },
 						{ slug: 'book/constants' },
-						{ slug: 'book/functions' },
+						{
+							slug: 'book/functions',
+							badge: { variant: 'tip', text: 'new' },
+						},
 						{ slug: 'book/assembly-functions' },
 						{
 							label: 'Communication',
