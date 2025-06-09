@@ -408,7 +408,7 @@ let areSlicesNotEqual = aSlice != bSlice; // false
 
 请注意，通过 `=={:tact}` 或 `!={:tact}` 操作符进行的直接比较隐含地使用了[标准 `Cell{:tact}` 表示法](#cells-representation)的 [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) 哈希值。
 
-还可使用 `.hash(){:tact}` 进行显式比较：
+还可使用 `Cell.hash(){:tact}` 或 `Slice.hash(){:tact}` 进行显式比较：
 
 ```tact
 let a = beginCell().storeUint(123, 8).endCell();
