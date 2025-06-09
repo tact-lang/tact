@@ -19,11 +19,11 @@
 {-
   # Tuple manipulation primitives
   The names and the types are mostly self-explaining.
-  See [polymorhism with forall](https://ton.org/docs/#/func/functions?id=polymorphism-with-forall)
+  See [polymorphism with forall](https://ton.org/docs/#/func/functions?id=polymorphism-with-forall)
   for more info on the polymorphic functions.
 
   Note that currently values of atomic type `tuple` can't be cast to composite tuple type (e.g. `[int, cell]`)
-  and vise versa.
+  and vice versa.
 -}
 
 {-
@@ -631,7 +631,7 @@ int get_seed() impure asm "RANDSEED";
 ;;; Equivalent to randomize(cur_lt());.
 () randomize_lt() impure asm "LTIME" "ADDRAND";
 
-;;; Checks whether the data parts of two slices coinside
+;;; Checks whether the data parts of two slices coincide
 int equal_slices_bits(slice a, slice b) asm "SDEQ";
 ;;; Checks whether b is a null. Note, that FunC also has polymorphic null? built-in.
 int builder_null?(builder b) asm "ISNULL";
@@ -834,7 +834,7 @@ builder store_query_id(builder b, int query_id) inline {
 
 ;; For `send_raw_message` and `send_message`:
 
-;;; x = 0 is used for ordinary messages; the gas fees are deducted from the senging amount; action phaes should NOT be ignored.
+;;; x = 0 is used for ordinary messages; the gas fees are deducted from the sending amount; action phase should NOT be ignored.
 const int SEND_MODE_REGULAR = 0;
 ;;; +1 means that the sender wants to pay transfer fees separately.
 const int SEND_MODE_PAY_FEES_SEPARATELY = 1;
