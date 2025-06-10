@@ -133,7 +133,7 @@ struct MessageParameters {
 ///         to: sender(),    // back to the sender,
 ///         value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
 ///                          // and no message body
-///     }.send()
+///     }.send();
 /// }
 /// ```
 ///
@@ -167,7 +167,7 @@ asm fun message(params: MessageParameters) {
     SENDRAWMSG
 }
 
-/// Available since Tact 1.7.0.
+/// Extension function for the `MessageParameters` struct. Available since Tact 1.7.0.
 ///
 /// Queues the message to be sent using the `MessageParameters` struct. Allows for cheaper non-deployment, regular messages compared to the `send()` function.
 ///
@@ -311,6 +311,8 @@ asm fun send(params: SendParameters) {
     SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
 }
 
+/// Extension function for the `SendParameters` struct. Available since Tact 1.7.0.
+///
 /// Queues the message to be sent using a `SendParameters` struct.
 ///
 /// ```tact
@@ -381,7 +383,7 @@ struct DeployParameters {
 ///                                      // and no additional message body
 ///         mode: SendIgnoreErrors,      // skip the message in case of errors
 ///         value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
-///     }.send()
+///     }.send();
 /// }
 /// ```
 ///
@@ -481,7 +483,7 @@ asm fun deploy(params: DeployParameters) {
     SENDRAWMSG
 }
 
-/// Available since Tact 1.7.0.
+/// Extension function for the `DeployParameters` struct. Available since Tact 1.7.0.
 ///
 /// Queues the contract deployment message to be sent using the `DeployParameters` struct. Allows for cheaper on-chain deployments compared to the `send()` function.
 ///
@@ -539,7 +541,7 @@ extends inline fun send(self: DeployParameters) {
 ///         value: 0,
 ///         to: sender(),
 ///         bounce: false,
-///     }.send()
+///     }.send();
 /// }
 /// ```
 ///
