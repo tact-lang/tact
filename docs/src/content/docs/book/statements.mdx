@@ -133,7 +133,7 @@ Some statements, such as [`let{:tact}`](#let) or [`return{:tact}`](#return), mus
 
 ## Expression
 
-An expression statement is an expression used in a place where a statement is expected. The expression is evaluated, and its result is discarded. Therefore, it makes sense only for expressions that have side effects, such as executing a function or updating a variable.
+An expression statement is an expression used in a place where a statement is expected. The expression is evaluated, and its result is discarded. Therefore, it makes sense only for expressions that have side effects, such as [printing to the debug console](/ref/core-debug#dump) or executing an [extension mutation function](/book/functions#mutates).
 
 ```tact
 dump(2 + 2); // stdlib function
@@ -500,7 +500,7 @@ do {
 
 The `foreach{:tact}` loop operates on key-value pairs (entries) of the [`map<K, V>{:tact}`](/book/maps) type in sequential order: from the smallest keys of the map to the biggest ones.
 
-This loop executes a block of code for each entry in the given map, capturing the key and value on each iteration. This is handy when you don't know in advance how many items there are in the map or don't want to explicitly look for each of the entries using the [`.get(){:tact}`](/book/maps#get) [method](/book/functions#extensions) of maps.
+This loop executes a block of code for each entry in the given map, capturing the key and value on each iteration. This is handy when you don't know in advance how many items there are in the map or don't want to explicitly look for each of the entries using the [`get(){:tact}`](/book/maps#get) [method](/book/functions#extensions) of maps.
 
 Note that the names of captured keys and values in each iteration are arbitrary and can be any valid Tact identifier, provided they are new to the current scope. The most common options are: `k` and `v`, or `key` and `value`.
 

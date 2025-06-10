@@ -666,14 +666,14 @@ extends fun get(self: map<K, V>, key: K): V?;
 ///
 /// See: https://docs.tact-lang.org/book/maps/#replace
 ///
-extends mutates fun replace(self: map<K, V>, key: K, val: V): Bool;
+extends mutates fun replace(self: map<K, V>, key: K, val: V?): Bool;
 
 /// Like `replace()`, but returns the old (pre-replacement) value
 /// on successful replacement and `null` otherwise.
 ///
 /// See: https://docs.tact-lang.org/book/maps/#replaceget
 ///
-extends mutates fun replaceGet(self: map<K, V>, key: K, val: V): V?;
+extends mutates fun replaceGet(self: map<K, V>, key: K, val: V?): V?;
 
 /// Deletes a single key-value pair (single entry) by its `key`
 /// from the map. Returns `true` in case of successful deletion and `false` otherwise.

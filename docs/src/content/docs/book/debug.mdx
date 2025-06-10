@@ -716,7 +716,7 @@ it('emits', async () => {
 });
 ```
 
-To parse the second emitted message, we could manually use several `.loadSomething(){:typescript}` functions, but that's overly brittle — if the fields of the `Ballroom{:tact}` [struct][struct] ever change, you'd need to start all over. That could significantly backfire when you have numerous tests written in that manner.
+To parse the second emitted message, we could manually use various [`Slice{:tact}`][slice] extension functions, but that's overly brittle — if the fields of the `Ballroom{:tact}` [struct][struct] ever change, you'd need to start all over. That could significantly backfire when you have numerous tests written in that manner.
 
 Fortunately, the Tact compiler auto-generates [TypeScript bindings (or wrappers)](/book/compile#wrap-ts) for contracts, making it easy to reuse them in your test suite. Not only do they provide wrappers for the contract you're testing, but they also export helper functions to store or load structs and [Messages][message] defined in the contract. These helper functions have names similar to their corresponding structures, prefixed with `load`.
 
@@ -856,7 +856,7 @@ If you're overwhelmed by the testing setup of [Blueprint][bp] or just want to te
 
    On Linux or macOS, it would look like:
 
-   ```json filename="package.json" {3}
+   ```json title="package.json" {3}
    {
      "scripts": {
        "lab": "blueprint build --all 1>/dev/null && yarn test -t plays"
@@ -866,7 +866,7 @@ If you're overwhelmed by the testing setup of [Blueprint][bp] or just want to te
 
    And here's how it may look on Windows:
 
-   ```json filename="package.json" {3-4}
+   ```json title="package.json" {3-4}
    {
      "scripts": {
        "build": "blueprint build --all | out-null",

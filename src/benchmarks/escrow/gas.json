@@ -269,6 +269,16 @@
         "approveTon": "6608",
         "cancelTon": "4509"
       }
+    },
+    {
+      "label": "1.6.13 with reordered __tact_store_address_opt arguments",
+      "pr": "https://github.com/tact-lang/tact/pull/3333",
+      "gas": {
+        "fundingTon": "4103",
+        "changeCode": "4200",
+        "approveTon": "6608",
+        "cancelTon": "4509"
+      }
     }
   ]
 }

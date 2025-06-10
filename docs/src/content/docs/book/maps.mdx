@@ -62,8 +62,8 @@ Allowed value types:
 * [`Bool{:tact}`](/book/types#booleans)
 * [`Cell{:tact}`][cell]
 * [`Address{:tact}`][p]
-* any [struct][struct] type
-* any [Message][message] type
+* any [struct][struct] type, except for [map literals](#initialize)
+* any [Message][message] type, except for [map literals](#initialize)
 
 Neither key nor value types can be made [optional](/book/optionals).
 
@@ -145,6 +145,10 @@ map<K, V> { key1: value1, key2: value2, /* ... */, keyN: valueN };
 
 Map literals are expressions that provide a concise and gas-effective way to create maps. First goes the `map<K, V>{:tact}` type expression, then a curly-brace enclosed comma-delimited list of zero or more predefined key-value pairs.
 
+:::note
+  While [struct][struct] and [message struct][message] types are generally [allowed as map values](#allowed-types), they are currently **not supported** within map literals. Attempts to use them as such lead to compilation errors.
+:::
+
 ```tact
 // Declaring a map as a local variable via a map literal expression
 let myMap: map<Int as uint8, Int as uint16> = map<Int as uint8, Int as uint16> {
@@ -220,8 +224,8 @@ Both keys and values can be arbitrary compile-time expressions as long as their 
 ```tact
 fun getExchangesList(): map<Address, Cell> {
     return map<Address, Cell> {
-        address("UQD5vcDeRhwaLgAvralVC7sJXI-fc2aNcMUXqcx-BQ-OWi5c"): "One Known eXchange".asCell(),
-        address("UQABGo8KCza3ea8DNHMnSWZmbRzW-05332eTdfvW-XDQEmnJ"): "yRacket".asCell(),
+        address("UQD5vcDeRhwaLgAvralVC7sJXI-fc2aNcMUXqcx-BQ-OWi5c"): "One Known eXchange".asComment(),
+        address("UQABGo8KCza3ea8DNHMnSWZmbRzW-05332eTdfvW-XDQEmnJ"): "yRacket".asComment(),
     };
 }
 ```
@@ -289,7 +293,7 @@ if (gotButUnsure != null) {
 
 ```tact
 // K and V correspond to the key and value types of the given map
-extends mutates fun replace(self: map<K, V>, key: K, val: V): Bool;
+extends mutates fun replace(self: map<K, V>, key: K, val: V?): Bool;
 ```
 
 To replace the value associated with a key, if such a key exists, use the `.replace(){:tact}` [method](/book/functions#extensions). It returns `true{:tact}` upon successful replacement and `false{:tact}` otherwise.
@@ -336,7 +340,7 @@ replaced2; // false
 
 ```tact
 // K and V correspond to the key and value types of the given map
-extends mutates fun replaceGet(self: map<K, V>, key: K, val: V): V?;
+extends mutates fun replaceGet(self: map<K, V>, key: K, val: V?): V?;
 ```
 
 Like [`.replace()`](#replace), but instead of returning a [`Bool{:tact}`](/book/types#booleans), it returns the old (pre-replacement) value on a successful replacement and [`null{:tact}`](/book/optionals) otherwise.

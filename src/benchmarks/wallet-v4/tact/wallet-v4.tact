@@ -160,7 +160,7 @@ contract WalletV4(
             let deployPlugin = DeployPlugin.fromSlice(msg.payload);
 
             let addr = newAddress(deployPlugin.wc, deployPlugin.stateInit.hash());
-            // cant use deploy here because of only basechain support
+            // can't use deploy here because of only basechain support
             sendRawMessage(
                 RawMsgWithDeploy {
                     stateInit: deployPlugin.stateInit,
