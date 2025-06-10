@@ -56,6 +56,33 @@ Note that the receiver `receive(msg: Slice){:tact}` acts as a fallback that catc
 
 If there is no receiver to process a message type and the fallback receiver `receive(msg: Slice){:tact}` is not declared, the transaction will fail with exit code [130](/book/exit-codes/#130).
 
+Receivers accept all incoming funds by default. That is, without explicitly sending a message that will refund spare Toncoin with the [`cashback(){:tact}`](/ref/core-send#cashback) function, all the incoming message value will be kept by the contract.
+
+Receivers accept all incoming funds by default. That is, without explicitly sending a message that will refund spare Toncoin with the [`cashback(){:tact}`](/ref/core-send#cashback) function, the contract will keep all the incoming message value.
+
+To check the amount of Toncoin (native coins) the incoming message carries with it, you can use the [`context(){:tact}`](/ref/core-contextstate#context) function and access the `value` field of its resulting [struct](/book/structs-and-messages#structs). Note, however, that the exact value by which the balance will be increased will be less than `context().value{:tact}` since the [compute fee](https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#computation-fees) for contract execution will be deducted from this value.
+
+```tact /context\(\).value/
+contract WalletV4(
+    // ...contract variables...
+) {
+    // ...
+    receive(msg: PluginRequestFunds) {
+        require(
+            myBalance() - context().value >= msg.amount,
+            "The balance is too low to fulfill the plugin request!",
+        );
+        // ...
+    }
+}
+
+message(0x706c7567) PluginRequestFunds {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    extra: Cell?;
+}
+```
+
 Naming the parameter of a receiver function with an underscore `_{:tact}` makes its value considered unused and discarded. This is useful when you don't need to inspect the message received and only want it to convey a specific opcode:
 
 ```tact
