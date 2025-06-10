@@ -1417,10 +1417,10 @@
     jssha "3.2.0"
     tweetnacl "1.0.3"
 
-"@ton/sandbox@^0.32.1":
-  version "0.32.1"
-  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.32.1.tgz#129a7af8772e40cbd88cc3494c95858bc008d493"
-  integrity sha512-ejvuZnB15XkvOTAuELQDxDMV2e4dQbb1C2ZyJcKjblxfSY6ZnT0njBAujJhCA9QB0a68M96AIwSZok5yN5Ipbw==
+"@ton/sandbox@^0.32.2":
+  version "0.32.2"
+  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.32.2.tgz#e949d1df2ae98c1552901597200209163dd8cc42"
+  integrity sha512-D+Yuyka3pMuoD1KPufRGzE3iFZ0QLyba/xC5mfrXoLtV111ubKxc7RscndOsggeru0bdDYm0i/iaWO5YQWqUfw==
   dependencies:
     chalk "^4.1.2"
     table "^6.9.0"
