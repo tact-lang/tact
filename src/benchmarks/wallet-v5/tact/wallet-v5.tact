@@ -224,4 +224,3 @@ asm extends mutates fun checkAndRemoveAddExtensionPrefix(self: Slice): Bool { x{
 asm extends mutates fun checkAndRemoveDeleteExtensionPrefix(self: Slice): Bool { x{03} SDBEGINSQ }
 asm extends mutates fun checkAndRemoveSetSignAllowedPrefix(self: Slice): Bool { x{04} SDBEGINSQ }
 asm fun setData(data: Cell) { c4 POP }
-
