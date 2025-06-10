@@ -181,6 +181,19 @@
         "revoke": "3778",
         "take excess": "5577"
       }
+    },
+    {
+      "label": "1.6.13 with optimized opcode parsing for fallback and text receivers",
+      "pr": "https://github.com/tact-lang/tact/pull/3331",
+      "gas": {
+        "deploy": "3940",
+        "request owner": "4848",
+        "prove ownership": "5026",
+        "get static data": "4678",
+        "destroy": "6125",
+        "revoke": "3742",
+        "take excess": "5541"
+      }
     }
   ]
 }
