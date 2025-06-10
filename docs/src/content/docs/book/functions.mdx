@@ -1,184 +1,510 @@
 ---
 title: Functions
-description: "Global, asm, native functions, as well as receivers, getters, and storage functions, plus the many attributes that allow for great flexibility and expressivity in the Tact language"
+description: "Global, asm, native functions, as well as receivers, getters, and internal functions, plus the many attributes that allow for great flexibility and expressivity in the Tact language"
 ---
 
-import { Badge } from '@astrojs/starlight/components';
+import { Badge, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-Functions in Tact can be defined in different ways:
+Tact offers a diverse set of function kinds and attributes that provide great flexibility and expressivity. While some functions stand out, many of their [parts and behaviors are common](#commonalities).
 
-* Global static functions
-* Extension functions
-* Mutation functions
-* Native functions
-* [Assembly functions](#asm)
-* [Internal functions](/book/contracts#internal-functions)
-* Receiver functions
-* Getter functions
+<CardGrid>
+  <LinkCard
+    title="Receiver functions"
+    href="#receivers"
+  />
+  <LinkCard
+    title="Regular functions"
+    href="#fun"
+  />
+  <LinkCard
+    title="Extension functions"
+    href="#extends"
+  />
+  <LinkCard
+    title="Extension mutation functions"
+    href="#mutates"
+  />
+  <LinkCard
+    title="Getter functions"
+    href="#get"
+  />
+  <LinkCard
+    title="Init function"
+    href="#init"
+  />
+  <LinkCard
+    title="Native functions"
+    href="#native"
+  />
+  <LinkCard
+    title="Assembly functions"
+    href="#asm"
+  />
+  <LinkCard
+    title="Inheritance"
+    href="#inheritance"
+  />
+  <LinkCard
+    title="Inlining"
+    href="#inline"
+  />
+  <LinkCard
+    title="Commonalities"
+    href="#commonalities"
+  />
+  <LinkCard
+    title="Low-level representation"
+    href="#low-level-representation"
+  />
+</CardGrid>
 
-All functions, except for [receiver functions](#receiver-functions), can have a trailing comma in their definitions (parameter lists) and calls (argument lists):
+## Receiver functions {#receivers}
 
-```tact
-fun foo(
-    a: Int, // trailing comma in parameter lists is allowed
-) {}
-
-fun bar() {
-    foo(
-        5, // trailing comma in argument lists is allowed too!
-    );
-}
-```
-
-<p/><Badge text="Available since Tact 1.6.1" variant="tip" size="medium"/><p/>
-
-Naming a parameter with an underscore `_{:tact}` causes its value to be considered unused and discarded. This is useful when you don't access the parameter but want to include it in the signature for possible overrides. Note that such a wildcard parameter name `_{:tact}` cannot be accessed.
-
-```tact
-trait WildThing {
-    // Using wildcards for parameter names
-    virtual fun assure(_: Int, _: Int): Bool {
-        return true;
-    }
-}
-
-contract YouMakeMyHeartSing with WildThing {
-    // And then overriding them with concrete names
-    override fun assure(a: Int, b: Int): Bool {
-        return a + b == b + a;
-    }
-}
-```
-
-## Global static functions
-
-You can define global functions anywhere in your program:
-
-```tact
-fun customPow(a: Int, c: Int): Int {
-  let res: Int = 1;
-  repeat(c) {
-    res *= a;
-  }
-  return res;
-}
-```
-
-## Virtual and abstract functions
-
-You can allow a contract inheriting a [trait](/book/types#traits) to modify an internal function marked with the `virtual{:tact}` keyword by using `override{:tact}`. A function can also be marked as `abstract{:tact}`, in which case the inheriting contract must define its implementation:
+Receiver functions are special functions responsible for [receiving messages](/book/receive) in contracts and can be defined only within a contract or trait.
 
 ```tact
-trait FilterTrait with Ownable {
-    // Virtual functions can be overridden by users of this trait
-    virtual fun filterMessage(): Bool {
-        return sender() != self.owner;
-    }
-
-    abstract fun specialFilter(): Bool;
-}
-
-contract Filter with FilterTrait {
-    // Overriding the default behavior of the FilterTrait
-    override fun filterMessage(): Bool {
-        return true;
-    }
-
-    override fun specialFilter(): Bool {
-        return true;
-    }
-}
-```
-
-## Extension function
-
-Extension functions allow you to implement extensions for any possible type.
-
-> **Warning**
-> The first argument MUST be named `self`, and the argument's type must be the type you are extending.
-
-```tact
-extends fun customPow(self: Int, c: Int): Int {
-    let res: Int = 1;
-    repeat(c) {
-        res *= self;
-    }
-    return res;
-}
-```
-
-## Mutation functions
-
-Mutation functions perform mutation on a value by replacing it with an execution result. To perform mutation, the function must change the `self` value.
-
-```tact
-extends mutates fun customPow(self: Int, c: Int) {
-    let res: Int = 1;
-    repeat(c) {
-        res *= self;
-    }
-    self = res;
-}
-```
-
-## Native functions
-
-Native functions are direct bindings of FunC functions:
-
-> **Note**
-> Native functions can also be mutation and extension functions.
-
-```tact
-@name(store_uint)
-native storeUint(s: Builder, value: Int, bits: Int): Builder;
-
-@name(load_int)
-extends mutates native loadInt(self: Slice, l: Int): Int;
-```
-
-## Assembly functions, `asm` {#asm}
-
-<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
-
-Read more about them on their dedicated page: [Assembly functions](/book/assembly-functions).
-
-## Receiver functions
-
-Receiver functions are special functions responsible for receiving messages in contracts and can be defined only within a contract or trait.
-
-```tact
-contract Treasure {
-    // This means that this contract can receive the comment "Increment", and this function would be called for such messages
-    receive("Increment") {
+contract Counter(counter: Int) {
+    // This means that this contract can receive the Increment message body,
+    // and this function would be called to handle such messages.
+    receive(msg: Increment) {
         self.counter += 1;
     }
 }
+
+message Increment {}
 ```
 
-## Getter Functions
+There are three kinds of receiver functions in Tact:
 
-Getter functions define getters on smart contracts and can be defined only within a contract or trait. Getter functions cannot be used to read another contract's state. If you need to obtain data, you should do so by sending a message with a request and defining a receiver function that processes the request answer.
+* [`receive(){:tact}`](#receive), which receives internal messages from other contracts.
+* [`bounced(){:tact}`](#bounced), which is processed when an outgoing message from this contract bounces back.
+* [`external(){:tact}`](#external), which doesn't have a sender and can be sent by anyone in the world.
+
+### `receive` — internal message receivers {#receive}
+
+<Badge text="Contract scope" variant="note" size="medium"/><p/>
+
+The most common receiver functions, `receive(){:tact}`, handle incoming messages from other contracts.
 
 ```tact
-contract Treasure {
-    get fun counter(): Int {
-        return self.counter;
+// This contract defines various kinds of receivers in their
+// order of handling the corresponding incoming messages.
+contract OrderOfReceivers() {
+    // Empty receiver
+    receive() {
+        inMsg().bits; // 0
+    }
+
+    // Text receiver
+    receive("yeehaw!") {
+        inMsg().asString(); // "yeehaw!"
+    }
+
+    // Catch-all String receiver
+    receive(str: String) {
+        // ...
+    }
+
+    // Binary message receiver
+    receive(msg: FancyMessage) {
+        // ...
+    }
+
+    // Catch-all Slice receiver
+    receive(rawMsg: Slice) {
+        // ...
+    }
+}
+
+message FancyMessage {}
+```
+
+Read more about them on their dedicated page: [Receive messages](/book/receive).
+
+### `bounced` — bounced internal message receivers {#bounced}
+
+<Badge text="Contract scope" variant="note" size="medium"/><p/>
+
+The `bounced(){:tact}` is a special kind of receivers which handle outgoing messages that were sent from this contract and bounced back to it.
+
+```tact
+contract Bouncy() {
+    // Handles empty message bodies
+    receive() {
+        // Sending a message...
+        message(MessageParameters{
+            to: sender(),
+            value: ton("0.1"),
+            body: BB {}.toCell(), // ...with a BB message body
+        });
+    }
+
+    // If the BB message body wasn't successfully processed by the recipient,
+    // it can bounce back to our contract, in which case the following receiver
+    // will handle it.
+    bounced(msg: bounced<BB>) {
+        // ...
+    }
+}
+
+message BB {}
+```
+
+Read more about them on their dedicated page: [Bounced messages](/book/bounced).
+
+### `external` — external message receivers {#external}
+
+<Badge text="Contract scope" variant="note" size="medium"/><p/>
+
+The `external(){:tact}` is a special kind of receivers which handle external messages — they are sent from the off-chain world and do not have a sender address on the blockchain. Such messages are often sent to wallet contracts to process specific messages or simply to send funds to another wallet contract.
+
+```tact
+contract FeaturelessWallet(publicKey: Int as uint256) {
+    external(msg: MessageWithSignedData) {
+        // Can't be replied to as there's no sender!
+        // Thus, many checks are required.
+        throwUnless(35, msg.bundle.verifySignature(self.publicKey));
+    }
+}
+
+message MessageWithSignedData {
+    bundle: SignedBundle;
+    walletId: Int as int32;
+    seqno: Int as uint32;
+}
+```
+
+Read more about them on their dedicated page: [External messages](/book/external).
+
+## `fun` — regular functions {#fun}
+
+<Badge text="Any scope" title="These functions can be declared or defined within contracts and at the top level" variant="note" size="medium"/><p/>
+
+Regular functions are defined using the `fun{:tact}` keyword.
+
+```tact
+fun add(a: Int, b: Int): Int {
+    return a + b;
+}
+```
+
+Read about common aspects of functions: [Commonalities](#commonalities).
+
+### Global functions {#fun-global}
+
+<Badge text="Global scope" variant="note" size="medium"/><p/>
+
+Regular functions that can be defined only at the top (module) level are called global. They differ from [internal functions](#fun-internal) not only in the scope, but also in available [attributes](#commonalities-attributes).
+
+```tact
+fun reply(msgBody: Cell) {
+    message(MessageParameters {
+        to: sender(),
+        value: 0,
+        mode: SendRemainingValue | SendIgnoreErrors,
+        body: msgBody,
+    });
+}
+```
+
+The following attributes can be specified for global functions:
+
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
+* [`extends{:tact}`](#extends) — makes it an [extension function](#extends).
+* [`mutates{:tact}`](#mutates), along with [`extends{:tact}`](#extends) — makes it an [extension mutation function](#mutates).
+
+These attributes _cannot_ be specified:
+
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — global functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#get) — global functions cannot be [getters](#get).
+
+### Internal functions {#fun-internal}
+
+<Badge text="Contract scope" variant="note" size="medium"/><p/>
+
+These functions behave similarly to private methods in popular object-oriented languages — they are internal to contracts and can be called by prefixing their names with a special [identifier `self{:tact}`](/book/contracts#self). That is why internal (or member) functions are sometimes referred to as "contract methods".
+
+Internal functions can access the contract's [persistent state variables](/book/contracts#variables) and [constants](/book/contracts#constants).
+
+They can only be called from [receivers](#receivers), [getters](#get), and other internal functions, but not from other contracts.
+
+```tact
+contract InternalFun(stopped: Bool) {
+    // Let's define an internal function to ensure that the contract was not stopped.
+    fun requireNotStopped() {
+        throwUnless(TactExitCodeContractStopped, !self.stopped);
+    }
+    // And use that internal function within a getter.
+    get fun veryImportantComputation(): Int {
+        // Internal function calls are prefixed with `self`
+        self.requireNotStopped();
+        return 2 + 2;
     }
 }
 ```
+
+The following attributes can be specified for internal functions with no prior attributes:
+
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — function [inheritance](#inheritance).
+* [`get{:tact}`](#get) — internal functions can become [getters](#get).
+
+These attributes _cannot_ be specified:
+
+* [`extends{:tact}`](#extends) — internal function cannot become an [extension function](#extends).
+* [`mutates{:tact}`](#mutates) — internal function cannot become an [extension mutation function](#mutates).
+
+## Extensions
+
+<Badge text="Global scope" variant="note" size="medium"/><p/>
+
+[Extension functions](#extends) provide a clean way to organize and extend code by allowing you to add new behaviors to existing types. The [extension _mutation_ functions](#mutates) also allow you to modify the value they operate on. Both kinds of extension functions can be called methods and both use special attributes: [`extends{:tact}`](#extends) and [`mutates{:tact}`](#mutates), respectively.
+
+### `extends` — extension functions {#extends}
+
+<Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
+
+The `extends{:tact}` attribute can be applied to all top level functions, transforming them into statically dispatched methods on the extended type. These methods are called _extension functions_.
+
+To define an extension function, add an `extends{:tact}` attribute to any [global function](#fun-global) and name its first parameter as `self`. The type of `self` is the type that is being extended.
+
+```tact
+// Extension function that compares two instances of the `StdAddress` type.
+extends fun equals(self: StdAddress, other: StdAddress): Bool {
+    if (self.workchain == other.workchain && self.address == other.address) {
+        return true;
+    }
+    return false;
+}
+```
+
+The special `self{:tact}` identifier inside an extension function is a copy of the value of the extended type. In other words, it is the argument value passed to the `self` parameter.
+
+```tact
+// Let's define a variable to call the `equals()` extension function on.
+let addr = parseStdAddress(
+    address("EQAFmjUoZUqKFEBGYFEMbv-m61sFStgAfUR8J6hJDwUU09iT").asSlice(),
+);
+
+// You can call extension functions on instances of the extended type,
+// such as variables...
+addr.equals(addr); // true
+
+// ...literals and structure instances...
+StdAddress {
+    workchain: addr.workchain,
+    address: addr.address,
+}.equals(addr); // true
+
+// ...or any other values of that type.
+parseStdAddress(
+    address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N").asSlice()
+).equals(addr); // false
+```
+
+Most of the standard library functions that work with values of the [`Builder{:tact}`][builder] type are extension functions on that type. As such, they do not modify the original value they are applied to.
+
+To preserve newly created values with extension functions, use intermediary assignments or make a long chained call in a single assignment.
+
+```tact
+let builder = beginCell();
+let cell = builder
+    .storeUint(42, 7)
+    .storeInt(42, 7)
+    .storeBool(true)
+    .storeSlice(slice)
+    .storeCoins(42)
+    .storeAddress(address)
+    .storeRef(cell)
+    .endCell();
+// Notice that the chained extension function call did not change
+// the `builder` variable itself, which is still holding an empty Builder.
+builder.refs(); // 0
+builder.bits(); // 0
+```
+
+The first parameter of extension functions must be named `self`. Failure to do so leads to a compilation error.
+
+Additionally, naming the first parameter of any non-extension function as `self{:tact}` leads to a compilation error too.
+
+```tact
+// COMPILATION ERROR! Extend function must have first parameter named "self"
+extends fun add(this: Int, other: Int): Int {
+    //          ~~~~~~~~~
+    return this + other;
+}
+
+// COMPILATION ERROR! Parameter name "self" is reserved for functions with "extends"
+fun add(self: Int, other: Int): Int {
+    //  ~~~~~~~~~
+    return self + other;
+}
+```
+
+The following additional attributes can be specified:
+
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
+* [`mutates{:tact}`](#mutates) — makes it into an [extension mutation function](#mutates).
+
+These attributes _cannot_ be specified:
+
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — extension functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#get) — extension functions cannot become [getters](#get).
+
+### `mutates` — extension mutation functions {#mutates}
+
+<Badge text="Global scope" title="This attribute can be applied to top-level functions only" variant="note" size="medium"/><p/>
+
+The `mutates{:tact}` attribute can be applied to [extension functions](#extends) only, which enables the persistence of the modifications made to the value of the extended type through the `self{:tact}` identifier. They allow mutations, and so they are called _extension mutation functions_.
+
+The extension _mutation_ functions replace the value of the extended type with the new one at the end of its execution. That value would change only upon the assignment to `self{:tact}` within the function body.
+
+To define an extension mutation function, add a `mutates{:tact}` attribute to the existing [extension function](#extends).
+
+```tact
+// Like the `skipBool` extension mutation function, but usable in chain calls.
+extends mutates fun chainSkipBool(self: Slice): Slice {
+    self.skipBool();
+
+    // Notice that returning the `self` value gives a copy of the slice,
+    // but not a mutable reference to it. Therefore, chaining of mutation functions
+    // is not very useful in most cases, and may lead to seemingly weird errors.
+    return self;
+}
+```
+
+For extension mutation functions, the special `self{:tact}` identifier refers to the value of the extended type, and changes made to it will persist after the function call.
+
+```tact
+// It is most useful to call extension mutation functions on instances
+// of the extended type that can keep the change stored either temporarily, i.e.,
+// within the current transaction, or permanently — in the contract's state.
+contract Mut(val: Slice) {
+    receive() {
+        let valTmp = beginCell().storeBool(true).storeInt(42, 7).asSlice();
+        valTmp.chainSkipBool().loadInt(7); // 42
+        self.val.chainSkipBool().loadInt(7); // 42
+        // Now, `valTmp` holds a slice without one bit, i.e.,
+        // only the value 42 stored using 7 bits. The `self.val` holds its original
+        // slice but without one bit from its front.
+    }
+}
+```
+
+Extension mutation functions cannot modify [constants](/book/constants) because they are immutable.
+
+```tact
+// Constant of the Int type
+const VAL: Int = 10;
+
+// Extension mutation function for the Int type
+extends mutates fun divideInHalf(self: Int) { self /= 2 }
+
+fun noEffect() {
+    VAL; // 10
+    VAL.divideInHalf();
+    VAL; // still 10
+}
+```
+
+The following additional attributes can be specified:
+
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
+
+These attributes _cannot_ be specified:
+
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — extension mutation functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#get) — extension mutation functions cannot become [getters](#get).
+
+### Static extension functions {#extends-static}
+
+There is no such attribute yet, so the special static extension functions in the standard library of Tact are introduced directly by the compiler:
+
+* [`Message.opcode(){:tact}`](/ref/core-cells#messageopcode)
+* [`Message.fromCell(){:tact}`](/ref/core-cells#messagefromcell)
+* [`Message.fromSlice(){:tact}`](/ref/core-cells#messagefromslice)
+* [`Struct.fromCell(){:tact}`](/ref/core-cells#structfromcell)
+* [`Struct.fromSlice(){:tact}`](/ref/core-cells#structfromslice)
+
+## `get fun` — off-chain getter functions {#get}
+
+<Badge text="Contract scope" variant="note" size="medium"/><p/>
+
+The special `get{:tact}` attribute cannot be combined with any other attribute. It is applied to [internal functions](#fun-internal), transforming them into so-called _getter functions_ (or getters for short). These functions are externally accessible off-chain, allowing direct reading of contract state without regular message passing.
+
+```tact
+contract StaleCounter(val: Int as uint32) {
+    // Getter function that simply returns the current value of the state variable
+    get fun value(): Int {
+        return self.val;
+    }
+
+    // Getter function that performs basic calculations
+    get fun valuePlus(another: Int): Int {
+        return self.val + another;
+    }
+}
+```
+
+Despite the restriction on attributes, getter functions can still be considered internal or contract methods — calling them from within another contract function is possible. In those cases, their behavior would be identical to calling an internal function through `self{:tact}`, including any state modifications those functions can perform.
+
+However, most of the time, getter functions are there to be called from the off-chain world. And when they are called that way and not via `self{:tact}`, their state modifications no longer persist between transactions (changes are discarded).
+
+```tact
+contract WillNotBudge(val: Int) {
+    get fun changeVal() {
+        self.val = randomInt();
+        self.val; // ?, it is random!
+        // However, after this function is done,
+        // the self.val will be reset to its value prior to this function call.
+    }
+}
+```
+
+Furthermore, when **not** used as internal functions, getters do not pay the [compute fees](https://docs.ton.org/develop/howto/fees-low-level#computation-fees) and have their gas limits to prevent infinite loops or endless transactions. That is, getters can perform arbitrary computations if their internal gas limit is not surpassed in a single transaction.
+
+Those gas limits depend on the API provider used to call a certain getter, but they are usually around 100 million gas units per getter call.
+
+With that in mind, getters are most commonly used for fetching the current state of contract's persistent state variables. To do so in a convenient matter, Tact allows you to view the contract itself as a [struct][struct] of contract variables, i.e., to use `self{:tact}` to refer to the contract itself and return all of its state variable values at once in a single getter.
+
+```tact
+contract ManyFields(
+    f1: Int,
+    f2: Int,
+    // ...
+    f42: Int,
+) {
+    // Notice that the return type of this get function coincides
+    // with the name of the contract, which makes that return type
+    // view the contract as a struct of its variables.
+    get fun state(): ManyFields {
+        return self; // you do not have to list all fields of a contract for this
+    }
+}
+```
+
+Keep in mind that getters can obtain the contract's data only off-chain. However, for one contract to retrieve data from another contract on-chain, it must exchange messages with it. Since communication is asynchronous, the received data might become irrelevant or invalid because, by the time the message with that data reaches your contract, the actual state of variables on another contract might have changed already.
+
+Thus, efficient data exchange is only feasible in contract systems where you have control over the source code of all contracts or when the interface and behavior of some contracts are defined strictly according to some [standards](https://github.com/ton-blockchain/teps), such as [Jettons](/cookbook/jettons) or [NFTs](/cookbook/nfts).
+
+Even in such cases, contracts on TON exchange messages as signals to perform a certain action on or with the sent data but never merely to read the state of another contract.
+
+### Method IDs
+
+Like other functions in TON contracts, getters have their _unique_ associated function selectors, which are 19-bit signed integer identifiers commonly called [_method IDs_](#low-level-representation).
+
+Method IDs of getters are derived from their names using the [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm as follows: `(crc16(<function_name>) & 0xffff) | 0x10000`. In addition, the Tact compiler conditionally reserves some method IDs for use in [getters of supported interfaces](/book/contracts#interfaces), namely: 113617 for `supported_interfaces`, 115390 for `lazy_deployment_completed`, and 121275 for `get_abi_ipfs`.
+
+Thus, getters and their method IDs are an important part of the contract interfaces, to the point where explorers tend to recognize contracts based not on their entire code, but on the set of getters they expose to the off-chain world.
 
 ### Explicit resolution of method ID collisions
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
-Like other functions in TON contracts, getters have their _unique_ associated function selectors, which are $19$-bit signed integer identifiers commonly called _method IDs_.
-
-Method IDs of getters are derived from their names using the [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm as follows: `(crc16(<function_name>) & 0xffff) | 0x10000`. In addition, the Tact compiler conditionally reserves some method IDs for use in [getters of supported interfaces](/book/contracts#interfaces), namely: $113617$ for `supported_interfaces`, $115390$ for `lazy_deployment_completed`, and $121275$ for `get_abi_ipfs`.
-
 Sometimes, getters with different names end up with the same method ID. If this happens, you can either rename some of the getters or manually specify the method ID as a [compile-time](/ref/core-comptime) expression like so:
 
 ```tact
-contract ManualMethodId {
+contract ManualMethodId() {
     const methodId: Int = 16384 + 42;
 
     get(self.methodId)
@@ -193,10 +519,575 @@ contract ManualMethodId {
 }
 ```
 
-Unlike getters, method IDs for [internal functions](/book/contracts#internal-functions) and some special functions are obtained sequentially: integers in the inclusive range from $-4$ to $0$ are given to [certain message handlers](https://docs.ton.org/v3/documentation/smart-contracts/func/docs/functions#special-function-names), while internal functions are numbered with method IDs starting at $1$ and going up to $2^{14} - 1$ inclusive.
+Unlike getters, method IDs for [internal functions](#fun-internal) and some special functions are obtained sequentially: integers in the inclusive range from -4 to 0 are given to [certain message handlers](https://docs.ton.org/v3/documentation/smart-contracts/func/docs/functions#special-function-names), while internal functions are numbered with method IDs starting at $1$ and going up to $2^{14} - 1$ inclusive.
 
-Since method IDs are $19$-bit signed integers and some of them are reserved, only the inclusive ranges from $-2^{18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$ are free to be used by users. To avoid collisions, it is recommended to specify method IDs only in these ranges, avoiding the method IDs of Tact-specific getters mentioned above.
+Since method IDs are 19-bit signed integers and some of them are reserved, only the inclusive ranges from $-2^{18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$ are free to be used by users. It is recommended to specify method IDs only in these ranges to avoid collisions.
+
+Furthermore, as the algorithm for generating method IDs only produces positive values and IDs -4 to 0 are reserved, by manually specifying negative IDs from $-2^{18}$ up to $-5$, you can guarantee that there would be no collisions with any other getters.
+
+```tact
+contract AntiPositive() {
+    // This getter's manually specified method ID
+    // will not collide with any autogenerated IDs
+    get(-42) fun negAns(): Int {
+        return -42;
+    }
+
+    get fun posAns(): Int {
+        return 42;
+    }
+}
+```
+
+### Off-chain calls
+
+You can call getter functions off-chain by using either a [proxy HTTP API](https://docs.ton.org/v3/guidelines/dapps/apis-sdks/ton-http-apis) or a [secure ADNL API](https://docs.ton.org/v3/guidelines/dapps/apis-sdks/ton-adnl-apis) for direct connections to TON nodes. For your convenience, there are many [SDKs for various general-purpose programming languages](https://docs.ton.org/v3/guidelines/dapps/apis-sdks/sdk). And to call getter functions locally, use the Tact-generated [contract wrapper class](/book/debug#wrappers-contract).
+
+Notice that in those APIs and SDKs, getters are often referred to as _get methods_, as they are, in fact, callable methods of contracts that behave somewhat similarly to get methods in many object-oriented programming languages.
+
+If the contract is already deployed to the testnet or the mainnet, some TON Blockchain explorers allow you to call get methods directly from their interface, providing their names and input stack arguments. As with other ways of calling getters, if you try to call a non-existent getter, an [exit code 11](/book/exit-codes#11) will be thrown: `"Unknown" error`.
+
+## `init` — constructor function {#init}
+
+<Badge text="Contract scope" variant="note" size="medium"/><p/>
+
+The special constructor function `init(){:tact}` is run upon deployment of the contract. Unlike [contract parameters](/book/contracts#parameters), it performs a delayed initialization of the contract data, overriding the values of persistent state variables on-chain.
+
+```tact
+contract Example {
+    // Persistent state variables
+    var1: Int = 0; // initialized with default value 0
+    var2: Int;     // must be initialized in the init() function
+    var3: Int = 7; // initialized with default value 7
+
+    // Constructor function, which is run only once
+    init() {
+        self.var2 = 42;
+        self.var3 = 32; // overrides the default to 32
+    }
+}
+```
+
+For every receiver that doesn't alter the contract's variables, Tact optimizes away unnecessary storage overrides. However, contracts cannot benefit from such optimizations if the `init(){:tact}` function is present. That is because for contracts with `init(){:tact}` every receiver has to check whether the `init(){:tact}` function has run already and did that only once, and to do so, a special flag is implicitly stored in the contract's persistent state.
+
+Effectively, the behavior or `init(){:tact}` function can be simulated when using contract parameters instead — through adding a special [`Bool{:tact}`](/book/types#booleans) field and a function that would be used in place of the `init(){:tact}`. That function would be called at the beginning of every receiver, while the boolean field would be used as a flag.
+
+```tact
+contract CounterBuiltinInit {
+    // Persistent state variables
+    counter: Int as uint32;
+
+    // Constructor function, which is run only once
+    init() {
+        self.counter = 0;
+    }
+
+    receive() {
+        cashback(sender());
+    }
+
+    receive(_: Increment) {
+        self.counter += 1;
+    }
+
+    get fun counter(): Int {
+        return self.counter;
+    }
+}
+
+contract CounterDIYInit(
+    // Persistent state variables
+    initialized: Bool, // set this field to `false` during deployment
+    counter: Int as uint32, // value of this field will be overridden in the `customInit()`
+) {
+    // Internal function, which will be used in place of a pseudo-constructor function
+    fun customInit() {
+        // Stop further actions if this customInit() function was called before
+        if (self.initialized) {
+            return;
+        }
+        // Initialize
+        self.initialized = true;
+        self.counter = 0;
+    }
+
+    receive() {
+        // Don't forget to add this call at the start of every receiver
+        // that can be used for deployments.
+        self.customInit();
+        cashback(sender());
+    }
+
+    receive(_: Increment) {
+        // Don't forget to add this call at the start of every receiver
+        // that can be used for deployments.
+        self.customInit();
+        self.counter += 1;
+    }
+
+    get fun counter(): Int {
+        return self.counter;
+    }
+
+}
+
+message Increment {}
+```
+
+None of the [attributes](#commonalities-attributes) can be specified for the `init(){:tact}` function.
+
+Read more about the `init(){:tact}` on its dedicated section: [Constructor function `init(){:tact}`](/book/contracts#init-function).
+
+## `native` — foreign function interfaces {#native}
+
+<Badge text="Global scope" variant="note" size="medium"/><p/>
+
+Native functions are Tact's [FFI](https://en.wikipedia.org/wiki/Foreign_function_interface) to FunC — they allow direct bindings to imported FunC functions. In order to declare them, you have to import a `.fc` or `.func` file first. Granted, the FunC's [standard library file, `stdlib.fc`](https://github.com/tact-lang/tact/blob/main/src/stdlib/stdlib/std/stdlib.fc), is always imported for you.
+
+Consider the following FunC file:
+
+```func title="import_me.fc"
+;; Notice the tensor return type (int, int),
+;; which means we would have to define at least one
+;; Tact structure to bind to this function.
+(int, int) keccak512(slice s) impure asm "ONE HASHEXT_KECCAK512 UNPAIR";
+```
+
+In Tact code, one could access that function as follows:
+
+```tact
+// 1. Import the FunC file that contains the function.
+import "./import_me.fc";
+
+// 2. Declare the native function binding.
+@name(keccak512) // name of the target FunC function
+native keccak512(s: Slice): HashPair;
+//     ^^^^^^^^^ name of the Tact function bind,
+//               which can be the identical to its FunC counterpart
+
+// 3. Define the necessary structs for the bind.
+//    In our case, it is the HashPair structure to capture multiple return values.
+struct HashPair {
+    h1: Int;
+    h2: Int;
+}
+
+// 4. Use the function whenever you would like.
+//    It has the same properties as regular global functions.
+fun example() {
+    let res = keccak512(emptySlice());
+    res.h1; // 663...lots of digits...092
+    res.h2; // 868...lots of digits...990
+}
+```
+
+The following attributes can be specified for `native{:tact}` functions:
+
+* [`inline{:tact}`](#inline) — embeds the function contents at the call site.
+* [`extends{:tact}`](#extends) — makes it an [extension function](#extends).
+* [`mutates{:tact}`](#mutates), along with [`extends{:tact}`](#extends) — makes it an [extension mutation function](#mutates).
+
+These attributes _cannot_ be specified:
+
+* [`abstract{:tact}`](#abstract), [`virtual{:tact}`](#virtual) and [`override{:tact}`](#override) — native functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](#get) — native functions cannot be [getters](#get).
+
+## `asm` — assembly functions {#asm}
+
+<Badge text="Global scope" variant="note" size="medium"/>
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+Assembly functions are top-level functions that allow you to write Tact assembly. Unlike all other functions, their bodies consist only of TVM instructions and some other primitives that serve as arguments to the instructions.
+
+Furthermore, `asm{:tact}` functions are nearly devoid of all abstractions and give direct access to the underlying stack and register contents on which TVM operates.
+
+```tact
+// Simple assembly function that creates a new `Builder`.
+asm fun beginCell(): Builder { NEWC }
+
+// Like nativeReserve(), but also allows reserving extra currencies.
+asm fun extraReserve(
+    // Toncoin amount
+    nativeAmount: Int,
+
+    // A map of 32-bit extra currency IDs to VarUInt32 amounts
+    extraAmountMap: map<Int as uint32, Int as varuint32>,
+
+    // Reservation mode
+    mode: Int,
+) { RAWRESERVEX }
+
+// Assembly function as an extension function for the `Builder` type.
+asm(value self) extends fun storeBool(self: Builder, value: Bool): Builder { 1 STI }
+```
+
+Read more about them on their dedicated page: [Assembly functions](/book/assembly-functions).
+
+## Inheritance
+
+<Badge text="Contract scope" title="Functions can only be inherited from traits and never at the top level" variant="note" size="medium"/><p/>
+
+The `with{:tact}` keyword allows a contract to inherit a [trait][trait] with all its constants, fields, and functions, including those transitively inherited from other traits associated with the specified trait.
+
+In particular, all functions of the trait become accessible in the contract, regardless of any inheritance-related attributes, such as `abstract{:tact}`, `virtual{:tact}`, or `override{:tact}`.
+
+You can allow a contract inheriting a [trait][trait] to modify a [internal function](#fun-internal) marked with the `virtual{:tact}` keyword by using `override{:tact}`. A function can also be marked as `abstract{:tact}`, in which case the inheriting contract must define its implementation.
+
+```tact
+trait FilterTrait with Ownable {
+    // Virtual functions can be overridden by users of this trait
+    virtual fun filterMessage(): Bool {
+        return sender() != self.owner;
+    }
+
+    abstract fun specialFilter(): Bool;
+
+    // Receivers can be inherited, but cannot be overridden
+    receive() { cashback(sender()) }
+}
+
+contract Filter() with FilterTrait {
+    // Overriding the default behavior of the FilterTrait
+    override fun filterMessage(): Bool {
+        return true;
+    }
+
+    override fun specialFilter(): Bool {
+        return true;
+    }
+}
+```
+
+{/* TODO: inheritance table as per https://github.com/tact-lang/tact/issues/3030 */}
+
+### `abstract` {#abstract}
+
+<Badge text="Contract scope" title="This attribute can be applied to internal functions only" variant="note" size="medium"/><p/>
+
+The `abstract{:tact}` attribute allows declaring a [internal function](#fun-internal) with no body given at declaration. Functions with this attribute are meant to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
+
+```tact
+trait DelayedOwnable {
+    owner: Address;
+
+    abstract fun requireOwner();
+
+    abstract fun requireOwnerDelayed(bigBadName: Int);
+}
+
+contract Ownership(owner: Address) with DelayedOwnable {
+    // All functions marked as abstract must be defined
+    // in the contract that inherits them.
+    override fun requireOwner() {
+        throwUnless(TactExitCodeAccessDenied, sender() == self.owner);
+    }
+
+    // The signature of the overridden function must match its inherited abstract
+    // counterpart on everything except parameter names. Notice the rename
+    // of the `bigBadName` parameter to `timestamp` in the function below.
+    override fun requireOwnerDelayed(timestamp: Int) {
+        throwUnless(TactExitCodeAccessDenied, now() >= timestamp);
+        throwUnless(TactExitCodeAccessDenied, sender() == self.owner);
+    }
+}
+```
+
+### `virtual` {#virtual}
+
+<Badge text="Contract scope" title="This attribute can be applied to internal functions only" variant="note" size="medium"/><p/>
+
+The `virtual{:tact}` attribute allows a [internal function](#fun-internal) to be overridden later in the inheritance hierarchy by either an intermediate trait or the contract inheriting it.
+
+This attribute is similar to the [`abstract{:tact}`](#abstract) attribute, except that you do not have to override bodies of functions with the `virtual{:tact}` attribute. But if you decide to override the function body, you may do it in any trait that depends on this trait and not only in the resulting contract.
+
+```tact
+import "@stdlib/ownable";
+
+trait DeployableFilterV1 with Ownable {
+    // Virtual functions can be optionally overridden by users of this trait.
+    virtual fun filter() {
+        // Not an owner
+        throwUnless(TactExitCodeAccessDenied, sender() == self.owner);
+    }
+
+    // Whereas internal functions with an abstract attribute must be overridden
+    // by the contract that will import this trait or any of the traits that depend on this trait.
+    abstract fun specialFilter();
+
+    // Receivers are inherited too,
+    // but they cannot defined be virtual or abstract
+    receive() { cashback(sender()) }
+}
+
+trait DeployableFilterV2 with DeployableFilterV1 {
+    override fun filter() {
+        // Not an owner
+        throwUnless(TactExitCodeAccessDenied, sender() == self.owner);
+
+        // Message carries too little Toncoin for our tastes
+        throwUnless(TactExitCodeAccessDenied, context().value < ton("1"));
+    }
+}
+
+contract Auth(owner: Address) with DeployableFilterV2 {
+    override fun specialFilter() {
+        if (randomInt() < 10) {
+            throw(TactExitCodeAccessDenied);
+        }
+    }
+
+    receive(_: TopSecretRequest) {
+        self.filter();
+        self.specialFilter();
+
+        // ...subsequent logic...
+    }
+}
+
+message TopSecretRequest {}
+```
+
+### `override` {#override}
+
+<Badge text="Contract scope" title="This attribute can be applied to internal functions only" variant="note" size="medium"/><p/>
+
+The `override{:tact}` attribute is used to override an inherited [internal function](#fun-internal) that has either a [`virtual{:tact}`](#virtual) or [`abstract{:tact}`](#abstract) attribute specified in the declaration of that function in one of the parent traits.
+
+## Commonalities
+
+Functions commonly share the same aspects, parts, or behavior. For example, due to the nature of TVM, Tact uses the [call by value](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_value) parameter-passing and binding strategy, which applies to all function kinds. That is, the evaluated value of any variable passed in a function call or assigned in the [`let{:tact}`](/book/statements#let) or [assignment](/book/statements#assignment) statement is copied.
+
+Therefore, there are no modifications of the original values in different scopes, except for the [extension _mutation_ functions](#mutates). And even so, those functions do not mutate the original value denoted by the `self{:tact}` keyword — instead, they discard the old value and replace it with the new one obtained at the end of the function body.
+
+The above applies to all functions except for [receivers](#receivers), because they cannot be called directly and are only executed upon receiving specific messages.
+
+### Scope {#commonalities-scope}
+
+All kinds of functions vary in scope: some can only be defined at the top level, such as [global functions](#fun-global), while others can only be defined within contracts and traits, such as [internal functions](#fun-internal) or [receivers](#receivers).
+
+Functions are hoisted upon declaration, such that the ones declared earlier might call those declared later and vice versa.
+
+```tact
+// Global function first() is defined prior to the second() function,
+// but we can call the second() one just fine.
+fun first(): Bool {
+    return second(true); // always true
+}
+
+// Global function second() is defined after the first() function,
+// and call to the first() function works as expected.
+fun second(flag: Bool): Bool {
+    if (flag) {
+        return true;
+    }
+    return first(); // always true, because of the prior condition
+}
+```
+
+### Attributes {#commonalities-attributes}
+
+Function attributes modify a function's behavior and typically restrict it to a specific scope.
+
+Attribute                      | Scope    | Can be applied to
+:----------------------------- | :------- | :----------------
+[`extends{:tact}`](#extends)   | global   | All global functions
+[`mutates{:tact}`](#mutates)   | global   | Functions with `extends{:tact}` attribute
+[`virtual{:tact}`](#virtual)   | contract | Internal functions
+[`abstract{:tact}`](#abstract) | contract | Internal functions
+[`override{:tact}`](#override) | contract | Internal functions that were previously marked with `virtual{:tact}` or `abstract{:tact}`
+[`inline{:tact}`](#inline)     | any      | All functions except for receivers and getters
+[`get{:tact}`](#get)           | contract | Internal functions — turns them into getters
+
+Notice that the "contract" scope also includes the [traits][trait].
+
+### Naming and namespaces {#commonalities-naming}
+
+Function names follow the standard Tact [identifier naming conventions](/book/expressions#identifiers).
+
+```tact
+abstract fun azAZ09_();
+```
+
+[Internal functions](#fun-internal) and [getters](#get) exist in a namespace separate from the contract's fields. For example, a persistent state variable named `value` can co-exist with a getter function named `value()`, which is very convenient in many cases.
+
+However, identifiers of internal functions within a single contract must be distinct, as are identifiers of all top-level functions. The only exceptions are [extensions](#extensions), which can have the same identifiers, provided that the extended types of their `self` parameter differ.
+
+```tact
+// COMPILATION ERROR! Static function "globName" already exists
+fun globName() {}
+fun globName() {}
+//  ~~~~~~~~~~~~~
+
+// No errors, because despite the same identifiers,
+// the types of the `self` parameter are different
+extends fun doWith(self: Int) {}
+extends fun doWith(self: Slice) {}
+```
+
+### Return values {#commonalities-return}
+
+All functions return a value. If the function does not have an explicit return type specified, it has an implicit return type of `void` — a pseudo-value that represents "nothing" in the Tact compiler. This also applies to the functions that do not allow specifying a return type, such as [receivers](#receivers) or [`init(){:tact}`](#init).
+
+Moreover, execution of any function can be ended prematurely with the [`return{:tact}` statement](/book/statements#return). This is also true for the [receiver functions](#receivers) and [`init(){:tact}`], where empty `return{:tact}` statements are allowed.
+
+```tact
+contract GreedyCashier(owner: Address) {
+    receive() {
+        // Stop the execution if the message is not from an `owner`.
+        if (sender() != self.owner) {
+            return;
+        }
+        // Otherwise, forward excesses back to the sender.
+        cashback(sender());
+    }
+}
+```
+
+To return multiple values in a function, aggregate the values in a [struct][struct].
+
+```tact
+fun minmax(a: Int, b: Int): MinMax {
+    if (a < b) {
+        return MinMax { min: a, max: b };
+    }
+    return MinMax { min: b, max: a };
+}
+
+struct MinMax {
+    min: Int;
+    max: Int;
+}
+```
+
+[Reachability](/book/statements#return) of `return{:tact}` statements should always be evident to the compiler. Otherwise, a compilation error will occur.
+
+### Recursion {#commonalities-recursion}
+
+Recursive functions are allowed, including the mutually recursive functions. There is no upper limit on the recursion depth or the number of calls — computations will continue until there is no more gas to spend.
+
+```tact
+fun produceOneFrom(a: Int): Int {
+    if (a <= 1) { return 1 }
+    return alsoProduceOneFrom(a - 1);
+}
+
+fun alsoProduceOneFrom(b: Int): Int {
+    if (b <= 1) { return 1 }
+    return produceOneFrom(b - 1);
+}
+
+fun example(someA: Int, someB: Int) {
+    // This sum will always be 2, regardless of values of `someA` and `someB`.
+    // The only exception is when their values are too big and there is not
+    // enough gas to finish the computations, in which case the transaction
+    // will fail with an exit code -14: Out of gas error.
+    produceOneFrom(someA) + alsoProduceOneFrom(someB); // 2
+}
+```
+
+### Code embedding with `inline` {#inline}
+
+<Badge text="Any scope" title="This attribute can be applied to functions within contracts and functions at the top level" variant="note" size="medium"/><p/>
+
+The `inline{:tact}` attribute embeds the code of the function to its call sites, which eliminates the overhead of the calls but potentially increases the code size if the function is called from multiple places.
+
+This attribute can improve performance of large infrequently called functions or small, alias-like functions. It can be combined with any other attribute except for [`get{:tact}`](#get).
+
+```tact
+inline fun add(a: Int, b: Int) {
+    // The following addition will be performed in-place,
+    // at all the `add()` call sites.
+    return a + b;
+}
+```
+
+### Trailing comma {#commonalities-comma}
+
+All functions, except for [receiver functions](#receivers), can have a trailing comma in their definitions (parameter lists) and calls (argument lists):
+
+```tact
+fun foo(
+    a: Int, // trailing comma in parameter lists is allowed
+) {}
+
+fun bar() {
+    foo(
+        5, // trailing comma in argument lists is allowed too!
+    );
+}
+```
+
+### Trailing semicolon {#commonalities-colon}
+
+The last [statement](/book/statements) inside the function body has a trailing semicolon — it can be freely omitted, which is useful for writing one-liners.
+
+```tact
+inline fun getCoinsStringOf(val: Int) { return val.toFloatString(9) }
+```
+
+When declaring an [internal function](#fun-internal) with [`abstract{:tact}`](#abstract) or [`virtual{:tact}`](#virtual) attributes, Tact allows you to omit a semicolon if it is the last function in the [trait's][trait] body.
+
+```tact
+trait CompositionVII {
+    abstract fun paintedWithOil(preliminary: Bool): Bool // no semicolon needed
+}
+
+contract Abstractionism() with CompositionVII {
+    override fun paintedWithOil(preliminary: Bool): Bool {
+        if (preliminary) {
+            return false; // perhaps, watercolors were used...
+        }
+        return true;
+    }
+}
+```
+
+### Wildcard parameters {#commonalities-wildcard}
+
+<Badge text="Available since Tact 1.6.1" variant="tip" size="medium"/><p/>
+
+For all kinds of functions, naming a parameter with an underscore `_{:tact}` causes its value to be considered unused and discarded. This is useful when you do not access the parameter but want to include it in the signature for possible overrides. Note that such a wildcard parameter name `_{:tact}` cannot be accessed.
+
+```tact
+trait WildThing {
+    // Using wildcards for parameter names
+    virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    }
+}
+
+contract YouMakeMyHeartSing() with WildThing {
+    // And then overriding them with concrete names
+    override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    }
+
+    // Wildcards are also useful when you do not intend to
+    // use the contents of the message and only handle the proper one
+    receive(_: FieldsDoNotLie) {
+        // ...
+    }
+}
+
+message FieldsDoNotLie {}
+```
+
+## Low-level representation
+
+On [TVM][tvm] level, contracts and their functions are often represented as a dictionary (or ["hashmap"](/book/maps#low-level-representation)) of methods, from their numeric method IDs to their respective bodies composed of TVM instructions. Each function then is a method that transforms the stack and TVM registers.
+
+A function call is, essentially, a call into the dictionary using the function's ID, after which:
+1. Function arguments are pushed onto the stack
+2. The function executes, manipulating the stack
+3. Return values are left on top of the stack, provoking another dictionary call or resulting in the end of the transaction
+
+When a so-called ["selector hack"](/book/config#optimizations-internalexternalreceiversoutsidemethodsmap) optimization is enabled, if the number of defined receivers is small, they are stored outside of that map as plain instruction sequences. That saves gas but can cause the contract to be incorrectly recognized and misparsed by some explorers and user wallets, which expect the root of the contract's code (the root cell) to point at the method dictionary.
 
 [p]: /book/types#primitive-types
 [struct]: /book/structs-and-messages#structs
+[cell]: /book/cells#cells
+[builder]: /book/cells#builders
 [slice]: /book/cells#slices
+[trait]: /book/types#traits
+
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview

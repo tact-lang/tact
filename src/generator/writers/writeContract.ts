@@ -229,7 +229,6 @@ export function writeInit(
             ctx.flag("inline");
         }
         ctx.context("type:" + t.name + "$init");
-        ctx.flag("inline");
         ctx.body(() => {
             ctx.append(";; Build init code cell");
             ctx.append();

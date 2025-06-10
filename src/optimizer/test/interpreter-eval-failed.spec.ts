@@ -7,7 +7,7 @@ import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
 import { resolveDescriptors } from "@/types/resolveDescriptors";
 import { resolveSignatures } from "@/types/resolveSignatures";
 import { resolveStatements } from "@/types/resolveStatements";
-import { loadCases } from "@/utils/loadCases";
+import { loadCases } from "@/utils/loadCases.infra";
 
 describe("interpreter-evaluation", () => {
     for (const r of loadCases(__dirname + "/failed/")) {

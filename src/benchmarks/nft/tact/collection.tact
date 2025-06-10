@@ -2,23 +2,6 @@ import "./constants";
 import "./messages";
 import "./item";
 
-struct DictGet {
-    itemIndex: Int? as uint64; // IndexSizeBits = 64
-    item: Slice?;
-    flag: Int;
-}
-
-struct DictItem {
-    amount: Int as coins;
-    initNFTBody: Cell;
-}
-
-// (int, slice, int) udict_get_min?(cell dict, int key_len) asm (-> 1 0 2) "DICTUMIN" "NULLSWAPIFNOT2";
-asm(-> 1 0 2) fun dictGetMin(dict: Cell, keySize: Int): DictGet { DICTUMIN NULLSWAPIFNOT2 }
-
-// (int, slice, int) udict_get_next?(cell dict, int key_len, int pivot) asm(pivot dict key_len -> 1 0 2) "DICTUGETNEXT" "NULLSWAPIFNOT2";
-asm(-> 1 0 2) fun dictGetNext(pivot: Int, dict: Cell, keySize: Int): DictGet { DICTUGETNEXT NULLSWAPIFNOT2 }
-
 contract NFTCollection {
     owner: Address;
     nextItemIndex: Int as uint64; // IndexSizeBits = 64
@@ -42,6 +25,17 @@ contract NFTCollection {
 
     receive() {} // ignore empty messages
 
+    receive(msg: DeployNFT) {
+        throwUnless(IncorrectSender, sender() == self.owner);
+        throwUnless(IncorrectIndex, msg.itemIndex <= self.nextItemIndex);
+
+        deployNFTItem(self.commonCode, msg.itemIndex, msg.amount, msg.initNFTBody, self.commonData);
+
+        if (msg.itemIndex == self.nextItemIndex) {
+            self.nextItemIndex += 1;
+        }
+    }
+
     receive(msg: GetRoyaltyParams) {
         MessageParameters {
             bounce: false,
@@ -53,17 +47,6 @@ contract NFTCollection {
             }.toCell(),
             mode: SendRemainingValue,
         }.send();
-    }
-
-    receive(msg: DeployNFT) {
-        throwUnless(IncorrectSender, sender() == self.owner);
-        throwUnless(IncorrectIndex, msg.itemIndex <= self.nextItemIndex);
-
-        deployNFTItem(self.commonCode, msg.itemIndex, msg.amount, msg.initNFTBody, self.commonData);
-
-        if (msg.itemIndex == self.nextItemIndex) {
-            self.nextItemIndex += 1;
-        }
     }
 
     receive(msg: BatchDeploy) {
@@ -136,3 +119,20 @@ inline fun deployNFTItem(commonCode: Cell, itemIndex: Int, amount: Int, initNFTB
         mode: SendPayFwdFeesSeparately,
     }.send();
 }
+
+struct DictGet {
+    itemIndex: Int? as uint64; // IndexSizeBits = 64
+    item: Slice?;
+    flag: Int;
+}
+
+struct DictItem {
+    amount: Int as coins;
+    initNFTBody: Cell;
+}
+
+// (int, slice, int) udict_get_min?(cell dict, int key_len) asm (-> 1 0 2) "DICTUMIN" "NULLSWAPIFNOT2";
+asm(-> 1 0 2) fun dictGetMin(dict: Cell, keySize: Int): DictGet { DICTUMIN NULLSWAPIFNOT2 }
+
+// (int, slice, int) udict_get_next?(cell dict, int key_len, int pivot) asm(pivot dict key_len -> 1 0 2) "DICTUGETNEXT" "NULLSWAPIFNOT2";
+asm(-> 1 0 2) fun dictGetNext(pivot: Int, dict: Cell, keySize: Int): DictGet { DICTUGETNEXT NULLSWAPIFNOT2 }

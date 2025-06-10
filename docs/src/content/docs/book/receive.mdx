@@ -48,11 +48,40 @@ contract MyContract {
 
 In a contract, the order of declaration of receivers has no effect on how receivers process messages. Hence, changing the order of receivers in the above contract produces an equivalent contract.
 
-Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then when a message with the comment `"message"{:tact}` arrives, it will be processed by `receive(str: String){:tact}`.
+Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then when a message with the comment `"message"{:tact}` arrives, it will be processed by `receive(str: String){:tact}`. yet, the message with an empty comment `""{:tact}` will be processed by the empty body receiver, `receive(){:tact}`.
+
+Processing and distinguishing the text receivers, like the comment receiver `receive("..."){:tact}` and the string receiver `receive(str: String){:tact}`, costs significantly more gas than processing binary ones, such as `receive(){:tact}` or `receive(msg: MyMessage){:tact}`. Thus, it is recommended to [prefer binary receivers to text receivers](/book/gas-best-practices#prefer-binary-receivers-to-text-receivers).
 
 Note that the receiver `receive(msg: Slice){:tact}` acts as a fallback that catches all messages that did not match previous receivers in the execution order list.
 
 If there is no receiver to process a message type and the fallback receiver `receive(msg: Slice){:tact}` is not declared, the transaction will fail with exit code [130](/book/exit-codes/#130).
+
+Receivers accept all incoming funds by default. That is, without explicitly sending a message that will refund spare Toncoin with the [`cashback(){:tact}`](/ref/core-send#cashback) function, all the incoming message value will be kept by the contract.
+
+Receivers accept all incoming funds by default. That is, without explicitly sending a message that will refund spare Toncoin with the [`cashback(){:tact}`](/ref/core-send#cashback) function, the contract will keep all the incoming message value.
+
+To check the amount of Toncoin (native coins) the incoming message carries with it, you can use the [`context(){:tact}`](/ref/core-contextstate#context) function and access the `value` field of its resulting [struct](/book/structs-and-messages#structs). Note, however, that the exact value by which the balance will be increased will be less than `context().value{:tact}` since the [compute fee](https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#computation-fees) for contract execution will be deducted from this value.
+
+```tact /context\(\).value/
+contract WalletV4(
+    // ...contract variables...
+) {
+    // ...
+    receive(msg: PluginRequestFunds) {
+        require(
+            myBalance() - context().value >= msg.amount,
+            "The balance is too low to fulfill the plugin request!",
+        );
+        // ...
+    }
+}
+
+message(0x706c7567) PluginRequestFunds {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    extra: Cell?;
+}
+```
 
 Naming the parameter of a receiver function with an underscore `_{:tact}` makes its value considered unused and discarded. This is useful when you don't need to inspect the message received and only want it to convey a specific opcode:
 

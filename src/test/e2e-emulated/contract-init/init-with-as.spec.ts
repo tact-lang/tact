@@ -23,8 +23,7 @@ describe("init-with-as-types", () => {
 
     it("should return correct values", async () => {
         const { blockchain, treasury } = await state.get();
-        blockchain.verbosity.vmLogs = "vm_logs_verbose";
-        blockchain.verbosity.print = true;
+        blockchain.verbosity.print = false;
 
         const cellData = Buffer.from("1".repeat(64));
 

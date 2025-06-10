@@ -50,6 +50,7 @@ import { getMapAbi } from "@/types/resolveABITypeRef";
 import type { SrcInfo } from "@/grammar";
 import { Cell } from "@ton/core";
 import { makeVisitor } from "@/utils/tricks";
+import { ContractFunctions } from "@/abi/contracts";
 
 function isNull(wCtx: WriterContext, expr: Ast.Expression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -294,15 +295,15 @@ const writeBinaryExpr =
                 wCtx.used(`__tact_slice_eq_bits_nullable`);
                 return `( ${prefix}__tact_slice_eq_bits_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
             }
-            if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_slice_eq_bits_nullable_one`);
-                return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
-            }
             if (!lt.optional && rt.optional) {
-                wCtx.used(`__tact_slice_eq_bits_nullable_one`);
-                return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
+                wCtx.used(`__tact_slice_eq_bits_nullable_right`);
+                return `( ${prefix}__tact_slice_eq_bits_nullable_right(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
             }
-            return `( ${prefix}equal_slices_bits(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
+            if (lt.optional && !rt.optional) {
+                wCtx.used(`__tact_slice_eq_bits_nullable_left`);
+                return `( ${prefix}__tact_slice_eq_bits_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
+            }
+            return `( ${prefix}equal_slices_bits(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
         }
 
         // Case for cells equality
@@ -317,16 +318,16 @@ const writeBinaryExpr =
                 wCtx.used(`__tact_cell_${op}_nullable`);
                 return `__tact_cell_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
-            if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_cell_${op}_nullable_one`);
-                return `__tact_cell_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-            }
             if (!lt.optional && rt.optional) {
-                wCtx.used(`__tact_cell_${op}_nullable_one`);
-                return `__tact_cell_${op}_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+                wCtx.used(`__tact_cell_${op}_nullable_right`);
+                return `__tact_cell_${op}_nullable_right(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
+            }
+            if (lt.optional && !rt.optional) {
+                wCtx.used(`__tact_cell_${op}_nullable_left`);
+                return `__tact_cell_${op}_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             wCtx.used(`__tact_cell_${op}`);
-            return `__tact_cell_${op}(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+            return `__tact_cell_${op}(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
         }
 
         // Case for slices and strings equality
@@ -341,16 +342,16 @@ const writeBinaryExpr =
                 wCtx.used(`__tact_slice_${op}_nullable`);
                 return `__tact_slice_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
-            if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_slice_${op}_nullable_one`);
-                return `__tact_slice_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-            }
             if (!lt.optional && rt.optional) {
-                wCtx.used(`__tact_slice_${op}_nullable_one`);
-                return `__tact_slice_${op}_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+                wCtx.used(`__tact_slice_${op}_nullable_right`);
+                return `__tact_slice_${op}_nullable_right(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
+            }
+            if (lt.optional && !rt.optional) {
+                wCtx.used(`__tact_slice_${op}_nullable_left`);
+                return `__tact_slice_${op}_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             wCtx.used(`__tact_slice_${op}`);
-            return `__tact_slice_${op}(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+            return `__tact_slice_${op}(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
         }
 
         // Case for maps equality
@@ -381,13 +382,13 @@ const writeBinaryExpr =
                 wCtx.used(`__tact_int_${op}_nullable`);
                 return `__tact_int_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
-            if (lt.optional && !rt.optional) {
-                wCtx.used(`__tact_int_${op}_nullable_one`);
-                return `__tact_int_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-            }
             if (!lt.optional && rt.optional) {
-                wCtx.used(`__tact_int_${op}_nullable_one`);
-                return `__tact_int_${op}_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
+                wCtx.used(`__tact_int_${op}_nullable_right`);
+                return `__tact_int_${op}_nullable_right(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
+            }
+            if (lt.optional && !rt.optional) {
+                wCtx.used(`__tact_int_${op}_nullable_left`);
+                return `__tact_int_${op}_nullable_left(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
             }
             if (f.op === "==") {
                 return `(${writeExpression(f.left, wCtx)} == ${writeExpression(f.right, wCtx)})`;
@@ -616,9 +617,13 @@ const writeMethodCall =
             const selfTy = getType(wCtx.ctx, selfTyRef.name);
 
             // Check struct ABI
-            if (selfTy.kind === "struct") {
-                if (StructFunctions.has(idText(f.method))) {
-                    const abi = StructFunctions.get(idText(f.method))!;
+            if (selfTy.kind === "struct" || selfTy.kind === "contract") {
+                const abi =
+                    selfTy.kind === "struct"
+                        ? StructFunctions.get(idText(f.method))
+                        : ContractFunctions.get(idText(f.method));
+
+                if (abi) {
                     return abi.generate(
                         wCtx,
                         [
@@ -830,7 +835,7 @@ const writeMapLiteral =
     (node: Ast.MapLiteral) =>
     (_ctx: WriterContext): string => {
         throwCompilationError(
-            "Only constant map literals are supported",
+            "Invalid map literal: it either uses run-time values or unsupported features like structs, cells or asm functions",
             node.loc,
         );
         // NB! Intentionally left here for when we can distinguish which Ast.Id are variables

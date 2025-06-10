@@ -40,21 +40,21 @@ function resolveStringsInAST(
 ) {
     traverse(ast, (node) => {
         if (node.kind === "static_call" && isRequire(node.function)) {
-            if (node.args.length !== 2) {
+            const [, messageArg] = node.args;
+            if (typeof messageArg === "undefined") {
                 return;
             }
             const resolved = ensureString(
-                evaluateRequireErrorString(node.args[1]!, ctx, util),
+                evaluateRequireErrorString(messageArg, ctx, util),
             ).value;
             if (!exceptions.get(ctx, resolved)) {
                 const id = exceptionId(resolved);
-                if (
-                    Array.from(exceptions.all(ctx).values()).find(
-                        (v) => v.id === id,
-                    )
-                ) {
-                    throwInternalCompilerError(
-                        `Duplicate error id: "${resolved}"`,
+                const exceptionsArray = [...exceptions.all(ctx).values()];
+                const prev = exceptionsArray.find((v) => v.id === id);
+                if (typeof prev !== "undefined") {
+                    throwCompilationError(
+                        `Error message "${resolved}" maps to error code ${id}, which is already assigned to "${prev.value}", change the message to resolve this conflict`,
+                        messageArg.loc,
                     );
                 }
                 ctx = exceptions.set(ctx, resolved, { value: resolved, id });

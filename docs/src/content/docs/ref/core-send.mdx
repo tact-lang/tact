@@ -13,7 +13,7 @@ To perform [nanoToncoin][nano] reservations, use [`nativeReserve(){:tact}`](/ref
 
 ### send
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun send(params: SendParameters);
@@ -76,7 +76,7 @@ SendParameters {
 
 ### message
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -142,7 +142,7 @@ MessageParameters {
 
 ### deploy
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -226,7 +226,7 @@ DeployParameters {
 
 ### cashback
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6.1" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -258,7 +258,7 @@ message(MessageParameters {
 
 ### emit
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun emit(body: Cell);
@@ -296,7 +296,7 @@ Various niche, dangerous, or unstable features which can produce unexpected resu
 
 ### sendRawMessage
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -315,7 +315,7 @@ Attempts to queue more than $255$ messages throw an exception with [exit code 33
 
 ### sendRawMessageReturnForwardFee
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -333,7 +333,7 @@ The `sendRawMessageReturnForwardFee(){:tact}` function may throw the following e
 
 ### nativeSendMessage
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Deprecated since Tact 1.6.6" variant="tip" size="medium"/><p/>
 
 Use [`sendRawMessage(){:tact}`](#sendrawmessage) instead.
@@ -348,7 +348,7 @@ Attempts to queue more than $255$ messages throw an exception with [exit code 33
 
 ### nativeSendMessageReturnForwardFee
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Deprecated since Tact 1.6.6" variant="tip" size="medium"/><p/>
 
 Use [`sendRawMessageReturnForwardFee(){:tact}`](#sendrawmessagereturnforwardfee) instead.

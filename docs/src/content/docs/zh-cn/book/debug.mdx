@@ -261,7 +261,7 @@ it('should increase counter', async () => {
 :::note
 
   请参阅 [Sandbox][sb] 文档中的更多测试示例：\
-  [测试流程 (FunC)](https://github.com/ton-org/sandbox/blob/main/docs/testing-key-points.md)\
+  [测试流程](https://github.com/ton-org/sandbox/blob/main/docs/testing-key-points.md)\
   [为 Tact 编写测试](https://github.com/ton-org/sandbox/blob/main/docs/tact-testing-examples.md)
 
 :::
@@ -697,7 +697,7 @@ bounced(msg: YourMessage) {
 
    在 Linux 或 macOS 上，它看起来就像这样：
 
-   ```json filename="package.json" {3}
+   ```json title="package.json" {3}
    {
      "scripts": {
        "lab": "blueprint build --all 1>/dev/null && yarn test -t plays"
@@ -707,7 +707,7 @@ bounced(msg: YourMessage) {
 
    下面是它在 Windows 上的样子：
 
-   ```json filename="package.json" {3-4}
+   ```json title="package.json" {3-4}
    {
      "scripts": {
        "build": "blueprint build --all | out-null",

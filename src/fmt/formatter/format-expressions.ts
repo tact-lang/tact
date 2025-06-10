@@ -373,6 +373,8 @@ const formatStructInstance: FormatRule = (code, node) => {
         throw new Error("Invalid struct instance");
     }
 
+    const endIndex = childLeafIdxWithText(fields, "}");
+
     code.apply(formatType, type).space();
 
     formatSeparatedList(
@@ -405,7 +407,7 @@ const formatStructInstance: FormatRule = (code, node) => {
         },
         {
             startIndex: 1,
-            endIndex: -1,
+            endIndex,
             wrapperLeft: "{",
             wrapperRight: "}",
             extraWrapperSpace: " ",
@@ -423,7 +425,6 @@ const formatStructInstance: FormatRule = (code, node) => {
         },
     );
 
-    const endIndex = childLeafIdxWithText(fields, "}");
     formatTrailingComments(code, fields, endIndex, true);
 };
 
@@ -433,6 +434,44 @@ interface ChainCall {
     trailingComments: CstNode[];
     hasLeadingNewline: boolean;
 }
+
+const findTrailingComments = (node: Cst): Cst[] => {
+    if (node.$ === "leaf") return [];
+    if (node.children.some((it) => isComment(it))) {
+        // backtrace from the end to find only comments that are not part of the expression
+        // for example,
+        // 100 // comment
+        //     ^^^^^^^^^^ needed comment
+        //
+        // 100 + /* foo */ 200
+        //       ^^^^^^^^^ inside expression
+        let lastIndex = node.children.length - 1;
+        for (let i = lastIndex; i >= 0; i--) {
+            const child = node.children[i];
+            if (!child) continue;
+            if (child.$ === "leaf" && child.text.includes("\n")) continue;
+            if (child.$ === "node" && child.type === "Comment") continue;
+            lastIndex = i;
+            break;
+        }
+        // return only trailing comments
+        return node.children.slice(lastIndex);
+    }
+
+    const lastChildren = node.children.at(-1);
+    if (!lastChildren) return [];
+    return findTrailingComments(lastChildren);
+};
+
+const hasTrailingCommentOnNextLine = (node: Cst): boolean => {
+    if (node.$ === "leaf") return false;
+    const trailingComments = findTrailingComments(node);
+    const multiline = trailingComments.some(
+        (it) => it.$ === "leaf" && it.text.includes("\n"),
+    );
+    const hasComments = trailingComments.some((it) => isComment(it));
+    return multiline && hasComments;
+};
 
 const formatSuffix: FormatRule = (code, node) => {
     const suffixes = childByField(node, "suffixes");
@@ -449,12 +488,14 @@ const formatSuffix: FormatRule = (code, node) => {
     // foo.bar()
     // ^^^
     const firstExpression = node.children.at(0);
+    if (!firstExpression) return;
+
     // foo.bar()
     //        ^^
     const firstSuffix = suffixesList.at(0);
     const secondSuffix = suffixesList.at(1);
 
-    // first call suffix attached to first expression
+    // first call suffix attached to the first expression
     const firstSuffixIsCallOrNotNull =
         firstSuffix &&
         firstSuffix.$ === "node" &&
@@ -464,8 +505,8 @@ const formatSuffix: FormatRule = (code, node) => {
         suffixesList = suffixesList.slice(1);
     }
 
-    suffixesList.forEach((suffix) => {
-        if (suffix.$ !== "node") return;
+    for (const suffix of suffixesList) {
+        if (suffix.$ !== "node") continue;
 
         if (suffix.type === "SuffixFieldAccess") {
             const name = childByField(suffix, "name");
@@ -500,15 +541,13 @@ const formatSuffix: FormatRule = (code, node) => {
                 lastInfo.nodes.push(suffix);
             }
         }
-    });
+    }
 
     const indent = infos.slice(0, -1).some((call) => call.hasLeadingNewline)
         ? 4
         : 0;
 
-    if (firstExpression) {
-        formatExpression(code, firstExpression);
-    }
+    formatExpression(code, firstExpression);
 
     if (firstSuffixIsCallOrNotNull) {
         formatExpression(code, firstSuffix);
@@ -530,16 +569,17 @@ const formatSuffix: FormatRule = (code, node) => {
                 (call) =>
                     call.leadingComments.length > 0 ||
                     call.trailingComments.length > 0,
-            );
+            ) ||
+        hasTrailingCommentOnNextLine(firstExpression);
 
     if (shouldBeMultiline) {
         code.indent();
         code.newLine();
 
         infos.forEach((info, index) => {
-            info.nodes.forEach((child) => {
+            for (const child of info.nodes) {
                 code.apply(formatExpression, child);
-            });
+            }
 
             if (index !== infos.length - 1) {
                 code.newLine();
@@ -548,11 +588,11 @@ const formatSuffix: FormatRule = (code, node) => {
 
         code.dedent();
     } else {
-        infos.forEach((info) => {
-            info.nodes.forEach((child) => {
+        for (const info of infos) {
+            for (const child of info.nodes) {
                 code.apply(formatExpression, child);
-            });
-        });
+            }
+        }
     }
 
     return;

@@ -5,15 +5,134 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOCS.md).
+
 ## [Unreleased]
+
+### Code generation
+
+- Reordered arguments of the `__tact_store_address_opt` function to optimize gas consumption: PR [#3333](https://github.com/tact-lang/tact/pull/3333)
+
+## [1.6.13] - 2025-05-29
+
+### Language features
+
+- Support `fromCell()` and `fromSlice()` methods on contract types: PR [#3305](https://github.com/tact-lang/tact/pull/3305)
+
+### Release contributors
+
+- [Anton Trunov](https://github.com/anton-trunov)
+- [Novus Nota](https://github.com/novusnota)
+
+## [1.6.12] - 2025-05-27
+
+### Language features
+
+- Support `toCell()` and `toSlice()` methods on contract types: PR [#3274](https://github.com/tact-lang/tact/pull/3274)
+- No explicit re-declarations for abstract methods and constants in traits: PR [#3272](https://github.com/tact-lang/tact/pull/3272)
+- A more informative error message if two `require()` calls have the same generated error code: PR [#3286](https://github.com/tact-lang/tact/pull/3286)
+
+### Code generation
+
+- Inline message deserialization for better gas consumption: PR [#2993](https://github.com/tact-lang/tact/pull/2993)
+
+### Docs
+
+- Completely reworked the functions page: PR [#3076](https://github.com/tact-lang/tact/pull/3076), PR [#3277](https://github.com/tact-lang/tact/pull/3277)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+- [Novus Nota](https://github.com/novusnota)
+- [Anton Trunov](https://github.com/anton-trunov)
+
+## [1.6.11] - 2025-05-26
+
+### Language features
+
+- [fix] Better error message when an integer key or value in a map literal is out of its serialization range: PR [#3285](https://github.com/tact-lang/tact/pull/3285)
+- [fix] Balanced quotation in error messages for out-of-project-root imports: PR [#3242](https://github.com/tact-lang/tact/pull/3242)
+- [fix] Disallow self-inheritance for contracts and traits: PR [#3094](https://github.com/tact-lang/tact/pull/3094)
+- [fix] Added fixed-bytes support to bounced message size calculations: PR [#3129](https://github.com/tact-lang/tact/pull/3129)
+- [fix] Fixed compiler errors for trait return types: PR [#3197](https://github.com/tact-lang/tact/pull/3197)
+- [fix] Added checks for trait returns in non-shuffle asm functions: PR [#3197](https://github.com/tact-lang/tact/pull/3197)
+- [fix] Allow equivalent `as`-annotations for maps types: PR [#3172](https://github.com/tact-lang/tact/pull/3172)
+- [fix] Added static/instance checks for core static methods: PR [#3119](https://github.com/tact-lang/tact/pull/3119)
+- [fix] Compiler now correctly counts the size of fields for maps in bounced messages: PR [#3255](https://github.com/tact-lang/tact/pull/3255)
+- [fix] Compiler now allows `bounced<T>` as a return type of assembly functions: PR [#3259](https://github.com/tact-lang/tact/pull/3259)
+
+### Code generation
+
+- Compiler now generates more efficient code for slice serialization: PR [#3213](https://github.com/tact-lang/tact/pull/3213)
+- Improve gas consumption for equality comparisons of optionals: PR [#3233](https://github.com/tact-lang/tact/pull/3233)
+- Improve gas consumption for deserialization of optional addresses: PR [#3225](https://github.com/tact-lang/tact/pull/3225)
+- [fix] Detect out-of-range exit codes for the special case of a fallback receiver with `throw`: PR [#3244](https://github.com/tact-lang/tact/pull/3244)
+- [fix] Correct transformation of binary and octal message opcodes to hexadecimal format: PR [#3239](https://github.com/tact-lang/tact/pull/3239)
+- [fix] Added escaping of special-chars in receiver comments break FunC compilation: PR [#3234](https://github.com/tact-lang/tact/pull/3234)
+- [fix] Disable optimization of optional integer comparisons that leads to runtime exceptions: PR [#3210](https://github.com/tact-lang/tact/pull/3210)
+- [fix] Compiler now doesn't generate `__tact_nop()` for `dump()` and `dumpStack()` in default mode: PR [#3218](https://github.com/tact-lang/tact/pull/3218)
+- [fix] Correct long struct tuple destruction: PR [#3105](https://github.com/tact-lang/tact/pull/3105)
+- Compiler now generates more efficient code for `if-throw` pattern with `throw_if/throw_unless` call: PR [#3216](https://github.com/tact-lang/tact/pull/3216)
+- [fix] Arguments of the `==` and `!=` operators get evaluated in the left-to-right order: PR [#3252](https://github.com/tact-lang/tact/pull/3252)
+
+### Docs
+
+- Changed the title of the "Gas-expensive" badge to "500+ gas" to avoid confusion when discussing relative gas-efficiency: PR [#3120](https://github.com/tact-lang/tact/pull/3120)
+- Added description of `safety`-related `tact.config.json` options to gas and security best practice pages: PR [#3206](https://github.com/tact-lang/tact/pull/3206)
+
+### Release contributors
+
+- [hazyone](https://github.com/hazyone)
+- [lordivash](https://github.com/lordivash)
+- [Novus Nota](https://github.com/novusnota)
+- [Daniil Sedov](https://github.com/Gusarich)
+- [Petr Makhnev](https://github.com/i582)
+- [Andrew Gutarev](https://github.com/pyAndr3w)
+- [Anton Trunov](https://github.com/anton-trunov)
+
+## [1.6.10] - 2025-05-16
+
+### Infrastructure
+
+- [fix] Explicit dependencies to fix Blueprint integration: PR [#3088](https://github.com/tact-lang/tact/pull/3088)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+- [verytactical](https://github.com/verytactical)
+
+## [1.6.9] - 2025-05-16
+
+### TypeScript third-party API
+
+- [fix] Move logs-related TS files to separate folder: PR [#3082](https://github.com/tact-lang/tact/pull/3082)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+
+## [1.6.8] - 2025-05-16
+
+### Breaking changes
+
+- [stdlib] Compiler now reports an error if `VarAddress` or `parseVarAddress()` is used, since starting
+  from [TVM 10](https://github.com/ton-blockchain/ton/blob/master/doc/GlobalVersions.md#version-10) they are mostly not supported: PR [#3067](https://github.com/tact-lang/tact/pull/3067).
 
 ### Language features
 
 - [fix] Compiler now correctly handles optional slices, builders, and strings when generating serialization logic: PR [#3053](https://github.com/tact-lang/tact/pull/3053)
+- [fix] Compiler now disallows type usages as value (e.g. `let x = Int` or `let x = MyStruct`): PR [#3065](https://github.com/tact-lang/tact/pull/3065)
+
+### Code generation
+
+- Use FunC and Fift WASM build [v2025.04](https://github.com/ton-blockchain/ton/releases/tag/v2025.04): PR [#3077](https://github.com/tact-lang/tact/pull/3077)
 
 ### Tooling
 
 - [fix] Formatter now correctly handles floating comments: PR [#2995](https://github.com/tact-lang/tact/pull/2995)
+- [fix] Formatter now correctly handles inline comments after the last declaration: PR [#3064](https://github.com/tact-lang/tact/pull/3064)
+- [fix] Formatter now correctly handles floating comments after import: PR [#3071](https://github.com/tact-lang/tact/pull/3071)
+- [fix] Formatter now better supports comments inside chained method calls: PR [#3070](https://github.com/tact-lang/tact/pull/3070)
 
 ### Docs
 
@@ -24,11 +143,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented that map key-value types and the inner message type of the `bounced<M>` type constructor cannot be nullable: PR [#3017](https://github.com/tact-lang/tact/pull/3017)
 - Lowercased "Struct" everywhere except at the beginning of sentences: PR [#3021](https://github.com/tact-lang/tact/pull/3021)
 - Reworked the optionals page: PR [#3002](https://github.com/tact-lang/tact/pull/3002)
+- Made the low-level representation of maps more apparent: PR [#3080](https://github.com/tact-lang/tact/pull/3080)
 
 ### Release contributors
 
 - [Novus Nota](https://github.com/novusnota)
 - [Petr Makhnev](https://github.com/i582)
+- [Daniil Sedov](https://github.com/Gusarich)
+- [skywardboundd](https://github.com/skywardboundd)
+- [xpyctumo](https://github.com/xpyctumo)
 
 ## [1.6.7] - 2025-04-24
 

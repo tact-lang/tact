@@ -1564,6 +1564,44 @@ describe("should format", () => {
                 }
             `),
             );
+
+            it(
+                "multiline struct instance with method call",
+                intact(`
+                    fun foo() {
+                        let x = Foo {
+                            name: "test",
+                            value: 123,
+                        }.toCell();
+                    }
+                `),
+            );
+
+            it(
+                "multiline struct instance with method call and inline comment",
+                intact(`
+                    fun foo() {
+                        let x = Foo { // comment
+                            name: "test",
+                            value: 123,
+                        }.toCell();
+                    }
+                `),
+            );
+
+            it(
+                "multiline struct instance with method call and inline comment with newline",
+                intact(`
+                    fun foo() {
+                        let x = Foo {
+                            name: "test",
+                            value: 123,
+                        }
+                        // convert to cell
+                            .toCell();
+                    }
+                `),
+            );
         });
 
         describe("format expressions with extra spaces", () => {

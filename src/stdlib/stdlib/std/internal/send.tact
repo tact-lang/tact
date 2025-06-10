@@ -31,7 +31,7 @@ const SendRemainingBalance: Int = 128;
 ///
 const SendOnlyEstimateFee: Int = 1024;
 
-/// **Deprecated** since Tact 1.6.5.
+/// **Deprecated** since Tact 1.6.5. Use `SendPayFwdFeesSeparately` instead.
 ///
 /// Pay forward fees separately from the message value.
 ///
@@ -565,9 +565,7 @@ asm fun cashback(to: Address) {
     SENDRAWMSG
 }
 
-/// Global function. **Deprecated** since Tact 1.6.6.
-///
-/// Use `sendRawMessage()` instead.
+/// Global function. **Deprecated** since Tact 1.6.6. Use `sendRawMessage()` instead.
 ///
 /// Queues the message to be sent by specifying the complete `msg` cell and the message `mode`.
 ///
@@ -603,9 +601,7 @@ asm fun nativeSendMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 ///
 asm fun sendRawMessage(msg: Cell, mode: Int) { SENDRAWMSG }
 
-/// Global function. **Deprecated** since Tact 1.6.6.
-///
-/// Use `sendRawMessageReturnForwardFee()` instead.
+/// Global function. **Deprecated** since Tact 1.6.6. Use `sendRawMessageReturnForwardFee()` instead.
 ///
 /// Similar to `sendRawMessage()`, but also calculates and returns the forward fee in nanoToncoin.
 ///
@@ -708,12 +704,25 @@ asm fun acceptMessage() { ACCEPT }
 /// Global function.
 ///
 /// Commits the current state of registers `c4` (persistent data) and `c5` (actions), so that the current execution is considered "successful" with the saved values even if an exception in compute phase is thrown later.
-//
+///
 /// ```tact
-/// fun example() {
-///     commit();  // now, transaction is considered "successful"
-///     throw(42); // and this won't fail it
+/// contract WalletV4(
+///     seqno: Int as uint32,
+///     // ...other parameters...
+/// ) {
+///     // ...
+///     external(_: Slice) {
+///         // ...various prior checks...
+///
+///         acceptMessage();
+///         self.seqno += 1;
+///         setData(self.toCell());
+///         commit(); //  now, transaction is considered "successful"
+///         throw(42); // and this won't fail it
+///     }
 /// }
+///
+/// asm fun setData(data: Cell) { c4 POP }
 /// ```
 ///
 /// See: https://docs.tact-lang.org/ref/core-contextstate#commit

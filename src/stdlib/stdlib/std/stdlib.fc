@@ -19,11 +19,11 @@
 {-
   # Tuple manipulation primitives
   The names and the types are mostly self-explaining.
-  See [polymorhism with forall](https://ton.org/docs/#/func/functions?id=polymorphism-with-forall)
+  See [polymorphism with forall](https://ton.org/docs/#/func/functions?id=polymorphism-with-forall)
   for more info on the polymorphic functions.
 
   Note that currently values of atomic type `tuple` can't be cast to composite tuple type (e.g. `[int, cell]`)
-  and vise versa.
+  and vice versa.
 -}
 
 {-
@@ -443,7 +443,7 @@ builder store_ref(builder b, cell c) asm(c b) "STREF";
 
 
 ;;; Stores `slice` [s] into `builder` [b]
-builder store_slice(builder b, slice s) asm "STSLICER";
+builder store_slice(builder b, slice s) asm(s b) "STSLICE";
 
 ;;; Stores (serializes) an integer [x] in the range `0..2^120 − 1` into `builder` [b].
 ;;; The serialization of [x] consists of a 4-bit unsigned big-endian integer `l`,
@@ -664,7 +664,7 @@ int get_seed() impure asm "RANDSEED";
 ;;; Equivalent to randomize(cur_lt());.
 () randomize_lt() impure asm "LTIME" "ADDRAND";
 
-;;; Checks whether the data parts of two slices coinside
+;;; Checks whether the data parts of two slices coincide
 int equal_slices_bits(slice a, slice b) asm "SDEQ";
 ;;; Checks whether b is a null. Note, that FunC also has polymorphic null? built-in.
 int builder_null?(builder b) asm "ISNULL";

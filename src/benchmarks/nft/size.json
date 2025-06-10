@@ -1,0 +1,214 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "size": {
+        "collection cells": "38",
+        "collection bits": "7819",
+        "item cells": "16",
+        "item bits": "4039"
+      },
+      "pr": "https://github.com/ton-blockchain/token-contract/tree/main/nft"
+    },
+    {
+      "label": "Tact",
+      "size": {
+        "collection cells": "44",
+        "collection bits": "25642",
+        "item cells": "12",
+        "item bits": "7330"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/2479"
+    },
+    {
+      "label": "1.6.4 with constructor instead of lazy bit",
+      "pr": "https://github.com/tact-lang/tact/pull/2479",
+      "size": {
+        "collection cells": "42",
+        "collection bits": "22417",
+        "item cells": "11",
+        "item bits": "6410"
+      }
+    },
+    {
+      "label": "1.6.4 with lazy bit",
+      "pr": "https://github.com/tact-lang/tact/pull/2479",
+      "size": {
+        "collection cells": "43",
+        "collection bits": "24074",
+        "item cells": "11",
+        "item bits": "6930"
+      }
+    },
+    {
+      "label": "1.6.4 with Use structs in init",
+      "pr": "https://github.com/tact-lang/tact/pull/2479",
+      "size": {
+        "collection cells": "42",
+        "collection bits": "23802",
+        "item cells": "11",
+        "item bits": "6850"
+      }
+    },
+    {
+      "label": "1.6.5 store optional cells with store_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2647",
+      "size": {
+        "collection cells": "42",
+        "collection bits": "23690",
+        "item cells": "11",
+        "item bits": "6794"
+      }
+    },
+    {
+      "label": "1.6.5 with load optional cells with load_maybe_ref",
+      "pr": "https://github.com/tact-lang/tact/pull/2661",
+      "size": {
+        "collection cells": "44",
+        "collection bits": "23354",
+        "item cells": "12",
+        "item bits": "6626"
+      }
+    },
+    {
+      "label": "1.6.5 with zero comparison optimization",
+      "pr": "https://github.com/tact-lang/tact/pull/2655",
+      "size": {
+        "collection cells": "44",
+        "collection bits": "23146",
+        "item cells": "12",
+        "item bits": "6530"
+      }
+    },
+    {
+      "label": "1.6.6 with deployNFTItem outside contract",
+      "pr": null,
+      "size": {
+        "collection cells": "43",
+        "collection bits": "22786",
+        "item cells": "12",
+        "item bits": "6530"
+      }
+    },
+    {
+      "label": "1.6.6 with optimized builder storage",
+      "pr": "https://github.com/tact-lang/tact/pull/2836",
+      "size": {
+        "collection cells": "43",
+        "collection bits": "22386",
+        "item cells": "12",
+        "item bits": "6530"
+      }
+    },
+    {
+      "label": "1.6.6 with optimized __tact_store_address_opt",
+      "pr": "https://github.com/tact-lang/tact/pull/2834",
+      "size": {
+        "collection cells": "43",
+        "collection bits": "22322",
+        "item cells": "12",
+        "item bits": "6498"
+      }
+    },
+    {
+      "label": "1.6.6 with contract parameters",
+      "pr": "https://github.com/tact-lang/tact/pull/2866",
+      "size": {
+        "collection cells": "40",
+        "collection bits": "20692",
+        "item cells": "10",
+        "item bits": "5601"
+      }
+    },
+    {
+      "label": "1.6.6 with init parameter with as type",
+      "pr": "https://github.com/tact-lang/tact/pull/2890",
+      "size": {
+        "collection cells": "39",
+        "collection bits": "20572",
+        "item cells": "10",
+        "item bits": "5601"
+      }
+    },
+    {
+      "label": "1.6.7 with using .fromSlice instead of self parsing",
+      "pr": "https://github.com/tact-lang/tact/pull/2984",
+      "size": {
+        "collection cells": "39",
+        "collection bits": "20612",
+        "item cells": "10",
+        "item bits": "5625"
+      }
+    },
+    {
+      "label": "1.6.10 with store_slice optimization",
+      "pr": "https://github.com/tact-lang/tact/pull/3213",
+      "size": {
+        "collection cells": "38",
+        "collection bits": "20444",
+        "item cells": "10",
+        "item bits": "5609"
+      }
+    },
+    {
+      "label": "1.6.10 with optimized __tact_load_address_opt",
+      "pr": "https://github.com/tact-lang/tact/pull/3225",
+      "size": {
+        "collection cells": "38",
+        "collection bits": "20156",
+        "item cells": "10",
+        "item bits": "5465"
+      }
+    },
+    {
+      "label": "1.6.10 with nullable-to-non-nullable comparisons reorder",
+      "pr": "https://github.com/tact-lang/tact/pull/3233",
+      "size": {
+        "collection cells": "38",
+        "collection bits": "20140",
+        "item cells": "10",
+        "item bits": "5457"
+      }
+    },
+    {
+      "label": "1.6.10 with correct evaluation order for binary expressions",
+      "pr": "https://github.com/tact-lang/tact/pull/3252",
+      "size": {
+        "collection cells": "38",
+        "collection bits": "20116",
+        "item cells": "10",
+        "item bits": "5449"
+      }
+    },
+    {
+      "label": "1.6.11 with inline message loading",
+      "pr": "https://github.com/tact-lang/tact/pull/2993",
+      "size": {
+        "collection cells": "38",
+        "collection bits": "19956",
+        "item cells": "10",
+        "item bits": "5393"
+      }
+    },
+    {
+      "label": "1.6.11 with optimized send",
+      "pr": null,
+      "size": {
+        "collection cells": "39",
+        "collection bits": "19604",
+        "item cells": "10",
+        "item bits": "5217"
+      }
+    },
+    {
+      "label": "1.6.13 with reordered __tact_store_address_opt arguments",
+      "pr": "https://github.com/tact-lang/tact/pull/3333",
+      "size": {
+        "collection cells": "39",
+        "collection bits": "19524",
+        "item cells": "10",
+        "item bits": "5185"
+      }
+    }
+  ]
+}

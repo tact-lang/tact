@@ -18,7 +18,7 @@ The summaries include information like
 
 Currently, Tact does not have a (formal) language specification, so one needs to consult the [Tact docs](https://docs.tact-lang.org) and the tests in this repository.
 
-The list of known bugs can be obtained using the following GitHub request: <https://github.com/tact-lang/tact/issues?q=is%3Aopen+is%3Aissue+label%3Abug>.
+The list of known bugs can be obtained using the following GitHub request: <https://github.com/tact-lang/tact/issues?q=is%3Aopen%20is%3Aissue%20label%3A%22kind%3A%20bug%22>.
 
 The document outlines how you can contribute and provides information about different components of the compiler, including their entry points.
 
@@ -359,7 +359,7 @@ The code generator lives in the [`src/generator`](../src/generator) sub-folder w
 The implementation that we have right now is being refactored to produce FunC ASTs and then pretty-print those ASTs as strings instead of producing source FunC code in one step. Here is the relevant pull request: <https://github.com/tact-lang/tact/pull/559>.
 
 One can find the end-to-end codegen test spec files in the [`src/test/e2e-emulated`](../src/test/e2e-emulated) folder. The test contracts are located in the subfolders of the [`src/test/e2e-emulated`](../src/test/e2e-emulated) folder. Many of those spec files test various language features in relative isolation.
-An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [`src/test/e2e-emulated/semantics.spec.ts`](../src/test/e2e-emulated/functions/semantics.spec.ts).
+An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [`src/test/e2e-emulated/functions/semantics.spec.ts`](../src/test/e2e-emulated/functions/semantics.spec.ts).
 
 Contracts with `inline` in the name of the file set `experimental.inline` config option to `true`.
 Contracts with `external` in the name of the file set the `external` config option to `true`.
@@ -380,13 +380,14 @@ Benchmarks are located inside `src/benchmarks/`, one directory per benchmark:
 
 #### File & folder roles
 
-| Path / file              | Purpose                                                  |
-| ------------------------ | -------------------------------------------------------- |
-| `tact/`                  | Tact project that is being benchmarked                   |
-| `func/`                  | Equivalent FunC project that we compare against          |
-| `<benchmark>.spec.ts`    | Jest test spec that prepares and runs the benchmark      |
-| `results_gas.json`       | Aggregated gas‑consumption results, updated by the CLI   |
-| `results_code_size.json` | Contract byte‑code size history, also updated by the CLI |
+| Path / file     | Purpose                                                  |
+| --------------- | -------------------------------------------------------- |
+| `tact/`         | Tact project that is being benchmarked                   |
+| `func/`         | Equivalent FunC project that we compare against          |
+| `test.spec.ts`  | Jest test spec for contract functionality testing        |
+| `bench.spec.ts` | Jest test spec for performance benchmarking              |
+| `gas.json`      | Aggregated gas‑consumption results, updated by the CLI   |
+| `size.json`     | Contract byte‑code size history, also updated by the CLI |
 
 > **CLI support** – All commands for creating, updating, or comparing benchmarks are documented in the [Updating Benchmarks](#benchmarks) section.
 
@@ -422,4 +423,4 @@ yarn random-ast 42
 
 It will produce 42 random expressions and pretty-print them in the terminal.
 
-The implementation can be found in [`random-ast.ts`](../src/ast/random-ast.ts).
+The implementation can be found in [`random-ast.infra.ts`](../src/ast/random-ast.infra.ts).
