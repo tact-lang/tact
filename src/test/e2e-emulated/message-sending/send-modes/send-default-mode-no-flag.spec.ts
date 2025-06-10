@@ -96,7 +96,7 @@ describe("SendDefaultMode with no flags", () => {
       indicating that it will include 1 TON in the "value" of the message.
       The tester also includes in its request that the Calculator should pay 1 TON when it sends its response back to the tester.
 
-   3) During the action phase, message forward fees will be deducted from the 1 TON payed by the tester. The message is sent
+   3) During the action phase, message forward fees will be deducted from the 1 TON paid by the tester. The message is sent
       to the calculator with a final value of: "1 TON - message forward fees". Call this value "ReqV" (i.e., Request Value).
 
    4) The calculator receives the message. An amount of ReqV TONs (i.e., the value in the incoming message)
@@ -108,7 +108,7 @@ describe("SendDefaultMode with no flags", () => {
    6) The calculator creates an AverageResult message (SendDefaultMode with no flags),
       indicating that it will include 1 TON in the "value" of the message.
 
-   7) During the action phase of the calculator, message forward fees will be deducted from the 1 TON payed by the calculator.
+   7) During the action phase of the calculator, message forward fees will be deducted from the 1 TON paid by the calculator.
       The message is sent to the tester with a final value of: "1 TON - message forward fees".
       Call this value "ResV" (i.e., Response Value).
 
@@ -211,8 +211,8 @@ describe("SendDefaultMode with no flags", () => {
 
        The following figure may help in visualizing the above concepts:
 
-       Imagine this chunk represents the amount payed by the contract in its send function, for example, the 1 TON
-       payed by the tester in its request to the calculator:
+       Imagine this chunk represents the amount paid by the contract in its send function, for example, the 1 TON
+       paid by the tester in its request to the calculator:
 
        |-----------------------------------------------|
 
@@ -327,7 +327,7 @@ describe("SendDefaultMode with no flags", () => {
           This means that the request never reaches the calculator.
 
        4) The tester's transaction is rolled back. The tester contract field "val" is reset to -1 ("initial state").
-          However, the tester contract still payed for the transaction fees.
+          However, the tester contract still paid for the transaction fees.
 
 
        Summary of transactions:
@@ -427,7 +427,7 @@ describe("SendDefaultMode with no flags", () => {
         const finalValue = await tester.getCurrentResult();
         expect(finalValue.toString()).toBe("-1");
 
-        // Check that the tester contract actually payed for the transaction fees even though its
+        // Check that the tester contract actually paid for the transaction fees even though its
         // transaction was rolled back. This is checked as follows:
         // IF we remove from the FINAL balance these two items:
         // - the initial balance.
@@ -436,12 +436,12 @@ describe("SendDefaultMode with no flags", () => {
         const incomingMessageInfo = getMessageInfo(
             ensureMessageIsDefined(testerRequestTsx.inMessage),
         );
-        const expectedPayedTotalFees = -(
+        const expectedPaidTotalFees = -(
             testerBalanceAfter -
             testerBalanceBefore -
             incomingMessageInfo.value
         );
-        expect(computeErrorIntervalOfNumber(expectedPayedTotalFees)).toContain(
+        expect(computeErrorIntervalOfNumber(expectedPaidTotalFees)).toContain(
             testerRequestTsx.totalFees.coins.toString(),
         );
     });
@@ -667,7 +667,7 @@ describe("SendDefaultMode with no flags", () => {
         ).toContain(calculatorBalanceAfter.toString());
 
         // Additionally, we should expect that the balance for the calculator did not change
-        // because it payed its transaction fees from the value of the incoming message
+        // because it paid its transaction fees from the value of the incoming message
         // and then sent the remaining value back to the tester.
         // Indeed, if we expand the terms of the delta for the calculator, we get:
         //     delta = inValue - totalFees - outMsg.value - outMsg.validatorsForwardFee
@@ -883,7 +883,7 @@ describe("SendDefaultMode with no flags", () => {
         ).toContain(calculatorBalanceAfter.toString());
 
         // Additionally, we should expect that the balance for the calculator did not change
-        // because it payed its transaction fees from the value of the incoming message,
+        // because it paid its transaction fees from the value of the incoming message,
         // which then depleted during the computation phase.
         // Indeed, if we expand the terms of the delta for the calculator, we get:
         //     delta = inValue - totalFees - outMsg.value - outMsg.validatorsForwardFee
@@ -1115,10 +1115,10 @@ function computeBalanceDelta(
             1) The value of the incoming message is added to the contract's balance. This explains the positive sign in inValue.
             2) All transaction fees are subtracted from the contract's balance. This explains the negative sign in totalFees.
             3) For the outbound message, we need to remove from the contract's balance the amount set in the send function.
-               However, we need to be careful. Why? Recall the diagram of how the amount payed by the contract in the send function
+               However, we need to be careful. Why? Recall the diagram of how the amount paid by the contract in the send function
                is split into "final value", message forward fees (msg_fwd_fee), forward fees for validators (fwd_fee), and action fees:
 
-               ----Total amount payed by contract in the send function-------
+               ----Total amount paid by contract in the send function-------
                |                                                            |
                v                                                            v
                |------------------------------|--------------|--------------|
@@ -1127,7 +1127,7 @@ function computeBalanceDelta(
                                                ---------msg_fwd_fee-----------
 
                 Note that in the formula for the totalFees, the action fees already occur as a term. Therefore, if we subtract
-                the total amount payed by the contract in the send function, we would be subtracting the action fees TWICE.
+                the total amount paid by the contract in the send function, we would be subtracting the action fees TWICE.
                 Hence, we should only subtract the "final value" (contained in outMsgInfo.value)
                 and the forward fees for validators (contained in outMsgInfo.validatorsForwardFee).
 

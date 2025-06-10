@@ -11,6 +11,7 @@ The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOC
 
 ### Code generation
 
+- Reordered arguments of the `__tact_store_address_opt` function to optimize gas consumption: PR [#3333](https://github.com/tact-lang/tact/pull/3333)
 - Don't load contract state unless getter reads or writes it: PR [#3364](https://github.com/tact-lang/tact/pull/3364)
 
 ### Release contributors

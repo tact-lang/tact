@@ -107,6 +107,15 @@
         "burn": "12027",
         "discovery": "5818"
       }
+    },
+    {
+      "label": "1.6.13 with reordered __tact_store_address_opt arguments",
+      "pr": "https://github.com/tact-lang/tact/pull/3333",
+      "gas": {
+        "transfer": "15635",
+        "burn": "12027",
+        "discovery": "5818"
+      }
     }
   ]
 }
