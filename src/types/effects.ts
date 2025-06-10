@@ -234,8 +234,7 @@ function expressionEffects(
         case "address":
         case "cell":
         case "struct_value":
-        case "map_value":
-        case "code_of": {
+        case "map_value": {
             return new Set<Effect>();
         }
         case "op_binary": {
@@ -276,7 +275,15 @@ function expressionEffects(
             );
             return unionAll([conditionEffects, thenEffects, elseEffects]);
         }
-        case "init_of":
+        case "code_of":
+        case "init_of": {
+            // In case of recursive contracts, their code is put into a global variable (`tact_child_contract_codes`)
+            // which is initialized in `*$contract_load` function. If we assume that there are no effects here,
+            // then there may be a situation when there is no value in the global variable with contract codes.
+            // And because of this, `initOf` in the getter fails when it tries to parse the value of this global
+            // variable which is null.
+            return new Set<Effect>(["contractStorageRead"]);
+        }
         case "static_call": {
             // global (static) functions cannot change contract storage because of the call-by-value semantics, so we don't analyze their bodies
             return mapUnionAll(expr.args, (arg) =>
