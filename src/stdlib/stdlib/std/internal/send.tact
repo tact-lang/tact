@@ -628,7 +628,6 @@ asm fun acceptMessage() { ACCEPT }
 ///     }
 /// }
 ///
-/// asm fun setData(data: Cell) { c4 POP }
 /// ```
 ///
 /// See: https://docs.tact-lang.org/ref/core-contextstate#commit

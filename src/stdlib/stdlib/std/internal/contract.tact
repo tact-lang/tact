@@ -457,3 +457,20 @@ asm fun setSeed(seed: Int) { SETRAND }
 /// See: https://docs.tact-lang.org/ref/core-contextstate#mycode
 ///
 asm fun myCode(): Cell { MYCODE }
+
+/// Global function. Available since Tact 1.6.14.
+///
+/// Replaces the current contract's data with the new `data` provided as parameter. This function allows a contract to update its internal state.
+///
+/// ```tact
+/// fun example() {
+///     let newData: Cell = ...; // prepare new data
+///     setData(newData);
+/// }
+/// ```
+///
+/// Warning: Direct modification of contract data may break state consistency. It's recommended to use standard state update mechanisms.
+///
+/// See: https://docs.tact-lang.org/ref/core-contextstate#setdata
+///
+asm fun setData(data: Cell) { c4 POP }
