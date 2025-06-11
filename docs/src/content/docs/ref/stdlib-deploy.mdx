@@ -61,7 +61,9 @@ The trait `Deployable{:tact}` provides a unified mechanism for deployments by im
 
 All contracts are deployed by sending them a message. While any message can be used for this purpose, you can use the special [`Deploy{:tact}`](#deploy) message.
 
-This message has a single field, `queryId`, provided by the deployer (usually set to zero). If the deployment succeeds, the contract will reply with a [`DeployOk{:tact}`](#deployok) message and echo the same `queryId` in the response.
+This message has a single field, `queryId`, provided by the deployer and is usually set to zero. If the deployment succeeds, the contract will reply with a [`DeployOk{:tact}`](#deployok) message and echo the same `queryId` in the response.
+
+Beware that the receiver handling the `Deploy{:tact}` message sends the `DeployOk{:tact}` reply using the [`self.reply(){:tact}`](/ref/core-base#self-reply) function, which returns all excessive funds from the incoming message back to the sender. That is, contracts deployed using the `Deployable{:tact}` trait have a balance of 0 Toncoin after the deployment is completed.
 
 Source code:
 
