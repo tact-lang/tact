@@ -6,13 +6,84 @@ prev:
   label: Functions
 ---
 
-TON is a distributed blockchain, which means that communication between contracts is performed by sending and receiving messages. The most common type of message is the internal message - a message sent from one contract (or a wallet) to another.
+import { Badge } from '@astrojs/starlight/components';
+
+TON is a distributed blockchain, which means that communication between contracts is performed by sending and receiving messages. The most common type of message is the _internal message_ 0 a message sent from one contract (or a wallet) to another.
 
 ## Receive internal messages
 
 To receive a message of the required type, you need to declare a receiver function. For example, `receive("increment"){:tact}`. This notation means the declaration of a receiver function that will be called when a text with the value `"increment"{:tact}` is sent to the contract. The function body can modify the state of the contract and send messages to other contracts. It is impossible to call a receiver directly. If you need to reuse some logic, you can declare a function and call it from the receiver.
 
-There are several receiver functions. All receiver functions are processed in the order they are listed below. The first receiver that matches the message type processes the message:
+### Empty receiver
+
+This receiver specifically handles internal messages with no contents, i.e., the `null{:tact}` body. Note that as a function, it's own body doesn't have to be empty.
+
+```tact
+contract Emptiness() {
+    // This receiver handles `null` (empty) message bodies of internal messages.
+    receive() {
+        // Although you can use this receiver for anything,
+        // it's most common to utilize it for deployments and forward excess funds
+        // from the incoming message back to the sender's address.
+        cashback(sender());
+    }
+}
+```
+
+### Text receivers
+
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+There are two kinds of text receivers:
+
+* `receive("..."){:tact}` — the exact text receiver that handles specific string comments with the maximum length of 123 bytes
+* `receive(str: string){:tact}` — the catch-all string receiver that handles arbitrary string comments
+
+Processing and distinguishing text receivers, e.g., the comment receiver `receive("..."){:tact}` and the string receiver `receive(str: String){:tact}`, costs significantly more gas than [processing binary ones](#binary-receivers), such as `receive(){:tact}` or `receive(msg: MyMessage){:tact}`. Thus, it is recommended to [prefer binary receivers to text receivers](/book/gas-best-practices#prefer-binary-receivers-to-text-receivers).
+
+```tact
+contract CertainMD() {
+    receive("time changes everything") {
+        message(MessageParameters {
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue,
+            body: "Doing things changes things. Not doing things leaves things exactly as they were".asComment(),
+        });
+    }
+
+    receive(str: String) {
+        message(MessageParameters {
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue,
+            body: "Do I get bonus points if I act like I care?".asComment(),
+        });
+    }
+}
+```
+
+### Binary receivers
+
+If the message body starts with a recognized [opcode](/book/structs-and-messages#message-opcodes) of 4 non-zero bytes, that internal message will be handled with a corresponding binary receiver `receive(msg: MessageStruct){:tact}` or the catch-all slice receiver `receive(msg: Slice){:tact}`, if there is no binary receiver for that opcode.
+
+```tact
+// This message struct overrides its unique id (opcode) with 411,
+// which allows message bodies that start with such opcodes
+// to be recognized and handled by the respective binary receiver function.
+message(411) HandleMe {}
+
+contract Handler() {
+    receive(msg: HandleMe) {
+        let body = inMsg();
+        body.preloadUint(32) == HandleMe.opcode(); // true
+    }
+}
+```
+
+## Processing order
+
+All receiver functions are processed in the order they are listed below. The first receiver that matches the message type processes the message:
 
 * `receive(){:tact}` - called when an empty message is sent to the contract
 * `receive("message"){:tact}` - called when a text message with a specific comment is sent to the contract (maximum `"message"{:tact}` length is 123 bytes)
@@ -50,13 +121,7 @@ In a contract, the order of declaration of receivers has no effect on how receiv
 
 Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then when a message with the comment `"message"{:tact}` arrives, it will be processed by `receive(str: String){:tact}`. yet, the message with an empty comment `""{:tact}` will be processed by the empty body receiver, `receive(){:tact}`.
 
-Processing and distinguishing the text receivers, like the comment receiver `receive("..."){:tact}` and the string receiver `receive(str: String){:tact}`, costs significantly more gas than processing binary ones, such as `receive(){:tact}` or `receive(msg: MyMessage){:tact}`. Thus, it is recommended to [prefer binary receivers to text receivers](/book/gas-best-practices#prefer-binary-receivers-to-text-receivers).
-
-Note that the receiver `receive(msg: Slice){:tact}` acts as a fallback that catches all messages that did not match previous receivers in the execution order list.
-
-If there is no receiver to process a message type and the fallback receiver `receive(msg: Slice){:tact}` is not declared, the transaction will fail with exit code [130](/book/exit-codes/#130).
-
-Receivers accept all incoming funds by default. That is, without explicitly sending a message that will refund spare Toncoin with the [`cashback(){:tact}`](/ref/core-send#cashback) function, all the incoming message value will be kept by the contract.
+Note that the receiver `receive(msg: Slice){:tact}` acts as a fallback that catches all messages that did not match previous receivers in the execution order list. If there is no receiver to process a message type and the fallback receiver `receive(msg: Slice){:tact}` is not declared, the transaction will fail with exit code [130](/book/exit-codes/#130).
 
 Receivers accept all incoming funds by default. That is, without explicitly sending a message that will refund spare Toncoin with the [`cashback(){:tact}`](/ref/core-send#cashback) function, the contract will keep all the incoming message value.
 
