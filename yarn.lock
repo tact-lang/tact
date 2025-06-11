@@ -1376,13 +1376,14 @@
   resolved "https://npm.dev-internal.org/@tact-lang/opcode/-/opcode-0.0.14.tgz"
   integrity sha512-8FKHK2jwvViRBReO2t40DCkHAP9KPTRWZof4kdsAUJFlyeWIC8SsRQSl9QkZxF+48WvjDduKNqN5Ltb80paufA==
 
-"@tact-lang/opcode@^0.3.0":
-  version "0.3.1"
-  resolved "https://npm.dev-internal.org/@tact-lang/opcode/-/opcode-0.3.1.tgz#bd9c7b10771f7a100fe2e5e5f18b33350225dc96"
-  integrity sha512-DfLGz59yl0PPnqFnFzkwr20NNspe4ocZJlBgyTiikGxpS5932wE7Jb9tcKpLqVKzR0TFiqBK0RbOTHM3e6qCRA==
+"@tact-lang/opcode@^0.3.2":
+  version "0.3.2"
+  resolved "https://npm.dev-internal.org/@tact-lang/opcode/-/opcode-0.3.2.tgz#0d103c5c5d3360348bf72b1b20fc507066fc4e01"
+  integrity sha512-ZFsgOBTCxsKkYYOKomdaHMc8VSOFQKTbjLR1mYq6NFYyTdaz69gHEqgsIEZ0URSNWGg2er5H+LXlv8+8Tlt7sA==
   dependencies:
-    "@ton/core" "^0.60.0"
+    "@ton/core" "^0.61.0"
     "@ton/crypto" "^3.3.0"
+    "@ton/sandbox" "^0.32.2"
 
 "@tact-lang/ton-abi@^0.0.3":
   version "0.0.3"
@@ -1394,10 +1395,10 @@
   resolved "https://npm.dev-internal.org/@tact-lang/ton-jest/-/ton-jest-0.0.4.tgz"
   integrity sha512-FWjfiNvhMlE44ZLLL7tgmHbrszMTPMttmYiaTekf1vwFXV3uAOawM8xM9NldYaCVs9eh8840PjgISdMMUTCSCw==
 
-"@ton/core@0.60.1", "@ton/core@^0.60.0":
-  version "0.60.1"
-  resolved "https://npm.dev-internal.org/@ton/core/-/core-0.60.1.tgz#cc9a62fb308d7597b1217dc8e44c7e2dcc0aceaa"
-  integrity sha512-8FwybYbfkk57C3l9gvnlRhRBHbLYmeu0LbB1z9N+dhDz0Z+FJW8w0TJlks8CgHrAFxsT3FlR2LsqFnsauMp38w==
+"@ton/core@^0.61.0":
+  version "0.61.0"
+  resolved "https://npm.dev-internal.org/@ton/core/-/core-0.61.0.tgz#09b37801cb2f5a942020fcc992be1e99f4b16689"
+  integrity sha512-0qyVfP2dDue2bq80ydXggo2MlufcmzuFk6G94qRrZxvyQ3NSe4UeBTeRf1gQmN7tywgTsX2gS61e4yvJrlUu4Q==
   dependencies:
     symbol.inspect "1.0.1"
 
@@ -1417,10 +1418,10 @@
     jssha "3.2.0"
     tweetnacl "1.0.3"
 
-"@ton/sandbox@^0.32.1":
-  version "0.32.1"
-  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.32.1.tgz#129a7af8772e40cbd88cc3494c95858bc008d493"
-  integrity sha512-ejvuZnB15XkvOTAuELQDxDMV2e4dQbb1C2ZyJcKjblxfSY6ZnT0njBAujJhCA9QB0a68M96AIwSZok5yN5Ipbw==
+"@ton/sandbox@^0.32.2":
+  version "0.32.2"
+  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.32.2.tgz#e949d1df2ae98c1552901597200209163dd8cc42"
+  integrity sha512-D+Yuyka3pMuoD1KPufRGzE3iFZ0QLyba/xC5mfrXoLtV111ubKxc7RscndOsggeru0bdDYm0i/iaWO5YQWqUfw==
   dependencies:
     chalk "^4.1.2"
     table "^6.9.0"
