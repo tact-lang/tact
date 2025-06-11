@@ -36,6 +36,8 @@ $+2$       | `SendIgnoreErrors{:tact}`            | Ignore any errors arising wh
 $+16$      | `SendBounceIfActionFail{:tact}`      | Bounce the transaction in case of any errors during the action phase. Has no effect if flag $+2$, `SendIgnoreErrors{:tact}`, is used.
 $+32$      | `SendDestroyIfZero{:tact}`           | The current account (contract) will be destroyed if its resulting balance is zero. This flag is often used with mode $128$, `SendRemainingBalance{:tact}`.
 
+Messages that are sent with the optional flag `SendPayFwdFeesSeparately{:tact}` and with their Toncoin `value` explicitly set to 0 will not carry any Toncoin with them, and thus, will not be able to bounce back if there would be an error in the transaction processing them on the recipient side.
+
 ## Combining modes with flags
 
 To create the [`Int{:tact}`][int] value for the `mode` field of `SendParameters{:tact}`, you simply combine a base mode with optional flags using the [bitwise OR](/book/operators#binary-bitwise-or) operation.
