@@ -85,8 +85,6 @@ trait Upgradable with Ownable {
 /// Change of code will be applied by the end of the current transaction.
 asm fun setCode(code: Cell) { SETCODE }
 
-/// Change of data is immediate.
-asm fun setData(data: Cell) { c4 POP }
 ```
 
 ## Time-locked upgrade
@@ -212,5 +210,4 @@ trait Upgradable with Ownable {
 
 asm fun setCode(code: Cell) { SETCODE }
 
-asm fun setData(data: Cell) { c4 POP }
 ```
