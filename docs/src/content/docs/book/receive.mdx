@@ -8,7 +8,7 @@ prev:
 
 import { Badge } from '@astrojs/starlight/components';
 
-TON is a distributed blockchain, which means that communication between contracts is performed by sending and receiving messages. The most common type of message is the _internal message_ 0 a message sent from one contract (or a wallet) to another.
+TON is a distributed blockchain, which means that communication between contracts is performed by sending and receiving messages. The most common type of message is the _internal message_ — a message sent from one contract (or a wallet) to another.
 
 ## Receive internal messages
 
@@ -37,7 +37,7 @@ contract Emptiness() {
 There are two kinds of text receivers:
 
 * `receive("..."){:tact}` — the exact text receiver that handles specific string comments with the maximum length of 123 bytes
-* `receive(str: string){:tact}` — the catch-all string receiver that handles arbitrary string comments
+* `receive(str: String){:tact}` — the catch-all string receiver that handles arbitrary string comments
 
 Processing and distinguishing text receivers, e.g., the comment receiver `receive("..."){:tact}` and the string receiver `receive(str: String){:tact}`, costs significantly more gas than [processing binary ones](#binary-receivers), such as `receive(){:tact}` or `receive(msg: MyMessage){:tact}`. Thus, it is recommended to [prefer binary receivers to text receivers](/book/gas-best-practices#prefer-binary-receivers-to-text-receivers).
 
