@@ -91,7 +91,7 @@
     "tact-fmt": "bin/tact-fmt.js"
   },
   "dependencies": {
-    "@tact-lang/opcode": "^0.3.0",
+    "@tact-lang/opcode": "^0.3.2",
     "@ton/core": "^0.61.0",
     "@ton/crypto": "^3.2.0",
     "@tonstudio/parser-runtime": "0.0.1",
