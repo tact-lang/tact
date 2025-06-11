@@ -175,14 +175,6 @@ contract ContractParameters(
 
 State variables declared in this way have **no** default value. Instead, they get their initial data only when the contract is deployed, which is much cheaper compared to deployments with an extra initialization step in the [`init(){:tact}`](#init-function) function.
 
-:::note
-
-  Keep in mind that contracts cannot call each other's [getters](#getter-functions) or retrieve data from other contracts synchronously. Thus, as contracts exchange asynchronous messages and it is not possible to directly read state variables of one contract by another, because by the time a message with the data reaches your contract, the state variables on another contract might have changed already.
-
-  Instead, prefer to write contracts that exchange messages as signals to perform a certain action on or with the sent data but never merely to read the state of another contract.
-
-:::
-
 The use of contract parameters syntax conflicts with using an `init(){:tact}` function or declaring persistent state variables via the [contract fields syntax](#variables). Whenever possible, prefer using contract parameters unless you need specific on-chain deployment logic that must be run exactly once, i.e. via the `init(){:tact}` function.
 
 ```tact
