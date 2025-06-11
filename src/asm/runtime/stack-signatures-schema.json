@@ -447,8 +447,8 @@
             "completion_tag": {
               "type": "boolean",
               "title": "Completion tag flag",
-              "description": "Determines completion tag presense: trailing `'1' + '0' * x` in bitstring",
-              "markdownDescription": "Determines completion tag presense: trailing `'1' + '0' * x` in bitstring"
+              "description": "Determines completion tag presence: trailing `'1' + '0' * x` in bitstring",
+              "markdownDescription": "Determines completion tag presence: trailing `'1' + '0' * x` in bitstring"
             },
             "max_bits": {
               "type": "number",
