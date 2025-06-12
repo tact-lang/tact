@@ -362,6 +362,55 @@ nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
 //            amount of nanoToncoins to reserve
 ```
 
+### setData
+
+<Badge text="Available since Tact 1.7" variant="tip" size="medium"/>
+<Badge text="DANGEROUS" title="Applies irreversible modifications to the contract — use only when you know what you are doing!" variant="danger" size="medium"/><p/>
+
+```tact
+fun setData(data: Cell);
+```
+
+Replaces the current contract's state data [`Cell{:tact}`][cell] with the new `data`. It is useful only in exceptional cases, such as contract upgrades, data migrations, or when processing external messages with a catch-all [`Slice{:tact}`][slice] receiver for maximum efficiency. Otherwise, do **not** use this function, as it immediately and permanently overrides the state with no ability to recover, which can result in the loss of funds and partial or full corruption of the contract's data.
+
+:::caution
+
+  When using this function, make sure that all logical code branches within your receiver end with a call to the [`throw(0){:tact}`](/ref/core-debug#throw) function to terminate the execution of the contract early and prevent the automatic contract's data save implicitly added by Tact after the end of each receiver. Conversely, your manual changes to data made with this function will be lost.
+
+:::
+
+Usage example:
+
+```tact {13}
+contract WalletV4(
+    seqno: Int as uint32,
+    // ...other parameters...
+) {
+    // ...
+    external(_: Slice) {
+        // ...various prior checks...
+
+        acceptMessage();
+        self.seqno += 1;
+
+        // Manually saving the contract's state
+        setData(self.toCell());
+
+        // And halting the transaction to prevent a secondary save implicitly
+        // added by Tact after the main execution logic of the receiver
+        throw(0);
+    }
+}
+```
+
+:::note
+
+  Tact automatically saves the contract's state after the end of each receiver's logic even when `return{:tact}` statements are used for early termination. Thus, this function is almost never needed in regular contracts.
+
+  However, if you intend to use the `throw(0){:tact}` pattern to terminate the compute phase and save the state yourself or you want to replace the data when upgrading the contract, this function becomes useful. That said, make sure to double-check and test cover your every move such that the contract's data won't become corrupt or inadvertently gone.
+
+:::
+
 ### commit
 
 ```tact
@@ -388,8 +437,6 @@ contract WalletV4(
         throw(42); // and this won't fail it
     }
 }
-
-asm fun setData(data: Cell) { c4 POP }
 ```
 
 ## Blockchain state

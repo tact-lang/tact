@@ -99,7 +99,7 @@ struct StateInit {
 ///
 /// Checks if the given `address` corresponds to the contract address in the workchain ID 0 (basechain) derived from the `StateInit` `self`. Returns `true` if the addresses match and `false` otherwise.
 ///
-/// This function works correctly only for basechain addresses. It may produce false positives or negatives if the specified `address` or the address derived from the `StateInit{:tact}` `self{:tact}` has a non-zero workchain ID.
+/// This function works correctly only for basechain addresses. It may produce false positives or negatives if the specified `address` or the address derived from the `StateInit` `self` has a non-zero workchain ID.
 ///
 /// #### Usage
 ///
@@ -457,3 +457,52 @@ asm fun setSeed(seed: Int) { SETRAND }
 /// See: https://docs.tact-lang.org/ref/core-contextstate#mycode
 ///
 asm fun myCode(): Cell { MYCODE }
+
+/// Global function. Available since Tact 1.7.0. DANGEROUS: Applies irreversible modifications to the contract — use only when you know what you are doing!
+///
+/// Replaces the current contract's state data [`Cell`][cell] with the new `data`. It is useful only in exceptional cases, such as contract upgrades, data migrations, or when processing external messages with a catch-all [`Slice`][slice] receiver for maximum efficiency. Otherwise, do **not** use this function, as it immediately and permanently overrides the state with no ability to recover, which can result in the loss of funds and partial or full corruption of the contract's data.
+///
+/// #### Caution
+///
+/// When using this function, make sure that all logical code branches within your receiver end with a call to the [`throw(0)`][throw] function to terminate the execution of the contract early and prevent the automatic contract's data save implicitly added by Tact after the end of each receiver. Conversely, your manual changes to data made with this function will be lost.
+///
+/// #### Usage example
+///
+/// ```tact {13}
+/// contract WalletV4(
+///     seqno: Int as uint32,
+///     // ...other parameters...
+/// ) {
+///     // ...
+///     external(_: Slice) {
+///         // ...various prior checks...
+///
+///         acceptMessage();
+///         self.seqno += 1;
+///
+///         // Manually saving the contract's state
+///         setData(self.toCell());
+///
+///         // And halting the transaction to prevent a secondary save implicitly
+///         // added by Tact after the main execution logic of the receiver
+///         throw(0);
+///     }
+/// }
+/// ```
+///
+/// #### Note
+///
+/// Tact automatically saves the contract's state after the end of each receiver's logic even when `return` statements are used for early termination. Thus, this function is almost never needed in regular contracts.
+///
+/// However, if you intend to use the `throw(0)` pattern to terminate the compute phase and save the state yourself or you want to replace the data when upgrading the contract, this function becomes useful. That said, make sure to double-check and test cover your every move such that the contract's data won't become corrupt or inadvertently gone.
+///
+/// #### See also
+///
+/// - https://docs.tact-lang.org/ref/core-contextstate#setdata
+/// - https://docs.tact-lang.org/ref/core-debug#throw
+///
+/// [cell]: https://docs.tact-lang.org/book/cells#cells
+/// [slice]: https://docs.tact-lang.org/book/cells#slices
+/// [throw]: https://docs.tact-lang.org/ref/core-debug#throw
+///
+asm fun setData(data: Cell) { c4 POP }

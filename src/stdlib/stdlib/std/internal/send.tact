@@ -627,8 +627,6 @@ asm fun acceptMessage() { ACCEPT }
 ///         throw(42); // and this won't fail it
 ///     }
 /// }
-///
-/// asm fun setData(data: Cell) { c4 POP }
 /// ```
 ///
 /// See: https://docs.tact-lang.org/ref/core-contextstate#commit

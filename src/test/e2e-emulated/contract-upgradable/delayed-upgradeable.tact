@@ -127,6 +127,3 @@ trait Upgradable with Ownable {
 
 /// Change of code is be applied by the end of the current transaction.
 asm fun setCode(code: Cell) { SETCODE }
-
-/// Change of data is immediate.
-asm fun setData(data: Cell) { c4 POP }

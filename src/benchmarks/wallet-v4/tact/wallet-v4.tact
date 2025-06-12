@@ -235,5 +235,3 @@ contract WalletV4(
         return self.extensions;
     }
 }
-
-asm fun setData(data: Cell) { c4 POP }

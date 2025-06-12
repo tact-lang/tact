@@ -13,6 +13,15 @@ The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOC
 
 - Reordered arguments of the `__tact_store_address_opt` function to optimize gas consumption: PR [#3333](https://github.com/tact-lang/tact/pull/3333)
 
+### Standard Library
+
+- Added `setData()` function: PR [#3402](https://github.com/tact-lang/tact/pull/3402)
+
+### Release contributors
+
+- [skywardboundd](https://github.com/skywardboundd)
+- [Novus Nota](https://github.com/novusnota)
+
 ## [1.6.13] - 2025-05-29
 
 ### Language features

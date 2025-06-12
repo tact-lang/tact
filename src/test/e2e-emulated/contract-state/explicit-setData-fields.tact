@@ -23,5 +23,3 @@ contract Test {
         return self.seqno;
     }
 }
-
-asm fun setData(data: Cell) { c4 POP }
