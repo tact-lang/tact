@@ -5,7 +5,9 @@ env:
 
 on:
   pull_request:
-    branches: ["**"]
+    branches: [
+      "aaaa"
+    ]
   workflow_dispatch:
 
 concurrency:
