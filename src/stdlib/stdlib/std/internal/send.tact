@@ -627,7 +627,6 @@ asm fun acceptMessage() { ACCEPT }
 ///         throw(42); // and this won't fail it
 ///     }
 /// }
-///
 /// ```
 ///
 /// See: https://docs.tact-lang.org/ref/core-contextstate#commit

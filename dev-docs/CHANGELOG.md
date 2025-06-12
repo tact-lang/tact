@@ -15,7 +15,12 @@ The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOC
 
 ### Language features
 
-- Support `setData`: PR [#3402](https://github.com/tact-lang/tact/pull/3402)
+- Added `setData()` function: PR [#3402](https://github.com/tact-lang/tact/pull/3402)
+
+### Release contributors
+
+- [skywardboundd](https://github.com/skywardboundd)
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.6.13] - 2025-05-29
 
@@ -27,7 +32,6 @@ The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOC
 
 - [Anton Trunov](https://github.com/anton-trunov)
 - [Novus Nota](https://github.com/novusnota)
-- [skywardboundd](https://github.com/skywardboundd)
 
 ## [1.6.12] - 2025-05-27
 

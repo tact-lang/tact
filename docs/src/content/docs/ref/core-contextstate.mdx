@@ -364,59 +364,52 @@ nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
 
 ### setData
 
-<Badge text="Available since Tact 1.6.14" variant="tip" size="medium"/>
-<Badge text="Advanced use only" variant="danger" size="medium"/><p/>
+<Badge text="Available since Tact 1.7" variant="tip" size="medium"/>
+<Badge text="DANGEROUS" title="Applies irreversible modifications to the contract — use only when you know what you are doing!" variant="danger" size="medium"/><p/>
 
 ```tact
 fun setData(data: Cell);
 ```
 
-This is a low-level function that directly manipulates contract storage. Only use it if you have deep understanding of:
-- TON Blockchain storage architecture and TVM c4 register
-- Tact's internal data serialization format and layout
-- Cell construction and data encoding/decoding
-- Contract upgrade patterns and migration strategies
-
-Improper usage can permanently break your contract and make funds inaccessible.
-
-Replaces the current contract's persistent data with the new `data` provided as parameter. This function directly modifies the contract's storage by updating the c4 register, which contains the persistent data cell.
-
-The function is particularly useful for contract upgrades, data migrations, or when implementing custom serialization logic. However, it bypasses Tact's type safety and automatic serialization mechanisms.
-
-**Exit codes:**
-
-This function doesn't throw exit codes by itself, but the new data structure must be compatible with the contract's expected state format to avoid future execution failures.
+Replaces the current contract's state data [`Cell{:tact}`][cell] with the new `data`. It is useful only in exceptional cases, such as contract upgrades, data migrations, or when processing external messages with a catch-all [`Slice{:tact}`][slice] receiver for maximum efficiency. Otherwise, do **not** use this function, as it immediately and permanently overrides the state with no ability to recover, which can result in the loss of funds and partial or full corruption of the contract's data.
 
 :::caution
 
-  Direct modification of contract data bypasses Tact's type safety and can lead to:
-  - State corruption if data format doesn't match contract expectations
-  - Loss of contract functionality if critical fields are missing or malformed  
-  - Incompatibility with future contract interactions
-
-  **Important:** After calling `setData()`, you must immediately exit the contract execution (using `return`, `throw`, or reaching the end of the receiver). If execution continues, Tact will automatically save the contract's current state fields (`self.fieldA`, `self.fieldB`, etc.) at the end, which will overwrite the data set by `setData()`.
-
-  Always ensure the new data cell follows the exact serialization format expected by your contract's state variables.
+  When using this function, make sure that all logical code branches within your receiver end with a call to the [`throw(0){:tact}`](/ref/core-debug#throw) function to terminate the execution of the contract early and prevent the automatic contract's data save implicitly added by Tact after the end of each receiver. Conversely, your manual changes to data made with this function will be lost.
 
 :::
 
-**Usage example:**
+Usage example:
 
-```tact
-contract Example {
-    value: Int = 0;
-    
-    receive("migrate") {
-        // Serialize current state with additional field
-        let builder = beginCell();
-        builder.storeUint(self.value, 32);
-        builder.storeUint(42, 32); // new field
-        
-        setData(builder.endCell());
-        throw(0); // REQUIRED: Must exit immediately to prevent auto-save of self.value
+```tact {13}
+contract WalletV4(
+    seqno: Int as uint32,
+    // ...other parameters...
+) {
+    // ...
+    external(_: Slice) {
+        // ...various prior checks...
+
+        acceptMessage();
+        self.seqno += 1;
+
+        // Manually saving the contract's state
+        setData(self.toCell());
+
+        // And halting the transaction to prevent a secondary save implicitly
+        // added by Tact after the main execution logic of the receiver
+        throw(0);
     }
 }
 ```
+
+:::note
+
+  Tact automatically saves the contract's state after the end of each receiver's logic even when `return{:tact}` statements are used for early termination. Thus, this function is almost never needed in regular contracts.
+
+  However, if you intend to use the `throw(0){:tact}` pattern to terminate the compute phase and save the state yourself or you want to replace the data when upgrading the contract, this function becomes useful. That said, make sure to double-check and test cover your every move such that the contract's data won't become corrupt or inadvertently gone.
+
+:::
 
 ### commit
 
@@ -444,8 +437,6 @@ contract WalletV4(
         throw(42); // and this won't fail it
     }
 }
-
-
 ```
 
 ## Blockchain state
