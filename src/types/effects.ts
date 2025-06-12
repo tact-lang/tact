@@ -193,6 +193,15 @@ function expressionEffects(
     switch (expr.kind) {
         case "id": {
             if (expr.text === "self") {
+                // Conservative approach: any method call like `10.foo()` will be considered as storage read
+                // since any use of `self` inside method will end up in this branch.
+                // We need this because one can write code like this:
+                // ```
+                // get fun bar(): Foo {
+                //   let a = self;
+                //   return a;
+                // }
+                // ```
                 return new Set<Effect>(["contractStorageRead"]);
             }
             return new Set<Effect>();
