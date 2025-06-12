@@ -40,8 +40,14 @@ message(0x6d0ff13b) FactoryDeploy {
 /// `Deploy` message.
 ///
 /// This message has a single field, `queryId`, provided by the deployer
-/// (usually set to zero). If the deployment succeeds, the contract will
+/// and is usually set to zero. If the deployment succeeds, the contract will
 /// reply with a `DeployOk` message and echo the same `queryId` in the response.
+///
+/// Beware that the receiver handling the `Deploy` message sends the `DeployOk` reply
+/// using the `self.reply()` function, which returns all excessive funds
+/// from the incoming message back to the sender. That is, contracts deployed
+/// using the `Deployable` trait have a balance of 0 Toncoin
+/// after the deployment is completed.
 ///
 /// ```tact
 /// import "@stdlib/deploy";
