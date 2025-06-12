@@ -25,12 +25,12 @@ contract Example {
 ```tact
 contract Example {
     receive() {
-        SendParameters {
+        send(SendParameters {
             bounce: true, // default
             to: sender(), // or another destination address
             value: ton("0.01"), // attached amount of TON to send
             body: "Hello from Tact!".asComment(), // comment (optional)
-        }.send();
+        });
     }
 }
 ```
@@ -42,13 +42,13 @@ If we need to send the whole balance of the smart contract, we should use the `S
 ```tact
 contract Example {
     receive() {
-        SendParameters {
+        send(SendParameters {
             // bounce = true by default
             to: sender(), // send the message back to the original sender
             value: 0,
             mode: SendRemainingBalance, // or mode: 128
             body: "Hello from Tact!".asComment(), // comment (optional)
-        }.send();
+        });
     }
 }
 ```
@@ -60,13 +60,13 @@ If we want to send a reply to the same sender, we can use the mode `SendRemainin
 ```tact
 contract Example {
     receive() {
-        SendParameters {
+        send(SendParameters {
             // bounce = true by default
             to: sender(), // send the message back to the original sender
             value: 0,
             mode: SendRemainingValue,
             body: "Hello from Tact!".asComment(), // comment (optional)
-        }.send();
+        });
     }
 }
 ```
@@ -76,13 +76,13 @@ It's often useful to add the `SendIgnoreErrors{:tact}` flag too, in order to ign
 ```tact
 contract Example {
     receive() {
-        SendParameters {
+        send(SendParameters {
             // bounce = true by default
             to: sender(), // send the message back to the original sender
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors, // prefer using | over + for the mode
             body: "Hello from Tact!".asComment(), // comment (optional)
-        }.send();
+        });
     }
 }
 ```
@@ -100,13 +100,13 @@ contract Example {
         let longString = "..."; // Some string with more than 127 characters.
         comment.append(longString);
 
-        SendParameters {
+        send(SendParameters {
             // bounce = true by default
             to: sender(),
             value: 0,
             mode: SendIgnoreErrors,
             body: comment.toCell(),
-        }.send();
+        });
     }
 }
 ```

@@ -98,7 +98,7 @@ message(0xea06185d) NativeSwap {
 
 // Let's say `swapAmount` is `ton("0.1")`, which is 10000000 nanoToncoins
 fun swapToncoinForUSDT(swapAmount: Int) {
-    SendParameters {
+    send(SendParameters {
         // Address of TON vault to send the message to
         to: address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_"),
         // Amount to swap plus a trade fee
@@ -110,7 +110,7 @@ fun swapToncoinForUSDT(swapAmount: Int) {
             // Set of parameters relevant for the whole swap
             swapParams: SwapParams{}, // use defaults
         }.toCell(),
-    }.send();
+    });
 }
 
 //
@@ -151,7 +151,7 @@ message(0xe3a0d482) JettonSwapPayload {
 /// NOTE: To calculate and provide Jetton wallet address for the target user,
 ///       make sure to check links after this code snippet
 fun swapJetton(targetJettonWalletAddress: Address) {
-    SendParameters {
+    send(SendParameters {
         to: targetJettonWalletAddress,
         value: ton("0.3"),
         body: JettonTransfer{
@@ -172,7 +172,7 @@ fun swapJetton(targetJettonWalletAddress: Address) {
                 swapParams: SwapParams{}, // use defaults
             }.toCell(),
         }.toCell(),
-    }.send();
+    });
 }
 
 //
@@ -328,7 +328,7 @@ fun provideLiquidity(myJettonWalletAddress: Address) {
     }.build(); // notice the .build() and not .toCell(),
                // since we want some custom serialization logic!
 
-    SendParameters {
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: JettonProvideLpGas,
         body: JettonTransfer{
@@ -340,7 +340,7 @@ fun provideLiquidity(myJettonWalletAddress: Address) {
             forwardTonAmount: JettonProvideLpGasFwd,
             forwardPayload: jettonDepositBody,
         }.toCell()
-    }.send();
+    });
 
     // Step 3. Deposit TON to Vault
     let nativeDepositBody = NativeDepositLiquidity{
@@ -354,11 +354,11 @@ fun provideLiquidity(myJettonWalletAddress: Address) {
     }.build(); // notice the .build() and not .toCell(),
                // since we want some custom serialization logic!
 
-    SendParameters {
+    send(SendParameters {
         to: address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_"),
         value: tonAmount + TonProvideLpGas,
         body: nativeDepositBody,
-    }.send();
+    });
 }
 
 //

@@ -344,13 +344,13 @@ contract SecureChecker(
         self.seqno += 1; // Increment seqno after successful processing
 
         // Ensure the message is sent to the address specified in the signed data
-        MessageParameters {
+        message(MessageParameters {
             to: request.requestBody.to, // Use the 'to' from the signed request
             value: 0,
             mode: SendRemainingBalance, // Caution: sending the whole balance!
             bounce: false,
             body: "Your action payload here".asComment(), // Example body
-        }.send();
+        });
     }
 
     // Empty receiver for the deployment,
@@ -386,12 +386,12 @@ contract InsecureChecker(
             // message to a different 'to' address before this one confirms.
             // The 'sender()' here is the original sender, but the attacker can initiate
             // a similar transaction targeting themselves or another address.
-            MessageParameters {
+            message(MessageParameters {
                 to: sender(), // Vulnerable: recipient isn't verified by the signature
                 value: 0,
                 mode: SendRemainingBalance, // Caution: sending the whole balance!
                 bounce: false,
-            }.send();
+            });
         }
     }
 
@@ -441,7 +441,7 @@ contract JettonWalletSample(
             "Invalid value - Burn",
         );
 
-        MessageParameters {
+        message(MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
@@ -452,7 +452,7 @@ contract JettonWalletSample(
                 owner: self.owner,
                 response_destination: self.owner,
             }.toCell(),
-        }.send();
+        });
     }
 
     bounced(src: bounced<TokenBurnNotification>) {
@@ -491,12 +491,12 @@ contract Sample(
     receive(msg: Vote) {
         self.votes += msg.votes;
 
-        MessageParameters {
+        message(MessageParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body: Excesses {}.toCell(),
-        }.send();
+        });
     }
 
     // Empty receiver for the deployment,
@@ -524,12 +524,12 @@ contract OneContract(
     money: Int as coins,
 ) {
     receive(msg: ProvideMoney) {
-        MessageParameters {
+        message(MessageParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             body: TakeMoney { money: self.money }.toCell(),
-        }.send();
+        });
     }
 
     // Empty receiver for the deployment,
@@ -541,13 +541,13 @@ contract AnotherContract(
     oneContractAddress: Address,
 ) {
     receive(_: GetMoney) {
-        MessageParameters {
+        message(MessageParameters {
             to: self.oneContractAddress,
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: false,
             body: ProvideMoney {}.toCell(),
-        }.send();
+        });
     }
 
     receive(msg: TakeMoney) {

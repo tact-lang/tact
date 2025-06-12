@@ -34,13 +34,13 @@ self.reply("Hello, World!".asComment()); // asComment converts a String to a Cel
 事实上，前面使用 [`self.reply(){:tact}`](#send-simple-reply) 的示例可以通过调用下面的 `send(){:tact}` 函数来实现：
 
 ```tact
-SendParameters {
+send(SendParameters {
     // bounce is set to true by default
     to: sender(), // sending message back to the sender
     value: 0, // don't add Toncoins to the message...
     mode: SendRemainingValue | SendIgnoreErrors, // ...except for ones received from the sender due to SendRemainingValue
     body: "Hello, World".asComment(), // asComment converts a String to a Cell with a comment
-}.send();
+});
 ```
 
 另一个示例是向指定的 [`Address{:tact}`][p]发送一条消息，消息的`值`为 $1$ TON，`body`为带有 [`String{:tact}`][p] `"Hello, World!"{:tact}`的注释：
@@ -48,13 +48,13 @@ SendParameters {
 ```tact
 let recipient: Address = address("...");
 let value: Int = ton("1");
-SendParameters {
+send(SendParameters {
     // bounce is set to true by default
     to: recipient,
     value: value,
     mode: SendIgnoreErrors, // will send the message despite any errors
     body: "Hello, World!".asComment(),
-}.send();
+});
 ```
 
 [可选标记](/zh-cn/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}`表示即使在发送消息过程中发生错误，也会继续发送下一条消息。 **在发送阶段，没有错误会导致交易回滚。**
@@ -66,13 +66,13 @@ SendParameters {
 ```tact
 let recipient: Address = address("...");
 let value: Int = ton("1");
-SendParameters {
+send(SendParameters {
     // bounce is set to true by default
     to: recipient,
     value: value,
     mode: SendIgnoreErrors, // don't stop in case of errors
     body: SomeMessage{arg1: 123, arg2: 1234}.toCell(),
-}.send();
+});
 ```
 
 ## 部署合约
@@ -83,7 +83,7 @@ SendParameters {
 let init: StateInit = initOf SecondContract(arg1, arg2);
 let address: Address = contractAddress(init);
 let value: Int = ton("1");
-SendParameters {
+send(SendParameters {
     // bounce is set to true by default
     to: address,
     value: value,
@@ -91,7 +91,7 @@ SendParameters {
     code: init.code,
     data: init.data,
     body: "Hello, World!".asComment(), // not necessary, can be omitted
-}.send();
+});
 ```
 
 ## 外发消息处理 {#outbound-message-processing}
@@ -108,18 +108,18 @@ contract FailureIsNothingButAnotherStep {
     // And all the funds it gets are obtained from inbound internal messages
     receive() {
         // 1st outbound message evaluated and queued (but not sent yet)
-        SendParameters {
+        send(SendParameters {
             to: sender(),
             value: ton("0.042"), // plus forward fee due to SendPayFwdFeesSeparately
             mode: SendIgnoreErrors | SendPayFwdFeesSeparately,
-        }.send();
+        });
 
         // 2nd outbound message evaluated and queued (but not sent yet, and never will be!)
-        SendParameters {
+        send(SendParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-        }.send();
+        });
     }
 }
 ```

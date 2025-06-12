@@ -142,7 +142,7 @@ fun jettonToJetton(myJettonWalletAddress: Address) {
     };
 
     // Start a swap with the message to the Jetton wallet
-    SendParameters {
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: FeeSwapJettonToJetton,
         body: JettonTransfer {
@@ -153,7 +153,7 @@ fun jettonToJetton(myJettonWalletAddress: Address) {
             forwardTonAmount: FeeSwapJettonToJettonFwd,
             forwardPayload: forwardPayload.toCell(),
         }.toCell(),
-    }.send();
+    });
 }
 
 //
@@ -242,7 +242,7 @@ fun jettonToToncoin(myJettonWalletAddress: Address) {
     };
 
     // Start a swap with the message to the Jetton wallet
-    SendParameters {
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: FeeSwapJettonToToncoin,
         body: JettonTransfer {
@@ -253,7 +253,7 @@ fun jettonToToncoin(myJettonWalletAddress: Address) {
             forwardTonAmount: FeeSwapJettonToToncoinFwd,
             forwardPayload: forwardPayload.toCell(),
         }.toCell(),
-    }.send();
+    });
 }
 
 //
@@ -361,7 +361,7 @@ fun toncoinToJetton() {
     };
 
     // Start a swap with the message to the proxy Toncoin wallet
-    SendParameters {
+    send(SendParameters {
         to: RouterProxyTonWallet,
         value: FeeSwapToncoinToJetton + offerAmount,
         body: ProxyToncoinTransfer {
@@ -369,7 +369,7 @@ fun toncoinToJetton() {
             refundAddress: myAddress(),
             forwardPayload: forwardPayload.toCell(),
         }.toCell(),
-    }.send();
+    });
 }
 
 //
@@ -525,7 +525,7 @@ fun jettonDeposit(myJettonWalletAddress: Address) {
         },
     };
 
-    SendParameters {
+    send(SendParameters {
         to: myJettonWalletAddress,
         value: FeeSingleSideProvideLpJetton,
         body: JettonTransfer {
@@ -536,7 +536,7 @@ fun jettonDeposit(myJettonWalletAddress: Address) {
             forwardTonAmount: FeeSingleSideProvideLpJettonFwd,
             forwardPayload: forwardPayload.toCell(),
         }.toCell(),
-    }.send();
+    });
 }
 
 //
@@ -610,7 +610,7 @@ fun toncoinDeposit() {
         },
     };
 
-    SendParameters {
+    send(SendParameters {
         to: RouterProxyTonWallet,
         value: FeeSingleSideProvideLpToncoin + offerAmount,
         body: ProxyToncoinTransfer {
@@ -619,7 +619,7 @@ fun toncoinDeposit() {
             refundAddress: myAddress(),
             forwardPayload: forwardPayload.toCell(),
         }.toCell(),
-    }.send();
+    });
 }
 
 //

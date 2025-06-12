@@ -49,12 +49,12 @@ Here's how the latter example would look in code:
 ```tact
 let to: Address = address("...");
 let value: Int = ton("1");
-SendParameters {
+send(SendParameters {
     to: to,
     value: value,
     mode: SendRemainingBalance | SendDestroyIfZero,
     body: "Hello, World!".asComment(),
-}.send();
+});
 ```
 
 Note that there can be only **one** [base mode](#base-modes), but the number of [optional flags](#optional-flags) may vary: you can use all, none, or only some of them.

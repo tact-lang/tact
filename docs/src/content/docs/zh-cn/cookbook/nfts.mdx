@@ -123,7 +123,7 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("transfer") {
-        SendParameters {
+        send(SendParameters {
             to: self.nftItemAddress,
             value: ton("0.1"),
             body: NFTTransfer{
@@ -135,7 +135,7 @@ contract Example {
                 forwardAmount: 1,
                 forwardPayload: rawSlice("F"), // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse()
             }.toCell(),
-        }.send();
+        });
     }
 }
 ```
@@ -186,13 +186,13 @@ contract Example {
     receive("get static data") {
         // FIXME: Put proper address("[NFT_ADDRESS]") here
         let nftAddress = sender();
-        SendParameters {
+        send(SendParameters {
             to: nftAddress,
             value: ton("0.1"),
             body: NFTGetStaticData{
                 queryId: 42,
             }.toCell(),
-        }.send();
+        });
     }
 
     receive(msg: NFTReportStaticData) {
@@ -230,13 +230,13 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("get royalty params") {
-        SendParameters {
+        send(SendParameters {
             to: self.nftCollectionAddress,
             value: ton("0.1"),
             body: NFTGetRoyaltyParams{
                 queryId: 42,
             }.toCell(),
-        }.send();
+        });
     }
 
     receive(msg: NFTReportRoyaltyParams) {
@@ -277,7 +277,7 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("deploy") {
-        SendParameters {
+        send(SendParameters {
             to: self.nftCollectionAddress,
             value: ton("0.14"),
             body: NFTDeploy{
@@ -286,7 +286,7 @@ contract Example {
                 amount: ton("0.1"),
                 nftContent: beginCell().endCell() // FIXME: Should be your content, mostly generated offchain
             }.toCell(),
-        }.send();
+        });
     }
 }
 ```
@@ -309,7 +309,7 @@ contract Example {
     // ... add more code from previous examples ...
 
     receive("change owner") {
-        SendParameters {
+        send(SendParameters {
             to: self.nftCollectionAddress,
             value: ton("0.05"),
             body: NFTChangeOwner{
@@ -317,7 +317,7 @@ contract Example {
                 // FIXME: Put proper address("NEW_OWNER_ADDRESS") here
                 newOwner: sender(),
             }.toCell(),
-        }.send();
+        });
     }
 }
 ```

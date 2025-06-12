@@ -223,7 +223,7 @@ contract Example {
             "Not enough funds to withdraw",
         );
 
-        SendParameters {
+        send(SendParameters {
             to: self.myJettonWalletAddress,
             value: JettonTransferGas,
             body: JettonTransfer {
@@ -249,7 +249,7 @@ contract Example {
                 // For more complicated transfers, adjust accordingly
                 forwardPayload: rawSlice("F"),
             }.toCell(),
-        }.send();
+        });
     }
 }
 ```
@@ -319,7 +319,7 @@ contract Example {
             "Not enough funds to throw away",
         );
 
-        SendParameters {
+        send(SendParameters {
             to: self.myJettonWalletAddress,
             value: JettonBurnGas,
             body: JettonBurn {
@@ -334,7 +334,7 @@ contract Example {
                 // if unused, it can be set to null
                 customPayload: null,
             }.toCell(),
-        }.send();
+        });
     }
 }
 ```
