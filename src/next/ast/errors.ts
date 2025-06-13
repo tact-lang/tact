@@ -3,7 +3,7 @@ import type { CType } from "@/next/ast/checked-type";
 import type { Loc } from "@/next/ast/common";
 import type * as V from "@/next/ast/via";
 
-export type WithLog<T> = Generator<TcError, T>;
+export type Log<T> = Generator<TcError, T>;
 
 export function runLog<T, R>(
     gen: Generator<T, R, unknown>,
@@ -21,8 +21,8 @@ export function runLog<T, R>(
 
 export function* mapLog<T, U>(
     xs: readonly T[],
-    f: (x: T) => WithLog<U>,
-): WithLog<U[]> {
+    f: (x: T) => Log<U>,
+): Log<U[]> {
     const result: U[] = [];
     for (const x of xs) {
         result.push(yield* f(x));
@@ -33,8 +33,8 @@ export function* mapLog<T, U>(
 export function* reduceLog<T, U>(
     xs: readonly T[],
     init: U,
-    f: (acc: U, x: T) => WithLog<U>,
-): WithLog<U> {
+    f: (acc: U, x: T) => Log<U>,
+): Log<U> {
     let acc = init;
     for (const x of xs) {
         acc = yield* f(acc, x);
@@ -44,8 +44,8 @@ export function* reduceLog<T, U>(
 
 export function* filterLog<T>(
     xs: readonly T[],
-    f: (x: T) => WithLog<boolean>,
-): WithLog<T[]> {
+    f: (x: T) => Log<boolean>,
+): Log<T[]> {
     const result: T[] = [];
     for (const x of xs) {
         const res = yield* f(x);
@@ -59,7 +59,7 @@ export function* filterLog<T>(
 export function* toMap<V extends { via: V.ViaUser }>(
     kind: string,
     xs: readonly (readonly [string, V])[],
-): WithLog<Map<string, V>> {
+): Log<Map<string, V>> {
     const result: Map<string, V> = new Map();
     for (const [key, next] of xs) {
         const prev = result.get(key);

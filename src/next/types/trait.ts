@@ -10,7 +10,7 @@ export function* decodeTrait(
     Lazy: Ast.ThunkBuilder,
     trait: Ast.Trait,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CTraitSig> {
+): Ast.Log<Ast.CTrait> {
     const { attributes, declarations, name, loc } = trait;
     const { constants, fields, methods, receivers } = declarations;
 
@@ -61,7 +61,7 @@ export function* decodeTrait(
         recover,
     });
 
-    const traitSig = Ast.CTraitSig(contentLazy);
+    const traitSig = Ast.CTrait(contentLazy);
 
     const selfType = Ast.SVTRef(trait.name, traitSig, [], trait.loc);
 

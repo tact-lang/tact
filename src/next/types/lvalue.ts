@@ -2,8 +2,8 @@
 import * as Ast from "@/next/ast";
 
 export function* convertExprToLValue(
-    node: Ast.DecodedExpression,
-): Ast.WithLog<undefined | Ast.LValue> {
+    node: Ast.CExpr,
+): Ast.Log<undefined | Ast.LValue> {
     const result = yield* convertExprToLValueAux(node);
     if (result?.kind === 'self') {
         yield ENoSelfAssign(node.loc);
@@ -17,15 +17,15 @@ const ENoSelfAssign = (loc: Ast.Loc): Ast.TcError => ({
 });
 
 function* convertExprToLValueAux(
-    node: Ast.DecodedExpression,
-): Ast.WithLog<undefined | Ast.LValue> {
+    node: Ast.CExpr,
+): Ast.Log<undefined | Ast.LValue> {
     switch (node.kind) {
         case "field_access": {
             const aggregate = yield* convertExprToLValue(node.aggregate);
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             return (
                 aggregate &&
-                Ast.LFieldAccess(
+                Ast.CLFieldAccess(
                     aggregate,
                     node.field,
                     node.computedType,

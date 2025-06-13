@@ -5,7 +5,7 @@ import * as Ast from "@/next/ast";
 export function* getInheritedTraits(
     traits: readonly Ast.TypeId[],
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<readonly Ast.Decl<Ast.CTraitMembers>[]> {
+): Ast.Log<readonly Ast.Decl<Ast.CTraitMembers>[]> {
     const decls = scopeRef().typeDecls;
     const prevTraits: Ast.Decl<Ast.CTraitMembers>[] = [];
     for (const trait of traits) {

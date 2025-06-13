@@ -57,7 +57,7 @@ function* tcSource(
     imported: readonly Ast.SourceCheckResult[],
     // source for current file
     source: TactSource,
-): Ast.WithLog<Ast.CSource> {
+): Ast.Log<Ast.CSource> {
     const Lazy = Ast.thunkBuilder;
     const scopeRef = () => scope;
     const scope: Ast.CSource = {
@@ -67,8 +67,4 @@ function* tcSource(
         extensions: decodeExtensions(Lazy, imported, source, scopeRef),
     };
     return scope;
-}
-
-function lowerSource(node: Ast.CSource) {
-
 }

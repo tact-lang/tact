@@ -1,13 +1,12 @@
-import type { Id, Loc, TypeId } from "@/next/ast/common";
+import type { Id, Loc, Ordered, TypeId } from "@/next/ast/common";
 import type {
     BinaryOperation,
     NumberBase,
     UnaryOperation,
 } from "@/next/ast/expression";
-import type { Ordered } from "@/next/ast/checked";
 // TODO: this seems incorrect
 import type { SelfType } from "@/next/ast/type-self";
-import type { LTBasic, LType, LTypeMap, LTypeRef, LTypeTensor, LTypeTuple } from "@/next/ast/lowered-type";
+import type { LTBasic, LType, LTMap, LTRef, LTTensor, LTTuple } from "@/next/ast/lowered-type";
 
 export type LTypeArgs = ReadonlyMap<string, LType>;
 
@@ -19,7 +18,7 @@ export type LExpr =
     | LStaticCall
     | LStaticMethodCall
     | LFieldAccess
-    | LStructInstance
+    | LStructCons
     | LInitOf
     | LCodeOf
     | LNumber
@@ -156,21 +155,21 @@ export type LStaticMethodCall = {
     readonly loc: Loc;
 };
 
-export type LStructInstance = {
+export type LStructCons = {
     readonly kind: "struct_instance";
     readonly fields: Ordered<LExpr>;
-    readonly computedType: LTypeRef;
+    readonly computedType: LTRef;
     readonly loc: Loc;
 };
 
 export type LMapLiteral = {
     readonly kind: "map_literal";
-    readonly fields: readonly DMapField[];
-    readonly computedType: LTypeMap;
+    readonly fields: readonly LMapField[];
+    readonly computedType: LTMap;
     readonly loc: Loc;
 };
 
-export type DMapField = {
+export type LMapField = {
     readonly key: LExpr;
     readonly value: LExpr;
 };
@@ -216,13 +215,13 @@ export type LUnit = {
 export type LTuple = {
     readonly kind: "tuple";
     readonly children: readonly LExpr[];
-    readonly computedType: LTypeTuple;
+    readonly computedType: LTTuple;
     readonly loc: Loc;
 };
 
 export type LTensor = {
     readonly kind: "tensor";
     readonly children: readonly LExpr[];
-    readonly computedType: LTypeTensor;
+    readonly computedType: LTTensor;
     readonly loc: Loc;
 };

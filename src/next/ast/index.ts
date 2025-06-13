@@ -12,6 +12,11 @@ export * from "@/next/ast/generated/checked-expr";
 export * from "@/next/ast/generated/checked-type";
 export * from "@/next/ast/generated/checked-stmt";
 
+export * from "@/next/ast/generated/lowered";
+export * from "@/next/ast/generated/lowered-expr";
+export * from "@/next/ast/generated/lowered-type";
+export * from "@/next/ast/generated/lowered-stmt";
+
 export * from "@/next/ast/generated/via";
 export * from "@/next/ast/generated/value";
 export * from "@/next/ast/generated/effects";

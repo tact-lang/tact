@@ -1,5 +1,5 @@
-import type { DecodedStatement } from "@/next/ast/checked-stmt";
-import type { FuncId, Loc, OptionalId, TypeId } from "@/next/ast/common";
+import type { CStmt } from "@/next/ast/checked-stmt";
+import type { FuncId, Loc, OptionalId, Ordered, TypeId } from "@/next/ast/common";
 import type { CType, CTRef, CTBounced } from "@/next/ast/checked-type";
 import type { Effects } from "@/next/ast/effects";
 import type { Thunk } from "@/next/ast/lazy";
@@ -37,14 +37,14 @@ export type Recover<T> = T | undefined;
 export type CTypeDecl =
     | CAlias
     | CContract
-    | CTraitSig
+    | CTrait
     | CStruct
     | CMessage
     | CUnion;
 
 export type CTypeDeclRefable =
     | CContract
-    | CTraitSig
+    | CTrait
     | CStruct
     | CMessage
     | CUnion;
@@ -55,7 +55,7 @@ export type CConstant = {
 };
 
 export type CFunction = {
-    readonly type: CTypeFunction;
+    readonly type: CTFunction;
     readonly inline: boolean;
     readonly body: CBody;
 };
@@ -63,7 +63,7 @@ export type CFunction = {
 export type CStatements = Thunk<Recover<CStatementsAux>>;
 
 export type CStatementsAux = {
-    readonly body: readonly DecodedStatement[];
+    readonly body: readonly CStmt[];
     readonly effects: Effects;
 };
 
@@ -84,7 +84,7 @@ export type CFiftBody = {
 };
 
 export type CExtension = {
-    readonly type: CTypeMethod;
+    readonly type: CTMethod;
     readonly inline: boolean;
     readonly body: CBody;
 };
@@ -95,7 +95,7 @@ export type CAlias = {
     readonly type: Thunk<CType>;
 };
 
-export type CInitSig = CInitEmpty | CInitSimple | CInitFn;
+export type CInit = CInitEmpty | CInitSimple | CInitFn;
 export type CInitEmpty = {
     readonly kind: "empty";
     // initOf() would take 0 parameters
@@ -124,11 +124,11 @@ export type CInitParam = {
 export type CContract = {
     readonly kind: "contract";
     readonly attributes: readonly ContractAttribute[];
-    readonly init: CInitSig;
+    readonly init: CInit;
     readonly content: Thunk<CContractMembers>;
 };
 export type CContractMembers = CMembers<Thunk<Recover<Value>>, CBody>;
-export type CTraitSig = {
+export type CTrait = {
     readonly kind: "trait";
     readonly content: Thunk<CTraitMembers>;
 };
@@ -162,7 +162,7 @@ export type CFieldConstant<Expr> = {
 
 export type CMethod<Body> = {
     readonly overridable: boolean;
-    readonly type: CTypeMethod;
+    readonly type: CTMethod;
     readonly inline: boolean;
     readonly body: Body;
     readonly getMethodId: Thunk<Recover<bigint>> | undefined;
@@ -229,14 +229,14 @@ export type CUnion = {
     readonly cases: ReadonlyMap<string, ReadonlyMap<string, CField>>;
 };
 
-export type CTypeFunction = {
+export type CTFunction = {
     readonly kind: "DecodedFnType";
     readonly typeParams: CTypeParams;
     readonly params: CParameters;
     readonly returnType: Thunk<CType>;
 };
 
-export type CTypeMethod = {
+export type CTMethod = {
     readonly kind: "DecodedMethodType";
     readonly mutates: boolean;
     readonly typeParams: CTypeParams;
@@ -249,11 +249,6 @@ export type CParameter = {
     readonly name: OptionalId;
     readonly type: Thunk<CType>;
     readonly loc: Loc;
-};
-
-export type Ordered<T> = {
-    readonly order: readonly string[];
-    readonly map: ReadonlyMap<string, T>;
 };
 
 export type CParameters = {

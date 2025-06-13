@@ -8,7 +8,7 @@ export function* decodeAlias(
     Lazy: Ast.ThunkBuilder,
     { typeParams, type }: Ast.AliasDecl,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CAlias> {
+): Ast.Log<Ast.CAlias> {
     const decodedParams = yield* decodeTypeParams(typeParams);
     return Ast.CAlias(
         decodedParams,

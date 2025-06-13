@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Ast from "@/next/ast";
 
-export function convertValueToExpr(node: Ast.Value): Ast.DecodedExpression {
+export function convertValueToExpr(node: Ast.Value): Ast.CExpr {
     switch (node.kind) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         case "number": {

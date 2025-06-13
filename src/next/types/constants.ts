@@ -12,7 +12,7 @@ export function* decodeConstants(
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.CConstant>>> {
+): Ast.Log<ReadonlyMap<string, Ast.Decl<Ast.CConstant>>> {
     const allConstSigs = [
         // imported
         ...imported.flatMap(({ globals, importedBy }) =>
@@ -63,9 +63,9 @@ function* decodeConstant(
                 Ast.TEText("defining constant"),
                 Ast.TECode(constant.loc),
             ],
-            recover: Ast.CTypeRecover(),
+            recover: Ast.CTRecover(),
             callback: function* () {
-                return Ast.CTypeRecover();
+                return Ast.CTRecover();
             },
         });
         const expr = Lazy({

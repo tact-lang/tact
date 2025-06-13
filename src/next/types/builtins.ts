@@ -23,8 +23,8 @@ const Params = (params: Record<string, Ast.CType>): Ast.CParameters => {
     return Ast.CParameters(order, set);
 };
 
-const Ref = (name: string): Ast.CTypeParamRef => {
-    return Ast.CTypeParamRef(Ast.TypeId(name, r), r);
+const Ref = (name: string): Ast.CTParamRef => {
+    return Ast.CTParamRef(Ast.TypeId(name, r), r);
 };
 
 const mapType = Ast.SVTMap(Ref("K"), Ref("V"), r);
@@ -34,10 +34,10 @@ const GenericFn = (
     typeParams: readonly string[],
     params: Record<string, Ast.CType>,
     returnType: Ast.CType,
-): [string, Ast.CTypeFunction] => {
+): [string, Ast.CTFunction] => {
     return [
         name,
-        Ast.CTypeFunction(
+        Ast.CTFunction(
             TypeParams(typeParams),
             Params(params),
             Ast.FakeThunk(returnType),
@@ -48,7 +48,7 @@ const Fn = (
     name: string,
     params: Record<string, Ast.CType>,
     returnType: Ast.CType,
-): [string, Ast.CTypeFunction] => {
+): [string, Ast.CTFunction] => {
     return GenericFn(name, [], params, returnType);
 };
 const MapMethod = (
@@ -56,10 +56,10 @@ const MapMethod = (
     mutates: boolean,
     params: Record<string, Ast.CType>,
     returnType: Ast.CType,
-): [string, Ast.CTypeMethod] => {
+): [string, Ast.CTMethod] => {
     return [
         name,
-        Ast.CTypeMethod(
+        Ast.CTMethod(
             mutates,
             TypeParams(["K", "V"]),
             mapType,
@@ -80,8 +80,8 @@ export const Address = Ast.CTBasic(Ast.TAddress(r), r);
 export const String = Ast.CTBasic(Ast.TString(r), r);
 export const StringBuilder = Ast.CTBasic(Ast.TStringBuilder(r), r);
 export const MapType = (k: Ast.CType, v: Ast.CType) =>
-    Ast.CTypeMap(k, v, r);
-export const Maybe = (t: Ast.CType) => Ast.CTypeMaybe(t, r);
+    Ast.CTMap(k, v, r);
+export const Maybe = (t: Ast.CType) => Ast.CTMaybe(t, r);
 export const Unit = Ast.TUnit(r);
 export const StateInit = Ast.CTBasic(Ast.TStateInit(r), r);
 
@@ -121,7 +121,7 @@ const BoolAssign = (name: string) => {
     return Fn(name, { left: Bool, right: Bool }, Void);
 };
 
-export const builtinFunctions: Map<string, Ast.CTypeFunction> = new Map([
+export const builtinFunctions: Map<string, Ast.CTFunction> = new Map([
     // dump<T>(arg: T): Void
     GenericFn("dump", ["T"], { data: Ref("T") }, Void),
     // ton(value: String): Int
@@ -149,7 +149,7 @@ export const builtinFunctions: Map<string, Ast.CTypeFunction> = new Map([
     // sha256(data: Slice | String): Int
 ]);
 
-export const builtinMethods: Map<string, Ast.CTypeMethod> = new Map([
+export const builtinMethods: Map<string, Ast.CTMethod> = new Map([
     // set(key: K, value: V): void
     MapMethod("set", true, { key: Ref("K"), value: Ref("V") }, Void),
     // get(key: K): Maybe<V>
@@ -170,7 +170,7 @@ export const builtinMethods: Map<string, Ast.CTypeMethod> = new Map([
     MapMethod("replaceGet", true, { key: Ref("K"), value: Ref("V") }, mapType),
 ]);
 
-export const builtinUnary: Map<string, Ast.CTypeFunction> = new Map([
+export const builtinUnary: Map<string, Ast.CTFunction> = new Map([
     Fn("+", { arg: Int }, Int),
     Fn("-", { arg: Int }, Int),
     Fn("~", { arg: Int }, Int),
@@ -178,7 +178,7 @@ export const builtinUnary: Map<string, Ast.CTypeFunction> = new Map([
     GenericFn("!!", ["T"], { arg: Maybe(Ref("T")) }, Ref("T")),
 ]);
 
-export const builtinBinary: Map<string, Ast.CTypeFunction> = new Map([
+export const builtinBinary: Map<string, Ast.CTFunction> = new Map([
     // (left: Int, right: Int): Int
     ArithBin("+"),
     ArithBin("-"),
@@ -203,7 +203,7 @@ export const builtinBinary: Map<string, Ast.CTypeFunction> = new Map([
     BoolBin("||"),
 ]);
 
-export const builtinAugmented: Map<string, Ast.CTypeFunction> = new Map([
+export const builtinAugmented: Map<string, Ast.CTFunction> = new Map([
     // (left: Int, right: Int): Void;
     ArithAssign("+="),
     ArithAssign("-="),
@@ -222,7 +222,7 @@ export const builtinAugmented: Map<string, Ast.CTypeFunction> = new Map([
 
 export const getStaticBuiltin = (
     type: Ast.CType,
-): Map<string, Ast.CTypeFunction> => {
+): Map<string, Ast.CTFunction> => {
     return new Map([
         // Foo.fromSlice(slice: Slice)
         Fn("fromSlice", { slice: Slice }, type),

@@ -12,7 +12,7 @@ export function* checkFieldOverride(
     nextType: Ast.Thunk<Ast.CType>,
     nextVia: Ast.ViaMember,
     override: boolean,
-): Ast.WithLog<void> {
+): Ast.Log<void> {
     if (prev) {
         if (prev.decl.kind !== "constant") {
             // cannot override field with constant
@@ -46,10 +46,10 @@ export function* checkFieldOverride(
 export function* checkMethodOverride(
     name: string,
     prev: Ast.DeclMem<Ast.CMethod<Ast.CBody | undefined>> | undefined,
-    nextType: Ast.CTypeMethod,
+    nextType: Ast.CTMethod,
     nextVia: Ast.ViaMember,
     override: boolean,
-): Ast.WithLog<void> {
+): Ast.Log<void> {
     if (prev) {
         if (override) {
             // overriding without override

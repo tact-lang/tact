@@ -7,10 +7,10 @@ import { decodeStatementsLazy } from "@/next/types/statements";
 export function* decodeBody(
     Lazy: Ast.ThunkBuilder,
     node: Ast.FunctionalBody,
-    fnType: Ast.CTypeFunction | Ast.CTypeMethod,
+    fnType: Ast.CTFunction | Ast.CTMethod,
     loc: Ast.Loc,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CBody> {
+): Ast.Log<Ast.CBody> {
     switch (node.kind) {
         case "abstract_body": {
             yield ENoBody(loc);
@@ -69,7 +69,7 @@ const ENoBody = (loc: Ast.Loc): Ast.TcError => ({
 
 function* checkShuffle(
     shuffle: Ast.AsmShuffle,
-    fnType: Ast.CTypeFunction | Ast.CTypeMethod,
+    fnType: Ast.CTFunction | Ast.CTMethod,
     loc: Ast.Loc,
     scopeRef: () => Ast.CSource,
 ) {
@@ -129,9 +129,9 @@ function* checkShuffle(
 }
 
 function* getRetTupleSize(
-    { kind, returnType }: Ast.CTypeFunction | Ast.CTypeMethod,
+    { kind, returnType }: Ast.CTFunction | Ast.CTMethod,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<undefined | number> {
+): Ast.Log<undefined | number> {
     const type = yield* returnType();
     const baseSize = yield* getTypeTupleSize(type, scopeRef);
     if (typeof baseSize === "undefined") {

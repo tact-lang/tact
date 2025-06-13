@@ -5,7 +5,7 @@ export const emptyTypeParams = Ast.CTypeParams([], new Set());
 
 export function* decodeTypeParams(
     ids: readonly Ast.TypeId[],
-): Ast.WithLog<Ast.CTypeParams> {
+): Ast.Log<Ast.CTypeParams> {
     const set: Set<string> = new Set();
     const order: Ast.TypeId[] = [];
 

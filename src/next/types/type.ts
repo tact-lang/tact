@@ -17,7 +17,7 @@ export const decodeTypeLazy = (
         callback: () => decodeType(typeParams, type, scopeRef().typeDecls),
         context: [Ast.TEText("checking type"), Ast.TECode(type.loc)],
         loc: type.loc,
-        recover: Ast.CTypeRecover(),
+        recover: Ast.CTRecover(),
     });
 
 export const decodeDealiasTypeLazy = (
@@ -37,7 +37,7 @@ export const decodeDealiasTypeLazy = (
         },
         context: [Ast.TEText("checking type"), Ast.TECode(type.loc)],
         loc: type.loc,
-        recover: Ast.CTypeRecover(),
+        recover: Ast.CTRecover(),
     });
 
 export function* dealiasType(type: Ast.CType, scopeRef: () => Ast.CSource) {
@@ -52,7 +52,7 @@ export function* decodeTypeMap(
     const { typeDecls } = scopeRef();
     const key = yield* decodeType(typeParams, type.key, typeDecls);
     const value = yield* decodeType(typeParams, type.value, typeDecls);
-    return Ast.CTypeMap(key, value, type.loc);
+    return Ast.CTMap(key, value, type.loc);
 }
 
 export function* decodeTypeSet(
@@ -63,7 +63,7 @@ export function* decodeTypeSet(
     const { typeDecls } = scopeRef();
     const key = yield* decodeType(typeParams, type.key, typeDecls);
     const value = yield* decodeType(typeParams, type.value, typeDecls);
-    return Ast.CTypeMap(key, value, type.loc);
+    return Ast.CTMap(key, value, type.loc);
 }
 
 export function decodeType(
@@ -74,7 +74,7 @@ export function decodeType(
     // decode all the types in an array
     function* recN(
         types: readonly Ast.Type[],
-    ): Ast.WithLog<readonly Ast.CType[]> {
+    ): Ast.Log<readonly Ast.CType[]> {
         const results: Ast.CType[] = [];
         for (const type of types) {
             const result = yield* rec(type);
@@ -84,45 +84,45 @@ export function decodeType(
     }
 
     // decode a type
-    function* rec(type: Ast.Type): Ast.WithLog<Ast.CType> {
+    function* rec(type: Ast.Type): Ast.Log<Ast.CType> {
         switch (type.kind) {
             case "basic": {
                 return type;
             }
             case "tuple_type": {
                 const result = yield* recN(type.typeArgs);
-                return Ast.CTypeTuple(result, type.loc);
+                return Ast.CTTuple(result, type.loc);
             }
             case "tensor_type": {
                 const result = yield* recN(type.typeArgs);
-                return Ast.CTypeTensor(result, type.loc);
+                return Ast.CTTensor(result, type.loc);
             }
             case "map_type": {
                 // NB! modify along with decodeTypeMap above
                 const key = yield* rec(type.key);
                 const value = yield* rec(type.value);
-                return Ast.CTypeMap(key, value, type.loc);
+                return Ast.CTMap(key, value, type.loc);
             }
             case "TypeBounced": {
                 const child = yield* rec(type.type);
                 if (child.kind !== "type_ref" || child.typeArgs.length > 0) {
                     yield EBouncedMessage(type.loc);
-                    return Ast.CTypeRecover();
+                    return Ast.CTRecover();
                 }
                 const typeEntry = typeDecls.get(child.name.text);
                 if (!typeEntry) {
                     yield EBouncedMessage(type.loc);
-                    return Ast.CTypeRecover();
+                    return Ast.CTRecover();
                 } else if (typeEntry.decl.kind === "message") {
-                    return Ast.CTypeBounced(child.name, type.loc);
+                    return Ast.CTBounced(child.name, type.loc);
                 } else {
                     yield EBouncedMessage(type.loc);
-                    return Ast.CTypeRecover();
+                    return Ast.CTRecover();
                 }
             }
             case "TypeMaybe": {
                 const child = yield* rec(type.type);
-                return Ast.CTypeMaybe(child, type.loc);
+                return Ast.CTMaybe(child, type.loc);
             }
             case "cons_type": {
                 // this is where the meat of the procedure is
@@ -139,9 +139,9 @@ export function decodeType(
                     // if we used type parameter generically, throw error
                     // because we do not support HKT
                     if (!(yield* matchArity(name, arity, 0, type.loc))) {
-                        return Ast.CTypeRecover();
+                        return Ast.CTRecover();
                     }
-                    return Ast.CTypeParamRef(type.name, type.loc);
+                    return Ast.CTParamRef(type.name, type.loc);
                 }
 
                 const typeEntry = typeDecls.get(name);
@@ -149,7 +149,7 @@ export function decodeType(
                 // there is no such type at all!
                 if (!typeEntry) {
                     yield ETypeNotFound(name, type.loc);
-                    return Ast.CTypeRecover();
+                    return Ast.CTRecover();
                 }
 
                 // check number of type arguments does match
@@ -161,17 +161,17 @@ export function decodeType(
                         type.loc,
                     ))
                 ) {
-                    return Ast.CTypeRecover();
+                    return Ast.CTRecover();
                 }
 
                 switch (typeEntry.decl.kind) {
                     case "trait": {
                         yield ETraitNotType(type.loc);
-                        return Ast.CTypeRecover();
+                        return Ast.CTRecover();
                     }
                     case "contract": {
                         // this is a ground type reference
-                        return Ast.DTypeRef(
+                        return Ast.CTRef(
                             type.name,
                             typeEntry.decl,
                             [],
@@ -182,7 +182,7 @@ export function decodeType(
                     case "message":
                     case "union": {
                         // this is a ground type reference
-                        return Ast.DTypeRef(
+                        return Ast.CTRef(
                             type.name,
                             typeEntry.decl,
                             args,
@@ -191,7 +191,7 @@ export function decodeType(
                     }
                     case "alias": {
                         // this is an alias reference
-                        return Ast.CTypeAliasRef(
+                        return Ast.CTAliasRef(
                             Ast.CNotDealiased(),
                             type.name,
                             args,
@@ -234,7 +234,7 @@ function* matchArity(
     got: number,
     expected: number,
     loc: Ast.Loc,
-): Ast.WithLog<boolean> {
+): Ast.Log<boolean> {
     const result = got === expected;
     if (!result) {
         yield EArity(name, expected, got, loc);
@@ -265,14 +265,14 @@ const dealiasTypeAux = (
     type: Ast.CType,
     typeDecls: ReadonlyMap<string, Ast.Decl<Ast.CTypeDecl>>,
 ) => {
-    function* rec(type: Ast.CType): Ast.WithLog<Ast.CType> {
+    function* rec(type: Ast.CType): Ast.Log<Ast.CType> {
         switch (type.kind) {
             case "recover": {
                 return type;
             }
             case "type_ref": {
                 const args = yield* Ast.mapLog(type.typeArgs, rec);
-                return Ast.DTypeRef(type.name, type.type, args, type.loc);
+                return Ast.CTRef(type.name, type.type, args, type.loc);
             }
             case "TypeAlias": {
                 const alias = typeDecls.get(type.name.text);
@@ -290,7 +290,7 @@ const dealiasTypeAux = (
                         yield* Ast.mapLog(type.typeArgs, rec),
                     ),
                 );
-                return Ast.CTypeAliasRef(
+                return Ast.CTAliasRef(
                     decoded,
                     type.name,
                     type.typeArgs,
@@ -303,19 +303,19 @@ const dealiasTypeAux = (
             case "map_type": {
                 const key = yield* rec(type.key);
                 const value = yield* rec(type.value);
-                return Ast.CTypeMap(key, value, type.loc);
+                return Ast.CTMap(key, value, type.loc);
             }
             case "TypeMaybe": {
                 const args = yield* rec(type.type);
-                return Ast.CTypeMaybe(args, type.loc);
+                return Ast.CTMaybe(args, type.loc);
             }
             case "tuple_type": {
                 const args = yield* Ast.mapLog(type.typeArgs, rec);
-                return Ast.CTypeTuple(args, type.loc);
+                return Ast.CTTuple(args, type.loc);
             }
             case "tensor_type": {
                 const args = yield* Ast.mapLog(type.typeArgs, rec);
-                return Ast.CTypeTensor(args, type.loc);
+                return Ast.CTTensor(args, type.loc);
             }
             case "basic":
             case "TypeBounced": {
@@ -362,12 +362,12 @@ export const substituteTypeArgs = (
             }
             case "type_ref": {
                 const args = recN(type.typeArgs);
-                return Ast.DTypeRef(type.name, type.type, args, type.loc);
+                return Ast.CTRef(type.name, type.type, args, type.loc);
             }
             case "TypeAlias": {
                 if (type.type.kind === "NotDealiased") {
                     const args = recN(type.typeArgs);
-                    return Ast.CTypeAliasRef(
+                    return Ast.CTAliasRef(
                         type.type,
                         type.name,
                         args,
@@ -375,7 +375,7 @@ export const substituteTypeArgs = (
                     );
                 } else {
                     const args = recN(type.typeArgs); // ??
-                    return Ast.CTypeAliasRef(
+                    return Ast.CTAliasRef(
                         rec(type.type),
                         type.name,
                         args,
@@ -386,19 +386,19 @@ export const substituteTypeArgs = (
             case "map_type": {
                 const key = rec(type.key);
                 const value = rec(type.value);
-                return Ast.CTypeMap(key, value, type.loc);
+                return Ast.CTMap(key, value, type.loc);
             }
             case "TypeMaybe": {
                 const args = rec(type.type);
-                return Ast.CTypeMaybe(args, type.loc);
+                return Ast.CTMaybe(args, type.loc);
             }
             case "tuple_type": {
                 const args = recN(type.typeArgs);
-                return Ast.CTypeTuple(args, type.loc);
+                return Ast.CTTuple(args, type.loc);
             }
             case "tensor_type": {
                 const args = recN(type.typeArgs);
-                return Ast.CTypeTensor(args, type.loc);
+                return Ast.CTTensor(args, type.loc);
             }
             case "recover":
             case "basic":
@@ -417,8 +417,8 @@ export function* instantiateStruct(
     // NB! these are type params from enclosing scope
     typeParams: Ast.CTypeParams,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<
-    undefined | { type: Ast.DTypeRef; fields: Ast.Ordered<Ast.CField> }
+): Ast.Log<
+    undefined | { type: Ast.CTRef; fields: Ast.Ordered<Ast.CField> }
 > {
     const decl = scopeRef().typeDecls.get(typeName.text);
     switch (decl?.decl.kind) {
@@ -452,7 +452,7 @@ export function* instantiateStruct(
                 return undefined;
             }
             return {
-                type: Ast.DTypeRef(typeName, decl.decl, typeArgs, typeName.loc),
+                type: Ast.CTRef(typeName, decl.decl, typeArgs, typeName.loc),
                 fields: decl.decl.fields,
             };
         }
@@ -469,7 +469,7 @@ export function* instantiateStruct(
                 return undefined;
             }
             const type = yield* dealiasType(
-                Ast.CTypeAliasRef(
+                Ast.CTAliasRef(
                     Ast.CNotDealiased(),
                     typeName,
                     typeArgs,
@@ -522,7 +522,7 @@ export function typeParamsToSubst(typeParams: Ast.CTypeParams) {
 export function* substToTypeArgMap(
     loc: Ast.Loc,
     subst: Map<string, Ast.CType | Ast.CNotSet>,
-): Ast.WithLog<undefined | Ast.TypeArgs> {
+): Ast.Log<undefined | Ast.TypeArgs> {
     const res = substToTypeArgMapAux(subst);
     if (res.ok) {
         return res.args;
@@ -559,7 +559,7 @@ export function* assignType(
     to: Ast.CType,
     from: Ast.CType,
     strict: boolean,
-): Ast.WithLog<undefined | Ast.TypeArgs> {
+): Ast.Log<undefined | Ast.TypeArgs> {
     const subst = typeParamsToSubst(toFreeTypeParam);
     const result = assignTypeAux(to, from, subst, strict);
     if (result.kind === "failure") {
@@ -726,11 +726,11 @@ export function* mgu(
     left: Ast.CType,
     right: Ast.CType,
     loc: Ast.Loc,
-): Ast.WithLog<Ast.CType> {
+): Ast.Log<Ast.CType> {
     function* rec(
         left: Ast.CType,
         right: Ast.CType,
-    ): Ast.WithLog<Ast.CType> {
+    ): Ast.Log<Ast.CType> {
         if (right.kind === "TypeAlias") {
             if (right.type.kind === "NotDealiased") {
                 return throwInternal("Decoder returned aliased type");
@@ -754,13 +754,13 @@ export function* mgu(
             return right;
         }
         if (right.kind === "basic" && right.type.kind === "TypeNull") {
-            return Ast.CTypeMaybe(left, loc);
+            return Ast.CTMaybe(left, loc);
         }
         if (left.kind === "basic" && left.type.kind === "TypeNull") {
-            return Ast.CTypeMaybe(right, loc);
+            return Ast.CTMaybe(right, loc);
         }
         yield ENotUnifiable(resultL.tree, loc);
-        return Ast.CTypeRecover();
+        return Ast.CTRecover();
     }
 
     return yield* rec(left, right);
@@ -780,9 +780,9 @@ export type CallResult = {
 
 export function* checkFnCall(
     loc: Ast.Loc,
-    fnType: Ast.CTypeFunction | Ast.CTypeMethod,
+    fnType: Ast.CTFunction | Ast.CTMethod,
     args: readonly (readonly [Ast.Loc, Ast.CType])[],
-): Ast.WithLog<CallResult> {
+): Ast.Log<CallResult> {
     const { typeParams, params, returnType } = fnType;
 
     const subst = typeParamsToSubst(typeParams);
@@ -809,7 +809,7 @@ export function* checkFnCall(
 
     if (!typeArgsMap) {
         return {
-            returnType: Ast.CTypeRecover(),
+            returnType: Ast.CTRecover(),
             typeArgMap: new Map(),
         };
     }
@@ -864,19 +864,19 @@ const EFnArity = (
 export function* checkFnCallWithArgs(
     Lazy: Ast.ThunkBuilder,
     loc: Ast.Loc,
-    fnType: Ast.CTypeFunction | undefined,
+    fnType: Ast.CTFunction | undefined,
     ascribedTypeArgs: readonly Ast.CType[],
     args: readonly (readonly [Ast.Loc, Ast.CType])[],
-): Ast.WithLog<CallResult> {
+): Ast.Log<CallResult> {
     if (!fnType) {
         yield ENoFunction(loc);
-        return { returnType: Ast.CTypeRecover(), typeArgMap: new Map() };
+        return { returnType: Ast.CTRecover(), typeArgMap: new Map() };
     }
     if (ascribedTypeArgs.length === 0) {
         return yield* checkFnCall(loc, fnType, args);
     }
     if (fnType.typeParams.order.length !== ascribedTypeArgs.length) {
-        return { returnType: Ast.CTypeRecover(), typeArgMap: new Map() };
+        return { returnType: Ast.CTRecover(), typeArgMap: new Map() };
     }
     const result = yield* checkFnCall(
         loc,
@@ -905,7 +905,7 @@ function substFnType(
         typeParams,
         params,
         returnType,
-    }: Ast.CTypeFunction | Ast.CTypeMethod,
+    }: Ast.CTFunction | Ast.CTMethod,
     args: readonly Ast.CType[],
 ) {
     const order: Ast.CParameter[] = [];
@@ -927,13 +927,13 @@ function substFnType(
                         ),
                     ],
                     loc: param.loc,
-                    recover: Ast.CTypeRecover(),
+                    recover: Ast.CTRecover(),
                 }),
                 param.loc,
             ),
         );
     }
-    return Ast.CTypeFunction(
+    return Ast.CTFunction(
         emptyTypeParams,
         Ast.CParameters(order, params.set),
         Lazy({
@@ -946,7 +946,7 @@ function substFnType(
             },
             context: [Ast.TEText(`substituting into return type`)],
             loc: fnLoc,
-            recover: Ast.CTypeRecover(),
+            recover: Ast.CTRecover(),
         }),
     );
 }
@@ -962,9 +962,9 @@ export function* lookupMethod(
     args: readonly (readonly [Ast.Loc, Ast.CType])[],
     typeDecls: ReadonlyMap<string, Ast.Decl<Ast.CTypeDecl>>,
     extensions: ReadonlyMap<string, Ast.Thunk<readonly Ast.Decl<Ast.CExtension>[]>>,
-): Ast.WithLog<MethodCallResult> {
+): Ast.Log<MethodCallResult> {
     if (selfType.kind === "recover") {
-        return { returnType: Ast.CTypeRecover(), typeArgMap: new Map(), mutates: false };
+        return { returnType: Ast.CTRecover(), typeArgMap: new Map(), mutates: false };
     }
     if (selfType.kind === "TypeAlias") {
         if (selfType.type.kind === "NotDealiased") {
@@ -988,7 +988,7 @@ export function* lookupMethod(
     const selfDecl = typeDecls.get(selfType.name.text);
     if (!selfDecl) {
         yield ENoMethod(method.loc);
-        return { returnType: Ast.CTypeRecover(), typeArgMap: new Map(), mutates: false };
+        return { returnType: Ast.CTRecover(), typeArgMap: new Map(), mutates: false };
     }
 
     if (selfDecl.decl.kind === "struct" || selfDecl.decl.kind === "message") {
@@ -1009,7 +1009,7 @@ export function* lookupMethod(
         const met = content.methods.get(method.text);
         if (!met) {
             yield ENoMethod(method.loc);
-            return { returnType: Ast.CTypeRecover(), typeArgMap: new Map(), mutates: false };
+            return { returnType: Ast.CTRecover(), typeArgMap: new Map(), mutates: false };
         }
         return {
             ...yield* checkFnCall(method.loc, met.decl.type, args),
@@ -1018,7 +1018,7 @@ export function* lookupMethod(
     }
 
     yield ENoMethod(method.loc);
-    return { returnType: Ast.CTypeRecover(), typeArgMap: new Map(), mutates: false };
+    return { returnType: Ast.CTRecover(), typeArgMap: new Map(), mutates: false };
 }
 
 function* lookupExts(
@@ -1027,15 +1027,15 @@ function* lookupExts(
     method: Ast.Id,
     args: readonly (readonly [Ast.Loc, Ast.CType])[],
     extensions: ReadonlyMap<string, Ast.Thunk<readonly Ast.Decl<Ast.CExtension>[]>>,
-): Ast.WithLog<MethodCallResult> {
+): Ast.Log<MethodCallResult> {
     const lazyExts = extensions.get(method.text);
     if (!lazyExts) {
         yield ENoMethod(method.loc);
-        return { returnType: Ast.CTypeRecover(), typeArgMap: new Map(), mutates: false };
+        return { returnType: Ast.CTRecover(), typeArgMap: new Map(), mutates: false };
     }
     const exts = yield* lazyExts();
-    const grounds: [Ast.CTypeMethod, Ast.TypeArgs][] = [];
-    const withVars: [Ast.CTypeMethod, Ast.TypeArgs][] = [];
+    const grounds: [Ast.CTMethod, Ast.TypeArgs][] = [];
+    const withVars: [Ast.CTMethod, Ast.TypeArgs][] = [];
     for (const { decl } of exts) {
         const subst = typeParamsToSubst(decl.type.typeParams);
         const result = assignTypeAux(decl.type.self, selfType, subst, true);
@@ -1057,7 +1057,7 @@ function* lookupExts(
     const either = ground || withVar;
     if (!either) {
         yield ENoMethod(method.loc);
-        return { returnType: Ast.CTypeRecover(), typeArgMap: new Map(), mutates: false };
+        return { returnType: Ast.CTRecover(), typeArgMap: new Map(), mutates: false };
     }
     const [methodType, typeArgs] = either;
     const result = yield* checkFnCall(
@@ -1095,11 +1095,11 @@ const ENoMethod = (loc: Ast.Loc): Ast.TcError => ({
 });
 
 export function* assignMethodType(
-    prev: Ast.CTypeMethod,
-    next: Ast.CTypeMethod,
+    prev: Ast.CTMethod,
+    next: Ast.CTMethod,
     prevVia: Ast.ViaMember,
     nextVia: Ast.ViaMember,
-): Ast.WithLog<void> {
+): Ast.Log<void> {
     const result = assignTypeAux(
         yield* prev.returnType(),
         yield* next.returnType(),

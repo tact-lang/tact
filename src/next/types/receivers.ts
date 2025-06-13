@@ -13,7 +13,7 @@ export function* getReceivers(
     traits: readonly Ast.Decl<Ast.CTraitMembers>[],
     receivers: readonly Ast.Receiver[],
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CReceivers> {
+): Ast.Log<Ast.CReceivers> {
     const impExternals: Ast.Decl<Ast.CReceiver>[] = [];
     const impInternals: Ast.Decl<Ast.CReceiver>[] = [];
     const impBounces: Ast.Decl<Ast.CBounce>[] = [];
@@ -90,7 +90,7 @@ function* mergeReceivers(
         readonly [Ast.ReceiverSubKind, readonly Ast.Statement[]]
     >[],
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CReceiver> {
+): Ast.Log<Ast.CReceiver> {
     const allMessage: Ast.DeclMem<Ast.CReceiverOpcode>[] = [];
     let allMessageAny: undefined | Ast.DeclMem<Ast.CReceiverMessageAny>;
     let allStringAny: undefined | Ast.DeclMem<Ast.CReceiverStringAny>;
@@ -259,7 +259,7 @@ function* mergeBounce(
         [Ast.TypedParameter, readonly Ast.Statement[]]
     >[],
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CBounce> {
+): Ast.Log<Ast.CBounce> {
     const allMessage: Ast.DeclMem<Ast.CReceiverMessage>[] = [];
     let allMessageAny: undefined | Ast.DeclMem<Ast.CReceiverMessageAny>;
 

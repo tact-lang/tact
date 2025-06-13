@@ -95,7 +95,7 @@ function* decodeInit(
     init: Ast.Init | undefined,
     contentLazy: () => Ast.Thunk<Ast.CContractMembers>,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CInitSig> {
+): Ast.Log<Ast.CInit> {
     if (!init) {
         // no init
         const lazyInit = Lazy({
@@ -218,7 +218,7 @@ function* getMethodsFromContract(
     traits: readonly Ast.Decl<Ast.CTraitMembers>[],
     methods: readonly Ast.Method[],
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<ReadonlyMap<string, Ast.DeclMem<Ast.CMethod<Ast.CBody>>>> {
+): Ast.Log<ReadonlyMap<string, Ast.DeclMem<Ast.CMethod<Ast.CBody>>>> {
     const res = yield* getMethodsGeneral(
         Lazy,
         contractSig,
@@ -248,11 +248,11 @@ function* getFieldishFromContract(
     contractSig: Ast.CContract,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.CTraitMembers>[],
-    init: Ast.CInitSig,
+    init: Ast.CInit,
     constants: readonly Ast.FieldConstant[],
     fields: readonly Ast.FieldDecl[],
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<
+): Ast.Log<
     Ast.Ordered<Ast.DeclMem<Ast.CFieldish<Ast.Thunk<Ast.Recover<Ast.Value>>>>>
 > {
     const res = yield* getFieldishGeneral(

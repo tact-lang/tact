@@ -14,7 +14,7 @@ export function* decodeMessage(
     Lazy: Ast.ThunkBuilder,
     message: Ast.MessageDecl,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CMessage> {
+): Ast.Log<Ast.CMessage> {
     const fields = yield* decodeFields(
         Lazy,
         message.fields,

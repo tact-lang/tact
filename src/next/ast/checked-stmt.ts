@@ -1,126 +1,125 @@
-import type { Ordered } from "@/next/ast/checked";
-import type { DecodedExpression, LValue } from "@/next/ast/checked-expr";
+import type { CExpr, CLValue } from "@/next/ast/checked-expr";
 import type { Id, Loc, OptionalId, TypeId } from "@/next/ast/common";
+import type { Ordered } from "@/next/ast/generated/common";
 import type { AugmentedAssignOperation } from "@/next/ast/statement";
 
-export type DecodedStatement =
-    | DStatementLet
-    | DStatementReturn
-    | DStatementExpression
-    | DStatementAssign
-    | DStatementAugmentedAssign
-    | DStatementCondition
-    | DStatementWhile
-    | DStatementUntil
-    | DStatementRepeat
-    | DStatementTry
-    | DStatementForEach
-    | DStatementDestruct
-    | DStatementBlock;
+export type CStmt =
+    | CStmtLet
+    | CStmtReturn
+    | CStmtExpression
+    | CStmtAssign
+    | CStmtAugmentedAssign
+    | CStmtCondition
+    | CStmtWhile
+    | CStmtUntil
+    | CStmtRepeat
+    | CStmtTry
+    | CStmtForEach
+    | CStmtDestruct
+    | CStmtBlock;
 
-export type DStatementList = readonly DecodedStatement[];
+export type CStmtList = readonly CStmt[];
 
-export type DStatementLet = {
+export type CStmtLet = {
     readonly kind: "statement_let";
     readonly name: OptionalId;
-    readonly expression: DecodedExpression;
+    readonly expression: CExpr;
     readonly loc: Loc;
 };
 
-export type DStatementReturn = {
+export type CStmtReturn = {
     readonly kind: "statement_return";
-    readonly expression: DecodedExpression | undefined;
+    readonly expression: CExpr | undefined;
     readonly loc: Loc;
 };
 
-export type DStatementExpression = {
+export type CStmtExpression = {
     readonly kind: "statement_expression";
-    readonly expression: DecodedExpression;
+    readonly expression: CExpr;
     readonly loc: Loc;
 };
 
-export type DStatementAssign = {
+export type CStmtAssign = {
     readonly kind: "statement_assign";
-    readonly path: LValue;
-    readonly expression: DecodedExpression;
+    readonly path: CLValue;
+    readonly expression: CExpr;
     readonly loc: Loc;
 };
 
-export type DStatementAugmentedAssign = {
+export type CStmtAugmentedAssign = {
     readonly kind: "statement_augmentedassign";
     readonly op: AugmentedAssignOperation;
-    readonly path: LValue;
-    readonly expression: DecodedExpression;
+    readonly path: CLValue;
+    readonly expression: CExpr;
     readonly loc: Loc;
 };
 
-export type DStatementCondition = {
+export type CStmtCondition = {
     readonly kind: "statement_condition";
-    readonly condition: DecodedExpression;
-    readonly trueStatements: DStatementList;
-    readonly falseStatements: DStatementList | undefined;
+    readonly condition: CExpr;
+    readonly trueStatements: CStmtList;
+    readonly falseStatements: CStmtList | undefined;
     readonly loc: Loc;
 };
 
-export type DStatementWhile = {
+export type CStmtWhile = {
     readonly kind: "statement_while";
-    readonly condition: DecodedExpression;
-    readonly statements: DStatementList;
+    readonly condition: CExpr;
+    readonly statements: CStmtList;
     readonly loc: Loc;
 };
 
-export type DStatementUntil = {
+export type CStmtUntil = {
     readonly kind: "statement_until";
-    readonly condition: DecodedExpression;
-    readonly statements: DStatementList;
+    readonly condition: CExpr;
+    readonly statements: CStmtList;
     readonly loc: Loc;
 };
 
-export type DStatementRepeat = {
+export type CStmtRepeat = {
     readonly kind: "statement_repeat";
-    readonly iterations: DecodedExpression;
-    readonly statements: DStatementList;
+    readonly iterations: CExpr;
+    readonly statements: CStmtList;
     readonly loc: Loc;
 };
 
-export type DStatementTry = {
+export type CStmtTry = {
     readonly kind: "statement_try";
-    readonly statements: DStatementList;
-    readonly catchBlock: DCatchBlock | undefined;
+    readonly statements: CStmtList;
+    readonly catchBlock: CCatchBlock | undefined;
     readonly loc: Loc;
 };
 
-export type DCatchBlock = {
+export type CCatchBlock = {
     readonly name: OptionalId;
-    readonly statements: DStatementList;
+    readonly statements: CStmtList;
 };
 
-export type DStatementForEach = {
+export type CStmtForEach = {
     readonly kind: "statement_foreach";
     readonly keyName: OptionalId;
     readonly valueName: OptionalId;
-    readonly map: DecodedExpression;
-    readonly statements: DStatementList;
+    readonly map: CExpr;
+    readonly statements: CStmtList;
     readonly loc: Loc;
 };
 
-export type DStatementDestruct = {
+export type CStmtDestruct = {
     readonly kind: "statement_destruct";
     readonly type: TypeId;
-    /** field name -> [field id, local id] */
-    readonly identifiers: Ordered<DestructPattern>;
+    readonly identifiers: Ordered<CDestructPattern>;
     readonly ignoreUnspecifiedFields: boolean;
-    readonly expression: DecodedExpression;
+    readonly expression: CExpr;
     readonly loc: Loc;
 };
 
-export type DestructPattern = {
+export type CDestructPattern = {
     readonly field: Id;
     readonly variable: OptionalId;
 };
 
-export type DStatementBlock = {
+export type CStmtBlock = {
     readonly kind: "statement_block";
-    readonly statements: DStatementList;
+    readonly statements: CStmtList;
     readonly loc: Loc;
 };

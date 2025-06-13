@@ -74,11 +74,11 @@ export function decodeConstantDef(
         // resulting type is whatever the type expression has
         const computedType = Lazy({
             callback: function* () {
-                return (yield* expr())?.value.computedType ?? Ast.CTypeRecover();
+                return (yield* expr())?.value.computedType ?? Ast.CTRecover();
             },
             context: [],
             loc: defLoc,
-            recover: Ast.CTypeRecover(),
+            recover: Ast.CTRecover(),
         });
         return [computedType, lazyExpr];
     }

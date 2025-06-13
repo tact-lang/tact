@@ -56,9 +56,9 @@ export function decodeStatementsLazy(
 
 const decodeStmts: Decode<
     readonly Ast.Statement[],
-    readonly Ast.DecodedStatement[]
+    readonly Ast.CStmt[]
 > = function* (nodes, ctx, eff) {
-    const results: Ast.DecodedStatement[] = [];
+    const results: Ast.CStmt[] = [];
     let state = [ctx, eff] as const;
     for (const node of nodes) {
         const result = yield* decodeStatement(node, ctx, eff);
@@ -69,7 +69,7 @@ const decodeStmts: Decode<
     return Result(results, context, effects);
 };
 
-const decodeStatement: Decode<Ast.Statement, Ast.DecodedStatement> = function (
+const decodeStatement: Decode<Ast.Statement, Ast.CStmt> = function (
     stmt,
     ctx,
     eff,
@@ -104,13 +104,13 @@ const decodeStatement: Decode<Ast.Statement, Ast.DecodedStatement> = function (
     }
 };
 
-const decodeLet: Decode<Ast.StatementLet, Ast.DStatementLet> = function* (
+const decodeLet: Decode<Ast.StatementLet, Ast.CStmtLet> = function* (
     node,
     ctx,
     eff,
 ) {
     const expr = yield* decodeExprCtx(node.expression, ctx);
-    const result = Ast.DStatementLet(node.name, expr.value, node.loc);
+    const result = Ast.CStmtLet(node.name, expr.value, node.loc);
     if (node.type) {
         const ascribed = yield* decodeType(
             ctx.typeParams,
@@ -132,7 +132,7 @@ const decodeLet: Decode<Ast.StatementLet, Ast.DStatementLet> = function* (
     }
 };
 
-const decodeReturn: Decode<Ast.StatementReturn, Ast.DStatementReturn> = function* (node, ctx, eff) {
+const decodeReturn: Decode<Ast.StatementReturn, Ast.CStmtReturn> = function* (node, ctx, eff) {
     if (ctx.required) {
         const missing = [...ctx.required].filter((p) => !eff.mustSetSelf.has(p));
         for (const fieldName of missing) {
@@ -141,7 +141,7 @@ const decodeReturn: Decode<Ast.StatementReturn, Ast.DStatementReturn> = function
     }
     const expr = yield* checkReturnExpr(node.expression, ctx);
     return Result(
-        Ast.DStatementReturn(expr?.value, node.loc),
+        Ast.CStmtReturn(expr?.value, node.loc),
         ctx,
         exitEff(expr ? expr.eff : emptyEff),
     );
@@ -170,11 +170,11 @@ function* checkReturnExpr(node: Ast.Expression | undefined, ctx: Context) {
 
 const decodeExpression: Decode<
     Ast.StatementExpression,
-    Ast.DStatementExpression
+    Ast.CStmtExpression
 > = function* (node, ctx, eff) {
     const expr = yield* decodeExprCtx(node.expression, ctx);
     return Result(
-        Ast.DStatementExpression(expr.value, node.loc), 
+        Ast.CStmtExpression(expr.value, node.loc), 
         ctx, 
         expr.eff,
     );
@@ -182,14 +182,14 @@ const decodeExpression: Decode<
 
 const decodeAssign: Decode<
     Ast.StatementAssign,
-    Ast.DStatementAssign | Ast.DStatementExpression
+    Ast.CStmtAssign | Ast.CStmtExpression
 > = function* (node, ctx, eff) {
     const right = yield* decodeExprCtx(node.expression, ctx);
     const left = yield* decodeExprCtx(node.path, ctx);
     const path = yield* convertExprToLValue(left.value);
     if (!path) {
         return Result(
-            Ast.DStatementExpression(right.value, node.loc),
+            Ast.CStmtExpression(right.value, node.loc),
             ctx,
             allEff([left.eff, right.eff]),
         );
@@ -208,18 +208,18 @@ const decodeAssign: Decode<
         ...argEffs,
         mayWrite: isAssignToStorage || argEffs.mayWrite,
     };
-    return Result(Ast.DStatementAssign(path, right.value, node.loc), ctx, newEff);
+    return Result(Ast.CStmtAssign(path, right.value, node.loc), ctx, newEff);
 };
 
 const decodeAssignAugmented: Decode<
     Ast.StatementAugmentedAssign,
-    Ast.DStatementAugmentedAssign | Ast.DStatementExpression
+    Ast.CStmtAugmentedAssign | Ast.CStmtExpression
 > = function* (node, ctx, eff) {
     const right = yield* decodeExprCtx(node.expression, ctx);
     const left = yield* decodeExprCtx(node.path, ctx);
     const path = yield* convertExprToLValue(left.value);
     if (!path) {
-        return Result(Ast.DStatementExpression(right.value, node.loc), ctx, eff);
+        return Result(Ast.CStmtExpression(right.value, node.loc), ctx, eff);
     }
 
     const fnType = builtinAugmented.get(node.op);
@@ -239,13 +239,13 @@ const decodeAssignAugmented: Decode<
         mayWrite: isAssignToStorage || argEffs.mayWrite,
     };
     return Result(
-        Ast.DStatementAugmentedAssign(node.op, path, right.value, node.loc),
+        Ast.CStmtAugmentedAssign(node.op, path, right.value, node.loc),
         ctx,
         newEff,
     );
 };
 
-const decodeCondition: Decode<Ast.StatementCondition, Ast.DStatementCondition> =
+const decodeCondition: Decode<Ast.StatementCondition, Ast.CStmtCondition> =
     function* (node, ctx, eff) {
         const condition = yield* decodeExprCtx(node.condition, ctx);
         yield* assignType(
@@ -258,7 +258,7 @@ const decodeCondition: Decode<Ast.StatementCondition, Ast.DStatementCondition> =
         const trueRes = yield* decodeStmts(node.trueStatements, ctx, eff);
         const falseRes = yield* checkElse(node.falseStatements, ctx, eff);
         return Result(
-            Ast.DStatementCondition(
+            Ast.CStmtCondition(
                 condition.value,
                 trueRes.value,
                 falseRes.value,
@@ -273,14 +273,14 @@ const decodeCondition: Decode<Ast.StatementCondition, Ast.DStatementCondition> =
     };
 const checkElse: Decode<
     undefined | readonly Ast.Statement[],
-    undefined | readonly Ast.DecodedStatement[]
+    undefined | readonly Ast.CStmt[]
 > = function* (node, ctx, eff) {
     if (typeof node === 'undefined') {
         return Result(undefined, ctx, emptyEff);
     }
     return yield* decodeStmts(node, ctx, eff);
 }
-const decodeWhile: Decode<Ast.StatementWhile, Ast.DStatementWhile> = function* (
+const decodeWhile: Decode<Ast.StatementWhile, Ast.CStmtWhile> = function* (
     node,
     ctx,
     eff,
@@ -297,13 +297,13 @@ const decodeWhile: Decode<Ast.StatementWhile, Ast.DStatementWhile> = function* (
     // might be executed zero times, so it doesn't matter
     // if it always returns, or assigns to `self`
     return Result(
-        Ast.DStatementWhile(condition.value, result.value, node.loc),
+        Ast.CStmtWhile(condition.value, result.value, node.loc),
         ctx,
         allEff([condition.eff, anyEff([result.effects, emptyEff])]),
     );
 };
 
-const decodeUntil: Decode<Ast.StatementUntil, Ast.DStatementUntil> = function* (
+const decodeUntil: Decode<Ast.StatementUntil, Ast.CStmtUntil> = function* (
     node,
     ctx,
     eff,
@@ -318,13 +318,13 @@ const decodeUntil: Decode<Ast.StatementUntil, Ast.DStatementUntil> = function* (
     );
     const result = yield* decodeStmts(node.statements, ctx, eff);
     return Result(
-        Ast.DStatementUntil(condition.value, result.value, node.loc),
+        Ast.CStmtUntil(condition.value, result.value, node.loc),
         ctx,
         allEff([result.effects, condition.eff, anyEff([result.effects, emptyEff])]),
     );
 };
 
-const decodeRepeat: Decode<Ast.StatementRepeat, Ast.DStatementRepeat> =
+const decodeRepeat: Decode<Ast.StatementRepeat, Ast.CStmtRepeat> =
     function* (node, ctx, eff) {
         const iterations = yield* decodeExprCtx(node.iterations, ctx);
         yield* assignType(
@@ -338,13 +338,13 @@ const decodeRepeat: Decode<Ast.StatementRepeat, Ast.DStatementRepeat> =
         // might be executed zero times, so it doesn't matter
         // if it always returns, or assigns to `self`
         return Result(
-            Ast.DStatementRepeat(iterations.value, result.value, node.loc),
+            Ast.CStmtRepeat(iterations.value, result.value, node.loc),
             ctx,
             allEff([iterations.eff, anyEff([result.effects, emptyEff])]),
         );
     };
 
-const decodeTry: Decode<Ast.StatementTry, Ast.DStatementTry> = function* (
+const decodeTry: Decode<Ast.StatementTry, Ast.CStmtTry> = function* (
     node,
     ctx,
     eff,
@@ -357,22 +357,22 @@ const decodeTry: Decode<Ast.StatementTry, Ast.DStatementTry> = function* (
             newCtx,
             eff,
         );
-        const catchBlock = Ast.DCatchBlock(node.catchBlock.name, catchRes.value);
+        const catchBlock = Ast.CCatchBlock(node.catchBlock.name, catchRes.value);
         return Result(
-            Ast.DStatementTry(tryRes.value, catchBlock, node.loc),
+            Ast.CStmtTry(tryRes.value, catchBlock, node.loc),
             ctx,
             anyEff([tryRes.effects, catchRes.effects]),
         );
     } else {
         return Result(
-            Ast.DStatementTry(tryRes.value, undefined, node.loc),
+            Ast.CStmtTry(tryRes.value, undefined, node.loc),
             ctx,
             tryRes.effects,
         );
     }
 };
 
-const decodeForeach: Decode<Ast.StatementForEach, Ast.DStatementForEach> =
+const decodeForeach: Decode<Ast.StatementForEach, Ast.CStmtForEach> =
     function* (node, ctx, eff) {
         const map = yield* decodeExprCtx(node.map, ctx);
         const innerCtx = yield* defineForVars(
@@ -383,7 +383,7 @@ const decodeForeach: Decode<Ast.StatementForEach, Ast.DStatementForEach> =
         );
         const result = yield* decodeStmts(node.statements, innerCtx, eff);
         return Result(
-            Ast.DStatementForEach(
+            Ast.CStmtForEach(
                 node.keyName,
                 node.valueName,
                 map.value,
@@ -399,7 +399,7 @@ function* defineForVars(
     keyName: Ast.OptionalId,
     valueName: Ast.OptionalId,
     ctx: Context,
-): Ast.WithLog<Context> {
+): Ast.Log<Context> {
     if (type.kind === "map_type") {
         const ctxKey = yield* defineVar(keyName, type.key, ctx);
         const ctxKV = yield* defineVar(valueName, type.value, ctxKey);
@@ -412,15 +412,15 @@ function* defineForVars(
         }
         return yield* defineForVars(childType, keyName, valueName, ctx);
     } else {
-        const ctxKey = yield* defineVar(keyName, Ast.CTypeRecover(), ctx);
-        const ctxKV = yield* defineVar(valueName, Ast.CTypeRecover(), ctxKey);
+        const ctxKey = yield* defineVar(keyName, Ast.CTRecover(), ctx);
+        const ctxKV = yield* defineVar(valueName, Ast.CTRecover(), ctxKey);
         return ctxKV;
     }
 }
 
 const decodeDestruct: Decode<
     Ast.StatementDestruct,
-    Ast.DStatementDestruct | Ast.DStatementExpression
+    Ast.CStmtDestruct | Ast.CStmtExpression
 > = function* (node, ctx, eff) {
     const expr = yield* decodeExprCtx(node.expression, ctx);
 
@@ -435,10 +435,10 @@ const decodeDestruct: Decode<
 
     const decl = yield* findStruct(node.type, typeArgs, ctx.scopeRef);
     if (!decl) {
-        return Result(Ast.DStatementExpression(expr.value, node.loc), ctx, expr.eff);
+        return Result(Ast.CStmtExpression(expr.value, node.loc), ctx, expr.eff);
     }
 
-    const ascribed = Ast.DTypeRef(node.type, decl, typeArgs, node.loc);
+    const ascribed = Ast.CTRef(node.type, decl, typeArgs, node.loc);
     yield* assignType(
         node.loc,
         emptyTypeParams,
@@ -457,7 +457,7 @@ const decodeDestruct: Decode<
     );
 
     return Result(
-        Ast.DStatementDestruct(
+        Ast.CStmtDestruct(
             node.type,
             fields,
             node.ignoreUnspecifiedFields,
@@ -474,9 +474,9 @@ function* checkFields(
     declFields: Ast.Ordered<Ast.CField>,
     ignoreUnspecifiedFields: boolean,
     ctx: Context,
-): Ast.WithLog<readonly [Ast.Ordered<Ast.DestructPattern>, Context]> {
+): Ast.Log<readonly [Ast.Ordered<Ast.CDestructPattern>, Context]> {
     const order: string[] = [];
-    const map: Map<string, [Ast.DestructPattern, Ast.Loc]> = new Map();
+    const map: Map<string, [Ast.CDestructPattern, Ast.Loc]> = new Map();
     for (const [field, variable] of stmtFields) {
         const fieldName = field.text;
         const prev = map.get(fieldName);
@@ -494,7 +494,7 @@ function* checkFields(
 
         order.push(fieldName);
 
-        map.set(fieldName, [Ast.DestructPattern(field, variable), field.loc]);
+        map.set(fieldName, [Ast.CDestructPattern(field, variable), field.loc]);
 
         ctx = yield* defineVar(variable, yield* decl.type(), ctx);
     }
@@ -549,7 +549,7 @@ function* findStruct(
     switch (decl.decl.kind) {
         case "alias": {
             const type = yield* dealiasType(
-                Ast.CTypeAliasRef(Ast.CNotDealiased(), id, typeArgs, id.loc),
+                Ast.CTAliasRef(Ast.CNotDealiased(), id, typeArgs, id.loc),
                 scopeRef,
             );
             if (
@@ -579,14 +579,14 @@ const ENotDestructible = (name: string, prev: Ast.Loc): Ast.TcError => ({
     descr: [Ast.TEText(`Type "${name}" doesn't `), Ast.TECode(prev)],
 });
 
-const decodeBlock: Decode<Ast.StatementBlock, Ast.DStatementBlock> = function* (
+const decodeBlock: Decode<Ast.StatementBlock, Ast.CStmtBlock> = function* (
     node,
     ctx,
     eff,
 ) {
     const result = yield* decodeStmts(node.statements, ctx, eff);
     return Result(
-        Ast.DStatementBlock(result.value, node.loc),
+        Ast.CStmtBlock(result.value, node.loc),
         ctx,
         result.effects,
     );
@@ -596,7 +596,7 @@ type Decode<T, U> = (
     node: T,
     context: Context,
     effAbove: Ast.Effects,
-) => Ast.WithLog<Result<U>>;
+) => Ast.Log<Result<U>>;
 
 type Result<U> = {
     readonly value: U;
@@ -623,7 +623,7 @@ function* defineVar(
     node: Ast.OptionalId,
     type: Ast.CType,
     ctx: Context,
-): Ast.WithLog<Context> {
+): Ast.Log<Context> {
     if (node.kind === "wildcard") {
         // there is nothing to define for a wildcard
         return ctx;
@@ -687,7 +687,7 @@ const EShadowConst = (
 
 function* getRequired(
     selfType: Ast.SelfType | undefined,
-): Ast.WithLog<undefined | Set<string>> {
+): Ast.Log<undefined | Set<string>> {
     if (!selfType) {
         return new Set();
     }

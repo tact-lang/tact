@@ -8,7 +8,7 @@ export function* decodeStruct(
     Lazy: Ast.ThunkBuilder,
     struct: Ast.StructDecl,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CStruct> {
+): Ast.Log<Ast.CStruct> {
     const typeParams = yield* decodeTypeParams(struct.typeParams);
     const fields = yield* decodeFields(
         Lazy,

@@ -11,7 +11,7 @@ import type {
     AsmShuffle,
     ContractAttribute,
 } from "@/next/ast/root";
-import type { DecodedStatement } from "@/next/ast/checked-stmt";
+import type { CStmt } from "@/next/ast/checked-stmt";
 import type { Value } from "@/next/ast/value";
 import type { Effects } from "@/next/ast/effects";
 
@@ -34,22 +34,13 @@ export const CAlias = (
         typeParams,
         type: type_,
     });
-export type Ordered<V> = $.Ordered<V>;
-export const Ordered = <V>(
-    order: readonly string[],
-    map: ReadonlyMap<string, V>,
-): $.Ordered<V> =>
-    Object.freeze({
-        order,
-        map,
-    });
 
-export type CTypeFunction = $.CTypeFunction;
-export const CTypeFunction = (
+export type CTFunction = $.CTFunction;
+export const CTFunction = (
     typeParams: $.CTypeParams,
     params: $.CParameters,
     returnType: Thunk<$d.CType>,
-): $.CTypeFunction =>
+): $.CTFunction =>
     Object.freeze({
         kind: "DecodedFnType",
         typeParams,
@@ -69,7 +60,7 @@ export const CBounce = (
 export type CStruct = $.CStruct;
 export const CStruct = (
     typeParams: $.CTypeParams,
-    fields: $.Ordered<$.CField>,
+    fields: $c.Ordered<$.CField>,
 ): $.CStruct =>
     Object.freeze({
         kind: "struct",
@@ -98,7 +89,7 @@ export const CConstant = (
     });
 export type CExtension = $.CExtension;
 export const CExtension = (
-    type: $.CTypeMethod,
+    type: $.CTMethod,
     inline: boolean,
     body: $.CBody,
 ): $.CExtension =>
@@ -125,14 +116,14 @@ export const CSource = (
         constants: constSigs,
         extensions: extSigs,
     });
-export type CTypeMethod = $.CTypeMethod;
-export const CTypeMethod = (
+export type CTMethod = $.CTMethod;
+export const CTMethod = (
     mutates: boolean,
     typeParams: $.CTypeParams,
     self: $m.SelfType,
     params: $.CParameters,
     returnType: Thunk<$d.CType>,
-): $.CTypeMethod =>
+): $.CTMethod =>
     Object.freeze({
         kind: "DecodedMethodType",
         mutates,
@@ -198,7 +189,7 @@ export const CFiftBody = (
 export type CBody = $.CBody;
 export type CFunction = $.CFunction;
 export const CFunction = (
-    type_: $.CTypeFunction,
+    type_: $.CTFunction,
     inline: boolean,
     body: $.CBody,
 ): $.CFunction =>
@@ -238,7 +229,7 @@ export type CFieldish<Expr> = $.CFieldish<Expr>;
 export type CMethod<Body> = $.CMethod<Body>;
 export const CMethod = <Body>(
     overridable: boolean,
-    type_: $.CTypeMethod,
+    type_: $.CTMethod,
     inline: boolean,
     body: Body,
     getMethodId: Thunk<undefined | bigint> | undefined,
@@ -253,7 +244,7 @@ export const CMethod = <Body>(
 export type CReceivers = $.CReceivers;
 export type CMembers<Expr, Body> = $.CMembers<Expr, Body>;
 export const CMembers = <Expr, Body>(
-    fieldish: $.Ordered<$.DeclMem<$.CFieldish<Expr>>>,
+    fieldish: $c.Ordered<$.DeclMem<$.CFieldish<Expr>>>,
     methods: ReadonlyMap<string, $.DeclMem<$.CMethod<Body>>>,
     receivers: $.CReceivers,
 ): $.CMembers<Expr, Body> =>
@@ -264,12 +255,12 @@ export const CMembers = <Expr, Body>(
     });
 export type CContractMembers = $.CContractMembers;
 export type CTraitMembers = $.CTraitMembers;
-export type CTraitSig = $.CTraitSig;
-export const CTraitSig = (
+export type CTrait = $.CTrait;
+export const CTrait = (
     content: Thunk<
         $.CMembers<Thunk<Value | undefined> | undefined, $.CBody | undefined>
     >,
-): $.CTraitSig =>
+): $.CTrait =>
     Object.freeze({
         kind: "trait",
         content,
@@ -338,7 +329,7 @@ export const CReceiver = (
 export type CMessage = $.CMessage;
 export const CMessage = (
     opcode: Thunk<undefined | bigint>,
-    fields: $.Ordered<$.CField>,
+    fields: $c.Ordered<$.CField>,
 ): $.CMessage =>
     Object.freeze({
         kind: "message",
@@ -347,7 +338,7 @@ export const CMessage = (
     });
 export type CInitEmpty = $.CInitEmpty;
 export const CInitEmpty = (
-    fill: Thunk<undefined | $.Ordered<Thunk<Value | undefined>>>,
+    fill: Thunk<undefined | $c.Ordered<Thunk<Value | undefined>>>,
 ): $.CInitEmpty =>
     Object.freeze({
         kind: "empty",
@@ -366,7 +357,7 @@ export const CInitParam = (
     });
 export type CInitSimple = $.CInitSimple;
 export const CInitSimple = (
-    fill: $.Ordered<$.CInitParam>,
+    fill: $c.Ordered<$.CInitParam>,
     loc: $c.Loc,
 ): $.CInitSimple =>
     Object.freeze({
@@ -376,7 +367,7 @@ export const CInitSimple = (
     });
 export type CStatementsAux = $.CStatementsAux;
 export const CStatementsAux = (
-    body: readonly DecodedStatement[],
+    body: readonly CStmt[],
     effects: Effects,
 ): $.CStatementsAux =>
     Object.freeze({
@@ -394,12 +385,12 @@ export const CInitFn = (
         statements,
     });
 export type CStatements = $.CStatements;
-export type CInitSig = $.CInitSig;
+export type CInit = $.CInit;
 export type CContract = $.CContract;
 export type CTypeDeclRefable = $.CTypeDeclRefable;
 export const CContract = (
     attributes: readonly ContractAttribute[],
-    init: $.CInitSig,
+    init: $.CInit,
     content: Thunk<$.CContractMembers>,
 ): $.CContract =>
     Object.freeze({

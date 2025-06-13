@@ -58,3 +58,12 @@ export const TypeId = (text: string, loc: $.Loc): $.TypeId =>
         loc,
     });
 export const isTypeId = ($value: TypeId) => $value.kind === "type_id";
+export type Ordered<V> = $.Ordered<V>;
+export const Ordered = <V>(
+    order: readonly string[],
+    map: ReadonlyMap<string, V>,
+): $.Ordered<V> =>
+    Object.freeze({
+        order,
+        map,
+    });

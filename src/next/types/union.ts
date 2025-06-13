@@ -14,7 +14,7 @@ export function* decodeUnion(
     Lazy: Ast.ThunkBuilder,
     union: Ast.UnionDecl,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CUnion> {
+): Ast.Log<Ast.CUnion> {
     const typeParams = yield* decodeTypeParams(union.typeParams);
 
     const cases: Map<string, Cons> = new Map();

@@ -1,6 +1,5 @@
-import type { Ordered } from "@/next/ast/checked";
 import type { LExpr, LLValue } from "@/next/ast/lowered-expr";
-import type { Id, Loc, OptionalId, TypeId } from "@/next/ast/common";
+import type { Id, Loc, OptionalId, Ordered, TypeId } from "@/next/ast/common";
 import type { AugmentedAssignOperation } from "@/next/ast/statement";
 
 export type LStmt =
@@ -86,11 +85,11 @@ export type LStmtRepeat = {
 export type LStmtTry = {
     readonly kind: "try";
     readonly statements: LStmtList;
-    readonly catchBlock: DCatchBlock | undefined;
+    readonly catchBlock: LCatchBlock | undefined;
     readonly loc: Loc;
 };
 
-export type DCatchBlock = {
+export type LCatchBlock = {
     readonly name: OptionalId;
     readonly statements: LStmtList;
 };
@@ -107,13 +106,13 @@ export type LStmtForEach = {
 export type LStmtDestruct = {
     readonly kind: "destruct";
     readonly type: TypeId;
-    readonly identifiers: Ordered<DestructPattern>;
+    readonly identifiers: Ordered<LDestructPattern>;
     readonly ignoreUnspecifiedFields: boolean;
     readonly expression: LExpr;
     readonly loc: Loc;
 };
 
-export type DestructPattern = {
+export type LDestructPattern = {
     readonly field: Id;
     readonly variable: OptionalId;
 };

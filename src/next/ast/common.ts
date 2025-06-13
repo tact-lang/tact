@@ -38,3 +38,8 @@ export type TypeId = {
 };
 
 export type Language = "func" | "tact";
+
+export type Ordered<T> = {
+    readonly order: readonly string[];
+    readonly map: ReadonlyMap<string, T>;
+};

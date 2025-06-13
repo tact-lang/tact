@@ -8,11 +8,11 @@ export const printSym = Symbol("print");
 
 export type Thunk<T> = {
     [printSym]: () => Result<T>;
-} & (() => E.WithLog<T>);
+} & (() => E.Log<T>);
 
 function Thunk<T>(
-    force: () => E.WithLog<T>,
-    onOccurs: () => E.WithLog<T>,
+    force: () => E.Log<T>,
+    onOccurs: () => E.Log<T>,
 ): Thunk<T> {
     let result: Result<T> = "waiting";
     function* delayed() {
@@ -47,7 +47,7 @@ type Options<T> = {
     readonly loc: Loc;
     readonly context: readonly E.TELine[];
     readonly recover: T;
-    readonly callback: (builder: ThunkBuilder) => E.WithLog<T>;
+    readonly callback: (builder: ThunkBuilder) => E.Log<T>;
 };
 
 export type ThunkBuilder = <T>(options: Options<T>) => Thunk<T>;

@@ -9,12 +9,12 @@ export function* decodeFnType(
     Lazy: Ast.ThunkBuilder,
     { typeParams, params, returnType }: Ast.TFunction,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.CTypeFunction> {
+): Ast.Log<Ast.CTFunction> {
     const decodedTypeParams = yield* decodeTypeParams(typeParams);
     const dealias = (type: Ast.Type) => {
         return decodeDealiasTypeLazy(Lazy, decodedTypeParams, type, scopeRef);
     };
-    return Ast.CTypeFunction(
+    return Ast.CTFunction(
         decodedTypeParams,
         yield* decodeParams(dealias, params),
         dealias(returnType),
@@ -24,7 +24,7 @@ export function* decodeFnType(
 export function* decodeParams(
     dealias: (type: Ast.Type) => Ast.Thunk<Ast.CType>,
     params: readonly Ast.TypedParameter[],
-): Ast.WithLog<Ast.CParameters> {
+): Ast.Log<Ast.CParameters> {
     const order: Ast.CParameter[] = [];
     const set: Set<string> = new Set();
     for (const param of params) {
@@ -40,7 +40,7 @@ export function* decodeParams(
 function* decodeParamName(
     node: Ast.OptionalId,
     set: ReadonlySet<string>,
-): Ast.WithLog<string | undefined> {
+): Ast.Log<string | undefined> {
     if (node.kind === "wildcard") {
         return undefined;
     }

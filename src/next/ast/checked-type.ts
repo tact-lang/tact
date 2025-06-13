@@ -2,7 +2,7 @@ import type { CTypeDeclRefable } from "@/next/ast/checked";
 import type { Loc, TypeId } from "@/next/ast/common";
 import type { BasicType } from "@/next/ast/type-basic";
 
-export type DNotSet = {
+export type CNotSet = {
     readonly kind: "not-set";
 };
 

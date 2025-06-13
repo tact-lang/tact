@@ -13,12 +13,12 @@ import { emptyTypeParams } from "@/next/types/type-params";
 
 export function* getMethodsGeneral(
     Lazy: Ast.ThunkBuilder,
-    declSig: Ast.CTraitSig | Ast.CContract,
+    declSig: Ast.CTrait | Ast.CContract,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.CTraitMembers>[],
     methods: readonly Ast.Method[],
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<
+): Ast.Log<
     ReadonlyMap<string, Ast.DeclMem<Ast.CMethod<Ast.CBody | undefined>>>
 > {
     // collect all inherited methods
@@ -57,7 +57,7 @@ export function* getMethodsGeneral(
 
         const decodedFn = yield* decodeFnType(Lazy, type, scopeRef);
         const selfType = Ast.SVTRef(typeName, declSig, [], loc);
-        const methodType = Ast.CTypeMethod(
+        const methodType = Ast.CTMethod(
             true, // always mutates
             emptyTypeParams,
             selfType,
@@ -147,7 +147,7 @@ function* decodeGet(
     get: Ast.GetAttribute,
     scopeRef: () => Ast.CSource,
     selfType: Ast.SelfType,
-): Ast.WithLog<bigint> {
+): Ast.Log<bigint> {
     if (get.methodId) {
         const expr = yield* decodeExpr(
             Lazy,

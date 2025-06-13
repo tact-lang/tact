@@ -134,7 +134,7 @@ function* decodeExt(
         return undefined;
     }
 
-    const methodType = Ast.CTypeMethod(
+    const methodType = Ast.CTMethod(
         mutates,
         decodedFn.typeParams,
         self,
@@ -157,7 +157,7 @@ function* areCompatible(
     name: string,
     prevs: readonly Ast.Decl<Ast.CExtension>[],
     next: Ast.Decl<Ast.CExtension>,
-): Ast.WithLog<boolean> {
+): Ast.Log<boolean> {
     for (const prev of prevs) {
         const prevType = prev.decl.type;
         const nextType = next.decl.type;
@@ -183,8 +183,8 @@ const EMethodOverlap = (
 });
 
 function isCompatible(
-    prev: Ast.CTypeMethod,
-    next: Ast.CTypeMethod,
+    prev: Ast.CTMethod,
+    next: Ast.CTMethod,
 ) {
     const prevSelf = prev.self;
     const nextSelf = next.self;
@@ -247,7 +247,7 @@ function allEqual(
 function* decodeSelfType(
     type: Ast.CType,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.SelfType | undefined> {
+): Ast.Log<Ast.SelfType | undefined> {
     switch (type.kind) {
         case "recover": {
             return undefined;
@@ -376,7 +376,7 @@ function* decodeSelfType(
 function* toGroundType(
     type: Ast.CType,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.SelfTypeGround | undefined> {
+): Ast.Log<Ast.SelfTypeGround | undefined> {
     switch (type.kind) {
         case "recover": {
             return undefined;

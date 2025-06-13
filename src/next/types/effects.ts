@@ -56,7 +56,7 @@ export const shortCircuitEff = (
 export const exitEff = (eff: Ast.Effects): Ast.Effects => ({ ...eff, mustThrow: true });
 export const assignEff = (eff: Ast.Effects): Ast.Effects => ({ ...eff, mustThrow: true });
 
-export function hasStorageAccess(node: Ast.DecodedExpression, selfType: Ast.SelfType | undefined): boolean {
+export function hasStorageAccess(node: Ast.CExpr, selfType: Ast.SelfType | undefined): boolean {
     // looking for `self.x.y.z`
     if (node.kind === 'field_access') {
         return hasStorageAccess(node.aggregate, selfType);

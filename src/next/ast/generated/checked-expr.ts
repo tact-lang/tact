@@ -1,31 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import type { Ordered } from "@/next/ast/checked";
 import type * as $ from "@/next/ast/checked-expr";
 import type * as $c from "@/next/ast/common";
 import type * as $d from "@/next/ast/checked-type";
 import type * as $e from "@/next/ast/expression";
 import type { SelfType } from "@/next/ast/type-self";
 
-export type DCodeOf = $.DCodeOf;
-export const DCodeOf = (
+export type CCodeOf = $.CCodeOf;
+export const CCodeOf = (
     contract: $c.TypeId,
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DCodeOf =>
+): $.CCodeOf =>
     Object.freeze({
         kind: "code_of",
         contract,
         computedType,
         loc,
     });
-export const isDCodeOf = ($value: DCodeOf) => $value.kind === "code_of";
-export type DNumber = $.DNumber;
+export type CNumber = $.CNumber;
 export const DNumber = (
     base: $e.NumberBase,
     value: bigint,
     computedType: $d.CTBasic,
     loc: $c.Loc,
-): $.DNumber =>
+): $.CNumber =>
     Object.freeze({
         kind: "number",
         base,
@@ -33,77 +31,70 @@ export const DNumber = (
         computedType,
         loc,
     });
-export const isDNumber = ($value: DNumber) => $value.kind === "number";
-export type DBoolean = $.DBoolean;
-export const DBoolean = (
+export type CBoolean = $.CBoolean;
+export const CBoolean = (
     value: boolean,
     computedType: $d.CTBasic,
     loc: $c.Loc,
-): $.DBoolean =>
+): $.CBoolean =>
     Object.freeze({
         kind: "boolean",
         value,
         computedType,
         loc,
     });
-export const isDBoolean = ($value: DBoolean) => $value.kind === "boolean";
-export type DNull = $.DNull;
-export const DNull = (computedType: $d.CTBasic, loc: $c.Loc): $.DNull =>
+export type CNull = $.CNull;
+export const CNull = (computedType: $d.CTBasic, loc: $c.Loc): $.CNull =>
     Object.freeze({
         kind: "null",
         computedType,
         loc,
     });
-export const isDNull = ($value: DNull) => $value.kind === "null";
-export type DString = $.DString;
-export const DString = (
+export type CString = $.CString;
+export const CString = (
     value: string,
     computedType: $d.CTBasic,
     loc: $c.Loc,
-): $.DString =>
+): $.CString =>
     Object.freeze({
         kind: "string",
         value,
         computedType,
         loc,
     });
-export const isDString = ($value: DString) => $value.kind === "string";
-export type DVar = $.DVar;
-export const DVar = (
+export type CVar = $.CVar;
+export const CVar = (
     name: string,
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DVar =>
+): $.CVar =>
     Object.freeze({
         kind: "var",
         name,
         computedType,
         loc,
     });
-export const isDVar = ($value: DVar) => $value.kind === "var";
-export type DSelf = $.DSelf;
-export const DSelf = (computedType: SelfType, loc: $c.Loc): $.DSelf =>
+export type CSelf = $.CSelf;
+export const CSelf = (computedType: SelfType, loc: $c.Loc): $.CSelf =>
     Object.freeze({
         kind: "self",
         computedType,
         loc,
     });
-export const isDSelf = ($value: DSelf) => $value.kind === "self";
-export type DUnit = $.DUnit;
-export const DUnit = (computedType: $d.CTBasic, loc: $c.Loc): $.DUnit =>
+export type CUnit = $.CUnit;
+export const CUnit = (computedType: $d.CTBasic, loc: $c.Loc): $.CUnit =>
     Object.freeze({
         kind: "unit",
         computedType,
         loc,
     });
-export const isDUnit = ($value: DUnit) => $value.kind === "unit";
-export type DSetLiteral = $.DSetLiteral;
-export const DSetLiteral = (
+export type CSetLiteral = $.CSetLiteral;
+export const CSetLiteral = (
     valueType: $d.CType,
     computedType: $d.CType,
-    fields: readonly $.DecodedExpression[],
+    fields: readonly $.CExpr[],
     loc: $c.Loc,
-): $.DSetLiteral =>
+): $.CSetLiteral =>
     Object.freeze({
         kind: "set_literal",
         valueType,
@@ -111,64 +102,58 @@ export const DSetLiteral = (
         computedType,
         loc,
     });
-export const isDSetLiteral = ($value: DSetLiteral) =>
-    $value.kind === "set_literal";
-export type DMapField = $.DMapField;
-export const DMapField = (
-    key: $.DecodedExpression,
-    value: $.DecodedExpression,
+export type CMapField = $.DMapField;
+export const CMapField = (
+    key: $.CExpr,
+    value: $.CExpr,
 ): $.DMapField =>
     Object.freeze({
         key,
         value,
     });
-export type DMapLiteral = $.DMapLiteral;
-export const DMapLiteral = (
+export type CMapLiteral = $.CMapLiteral;
+export const CMapLiteral = (
     computedType: $d.CTMap,
     fields: readonly $.DMapField[],
     loc: $c.Loc,
-): $.DMapLiteral =>
+): $.CMapLiteral =>
     Object.freeze({
         kind: "map_literal",
         fields,
         computedType,
         loc,
     });
-export const isDMapLiteral = ($value: DMapLiteral) =>
-    $value.kind === "map_literal";
-export type DTensor = $.DTensor;
-export const DTensor = (
-    children: readonly $.DecodedExpression[],
+export type CTensor = $.CTensor;
+export const CTensor = (
+    children: readonly $.CExpr[],
     computedType: $d.CTTensor,
     loc: $c.Loc,
-): $.DTensor =>
+): $.CTensor =>
     Object.freeze({
         kind: "tensor",
         children,
         computedType,
         loc,
     });
-export const isDTensor = ($value: DTensor) => $value.kind === "tensor";
-export type DTuple = $.DTuple;
-export const DTuple = (
-    children: readonly $.DecodedExpression[],
+export type CTuple = $.CTuple;
+export const CTuple = (
+    children: readonly $.CExpr[],
     computedType: $d.CTTuple,
     loc: $c.Loc,
-): $.DTuple =>
+): $.CTuple =>
     Object.freeze({
         kind: "tuple",
         children,
         computedType,
         loc,
     });
-export const isDTuple = ($value: DTuple) => $value.kind === "tuple";
-export type DInitOf = $.DInitOf;
-export const DInitOf = (
+export type CInitOf = $.CInitOf;
+export const CInitOf = (
     contract: $c.TypeId,
-    args: readonly $.DecodedExpression[],
+    args: readonly $.CExpr[],
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DInitOf =>
+): $.CInitOf =>
     Object.freeze({
         kind: "init_of",
         contract,
@@ -176,28 +161,25 @@ export const DInitOf = (
         computedType,
         loc,
     });
-export const isDInitOf = ($value: DInitOf) => $value.kind === "init_of";
-export type DStructInstance = $.DStructInstance;
-export const DStructInstance = (
-    fields: Ordered<undefined | DecodedExpression>,
+export type CStructCons = $.CStructCons;
+export const CStructCons = (
+    fields: $c.Ordered<undefined | CExpr>,
     computedType: $d.CTRef | $d.CTRecover,
     loc: $c.Loc,
-): $.DStructInstance =>
+): $.CStructCons =>
     Object.freeze({
         kind: "struct_instance",
         fields,
         computedType,
         loc,
     });
-export const isDStructInstance = ($value: DStructInstance) =>
-    $value.kind === "struct_instance";
-export type DFieldAccess = $.DFieldAccess;
-export const DFieldAccess = (
-    aggregate: $.DecodedExpression,
+export type CFieldAccess = $.CFieldAccess;
+export const CFieldAccess = (
+    aggregate: $.CExpr,
     field: $c.Id,
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DFieldAccess =>
+): $.CFieldAccess =>
     Object.freeze({
         kind: "field_access",
         aggregate,
@@ -205,17 +187,15 @@ export const DFieldAccess = (
         computedType,
         loc,
     });
-export const isDFieldAccess = ($value: DFieldAccess) =>
-    $value.kind === "field_access";
-export type DStaticMethodCall = $.DStaticMethodCall;
-export const DStaticMethodCall = (
+export type CStaticMethodCall = $.CStaticMethodCall;
+export const CStaticMethodCall = (
     self: $c.TypeId,
     typeArgs: $.TypeArgs,
     function_: $c.Id,
-    args: readonly $.DecodedExpression[],
+    args: readonly $.CExpr[],
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DStaticMethodCall =>
+): $.CStaticMethodCall =>
     Object.freeze({
         kind: "static_method_call",
         self,
@@ -225,17 +205,15 @@ export const DStaticMethodCall = (
         computedType,
         loc,
     });
-export const isDStaticMethodCall = ($value: DStaticMethodCall) =>
-    $value.kind === "static_method_call";
 export type TypeArgs = $.TypeArgs;
-export type DStaticCall = $.DStaticCall;
-export const DStaticCall = (
+export type CStaticCall = $.CStaticCall;
+export const CStaticCall = (
     function_: $c.Id,
     typeArgs: $.TypeArgs,
-    args: readonly $.DecodedExpression[],
+    args: readonly $.CExpr[],
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DStaticCall =>
+): $.CStaticCall =>
     Object.freeze({
         kind: "static_call",
         function: function_,
@@ -244,17 +222,15 @@ export const DStaticCall = (
         computedType,
         loc,
     });
-export const isDStaticCall = ($value: DStaticCall) =>
-    $value.kind === "static_call";
-export type DMethodCall = $.DMethodCall;
-export const DMethodCall = (
-    self: $.DecodedExpression,
+export type CMethodCall = $.CMethodCall;
+export const CMethodCall = (
+    self: $.CExpr,
     method: $c.Id,
-    args: readonly $.DecodedExpression[],
+    args: readonly $.CExpr[],
     typeArgs: $.TypeArgs,
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DMethodCall =>
+): $.CMethodCall =>
     Object.freeze({
         kind: "method_call",
         self,
@@ -264,16 +240,14 @@ export const DMethodCall = (
         computedType,
         loc,
     });
-export const isDMethodCall = ($value: DMethodCall) =>
-    $value.kind === "method_call";
-export type DConditional = $.DConditional;
-export const DConditional = (
-    condition: $.DecodedExpression,
-    thenBranch: $.DecodedExpression,
-    elseBranch: $.DecodedExpression,
+export type CConditional = $.CConditional;
+export const CConditional = (
+    condition: $.CExpr,
+    thenBranch: $.CExpr,
+    elseBranch: $.CExpr,
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DConditional =>
+): $.CConditional =>
     Object.freeze({
         kind: "conditional",
         condition,
@@ -282,16 +256,14 @@ export const DConditional = (
         computedType,
         loc,
     });
-export const isDConditional = ($value: DConditional) =>
-    $value.kind === "conditional";
-export type DOpUnary = $.DOpUnary;
-export const DOpUnary = (
+export type COpUnary = $.COpUnary;
+export const COpUnary = (
     op: $e.UnaryOperation,
-    operand: $.DecodedExpression,
+    operand: $.CExpr,
     typeArgs: ReadonlyMap<string, $d.CType>,
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DOpUnary =>
+): $.COpUnary =>
     Object.freeze({
         kind: "op_unary",
         op,
@@ -300,16 +272,15 @@ export const DOpUnary = (
         computedType,
         loc,
     });
-export const isDOpUnary = ($value: DOpUnary) => $value.kind === "op_unary";
-export type DOpBinary = $.DOpBinary;
-export const DOpBinary = (
+export type COpBinary = $.COpBinary;
+export const COpBinary = (
     op: $e.BinaryOperation,
-    left: $.DecodedExpression,
-    right: $.DecodedExpression,
+    left: $.CExpr,
+    right: $.CExpr,
     typeArgs: ReadonlyMap<string, $d.CType>,
     computedType: $d.CType,
     loc: $c.Loc,
-): $.DOpBinary =>
+): $.COpBinary =>
     Object.freeze({
         kind: "op_binary",
         op,
@@ -319,36 +290,33 @@ export const DOpBinary = (
         computedType,
         loc,
     });
-export const isDOpBinary = ($value: DOpBinary) => $value.kind === "op_binary";
-export type DecodedExpression = $.DecodedExpression;
-export type LVar = $.LVar;
-export const LVar = (
+export type CExpr = $.CExpr;
+export type CLVar = $.CLVar;
+export const CLVar = (
     name: string,
     computedType: $d.CType,
     loc: $c.Loc,
-): $.LVar =>
+): $.CLVar =>
     Object.freeze({
         kind: "var",
         name,
         computedType,
         loc,
     });
-export const isLVar = ($value: LVar) => $value.kind === "var";
-export type LSelf = $.LSelf;
-export const LSelf = (computedType: SelfType, loc: $c.Loc): $.LSelf =>
+export type CLSelf = $.CLSelf;
+export const CLSelf = (computedType: SelfType, loc: $c.Loc): $.CLSelf =>
     Object.freeze({
         kind: "self",
         computedType,
         loc,
     });
-export const isLSelf = ($value: LSelf) => $value.kind === "self";
-export type LFieldAccess = $.LFieldAccess;
-export const LFieldAccess = (
-    aggregate: $.LValue,
+export type CLFieldAccess = $.CLFieldAccess;
+export const CLFieldAccess = (
+    aggregate: $.CLValue,
     field: $c.Id,
     computedType: $d.CType,
     loc: $c.Loc,
-): $.LFieldAccess =>
+): $.CLFieldAccess =>
     Object.freeze({
         kind: "field_access",
         aggregate,
@@ -356,6 +324,4 @@ export const LFieldAccess = (
         computedType,
         loc,
     });
-export const isLFieldAccess = ($value: LFieldAccess) =>
-    $value.kind === "field_access";
-export type LValue = $.LValue;
+export type LValue = $.CLValue;

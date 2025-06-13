@@ -12,13 +12,13 @@ type MaybeExpr = Ast.Thunk<Ast.Value | undefined> | undefined;
 
 export function* getFieldishGeneral(
     Lazy: Ast.ThunkBuilder,
-    traitSigRef: Ast.CTraitSig | Ast.CContract,
+    traitSigRef: Ast.CTrait | Ast.CContract,
     typeName: Ast.TypeId,
     traits: readonly Ast.Decl<Ast.CTraitMembers>[],
     constants: readonly Ast.FieldConstant[],
     fields: readonly Ast.FieldDecl[],
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.Ordered<Ast.DeclMem<Ast.CFieldish<MaybeExpr>>>> {
+): Ast.Log<Ast.Ordered<Ast.DeclMem<Ast.CFieldish<MaybeExpr>>>> {
     // collect all inherited fields and constants
     const inherited: Map<
         string,
@@ -195,7 +195,7 @@ function* decodeConstant(
     nextVia: Ast.ViaMember,
     scopeRef: () => Ast.CSource,
     selfType: Ast.SelfType,
-): Ast.WithLog<Ast.DeclMem<Ast.CFieldConstant<MaybeExpr>>> {
+): Ast.Log<Ast.DeclMem<Ast.CFieldConstant<MaybeExpr>>> {
     if (init.kind === "constant_decl") {
         const type = decodeTypeLazy(Lazy, emptyTypeParams, init.type, scopeRef);
         return Ast.DeclMem(

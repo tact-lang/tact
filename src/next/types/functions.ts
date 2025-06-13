@@ -13,7 +13,7 @@ export function* decodeFunctions(
     imported: readonly Ast.SourceCheckResult[],
     source: TactSource,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<ReadonlyMap<string, Ast.Decl<Ast.CFunction>>> {
+): Ast.Log<ReadonlyMap<string, Ast.Decl<Ast.CFunction>>> {
     const allFnSigs = [
         // imported
         ...imported.flatMap(({ globals, importedBy }) =>

@@ -1,5 +1,5 @@
-import type { Ordered, Recover } from "@/next/ast/checked";
-import type { Id, Loc, TypeId } from "@/next/ast/common";
+import type { Recover } from "@/next/ast/checked";
+import type { Id, Loc, Ordered, TypeId } from "@/next/ast/common";
 import type * as D from "@/next/ast/checked-type";
 import type {
     BinaryOperation,
@@ -10,66 +10,66 @@ import type { SelfType } from "@/next/ast/type-self";
 
 export type TypeArgs = ReadonlyMap<string, D.CType>;
 
-export type DecodedExpression =
-    | DOpBinary
-    | DOpUnary
-    | DConditional
-    | DMethodCall
-    | DStaticCall
-    | DStaticMethodCall
-    | DFieldAccess
-    | DStructInstance
-    | DInitOf
-    | DCodeOf
-    | DNumber
-    | DBoolean
-    | DNull
-    | DString
-    | DVar
-    | DSelf
-    | DUnit
-    | DTuple
-    | DTensor
-    | DMapLiteral
-    | DSetLiteral;
+export type CExpr =
+    | COpBinary
+    | COpUnary
+    | CConditional
+    | CMethodCall
+    | CStaticCall
+    | CStaticMethodCall
+    | CFieldAccess
+    | CStructCons
+    | CInitOf
+    | CCodeOf
+    | CNumber
+    | CBoolean
+    | CNull
+    | CString
+    | CVar
+    | CSelf
+    | CUnit
+    | CTuple
+    | CTensor
+    | CMapLiteral
+    | CSetLiteral;
 
-export type LValue = LVar | LSelf | LFieldAccess;
+export type CLValue = CLVar | CLSelf | CLFieldAccess;
 
-export type LSelf = {
+export type CLSelf = {
     readonly kind: "self";
     readonly computedType: SelfType;
     readonly loc: Loc;
 };
 
-export type LVar = {
+export type CLVar = {
     readonly kind: "var";
     readonly name: string;
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type LFieldAccess = {
+export type CLFieldAccess = {
     readonly kind: "field_access";
-    readonly aggregate: LValue;
+    readonly aggregate: CLValue;
     readonly field: Id;
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DSelf = {
+export type CSelf = {
     readonly kind: "self";
     readonly computedType: SelfType;
     readonly loc: Loc;
 };
 
-export type DVar = {
+export type CVar = {
     readonly kind: "var";
     readonly name: string;
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DNumber = {
+export type CNumber = {
     readonly kind: "number";
     readonly base: NumberBase;
     readonly value: bigint;
@@ -77,92 +77,92 @@ export type DNumber = {
     readonly loc: Loc;
 };
 
-export type DBoolean = {
+export type CBoolean = {
     readonly kind: "boolean";
     readonly value: boolean;
     readonly computedType: D.CTBasic;
     readonly loc: Loc;
 };
 
-export type DString = {
+export type CString = {
     readonly kind: "string";
     readonly value: string;
     readonly computedType: D.CTBasic;
     readonly loc: Loc;
 };
 
-export type DNull = {
+export type CNull = {
     readonly kind: "null";
     readonly computedType: D.CTBasic;
     readonly loc: Loc;
 };
 
-export type DOpBinary = {
+export type COpBinary = {
     readonly kind: "op_binary";
     readonly op: BinaryOperation;
-    readonly left: DecodedExpression;
-    readonly right: DecodedExpression;
+    readonly left: CExpr;
+    readonly right: CExpr;
     readonly typeArgs: TypeArgs;
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DOpUnary = {
+export type COpUnary = {
     readonly kind: "op_unary";
     readonly op: UnaryOperation;
-    readonly operand: DecodedExpression;
+    readonly operand: CExpr;
     readonly typeArgs: TypeArgs;
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DFieldAccess = {
+export type CFieldAccess = {
     readonly kind: "field_access";
-    readonly aggregate: DecodedExpression;
+    readonly aggregate: CExpr;
     readonly field: Id;
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DMethodCall = {
+export type CMethodCall = {
     readonly kind: "method_call";
-    readonly self: DecodedExpression;
+    readonly self: CExpr;
     readonly method: Id;
     // NB! these are substitutions to self type
-    readonly args: readonly DecodedExpression[];
+    readonly args: readonly CExpr[];
     readonly typeArgs: TypeArgs;
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
 // builtins or top-level (module) functions
-export type DStaticCall = {
+export type CStaticCall = {
     readonly kind: "static_call";
     readonly function: Id;
     readonly typeArgs: TypeArgs;
-    readonly args: readonly DecodedExpression[];
+    readonly args: readonly CExpr[];
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DStaticMethodCall = {
+export type CStaticMethodCall = {
     readonly kind: "static_method_call";
     readonly self: TypeId;
     readonly typeArgs: TypeArgs;
     readonly function: Id;
-    readonly args: readonly DecodedExpression[];
+    readonly args: readonly CExpr[];
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DStructInstance = {
+export type CStructCons = {
     readonly kind: "struct_instance";
-    readonly fields: Ordered<Recover<DecodedExpression>>;
+    readonly fields: Ordered<Recover<CExpr>>;
     readonly computedType: D.CTRef | D.CTRecover;
     readonly loc: Loc;
 };
 
-export type DMapLiteral = {
+export type CMapLiteral = {
     readonly kind: "map_literal";
     readonly fields: readonly DMapField[];
     readonly computedType: D.CTMap;
@@ -170,58 +170,58 @@ export type DMapLiteral = {
 };
 
 export type DMapField = {
-    readonly key: DecodedExpression;
-    readonly value: DecodedExpression;
+    readonly key: CExpr;
+    readonly value: CExpr;
 };
 
-export type DSetLiteral = {
+export type CSetLiteral = {
     readonly kind: "set_literal";
     readonly valueType: D.CType;
-    readonly fields: readonly DecodedExpression[];
+    readonly fields: readonly CExpr[];
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DInitOf = {
+export type CInitOf = {
     readonly kind: "init_of";
     readonly contract: TypeId;
-    readonly args: readonly DecodedExpression[];
+    readonly args: readonly CExpr[];
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DCodeOf = {
+export type CCodeOf = {
     readonly kind: "code_of";
     readonly contract: TypeId;
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DConditional = {
+export type CConditional = {
     readonly kind: "conditional";
-    readonly condition: DecodedExpression;
-    readonly thenBranch: DecodedExpression;
-    readonly elseBranch: DecodedExpression;
+    readonly condition: CExpr;
+    readonly thenBranch: CExpr;
+    readonly elseBranch: CExpr;
     readonly computedType: D.CType;
     readonly loc: Loc;
 };
 
-export type DUnit = {
+export type CUnit = {
     readonly kind: "unit";
     readonly computedType: D.CTBasic;
     readonly loc: Loc;
 };
 
-export type DTuple = {
+export type CTuple = {
     readonly kind: "tuple";
-    readonly children: readonly DecodedExpression[];
+    readonly children: readonly CExpr[];
     readonly computedType: D.CTTuple;
     readonly loc: Loc;
 };
 
-export type DTensor = {
+export type CTensor = {
     readonly kind: "tensor";
-    readonly children: readonly DecodedExpression[];
+    readonly children: readonly CExpr[];
     readonly computedType: D.CTTensor;
     readonly loc: Loc;
 };

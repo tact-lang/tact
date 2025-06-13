@@ -3,8 +3,8 @@
 import * as Ast from "@/next/ast";
 
 export function* evalExpr(
-    expr: Ast.DecodedExpression,
+    expr: Ast.CExpr,
     scopeRef: () => Ast.CSource,
-): Ast.WithLog<Ast.Value> {
+): Ast.Log<Ast.Value> {
     return Ast.VNumber(0n, expr.loc);
 }

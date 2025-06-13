@@ -1,7 +1,7 @@
 import type { Effects } from "@/next/ast/effects";
 import type { LStmt } from "@/next/ast/lowered-stmt";
-import type { FuncId, Loc, OptionalId, TypeId } from "@/next/ast/common";
-import type { LType, LTypeRef, LTypeBounced } from "@/next/ast/lowered-type";
+import type { FuncId, Loc, OptionalId, Ordered, TypeId } from "@/next/ast/common";
+import type { LType, LTRef, LTBounced } from "@/next/ast/lowered-type";
 import type { SelfType } from "@/next/ast/type-self";
 import type {
     AsmInstruction,
@@ -11,27 +11,33 @@ import type {
 import type { Value } from "@/next/ast/value";
 
 export type LSource = {
-    readonly typeDecls: ReadonlyMap<string, LTypeDeclSig>;
-    readonly functions: ReadonlyMap<string, LFnSig>;
-    readonly constants: ReadonlyMap<string, LConstSig>;
-    readonly extensions: ReadonlyMap<string, readonly LExtSig[]>;
+    readonly typeDecls: ReadonlyMap<string, LTypeDecl>;
+    readonly functions: ReadonlyMap<string, LFunction>;
+    readonly constants: ReadonlyMap<string, LConstant>;
+    readonly extensions: ReadonlyMap<string, readonly LExtension[]>;
 };
 
-export type LTypeDeclSig =
-    | LAliasSig
-    | LContractSig
-    | LTraitSig
-    | LStructSig
-    | LMessageSig
-    | LUnionSig;
+export type LTypeDecl =
+    | LAlias
+    | LContract
+    | LTrait
+    | LStruct
+    | LMessage
+    | LUnion;
 
-export type LConstSig = {
+export type LTypeDeclRefable =
+    | LContract
+    | LStruct
+    | LMessage
+    | LUnion;
+
+export type LConstant = {
     readonly initializer: Value;
     readonly type: LType;
 };
 
-export type LFnSig = {
-    readonly type: LDecodedFnType;
+export type LFunction = {
+    readonly type: LTFunction;
     readonly inline: boolean;
     readonly body: LBody;
 };
@@ -57,30 +63,30 @@ export type LFiftBody = {
     readonly instructions: readonly AsmInstruction[];
 };
 
-export type LExtSig = {
-    readonly type: LDecodedMethodType;
+export type LExtension = {
+    readonly type: LTMethod;
     readonly inline: boolean;
     readonly body: LBody;
 };
 
-export type LAliasSig = {
+export type LAlias = {
     readonly kind: "alias";
     readonly typeParams: LTypeParams;
     readonly type: LType;
 };
 
-export type LInitSig = LInitEmpty | LInitSimple | LInitFn;
+export type LInit = LInitEmpty | LInitSimple | LInitFn;
 export type LInitEmpty = {
     readonly kind: "empty";
     // initOf() would take 0 parameters
     // values to fill all the fields
-    readonly fill: LOrdered<Value>;
+    readonly fill: Ordered<Value>;
 };
 export type LInitSimple = {
     readonly kind: "simple";
     // initOf() takes these parameters and
     // sets them into correspondingly named fields
-    readonly fill: LOrdered<LInitParam>;
+    readonly fill: Ordered<LInitParam>;
     readonly loc: Loc;
 };
 export type LInitFn = {
@@ -95,114 +101,108 @@ export type LInitParam = {
     readonly loc: Loc;
 };
 
-export type LContractSig = {
+export type LContract = {
     readonly kind: "contract";
     readonly attributes: readonly ContractAttribute[];
-    readonly init: LInitSig;
-    readonly content: LContractContent;
+    readonly init: LInit;
+    readonly content: LContractMembers;
 };
-export type LContractContent = LCommonSig<Value, LBody>;
-export type LTraitSig = {
+export type LContractMembers = LMembers<Value, LBody>;
+export type LTrait = {
     readonly kind: "trait";
-    readonly content: LTraitContent;
+    readonly content: LTraitMembers;
 };
-export type LTraitContent = LCommonSig<Value | undefined, LBody | undefined>;
-export type LCommonSig<Expr, Body> = {
-    readonly fieldish: LOrdered<LFieldish<Expr>>;
-    readonly methods: ReadonlyMap<string, LMethodSig<Body>>;
+export type LTraitMembers = LMembers<Value | undefined, LBody | undefined>;
+export type LMembers<Expr, Body> = {
+    readonly fieldish: Ordered<LFieldish<Expr>>;
+    readonly methods: ReadonlyMap<string, LMethod<Body>>;
     readonly receivers: LReceivers;
 };
 export type LReceivers = {
-    readonly bounce: LBounceSig;
-    readonly internal: LRecvSig;
-    readonly external: LRecvSig;
+    readonly bounce: LBounce;
+    readonly internal: LReceiver;
+    readonly external: LReceiver;
 };
 
-export type LFieldish<Expr> = LInhFieldSig | LFieldConstSig<Expr>;
-export type LInhFieldSig = {
+export type LFieldish<Expr> = LField | LFieldConstant<Expr>;
+export type LField = {
     readonly kind: "field";
     readonly type: LType;
     readonly init: Value | undefined;
 };
-export type LFieldConstSig<Expr> = {
+export type LFieldConstant<Expr> = {
     readonly kind: "constant";
-    readonly overridable: boolean;
     readonly type: LType;
     readonly init: Expr;
 };
 
-export type LMethodSig<Body> = {
-    readonly overridable: boolean;
-    readonly type: LDecodedMethodType;
+export type LMethod<Body> = {
+    readonly type: LTMethod;
     readonly inline: boolean;
     readonly body: Body;
     readonly getMethodId: bigint | undefined;
 };
 
-export type LBounceSig = {
+export type LBounce = {
     // NB! can't compute opcodes until all receivers are present
-    readonly message: readonly LMessageRecv[];
-    readonly messageAny: undefined | LMessageAnyRecv;
+    readonly message: readonly LReceiverMessage[];
+    readonly messageAny: undefined | LReceiverAny;
 };
 
-export type LRecvSig = {
+export type LReceiver = {
     // NB! can't compute opcodes until all receivers are present
-    readonly message: readonly LOpcodeRecv[];
-    readonly messageAny: undefined | LMessageAnyRecv;
-    readonly stringAny: undefined | LStringAnyRecv;
-    readonly empty: undefined | LEmptyRecv;
+    readonly message: readonly LReceiverOpcode[];
+    readonly messageAny: undefined | LReceiverAny;
+    readonly stringAny: undefined | LReceiverAny;
+    readonly empty: undefined | LReceiverEmpty;
 };
 
-export type LOpcodeRecv = LMessageRecv | LStringRecv;
-export type LMessageRecv = {
+export type LReceiverOpcode = LReceiverMessage | LReceiverString;
+export type LReceiverMessage = {
     readonly kind: "binary";
     readonly name: OptionalId;
-    readonly type: LTypeRef | LTypeBounced;
+    readonly type: LTRef | LTBounced;
     readonly statements: LStatements;
 };
-export type LMessageAnyRecv = {
+export type LReceiverAny = {
     readonly name: OptionalId;
     readonly statements: LStatements;
 };
-export type LStringRecv = {
+export type LReceiverString = {
     readonly kind: "string";
     readonly comment: string;
     readonly statements: LStatements;
 };
-export type LStringAnyRecv = {
-    readonly name: OptionalId;
-    readonly statements: LStatements;
-};
-export type LEmptyRecv = {
+export type LReceiverEmpty = {
     readonly statements: LStatements;
 };
 
-export type LStructSig = {
+export type LStruct = {
     readonly kind: "struct";
     readonly typeParams: LTypeParams;
-    readonly fields: LOrdered<LInhFieldSig>;
+    readonly fields: Ordered<LField>;
 };
 
-export type LMessageSig = {
+export type LMessage = {
     readonly kind: "message";
     readonly opcode: bigint;
-    readonly fields: LOrdered<LInhFieldSig>;
+    readonly fields: Ordered<LField>;
 };
 
-export type LUnionSig = {
+export type LUnion = {
     readonly kind: "union";
     readonly typeParams: LTypeParams;
-    readonly cases: ReadonlyMap<string, ReadonlyMap<string, LInhFieldSig>>;
+    readonly cases: ReadonlyMap<string, ReadonlyMap<string, LField>>;
 };
 
-export type LDecodedFnType = {
+export type LTFunction = {
     readonly kind: "DecodedFnType";
     readonly typeParams: LTypeParams;
     readonly params: LParameters;
     readonly returnType: LType;
 };
 
-export type LDecodedMethodType = {
+export type LTMethod = {
     readonly kind: "DecodedMethodType";
     readonly mutates: boolean;
     readonly typeParams: LTypeParams;
@@ -211,26 +211,15 @@ export type LDecodedMethodType = {
     readonly returnType: LType;
 };
 
-export type LDecodedParameter = {
+export type LParameter = {
     readonly name: OptionalId;
     readonly type: LType;
     readonly loc: Loc;
-};
-
-export type LOrdered<T> = {
-    readonly order: readonly string[];
-    readonly map: ReadonlyMap<string, T>;
 };
 
 export type LParameters = {
     readonly order: readonly LParameter[];
     readonly set: ReadonlySet<string>;
-};
-
-export type LParameter = {
-    readonly name: OptionalId;
-    readonly type: LType;
-    readonly loc: Loc;
 };
 
 export type LTypeParams = {
