@@ -152,7 +152,7 @@ export function writeTypescript(
 
         for (const s of abi.types) {
             writeStruct(s.name, s.fields, true, w);
-            writeSerializer(s, allocations[s.name]!.root, w);
+            writeSerializer(s, allocations[s.name]!.root, w, `${abi.name}$`);
             writeParser(s, allocations[s.name]!.root, w);
             writeTupleParser(s, w);
             writeGetterTupleParser(s, w);
