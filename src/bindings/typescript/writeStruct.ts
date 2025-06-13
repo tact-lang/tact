@@ -89,7 +89,6 @@ export function writeSerializer(
     s: ABIType,
     allocation: AllocationCell,
     w: Writer,
-    contractName?: string,
 ) {
     w.append(`export function store${s.name}(src: ${s.name}) {`);
     w.inIndent(() => {
@@ -97,11 +96,7 @@ export function writeSerializer(
         w.inIndent(() => {
             w.append(`const b_0 = builder;`);
             if (s.header) {
-                if (contractName) {
-                    w.append(`b_0.storeUint(${contractName}_opcodes.${s.name}, 32);`);
-                } else {
-                    w.append(`b_0.storeUint(${s.header}, 32);`);
-                }
+                w.append(`b_0.storeUint(${s.header}, 32);`);
             }
             writeSerializerCell(0, allocation, w);
         });
