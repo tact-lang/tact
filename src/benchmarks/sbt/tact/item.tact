@@ -50,13 +50,13 @@ contract SBTItem(
             content,
         };
 
-        message(MessageParameters {
+        MessageParameters {
             to: msg.destination,
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
             body: msgBody.toCell(),
-        });
+        }.send();
     }
 
     receive(msg: ProveOwnership) {
@@ -74,17 +74,17 @@ contract SBTItem(
             content,
         };
 
-        message(MessageParameters {
+        MessageParameters {
             to: msg.destination,
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
             body: msgBody.toCell(),
-        });
+        }.send();
     }
 
     bounced(msg: bounced<ProveOwnershipOut>) {
-        message(MessageParameters {
+        MessageParameters {
             to: self.owner!!,
             value: 0,
             mode: SendRemainingValue,
@@ -92,7 +92,7 @@ contract SBTItem(
             body: ProveOwnershipBounced {
                 queryId: msg.queryId,
             }.toCell(),
-        });
+        }.send();
     }
 
     receive(msg: GetStaticData) {
@@ -104,13 +104,13 @@ contract SBTItem(
             collectionAddress: self.collectionAddress,
         };
 
-        message(MessageParameters {
+        MessageParameters {
             bounce: false,
             to: sender(),
             value: 0,
             body: msgBody.toCell(),
             mode: SendRemainingValue,
-        });
+        }.send();
     }
 
     receive(msg: TakeExcess) {
@@ -121,13 +121,13 @@ contract SBTItem(
 
         let msgBody = ExcessOut { queryId: msg.queryId };
 
-        message(MessageParameters {
+        MessageParameters {
             bounce: false,
             to: sender(),
             value: 0,
             body: msgBody.toCell(),
             mode: SendRemainingBalance,
-        });
+        }.send();
     }
 
     receive(msg: Destroy) {
@@ -136,13 +136,13 @@ contract SBTItem(
 
         let msgBody = ExcessOut { queryId: msg.queryId };
 
-        message(MessageParameters {
+        MessageParameters {
             bounce: false,
             to: sender(),
             value: 0,
             body: msgBody.toCell(),
             mode: SendRemainingBalance,
-        });
+        }.send();
 
         self.owner = null;
         self.authorityAddress = null;

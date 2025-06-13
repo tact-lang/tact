@@ -69,7 +69,7 @@ contract JettonWalletNotcoin(
         let ctx = context();
         checkAmountIsEnoughToTransfer(ctx.value, msg.forwardTonAmount, ctx.readForwardFee());
 
-        deploy(DeployParameters {
+        DeployParameters {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
@@ -82,7 +82,7 @@ contract JettonWalletNotcoin(
                 forwardPayload: msg.forwardPayload,
             }.toCell(),
             init: initOf JettonWalletNotcoin(0, msg.destination, self.master),
-        });
+        }.send();
     }
 
     receive(msg: JettonTransferInternal) {
@@ -95,7 +95,7 @@ contract JettonWalletNotcoin(
         }
 
         if (msg.forwardTonAmount > 0) {
-            message(MessageParameters {
+            MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayFwdFeesSeparately,
@@ -106,7 +106,7 @@ contract JettonWalletNotcoin(
                     sender: msg.sender,
                     forwardPayload: msg.forwardPayload,
                 }.toCell(),
-            });
+            }.send();
         }
 
         // 0xd53276db -- Cashback to the original Sender
@@ -117,13 +117,13 @@ contract JettonWalletNotcoin(
                 2,
             );
 
-            message(MessageParameters {
+            MessageParameters {
                 to: msg.responseDestination!!,
                 value: 0,
                 mode: SendRemainingBalance | SendIgnoreErrors,
                 bounce: false,
                 body: JettonExcesses { queryId: msg.queryId }.toCell(),
-            });
+            }.send();
         }
     }
 
@@ -135,7 +135,7 @@ contract JettonWalletNotcoin(
 
         checkAmountIsEnoughToBurn(context().value);
 
-        message(MessageParameters {
+        MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
@@ -146,7 +146,7 @@ contract JettonWalletNotcoin(
                 sender: self.owner,
                 responseDestination: msg.responseDestination,
             }.toCell(),
-        });
+        }.send();
     }
 
     receive(_: Slice) { throw(0xffff) }

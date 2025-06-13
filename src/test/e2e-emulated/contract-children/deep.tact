@@ -5,13 +5,13 @@ contract A {
     }
 
     receive("Message") {
-        deploy(DeployParameters{
+        DeployParameters{
             init: initOf B(myAddress()),
             value: 0, 
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
             body: "Message".asComment()
-        });
+        }.send();
     }
 
     get fun getNext(): StateInit {
@@ -30,7 +30,7 @@ contract B {
         // to also test this way of deploying contracts
         let init: StateInit = initOf C(myAddress());
         let address: Address = contractAddress(init);
-        send(SendParameters{
+        SendParameters{
             value: 0, 
             to: address, 
             mode: SendRemainingValue | SendIgnoreErrors,
@@ -38,7 +38,7 @@ contract B {
             code: init.code,
             data: init.data,
             body: "Message".asComment()
-        });
+        }.send();
     }
 
     get fun getNext(): StateInit {
@@ -55,7 +55,7 @@ contract C {
     receive("Message") {
         let init: StateInit = initOf C(self.parent);
         let address: Address = contractAddress(init);
-        send(SendParameters{
+        SendParameters{
             value: 0, 
             to: address, 
             mode: SendRemainingValue | SendIgnoreErrors,
@@ -63,7 +63,7 @@ contract C {
             code: init.code,
             data: init.data,
             body: "Message2".asComment()
-        });
+        }.send();
     }
 
     receive("Message2") {

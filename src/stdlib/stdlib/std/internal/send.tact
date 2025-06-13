@@ -129,11 +129,11 @@ struct MessageParameters {
 ///
 /// ```tact
 /// fun example() {
-///     message(MessageParameters{
+///     MessageParameters{
 ///         to: sender(),    // back to the sender,
 ///         value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
 ///                          // and no message body
-///     });
+///     }.send();
 /// }
 /// ```
 ///
@@ -167,15 +167,45 @@ asm fun message(params: MessageParameters) {
     SENDRAWMSG
 }
 
+/// Extension function for the `MessageParameters` struct. Available since Tact 1.7.0.
+///
+/// Queues the message to be sent using the `MessageParameters` struct. Allows for cheaper non-deployment, regular messages compared to the `send()` function.
+///
+/// The `MessageParameters` struct is similar to `SendParameters` struct, but without the `code` and `data` fields.
+///
+/// ```tact
+/// fun example() {
+///     MessageParameters{
+///         to: sender(),    // back to the sender,
+///         value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+///                          // and no message body
+///     }.send();
+/// }
+/// ```
+///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-send#message
+/// * https://docs.tact-lang.org/book/message-mode
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
+///
+extends inline fun send(self: MessageParameters) {
+    message(self);
+}
+
 /// Global function. Queues the message to be sent using a `SendParameters` struct.
 ///
 /// ```tact
 /// fun example() {
-///     send(SendParameters{
+///     SendParameters{
 ///         to: sender(),    // back to the sender,
 ///         value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
 ///                          // and no message body
-///     });
+///     }.send()
 /// }
 /// ```
 ///
@@ -281,6 +311,32 @@ asm fun send(params: SendParameters) {
     SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
 }
 
+/// Extension function for the `SendParameters` struct. Available since Tact 1.7.0.
+///
+/// Queues the message to be sent using a `SendParameters` struct.
+///
+/// ```tact
+/// fun example() {
+///     SendParameters{
+///         to: sender(),    // back to the sender,
+///         value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+///                          // and no message body
+///     }.send();
+/// }
+/// ```
+///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
+/// See: https://docs.tact-lang.org/ref/core-send#send
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
+///
+extends inline fun send(self: SendParameters) {
+    send(self);
+}
+
 /// Struct for specifying the deployment message parameters of the `deploy()` function. Available since Tact 1.6.0.
 ///
 /// See: https://docs.tact-lang.org/ref/core-send#deploy
@@ -322,12 +378,12 @@ struct DeployParameters {
 ///
 /// ```tact
 /// fun example() {
-///     deploy(DeployParameters{
+///     DeployParameters{
 ///         init: initOf SomeContract(), // with initial code and data of SomeContract
 ///                                      // and no additional message body
 ///         mode: SendIgnoreErrors,      // skip the message in case of errors
 ///         value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
-///     });
+///     }.send();
 /// }
 /// ```
 ///
@@ -427,6 +483,44 @@ asm fun deploy(params: DeployParameters) {
     SENDRAWMSG
 }
 
+/// Extension function for the `DeployParameters` struct. Available since Tact 1.7.0.
+///
+/// Queues the contract deployment message to be sent using the `DeployParameters` struct. Allows for cheaper on-chain deployments compared to the `send()` function.
+///
+/// The `DeployParameters` struct consists of the following fields:
+/// * `mode: Int`, an 8-bit value that configures how to send a message, defaults to 0.
+/// * `body: Cell?`, optional message body as a `Cell`.
+/// * `value: Int`, the amount of nanoToncoins you want to send with the message.
+///   This value is used to cover forward fees, unless the optional flag `SendPayFwdFeesSeparately` is used.
+/// * `bounce: Bool`, when set to `true` (default) message bounces back to the sender
+///    if the recipient contract doesn't exist or wasn't able to process the message.
+/// * `init: StateInit`, init package of the contract (initial code and initial data).
+///
+/// ```tact
+/// fun example() {
+///     DeployParameters{
+///         init: initOf SomeContract(), // with initial code and data of SomeContract
+///                                      // and no additional message body
+///         mode: SendIgnoreErrors,      // skip the message in case of errors
+///         value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
+///     }.send();
+/// }
+/// ```
+///
+/// #### Exit codes
+///
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-send#deploy
+/// * https://docs.tact-lang.org/book/message-mode
+///
+/// [Action list is too long]: https://docs.tact-lang.org/book/exit-codes#33
+///
+extends inline fun send(self: DeployParameters) {
+    deploy(self);
+}
+
 /// Global function. Available since Tact 1.6.1.
 ///
 /// Queues an empty message to be sent with the `SendRemainingValue` mode and the `SendIgnoreErrors` flag to the destination address `to`.
@@ -441,13 +535,13 @@ asm fun deploy(params: DeployParameters) {
 ///
 ///     // The cashback() function above is cheaper, but functionally
 ///     // equivalent to the following call to the message() function
-///     message(MessageParameters{
+///     MessageParameters{
 ///         mode: SendRemainingValue | SendIgnoreErrors,
 ///         body: null,
 ///         value: 0,
 ///         to: sender(),
 ///         bounce: false,
-///     });
+///     }.send();
 /// }
 /// ```
 ///

@@ -26,13 +26,13 @@ contract JettonMinterNotcoin(
         self.totalSupply -= msg.amount;
 
         if (msg.responseDestination.isNotNone()) {
-            message(MessageParameters {
+            MessageParameters {
                 to: msg.responseDestination,
                 body: JettonExcesses { queryId: msg.queryId }.toCell(),
                 value: 0,
                 bounce: false,
                 mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
-            });
+            }.send();
         }
     }
 
@@ -43,12 +43,12 @@ contract JettonMinterNotcoin(
             ? contractBasechainAddress(initOf JettonWalletNotcoin(0, msg.ownerAddress, myAddress()))
             : emptyBasechainAddress();
 
-        message(MessageParameters {
+        MessageParameters {
             body: makeTakeWalletAddressMsg(targetJettonWallet, msg),
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendBounceIfActionFail,
-        });
+        }.send();
     }
 
     receive(msg: Mint) {
@@ -59,13 +59,13 @@ contract JettonMinterNotcoin(
         forceBasechain(msg.receiver);
         checkAmountIsEnoughToTransfer(ctx.value, msg.mintMessage.forwardTonAmount, ctx.readForwardFee());
 
-        deploy(DeployParameters {
+        DeployParameters {
             value: 0,
             bounce: true,
             mode: SendRemainingValue,
             body: msg.mintMessage.toCell(),
             init: getJettonWalletInit(msg.receiver),
-        });
+        }.send();
     }
 
     receive(msg: JettonUpdateContent) {

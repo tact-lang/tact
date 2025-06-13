@@ -26,13 +26,13 @@ contract Child {
     }
 
     receive() {
-        message(MessageParameters {
+        MessageParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: false, 
             body: ChildAddress { address: myAddress() }.toCell(),
-        });
+        }.send();
     }
 }
 
@@ -46,7 +46,7 @@ contract Parent {
 
     receive() {
         let ci = initOf Child(myAddress());
-        send(SendParameters {
+        SendParameters {
             to: contractAddress(ci),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
@@ -54,7 +54,7 @@ contract Parent {
             body: beginCell().endCell(),
             code: ci.code,
             data: ci.data,
-        });
+        }.send();
     }
 
     receive(msg: ChildAddress) {
