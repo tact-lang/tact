@@ -31,7 +31,7 @@ self.reply("Hello, World!".asComment()); // asComment converts a String to a Cel
 
 如果需要更高级的逻辑，可以直接使用 `send(){:tact}` 函数和 `SendParameters{:tact}` [Struct](/zh-cn/book/structs-and-messages#structs) 。
 
-事实上，前面使用 [`.reply(){:tact}`](#send-simple-reply) 的示例可以通过调用下面的 `send(){:tact}` 函数来实现：
+事实上，前面使用 [`self.reply(){:tact}`](#send-simple-reply) 的示例可以通过调用下面的 `send(){:tact}` 函数来实现：
 
 ```tact
 send(SendParameters {

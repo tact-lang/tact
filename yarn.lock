@@ -56,11 +56,11 @@
     semver "^6.3.1"
 
 "@babel/generator@^7.26.0", "@babel/generator@^7.26.2", "@babel/generator@^7.26.5", "@babel/generator@^7.7.2":
-  version "7.27.3"
-  resolved "https://npm.dev-internal.org/@babel/generator/-/generator-7.27.3.tgz#ef1c0f7cfe3b5fc8cbb9f6cc69f93441a68edefc"
-  integrity sha512-xnlJYj5zepml8NXtjkG0WquFUv8RskFqyFcVgTBp5k+NaA/8uw/K+OSVf8AMGw5e9HKP2ETd5xpK5MLZQD6b4Q==
+  version "7.27.5"
+  resolved "https://npm.dev-internal.org/@babel/generator/-/generator-7.27.5.tgz#3eb01866b345ba261b04911020cbe22dd4be8c8c"
+  integrity sha512-ZGhA37l0e/g2s1Cnzdix0O3aLYm66eF8aufiVteOgnwxgnRP8GoyMj7VWsgWnQbVKXyge7hqrFh2K2TQM6t1Hw==
   dependencies:
-    "@babel/parser" "^7.27.3"
+    "@babel/parser" "^7.27.5"
     "@babel/types" "^7.27.3"
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.25"
@@ -122,10 +122,10 @@
     "@babel/template" "^7.25.9"
     "@babel/types" "^7.26.0"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.23.9", "@babel/parser@^7.25.9", "@babel/parser@^7.26.0", "@babel/parser@^7.26.5", "@babel/parser@^7.27.3":
-  version "7.27.4"
-  resolved "https://npm.dev-internal.org/@babel/parser/-/parser-7.27.4.tgz#f92e89e4f51847be05427285836fc88341c956df"
-  integrity sha512-BRmLHGwpUqLFR2jzx9orBuX/ABDkj2jLKOXrHDTN2aOKL+jFDDKaRNo9nyYsIl9h/UE/7lMKdDjKQQyxKKDZ7g==
+"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.23.9", "@babel/parser@^7.25.9", "@babel/parser@^7.26.0", "@babel/parser@^7.26.5", "@babel/parser@^7.27.5":
+  version "7.27.5"
+  resolved "https://npm.dev-internal.org/@babel/parser/-/parser-7.27.5.tgz#ed22f871f110aa285a6fd934a0efed621d118826"
+  integrity sha512-OsQd175SxWkGlzbny8J3K8TnnDD0N3lrIUtB92xwyRpzaenGZhxDvxN/JgU00U3CDZNj9tPuDJ5H0WS4Nt3vKg==
   dependencies:
     "@babel/types" "^7.27.3"
 
@@ -1067,10 +1067,10 @@
     multiformats "^9.5.4"
     murmurhash3js-revisited "^3.0.0"
 
-"@napi-rs/wasm-runtime@^0.2.9":
-  version "0.2.10"
-  resolved "https://npm.dev-internal.org/@napi-rs/wasm-runtime/-/wasm-runtime-0.2.10.tgz#f3b7109419c6670000b2401e0c778b98afc25f84"
-  integrity sha512-bCsCyeZEwVErsGmyPNSzwfwFn4OdxBj0mmv6hOFucB/k81Ojdu68RbZdxYsRQUPc9l6SU5F/cG+bXgWs3oUgsQ==
+"@napi-rs/wasm-runtime@^0.2.11":
+  version "0.2.11"
+  resolved "https://npm.dev-internal.org/@napi-rs/wasm-runtime/-/wasm-runtime-0.2.11.tgz#192c1610e1625048089ab4e35bc0649ce478500e"
+  integrity sha512-9DPkXtvHydrcOsopiYpUgPHpmj0HWZKMUnL2dZqpvC42lsratuBG06V5ipyno0fUek5VlFsNQ+AcFATSrJXgMA==
   dependencies:
     "@emnapi/core" "^1.4.3"
     "@emnapi/runtime" "^1.4.3"
@@ -1126,72 +1126,72 @@
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
 
-"@oxc-resolver/binding-darwin-arm64@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-darwin-arm64/-/binding-darwin-arm64-9.0.2.tgz#345ff11258dbec11d333bf088a79b864f5f03ec5"
-  integrity sha512-MVyRgP2gzJJtAowjG/cHN3VQXwNLWnY+FpOEsyvDepJki1SdAX/8XDijM1yN6ESD1kr9uhBKjGelC6h3qtT+rA==
+"@oxc-resolver/binding-darwin-arm64@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-darwin-arm64/-/binding-darwin-arm64-11.2.0.tgz#e10cb8530dfa948a2eee889346f459f6c65eebfd"
+  integrity sha512-ruKLkS+Dm/YIJaUhzEB7zPI+jh3EXxu0QnNV8I7t9jf0lpD2VnltuyRbhrbJEkksklZj//xCMyFFsILGjiU2Mg==
 
-"@oxc-resolver/binding-darwin-x64@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-darwin-x64/-/binding-darwin-x64-9.0.2.tgz#cd19f263a31b601356002ebd2eb8dda193753704"
-  integrity sha512-7kV0EOFEZ3sk5Hjy4+bfA6XOQpCwbDiDkkHN4BHHyrBHsXxUR05EcEJPPL1WjItefg+9+8hrBmoK0xRoDs41+A==
+"@oxc-resolver/binding-darwin-x64@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-darwin-x64/-/binding-darwin-x64-11.2.0.tgz#d91779b76820037055c9ead87bf3ee21a96e178d"
+  integrity sha512-0zhgNUm5bYezdSFOg3FYhtVP83bAq7FTV/3suGQDl/43MixfQG7+bl+hlrP4mz6WlD2SUb2u9BomnJWl1uey9w==
 
-"@oxc-resolver/binding-freebsd-x64@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-freebsd-x64/-/binding-freebsd-x64-9.0.2.tgz#e6e0b9b9409cb4eb71307ca880f1d868cce88c94"
-  integrity sha512-6OvkEtRXrt8sJ4aVfxHRikjain9nV1clIsWtJ1J3J8NG1ZhjyJFgT00SCvqxbK+pzeWJq6XzHyTCN78ML+lY2w==
+"@oxc-resolver/binding-freebsd-x64@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-freebsd-x64/-/binding-freebsd-x64-11.2.0.tgz#6149681bb3c3eaf0d92517428d38042e1c56faf2"
+  integrity sha512-SHOxfCcZV1axeIGfyeD1BkdLvfQgjmPy18tO0OUXGElcdScxD6MqU5rj/AVtiuBT+51GtFfOKlwl1+BdVwhD1A==
 
-"@oxc-resolver/binding-linux-arm-gnueabihf@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-arm-gnueabihf/-/binding-linux-arm-gnueabihf-9.0.2.tgz#e4ef8e0a831fa05101ca8fc0501cd7b536093e66"
-  integrity sha512-aYpNL6o5IRAUIdoweW21TyLt54Hy/ZS9tvzNzF6ya1ckOQ8DLaGVPjGpmzxdNja9j/bbV6aIzBH7lNcBtiOTkQ==
+"@oxc-resolver/binding-linux-arm-gnueabihf@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-arm-gnueabihf/-/binding-linux-arm-gnueabihf-11.2.0.tgz#7f375b0823374148368e65e4de8a2a3041e6d27c"
+  integrity sha512-mgEkYrJ+N90sgEDqEZ07zH+4I1D28WjqAhdzfW3aS2x2vynVpoY9jWfHuH8S62vZt3uATJrTKTRa8CjPWEsrdw==
 
-"@oxc-resolver/binding-linux-arm64-gnu@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-9.0.2.tgz#c95345cf91b9597a469a8d3028d0b182e2e22055"
-  integrity sha512-RGFW4vCfKMFEIzb9VCY0oWyyY9tR1/o+wDdNePhiUXZU4SVniRPQaZ1SJ0sUFI1k25pXZmzQmIP6cBmazi/Dew==
+"@oxc-resolver/binding-linux-arm64-gnu@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-11.2.0.tgz#aa70d17bdf6418d3fe309b11c1514e25e92bd7c7"
+  integrity sha512-BhEzNLjn4HjP8+Q18D3/jeIDBxW7OgoJYIjw2CaaysnYneoTlij8hPTKxHfyqq4IGM3fFs9TLR/k338M3zkQ7g==
 
-"@oxc-resolver/binding-linux-arm64-musl@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-arm64-musl/-/binding-linux-arm64-musl-9.0.2.tgz#d968aadd446a6c1d729764f3ddd0e1b66e3ec53f"
-  integrity sha512-lxx/PibBfzqYvut2Y8N2D0Ritg9H8pKO+7NUSJb9YjR/bfk2KRmP8iaUz3zB0JhPtf/W3REs65oKpWxgflGToA==
+"@oxc-resolver/binding-linux-arm64-musl@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-arm64-musl/-/binding-linux-arm64-musl-11.2.0.tgz#5065ba7151d316d45b209b55fc37f3ecfcb9f9bd"
+  integrity sha512-yxbMYUgRmN2V8x8XoxmD/Qq6aG7YIW3ToMDILfmcfeeRRVieEJ3DOWBT0JSE+YgrOy79OyFDH/1lO8VnqLmDQQ==
 
-"@oxc-resolver/binding-linux-riscv64-gnu@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-riscv64-gnu/-/binding-linux-riscv64-gnu-9.0.2.tgz#698f364bf15489e69c8441c842a09a468c7389ca"
-  integrity sha512-yD28ptS/OuNhwkpXRPNf+/FvrO7lwURLsEbRVcL1kIE0GxNJNMtKgIE4xQvtKDzkhk6ZRpLho5VSrkkF+3ARTQ==
+"@oxc-resolver/binding-linux-riscv64-gnu@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-riscv64-gnu/-/binding-linux-riscv64-gnu-11.2.0.tgz#63aaddff4d065d8a90425e1cc00e1d1410ea9b48"
+  integrity sha512-QG1UfgC2N2qhW1tOnDCgB/26vn1RCshR5sYPhMeaxO1gMQ3kEKbZ3QyBXxrG1IX5qsXYj5hPDJLDYNYUjRcOpg==
 
-"@oxc-resolver/binding-linux-s390x-gnu@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-s390x-gnu/-/binding-linux-s390x-gnu-9.0.2.tgz#dfcbf0531f0ade1197275f40e6f8900635af187c"
-  integrity sha512-WBwEJdspoga2w+aly6JVZeHnxuPVuztw3fPfWrei2P6rNM5hcKxBGWKKT6zO1fPMCB4sdDkFohGKkMHVV1eryQ==
+"@oxc-resolver/binding-linux-s390x-gnu@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-s390x-gnu/-/binding-linux-s390x-gnu-11.2.0.tgz#ab007ce62814b783f55a1ae7c204d841bd72e2af"
+  integrity sha512-uqTDsQdi6mrkSV1gvwbuT8jf/WFl6qVDVjNlx7IPSaAByrNiJfPrhTmH8b+Do58Dylz7QIRZgxQ8CHIZSyBUdg==
 
-"@oxc-resolver/binding-linux-x64-gnu@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-x64-gnu/-/binding-linux-x64-gnu-9.0.2.tgz#73f7157f3b052c44c206b672b970da060125c533"
-  integrity sha512-a2z3/cbOOTUq0UTBG8f3EO/usFcdwwXnCejfXv42HmV/G8GjrT4fp5+5mVDoMByH3Ce3iVPxj1LmS6OvItKMYQ==
+"@oxc-resolver/binding-linux-x64-gnu@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-x64-gnu/-/binding-linux-x64-gnu-11.2.0.tgz#71543385bcd557201a1fb27acb899c7d09ad3502"
+  integrity sha512-GZdHXhJ7p6GaQg9MjRqLebwBf8BLvGIagccI6z5yMj4fV3LU4QuDfwSEERG+R6oQ/Su9672MBqWwncvKcKT68w==
 
-"@oxc-resolver/binding-linux-x64-musl@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-x64-musl/-/binding-linux-x64-musl-9.0.2.tgz#2b047ce69cb7fa1900174d43e4a7b6027146a449"
-  integrity sha512-bHZF+WShYQWpuswB9fyxcgMIWVk4sZQT0wnwpnZgQuvGTZLkYJ1JTCXJMtaX5mIFHf69ngvawnwPIUA4Feil0g==
+"@oxc-resolver/binding-linux-x64-musl@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-linux-x64-musl/-/binding-linux-x64-musl-11.2.0.tgz#28876735f3bd99d89363885ee6a35f36246bd0b2"
+  integrity sha512-YBAC3GOicYznReG2twE7oFPSeK9Z1f507z1EYWKg6HpGYRYRlJyszViu7PrhMT85r/MumDTs429zm+CNqpFWOA==
 
-"@oxc-resolver/binding-wasm32-wasi@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-wasm32-wasi/-/binding-wasm32-wasi-9.0.2.tgz#df8eab1815ae0da0c70f0f9dda4bcd84c70d7024"
-  integrity sha512-I5cSgCCh5nFozGSHz+PjIOfrqW99eUszlxKLgoNNzQ1xQ2ou9ZJGzcZ94BHsM9SpyYHLtgHljmOZxCT9bgxYNA==
+"@oxc-resolver/binding-wasm32-wasi@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-wasm32-wasi/-/binding-wasm32-wasi-11.2.0.tgz#68684ab71e727c870655fd3694ea5b8806b87516"
+  integrity sha512-+qlIg45CPVPy+Jn3vqU1zkxA/AAv6e/2Ax/ImX8usZa8Tr2JmQn/93bmSOOOnr9fXRV9d0n4JyqYzSWxWPYDEw==
   dependencies:
-    "@napi-rs/wasm-runtime" "^0.2.9"
+    "@napi-rs/wasm-runtime" "^0.2.11"
 
-"@oxc-resolver/binding-win32-arm64-msvc@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-9.0.2.tgz#9530c2e08ebb5d02870b004135ef0b4438a620b7"
-  integrity sha512-5IhoOpPr38YWDWRCA5kP30xlUxbIJyLAEsAK7EMyUgqygBHEYLkElaKGgS0X5jRXUQ6l5yNxuW73caogb2FYaw==
+"@oxc-resolver/binding-win32-arm64-msvc@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-11.2.0.tgz#ef9ced6045c60a77357fdd62205e76e0879d9fb0"
+  integrity sha512-AI4KIpS8Zf6vwfOPk0uQPSC0pQ1m5HU4hCbtrgL21JgJSlnJaeEu3/aoOBB45AXKiExBU9R+CDR7aSnW7uhc5A==
 
-"@oxc-resolver/binding-win32-x64-msvc@9.0.2":
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-win32-x64-msvc/-/binding-win32-x64-msvc-9.0.2.tgz#15dc9cecd2e89bbcad07247477fc04dd8c3ffbbe"
-  integrity sha512-Qc40GDkaad9rZksSQr2l/V9UubigIHsW69g94Gswc2sKYB3XfJXfIfyV8WTJ67u6ZMXsZ7BH1msSC6Aen75mCg==
+"@oxc-resolver/binding-win32-x64-msvc@11.2.0":
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/@oxc-resolver/binding-win32-x64-msvc/-/binding-win32-x64-msvc-11.2.0.tgz#24af4f17b40b1e6c08e9fa3bdfcaaf5d64bfcd64"
+  integrity sha512-r19cQc7HaEJ76HFsMsbiKMTIV2YqFGSof8H5hB7e5Jkb/23Y8Isv1YrSzkDaGhcw02I/COsrPo+eEmjy35eFuA==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
@@ -1376,13 +1376,14 @@
   resolved "https://npm.dev-internal.org/@tact-lang/opcode/-/opcode-0.0.14.tgz"
   integrity sha512-8FKHK2jwvViRBReO2t40DCkHAP9KPTRWZof4kdsAUJFlyeWIC8SsRQSl9QkZxF+48WvjDduKNqN5Ltb80paufA==
 
-"@tact-lang/opcode@^0.3.0":
-  version "0.3.1"
-  resolved "https://npm.dev-internal.org/@tact-lang/opcode/-/opcode-0.3.1.tgz#bd9c7b10771f7a100fe2e5e5f18b33350225dc96"
-  integrity sha512-DfLGz59yl0PPnqFnFzkwr20NNspe4ocZJlBgyTiikGxpS5932wE7Jb9tcKpLqVKzR0TFiqBK0RbOTHM3e6qCRA==
+"@tact-lang/opcode@^0.3.2":
+  version "0.3.2"
+  resolved "https://npm.dev-internal.org/@tact-lang/opcode/-/opcode-0.3.2.tgz#0d103c5c5d3360348bf72b1b20fc507066fc4e01"
+  integrity sha512-ZFsgOBTCxsKkYYOKomdaHMc8VSOFQKTbjLR1mYq6NFYyTdaz69gHEqgsIEZ0URSNWGg2er5H+LXlv8+8Tlt7sA==
   dependencies:
-    "@ton/core" "^0.60.0"
+    "@ton/core" "^0.61.0"
     "@ton/crypto" "^3.3.0"
+    "@ton/sandbox" "^0.32.2"
 
 "@tact-lang/ton-abi@^0.0.3":
   version "0.0.3"
@@ -1394,10 +1395,10 @@
   resolved "https://npm.dev-internal.org/@tact-lang/ton-jest/-/ton-jest-0.0.4.tgz"
   integrity sha512-FWjfiNvhMlE44ZLLL7tgmHbrszMTPMttmYiaTekf1vwFXV3uAOawM8xM9NldYaCVs9eh8840PjgISdMMUTCSCw==
 
-"@ton/core@0.60.1", "@ton/core@^0.60.0":
-  version "0.60.1"
-  resolved "https://npm.dev-internal.org/@ton/core/-/core-0.60.1.tgz#cc9a62fb308d7597b1217dc8e44c7e2dcc0aceaa"
-  integrity sha512-8FwybYbfkk57C3l9gvnlRhRBHbLYmeu0LbB1z9N+dhDz0Z+FJW8w0TJlks8CgHrAFxsT3FlR2LsqFnsauMp38w==
+"@ton/core@^0.61.0":
+  version "0.61.0"
+  resolved "https://npm.dev-internal.org/@ton/core/-/core-0.61.0.tgz#09b37801cb2f5a942020fcc992be1e99f4b16689"
+  integrity sha512-0qyVfP2dDue2bq80ydXggo2MlufcmzuFk6G94qRrZxvyQ3NSe4UeBTeRf1gQmN7tywgTsX2gS61e4yvJrlUu4Q==
   dependencies:
     symbol.inspect "1.0.1"
 
@@ -1417,10 +1418,13 @@
     jssha "3.2.0"
     tweetnacl "1.0.3"
 
-"@ton/sandbox@^0.30.0":
-  version "0.30.0"
-  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.30.0.tgz#8af17d60bee83d8b9a7050516b4b3286e12e5445"
-  integrity sha512-fFqwZrMT0KVdWmc/GieBbV0xrs58bx+JUbcHTq/fGLP8dNAKqbnX9ddIT1jA0N8WFOIIAF9MDw0CeIc6h0C8tA==
+"@ton/sandbox@^0.32.2":
+  version "0.32.2"
+  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.32.2.tgz#e949d1df2ae98c1552901597200209163dd8cc42"
+  integrity sha512-D+Yuyka3pMuoD1KPufRGzE3iFZ0QLyba/xC5mfrXoLtV111ubKxc7RscndOsggeru0bdDYm0i/iaWO5YQWqUfw==
+  dependencies:
+    chalk "^4.1.2"
+    table "^6.9.0"
 
 "@ton/test-utils@^0.7.0":
   version "0.7.0"
@@ -1605,23 +1609,23 @@
     ts-api-utils "^2.1.0"
 
 "@typescript-eslint/parser@^8.21.0":
-  version "8.33.1"
-  resolved "https://npm.dev-internal.org/@typescript-eslint/parser/-/parser-8.33.1.tgz#ef9a5ee6aa37a6b4f46cc36d08a14f828238afe2"
-  integrity sha512-qwxv6dq682yVvgKKp2qWwLgRbscDAYktPptK4JPojCwwi3R9cwrvIxS4lvBpzmcqzR4bdn54Z0IG1uHFskW4dA==
+  version "8.34.0"
+  resolved "https://npm.dev-internal.org/@typescript-eslint/parser/-/parser-8.34.0.tgz#703270426ac529304ae6988482f487c856d9c13f"
+  integrity sha512-vxXJV1hVFx3IXz/oy2sICsJukaBrtDEQSBiV48/YIV5KWjX1dO+bcIr/kCPrW6weKXvsaGKFNlwH0v2eYdRRbA==
   dependencies:
-    "@typescript-eslint/scope-manager" "8.33.1"
-    "@typescript-eslint/types" "8.33.1"
-    "@typescript-eslint/typescript-estree" "8.33.1"
-    "@typescript-eslint/visitor-keys" "8.33.1"
+    "@typescript-eslint/scope-manager" "8.34.0"
+    "@typescript-eslint/types" "8.34.0"
+    "@typescript-eslint/typescript-estree" "8.34.0"
+    "@typescript-eslint/visitor-keys" "8.34.0"
     debug "^4.3.4"
 
-"@typescript-eslint/project-service@8.33.1":
-  version "8.33.1"
-  resolved "https://npm.dev-internal.org/@typescript-eslint/project-service/-/project-service-8.33.1.tgz#c85e7d9a44d6a11fe64e73ac1ed47de55dc2bf9f"
-  integrity sha512-DZR0efeNklDIHHGRpMpR5gJITQpu6tLr9lDJnKdONTC7vvzOlLAG/wcfxcdxEWrbiZApcoBCzXqU/Z458Za5Iw==
+"@typescript-eslint/project-service@8.34.0":
+  version "8.34.0"
+  resolved "https://npm.dev-internal.org/@typescript-eslint/project-service/-/project-service-8.34.0.tgz#449119b72fe9fae185013a6bdbaf1ffbfee6bcaf"
+  integrity sha512-iEgDALRf970/B2YExmtPMPF54NenZUf4xpL3wsCRx/lgjz6ul/l13R81ozP/ZNuXfnLCS+oPmG7JIxfdNYKELw==
   dependencies:
-    "@typescript-eslint/tsconfig-utils" "^8.33.1"
-    "@typescript-eslint/types" "^8.33.1"
+    "@typescript-eslint/tsconfig-utils" "^8.34.0"
+    "@typescript-eslint/types" "^8.34.0"
     debug "^4.3.4"
 
 "@typescript-eslint/scope-manager@8.32.1":
@@ -1632,18 +1636,18 @@
     "@typescript-eslint/types" "8.32.1"
     "@typescript-eslint/visitor-keys" "8.32.1"
 
-"@typescript-eslint/scope-manager@8.33.1":
-  version "8.33.1"
-  resolved "https://npm.dev-internal.org/@typescript-eslint/scope-manager/-/scope-manager-8.33.1.tgz#d1e0efb296da5097d054bc9972e69878a2afea73"
-  integrity sha512-dM4UBtgmzHR9bS0Rv09JST0RcHYearoEoo3pG5B6GoTR9XcyeqX87FEhPo+5kTvVfKCvfHaHrcgeJQc6mrDKrA==
+"@typescript-eslint/scope-manager@8.34.0":
+  version "8.34.0"
+  resolved "https://npm.dev-internal.org/@typescript-eslint/scope-manager/-/scope-manager-8.34.0.tgz#9fedaec02370cf79c018a656ab402eb00dc69e67"
+  integrity sha512-9Ac0X8WiLykl0aj1oYQNcLZjHgBojT6cW68yAgZ19letYu+Hxd0rE0veI1XznSSst1X5lwnxhPbVdwjDRIomRw==
   dependencies:
-    "@typescript-eslint/types" "8.33.1"
-    "@typescript-eslint/visitor-keys" "8.33.1"
+    "@typescript-eslint/types" "8.34.0"
+    "@typescript-eslint/visitor-keys" "8.34.0"
 
-"@typescript-eslint/tsconfig-utils@8.33.1", "@typescript-eslint/tsconfig-utils@^8.33.1":
-  version "8.33.1"
-  resolved "https://npm.dev-internal.org/@typescript-eslint/tsconfig-utils/-/tsconfig-utils-8.33.1.tgz#7836afcc097a4657a5ed56670851a450d8b70ab8"
-  integrity sha512-STAQsGYbHCF0/e+ShUQ4EatXQ7ceh3fBCXkNU7/MZVKulrlq1usH7t2FhxvCpuCi5O5oi1vmVaAjrGeL71OK1g==
+"@typescript-eslint/tsconfig-utils@8.34.0", "@typescript-eslint/tsconfig-utils@^8.34.0":
+  version "8.34.0"
+  resolved "https://npm.dev-internal.org/@typescript-eslint/tsconfig-utils/-/tsconfig-utils-8.34.0.tgz#97d0a24e89a355e9308cebc8e23f255669bf0979"
+  integrity sha512-+W9VYHKFIzA5cBeooqQxqNriAP0QeQ7xTiDuIOr71hzgffm3EL2hxwWBIIj4GuofIbKxGNarpKqIq6Q6YrShOA==
 
 "@typescript-eslint/type-utils@8.32.1":
   version "8.32.1"
@@ -1660,10 +1664,10 @@
   resolved "https://npm.dev-internal.org/@typescript-eslint/types/-/types-8.32.1.tgz#b19fe4ac0dc08317bae0ce9ec1168123576c1d4b"
   integrity sha512-YmybwXUJcgGqgAp6bEsgpPXEg6dcCyPyCSr0CAAueacR/CCBi25G3V8gGQ2kRzQRBNol7VQknxMs9HvVa9Rvfg==
 
-"@typescript-eslint/types@8.33.1", "@typescript-eslint/types@^8.33.1":
-  version "8.33.1"
-  resolved "https://npm.dev-internal.org/@typescript-eslint/types/-/types-8.33.1.tgz#b693111bc2180f8098b68e9958cf63761657a55f"
-  integrity sha512-xid1WfizGhy/TKMTwhtVOgalHwPtV8T32MS9MaH50Cwvz6x6YqRIPdD2WvW0XaqOzTV9p5xdLY0h/ZusU5Lokg==
+"@typescript-eslint/types@8.34.0", "@typescript-eslint/types@^8.34.0":
+  version "8.34.0"
+  resolved "https://npm.dev-internal.org/@typescript-eslint/types/-/types-8.34.0.tgz#18000f205c59c9aff7f371fc5426b764cf2890fb"
+  integrity sha512-9V24k/paICYPniajHfJ4cuAWETnt7Ssy+R0Rbcqo5sSFr3QEZ/8TSoUi9XeXVBGXCaLtwTOKSLGcInCAvyZeMA==
 
 "@typescript-eslint/typescript-estree@8.32.1":
   version "8.32.1"
@@ -1679,15 +1683,15 @@
     semver "^7.6.0"
     ts-api-utils "^2.1.0"
 
-"@typescript-eslint/typescript-estree@8.33.1":
-  version "8.33.1"
-  resolved "https://npm.dev-internal.org/@typescript-eslint/typescript-estree/-/typescript-estree-8.33.1.tgz#d271beed470bc915b8764e22365d4925c2ea265d"
-  integrity sha512-+s9LYcT8LWjdYWu7IWs7FvUxpQ/DGkdjZeE/GGulHvv8rvYwQvVaUZ6DE+j5x/prADUgSbbCWZ2nPI3usuVeOA==
+"@typescript-eslint/typescript-estree@8.34.0":
+  version "8.34.0"
+  resolved "https://npm.dev-internal.org/@typescript-eslint/typescript-estree/-/typescript-estree-8.34.0.tgz#c9f3feec511339ef64e9e4884516c3e558f1b048"
+  integrity sha512-rOi4KZxI7E0+BMqG7emPSK1bB4RICCpF7QD3KCLXn9ZvWoESsOMlHyZPAHyG04ujVplPaHbmEvs34m+wjgtVtg==
   dependencies:
-    "@typescript-eslint/project-service" "8.33.1"
-    "@typescript-eslint/tsconfig-utils" "8.33.1"
-    "@typescript-eslint/types" "8.33.1"
-    "@typescript-eslint/visitor-keys" "8.33.1"
+    "@typescript-eslint/project-service" "8.34.0"
+    "@typescript-eslint/tsconfig-utils" "8.34.0"
+    "@typescript-eslint/types" "8.34.0"
+    "@typescript-eslint/visitor-keys" "8.34.0"
     debug "^4.3.4"
     fast-glob "^3.3.2"
     is-glob "^4.0.3"
@@ -1713,12 +1717,12 @@
     "@typescript-eslint/types" "8.32.1"
     eslint-visitor-keys "^4.2.0"
 
-"@typescript-eslint/visitor-keys@8.33.1":
-  version "8.33.1"
-  resolved "https://npm.dev-internal.org/@typescript-eslint/visitor-keys/-/visitor-keys-8.33.1.tgz#6c6e002c24d13211df3df851767f24dfdb4f42bc"
-  integrity sha512-3i8NrFcZeeDHJ+7ZUuDkGT+UHq+XoFGsymNK2jZCOHcfEzRQ0BdpRtdpSx/Iyf3MHLWIcLS0COuOPibKQboIiQ==
+"@typescript-eslint/visitor-keys@8.34.0":
+  version "8.34.0"
+  resolved "https://npm.dev-internal.org/@typescript-eslint/visitor-keys/-/visitor-keys-8.34.0.tgz#c7a149407be31d755dba71980617d638a40ac099"
+  integrity sha512-qHV7pW7E85A0x6qyrFn+O+q1k1p3tQCsqIZ1KZ5ESLXY57aTvUd3/a4rdPTeXisvhXn2VQG0VSKUqs8KHF2zcA==
   dependencies:
-    "@typescript-eslint/types" "8.33.1"
+    "@typescript-eslint/types" "8.34.0"
     eslint-visitor-keys "^4.2.0"
 
 "@typescript/vfs@^1.5.0":
@@ -1757,6 +1761,16 @@ ajv@^6.12.4:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
+
+ajv@^8.0.1:
+  version "8.17.1"
+  resolved "https://npm.dev-internal.org/ajv/-/ajv-8.17.1.tgz#37d9a5c776af6bc92d7f4f9510eba4c0a60d11a6"
+  integrity sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+    fast-uri "^3.0.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
 
 allure-commandline@^2.34.0:
   version "2.34.0"
@@ -1916,6 +1930,11 @@ arraybuffer.prototype.slice@^1.0.4:
     es-errors "^1.3.0"
     get-intrinsic "^1.2.6"
     is-array-buffer "^3.0.4"
+
+astral-regex@^2.0.0:
+  version "2.0.0"
+  resolved "https://npm.dev-internal.org/astral-regex/-/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
+  integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
 
 async-function@^1.0.0:
   version "1.0.0"
@@ -2169,7 +2188,7 @@ chalk-template@^1.1.0:
   dependencies:
     chalk "^5.2.0"
 
-chalk@4.1.2, chalk@^4.0.0, chalk@^4.0.2, chalk@^4.1.0, chalk@^4.1.1:
+chalk@4.1.2, chalk@^4.0.0, chalk@^4.0.2, chalk@^4.1.0, chalk@^4.1.1, chalk@^4.1.2:
   version "4.1.2"
   resolved "https://npm.dev-internal.org/chalk/-/chalk-4.1.2.tgz#aac4e2b7734a740867aeb16bf02aad556a1e7a01"
   integrity sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==
@@ -3028,6 +3047,11 @@ fast-levenshtein@^2.0.6:
   resolved "https://npm.dev-internal.org/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz"
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
+fast-uri@^3.0.1:
+  version "3.0.6"
+  resolved "https://npm.dev-internal.org/fast-uri/-/fast-uri-3.0.6.tgz#88f130b77cfaea2378d56bf970dea21257a68748"
+  integrity sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==
+
 fastq@^1.6.0:
   version "1.17.1"
   resolved "https://npm.dev-internal.org/fastq/-/fastq-1.17.1.tgz"
@@ -3042,12 +3066,12 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fd-package-json@^1.2.0:
-  version "1.2.0"
-  resolved "https://npm.dev-internal.org/fd-package-json/-/fd-package-json-1.2.0.tgz#4f218bb8ff65c21011d1f4f17cb3d0c9e72f8da7"
-  integrity sha512-45LSPmWf+gC5tdCQMNH4s9Sr00bIkiD9aN7dc5hqkrEw1geRYyDQS1v1oMHAW3ysfxfndqGsrDREHHjNNbKUfA==
+fd-package-json@^2.0.0:
+  version "2.0.0"
+  resolved "https://npm.dev-internal.org/fd-package-json/-/fd-package-json-2.0.0.tgz#03f53ce5a0af552c2f4faf703a24e526310a2411"
+  integrity sha512-jKmm9YtsNXN789RS/0mSzOC1NUq9mkVd65vbSSVsKdjGvYXBuE4oWe2QOEoFeRmJg+lPuZxpmrfFclNhoRMneQ==
   dependencies:
-    walk-up-path "^3.0.1"
+    walk-up-path "^4.0.0"
 
 fdir@^6.4.4:
   version "6.4.4"
@@ -3142,12 +3166,12 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.6"
     signal-exit "^4.0.1"
 
-formatly@^0.2.3:
-  version "0.2.3"
-  resolved "https://npm.dev-internal.org/formatly/-/formatly-0.2.3.tgz#30c4d3605c4f66d97a97a7dafbd9bb4a2467b26f"
-  integrity sha512-WH01vbXEjh9L3bqn5V620xUAWs32CmK4IzWRRY6ep5zpa/mrisL4d9+pRVuETORVDTQw8OycSO1WC68PL51RaA==
+formatly@^0.2.4:
+  version "0.2.4"
+  resolved "https://npm.dev-internal.org/formatly/-/formatly-0.2.4.tgz#9f6281e14d2dc43a14061c0526b42c8bbb780c7a"
+  integrity sha512-lIN7GpcvX/l/i24r/L9bnJ0I8Qn01qijWpQpDDvTLL29nKqSaJJu4h20+7VJ6m2CAhQ2/En/GbxDiHCzq/0MyA==
   dependencies:
-    fd-package-json "^1.2.0"
+    fd-package-json "^2.0.0"
 
 fs-extra@^11.1.1:
   version "11.3.0"
@@ -4349,6 +4373,11 @@ json-schema-traverse@^0.4.1:
   resolved "https://npm.dev-internal.org/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz"
   integrity sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==
 
+json-schema-traverse@^1.0.0:
+  version "1.0.0"
+  resolved "https://npm.dev-internal.org/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz#ae7bcb3656ab77a73ba5c49bf654f38e6b6860e2"
+  integrity sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==
+
 json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
   resolved "https://npm.dev-internal.org/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz"
@@ -4398,21 +4427,21 @@ kleur@^3.0.3:
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
 knip@^5.24.1:
-  version "5.56.0"
-  resolved "https://npm.dev-internal.org/knip/-/knip-5.56.0.tgz#23c1cc9a7ee7183a0f4884f1cc2d083f40471f58"
-  integrity sha512-4RNCi41ax0zzl7jloxiUAcomwHIW+tj201jfr7TmHkSvb1/LkChsfXH0JOFFesVHhtSrMw6Dv4N6fmfFd4sJ0Q==
+  version "5.60.2"
+  resolved "https://npm.dev-internal.org/knip/-/knip-5.60.2.tgz#0deb8f5d72878f08a1dd8200d2655124204c5d56"
+  integrity sha512-TsYqEsoL3802RmhGL5MN7RLI6/03kocMYx/4BpMmwo3dSwEJxmzV7HqRxMVZr6c1llbd25+MqjgA86bv1IwsPA==
   dependencies:
     "@nodelib/fs.walk" "^1.2.3"
     fast-glob "^3.3.3"
-    formatly "^0.2.3"
+    formatly "^0.2.4"
     jiti "^2.4.2"
     js-yaml "^4.1.0"
     minimist "^1.2.8"
-    oxc-resolver "^9.0.2"
-    picocolors "^1.1.0"
+    oxc-resolver "^11.1.0"
+    picocolors "^1.1.1"
     picomatch "^4.0.1"
-    smol-toml "^1.3.1"
-    strip-json-comments "5.0.1"
+    smol-toml "^1.3.4"
+    strip-json-comments "5.0.2"
     zod "^3.22.4"
     zod-validation-error "^3.0.3"
 
@@ -4462,6 +4491,11 @@ lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://npm.dev-internal.org/lodash.merge/-/lodash.merge-4.6.2.tgz"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
+
+lodash.truncate@^4.4.2:
+  version "4.4.2"
+  resolved "https://npm.dev-internal.org/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
+  integrity sha512-jttmRe7bRse52OsWIMDLaXxWqRAmtIUccAQ3garviCqJjafXOfNMO0yMfNpdD6zbGaTU0P5Nz7e7gAT6cKmJRw==
 
 lodash@^4.17.21:
   version "4.17.21"
@@ -4793,24 +4827,24 @@ own-keys@^1.0.1:
     object-keys "^1.1.1"
     safe-push-apply "^1.0.0"
 
-oxc-resolver@^9.0.2:
-  version "9.0.2"
-  resolved "https://npm.dev-internal.org/oxc-resolver/-/oxc-resolver-9.0.2.tgz#0a86ee1e26f6c3f5f2af73dece276f8f588d4ef8"
-  integrity sha512-w838ygc1p7rF+7+h5vR9A+Y9Fc4imy6C3xPthCMkdFUgFvUWkmABeNB8RBDQ6+afk44Q60/UMMQ+gfDUW99fBA==
+oxc-resolver@^11.1.0:
+  version "11.2.0"
+  resolved "https://npm.dev-internal.org/oxc-resolver/-/oxc-resolver-11.2.0.tgz#1c996e5b07b5170cc7134b66f71d27f65d4a5f74"
+  integrity sha512-3iJYyIdDZMDoj0ZSVBrI1gUvPBMkDC4gxonBG+7uqUyK5EslG0mCwnf6qhxK8oEU7jLHjbRBNyzflPSd3uvH7Q==
   optionalDependencies:
-    "@oxc-resolver/binding-darwin-arm64" "9.0.2"
-    "@oxc-resolver/binding-darwin-x64" "9.0.2"
-    "@oxc-resolver/binding-freebsd-x64" "9.0.2"
-    "@oxc-resolver/binding-linux-arm-gnueabihf" "9.0.2"
-    "@oxc-resolver/binding-linux-arm64-gnu" "9.0.2"
-    "@oxc-resolver/binding-linux-arm64-musl" "9.0.2"
-    "@oxc-resolver/binding-linux-riscv64-gnu" "9.0.2"
-    "@oxc-resolver/binding-linux-s390x-gnu" "9.0.2"
-    "@oxc-resolver/binding-linux-x64-gnu" "9.0.2"
-    "@oxc-resolver/binding-linux-x64-musl" "9.0.2"
-    "@oxc-resolver/binding-wasm32-wasi" "9.0.2"
-    "@oxc-resolver/binding-win32-arm64-msvc" "9.0.2"
-    "@oxc-resolver/binding-win32-x64-msvc" "9.0.2"
+    "@oxc-resolver/binding-darwin-arm64" "11.2.0"
+    "@oxc-resolver/binding-darwin-x64" "11.2.0"
+    "@oxc-resolver/binding-freebsd-x64" "11.2.0"
+    "@oxc-resolver/binding-linux-arm-gnueabihf" "11.2.0"
+    "@oxc-resolver/binding-linux-arm64-gnu" "11.2.0"
+    "@oxc-resolver/binding-linux-arm64-musl" "11.2.0"
+    "@oxc-resolver/binding-linux-riscv64-gnu" "11.2.0"
+    "@oxc-resolver/binding-linux-s390x-gnu" "11.2.0"
+    "@oxc-resolver/binding-linux-x64-gnu" "11.2.0"
+    "@oxc-resolver/binding-linux-x64-musl" "11.2.0"
+    "@oxc-resolver/binding-wasm32-wasi" "11.2.0"
+    "@oxc-resolver/binding-win32-arm64-msvc" "11.2.0"
+    "@oxc-resolver/binding-win32-x64-msvc" "11.2.0"
 
 p-limit@^2.2.0:
   version "2.3.0"
@@ -4920,7 +4954,7 @@ path-type@^4.0.0:
   resolved "https://npm.dev-internal.org/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
-picocolors@^1.0.0, picocolors@^1.1.0, picocolors@^1.1.1:
+picocolors@^1.0.0, picocolors@^1.1.1:
   version "1.1.1"
   resolved "https://npm.dev-internal.org/picocolors/-/picocolors-1.1.1.tgz#3d321af3eab939b083c8f929a1d12cda81c26b6b"
   integrity sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==
@@ -5096,6 +5130,11 @@ require-directory@^2.1.1:
   version "2.1.1"
   resolved "https://npm.dev-internal.org/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
   integrity sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==
+
+require-from-string@^2.0.2:
+  version "2.0.2"
+  resolved "https://npm.dev-internal.org/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
+  integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
 
 resolve-cwd@^3.0.0:
   version "3.0.0"
@@ -5326,10 +5365,19 @@ slash@^3.0.0:
   resolved "https://npm.dev-internal.org/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
-smol-toml@^1.3.1:
-  version "1.3.1"
-  resolved "https://npm.dev-internal.org/smol-toml/-/smol-toml-1.3.1.tgz#d9084a9e212142e3cab27ef4e2b8e8ba620bfe15"
-  integrity sha512-tEYNll18pPKHroYSmLLrksq233j021G0giwW7P3D24jC54pQ5W5BXMsQ/Mvw1OJCmEYDgY+lrzT+3nNUtoNfXQ==
+slice-ansi@^4.0.0:
+  version "4.0.0"
+  resolved "https://npm.dev-internal.org/slice-ansi/-/slice-ansi-4.0.0.tgz#500e8dd0fd55b05815086255b3195adf2a45fe6b"
+  integrity sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==
+  dependencies:
+    ansi-styles "^4.0.0"
+    astral-regex "^2.0.0"
+    is-fullwidth-code-point "^3.0.0"
+
+smol-toml@^1.3.4:
+  version "1.3.4"
+  resolved "https://npm.dev-internal.org/smol-toml/-/smol-toml-1.3.4.tgz#4ec76e0e709f586bc50ba30eb79024173c2b2221"
+  integrity sha512-UOPtVuYkzYGee0Bd2Szz8d2G3RfMfJ2t3qVdZUAozZyAk+a0Sxa+QKix0YCwjL/A1RR0ar44nCxaoN9FxdJGwA==
 
 source-map-support@0.5.13:
   version "0.5.13"
@@ -5471,10 +5519,10 @@ strip-final-newline@^2.0.0:
   resolved "https://npm.dev-internal.org/strip-final-newline/-/strip-final-newline-2.0.0.tgz#89b852fb2fcbe936f6f4b3187afb0a12c1ab58ad"
   integrity sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==
 
-strip-json-comments@5.0.1:
-  version "5.0.1"
-  resolved "https://npm.dev-internal.org/strip-json-comments/-/strip-json-comments-5.0.1.tgz"
-  integrity sha512-0fk9zBqO67Nq5M/m45qHCJxylV/DhBlIOVExqgOMiCCrzrhU6tCibRXNqE3jwJLftzE9SNuZtYbpzcO+i9FiKw==
+strip-json-comments@5.0.2:
+  version "5.0.2"
+  resolved "https://npm.dev-internal.org/strip-json-comments/-/strip-json-comments-5.0.2.tgz#14a76abd63b84a6d2419d14f26a0281d0cf6ea46"
+  integrity sha512-4X2FR3UwhNUE9G49aIsJW5hRRR3GXGTBTZRMfv568O60ojM8HcWjV/VxAxCDW3SUND33O6ZY66ZuRcdkj73q2g==
 
 strip-json-comments@^3.1.1:
   version "3.1.1"
@@ -5504,6 +5552,17 @@ symbol.inspect@1.0.1:
   version "1.0.1"
   resolved "https://npm.dev-internal.org/symbol.inspect/-/symbol.inspect-1.0.1.tgz"
   integrity sha512-YQSL4duoHmLhsTD1Pw8RW6TZ5MaTX5rXJnqacJottr2P2LZBF/Yvrc3ku4NUpMOm8aM0KOCqM+UAkMA5HWQCzQ==
+
+table@^6.9.0:
+  version "6.9.0"
+  resolved "https://npm.dev-internal.org/table/-/table-6.9.0.tgz#50040afa6264141c7566b3b81d4d82c47a8668f5"
+  integrity sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==
+  dependencies:
+    ajv "^8.0.1"
+    lodash.truncate "^4.4.2"
+    slice-ansi "^4.0.0"
+    string-width "^4.2.3"
+    strip-ansi "^6.0.1"
 
 teslabot@^1.5.0:
   version "1.5.0"
@@ -5836,10 +5895,10 @@ vscode-uri@^3.1.0:
   resolved "https://npm.dev-internal.org/vscode-uri/-/vscode-uri-3.1.0.tgz#dd09ec5a66a38b5c3fffc774015713496d14e09c"
   integrity sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==
 
-walk-up-path@^3.0.1:
-  version "3.0.1"
-  resolved "https://npm.dev-internal.org/walk-up-path/-/walk-up-path-3.0.1.tgz#c8d78d5375b4966c717eb17ada73dbd41490e886"
-  integrity sha512-9YlCL/ynK3CTlrSRrDxZvUauLzAswPCrsaCgilqFevUYpeEW0/3ScEjaa3kbW/T0ghhkEr7mv+fpjqn1Y1YuTA==
+walk-up-path@^4.0.0:
+  version "4.0.0"
+  resolved "https://npm.dev-internal.org/walk-up-path/-/walk-up-path-4.0.0.tgz#590666dcf8146e2d72318164f1f2ac6ef51d4198"
+  integrity sha512-3hu+tD8YzSLGuFYtPRb48vdhKMi0KQV5sn+uWr8+7dMEq/2G/dtLrdDinkLjqq5TIbIBjYJ4Ax/n3YiaW7QM8A==
 
 walker@^1.0.8:
   version "1.0.8"

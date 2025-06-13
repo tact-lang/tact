@@ -91,8 +91,8 @@
     "tact-fmt": "bin/tact-fmt.js"
   },
   "dependencies": {
-    "@tact-lang/opcode": "^0.3.0",
-    "@ton/core": "0.60.1",
+    "@tact-lang/opcode": "^0.3.2",
+    "@ton/core": "^0.61.0",
     "@ton/crypto": "^3.2.0",
     "@tonstudio/parser-runtime": "0.0.1",
     "blockstore-core": "1.0.5",
@@ -112,7 +112,7 @@
     "@tact-lang/coverage": "^0.0.8",
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
-    "@ton/sandbox": "^0.30.0",
+    "@ton/sandbox": "^0.32.2",
     "@ton/test-utils": "^0.7.0",
     "@tonstudio/pgen": "^0.0.1",
     "@types/diff": "^7.0.0",
