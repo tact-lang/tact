@@ -90,7 +90,7 @@ contract WalletV5(
         acceptMessage();
 
         self.seqno += 1;
-        // NOTE: fix, blocked by #2073
+        setData(self.toCell());
         commit();
 
         signedSlice.skipBits(32 + 32 + 32 + 32); // skip opcode, walletId, validUntil, seqno
@@ -223,3 +223,4 @@ asm fun setC5(outActions: Cell) { c5 POP }
 asm extends mutates fun checkAndRemoveAddExtensionPrefix(self: Slice): Bool { x{02} SDBEGINSQ }
 asm extends mutates fun checkAndRemoveDeleteExtensionPrefix(self: Slice): Bool { x{03} SDBEGINSQ }
 asm extends mutates fun checkAndRemoveSetSignAllowedPrefix(self: Slice): Bool { x{04} SDBEGINSQ }
+asm fun setData(data: Cell) { c4 POP }
