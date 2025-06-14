@@ -3,9 +3,43 @@ title: Learn Tact in Y minutes
 description: "Take a whirlwind tour of the Tact smart contract programming language. A scenic voyage inspired by the famous learnXinYminutes website."
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 Tact is a fresh programming language for TON Blockchain that is focused on efficiency and ease of development. It is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
 
 You can try Tact without installing anything locally using the [Web IDE](https://ide.ton.org). In addition, most examples below have an "Open in Web IDE" button for your convenience.
+
+Nonetheless, you can also follow and test out each code snippet locally. To do so, create an empty Tact project with the following command:
+
+<Tabs>
+ <TabItem label="yarn v1" icon="seti:yarn">
+   ```shell
+   # recommended
+   yarn create tact
+   ```
+ </TabItem>
+ <TabItem label="yarn v4+" icon="seti:yarn">
+   ```shell
+   # recommended
+   yarn create tact@latest
+   ```
+ </TabItem>
+ <TabItem label="npm" icon="seti:npm">
+   ```shell
+   npm create tact@latest
+   ```
+ </TabItem>
+ <TabItem label="pnpm" icon="pnpm">
+   ```shell
+   pnpm create tact@latest
+   ```
+ </TabItem>
+ <TabItem label="bun" icon="bun">
+   ```shell
+   bun create tact@latest
+   ```
+ </TabItem>
+</Tabs>
 
 ## Comments
 
