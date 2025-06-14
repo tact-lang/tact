@@ -77,6 +77,10 @@ export type Options = {
      * Does nothing if contract parameters are declared.
      */
     readonly enableLazyDeploymentCompletedGetter?: boolean;
+    /**
+     * If set to true, disables generation of test files.
+     */
+    readonly skipTestGeneration?: boolean;
 };
 
 export type Mode = "fullWithDecompilation" | "full" | "funcOnly" | "checkOnly";
