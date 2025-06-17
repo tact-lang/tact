@@ -28,12 +28,12 @@ contract Calculator {
     receive(request: BinaryIntOperation) {
         require(request.op == "/", "Only divisions are currently supported.");
         let result = request.val1 / request.val2;
-        message(MessageParameters{
+        MessageParameters{
             to: sender(),
             bounce: false,
             value: ton("1"),
             body: BinaryIntResult{val: result}.toCell(), 
-            });
+            }.send();
     }
 }
 
@@ -77,46 +77,46 @@ contract ReceiverTester {
     // Initiate a request to the calculator, with an unsupported arithmetic operation: 1 + 1
     receive("do_unsupported_op") {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
+        MessageParameters{
                 to: addr,
                 bounce: true,
                 value: ton("1"),
                 body: BinaryIntOperation{op: "+", val1: 1, val2: 1}.toCell(),
-                });
+                }.send();
     }
 
     // Initiate a request to the calculator, with a division by zero: 10/0
     receive("do_div_by_zero") {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
+        MessageParameters{
                 to: addr,
                 bounce: true,
                 value: ton("1"),
                 body: BinaryIntOperation{op: "/", val1: 10, val2: 0}.toCell(),
-                });
+                }.send();
     }
 
     // Initiate a request to the calculator: 10/2
     receive("do_success_div") {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
+        MessageParameters{
                 to: addr,
                 bounce: true,
                 value: ton("1"),
                 body: BinaryIntOperation{op: "/", val1: 10, val2: 2}.toCell(),
-                });
+                }.send();
     }
 
     // Initiate a non-arithmetic request to the calculator.
     // The calculator will reject the request
     receive("do_unknown_request") {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
+        MessageParameters{
                 to: addr,
                 bounce: true,
                 value: ton("1"),
                 body: "do_something".asComment(),
-                });
+                }.send();
     }
 
     bounced(msg: Slice) {
@@ -167,12 +167,12 @@ contract ReceiverTester {
 
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
-        send(SendParameters {
+        SendParameters {
                 to: msg.address,
                 bounce: false,
                 value: ton("5"),
                 body: msg.body,
-                });
+                }.send();
     }
 
     get fun receiverKind(): String {
@@ -1338,12 +1338,12 @@ contract EmptyBouncedTester {
 
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
-        send(SendParameters {
+        SendParameters {
                 to: msg.address,
                 bounce: true,
                 value: ton("5"),
                 body: msg.body,
-                });
+                }.send();
     }
 
     receive("reset") {
@@ -1369,12 +1369,12 @@ contract BinaryBouncedTester {
 
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
-        send(SendParameters {
+        SendParameters {
                 to: msg.address,
                 bounce: true,
                 value: ton("5"),
                 body: msg.body,
-                });
+                }.send();
     }
 
     receive("reset") {
@@ -1396,12 +1396,12 @@ contract SliceBouncedTester {
 
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
-        send(SendParameters {
+        SendParameters {
                 to: msg.address,
                 bounce: true,
                 value: ton("5"),
                 body: msg.body,
-                });
+                }.send();
     }
 
     receive("reset") {
@@ -1431,12 +1431,12 @@ contract AllBouncedTester {
 
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
-        send(SendParameters {
+        SendParameters {
                 to: msg.address,
                 bounce: true,
                 value: ton("5"),
                 body: msg.body,
-                });
+                }.send();
     }
 
     receive("reset") {

@@ -28,13 +28,13 @@ contract JettonMinter(
         self.totalSupply -= msg.amount;
 
         if (msg.responseDestination.isNotNone()) {
-            message(MessageParameters {
+            MessageParameters {
                 to: msg.responseDestination,
                 body: JettonExcesses { queryId: msg.queryId }.toCell(),
                 value: 0,
                 bounce: false,
                 mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
-            });
+            }.send();
         }
     }
 
@@ -50,12 +50,12 @@ contract JettonMinter(
             ? contractBasechainAddress(initOf JettonWallet(msg.ownerAddress, myAddress(), 0))
             : emptyBasechainAddress();
 
-        message(MessageParameters {
+        MessageParameters {
             body: makeTakeWalletAddressMsg(targetJettonWallet, msg),
             to: sender(),
             value: 0,
             mode: SendRemainingValue,
-        });
+        }.send();
     }
 
     receive(msg: JettonUpdateContent) {
@@ -67,13 +67,13 @@ contract JettonMinter(
         throwUnless(73, sender() == self.owner);
         self.totalSupply += msg.mintMessage.amount;
 
-        deploy(DeployParameters {
+        DeployParameters {
             value: 0,
             bounce: true,
             mode: SendRemainingValue,
             body: msg.mintMessage.toCell(),
             init: getJettonWalletInit(msg.receiver),
-        });
+        }.send();
     }
 
     receive(msg: ChangeOwner) {

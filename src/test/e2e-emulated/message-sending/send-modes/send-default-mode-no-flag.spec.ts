@@ -193,11 +193,11 @@ describe("SendDefaultMode with no flags", () => {
         /* In SendDefaultMode with no flags, outbound messages must pay for forward fees. The forward fees are deducted from the
        initial "value" passed as parameter to the send function. So that if we execute:
 
-       send(SendParameters{
+       SendParameters{
                 ......
                 value: V,
                 ......
-                });
+                }.send();
 
        the message final value is: V - msg_fwd_fee
 
