@@ -244,7 +244,7 @@ contract Example {
 
 :::note
 
-  Keep in mind that contracts cannot call each other's [getters](#getter-functions) or retrieve data from other contracts synchronously. Thus, as contracts exchange asynchronous messages and it is not possible to directly read state variables of one contract by another, because by the time a message with the data reaches your contract, the state variables on another contract might have changed already.
+  Keep in mind that contracts cannot call each other's [getters](#getter-functions) or retrieve data from other contracts synchronously. Thus, as contracts exchange asynchronous messages, it is not possible to directly read the state variables of one contract by another because, by the time a message with the data reaches your contract, the state variables on another contract might have changed already.
 
   Instead, prefer to write contracts that exchange messages as signals to perform a certain action on or with the sent data but never merely to read the state of another contract.
 
