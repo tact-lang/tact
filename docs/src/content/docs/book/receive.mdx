@@ -10,9 +10,7 @@ import { Badge } from '@astrojs/starlight/components';
 
 TON is a distributed blockchain, which means that communication between smart contracts is performed by sending and receiving messages. The most common type of message is the _internal message_ — a message sent from one contract (or a wallet) to another.
 
-A single received message equates to a single transaction. That is, no other message can influence the flow of the current transaction initiated by the incoming message. On top of that, due to the [split into different phases](/book/send#outbound-message-processing), outgoing messages are not sent until the end of computations within the current transaction. Thus, reentrancy of messages is not possible.
-
-That said, all pending messages on TON Blockchain are publicly visible, and an attacker can spam your contract with identically composed messages. Read more about how to prevent it here: [Preventing front-running with signature verification](/book/security-best-practices/#preventing-front-running-with-signature-verification).
+A single received message equates to a single transaction. That is, no other message can influence the flow of the current transaction initiated by the incoming message. On top of that, [message-sending functions](/book/send#message-sending-functions) and underlying TVM instructions do not deliver messages immediately but instead [queue them to be sent after the end of computations](/book/send#outbound-message-processing) in a separate phase of the transaction. Thus, [reentrancy](https://en.wikipedia.org/wiki/Reentrancy_(computing)) of messages is not possible.
 
 ## Receive internal messages
 
