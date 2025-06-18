@@ -7,8 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ## Doc: 2025-06
 
 - Adjusted inline code tag highlighting to support global Starlight themes, and modified the One Light color theme to support proper highlighting of `keyword.operator.new` TextMate scopes: PR [#3346](https://github.com/tact-lang/tact/pull/3346)
-- Warned that imports are automatically exported: PR [#TBD](https://github.com/tact-lang/tact/pull/TBD)
-- Documented refunds, message chains, and the carry-value pattern for receivers: PR [#TBD](https://github.com/tact-lang/tact/pull/TBD)
+- Warned that imports are automatically exported: PR [#3368](https://github.com/tact-lang/tact/pull/3368)
+- Documented refunds, message chains, and the carry-value pattern for receivers: PR [#3422](https://github.com/tact-lang/tact/pull/3422)
 
 ## Doc: 2025-05
 
