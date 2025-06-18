@@ -158,8 +158,6 @@ contract Sample(
     // which forwards the remaining value back to the sender
     receive() { cashback(sender()) }
 }
-
-asm fun setData(data: Cell) { c4 POP }
 ```
 
 :::tip[Hey there!]

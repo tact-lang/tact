@@ -46,15 +46,22 @@ After accepting a message, the contract can use as much gas as it wants. This is
 
 When processing an external message, the `context` and `sender` functions are not available. This is because there is no context available for external messages. Therefore, you cannot use the `context` and `sender` functions in external messages. You need to carefully test your contract to ensure that it does not use the `context` and `sender` functions.
 
-## Enable External Messages Support
+## Enable external message receivers support
 
-To enable external message support, please enable it in the project configuration file:
+You can enable the external message support in the [`tact.config.json`](/book/config) by setting the [`external`](/book/config#options-external) option to `true{:json}`.
 
-```json
+```json title="tact.config.json" {8}
 {
-  "options": {
-    "external": true
-  }
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "external": true
+      }
+    }
+  ]
 }
 ```
 
@@ -79,3 +86,7 @@ contract SampleContract {
 ```
 
 External receivers follow the same execution order conventions as [internal receivers](/book/receive).
+
+## Contract storage handling
+
+External message receivers handle contract storage just as [internal message receivers](/book/receive#contract-storage-handling) do. In addition, the empty [`return{:tact}` statement](/book/statements#return) and the [`throw(0){:tact}`](/ref/core-debug#throw) patterns [work the same](/book/receive#contract-storage-handling).
