@@ -76,4 +76,8 @@ contract MyContract {
 
 On TON, bounced message bodies have a 32 bits prefix, where all bits are set, i.e., with `0xFFFFFFFF{:tact}`. However, since that prefix is always the same for all bounced messages, Tact cuts it off for your convenience, keeping only the remaining 256 bits of the payload, which usually starts with a 32-bit message opcode.
 
+## Contract storage handling
+
+Bounced message receivers handle contract storage just as [internal message receivers](/book/receive#contract-storage-handling) do. In addition, the empty [`return{:tact}` statement](/book/statements#return) and the [`throw(0){:tact}`](/ref/core-debug#throw) patterns [work the same](/book/receive#contract-storage-handling).
+
 [message]: /book/structs-and-messages#messages
