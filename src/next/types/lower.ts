@@ -953,30 +953,28 @@ function* (node) {
 const lowerInitOf: Lower<Ast.CInitOf, Ast.LInitOf> =
 function* (node) {
     const type = yield* lowerType(node.computedType);
-    const fields = yield* Ast.mapLog(node.fields, lowerExpr);
-    return type && fields &&
+    const args = yield* lowerExprs(node.args);
+    return type && args &&
         Ast.LInitOf(
-            node.name,
+            node.contract,
+            args,
             type,
-            fields,
             node.loc,
         );
 }
 const lowerCodeOf: Lower<Ast.CCodeOf, Ast.LCodeOf> =
 function* (node) {
     const type = yield* lowerType(node.computedType);
-    const fields = yield* Ast.mapLog(node.fields, lowerExpr);
-    return type && fields &&
+    return type &&
         Ast.LCodeOf(
-            node.name,
+            node.contract,
             type,
-            fields,
             node.loc,
         );
 }
 const lowerNull: Lower<Ast.CNull, Ast.LNull> =
 function* (node) {
-    const type = yield* lowerType(node.computedType);
+    const type = yield* lowerTypeBasic(node.computedType);
     return type && Ast.LNull(type, node.loc);
 }
 const lowerVar: Lower<Ast.CVar, Ast.LVar> =
@@ -986,64 +984,59 @@ function* (node) {
 }
 const lowerSelf: Lower<Ast.CSelf, Ast.LSelf> =
 function* (node) {
-    const type = yield* lowerType(node.computedType);
-    return type && Ast.LSelf(type, node.loc);
+    return Ast.LSelf(node.computedType, node.loc);
 }
 const lowerUnit: Lower<Ast.CUnit, Ast.LUnit> =
 function* (node) {
-    const type = yield* lowerType(node.computedType);
+    const type = yield* lowerTypeBasic(node.computedType);
     return type && Ast.LUnit(type, node.loc);
 }
 const lowerTuple: Lower<Ast.CTuple, Ast.LTuple> =
 function* (node) {
-    const type = yield* lowerType(node.computedType);
-    const elements = yield* Ast.mapLog(node.elements, lowerExpr);
+    const type = yield* lowerTypeTuple(node.computedType);
+    const elements = yield* lowerExprs(node.children);
     return type && elements &&
         Ast.LTuple(
-            node.name,
-            type,
             elements,
+            type,
             node.loc,
         );
 }
 const lowerTensor: Lower<Ast.CTensor, Ast.LTensor> =
 function* (node) {
-    const type = yield* lowerType(node.computedType);
-    const elements = yield* Ast.mapLog(node.elements, lowerExpr);
+    const type = yield* lowerTypeTensor(node.computedType);
+    const elements = yield* lowerExprs(node.children);
     return type && elements &&
         Ast.LTensor(
-            node.name,
-            type,
-            node.dimensions,
             elements,
+            type,
             node.loc,
         );
 }
 const lowerMapLiteral: Lower<Ast.CMapLiteral, Ast.LMapLiteral> =
 function* (node) {
-    const type = yield* lowerType(node.computedType);
-    const entries = yield* Ast.mapLog(node.entries, entry => {
-        return Ast.mapLog(entry, lowerExpr);
-    });
-    return type && entries &&
+    const type = yield* lowerTypeMap(node.computedType);
+    let failed = false;
+    const fields: Ast.LMapField[] = [];
+    for (const field of node.fields) {
+        const key = yield* lowerExpr(field.key);
+        const value = yield* lowerExpr(field.value);
+        if (key && value) {
+            fields.push({ key, value });
+        } else {
+            failed = true;
+        }
+    }
+    return failed ? undefined : type &&
         Ast.LMapLiteral(
-            node.name,
+            fields,
             type,
-            entries,
             node.loc,
         );
 }
 const lowerSetLiteral: Lower<Ast.CSetLiteral, Ast.LSetLiteral> =
-function* (node) {
-    const type = yield* lowerType(node.computedType);
-    const elements = yield* Ast.mapLog(node.elements, lowerExpr);
-    return type && elements &&
-        Ast.LSetLiteral(
-            node.name,
-            type,
-            elements,
-            node.loc,
-        );
+function* (_node) {
+    return throwInternal("Set literals not supported");
 }
 
 const lowerParameter: Lower<Ast.CParameter, Ast.LParameter> =
@@ -1053,9 +1046,9 @@ function* (node) {
 }
 
 const lowerType: Lower<Ast.CType, Ast.LType> =
-function* (node) {
+function (node) {
     switch (node.kind) {
-        case "recover": return undefined;
+        case "recover": return lowerRecover(node);
         case "type_ref": return lowerTypeRef(node);
         case "TypeAlias": return lowerTypeAliasRef(node);
         case "TypeParam": return lowerTypeParam(node);
@@ -1067,6 +1060,11 @@ function* (node) {
         case "basic": return lowerTypeBasic(node);
     }
 }
+
+const lowerRecover: Lower<Ast.CTRecover, undefined> =
+function* () {
+    return undefined;
+};
 
 const lowerTypes: Lower<readonly Ast.CType[], readonly Ast.LType[]> =
 function* (nodes) {

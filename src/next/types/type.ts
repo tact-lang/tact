@@ -638,14 +638,14 @@ export function assignTypeAux(
                 results.push(res.value);
                 continue;
             }
-            if (!results.length) {
-                return AssignSuccess();
-            }
             const toStr = printType(to, false);
             const fromStr = printType(from, false);
             if (!toStr || !fromStr) {
                 // if types have errors, we don't print the error
                 // because it resulted from another error
+                return AssignSuccess();
+            }
+            if (res.value && !results.length) {
                 return AssignSuccess();
             }
             return AssignFailure(Ast.MatchTree(to, from, results));
@@ -714,7 +714,7 @@ export function assignTypeAux(
                 );
             }
             case "basic": {
-                return from.kind === to.kind;
+                return from.kind === to.kind && to.type.kind === from.type.kind;
             }
         }
     }

@@ -5,11 +5,13 @@ import { typecheck } from "@/next/types/typecheck";
 import { runServer } from "@/server/run-server";
 import { basename, dirname } from "path";
 import type { Logger } from "@/error/logger-util";
-import type { ResolvedImport } from "@/next/imports/source";
+import type { ResolvedImport, TactSource } from "@/next/imports/source";
+import { lowerSource } from "@/next/types/lower";
+import { runLog } from "@/next/ast";
 
 export const runTest = async (path: string): Promise<string> => {
-    let types: unknown;
-    await runServer(async (log) => {
+    let source: TactSource | undefined;
+    const entries = await runServer(async (log) => {
         await log.recover(async (log) => {
             // const result = await buildNoStdlib(log, path);
             const result = await buildE2E(log, path);
@@ -18,10 +20,15 @@ export const runTest = async (path: string): Promise<string> => {
                 return;
             }
 
-            types = typecheck(result);
+            source = result;
         });
     });
-    return toJs(types);
+    if (entries.length > 0 || !source) {
+        return toJs(entries);
+    }
+    const [csource, errors1] = typecheck(source);
+    const [lowered, errors2] = runLog(lowerSource(csource));
+    return toJs({ lowered, errors: [...errors1, ...errors2] });
 };
 
 export const buildE2E = async <M>(log: Logger<M, void>, path: string) => {

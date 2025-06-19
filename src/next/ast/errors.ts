@@ -78,6 +78,10 @@ export type TcError = {
     // text description
     readonly descr: readonly TELine[];
 };
+export const TcError = (
+    loc: Loc,
+    ...descr: readonly TELine[]
+): TcError => ({ loc, descr });
 
 export type TELine = TEText | TEVia | TEViaMember | TECode | TEMismatch;
 

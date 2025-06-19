@@ -5,6 +5,7 @@ import {
     Bool,
     builtinBinary,
     builtinFunctions,
+    builtinUnary,
     getStaticBuiltin,
     StateInit,
 } from "@/next/types/builtins";
@@ -402,7 +403,7 @@ const decodeBinary: Decode<Ast.OpBinary, Ast.COpBinary> = function* (
         [left.value.loc, left.value.computedType],
         [right.value.loc, right.value.computedType],
     ]);
-    if (node.op === "==" || node.op === "!=") {
+    if ((node.op === "==" || node.op === "!=") && returnType.kind !== 'recover') {
         const typeArg = typeArgMap.get("T");
         if (!typeArg) {
             return throwInternal(
@@ -478,7 +479,7 @@ const supportsEqualityBasic = (common: Ast.BasicType): boolean => {
 
 const decodeUnary: Decode<Ast.OpUnary, Ast.COpUnary> = function* (node, ctx) {
     const operand = yield* decodeExprCtx(node.operand, ctx);
-    const fnType = builtinBinary.get(node.op);
+    const fnType = builtinUnary.get(node.op);
     if (!fnType) {
         return throwInternal("Builtin operator is not in the map");
     }
@@ -770,7 +771,9 @@ function* lookupField(
             }
             return yield* field.type();
         }
-        case "recover":
+        case "recover": {
+            return Ast.CTRecover();
+        }
         case "TypeAlias": {
             const type = yield* dealiasType(selfType, scopeRef);
             return yield* lookupField(type, fieldName, scopeRef);
