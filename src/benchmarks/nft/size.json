@@ -8,7 +8,7 @@
         "item cells": "16",
         "item bits": "4039"
       },
-      "pr": "https://github.com/ton-blockchain/token-contract/tree/main/nft"
+      "pr": "https://github.com/ton-blockchain/token-contract/blob/21e7844fa6dbed34e0f4c70eb5f0824409640a30/nft"
     },
     {
       "label": "Tact",
@@ -82,7 +82,7 @@
     },
     {
       "label": "1.6.6 with deployNFTItem outside contract",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2837",
       "size": {
         "collection cells": "43",
         "collection bits": "22786",
@@ -192,7 +192,7 @@
     },
     {
       "label": "1.6.11 with optimized send",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/3278",
       "size": {
         "collection cells": "39",
         "collection bits": "19604",
