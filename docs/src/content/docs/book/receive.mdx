@@ -8,7 +8,9 @@ prev:
 
 import { Badge } from '@astrojs/starlight/components';
 
-TON is a distributed blockchain, which means that communication between contracts is performed by sending and receiving messages. The most common type of message is the _internal message_ — a message sent from one contract (or a wallet) to another.
+TON is a distributed blockchain, which means that communication between smart contracts is performed by sending and receiving messages. The most common type of message is the _internal message_ — a message sent from one contract (or a wallet) to another.
+
+When processing an incoming message, no other message can interrupt the execution of a smart contract. On top of that, [message-sending functions](/book/send#message-sending-functions) and underlying TVM instructions do not deliver outgoing messages immediately but instead [queue them to be sent after the end of computations](/book/send#outbound-message-processing) in a separate phase of the current transaction. Thus, [reentrancy](https://en.wikipedia.org/wiki/Reentrancy_(computing)) of messages is not possible.
 
 ## Receive internal messages
 
