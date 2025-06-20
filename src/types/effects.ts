@@ -23,6 +23,24 @@ export function computeReceiversEffects(ctx: CompilerContext) {
     }
 }
 
+export function computeGettersEffects(ctx: CompilerContext) {
+    for (const type of getAllTypes(ctx)) {
+        if (type.kind === "contract") {
+            for (const [, getter] of type.functions) {
+                if (!getter.isGetter) continue;
+
+                if (getter.ast.kind === "function_def") {
+                    getter.effects = statementListEffects(
+                        getter.ast.statements,
+                        new Set<Ast.Id>(),
+                        ctx,
+                    );
+                }
+            }
+        }
+    }
+}
+
 function statementListEffects(
     statements: readonly Ast.Statement[],
     processedContractMethods: ReadonlySet<Ast.Id>,
@@ -174,6 +192,18 @@ function expressionEffects(
 ): ReadonlySet<Effect> {
     switch (expr.kind) {
         case "id": {
+            if (expr.text === "self") {
+                // Conservative approach: any method call like `10.foo()` will be considered as storage read
+                // since any use of `self` inside method will end up in this branch.
+                // We need this because one can write code like this:
+                // ```
+                // get fun bar(): Foo {
+                //   let a = self;
+                //   return a;
+                // }
+                // ```
+                return new Set<Effect>(["contractStorageRead"]);
+            }
             return new Set<Effect>();
         }
         case "field_access": {
@@ -213,8 +243,7 @@ function expressionEffects(
         case "address":
         case "cell":
         case "struct_value":
-        case "map_value":
-        case "code_of": {
+        case "map_value": {
             return new Set<Effect>();
         }
         case "op_binary": {
@@ -255,7 +284,15 @@ function expressionEffects(
             );
             return unionAll([conditionEffects, thenEffects, elseEffects]);
         }
-        case "init_of":
+        case "code_of":
+        case "init_of": {
+            // In case of recursive contracts, their code is put into a global variable (`tact_child_contract_codes`)
+            // which is initialized in `*$contract_load` function. If we assume that there are no effects here,
+            // then there may be a situation when there is no value in the global variable with contract codes.
+            // And because of this, `initOf` in the getter fails when it tries to parse the value of this global
+            // variable which is null.
+            return new Set<Effect>(["contractStorageRead"]);
+        }
         case "static_call": {
             // global (static) functions cannot change contract storage because of the call-by-value semantics, so we don't analyze their bodies
             return mapUnionAll(expr.args, (arg) =>

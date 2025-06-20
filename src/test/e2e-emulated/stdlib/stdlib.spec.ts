@@ -251,8 +251,8 @@ describe("stdlib", () => {
 
         expect(Number(await contract.getSetGasLimit(5000n))).toMatchSnapshot(
             "Gas consumed in segGasLimit()",
-        ); // 5000 just to make sure it's enough, 3785 is how much it actually costs
-        await expect(contract.getSetGasLimit(3784n)).rejects.toThrow("-14"); // 3784 gas is not enough for sure
+        ); // 5000 just to make sure it's enough, 3520 is how much it actually costs
+        await expect(contract.getSetGasLimit(3510n)).rejects.toThrow("-14"); // 3510 gas is not enough for sure
 
         expect(await contract.getGetSeed()).toBe(0n);
 
