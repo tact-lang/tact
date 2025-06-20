@@ -1,3 +1,4 @@
+;; https://github.com/ton-blockchain/token-contract/blob/0f2d7ffabbd6ecbef5cad136e45e2d43a52a82f9/nft/nft-collection.fc
 #include "params.fc";
 #include "op-codes.fc";
 
