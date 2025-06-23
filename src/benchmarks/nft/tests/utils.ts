@@ -30,20 +30,6 @@ import {
 
 import "@ton/test-utils";
 
-/** Operation codes for NFT contract messages */
-export const Operations = {
-    TransferNft: 0x5fcc3d14,
-    OwnershipAssignment: 0x05138d91,
-    Excess: 0xd53276db,
-    GetStaticData: 0x2fcb26a2,
-    ReportStaticData: 0x8b771735,
-    GetRoyaltyParams: 0x693d3950,
-    ReportRoyaltyParams: 0xa8cb00ad,
-    EditContent: 0x1a0b9d51,
-    TransferEditorship: 0x1c04412a,
-    EditorshipAssigned: 0x511a4463,
-} as const;
-
 /** Storage and transaction related constants */
 export const Storage = {
     /** Minimum amount of TONs required for storage */
@@ -65,7 +51,7 @@ export const Storage = {
         /** Forward fee for double message */
         Double: 729606n,
     },
-} as const;
+};
 
 /** Error codes */
 export const ErrorCodes = {
@@ -83,7 +69,7 @@ export const ErrorCodes = {
     InvalidData: 65535,
     /** Error code for invalid destination workchain */
     InvalidDestinationWorkchain: 333,
-} as const;
+};
 
 /** Test related constants */
 export const TestValues = {
@@ -116,7 +102,7 @@ export const TestValues = {
     ExtraValues: {
         BatchMultiplier: 10n,
     },
-} as const;
+};
 
 /** Dictionary type for NFT deployment data */
 type dictDeployNFT = {
@@ -205,3 +191,4 @@ export const sendTransfer = async (
     };
     return await itemNFT.send(from, { value }, msg);
 };
+

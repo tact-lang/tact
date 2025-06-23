@@ -11,10 +11,12 @@ import type {
     GetRoyaltyParams,
     BatchDeploy,
     RoyaltyParams,
+    ReportRoyaltyParams,
     InitNFTBody,
     ChangeOwner,
 } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 import {
+    storeReportRoyaltyParams,
     storeRoyaltyParams,
     type NFTCollection,
 } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
@@ -28,7 +30,6 @@ import {
     getOwner,
     getNextItemIndex,
     loadGetterTupleNFTData,
-    Operations,
     Storage,
     ErrorCodes,
     TestValues,
@@ -51,8 +52,10 @@ export type FromInitCollection = (
 
 const globalSetup = async (fromInitCollection: FromInitCollection) => {
     const blockchain = await Blockchain.create();
+
     const owner = await blockchain.treasury("owner");
     const notOwner = await blockchain.treasury("notOwner");
+
     const defaultCommonContent = beginCell()
         .storeStringTail("common")
         .endCell();
@@ -142,72 +145,72 @@ const testEmptyMessages = (fromInitCollection: FromInitCollection) => {
     });
 };
 
+const setupWithItem = async (fromInitCollection: FromInitCollection, fromInitItem: FromInitItem) => {
+    /**
+     * Helper function to deploy an NFT item
+     * @param itemIndex - Index of the NFT to deploy
+     * @param collectionNFT - Collection contract instance
+     * @param sender - Sender of the deployment transaction
+     * @param owner - Owner of the deployed NFT
+     * @returns Promise resolving to the NFT item contract and transaction result
+     */
+    const deployNFT = async (
+        itemIndex: bigint,
+        collectionNFT: SandboxContract<NFTCollection>,
+        sender: SandboxContract<TreasuryContract>,
+        owner: SandboxContract<TreasuryContract>,
+        defaultNFTContent: Cell,
+        blockchain: Blockchain,
+    ) => {
+        const initNFTBody: InitNFTBody = {
+            $$type: "InitNFTBody",
+            owner: owner.address,
+            content: defaultNFTContent,
+        };
+
+        const mintMsg: DeployNFT = {
+            $$type: "DeployNFT",
+            queryId: 1n,
+            itemIndex: itemIndex,
+            amount: Storage.NftMintAmount,
+            initNFTBody: beginCell()
+                .store(storeInitNFTBody(initNFTBody))
+                .endCell(),
+        };
+
+        const itemNFT = blockchain.openContract(
+            await fromInitItem(
+                null,
+                null,
+                collectionNFT.address,
+                itemIndex,
+            ),
+        );
+
+        const trxResult = await collectionNFT.send(
+            sender.getSender(),
+            { value: Storage.DeployAmount },
+            mintMsg,
+        );
+        return {itemNFT, trxResult};
+    };
+    return {...await globalSetup(fromInitCollection), deployNFT};
+}
+
 const testDeployItem = (
     fromInitCollection: FromInitCollection,
     fromInitItem: FromInitItem,
 ) => {
     describe("NFT deploy cases", () => {
-        it("should deploy NFTItem correctly", async () => {
-            // checking in beforeEach
-        });
         const setup = async () => {
-            return await globalSetup(fromInitCollection);
-        };
-
-        /**
-         * Helper function to deploy an NFT item
-         * @param itemIndex - Index of the NFT to deploy
-         * @param collectionNFT - Collection contract instance
-         * @param sender - Sender of the deployment transaction
-         * @param owner - Owner of the deployed NFT
-         * @returns Promise resolving to the NFT item contract and transaction result
-         */
-        const deployNFT = async (
-            itemIndex: bigint,
-            collectionNFT: SandboxContract<NFTCollection>,
-            sender: SandboxContract<TreasuryContract>,
-            owner: SandboxContract<TreasuryContract>,
-            defaultNFTContent: Cell,
-            blockchain: Blockchain,
-        ): Promise<[SandboxContract<NFTItem>, SendMessageResult]> => {
-            const initNFTBody: InitNFTBody = {
-                $$type: "InitNFTBody",
-                owner: owner.address,
-                content: defaultNFTContent,
-            };
-
-            const mintMsg: DeployNFT = {
-                $$type: "DeployNFT",
-                queryId: 1n,
-                itemIndex: itemIndex,
-                amount: Storage.NftMintAmount,
-                initNFTBody: beginCell()
-                    .store(storeInitNFTBody(initNFTBody))
-                    .endCell(),
-            };
-
-            const itemNFT = blockchain.openContract(
-                await fromInitItem(
-                    null,
-                    null,
-                    collectionNFT.address,
-                    itemIndex,
-                ),
-            );
-
-            const trxResult = await collectionNFT.send(
-                sender.getSender(),
-                { value: Storage.DeployAmount },
-                mintMsg,
-            );
-            return [itemNFT, trxResult];
+            return await setupWithItem(fromInitCollection, fromInitItem);
         };
 
         it("should mint NFTItem correctly", async () => {
-            const { collectionNFT, owner, defaultNFTContent, blockchain } =
+            const { collectionNFT, owner, defaultNFTContent, blockchain, deployNFT } =
                 await setup();
             const nextItemIndex = await getNextItemIndex(collectionNFT);
-            const [itemNFT, _trx] = await deployNFT(
+            const {itemNFT}= await deployNFT(
                 nextItemIndex,
                 collectionNFT,
                 owner,
@@ -240,10 +243,10 @@ const testDeployItem = (
         });
 
         it("should not mint NFTItem if not owner", async () => {
-            const { collectionNFT, defaultNFTContent, blockchain, notOwner } =
+            const { collectionNFT, defaultNFTContent, blockchain, notOwner, deployNFT } =
                 await setup();
             const nextItemIndex = await getNextItemIndex(collectionNFT);
-            const [_itemNFT, trx] = await deployNFT(
+            const {trxResult} = await deployNFT(
                 nextItemIndex,
                 collectionNFT,
                 notOwner,
@@ -254,7 +257,7 @@ const testDeployItem = (
             await step(
                 "Check that trx.transactions has correct transaction (not owner mint)",
                 () => {
-                    expect(trx.transactions).toHaveTransaction({
+                    expect(trxResult.transactions).toHaveTransaction({
                         from: notOwner.address,
                         to: collectionNFT.address,
                         success: false,
@@ -265,11 +268,11 @@ const testDeployItem = (
         });
 
         it("should not deploy previous nft", async () => {
-            const { collectionNFT, owner, defaultNFTContent, blockchain } =
+            const { collectionNFT, owner, defaultNFTContent, blockchain, deployNFT } =
                 await setup();
             let nextItemIndex: bigint = await getNextItemIndex(collectionNFT);
             for (let i = 0; i < 10; i++) {
-                const [_itemNFT, _trx] = await deployNFT(
+                await deployNFT(
                     nextItemIndex,
                     collectionNFT,
                     owner,
@@ -279,7 +282,7 @@ const testDeployItem = (
                 );
                 nextItemIndex++;
             }
-            const [_itemNFT, trx] = await deployNFT(
+            const {itemNFT, trxResult} = await deployNFT(
                 0n,
                 collectionNFT,
                 owner,
@@ -290,9 +293,9 @@ const testDeployItem = (
             await step(
                 "Check that trx.transactions has correct transaction (should not deploy previous nft)",
                 () => {
-                    expect(trx.transactions).toHaveTransaction({
+                    expect(trxResult.transactions).toHaveTransaction({
                         from: collectionNFT.address,
-                        to: _itemNFT.address,
+                        to: itemNFT.address,
                         deploy: false,
                         success: false,
                         exitCode: ErrorCodes.InvalidData,
@@ -302,10 +305,10 @@ const testDeployItem = (
         });
 
         it("shouldn't mint item itemIndex > nextItemIndex", async () => {
-            const { collectionNFT, owner, defaultNFTContent, blockchain } =
+            const { collectionNFT, owner, defaultNFTContent, blockchain, deployNFT } =
                 await setup();
             const nextItemIndex = await getNextItemIndex(collectionNFT);
-            const [_itemNFT, trx] = await deployNFT(
+            const {trxResult} = await deployNFT(
                 nextItemIndex + 1n,
                 collectionNFT,
                 owner,
@@ -316,7 +319,7 @@ const testDeployItem = (
             await step(
                 "Check that trx.transactions has correct transaction (itemIndex > nextItemIndex)",
                 () => {
-                    expect(trx.transactions).toHaveTransaction({
+                    expect(trxResult.transactions).toHaveTransaction({
                         from: owner.address,
                         to: collectionNFT.address,
                         success: false,
@@ -327,11 +330,12 @@ const testDeployItem = (
         });
 
         it("should get nft by itemIndex correctly", async () => {
-            const { collectionNFT, owner, defaultNFTContent, blockchain } =
+            const { collectionNFT, owner, defaultNFTContent, blockchain, deployNFT } =
                 await setup();
             const nextItemIndex = await getNextItemIndex(collectionNFT);
+
             // deploy new nft to get itemIndex
-            const [_itemNFT, _trx] = await deployNFT(
+            await deployNFT(
                 nextItemIndex,
                 collectionNFT,
                 owner,
@@ -339,14 +343,17 @@ const testDeployItem = (
                 defaultNFTContent,
                 blockchain,
             );
+
             const nftAddress =
                 await collectionNFT.getGetNftAddressByIndex(nextItemIndex);
             const newNFT = blockchain.getContract(nftAddress);
             const getData = await (await newNFT).get("get_nft_data");
             const dataNFT = loadGetterTupleNFTData(getData.stack);
+
             await step("Check that dataNFT.itemIndex is nextItemIndex", () => {
                 expect(dataNFT.itemIndex).toBe(nextItemIndex);
             });
+
             await step(
                 "Check that dataNFT.collectionAddress equals collectionNFT.address",
                 () => {
@@ -391,30 +398,27 @@ const testRoyalty = (fromInitCollection: FromInitCollection) => {
                 },
             );
 
-            const exceptedMsg: Cell = beginCell()
-                .storeUint(Operations.ReportRoyaltyParams, 32)
-                .storeUint(queryId, 64)
-                .storeUint(royaltyParams.nominator, 16)
-                .storeUint(royaltyParams.dominator, 16)
-                .storeAddress(royaltyParams.owner)
-                .endCell();
+            const expectedMsg: ReportRoyaltyParams =
+            {
+                $$type: "ReportRoyaltyParams",
+                queryId,
+                params: royaltyParams
+            }
+
             expect(trxResult.transactions).toHaveTransaction({
                 from: collectionNFT.address,
                 to: owner.address,
-                body: exceptedMsg,
+                body: beginCell().store(storeReportRoyaltyParams(expectedMsg)).endCell(),
             });
         });
 
         it("should get royalty params correctly", async () => {
             const { collectionNFT, royaltyParams } = await setup();
             const currRoyaltyParams = await collectionNFT.getRoyaltyParams();
-            expect(
-                beginCell()
-                    .store(storeRoyaltyParams(currRoyaltyParams))
-                    .asSlice(),
-            ).toEqualSlice(
-                beginCell().store(storeRoyaltyParams(royaltyParams)).asSlice(),
-            );
+
+            const currCell = beginCell().store(storeRoyaltyParams(currRoyaltyParams)).endCell();
+            const expectedCell = beginCell().store(storeRoyaltyParams(royaltyParams)).endCell();
+            expect(currCell).toEqualCell(expectedCell);
         });
     });
 };
@@ -445,7 +449,7 @@ const testBatchDeploy = (
             count: bigint,
             extra: bigint = -1n,
         ): Promise<SendMessageResult> => {
-            const dct = Dictionary.empty(
+            const dict = Dictionary.empty(
                 Dictionary.Keys.BigUint(64),
                 dictDeployNFTItem,
             );
@@ -458,15 +462,15 @@ const testBatchDeploy = (
             };
 
             while (i < count) {
-                dct.set(i, {
+                dict.set(i, {
                     amount: Storage.NftMintAmount,
                     initNFTBody: initNFTBody,
                 });
-                i += 1n;
+                i++;
             }
 
-            if (extra != -1n) {
-                dct.set(extra, {
+            if (extra != -1n) { // helper condition if we wanna deploy some extra nft
+                dict.set(extra, {
                     amount: Storage.NftMintAmount,
                     initNFTBody: initNFTBody,
                 });
@@ -475,7 +479,7 @@ const testBatchDeploy = (
             const batchMintNFT: BatchDeploy = {
                 $$type: "BatchDeploy",
                 queryId: 0n,
-                deployList: beginCell().storeDictDirect(dct).endCell(),
+                deployList: beginCell().storeDictDirect(dict).endCell(),
             };
 
             return await collectionNFT.send(
@@ -491,8 +495,8 @@ const testBatchDeploy = (
 
         it.skip("test max batch mint", async () => {
             const { collectionNFT, owner, defaultNFTContent } = await setup();
-            let L = 1n;
-            let R = 1000n;
+            let L = 1n; // left border
+            let R = 1000n; // right border
             while (R - L > 1) {
                 const M = (L + R) / 2n;
                 const trxResult = await batchMintNFTProcess(
@@ -566,7 +570,7 @@ const testBatchDeploy = (
                 owner,
                 owner,
                 defaultNFTContent,
-                260n,
+                250n + 1n,
             );
 
             await step(
@@ -712,57 +716,16 @@ const testGetNftAddressByIndex = (
     fromInitItem: FromInitItem,
 ) => {
     const setup = async () => {
-        return await globalSetup(fromInitCollection);
+        return await setupWithItem(fromInitCollection, fromInitItem);
     };
 
     describe("Get nft address by index cases", () => {
-        const deployNFT = async (
-            itemIndex: bigint,
-            collectionNFT: SandboxContract<NFTCollection>,
-            sender: SandboxContract<TreasuryContract>,
-            owner: SandboxContract<TreasuryContract>,
-            defaultNFTContent: Cell,
-            blockchain: Blockchain,
-        ): Promise<[SandboxContract<NFTItem>, SendMessageResult]> => {
-            const initNFTBody: InitNFTBody = {
-                $$type: "InitNFTBody",
-                owner: owner.address,
-                content: defaultNFTContent,
-            };
-
-            const mintMsg: DeployNFT = {
-                $$type: "DeployNFT",
-                queryId: 1n,
-                itemIndex: itemIndex,
-                amount: Storage.NftMintAmount,
-                initNFTBody: beginCell()
-                    .store(storeInitNFTBody(initNFTBody))
-                    .endCell(),
-            };
-
-            const itemNFT = blockchain.openContract(
-                await fromInitItem(
-                    null,
-                    null,
-                    collectionNFT.address,
-                    itemIndex,
-                ),
-            );
-
-            const trxResult = await collectionNFT.send(
-                sender.getSender(),
-                { value: Storage.DeployAmount },
-                mintMsg,
-            );
-            return [itemNFT, trxResult];
-        };
-
         it("should get nft address by index correctly", async () => {
-            const { collectionNFT, owner, defaultNFTContent, blockchain } =
+            const { collectionNFT, owner, defaultNFTContent, blockchain, deployNFT } =
                 await setup();
             const nftAddress = await collectionNFT.getGetNftAddressByIndex(0n);
 
-            const [_itemNFT, trxDeploy] = await deployNFT(
+            const {trxResult} = await deployNFT(
                 0n,
                 collectionNFT,
                 owner,
@@ -774,7 +737,7 @@ const testGetNftAddressByIndex = (
             await step(
                 "Check that trxDeploy.transactions has correct transaction (deploy item)",
                 () => {
-                    expect(trxDeploy.transactions).toHaveTransaction({
+                    expect(trxResult.transactions).toHaveTransaction({
                         from: collectionNFT.address,
                         to: nftAddress,
                         success: true,
@@ -818,11 +781,14 @@ const testGetNftContent = (fromInitCollection: FromInitCollection) => {
                 0n,
                 defaultContent,
             );
+
+            // standard detail
             const expectedContent = beginCell()
                 .storeUint(1, 8)
                 .storeSlice(defaultCommonContent.asSlice())
                 .storeRef(defaultContent)
                 .endCell();
+
             await step(
                 "Check that content equals expectedContent (nft content)",
                 () => {
