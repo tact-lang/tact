@@ -92,7 +92,8 @@ export const testTransferFee = (
         return await globalSetup(fromInitItem);
     }
 
-    describe("Transfer ownership Fee cases", () => { // implementation detail
+    describe("Transfer ownership Fee cases", () => {
+        // implementation detail
         it("should return error if forward amount is too much", async () => {
             const { itemNFT, owner, notOwner, emptyAddress } = await setup();
 

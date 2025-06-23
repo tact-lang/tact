@@ -56,7 +56,8 @@ const globalSetup = async (fromInitItem: FromInitItem) => {
     const blockchain = await Blockchain.create();
     const config = blockchain.config;
 
-    blockchain.setConfig( // set StorageFee to 0 in blockchain
+    blockchain.setConfig(
+        // set StorageFee to 0 in blockchain
         setStoragePrices(config, {
             unixTimeSince: 0,
             bitPricePerSecond: 0n,
