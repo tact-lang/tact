@@ -76,7 +76,7 @@ int forward_init_state_overhead() inline {
     ;; 3 messages: wal1->wal2,  wal2->owner, wal2->response
     ;; but last one is optional (it is ok if it fails)
     fwd_count * fwd_fee +
-    forward_init_state_overhead() + ;; additional fwd fees related to initstate in iternal_transfer
+    forward_init_state_overhead() + ;; additional fwd fees related to initstate in internal_transfer
     get_compute_fee(MY_WORKCHAIN, send_transfer_gas_consumption) +
     get_compute_fee(MY_WORKCHAIN, receive_transfer_gas_consumption) +
     calculate_jetton_wallet_min_storage_fee() );

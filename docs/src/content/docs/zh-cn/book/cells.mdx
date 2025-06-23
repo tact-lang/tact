@@ -63,9 +63,9 @@ description: Cells、Builders 和 Slices 是 TON 区块链的底层单元
 
 接下来， $2$ 字节存储了引用的深度，即Cell树根（当前Cell）和最深引用（包括它）之间的cells数。 例如，如果一个cell只包含一个引用而没有其他引用，则其深度为 $1$，而被引用cell的深度为 $0$。
 
-最后，为每个参考cell存储其标准表示的 [SHA-256][sha-2] 哈希值，每个参考cell占用 $32$ 字节，并递归重复上述算法。 请注意，不允许循环引用cell，因此递归总是以定义明确的方式结束。 请注意，不允许循环引用cell，因此递归总是以定义明确的方式结束。
+最后，为每个参考cell存储其标准表示的 [SHA-256][sha-2] 哈希值，每个参考cell占用 $32$ 字节，并递归重复上述算法。  请注意，不允许循环引用cell，因此递归总是以定义明确的方式结束。
 
-如果我们要计算这个cell的标准表示的哈希值，就需要将上述步骤中的所有字节连接在一起，然后使用 [SHA-256][sha-2] 哈希值进行散列。 如果我们要计算这个cell的标准表示的哈希值，就需要将上述步骤中的所有字节连接在一起，然后使用 [SHA-256][sha-2] 哈希值进行散列。 这是[TVM][tvm]的[`HASHCU`和`HASHSU`指令](https://docs.ton.org/learn/tvm-instructions/instructions)以及 Tact 的[`Cell.hash(){:tact}`](/zh-cn/ref/core-cells#cellhash)和[`Slice.hash(){:tact}`](/zh-cn/ref/core-cells#slicehash)函数背后的算法。
+如果我们要计算这个cell的标准表示的哈希值，就需要将上述步骤中的所有字节连接在一起，然后使用 [SHA-256][sha-2] 哈希值进行散列。 这是[TVM][tvm]的[`HASHCU`和`HASHSU`指令](https://docs.ton.org/learn/tvm-instructions/instructions)以及 Tact 的[`Cell.hash(){:tact}`](/zh-cn/ref/core-cells#cellhash)和[`Slice.hash(){:tact}`](/zh-cn/ref/core-cells#slicehash)函数背后的算法。
 
 #### Bag of Cells {#cells-boc}
 
@@ -408,7 +408,7 @@ let areSlicesNotEqual = aSlice != bSlice; // false
 
 请注意，通过 `=={:tact}` 或 `!={:tact}` 操作符进行的直接比较隐含地使用了[标准 `Cell{:tact}` 表示法](#cells-representation)的 [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) 哈希值。
 
-还可使用 `.hash(){:tact}` 进行显式比较：
+还可使用 `Cell.hash(){:tact}` 或 `Slice.hash(){:tact}` 进行显式比较：
 
 ```tact
 let a = beginCell().storeUint(123, 8).endCell();

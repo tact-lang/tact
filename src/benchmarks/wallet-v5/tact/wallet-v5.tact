@@ -90,7 +90,7 @@ contract WalletV5(
         acceptMessage();
 
         self.seqno += 1;
-        // NOTE: fix, blocked by #2073
+        setData(self.toCell());
         commit();
 
         signedSlice.skipBits(32 + 32 + 32 + 32); // skip opcode, walletId, validUntil, seqno

@@ -87,7 +87,7 @@ contract Example {
 }
 ```
 
-The latter example is identical to using the [`.reply(){:tact}` function](#how-to-make-a-basic-reply).
+The latter example is identical to using the [`self.reply(){:tact}` function](#how-to-make-a-basic-reply).
 
 ## How to send a message with a long text comment
 
@@ -119,6 +119,46 @@ contract Example {
   [`Cell{:tact}` in Core library](/ref/core-cells)
 
 :::
+
+## How to commit the state for the sequence number
+
+To prevent the possibility of replay attacks, you can use unique identifiers, such as `seqno`. Yet, the changes made to it must persist. To do so, the [`commit(){:tact}`](/ref/core-contextstate#commit) function is used.
+
+```tact {20}
+message MsgWithSignedData {
+    bundle: SignedBundle;
+    seqno: Int as uint64;
+    someExtraData: Cell;
+}
+
+contract Sample(
+    publicKey: Int as uint256,
+    seqno: Int as uint64,
+) {
+    external(msg: MsgWithSignedData) {
+        // Various checks with accepting the external message processing afterwards
+        require(msg.bundle.verifySignature(self.publicKey), "Invalid signature");
+        require(msg.seqno == self.seqno, "Invalid seqno");
+        acceptMessage();
+
+        // Since we have done all the checks we can now safely increase the number,
+        // then commit the state of persistent data and output actions,
+        // and, finally, save that state early, before any further actions take place.
+        self.seqno += 1;
+        commit();
+        setData(self.toCell());
+
+        // And now you can safely do something with the rest of the message,
+        // knowing that the `self.seqno` change will not be reverted in case of errors
+        throw(42); // this will prevent subsequent code from executing,
+        //            but will not fail the transaction!
+    }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+}
+```
 
 :::tip[Hey there!]
 

@@ -242,6 +242,14 @@ contract Example {
 }
 ```
 
+:::note
+
+  Keep in mind that contracts cannot call each other's [getters](#getter-functions) or retrieve data from other contracts synchronously. Thus, as contracts exchange asynchronous messages, it is not possible to directly read the state variables of one contract by another because, by the time a message with the data reaches your contract, the state variables on another contract might have changed already.
+
+  Instead, prefer to write contracts that exchange messages as signals to perform a certain action on or with the sent data but never merely to read the state of another contract.
+
+:::
+
 As the contract state is updated at the very end of the [compute phase][compute] of the transaction, intermediate assignments of [`Int{:tact}`][int] values exceeding the limits specified by [serialization formats](/book/integers#serialization) won't fail immediately. Instead, such assignments would cause an [exit code 5](/book/exit-codes#5) only after all statements have been executed.
 
 This is to be expected because the integers in the temporary [TVM][tvm] memory, which is used to process the [compute phase][compute], always have $257$ bits and are capable of holding values in the inclusive range from $-2^{256}$ to $2^{256} - 1$.

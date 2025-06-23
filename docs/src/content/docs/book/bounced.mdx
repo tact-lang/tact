@@ -5,6 +5,8 @@ description: "When a contract sends a message with the flag bounce set to true, 
 
 When a contract sends a message with the flag `bounce` set to `true{:tact}`, and if the message isn't processed properly, it will bounce back to the sender. This is useful when you want to ensure that the message has been processed properly and, if not, revert the changes.
 
+Yet, bouncing a message back incurs the same [forward fees](https://docs.ton.org/develop/howto/fees-low-level#forward-fees) as sending a new message. If the received message does not have any value attached to it, e.g., it was sent with an optional flag [`SendPayFwdFeesSeparately{:tact}`](/book/message-mode#optional-flags) and the `value` set to 0, it will not have any funds to bounce back upon errors in this transaction.
+
 ## Caveats
 
 Currently, bounced messages in TON can have at most 256 bits of payload and no references, but the amount of useful data bits when handling messages in `bounced` receivers is at most 224, since the first 32 bits are occupied by the message opcode. This means that you can't recover much of the data from the bounced message, for instance you cannot fit an address into a bounced message, since regular internal addresses need 267 bits to be represented.
@@ -75,5 +77,9 @@ contract MyContract {
 ```
 
 On TON, bounced message bodies have a 32 bits prefix, where all bits are set, i.e., with `0xFFFFFFFF{:tact}`. However, since that prefix is always the same for all bounced messages, Tact cuts it off for your convenience, keeping only the remaining 256 bits of the payload, which usually starts with a 32-bit message opcode.
+
+## Contract storage handling
+
+Bounced message receivers handle contract storage just as [internal message receivers](/book/receive#contract-storage-handling) do. In addition, the empty [`return{:tact}` statement](/book/statements#return) and the [`throw(0){:tact}`](/ref/core-debug#throw) patterns [work the same](/book/receive#contract-storage-handling).
 
 [message]: /book/structs-and-messages#messages

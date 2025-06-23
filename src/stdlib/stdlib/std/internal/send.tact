@@ -610,11 +610,22 @@ asm fun acceptMessage() { ACCEPT }
 /// Global function.
 ///
 /// Commits the current state of registers `c4` (persistent data) and `c5` (actions), so that the current execution is considered "successful" with the saved values even if an exception in compute phase is thrown later.
-//
+///
 /// ```tact
-/// fun example() {
-///     commit();  // now, transaction is considered "successful"
-///     throw(42); // and this won't fail it
+/// contract WalletV4(
+///     seqno: Int as uint32,
+///     // ...other parameters...
+/// ) {
+///     // ...
+///     external(_: Slice) {
+///         // ...various prior checks...
+///
+///         acceptMessage();
+///         self.seqno += 1;
+///         setData(self.toCell());
+///         commit(); //  now, transaction is considered "successful"
+///         throw(42); // and this won't fail it
+///     }
 /// }
 /// ```
 ///
