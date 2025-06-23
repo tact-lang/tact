@@ -19,6 +19,15 @@ import type {
     NFTCollection,
     Transfer,
 } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
+import {
+    IncorrectDeployer,
+    IncorrectIndex,
+    IncorrectSender,
+    InvalidData,
+    InvalidDestinationWorkchain,
+    InvalidFees,
+    NotInit,
+} from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 import { loadInitNFTBody } from "@/benchmarks/nft/tact/output/collection_NFTCollection";
 
 // NFT Item imports
@@ -56,19 +65,19 @@ export const Storage = {
 /** Error codes */
 export const ErrorCodes = {
     /** Error code for not initialized contract */
-    NotInit: 9,
+    NotInit: Number(NotInit),
     /** Error code for not owner */
-    NotOwner: 401,
+    NotOwner: Number(IncorrectSender),
     /** Error code for invalid fees */
-    InvalidFees: 402,
+    InvalidFees: Number(InvalidFees),
     /** Error code for incorrect index */
-    IncorrectIndex: 402,
+    IncorrectIndex: Number(Number(IncorrectIndex)),
     /** Error code for incorrect deployer */
-    IncorrectDeployer: 401,
+    IncorrectDeployer: Number(IncorrectDeployer),
     /** Error code for invalid data */
-    InvalidData: 65535,
+    InvalidData: Number(InvalidData),
     /** Error code for invalid destination workchain */
-    InvalidDestinationWorkchain: 333,
+    InvalidDestinationWorkchain: Number(InvalidDestinationWorkchain),
 };
 
 /** Test related constants */
@@ -150,6 +159,11 @@ export function loadGetterTupleNFTData(source: TupleItem[]): NFTData {
     };
 }
 
+/**
+ * Retrieves the owner of the NFT collection.
+ * @param collection - The sandbox contract instance of the NFT collection.
+ * @returns The address of the collection owner.
+ */
 export const getOwner = async (
     collection: SandboxContract<NFTCollection>,
 ): Promise<Address> => {
@@ -157,6 +171,11 @@ export const getOwner = async (
     return res.owner;
 };
 
+/**
+ * Retrieves the next item index from the NFT collection.
+ * @param collection - The sandbox contract instance of the NFT collection.
+ * @returns The next item index to be minted.
+ */
 export const getNextItemIndex = async (
     collection: SandboxContract<NFTCollection>,
 ): Promise<bigint> => {
@@ -164,6 +183,11 @@ export const getNextItemIndex = async (
     return res.nextItemIndex;
 };
 
+/**
+ * Retrieves the owner of a specific NFT item.
+ * @param item - The sandbox contract instance of the NFT item.
+ * @returns The address of the NFT item's owner.
+ */
 export const getItemOwner = async (
     item: SandboxContract<NFTItem>,
 ): Promise<Address> => {
@@ -171,6 +195,17 @@ export const getItemOwner = async (
     return res.owner!;
 };
 
+/**
+ * Sends a transfer transaction for an NFT item.
+ * @param itemNFT - The sandbox contract instance of the NFT item to be transferred.
+ * @param from - The sender of the transaction.
+ * @param value - The value to be sent with the transaction.
+ * @param newOwner - The address of the new owner.
+ * @param responseDestination - The address where the response should be sent.
+ * @param forwardAmount - The amount of TONs to be forwarded to the new owner.
+ * @param forwardPayload - The payload to be forwarded to the new owner.
+ * @returns The result of the sent message.
+ */
 export const sendTransfer = async (
     itemNFT: SandboxContract<NFTItem>,
     from: Sender,
