@@ -38,23 +38,23 @@ exports[`benchmarks benchmark readFwdFee: code size 1`] = `116`;
 
 exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1968`;
 
-exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2154`;
+exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2126`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2155`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2127`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2157`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2129`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2154`;
+exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2126`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2155`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2127`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2157`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2129`;
 
-exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1975`;
+exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1947`;
 
-exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `1975`;
+exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `1947`;
 
-exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `1975`;
+exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `1947`;
 
 exports[`benchmarks benchmark sqrt via geom mean: code size 1`] = `265`;
 
