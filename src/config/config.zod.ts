@@ -68,6 +68,10 @@ export const optionsSchema: z.ZodType<C.Options> = z.object({
      * Does nothing if contract parameters are declared.
      */
     enableLazyDeploymentCompletedGetter: z.boolean().optional(),
+    /**
+     * If set to true, disables generation of test files.
+     */
+    skipTestGeneration: z.boolean().optional(),
 });
 
 export const modeSchema: z.ZodType<C.Mode> = z.union([
