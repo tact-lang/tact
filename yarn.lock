@@ -1749,10 +1749,17 @@ allure-jest@^3.2.1:
   dependencies:
     allure-js-commons "3.2.2"
 
-allure-js-commons@3.2.2, allure-js-commons@^3.2.1:
+allure-js-commons@3.2.2:
   version "3.2.2"
   resolved "https://npm.dev-internal.org/allure-js-commons/-/allure-js-commons-3.2.2.tgz#f8c494b7f20b6f2270a4d2924b94a0c9b7762df6"
   integrity sha512-qr9r9+HpyNmbaaAtNDK6qXXar7RcYQECf8hOtH/e8DFKZNahIkfFYU0LP4Q7SPbqyAZsGbocTKikVx9L2po+eg==
+  dependencies:
+    md5 "^2.3.0"
+
+allure-js-commons@^3.2.1:
+  version "3.3.0"
+  resolved "https://npm.dev-internal.org/allure-js-commons/-/allure-js-commons-3.3.0.tgz#2e7060bd3b82f34d9dc20c01cdae7c795b611dcf"
+  integrity sha512-EAIfpBFk6m7Q4KfyuAL3cAqVGv0dLWCT9359BmVGhO5ANKCwuU6U+DJBs3dLYo+MDUF7vlmwWPpvv4lAvdcVtA==
   dependencies:
     md5 "^2.3.0"
 
