@@ -7,7 +7,7 @@
         "addPlugin": "5908",
         "pluginTransfer": "4785"
       },
-      "pr": "https://github.com/ton-blockchain/wallet-contract-v5"
+      "pr": "https://github.com/ton-blockchain/wallet-contract-v5/blob/047852ac96a45a8ed418d18960fa6d621a667ed3/contracts/wallet_v4.fc"
     },
     {
       "label": "1.6.4 initial",
