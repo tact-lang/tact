@@ -714,25 +714,38 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             ? [getType(ctx.ctx, f.self.name), f.self.optional]
             : [null, false];
 
+    const isGetterWithoutStateUsage =
+        f.isGetter &&
+        !f.effects.has("contractStorageRead") &&
+        !f.effects.has("contractStorageWrite");
+
     // Write function header
     let returns: string = resolveFuncType(f.returns, ctx);
     const returnsOriginal = returns;
     let returnsStr: string | null;
     if (self && f.isMutating) {
-        if (f.returns.kind !== "void") {
+        if (isGetterWithoutStateUsage) {
+            returns = `((), ${returns})`;
+        } else if (f.returns.kind !== "void") {
             returns = `(${resolveFuncType(self, ctx)}, ${returns})`;
         } else {
             returns = `(${resolveFuncType(self, ctx)}, ())`;
         }
-        returnsStr = resolveFuncTypeUnpack(self, funcIdOf("self"), ctx);
+        returnsStr = isGetterWithoutStateUsage
+            ? "()"
+            : resolveFuncTypeUnpack(self, funcIdOf("self"), ctx);
     }
 
     // Resolve function descriptor
     const params: string[] = [];
     if (self) {
-        params.push(
-            resolveFuncType(self, ctx, isSelfOpt) + " " + funcIdOf("self"),
-        );
+        if (isGetterWithoutStateUsage) {
+            params.push(`() ${funcIdOf("self")}`);
+        } else {
+            params.push(
+                resolveFuncType(self, ctx, isSelfOpt) + " " + funcIdOf("self"),
+            );
+        }
     }
 
     f.params.forEach((a, index) => {
@@ -816,7 +829,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 }
                 ctx.body(() => {
                     // Unpack self
-                    if (self && !isSelfOpt) {
+                    if (self && !isSelfOpt && !isGetterWithoutStateUsage) {
                         ctx.append(
                             `var (${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)}) = ${funcIdOf("self")};`,
                         );
@@ -979,13 +992,22 @@ export function writeGetter(f: FunctionDescription, wCtx: WriterContext) {
             );
         }
 
-        // Load contract state
-        wCtx.append(`var self = ${ops.contractLoad(self.name, wCtx)}();`);
+        const call = `${wCtx.used(ops.extension(self.name, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")})`;
 
-        // Execute get method
-        wCtx.append(
-            `var res = self~${wCtx.used(ops.extension(self.name, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")});`,
-        );
+        if (
+            f.isGetter &&
+            !f.effects.has("contractStorageRead") &&
+            !f.effects.has("contractStorageWrite")
+        ) {
+            wCtx.append(`var self = ();`);
+            wCtx.append(`var res = self~${call};`);
+        } else {
+            // Load contract state
+            wCtx.append(`var self = ${ops.contractLoad(self.name, wCtx)}();`);
+
+            // Execute get method
+            wCtx.append(`var res = self~${call};`);
+        }
 
         // Pack if needed
         if (f.returns.kind === "ref") {
