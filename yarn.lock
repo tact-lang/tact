@@ -1794,16 +1794,16 @@ allure-commandline@^2.34.0:
   integrity sha512-+SgVJ9+o7OH43KVCln0KT7VIsXCfMVEvFuYArIFNtS0fWu61UFdeiCYvrlQPC9trEoFhOe2e5i8Xhghwo46iRQ==
 
 allure-jest@^3.2.1:
-  version "3.2.2"
-  resolved "https://npm.dev-internal.org/allure-jest/-/allure-jest-3.2.2.tgz#867f587c57fd3180eaa0b803285ff0b0c4c9c4b0"
-  integrity sha512-61PSm/U+AKVR/nPITbz35M4kHqK7vkGHiM4wKvTciU4QgFKWNLyQ8dX2rHvHaLVS9WqJfQCjQoIgOoX1OEidrQ==
+  version "3.3.0"
+  resolved "https://npm.dev-internal.org/allure-jest/-/allure-jest-3.3.0.tgz#9f70733feeec7dbf08a0d84bedbcf45db6f6f58d"
+  integrity sha512-EuHLgrnq4e02sMa2HhvcOGlRv0eGPbke94+DaSnEvbTn5OjF9GOe5pe7ITWK7HqBjaupbVJsH/l/susWmDr6nw==
   dependencies:
-    allure-js-commons "3.2.2"
+    allure-js-commons "3.3.0"
 
-allure-js-commons@3.2.2, allure-js-commons@^3.2.1:
-  version "3.2.2"
-  resolved "https://npm.dev-internal.org/allure-js-commons/-/allure-js-commons-3.2.2.tgz#f8c494b7f20b6f2270a4d2924b94a0c9b7762df6"
-  integrity sha512-qr9r9+HpyNmbaaAtNDK6qXXar7RcYQECf8hOtH/e8DFKZNahIkfFYU0LP4Q7SPbqyAZsGbocTKikVx9L2po+eg==
+allure-js-commons@3.3.0, allure-js-commons@^3.2.1:
+  version "3.3.0"
+  resolved "https://npm.dev-internal.org/allure-js-commons/-/allure-js-commons-3.3.0.tgz#2e7060bd3b82f34d9dc20c01cdae7c795b611dcf"
+  integrity sha512-EAIfpBFk6m7Q4KfyuAL3cAqVGv0dLWCT9359BmVGhO5ANKCwuU6U+DJBs3dLYo+MDUF7vlmwWPpvv4lAvdcVtA==
   dependencies:
     md5 "^2.3.0"
 
