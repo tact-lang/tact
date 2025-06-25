@@ -1,64 +1,27 @@
-// https://github.com/ton-blockchain/stablecoin-contract/blob/main/gasUtils.ts
-import {
-    beginCell,
-    Dictionary,
-    type Cell,
-    type DictionaryValue,
-} from "@ton/core";
-import type { BlockchainConfig } from "@ton/sandbox";
+import { Dictionary, type Cell } from "@ton/core";
+import { updateConfig } from "@ton/sandbox";
+import type { StoragePrices } from "@ton/sandbox/dist/config/config.tlb-gen";
 
-// https://github.com/ton-blockchain/ton/blob/ed4682066978f69ffa38dd98912ca77d4f660f66/crypto/block/block.tlb#L705
-const ConfigStoragePriceIndex = 18;
-const ConfigKeyLength = 32;
+export function zeroStoragePrices(configRaw: Cell): Cell {
+    return setStoragePrices(configRaw, {
+        kind: "StoragePrices",
+        utime_since: 0,
+        bit_price_ps: 0n,
+        _cell_price_ps: 0n,
+        mc_bit_price_ps: 0n,
+        mc_cell_price_ps: 0n,
+    });
+}
 
-type StorageValue = {
-    unixTimeSince: number;
-    bitPricePerSecond: bigint;
-    cellPricePerSecond: bigint;
-    masterChainBitPricePerSecond: bigint;
-    masterChainCellPricePerSecond: bigint;
-};
+export function setStoragePrices(configRaw: Cell, prices: StoragePrices): Cell {
+    const storagePricesDict = Dictionary.empty<number, StoragePrices>();
 
-const storageValue: DictionaryValue<StorageValue> = {
-    serialize: (src, builder) => {
-        builder
-            .storeUint(0xcc, 8)
-            .storeUint(src.unixTimeSince, 32)
-            .storeUint(src.bitPricePerSecond, 64)
-            .storeUint(src.cellPricePerSecond, 64)
-            .storeUint(src.masterChainBitPricePerSecond, 64)
-            .storeUint(src.masterChainCellPricePerSecond, 64);
-    },
-    parse: (src) => {
-        return {
-            unixTimeSince: src.skip(8).loadUint(32),
-            bitPricePerSecond: src.loadUintBig(64),
-            cellPricePerSecond: src.loadUintBig(64),
-            masterChainBitPricePerSecond: src.loadUintBig(64),
-            masterChainCellPricePerSecond: src.loadUintBig(64),
-        };
-    },
-};
+    storagePricesDict.set(0, prices);
 
-export function setStoragePrices(
-    configRaw: Cell,
-    prices: StorageValue,
-): BlockchainConfig {
-    const config = configRaw
-        .beginParse()
-        .loadDictDirect(
-            Dictionary.Keys.Int(ConfigKeyLength),
-            Dictionary.Values.Cell(),
-        );
-    const storageData = Dictionary.loadDirect(
-        Dictionary.Keys.Uint(ConfigKeyLength),
-        storageValue,
-        config.get(ConfigStoragePriceIndex)!,
-    );
-    storageData.set(storageData.values().length - 1, prices);
-    config.set(
-        ConfigStoragePriceIndex,
-        beginCell().storeDictDirect(storageData).endCell(),
-    );
-    return beginCell().storeDictDirect(config).endCell();
+    const updatedConfig = updateConfig(configRaw, {
+        kind: "ConfigParam__18",
+        anon0: storagePricesDict,
+    });
+
+    return updatedConfig;
 }
