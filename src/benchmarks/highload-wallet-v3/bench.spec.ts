@@ -43,7 +43,7 @@ import { Blockchain } from "@ton/sandbox";
 import type { KeyPair } from "@ton/crypto";
 import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";
 import { type Step, writeLog } from "@/test/utils/write-vm-log";
-import { HighloadQueryId } from "@/benchmarks/highload-wallet-v3/HighloadQueryId";
+import { HighloadQueryId } from "@/benchmarks/highload-wallet-v3/tests/HighloadQueryId";
 import { bufferToBigInt } from "@/benchmarks/wallet-v5/utils";
 
 const createInternalTransferBody = (opts: {
