@@ -78,6 +78,13 @@ export type TcError = {
     // text description
     readonly descr: readonly TELine[];
 };
+export const TcError = (
+    loc: Loc,
+    ...descr: readonly TELine[]
+): TcError => {
+    debugger;
+    return { loc, descr };
+};
 
 export type TELine = TEText | TEVia | TEViaMember | TECode | TEMismatch;
 
@@ -147,22 +154,20 @@ export const ERedefine = (
     name: string,
     prev: V.Via,
     next: V.ViaUser,
-): TcError => ({
-    loc: viaToRange(next),
-    descr: [TEText(`There already is a ${kind} "${name}" from`), TEVia(prev)],
-});
+) => TcError(
+    viaToRange(next),
+    TEText(`There already is a ${kind} "${name}" from`), TEVia(prev),
+);
 
 export const ERedefineMember = (
     name: string,
     prev: V.ViaMember,
     next: V.ViaMember,
-): TcError => ({
-    loc: next.defLoc,
-    descr: [
-        TEText(`"${name}" is inherited twice`),
-        TEText(`First defined at`),
-        TEViaMember(prev),
-        TEText(`Redefined at`),
-        TEViaMember(next),
-    ],
-});
+) => TcError(
+    next.defLoc,
+    TEText(`"${name}" is inherited twice`),
+    TEText(`First defined at`),
+    TEViaMember(prev),
+    TEText(`Redefined at`),
+    TEViaMember(next),
+);

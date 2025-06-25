@@ -13,17 +13,29 @@ export function* decodeConstants(
     source: TactSource,
     scopeRef: () => Ast.CSource,
 ): Ast.Log<ReadonlyMap<string, Ast.Decl<Ast.CConstant>>> {
-    const allConstSigs = [
-        // imported
-        ...imported.flatMap(({ globals, importedBy }) =>
-            [...globals.constants].map(
-                ([name, s]) =>
-                    [
-                        name,
-                        Ast.Decl(s.decl, Ast.ViaImport(importedBy, s.via)),
-                    ] as const,
-            ),
+    // imported
+    const importedSigs = imported.flatMap(({ globals, importedBy }) =>
+        [...globals.constants].map(
+            ([name, s]) =>
+                [
+                    name,
+                    Ast.Decl(s.decl, Ast.ViaImport(importedBy, s.via)),
+                ] as const,
         ),
+    );
+    // deduplicate diamond imports
+    const filteredImports: (readonly [string, Ast.Decl<Ast.CConstant>])[] = [];
+    const map: Map<string, TactSource> = new Map();
+    for (const [name, decl] of importedSigs) {
+        const prevSource = map.get(name);
+        if (typeof prevSource === 'undefined' || decl.via.source !== prevSource) {
+            filteredImports.push([name, decl]);
+            map.set(name, decl.via.source);
+        }
+    }
+    // merge
+    const allConstSigs = [
+        ...filteredImports,
         // local
         ...(yield* Ast.mapLog(source.items.constants, function* (c) {
             return [
@@ -93,7 +105,7 @@ function* decodeConstant(
     }
 }
 
-const ETopLevelDecl = (loc: Ast.Loc): Ast.TcError => ({
+const ETopLevelDecl = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Top-level constant must have a body`)],
-});
+    Ast.TEText(`Top-level constant must have a body`),
+);

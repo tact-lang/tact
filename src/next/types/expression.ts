@@ -5,8 +5,10 @@ import {
     Bool,
     builtinBinary,
     builtinFunctions,
+    builtinUnary,
     getStaticBuiltin,
     StateInit,
+    stateInitFields,
 } from "@/next/types/builtins";
 import {
     assignType,
@@ -316,31 +318,27 @@ function* checkFields(
         );
     }
 }
-const EMissingField = (name: string, prev: Ast.Loc): Ast.TcError => ({
-    loc: prev,
-    descr: [
-        Ast.TEText(`Value for field "${name}" is missing`),
-        Ast.TECode(prev),
-    ],
-});
-const ENoSuchField = (name: string, next: Ast.Loc): Ast.TcError => ({
-    loc: next,
-    descr: [Ast.TEText(`There is no field "${name}"`), Ast.TECode(next)],
-});
+const EMissingField = (name: string, prev: Ast.Loc) => Ast.TcError(
+    prev,
+    Ast.TEText(`Value for field "${name}" is missing`),
+    Ast.TECode(prev),
+);
+const ENoSuchField = (name: string, next: Ast.Loc) => Ast.TcError(
+    next,
+    Ast.TEText(`There is no field "${name}"`), Ast.TECode(next),
+);
 const EDuplicateField = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): Ast.TcError => ({
-    loc: prev,
-    descr: [
-        Ast.TEText(`Duplicate field "${name}"`),
-        Ast.TEText(`Defined at:`),
-        Ast.TECode(next),
-        Ast.TEText(`Previously defined at:`),
-        Ast.TECode(prev),
-    ],
-});
+) => Ast.TcError(
+    prev,
+    Ast.TEText(`Duplicate field "${name}"`),
+    Ast.TEText(`Defined at:`),
+    Ast.TECode(next),
+    Ast.TEText(`Previously defined at:`),
+    Ast.TECode(prev),
+);
 
 const decodeVar: Decode<Ast.Var, Ast.CVar | Ast.CSelf> = function* (node, ctx) {
     if (node.name !== "self") {
@@ -362,10 +360,10 @@ const decodeVar: Decode<Ast.Var, Ast.CVar | Ast.CSelf> = function* (node, ctx) {
         emptyEff,
     );
 };
-const ENoSelf = (loc: Ast.Loc): Ast.TcError => ({
+const ENoSelf = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`"self" is not allowed here`)],
-});
+    Ast.TEText(`"self" is not allowed here`),
+);
 function* lookupVar(
     name: string,
     loc: Ast.Loc,
@@ -383,10 +381,10 @@ function* lookupVar(
     yield EUndefined(name, loc);
     return Ast.CTRecover();
 }
-const EUndefined = (name: string, loc: Ast.Loc): Ast.TcError => ({
+const EUndefined = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Variable "${name}" not defined`)],
-});
+    Ast.TEText(`Variable "${name}" not defined`),
+);
 
 const decodeBinary: Decode<Ast.OpBinary, Ast.COpBinary> = function* (
     node,
@@ -402,7 +400,7 @@ const decodeBinary: Decode<Ast.OpBinary, Ast.COpBinary> = function* (
         [left.value.loc, left.value.computedType],
         [right.value.loc, right.value.computedType],
     ]);
-    if (node.op === "==" || node.op === "!=") {
+    if ((node.op === "==" || node.op === "!=") && returnType.kind !== 'recover') {
         const typeArg = typeArgMap.get("T");
         if (!typeArg) {
             return throwInternal(
@@ -428,57 +426,58 @@ const decodeBinary: Decode<Ast.OpBinary, Ast.COpBinary> = function* (
         newEff,
     );
 };
-const ENoEquality = (loc: Ast.Loc): Ast.TcError => ({
+const ENoEquality = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Equality on this type is not supported`)],
-});
-const supportsEquality = (common: Ast.CType): boolean => {
-    switch (common.kind) {
-        case "map_type": {
-            return true;
-        }
-        case "TypeMaybe": {
-            return supportsEquality(common.type);
-        }
-        case "recover":
-        case "type_ref":
-        case "TypeAlias":
-        case "TypeParam":
-        case "TypeBounced":
-        case "tuple_type":
-        case "tensor_type": {
-            return false;
-        }
-        case "basic": {
-            return supportsEqualityBasic(common.type);
-        }
-    }
+    Ast.TEText(`Equality on this type is not supported`),
+);
+const supportsEquality = (_common: Ast.CType): boolean => {
+    return true; // FIXME
+    // switch (common.kind) {
+    //     case "map_type": {
+    //         return true;
+    //     }
+    //     case "TypeMaybe": {
+    //         return supportsEquality(common.type);
+    //     }
+    //     case "recover":
+    //     case "type_ref":
+    //     case "TypeAlias":
+    //     case "TypeParam":
+    //     case "TypeBounced":
+    //     case "tuple_type":
+    //     case "tensor_type": {
+    //         return false;
+    //     }
+    //     case "basic": {
+    //         return supportsEqualityBasic(common.type);
+    //     }
+    // }
 };
-const supportsEqualityBasic = (common: Ast.BasicType): boolean => {
-    switch (common.kind) {
-        case "unit_type":
-        case "TyInt":
-        case "TySlice":
-        case "TyCell":
-        case "TypeNull":
-        case "TypeBool":
-        case "TypeAddress":
-        case "TypeString": {
-            return true;
-        }
-        case "TypeVoid":
-        case "TyBuilder":
-        case "TypeStateInit":
-        case "TypeStringBuilder": {
-            return false;
-        }
-    }
-};
+// const supportsEqualityBasic = (common: Ast.BasicType): boolean => {
+//     switch (common.kind) {
+//         case "unit_type":
+//         case "TyInt":
+//         case "TySlice":
+//         case "TyCell":
+//         case "TypeNull":
+//         case "TypeBool":
+//         case "TypeAddress":
+//         case "TypeString": {
+//             return true;
+//         }
+//         case "TypeVoid":
+//         case "TyBuilder":
+//         case "TypeStateInit":
+//         case "TypeStringBuilder": {
+//             return false;
+//         }
+//     }
+// };
 
 
 const decodeUnary: Decode<Ast.OpUnary, Ast.COpUnary> = function* (node, ctx) {
     const operand = yield* decodeExprCtx(node.operand, ctx);
-    const fnType = builtinBinary.get(node.op);
+    const fnType = builtinUnary.get(node.op);
     if (!fnType) {
         return throwInternal("Builtin operator is not in the map");
     }
@@ -642,10 +641,10 @@ const decodeFunctionCall: Decode<
         return Result(Ast.CStaticCall(name, typeArgMap, exprs, returnType, node.loc), newEffs);
     }
 };
-const EMismatchSha256 = (loc: Ast.Loc): Ast.TcError => ({
+const EMismatchSha256 = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`sha256() takes either Slice or String`)],
-});
+    Ast.TEText(`sha256() takes either Slice or String`),
+);
 
 const decodeStaticMethodCall: Decode<
     Ast.StaticMethodCall,
@@ -688,14 +687,14 @@ const decodeStaticMethodCall: Decode<
         newEffs,
     );
 };
-const EUndefinedStatic = (name: string, loc: Ast.Loc): Ast.TcError => ({
+const EUndefinedStatic = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Static method ${name} doesn't exist`)],
-});
-const EFunctionArity = (loc: Ast.Loc): Ast.TcError => ({
+    Ast.TEText(`Static method ${name} doesn't exist`),
+);
+const EFunctionArity = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Function doesn't take any generic arguments`)],
-});
+    Ast.TEText(`Function doesn't take any generic arguments`),
+);
 
 const decodeFieldAccess: Decode<Ast.FieldAccess, Ast.CFieldAccess> = function* (
     node,
@@ -770,16 +769,27 @@ function* lookupField(
             }
             return yield* field.type();
         }
-        case "recover":
+        case "recover": {
+            return Ast.CTRecover();
+        }
         case "TypeAlias": {
             const type = yield* dealiasType(selfType, scopeRef);
             return yield* lookupField(type, fieldName, scopeRef);
         }
+        case "basic": {
+            if (selfType.type.kind === 'TypeStateInit') {
+                const type = stateInitFields.get(fieldName.text);
+                if (type) {
+                    return type;
+                }
+            }
+            yield ENoSuchField(fieldName.text, fieldName.loc);
+            return Ast.CTRecover();
+        }
         case "TypeParam":
         case "map_type":
         case "tuple_type":
-        case "tensor_type":
-        case "basic": {
+        case "tensor_type": {
             yield ENoSuchField(fieldName.text, fieldName.loc);
             return Ast.CTRecover();
         }
@@ -875,7 +885,7 @@ const decodeCodeOf: Decode<Ast.CodeOf, Ast.CCodeOf> = function* (node, ctx) {
         emptyEff,
     );
 };
-const ENotContract = (name: string, loc: Ast.Loc): Ast.TcError => ({
+const ENotContract = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`"${name}" is not a contract`)],
-});
+    Ast.TEText(`"${name}" is not a contract`),
+);

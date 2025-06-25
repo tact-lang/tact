@@ -25,12 +25,12 @@ export function* getInheritedTraits(
     return prevTraits;
 }
 
-const EUndefinedTrait = (name: string, loc: Ast.Loc): Ast.TcError => ({
+const EUndefinedTrait = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Traits "${name}" is not defined`)],
-});
+    Ast.TEText(`Traits "${name}" is not defined`),
+);
 
-const EOnlyTraits = (loc: Ast.Loc): Ast.TcError => ({
+const EOnlyTraits = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Can only inherit traits`)],
-});
+    Ast.TEText(`Can only inherit traits`),
+);

@@ -1,3 +1,6 @@
+import "./address";
+import "./context";
+
 /// Global function. Available since Tact 1.6.0.
 ///
 /// Computes and returns an `Int` value of the SHA-256 hash of the `code` and `data` of the given contract. To assemble the `code` and `data` cells together for hashing, the standard `Cell` representation is used.
@@ -83,17 +86,37 @@ inline fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address {
     return newAddress(chain, hash);
 }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Creates and returns a basechain address derived from a contract's `StateInit` (code and data).
+///
+/// ```tact
+/// fun example() {
+///     let code: Cell = loadCell(); // load contract code
+///     let data: Cell = loadCell(); // load contract data
+///     let state: StateInit = StateInit { code, data };
+///     let addr: BasechainAddress = contractBasechainAddress(state);
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-addresses#contractbasechainaddress
+///
+inline fun contractBasechainAddress(s: StateInit): BasechainAddress {
+    let hash = contractHash(s.code, s.data);
+    return newBasechainAddress(hash);
+}
+
 /// Struct containing the initial state, i.e. initial code and initial data of the given contract upon its deployment.
 ///
 /// See: https://docs.tact-lang.org/book/expressions#initof
 ///
-struct StateInit {
-    /// Initial code of the contract (compiled bitcode)
-    code: Cell;
+// struct StateInit {
+//     /// Initial code of the contract (compiled bitcode)
+//     code: Cell;
 
-    /// Initial data of the contract (parameters of `init()` function or contract parameters)
-    data: Cell;
-}
+//     /// Initial data of the contract (parameters of `init()` function or contract parameters)
+//     data: Cell;
+// }
 
 /// Global function. Available since Tact 1.6.1.
 ///

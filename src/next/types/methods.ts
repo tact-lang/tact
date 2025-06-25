@@ -115,10 +115,10 @@ export function* getMethodsGeneral(
 
     return all;
 }
-const EGenericMethod = (loc: Ast.Loc): Ast.TcError => ({
+const EGenericMethod = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Method cannot be generic`)],
-});
+    Ast.TEText(`Method cannot be generic`),
+);
 
 function decodeGetLazy(
     Lazy: Ast.ThunkBuilder,
@@ -202,26 +202,22 @@ function* checkMethodId(methodId: bigint, loc: Ast.Loc) {
     }
 }
 
-const EBadId = (loc: Ast.Loc): Ast.TcError => ({
+const EBadId = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Method ids must fit 19-bit signed integer range`)],
-});
-const EReservedTvmId = (loc: Ast.Loc): Ast.TcError => ({
+    Ast.TEText(`Method ids must fit 19-bit signed integer range`),
+);
+const EReservedTvmId = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `Method ids cannot overlap with the TVM reserved ids: -4, -3, -2, -1, 0 ... 2^14 - 1`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `Method ids cannot overlap with the TVM reserved ids: -4, -3, -2, -1, 0 ... 2^14 - 1`,
+    ),
+);
 const EReservedTactId = (
     loc: Ast.Loc,
     tactMethodIds: readonly bigint[],
-): Ast.TcError => ({
+) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `Method ids cannot overlap with Tact reserved method ids: ${tactMethodIds.map((n) => n.toString()).join(", ")}`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `Method ids cannot overlap with Tact reserved method ids: ${tactMethodIds.map((n) => n.toString()).join(", ")}`,
+    ),
+);

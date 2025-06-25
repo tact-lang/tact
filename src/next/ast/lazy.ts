@@ -70,9 +70,10 @@ const makeBuilder = (allContext: readonly E.TELine[]): ThunkBuilder => {
     };
 };
 
-const EOccurs = (loc: Loc, context: readonly E.TELine[]): E.TcError => ({
+const EOccurs = (loc: Loc, context: readonly E.TELine[]) => E.TcError(
     loc,
-    descr: [E.TEText(`Recursive definition`), ...context],
-});
+    E.TEText(`Recursive definition`),
+    ...context,
+);
 
 export const thunkBuilder = makeBuilder([]);

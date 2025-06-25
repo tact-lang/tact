@@ -11,10 +11,10 @@ export function* convertExprToLValue(
     }
     return result;
 }
-const ENoSelfAssign = (loc: Ast.Loc): Ast.TcError => ({
+const ENoSelfAssign = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Cannot assign to self`)],
-});
+    Ast.TEText(`Cannot assign to self`),
+);
 
 function* convertExprToLValueAux(
     node: Ast.CExpr,
@@ -60,12 +60,10 @@ function* convertExprToLValueAux(
         }
     }
 }
-const ENotLValue = (prev: Ast.Loc): Ast.TcError => ({
-    loc: prev,
-    descr: [
-        Ast.TEText(
-            `This expression cannot be used on the left side of assignment`,
-        ),
-        Ast.TECode(prev),
-    ],
-});
+const ENotLValue = (prev: Ast.Loc) => Ast.TcError(
+    prev,
+    Ast.TEText(
+        `This expression cannot be used on the left side of assignment`,
+    ),
+    Ast.TECode(prev),
+);

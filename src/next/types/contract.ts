@@ -167,16 +167,20 @@ function* decodeInit(
             Lazy,
             init.loc,
             statements,
-            emptyTypeParams,
-            selfTypeRef,
-            Lazy({
-                callback: function* () {
-                    return Void;
-                },
-                context: [],
-                loc: init.loc,
-                recover: Void,
-            }),
+            () => Ast.CTMethod(
+                true,
+                emptyTypeParams,
+                selfTypeRef(),
+                decodedParams,
+                Lazy({
+                    callback: function* () {
+                        return Void;
+                    },
+                    context: [],
+                    loc: init.loc,
+                    recover: Void,
+                }),
+            ),
             true,
             scopeRef,
         );
@@ -188,28 +192,24 @@ const EDuplicateParam = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): Ast.TcError => ({
-    loc: next,
-    descr: [
-        Ast.TEText(`Contract parameter ${name} was already defined`),
-        Ast.TEText(`New definition:`),
-        Ast.TECode(next),
-        Ast.TEText(`Previously defined at:`),
-        Ast.TECode(prev),
-    ],
-});
-const ENoInitializerParams = (loc: Ast.Loc): Ast.TcError => ({
+) => Ast.TcError(
+    next,
+    Ast.TEText(`Contract parameter ${name} was already defined`),
+    Ast.TEText(`New definition:`),
+    Ast.TECode(next),
+    Ast.TEText(`Previously defined at:`),
+    Ast.TECode(prev),
+);
+const ENoInitializerParams = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Contract parameters cannot have an initializer`)],
-});
-const ENoInitializerEmpty = (loc: Ast.Loc): Ast.TcError => ({
+    Ast.TEText(`Contract parameters cannot have an initializer`),
+);
+const ENoInitializerEmpty = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `When there is no init() or contract parameters, all fields must have an initializer`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `When there is no init() or contract parameters, all fields must have an initializer`,
+    ),
+);
 
 function* getMethodsFromContract(
     Lazy: Ast.ThunkBuilder,
@@ -314,23 +314,19 @@ function* getFieldishFromContract(
         return { order, map };
     }
 }
-const EFieldsTwice = (loc: Ast.Loc): Ast.TcError => ({
+const EFieldsTwice = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(`Cannot define other fields when using contract parameters`),
-    ],
-});
+    Ast.TEText(`Cannot define other fields when using contract parameters`),
+);
 const EAbstract = (
     kind: string,
     name: string,
     next: Ast.ViaMember,
-): Ast.TcError => ({
-    loc: next.defLoc,
-    descr: [
-        Ast.TEText(`Contract ${kind} "${name}" must have an initializer`),
-        Ast.TEViaMember(next),
-    ],
-});
+) => Ast.TcError(
+    next.defLoc,
+    Ast.TEText(`Contract ${kind} "${name}" must have an initializer`),
+    Ast.TEViaMember(next),
+);
 
 const recover: Ast.CContractMembers = {
     fieldish: Ast.Ordered([], new Map()),

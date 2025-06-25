@@ -219,15 +219,15 @@ const getArity = (decl: Ast.CTypeDecl): number => {
     }
 };
 
-const EBouncedMessage = (loc: Ast.Loc): Ast.TcError => ({
+const EBouncedMessage = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Only message types can be bounced<>`)],
-});
+    Ast.TEText(`Only message types can be bounced<>`),
+);
 
-const ETypeNotFound = (name: string, loc: Ast.Loc): Ast.TcError => ({
+const ETypeNotFound = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Type "${name}" is not defined`)],
-});
+    Ast.TEText(`Type "${name}" is not defined`),
+);
 
 function* matchArity(
     name: string,
@@ -247,19 +247,17 @@ const EArity = (
     expected: number,
     got: number,
     loc: Ast.Loc,
-): Ast.TcError => ({
+) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `Type "${name}" is expected to have ${expected} type arguments, got ${got}`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `Type "${name}" is expected to have ${expected} type arguments, got ${got}`,
+    ),
+);
 
-const ETraitNotType = (loc: Ast.Loc): Ast.TcError => ({
+const ETraitNotType = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Traits cannot be used as types`)],
-});
+    Ast.TEText(`Traits cannot be used as types`),
+);
 
 const dealiasTypeAux = (
     type: Ast.CType,
@@ -490,27 +488,25 @@ export function* instantiateStruct(
         }
     }
 }
-const ENoSuchType = (name: string, loc: Ast.Loc): Ast.TcError => ({
+const ENoSuchType = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Type ${name} is not defined`)],
-});
-const ENotInstantiable = (name: string, loc: Ast.Loc): Ast.TcError => ({
+    Ast.TEText(`Type ${name} is not defined`),
+);
+const ENotInstantiable = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Cannot create value of type ${name}`)],
-});
+    Ast.TEText(`Cannot create value of type ${name}`),
+);
 const ETypeArity = (
     name: string,
     loc: Ast.Loc,
     declArity: number,
     useArity: number,
-): Ast.TcError => ({
+) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `Type ${name} expects ${declArity} arguments, got ${useArity}`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `Type ${name} expects ${declArity} arguments, got ${useArity}`,
+    ),
+);
 
 export function typeParamsToSubst(typeParams: Ast.CTypeParams) {
     const subst: Map<string, Ast.CNotSet | Ast.CType> = new Map(
@@ -568,14 +564,14 @@ export function* assignType(
     }
     return yield* substToTypeArgMap(loc, subst);
 }
-const EFreeTypeParam = (paramName: string, loc: Ast.Loc): Ast.TcError => ({
+const EFreeTypeParam = (paramName: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`No substitution for type parameter "${paramName}"`)],
-});
-const EMismatch = (tree: Ast.MatchTree, loc: Ast.Loc): Ast.TcError => ({
+    Ast.TEText(`No substitution for type parameter "${paramName}"`),
+);
+const EMismatch = (tree: Ast.MatchTree, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Type mismatch`), Ast.TEMismatch(tree)],
-});
+    Ast.TEText(`Type mismatch`), Ast.TEMismatch(tree),
+);
 
 type AssignResult = AssignSuccess | AssignFailure;
 type AssignSuccess = {
@@ -638,14 +634,14 @@ export function assignTypeAux(
                 results.push(res.value);
                 continue;
             }
-            if (!results.length) {
-                return AssignSuccess();
-            }
             const toStr = printType(to, false);
             const fromStr = printType(from, false);
             if (!toStr || !fromStr) {
                 // if types have errors, we don't print the error
                 // because it resulted from another error
+                return AssignSuccess();
+            }
+            if (res.value && !results.length) {
                 return AssignSuccess();
             }
             return AssignFailure(Ast.MatchTree(to, from, results));
@@ -672,19 +668,11 @@ export function assignTypeAux(
                 return yield* rec(to, from);
             }
             case "type_ref": {
-                const typeVar = subst.get(to.name.text);
-                if (!typeVar) {
-                    return (
-                        to.kind === from.kind &&
-                        to.name.text === from.name.text &&
-                        (yield* recN(to.typeArgs, from.typeArgs))
-                    );
-                } else if (typeVar.kind === "not-set") {
-                    subst.set(to.name.text, from);
-                    return true;
-                } else {
-                    return yield* rec(typeVar, from);
-                }
+                return (
+                    to.kind === from.kind &&
+                    to.name.text === from.name.text &&
+                    (yield* recN(to.typeArgs, from.typeArgs))
+                );
             }
             case "tuple_type":
             case "tensor_type": {
@@ -694,15 +682,30 @@ export function assignTypeAux(
                 );
             }
             case "TypeParam": {
-                return to.kind === from.kind && to.name.text === from.name.text;
+                const typeVar = subst.get(to.name.text);
+                if (!typeVar) {
+                    return to.kind === from.kind && to.name.text === from.name.text;
+                } else if (typeVar.kind === "not-set") {
+                    subst.set(to.name.text, from);
+                    return true;
+                } else {
+                    return yield* rec(typeVar, from);
+                }
             }
             case "TypeBounced": {
                 return to.kind === from.kind && to.name.text === from.name.text;
             }
             case "TypeMaybe": {
                 return (
+                    // Maybe<Cell> := Null
                     (!strict && from.kind === "basic" && from.type.kind === "TypeNull") ||
-                    (to.kind === from.kind && (yield* rec(to.type, from.type)))
+                    (
+                        to.kind === from.kind
+                            // Maybe<Cell> := Maybe<Cell>
+                            ? yield* rec(to.type, from.type)
+                            // Maybe<Cell> := Cell
+                            : !strict && (yield* rec(to.type, from))
+                    )
                 );
             }
             case "map_type": {
@@ -714,7 +717,7 @@ export function assignTypeAux(
                 );
             }
             case "basic": {
-                return from.kind === to.kind;
+                return from.kind === to.kind && to.type.kind === from.type.kind;
             }
         }
     }
@@ -765,13 +768,11 @@ export function* mgu(
 
     return yield* rec(left, right);
 }
-const ENotUnifiable = (tree: Ast.MatchTree, loc: Ast.Loc): Ast.TcError => ({
+const ENotUnifiable = (tree: Ast.MatchTree, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(`Branches of condition have mismatched types`),
-        Ast.TEMismatch(tree),
-    ],
-});
+    Ast.TEText(`Branches of condition have mismatched types`),
+    Ast.TEMismatch(tree),
+);
 
 export type CallResult = {
     readonly returnType: Ast.CType;
@@ -835,13 +836,11 @@ const EMismatchArg = (
     name: string,
     tree: Ast.MatchTree,
     loc: Ast.Loc,
-): Ast.TcError => ({
+) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(`Type doesn't match type of parameter ${name}`),
-        Ast.TEMismatch(tree),
-    ],
-});
+    Ast.TEText(`Type doesn't match type of parameter ${name}`),
+    Ast.TEMismatch(tree),
+);
 
 function getParamName(name: Ast.OptionalId, index: number) {
     return name.kind === "id" ? name.text : `#${index + 1}`;
@@ -852,14 +851,12 @@ const EFnArity = (
     expected: number,
     got: number,
     loc: Ast.Loc,
-): Ast.TcError => ({
+) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `${kind} is expected to have ${expected} type arguments, got ${got}`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `${kind} is expected to have ${expected} type arguments, got ${got}`,
+    ),
+);
 
 export function* checkFnCallWithArgs(
     Lazy: Ast.ThunkBuilder,
@@ -893,10 +890,10 @@ export function* checkFnCallWithArgs(
         ),
     };
 }
-const ENoFunction = (loc: Ast.Loc): Ast.TcError => ({
+const ENoFunction = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`No such function`), Ast.TECode(loc)],
-});
+    Ast.TEText(`No such function`), Ast.TECode(loc),
+);
 
 function substFnType(
     Lazy: Ast.ThunkBuilder,
@@ -1089,10 +1086,10 @@ function typeArgsToParams(args: Ast.TypeArgs, params: Ast.CTypeParams) {
     return result;
 }
 
-const ENoMethod = (loc: Ast.Loc): Ast.TcError => ({
+const ENoMethod = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`No such method`), Ast.TECode(loc)],
-});
+    Ast.TEText(`No such method`), Ast.TECode(loc),
+);
 
 export function* assignMethodType(
     prev: Ast.CTMethod,
@@ -1142,33 +1139,29 @@ const EMismatchReturn = (
     tree: Ast.MatchTree,
     prev: Ast.Loc,
     next: Ast.Loc,
-): Ast.TcError => ({
-    loc: next,
-    descr: [
-        Ast.TEText(`Return type doesn't match with inherited method`),
-        Ast.TEMismatch(tree),
-        Ast.TEText(`Inherited from:`),
-        Ast.TECode(prev),
-        Ast.TEText(`Override at:`),
-        Ast.TECode(next),
-    ],
-});
+) => Ast.TcError(
+    next,
+    Ast.TEText(`Return type doesn't match with inherited method`),
+    Ast.TEMismatch(tree),
+    Ast.TEText(`Inherited from:`),
+    Ast.TECode(prev),
+    Ast.TEText(`Override at:`),
+    Ast.TECode(next),
+);
 
 const EMismatchParam = (
     name: string,
     tree: Ast.MatchTree,
     prev: Ast.Loc,
     next: Ast.Loc,
-): Ast.TcError => ({
-    loc: next,
-    descr: [
-        Ast.TEText(
-            `Type of parameter ${name} doesn't match with inherited method`,
-        ),
-        Ast.TEMismatch(tree),
-        Ast.TEText(`Inherited from:`),
-        Ast.TECode(prev),
-        Ast.TEText(`Override at:`),
-        Ast.TECode(next),
-    ],
-});
+) => Ast.TcError(
+    next,
+    Ast.TEText(
+        `Type of parameter ${name} doesn't match with inherited method`,
+    ),
+    Ast.TEMismatch(tree),
+    Ast.TEText(`Inherited from:`),
+    Ast.TECode(prev),
+    Ast.TEText(`Override at:`),
+    Ast.TECode(next),
+);

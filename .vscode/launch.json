@@ -12,7 +12,10 @@
             ],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "NODE_OPTIONS": "--stack-trace-limit=100000"
+            }
         }
     ]
 }

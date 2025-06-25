@@ -174,13 +174,11 @@ const EMethodOverlap = (
     name: string,
     prev: Ast.Via,
     next: Ast.ViaUser,
-): Ast.TcError => ({
-    loc: Ast.viaToRange(next),
-    descr: [
-        Ast.TEText(`Method "${name}" overlaps previously defined method`),
-        Ast.TEVia(prev),
-    ],
-});
+) => Ast.TcError(
+    Ast.viaToRange(next),
+    Ast.TEText(`Method "${name}" overlaps previously defined method`),
+    Ast.TEVia(prev),
+);
 
 function isCompatible(
     prev: Ast.CTMethod,
@@ -461,15 +459,13 @@ function* toGroundType(
     }
 }
 
-const EBadMethodType = (loc: Ast.Loc): Ast.TcError => ({
+const EBadMethodType = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `Type of self must either have no type parameters, or be a generic type with distinct type parameters`,
-        ),
-    ],
-});
-const ENoMethods = (kind: string, loc: Ast.Loc): Ast.TcError => ({
+    Ast.TEText(
+        `Type of self must either have no type parameters, or be a generic type with distinct type parameters`,
+    ),
+);
+const ENoMethods = (kind: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Cannot define methods on ${kind}`)],
-});
+    Ast.TEText(`Cannot define methods on ${kind}`),
+);

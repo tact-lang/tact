@@ -1266,11 +1266,7 @@ const parseTypeOptional =
     ({ type, optionals }: $ast.TypeOptional): Handler<Ast.Type> =>
     (ctx) => {
         return optionals.reduce((acc, optional) => {
-            return Ast.TCons(
-                Ast.TypeId("Maybe", ctx.toRange(optional.loc)),
-                [acc],
-                ctx.toRange(optional.loc),
-            );
+            return Ast.TMaybe(acc, ctx.toRange(optional.loc));
         }, parseType(type)(ctx));
     };
 
@@ -1299,6 +1295,8 @@ const parseTypeRegular =
                 return Ast.TBasic(Ast.TString(range), range);
             case "StringBuilder":
                 return Ast.TBasic(Ast.TStringBuilder(range), range);
+            case "StateInit":
+                return Ast.TBasic(Ast.TStateInit(range), range);
             case "Bounced":
                 ctx.err.mustBeGeneric()(range);
                 return Ast.TCons(Ast.TypeId("ERROR", range), [], range);

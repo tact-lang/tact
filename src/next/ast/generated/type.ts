@@ -38,13 +38,15 @@ export const TCons = (
     name: $c.TypeId,
     typeArgs: readonly $.Type[],
     loc: $c.Loc,
-): $.TCons =>
-    Object.freeze({
+): $.TCons => {
+    if (name.text === 'StateInit') debugger;
+    return Object.freeze({
         kind: "cons_type",
         name,
         typeArgs,
         loc,
     });
+};
 export type Type = $.Type;
 export type TMap = $.TMap;
 export const TMap = (key: $.Type, value: $.Type, loc: $c.Loc): $.TMap =>

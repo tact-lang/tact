@@ -1,3 +1,5 @@
+import "./cells";
+
 /// Ordinary message (default).
 ///
 /// This constant is available since Tact 1.6.0.

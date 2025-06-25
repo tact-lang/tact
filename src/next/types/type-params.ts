@@ -23,7 +23,7 @@ export function* decodeTypeParams(
     return Ast.CTypeParams(ids, set);
 }
 
-const EDuplicateTypeParam = (name: string, loc: Ast.Loc): Ast.TcError => ({
+const EDuplicateTypeParam = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Duplicate type parameter "${name}"`)],
-});
+    Ast.TEText(`Duplicate type parameter "${name}"`),
+);

@@ -26,24 +26,37 @@ export function decodeStatementsLazy(
     Lazy: Ast.ThunkBuilder,
     loc: Ast.Loc,
     statements: readonly Ast.Statement[],
-    typeParams: Ast.CTypeParams,
-    selfTypeRef: () => undefined | Ast.SelfType,
-    returnType: Ast.Thunk<Ast.CType>,
+    fnTypeRef: () => Ast.CTFunction | Ast.CTMethod,
+    // typeParams: Ast.CTypeParams,
+    // selfTypeRef: () => undefined | Ast.SelfType,
+    // returnType: Ast.Thunk<Ast.CType>,
     isInit: boolean,
     scopeRef: () => Ast.CSource,
+    // localScopeRef: ReadonlyMap<string, [Ast.CType, Ast.Loc]>,
 ) {
     return Lazy({
         callback: function* (Lazy) {
-            const selfType = selfTypeRef();
-            const required = isInit ? yield* getRequired(selfType) : undefined;
+            const fnType = fnTypeRef();
+            const selfType = fnType.kind === "DecodedMethodType"
+                ? fnType.self
+                : undefined;
+            const required = isInit
+                ? yield* getRequired(selfType)
+                : undefined;
+            const localScopeRef: Map<string, [Ast.CType, Ast.Loc]> = new Map();
+            for (const { loc, name, type } of fnType.params.order) {
+                if (name.kind === 'id') {
+                    localScopeRef.set(name.text, [yield* type(), loc]);
+                }
+            }
             const ctx: Context = {
                 Lazy,
-                localScopeRef: new Map(),
+                localScopeRef,
                 required,
-                returnType: yield* returnType(),
+                returnType: yield* fnType.returnType(),
                 scopeRef,
                 selfType,
-                typeParams,
+                typeParams: fnType.typeParams,
             };
             const res = yield* decodeStmts(statements, ctx, emptyEff);
             return Ast.CStatementsAux(res.value, res.effects);
@@ -61,6 +74,7 @@ const decodeStmts: Decode<
     const results: Ast.CStmt[] = [];
     let state = [ctx, eff] as const;
     for (const node of nodes) {
+        const [ctx, eff] = state;
         const result = yield* decodeStatement(node, ctx, eff);
         results.push(result.value);
         state = [result.context, allEff([eff, result.effects])];
@@ -146,12 +160,10 @@ const decodeReturn: Decode<Ast.StatementReturn, Ast.CStmtReturn> = function* (no
         exitEff(expr ? expr.eff : emptyEff),
     );
 };
-const EMissingSelfInit = (name: string, loc: Ast.Loc): Ast.TcError => ({
+const EMissingSelfInit = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(`Field "self.${name}" is not initialized by this moment`),
-    ],
-});
+    Ast.TEText(`Field "self.${name}" is not initialized by this moment`),
+);
 function* checkReturnExpr(node: Ast.Expression | undefined, ctx: Context) {
     if (!node) {
         return undefined;
@@ -512,31 +524,27 @@ function* checkFields(
     );
     return [Ast.Ordered(order, result), ctx];
 }
-const EMissingField = (name: string, prev: Ast.Loc): Ast.TcError => ({
-    loc: prev,
-    descr: [
-        Ast.TEText(`Value for field "${name}" is missing`),
-        Ast.TECode(prev),
-    ],
-});
-const ENoSuchField = (name: string, next: Ast.Loc): Ast.TcError => ({
-    loc: next,
-    descr: [Ast.TEText(`There is no field "${name}"`), Ast.TECode(next)],
-});
+const EMissingField = (name: string, prev: Ast.Loc) => Ast.TcError(
+    prev,
+    Ast.TEText(`Value for field "${name}" is missing`),
+    Ast.TECode(prev),
+);
+const ENoSuchField = (name: string, next: Ast.Loc) => Ast.TcError(
+    next,
+    Ast.TEText(`There is no field "${name}"`), Ast.TECode(next),
+);
 const EDuplicateField = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): Ast.TcError => ({
-    loc: prev,
-    descr: [
-        Ast.TEText(`Duplicate field "${name}"`),
-        Ast.TEText(`Defined at:`),
-        Ast.TECode(next),
-        Ast.TEText(`Previously defined at:`),
-        Ast.TECode(prev),
-    ],
-});
+) => Ast.TcError(
+    prev,
+    Ast.TEText(`Duplicate field "${name}"`),
+    Ast.TEText(`Defined at:`),
+    Ast.TECode(next),
+    Ast.TEText(`Previously defined at:`),
+    Ast.TECode(prev),
+);
 function* findStruct(
     id: Ast.TypeId,
     typeArgs: Ast.CType[],
@@ -574,10 +582,10 @@ function* findStruct(
         }
     }
 }
-const ENotDestructible = (name: string, prev: Ast.Loc): Ast.TcError => ({
-    loc: prev,
-    descr: [Ast.TEText(`Type "${name}" doesn't `), Ast.TECode(prev)],
-});
+const ENotDestructible = (name: string, prev: Ast.Loc) => Ast.TcError(
+    prev,
+    Ast.TEText(`Type "${name}" doesn't `), Ast.TECode(prev),
+);
 
 const decodeBlock: Decode<Ast.StatementBlock, Ast.CStmtBlock> = function* (
     node,
@@ -652,38 +660,34 @@ function* defineVar(
     localScopeRef.set(node.text, [type, node.loc]);
     return { ...ctx, localScopeRef };
 }
-const ENoDefineSelf = (loc: Ast.Loc): Ast.TcError => ({
+const ENoDefineSelf = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Cannot define a variable "self"`)],
-});
+    Ast.TEText(`Cannot define a variable "self"`),
+);
 const ERedefineVar = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): Ast.TcError => ({
-    loc: next,
-    descr: [
-        Ast.TEText(`Variable ${name} is already defined`),
-        Ast.TEText(`Defined at:`),
-        Ast.TECode(next),
-        Ast.TEText(`Previously defined at:`),
-        Ast.TECode(prev),
-    ],
-});
+) => Ast.TcError(
+    next,
+    Ast.TEText(`Variable ${name} is already defined`),
+    Ast.TEText(`Defined at:`),
+    Ast.TECode(next),
+    Ast.TEText(`Previously defined at:`),
+    Ast.TECode(prev),
+);
 const EShadowConst = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): Ast.TcError => ({
-    loc: next,
-    descr: [
-        Ast.TEText(`Variable ${name} shadows a global constant`),
-        Ast.TEText(`Defined at:`),
-        Ast.TECode(next),
-        Ast.TEText(`Previously defined at:`),
-        Ast.TECode(prev),
-    ],
-});
+) => Ast.TcError(
+    next,
+    Ast.TEText(`Variable ${name} shadows a global constant`),
+    Ast.TEText(`Defined at:`),
+    Ast.TECode(next),
+    Ast.TEText(`Previously defined at:`),
+    Ast.TECode(prev),
+);
 
 function* getRequired(
     selfType: Ast.SelfType | undefined,

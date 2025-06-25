@@ -1,3 +1,7 @@
+import "./debug";
+import "./cells";
+import "./exit-codes";
+
 /// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Casts the `Slice` to an `Address` in a given `chain` ID and returns it. The inverse of `Address.asSlice()` and a safe but more gas-expensive version of `Slice.asAddressUnsafe()`.
@@ -313,26 +317,6 @@ inline fun emptyBasechainAddress(): BasechainAddress {
 ///
 inline fun newBasechainAddress(hash: Int): BasechainAddress {
     return BasechainAddress { hash };
-}
-
-/// Global function. Available since Tact 1.6.0.
-///
-/// Creates and returns a basechain address derived from a contract's `StateInit` (code and data).
-///
-/// ```tact
-/// fun example() {
-///     let code: Cell = loadCell(); // load contract code
-///     let data: Cell = loadCell(); // load contract data
-///     let state: StateInit = StateInit { code, data };
-///     let addr: BasechainAddress = contractBasechainAddress(state);
-/// }
-/// ```
-///
-/// See: https://docs.tact-lang.org/ref/core-addresses#contractbasechainaddress
-///
-inline fun contractBasechainAddress(s: StateInit): BasechainAddress {
-    let hash = contractHash(s.code, s.data);
-    return newBasechainAddress(hash);
 }
 
 /// Extension function for the `Builder` type. Available since Tact 1.6.0.

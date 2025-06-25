@@ -178,15 +178,13 @@ function decodeField(
     return Ast.DeclMem(Ast.CField(decoded, init), nextVia);
 }
 
-const EMustCopyField = (name: string, prev: Ast.ViaMember): Ast.TcError => ({
-    loc: prev.defLoc,
-    descr: [
-        Ast.TEText(
-            `Field "${name}" was defined in parent trait, but never mentioned`,
-        ),
-        Ast.TEViaMember(prev),
-    ],
-});
+const EMustCopyField = (name: string, prev: Ast.ViaMember) => Ast.TcError(
+    prev.defLoc,
+    Ast.TEText(
+        `Field "${name}" was defined in parent trait, but never mentioned`,
+    ),
+    Ast.TEViaMember(prev),
+);
 
 function* decodeConstant(
     Lazy: Ast.ThunkBuilder,

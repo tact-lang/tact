@@ -85,6 +85,11 @@ export const Maybe = (t: Ast.CType) => Ast.CTMaybe(t, r);
 export const Unit = Ast.TUnit(r);
 export const StateInit = Ast.CTBasic(Ast.TStateInit(r), r);
 
+export const stateInitFields = new Map([
+    ["code", Cell],
+    ["data", Cell],
+]);
+
 export const builtinTypes = new Map(
     [
         "Int",
@@ -99,6 +104,7 @@ export const builtinTypes = new Map(
         "StringBuilder",
         "Map",
         "Maybe",
+        "StateInit",
     ].map((s) => [s, s]),
 );
 

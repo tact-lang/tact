@@ -26,19 +26,12 @@ export function* decodeBody(
             );
         }
         case "regular_body": {
-            const selfTypeRef = () => {
-                return fnType.kind === "DecodedMethodType"
-                    ? fnType.self
-                    : undefined;
-            };
             return Ast.CTactBody(
                 decodeStatementsLazy(
                     Lazy,
                     loc,
                     node.statements,
-                    fnType.typeParams,
-                    selfTypeRef,
-                    fnType.returnType,
+                    () => fnType,
                     true,
                     scopeRef,
                 ),
@@ -62,10 +55,10 @@ export function* decodeBody(
     }
 }
 
-const ENoBody = (loc: Ast.Loc): Ast.TcError => ({
+const ENoBody = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Function must have a body`)],
-});
+    Ast.TEText(`Function must have a body`),
+);
 
 function* checkShuffle(
     shuffle: Ast.AsmShuffle,
@@ -88,6 +81,10 @@ function* checkShuffle(
             } else {
                 paramsArray.push(typedId.name.text);
             }
+        }
+
+        if (fnType.kind === 'DecodedMethodType') {
+            paramsArray.push("self");
         }
 
         const paramSet = new Set(paramsArray);
@@ -140,7 +137,7 @@ function* getRetTupleSize(
     return baseSize + (kind === "DecodedMethodType" ? 1 : 0);
 }
 
-function* getTypeTupleSize(type: Ast.CType, scopeRef: () => Ast.CSource) {
+function* getTypeTupleSize(type: Ast.CType, scopeRef: () => Ast.CSource): Ast.Log<number | undefined> {
     switch (type.kind) {
         case "recover": {
             return undefined;
@@ -190,7 +187,7 @@ function* getTypeTupleSize(type: Ast.CType, scopeRef: () => Ast.CSource) {
             return undefined;
         }
         case "TypeMaybe": {
-            return getTypeTupleSize(type.type, scopeRef);
+            return yield* getTypeTupleSize(type.type, scopeRef);
         }
         case "tuple_type": {
             return 1;
@@ -223,51 +220,43 @@ function* getTypeTupleSize(type: Ast.CType, scopeRef: () => Ast.CSource) {
     }
 }
 
-const EDuplicateArgs = (loc: Ast.Loc): Ast.TcError => ({
+const EDuplicateArgs = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Argument rearrangement cannot have duplicates`)],
-});
+    Ast.TEText(`Argument rearrangement cannot have duplicates`),
+);
 
-const EWildcardArgs = (loc: Ast.Loc): Ast.TcError => ({
+const EWildcardArgs = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Argument rearrangement cannot use wildcards`)],
-});
+    Ast.TEText(`Argument rearrangement cannot use wildcards`)
+);
 
-const EMissingArgs = (loc: Ast.Loc): Ast.TcError => ({
+const EMissingArgs = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `Argument rearrangement must mention all function parameters`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `Argument rearrangement must mention all function parameters`,
+    ),
+);
 
-const EExtraArgs = (loc: Ast.Loc): Ast.TcError => ({
+const EExtraArgs = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `Argument rearrangement must mention only function parameters`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `Argument rearrangement must mention only function parameters`,
+    ),
+);
 
-const EDuplicateRet = (loc: Ast.Loc): Ast.TcError => ({
+const EDuplicateRet = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Return rearrangement cannot have duplicates`)],
-});
+    Ast.TEText(`Return rearrangement cannot have duplicates`)
+);
 
-const EMissingRet = (loc: Ast.Loc): Ast.TcError => ({
+const EMissingRet = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(`Return rearrangement must mention all function parameters`),
-    ],
-});
+    Ast.TEText(`Return rearrangement must mention all function parameters`),
+);
 
-const EExtraRet = (loc: Ast.Loc): Ast.TcError => ({
+const EExtraRet = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `Return rearrangement must mention only function parameters`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `Return rearrangement must mention only function parameters`,
+    ),
+);

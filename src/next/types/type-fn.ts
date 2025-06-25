@@ -52,7 +52,7 @@ function* decodeParamName(
     return recoverName(name, set);
 }
 
-const EDuplicateParam = (name: string, loc: Ast.Loc): Ast.TcError => ({
+const EDuplicateParam = (name: string, loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Duplicate parameter "${name}"`)],
-});
+    Ast.TEText(`Duplicate parameter "${name}"`),
+);

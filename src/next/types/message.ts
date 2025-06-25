@@ -47,18 +47,18 @@ export function* decodeMessage(
 
     return Ast.CMessage(lazyExpr, fields);
 }
-const EZero = (next: Ast.Loc): Ast.TcError => ({
-    loc: next,
-    descr: [Ast.TEText(`Zero opcode is reserved for text comments`)],
-});
-const ENegative = (next: Ast.Loc): Ast.TcError => ({
-    loc: next,
-    descr: [Ast.TEText(`Opcode must be positive`)],
-});
-const ETooLarge = (next: Ast.Loc): Ast.TcError => ({
-    loc: next,
-    descr: [Ast.TEText(`Opcode is too large`)],
-});
+const EZero = (next: Ast.Loc) => Ast.TcError(
+    next,
+    Ast.TEText(`Zero opcode is reserved for text comments`),
+);
+const ENegative = (next: Ast.Loc) => Ast.TcError(
+    next,
+    Ast.TEText(`Opcode must be positive`),
+);
+const ETooLarge = (next: Ast.Loc) => Ast.TcError(
+    next,
+    Ast.TEText(`Opcode is too large`),
+);
 
 function* decodeOpcode(
     Lazy: Ast.ThunkBuilder,

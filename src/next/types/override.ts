@@ -80,38 +80,32 @@ const ENeedOverride = (
     name: string,
     prev: Ast.ViaMember,
     next: Ast.ViaMember,
-): Ast.TcError => ({
-    loc: next.defLoc,
-    descr: [
-        Ast.TEText(`Overriding "${name}" without "override"`),
-        Ast.TEText(`First defined at`),
-        Ast.TEViaMember(prev),
-        Ast.TEText(`Redefined at`),
-        Ast.TEViaMember(next),
-    ],
-});
+) => Ast.TcError(
+    next.defLoc,
+    Ast.TEText(`Overriding "${name}" without "override"`),
+    Ast.TEText(`First defined at`),
+    Ast.TEViaMember(prev),
+    Ast.TEText(`Redefined at`),
+    Ast.TEViaMember(next),
+);
 
 const ENeedAbstract = (
     name: string,
     prev: Ast.ViaMember,
     next: Ast.ViaMember,
-): Ast.TcError => ({
-    loc: next.defLoc,
-    descr: [
-        Ast.TEText(
-            `To override "${name}" it has to be "virtual" or "abstract"`,
-        ),
-        Ast.TEText(`First defined at`),
-        Ast.TEViaMember(prev),
-        Ast.TEText(`Redefined at`),
-        Ast.TEViaMember(next),
-    ],
-});
+) => Ast.TcError(
+    next.defLoc,
+    Ast.TEText(
+        `To override "${name}" it has to be "virtual" or "abstract"`,
+    ),
+    Ast.TEText(`First defined at`),
+    Ast.TEViaMember(prev),
+    Ast.TEText(`Redefined at`),
+    Ast.TEViaMember(next),
+);
 
-const EEmptyOverride = (name: string, next: Ast.ViaMember): Ast.TcError => ({
-    loc: next.defLoc,
-    descr: [
-        Ast.TEText(`To override "${name}" it has to exist`),
-        Ast.TEViaMember(next),
-    ],
-});
+const EEmptyOverride = (name: string, next: Ast.ViaMember) => Ast.TcError(
+    next.defLoc,
+    Ast.TEText(`To override "${name}" it has to exist`),
+    Ast.TEViaMember(next),
+);

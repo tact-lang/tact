@@ -68,10 +68,10 @@ export function* decodeTrait(
     return traitSig;
 }
 
-const ENoAttributes = (loc: Ast.Loc): Ast.TcError => ({
+const ENoAttributes = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [Ast.TEText(`Traits cannot have attributes`)],
-});
+    Ast.TEText(`Traits cannot have attributes`),
+);
 
 const recover: Ast.CTraitMembers = {
     fieldish: Ast.Ordered([], new Map()),

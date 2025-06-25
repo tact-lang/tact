@@ -157,32 +157,41 @@ function* mergeReceivers(
         via,
         decl: [subKind, body],
     } of local) {
-        const statements = decodeStatementsLazy(
+        const statements = (params: Ast.CParameters) => decodeStatementsLazy(
             Lazy,
             via.defLoc,
             body,
-            emptyTypeParams,
-            selfTypeRef,
-            Lazy({
-                callback: function* () {
-                    return Void;
-                },
-                context: [],
-                loc: via.defLoc,
-                recover: Void,
-            }),
+            () => Ast.CTMethod(
+                true,
+                emptyTypeParams,
+                selfTypeRef(),
+                params,
+                Lazy({
+                    callback: function* () {
+                        return Void;
+                    },
+                    context: [],
+                    loc: via.defLoc,
+                    recover: Void,
+                })
+            ),
             true,
             scopeRef,
         );
         switch (subKind.kind) {
             case "simple": {
-                const { name, type } = subKind.param;
-                const decoded = yield* decodeDealiasTypeLazy(
+                const { name, type, loc } = subKind.param;
+                const decodedLazy = decodeDealiasTypeLazy(
                     Lazy,
                     emptyTypeParams,
                     type,
                     scopeRef,
-                )();
+                );
+                const decoded = yield* decodedLazy();
+                const parameters = Ast.CParameters(
+                    [Ast.CParameter(name, decodedLazy, loc)],
+                    name.kind === 'id' ? new Set([name.text]) : new Set()
+                );
                 if (decoded.kind === "basic" && decoded.type.kind === "TySlice") {
                     if (allMessageAny) {
                         yield ERedefineReceiver(
@@ -192,7 +201,7 @@ function* mergeReceivers(
                         );
                     }
                     allMessageAny = Ast.DeclMem(
-                        Ast.CReceiverMessageAny(name, statements),
+                        Ast.CReceiverMessageAny(name, statements(parameters)),
                         via,
                     );
                 } else if (decoded.kind === "basic" && decoded.type.kind === "TypeString") {
@@ -204,13 +213,13 @@ function* mergeReceivers(
                         );
                     }
                     allStringAny = Ast.DeclMem(
-                        Ast.CReceiverStringAny(name, statements),
+                        Ast.CReceiverStringAny(name, statements(parameters)),
                         via,
                     );
                 } else if (decoded.kind === "type_ref") {
                     allMessage.push(
                         Ast.DeclMem(
-                            Ast.CReceiverMessage(name, decoded, statements),
+                            Ast.CReceiverMessage(name, decoded, statements(parameters)),
                             via,
                         ),
                     );
@@ -227,13 +236,15 @@ function* mergeReceivers(
                         via,
                     );
                 }
-                allEmpty = Ast.DeclMem(Ast.CReceiverEmpty(statements), via);
+                const parameters = Ast.CParameters([], new Set());
+                allEmpty = Ast.DeclMem(Ast.CReceiverEmpty(statements(parameters)), via);
                 continue;
             }
             case "comment": {
+                const parameters = Ast.CParameters([], new Set());
                 allMessage.push(
                     Ast.DeclMem(
-                        Ast.CReceiverString(subKind.comment.value, statements),
+                        Ast.CReceiverString(subKind.comment.value, statements(parameters)),
                         via,
                     ),
                 );
@@ -298,31 +309,40 @@ function* mergeBounce(
     // local
     for (const {
         via,
-        decl: [{ name, type }, body],
+        decl: [{ name, type, loc }, body],
     } of local) {
-        const statements = decodeStatementsLazy(
-            Lazy,
-            via.defLoc,
-            body,
-            emptyTypeParams,
-            selfTypeRef,
-            Lazy({
-                callback: function* () {
-                    return Void;
-                },
-                context: [],
-                loc: via.defLoc,
-                recover: Void,
-            }),
-            true,
-            scopeRef,
-        );
-        const decoded = yield* decodeDealiasTypeLazy(
+        const decodedLazy = decodeDealiasTypeLazy(
             Lazy,
             emptyTypeParams,
             type,
             scopeRef,
-        )();
+        );
+        const decoded = yield* decodedLazy();
+        const parameters = Ast.CParameters(
+            [Ast.CParameter(name, decodedLazy, loc)],
+            name.kind === 'id' ? new Set([name.text]) : new Set()
+        );
+        const statements = decodeStatementsLazy(
+            Lazy,
+            via.defLoc,
+            body,
+            () => Ast.CTMethod(
+                true,
+                emptyTypeParams,
+                selfTypeRef(),
+                parameters,
+                Lazy({
+                    callback: function* () {
+                        return Void;
+                    },
+                    context: [],
+                    loc: via.defLoc,
+                    recover: Void,
+                })
+            ),
+            true,
+            scopeRef,
+        );
         if (decoded.kind === "basic" && decoded.type.kind === "TySlice") {
             if (allMessageAny) {
                 yield ERedefineReceiver(
@@ -353,26 +373,22 @@ function* mergeBounce(
     };
 }
 
-const EInvalidRecv = (loc: Ast.Loc): Ast.TcError => ({
+const EInvalidRecv = (loc: Ast.Loc) => Ast.TcError(
     loc,
-    descr: [
-        Ast.TEText(
-            `Receiver's parameter must be a message type, Slice, or String`,
-        ),
-    ],
-});
+    Ast.TEText(
+        `Receiver's parameter must be a message type, Slice, or String`,
+    ),
+);
 
 const ERedefineReceiver = (
     kind: string,
     prev: Ast.ViaMember,
     next: Ast.ViaMember,
-): Ast.TcError => ({
-    loc: next.defLoc,
-    descr: [
-        Ast.TEText(`There already is a ${kind} receiver`),
-        Ast.TEText(`First defined at`),
-        Ast.TEViaMember(prev),
-        Ast.TEText(`Redefined at`),
-        Ast.TEViaMember(next),
-    ],
-});
+) => Ast.TcError(
+    next.defLoc,
+    Ast.TEText(`There already is a ${kind} receiver`),
+    Ast.TEText(`First defined at`),
+    Ast.TEViaMember(prev),
+    Ast.TEText(`Redefined at`),
+    Ast.TEViaMember(next),
+);

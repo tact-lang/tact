@@ -93,13 +93,11 @@ const EDuplicateField = (
     name: string,
     prev: Ast.Loc,
     next: Ast.Loc,
-): Ast.TcError => ({
-    loc: next,
-    descr: [
-        Ast.TEText(`Duplicate field ${name}`),
-        Ast.TEText(`New definition:`),
-        Ast.TECode(next),
-        Ast.TEText(`Previously defined at:`),
-        Ast.TECode(prev),
-    ],
-});
+) => Ast.TcError(
+    next,
+    Ast.TEText(`Duplicate field ${name}`),
+    Ast.TEText(`New definition:`),
+    Ast.TECode(next),
+    Ast.TEText(`Previously defined at:`),
+    Ast.TECode(prev),
+);

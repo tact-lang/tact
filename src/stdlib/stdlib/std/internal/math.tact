@@ -1,3 +1,5 @@
+import "./debug";
+
 // Prepare random
 
 /// Global function.
