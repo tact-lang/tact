@@ -13,7 +13,7 @@ export function zeroStoragePrices(configRaw: Cell): Cell {
     });
 }
 
-export function setStoragePrices(configRaw: Cell, prices: StoragePrices): Cell {
+function setStoragePrices(configRaw: Cell, prices: StoragePrices): Cell {
     const storagePricesDict = Dictionary.empty<number, StoragePrices>();
 
     storagePricesDict.set(0, prices);
