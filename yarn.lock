@@ -1426,6 +1426,14 @@
     chalk "^4.1.2"
     table "^6.9.0"
 
+"@ton/sandbox@^0.33.0":
+  version "0.33.0"
+  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.33.0.tgz#62efc1e8e0c5d7dcb8101a2709387e7c320839ea"
+  integrity sha512-hhPXaan9PNSGUY3NtG8g5e7lgzy81gh+pnp4dagvwFVp1F4iqfGXjIAYc0sTIT/UVIb1U64fTS+STbTgpXni1A==
+  dependencies:
+    chalk "^4.1.2"
+    table "^6.9.0"
+
 "@ton/test-utils@^0.7.0":
   version "0.7.0"
   resolved "https://npm.dev-internal.org/@ton/test-utils/-/test-utils-0.7.0.tgz#c70dd68f5155edfc68482ea1050fda73511f0c92"
