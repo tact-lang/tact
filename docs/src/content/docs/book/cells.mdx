@@ -61,9 +61,17 @@ The standard [`Cell{:tact}`](#cells) representation is a common serialization fo
 
 Then, the data bits of the cell themselves are serialized as $\lceil\frac{b}{8}\rceil$ 8-bit octets (bytes). If $b$ is not a multiple of eight, a binary `1` followed by up to six binary `0`s is appended to the data bits.
 
-Next, 2 bytes store the depth of the refs, i.e., the number of cells between the root of the cell tree (the current cell) and the deepest reference, including it. For example, a cell containing only one reference and no further references would have a depth of 1, while the referenced cell would have a depth of 0.
+Next, for every referenced cell, 2 bytes store the depth of the refs, i.e., the number of cells between the root of the cell tree (the current cell) and the deepest reference, including it. For example, a cell containing only one reference and no further references would have a depth of 1, while the referenced cell would have a depth of 0.
 
 Finally, for every referenced cell, the [SHA-256][sha-2] hash of its standard representation is stored, occupying 32 bytes per referenced cell, recursively repeating the said algorithm. Note that cyclic cell references are not allowed, so this recursion always terminates in a well-defined manner.
+
+If there are no referenced cells, no depth or hashes are stored.
+
+:::note
+
+This process might differ for exotic cells, or cells, that contain exotic cells in their subtree. [Kinds of cells](#cells-kinds)
+
+:::
 
 If we were to compute the hash of the standard representation of this cell, all bytes from the above steps would be concatenated together and then hashed using the [SHA-256][sha-2] hash function. This is the algorithm behind the [`HASHCU` and `HASHSU` instructions](https://docs.ton.org/learn/tvm-instructions/instructions) of [TVM][tvm] and the respective [`Cell.hash(){:tact}`](/ref/core-cells#cellhash) and [`Slice.hash(){:tact}`](/ref/core-cells#slicehash) functions of Tact.
 
