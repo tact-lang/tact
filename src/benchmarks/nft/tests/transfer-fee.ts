@@ -229,7 +229,7 @@ export const testTransferForwardFeeDouble = (
         const setup = async () => {
             return await globalSetup(fromInitItem);
         };
-        it("should false with only one fwd fee on balance", async () => {
+        it("should fail with only one fwd fee on balance", async () => {
             const { itemNFT, owner, notOwner, balance, fwdFeeDouble } =
                 await setup();
             const trxResult = await sendTransfer(

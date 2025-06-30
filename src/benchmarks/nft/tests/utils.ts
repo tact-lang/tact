@@ -71,7 +71,7 @@ export const ErrorCodes = {
     /** Error code for invalid fees */
     InvalidFees: Number(InvalidFees),
     /** Error code for incorrect index */
-    IncorrectIndex: Number(Number(IncorrectIndex)),
+    IncorrectIndex: Number(IncorrectIndex),
     /** Error code for incorrect deployer */
     IncorrectDeployer: Number(IncorrectDeployer),
     /** Error code for invalid data */
