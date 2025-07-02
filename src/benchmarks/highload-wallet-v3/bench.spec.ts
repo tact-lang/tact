@@ -14,92 +14,34 @@ import {
 } from "@/benchmarks/utils/gas";
 
 import { resolve } from "path";
-import type { OutAction } from "@ton/core";
 import {
     beginCell,
-    Cell,
-    contractAddress,
     Dictionary,
     SendMode,
     toNano,
     internal as internal_relaxed,
-    storeOutList,
-    storeMessageRelaxed,
 } from "@ton/core";
-import { posixNormalize } from "@/utils/filePath";
-import { readFileSync } from "fs";
-import type {
-    ExternalRequest,
-    MsgInner,
-} from "@/benchmarks/highload-wallet-v3/tact/output/highload-wallet-v3_HighloadWalletV3";
-import {
-    HighloadWalletV3,
-    storeExternalRequest,
-    storeInternalTransfer,
-    storeMsgInner,
-} from "@/benchmarks/highload-wallet-v3/tact/output/highload-wallet-v3_HighloadWalletV3";
+import { HighloadWalletV3 } from "@/benchmarks/highload-wallet-v3/tact/output/highload-wallet-v3_HighloadWalletV3";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import type { KeyPair } from "@ton/crypto";
-import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";
+import { getSecureRandomBytes, keyPairFromSeed } from "@ton/crypto";
 import { type Step, writeLog } from "@/test/utils/write-vm-log";
-import { HighloadQueryId } from "@/benchmarks/highload-wallet-v3/tests/HighloadQueryId";
+import { HighloadQueryId } from "@/benchmarks/highload-wallet-v3/tests/highload-query-id";
 import { bufferToBigInt } from "@/benchmarks/wallet-v5/utils";
+import {
+    createExternalRequestCell,
+    createInternalTransfer,
+    DEFAULT_TIMEOUT,
+    fromInitHighloadWalletV3_FunC,
+    SUBWALLET_ID,
+    type FromInitHighloadWalletV3,
+} from "@/benchmarks/highload-wallet-v3/tests/utils";
 
-const createInternalTransferBody = (opts: {
-    actions: OutAction[] | Cell;
-    queryId: HighloadQueryId;
-}) => {
-    let actionsCell: Cell;
-    if (opts.actions instanceof Cell) {
-        actionsCell = opts.actions;
-    } else {
-        if (opts.actions.length > 254) {
-            throw TypeError(
-                "Max allowed action count is 254. Use packActions instead.",
-            );
-        }
-        const actionsBuilder = beginCell();
-        storeOutList(opts.actions)(actionsBuilder);
-        actionsCell = actionsBuilder.endCell();
-    }
-    return beginCell()
-        .store(
-            storeInternalTransfer({
-                $$type: "InternalTransfer",
-                queryID: opts.queryId.getQueryId(),
-                actions: actionsCell,
-            }),
-        )
-        .endCell();
-};
-
-const createInternalTransfer = (
-    wallet: SandboxContract<HighloadWalletV3>,
-    opts: {
-        actions: OutAction[] | Cell;
-        queryId: HighloadQueryId;
-        value: bigint;
-    },
-) => {
-    return internal_relaxed({
-        to: wallet.address,
-        value: opts.value,
-        body: createInternalTransferBody(opts),
-    });
-};
-
-function testHighloadWalletV3(
+function benchHighloadWalletV3(
     benchmarkResult: BenchmarkResult,
     codeSizeResults: CodeSizeResult,
-    fromInit: (
-        publicKey: bigint,
-        subwalletID: bigint,
-        oldQueries: Dictionary<number, Cell>,
-        queries: Dictionary<number, Cell>,
-        lastCleanTime: bigint,
-        timeout: bigint,
-    ) => Promise<HighloadWalletV3>,
+    fromInit: FromInitHighloadWalletV3,
 ) {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
@@ -108,9 +50,6 @@ function testHighloadWalletV3(
     let keypair: KeyPair;
 
     let step: Step;
-
-    const DEFAULT_TIMEOUT = 120n;
-    const SUBWALLET_ID = 0n;
 
     const justTestFlow = async (kind: "external" | "internal") => {
         const testReceiver = receiver.address;
@@ -134,38 +73,17 @@ function testHighloadWalletV3(
             value: forwardToSelfValue,
         });
 
-        const msgInnerStruct: MsgInner = {
-            $$type: "MsgInner",
-            subwalletID: SUBWALLET_ID,
-            messageToSend: beginCell()
-                .store(storeMessageRelaxed(internalMessage))
-                .endCell(),
-            sendMode: BigInt(SendMode.PAY_GAS_SEPARATELY),
-            queryID: {
-                $$type: "QueryID",
-                shift: queryId.getShift(),
-                bitNumber: queryId.getBitNumber(),
+        const externalRequestCell = createExternalRequestCell(
+            keypair.secretKey,
+            {
+                message: internalMessage,
+                mode: SendMode.PAY_GAS_SEPARATELY,
+                queryId,
+                createdAt: Date.now(),
+                subwalletId: SUBWALLET_ID,
+                timeout: DEFAULT_TIMEOUT,
             },
-            createdAt: BigInt(~~(Date.now() / 1000)),
-            timeout: DEFAULT_TIMEOUT,
-        };
-
-        const msgInnerCell = beginCell()
-            .store(storeMsgInner(msgInnerStruct))
-            .endCell();
-
-        const msgInnerHash = msgInnerCell.hash();
-        const signature = sign(msgInnerHash, keypair.secretKey);
-
-        const externalRequestStruct: ExternalRequest = {
-            $$type: "ExternalRequest",
-            signature: signature,
-            signedMsg: msgInnerCell,
-        };
-
-        const externalRequestCell = beginCell()
-            .store(storeExternalRequest(externalRequestStruct))
-            .endCell();
+        );
 
         const result = await step("externalTransfer & internalTransfer", () =>
             wallet.sendExternal(externalRequestCell.asSlice()),
@@ -224,11 +142,11 @@ function testHighloadWalletV3(
         wallet = blockchain.openContract(
             await fromInit(
                 bufferToBigInt(keypair.publicKey),
-                SUBWALLET_ID,
+                BigInt(SUBWALLET_ID),
                 Dictionary.empty(),
                 Dictionary.empty(),
                 0n,
-                DEFAULT_TIMEOUT,
+                BigInt(DEFAULT_TIMEOUT),
             ),
         );
 
@@ -287,7 +205,7 @@ function testHighloadWalletV3(
     });
 }
 
-describe("Highload Wallet v3 Gas Tests", () => {
+describe("Highload Wallet v3 Gas Benchmarks", () => {
     const fullResults = generateResults(benchmarkResults);
     const fullCodeSizeResults = generateCodeSizeResults(
         benchmarkCodeSizeResults,
@@ -297,44 +215,17 @@ describe("Highload Wallet v3 Gas Tests", () => {
         const funcCodeSize = fullCodeSizeResults.at(0)!;
         const funcResult = fullResults.at(0)!;
 
-        async function fromFuncInit(
-            publicKey: bigint,
-            subwalletID: bigint,
-            _oldQueries: Dictionary<number, Cell>,
-            _queries: Dictionary<number, Cell>,
-            _lastCleanTime: bigint,
-            timeout: bigint,
-        ) {
-            const bocWallet = readFileSync(
-                posixNormalize(
-                    resolve(__dirname, "./func/output/highload-wallet-v3.boc"),
-                ),
-            );
-
-            const walletCell = Cell.fromBoc(bocWallet)[0]!;
-
-            const stateInitWallet = beginCell()
-                .storeUint(publicKey, 256)
-                .storeUint(subwalletID, 32)
-                .storeDict(Dictionary.empty())
-                .storeDict(Dictionary.empty())
-                .storeUint(0, 64)
-                .storeUint(timeout, 22)
-                .endCell();
-
-            const init = { code: walletCell, data: stateInitWallet };
-            const address = contractAddress(0, init);
-
-            return Promise.resolve(new HighloadWalletV3(address, init));
-        }
-
-        testHighloadWalletV3(funcResult, funcCodeSize, fromFuncInit);
+        benchHighloadWalletV3(
+            funcResult,
+            funcCodeSize,
+            fromInitHighloadWalletV3_FunC,
+        );
     });
 
     describe("tact", () => {
         const tactCodeSize = fullCodeSizeResults.at(-1)!;
         const tactResult = fullResults.at(-1)!;
-        testHighloadWalletV3(
+        benchHighloadWalletV3(
             tactResult,
             tactCodeSize,
             HighloadWalletV3.fromInit.bind(HighloadWalletV3),

@@ -85,7 +85,7 @@ contract HighloadWalletV3(
             let valueSlice = value!!.beginParse();
             let head = valueSlice.loadBits(msgInner.queryID.bitNumber);
             let tail = valueSlice;
-            throwIf(AlreadyExecuted, tail.preloadInt(1) != 0);
+            throwIf(AlreadyExecuted, tail.loadInt(1) != 0);
             newValue = newValue.storeSlice(head).storeTrue().storeSlice(tail);
         } else {
             newValue = newValue.storeZeroes(msgInner.queryID.bitNumber).storeTrue().storeZeroes(CELL_BITS_SIZE - msgInner.queryID.bitNumber - 1);

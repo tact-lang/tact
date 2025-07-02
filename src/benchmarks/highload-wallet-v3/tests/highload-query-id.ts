@@ -1,7 +1,10 @@
+import { getRandomInt } from "@/benchmarks/highload-wallet-v3/tests/utils";
+
 const BIT_NUMBER_SIZE = 10n; // 10 bit
 // const SHIFT_SIZE = 13n; // 13 bit
-const MAX_BIT_NUMBER = 1022n;
-const MAX_SHIFT = 8191n; // 2^13 = 8192
+export const MAX_BIT_NUMBER = 1022n;
+export const MAX_SHIFT = 8191n; // 2^13 = 8192
+export const MAX_KEY_COUNT = 1 << 13;
 
 export class HighloadQueryId {
     private shift: bigint; // [0 .. 8191]
@@ -91,11 +94,3 @@ export class HighloadQueryId {
         return this.bitnumber + this.shift * 1023n;
     }
 }
-
-const getRandom = (min: number, max: number) => {
-    return Math.random() * (max - min) + min;
-};
-
-const getRandomInt = (min: number, max: number) => {
-    return Math.round(getRandom(min, max));
-};
