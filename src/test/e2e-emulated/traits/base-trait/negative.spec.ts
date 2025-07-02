@@ -14,7 +14,7 @@ import { Negative } from "./output/negative_Negative";
 
 import "@ton/test-utils";
 
-import { setStoragePrices } from "@/test/utils/gasUtils";
+import { zeroStoragePrices } from "@/test/utils/gasUtils";
 
 const setup = async () => {
     const deployValue = toNano("0.05");
@@ -46,17 +46,7 @@ const setup = async () => {
 
     const blockchain: Blockchain = await Blockchain.create();
 
-    const config = blockchain.config;
-
-    blockchain.setConfig(
-        setStoragePrices(config, {
-            unixTimeSince: 0,
-            bitPricePerSecond: 0n,
-            cellPricePerSecond: 0n,
-            masterChainBitPricePerSecond: 0n,
-            masterChainCellPricePerSecond: 0n,
-        }),
-    );
+    blockchain.setConfig(zeroStoragePrices(blockchain.config));
 
     const treasury: SandboxContract<TreasuryContract> =
         await blockchain.treasury("treasury");

@@ -154,10 +154,10 @@ prando
 quadtree
 quadtrees
 RANDU
-Reentrancy
 rangle
 rawslice
 reentrancy
+Reentrancy
 renamer
 replaceget
 respecifying
@@ -219,6 +219,7 @@ uninit
 Uninit
 unixfs
 untypable
+utime
 varint
 varuint
 verytactical
