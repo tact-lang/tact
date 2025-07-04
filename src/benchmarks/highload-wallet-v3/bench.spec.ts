@@ -79,7 +79,7 @@ function benchHighloadWalletV3(
                 message: internalMessage,
                 mode: SendMode.PAY_GAS_SEPARATELY,
                 queryId,
-                createdAt: Date.now(),
+                createdAt: ~~(Date.now() / 1000),
                 subwalletId: SUBWALLET_ID,
                 timeout: DEFAULT_TIMEOUT,
             },
