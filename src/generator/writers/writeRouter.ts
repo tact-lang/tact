@@ -26,6 +26,8 @@ import { getAstFactory, idText } from "@/ast/ast-helpers";
 import { evalConstantExpression } from "@/optimizer/constEval";
 import { getAstUtil } from "@/ast/util";
 import { prettyPrint } from "@/ast/ast-printer";
+import { escapeUnicodeControlCodes } from "@/utils/text";
+import { writeCellParser } from "@/generator/writers/writeSerialization";
 
 type ContractReceivers = {
     readonly internal: Receivers;
@@ -188,26 +190,29 @@ function writeBinaryReceiver(
             binaryReceiver.ast.loc,
         );
 
-    const allocation = getType(wCtx.ctx, selector.type);
-    if (!allocation.header) {
+    const type = getType(wCtx.ctx, selector.type);
+    if (!type.header) {
         throwInternalCompilerError(
             `Invalid allocation: ${selector.type}`,
             binaryReceiver.ast.loc,
         );
     }
     wCtx.append(`;; Receive ${selector.type} message`);
-    wCtx.inBlock(`if (op == ${messageOpcode(allocation.header)})`, () => {
+    wCtx.inBlock(`if (op == ${messageOpcode(type.header)})`, () => {
         if (!msgOpcodeRemoved) {
             wCtx.append("in_msg~skip_bits(32);");
         }
-        const msgFields = resolveFuncTypeUnpack(
-            selector.type,
-            funcIdOf(selector.name),
-            wCtx,
-        );
-        wCtx.append(
-            `var ${msgFields} = in_msg~${ops.reader(selector.type, "no-opcode", wCtx)}();`,
-        );
+
+        const name = funcIdOf(selector.name);
+
+        if (type.fields.length === 0) {
+            // special case for empty messages
+            wCtx.append(`var ${name} = empty_tuple();`);
+        } else {
+            // write cell parser in place for much better performance
+            const allocation = getAllocation(wCtx.ctx, type.name);
+            writeCellParser(allocation.root, type, 0, wCtx, name, "in_msg");
+        }
 
         writeReceiverBody(binaryReceiver, contract, wCtx);
     });
@@ -281,7 +286,10 @@ function writeCommentReceivers(
                 !msgOpcodeRemoved,
                 commentRcv.ast.loc,
             );
-            wCtx.append(`;; Receive "${commentRcv.selector.comment}" message`);
+            const comment = escapeUnicodeControlCodes(
+                commentRcv.selector.comment,
+            );
+            wCtx.append(`;; Receive "${comment}" message`);
 
             wCtx.inBlock(`if (text_op == 0x${hash})`, () => {
                 writeReceiverBody(commentRcv, contract, wCtx);
@@ -423,7 +431,16 @@ function fallbackReceiverKind(
                 );
                 if (constEvalResult.kind !== "number") {
                     throwInternalCompilerError(
-                        `"throw" can only have a number as an argument, but it has throws ${prettyPrint(constEvalResult)}`,
+                        `"throw" can only have a number as an argument, but it throws ${prettyPrint(constEvalResult)}`,
+                        throwArg.loc,
+                    );
+                }
+                if (
+                    constEvalResult.value < 0n ||
+                    constEvalResult.value >= 2n ** 16n
+                ) {
+                    throwCompilationError(
+                        `Invalid exit code for "throw": ${constEvalResult.value}, but it must be in range [0, 65535]`,
                         throwArg.loc,
                     );
                 }
@@ -717,6 +734,7 @@ export function messageOpcode(n: Ast.Number): string {
             return n.value.toString(n.base);
         case 2:
         case 8:
+            return `0x${n.value.toString(16)}`;
         case 16:
             return `0x${n.value.toString(n.base)}`;
     }

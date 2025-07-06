@@ -1,11 +1,11 @@
 ---
 title: Contracts
-description: "Contracts in Tact are similar to classes in popular object-oriented languages, except that their instances are deployed on the blockchain and they can't be passed around like Structs and Messages."
+description: "Contracts in Tact are similar to classes in popular object-oriented languages, except that their instances are deployed on the blockchain and they can't be passed around like structs and Messages."
 ---
 
 import { Badge } from '@astrojs/starlight/components';
 
-Contracts in Tact are similar to classes in popular object-oriented languages, except that their instances are deployed on the blockchain and they can't be passed around like [Structs and Messages](/book/structs-and-messages).
+Contracts in Tact are similar to classes in popular object-oriented languages, except that their instances are deployed on the blockchain and they can't be passed around like [structs and Messages](/book/structs-and-messages).
 
 ## Self-references {#self}
 
@@ -83,7 +83,7 @@ contract Vot(
 ) with Supe {}
 ```
 
-If declared or defined in a trait, internal functions and constants can be marked as [virtual or abstract](/book/functions#virtual-and-abstract-functions) and overridden in contracts inheriting from the trait.
+If declared or defined in a trait, internal functions and constants can be marked as [virtual or abstract](/book/functions#inheritance) and overridden in contracts inheriting from the trait.
 
 ### Supported interfaces, `@interface(…)` {#interfaces}
 
@@ -242,6 +242,14 @@ contract Example {
 }
 ```
 
+:::note
+
+  Keep in mind that contracts cannot call each other's [getters](#getter-functions) or retrieve data from other contracts synchronously. Thus, as contracts exchange asynchronous messages, it is not possible to directly read the state variables of one contract by another because, by the time a message with the data reaches your contract, the state variables on another contract might have changed already.
+
+  Instead, prefer to write contracts that exchange messages as signals to perform a certain action on or with the sent data but never merely to read the state of another contract.
+
+:::
+
 As the contract state is updated at the very end of the [compute phase][compute] of the transaction, intermediate assignments of [`Int{:tact}`][int] values exceeding the limits specified by [serialization formats](/book/integers#serialization) won't fail immediately. Instead, such assignments would cause an [exit code 5](/book/exit-codes#5) only after all statements have been executed.
 
 This is to be expected because the integers in the temporary [TVM][tvm] memory, which is used to process the [compute phase][compute], always have $257$ bits and are capable of holding values in the inclusive range from $-2^{256}$ to $2^{256} - 1$.
@@ -295,7 +303,7 @@ contract ParamParamParam(
 
 :::note
 
-  Tact supports local, non-persistent state variables too. See: [Variable declaration](/book/statements#let).
+  Tact supports local, non-persistent state variables too. See: [Variable definition with `let{:tact}` statement](/book/statements#let).
 
 :::
 
@@ -376,7 +384,7 @@ contract TheySeeMeTrailing {
 }
 ```
 
-<Badge text="Available since Tact 1.7" variant="tip" size="medium"/> The parameters of the `init(){:tact}` function can specify [serialization formats](/book/integers#serialization) using the `as` keyword, just like you can with contract fields:
+<Badge text="Available since Tact 1.6.7" variant="tip" size="medium"/> The parameters of the `init(){:tact}` function can specify [serialization formats](/book/integers#serialization) using the `as` keyword, just like you can with contract fields:
 
 ```tact {4}
 contract Example {
@@ -431,30 +439,22 @@ contract LazyInit {
 
 ### Getter functions
 
-[Getter functions](/book/functions#getter-functions) are **not accessible from other contracts and are exported only to the off-chain world**.
-
-Additionally, **getters cannot modify the contract's state variables**; they can only read their values and use them in expressions.
+[Getter functions](/book/functions#get) are **not accessible** from other contracts and are exported only to the off-chain world.
 
 ```tact
-contract HelloWorld {
-    foo: Int;
-
-    init() {
-        self.foo = 0;
-    }
-
-    // getter function with return type Int
+contract HelloWorld(foo: Int) {
+    // Getter function with return type Int
     get fun foo(): Int {
-        return self.foo; // can't change self.foo here
+        return self.foo + 42;
     }
 }
 ```
 
-Read more about them in their dedicated section: [Getter functions](/book/functions#getter-functions)
+Read more about them in their dedicated section: [Getter functions](/book/functions#get).
 
 ### Receiver functions
 
-[Receiver functions](/book/functions#receiver-functions) in Tact can be one of the following three kinds:
+[Receiver functions](/book/functions#receivers) in Tact can be one of the following three kinds:
 
 * [`receive(){:tact}`](/book/receive), which receives internal messages (from other contracts).
 * [`bounced(){:tact}`](/book/bounced), which is called when an outgoing message from this contract bounces back.
@@ -514,7 +514,7 @@ contract Example {
 }
 ```
 
-### Internal functions
+### Internal functions {#internal-functions}
 
 These functions behave similarly to private methods in popular object-oriented languages — they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](#self). That's why internal functions are sometimes referred to as "contract methods."
 
@@ -538,17 +538,112 @@ contract Functions {
 }
 ```
 
+Read more about them in their dedicated section: [Internal functions](/book/functions#fun-internal).
+
 :::note
 
   Tact supports other kinds of functions too. See: [Functions](/book/functions).
 
 :::
 
+### Operations
+
+#### Converting to Cell or Slice {#tocellslice}
+
+<Badge text="Available since Tact 1.6.12" variant="tip" size="medium"/><p/>
+
+You can convert a contract instance to a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] using the [`toCell(){:tact}`][ct-tc] and [`toSlice(){:tact}`][ct-ts] methods. These methods will build a new `Cell{:tact}` or `Slice{:tact}` with the contract data.
+
+```tact
+contract WalletV4(
+    seqno: Int as uint32,
+    walletId: Int as int32,
+    publicKey: Int as uint256,
+    extensions: map<Address, Bool>,
+) {
+    // ...
+    external(msgSlice: Slice) {
+        let msg = ExtRequest.fromSlice(msgSlice);
+        throwIf(Expired, msg.validUntil < now());
+        throwUnless(SeqnoMismatch, msg.seqno == self.seqno);
+        throwUnless(WalletIdMismatch, msg.walletId == self.walletId);
+        throwUnless(SignatureMismatch, msg.bundle.verifySignature(self.publicKey));
+
+        acceptMessage();
+        self.seqno += 1;
+        setData(self.toCell()); // <- set the contract data explicitly for low level control
+        commit();
+
+        // ...
+    }
+}
+```
+
+This is useful when you need to explicitly set data of your contract for low level control of the contract data.
+
+:::note
+
+  If a contract doesn't use [contract parameters](/book/contracts#parameters), the resulting `Cell{:tact}` or `Slice{:tact}` will contain a leading one bit representing the [lazy initialization bit](/book/functions/#init).
+
+:::
+
+:::note[Useful links:]
+
+  [`Contract.toCell(){:tact}` in Core library][ct-tc]\
+  [`Contract.toSlice(){:tact}` in Core library][ct-ts]
+
+:::
+
+#### Obtaining from Cell or Slice {#fromcellslice}
+
+<Badge text="Available since Tact 1.6.13" variant="tip" size="medium"/><p/>
+
+If you have a contract data [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] with composed using the [`toCell{:tact}` or `toSlice{:tact}` methods](#tocellslice), you can obtain the initial contract [struct](/book/structs-and-messages#structs) back with the respective [`fromCell(){:tact}`][ct-fc] and [`fromSlice(){:tact}`][ct-fs] functions. These functions would parse a given `Cell{:tact}` or `Slice{:tact}` and produce a struct with contract variables.
+
+```tact
+contract PointCaller(
+    x: Int as uint32,
+    y: Int as uint32,
+) {
+    receive(msg: NewContractData) {
+        let contractStruct = PointCaller.fromCell(msg.cell);
+        self.x = contractStruct.x;
+        self.y = contractStruct.y;
+    }
+
+    get fun inverseLaw(): Bool {
+        let contractStruct = PointCaller.fromCell(self.toCell());
+        let contractCell = self.toCell();
+
+        return contractStruct.toCell() == contractCell; // always true
+    }
+}
+
+message NewContractData {
+    // Can be obtained with a call to PointCaller.toCell()
+    cell: Cell;
+}
+```
+
+:::note[Useful links:]
+
+  [`Contract.fromCell(){:tact}` in Core library][ct-fc]\
+  [`Contract.fromSlice(){:tact}` in Core library][ct-fs]
+
+:::
+
 [p]: /book/types#primitive-types
 [int]: /book/integers
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices
 [trait]: /book/types#traits
 
 [compute]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [bp]: https://github.com/ton-org/blueprint
 [bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration
+
+[ct-tc]: /ref/core-cells#contracttocell
+[ct-ts]: /ref/core-cells#contracttoslice
+[ct-fc]: /ref/core-cells#contractfromcell
+[ct-fs]: /ref/core-cells#contractfromslice

@@ -13,13 +13,16 @@ All of the data structures listed here are made using the built-in [`map<K, V>{:
 
 An [array](https://en.wikipedia.org/wiki/Array_(data_structure)) is a data structure consisting of a continuous block of memory, which represents a collection of elements of the same memory size, each identified by at least one array key or _index_.
 
-The following example emulates an array using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
+The following example emulates an array using a [`map<Int, V>{:tact}`][map] wrapped in a [struct][struct], where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
 
 ```tact
 struct Array {
-    m: map<Int as uint16, Int>; // array of Int values as a map of Ints to Ints,
-                                // with serialization of its keys to uint16 to save space
-    length: Int = 0;            // length of the array, defaults to 0
+    // An array of Int values as a map of Ints to Ints,
+    // with serialization of its keys to uint16 to save space
+    m: map<Int as uint16, Int>;
+
+    // Length of the array, defaults to 0
+    length: Int = 0;
 }
 
 // Compile-time constant upper bound for our map representing an array.
@@ -30,7 +33,7 @@ extends mutates fun append(self: Array, item: Int) {
     require(self.length + 1 <= MaxArraySize, "No space in the array left for new items!");
 
     self.m.set(self.length, item); // set the entry (key-value pair)
-    self.length += 1;              // increase the length field
+    self.length += 1; // increase the length field
 }
 
 // Extension mutation function for inserting new entries at the given index
@@ -49,7 +52,7 @@ extends mutates fun insert(self: Array, item: Int, idx: Int) {
 
     // Insert the new item
     self.m.set(idx, item); // set the entry (key-value pair)
-    self.length += 1;      // increase the length field
+    self.length += 1; // increase the length field
 }
 
 // Extension function for getting the value at the given index
@@ -88,7 +91,7 @@ extends mutates fun deleteIdx(self: Array, idx: Int): Int {
     }
 
     self.m.set(self.length - 1, null); // delete the last entry
-    self.length -= 1;                  // decrease the length field
+    self.length -= 1; // decrease the length field
 
     return memorized;
 }
@@ -100,7 +103,7 @@ extends fun deleteLast(self: Array): Int {
     // Note that we use the !! operator, as we know for sure the value would be there
     let lastItem: Int = self.m.get(self.length - 1)!!;
     self.m.set(self.length - 1, null); // delete the entry
-    self.length -= 1;                  // decrease the length field
+    self.length -= 1; // decrease the length field
 
     return lastItem;
 }
@@ -168,13 +171,16 @@ A [stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) is a data st
 * push, which adds an element to the end of the collection
 * pop, which removes the most recently added element
 
-The following example emulates a stack using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
+The following example emulates a stack using a [`map<Int, V>{:tact}`][map] wrapped in a [struct][struct], where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
 
 ```tact
 struct Stack {
-    m: map<Int as uint16, Int>; // stack of Int values as a map of Ints to Ints,
-                                // with serialization of its keys to uint16 to save space
-    length: Int = 0;            // length of the stack, defaults to 0
+    // A stack of Int values as a map of Ints to Ints,
+    // with serialization of its keys to uint16 to save space
+    m: map<Int as uint16, Int>;
+
+    // Length of the stack, defaults to 0
+    length: Int = 0;
 }
 
 // Compile-time constant upper bound for our map representing a stack.
@@ -185,7 +191,7 @@ extends mutates fun push(self: Stack, item: Int) {
     require(self.length + 1 <= MaxStackSize, "No space in the stack left for new items!");
 
     self.m.set(self.length, item); // set the entry (key-value pair)
-    self.length += 1;              // increase the length field
+    self.length += 1; // increase the length field
 }
 
 // Extension mutation function for deleting the last entry and returning its value
@@ -195,7 +201,7 @@ extends mutates fun pop(self: Stack): Int {
     // Note that we use the !! operator, as we know for sure that the value will be there
     let lastItem: Int = self.m.get(self.length - 1)!!;
     self.m.set(self.length - 1, null); // delete the entry
-    self.length -= 1;                  // decrease the length field
+    self.length -= 1; // decrease the length field
 
     return lastItem;
 }
@@ -271,14 +277,19 @@ contract MapAsStack {
 
 A [circular buffer](https://en.wikipedia.org/wiki/Circular_buffer) (circular queue, cyclic buffer, or ring buffer) is a data structure that uses a single, fixed-size [buffer](https://en.wikipedia.org/wiki/Data_buffer) as if it were connected end-to-end.
 
-The following example emulates a circular buffer using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
+The following example emulates a circular buffer using a [`map<Int, V>{:tact}`][map] wrapped in a [struct][struct], where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
 
 ```tact
 struct CircularBuffer {
-    m: map<Int as uint8, Int>; // circular buffer of Int values as a map of Ints to Ints,
-                               // with serialization of its keys to uint8 to save space
-    length: Int = 0;           // length of the circular buffer; defaults to 0
-    start: Int = 0;            // current index into the circular buffer; defaults to 0
+    // A circular buffer of Int values as a map of Ints to Ints,
+    // with serialization of its keys to uint8 to save space
+    m: map<Int as uint8, Int>;
+
+    // Length of the circular buffer; defaults to 0
+    length: Int = 0;
+
+    // Current index into the circular buffer; defaults to 0
+    start: Int = 0;
 }
 
 // Compile-time constant upper bound for our map representing a circular buffer.
@@ -288,9 +299,9 @@ const MaxCircularBufferSize: Int = 5;
 extends mutates fun put(self: CircularBuffer, item: Int) {
     if (self.length < MaxCircularBufferSize) {
         self.m.set(self.length, item); // store the item
-        self.length += 1;              // increase the length field
+        self.length += 1; // increase the length field
     } else {
-        self.m.set(self.start, item);                          // store the item, overriding previous entry
+        self.m.set(self.start, item); // store the item, overriding previous entry
         self.start = (self.start + 1) % MaxCircularBufferSize; // update starting position
     }
 }
@@ -327,7 +338,8 @@ extends mutates fun deleteAll(self: CircularBuffer) {
 
 // Global static function for creating an empty CircularBuffer
 fun emptyCircularBuffer(): CircularBuffer {
-    return CircularBuffer{m: emptyMap(), length: 0, start: 0}; // length and start default to 0
+    // Length and start default to 0
+    return CircularBuffer { m: emptyMap(), length: 0, start: 0 };
 }
 
 // This contract records the last 5 timestamps of when a "timer" message was received
@@ -382,3 +394,4 @@ contract MapAsCircularBuffer {
 :::
 
 [map]: /book/maps
+[struct]: /book/structs-and-messages#structs

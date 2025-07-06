@@ -6,13 +6,103 @@ prev:
   label: Functions
 ---
 
-TON is a distributed blockchain, which means that communication between contracts is performed by sending and receiving messages. The most common type of message is the internal message - a message sent from one contract (or a wallet) to another.
+import { Badge } from '@astrojs/starlight/components';
+
+TON is a distributed blockchain, which means that communication between smart contracts is performed by sending and receiving messages. The most common type of message is the _internal message_ — a message sent from one contract (or a wallet) to another.
+
+When processing an incoming message, no other message can interrupt the execution of a smart contract. On top of that, [message-sending functions](/book/send#message-sending-functions) and underlying TVM instructions do not deliver outgoing messages immediately but instead [queue them to be sent after the end of computations](/book/send#outbound-message-processing) in a separate phase of the current transaction. Thus, [reentrancy](https://en.wikipedia.org/wiki/Reentrancy_(computing)) of messages is not possible.
 
 ## Receive internal messages
 
 To receive a message of the required type, you need to declare a receiver function. For example, `receive("increment"){:tact}`. This notation means the declaration of a receiver function that will be called when a text with the value `"increment"{:tact}` is sent to the contract. The function body can modify the state of the contract and send messages to other contracts. It is impossible to call a receiver directly. If you need to reuse some logic, you can declare a function and call it from the receiver.
 
-There are several receiver functions. All receiver functions are processed in the order they are listed below. The first receiver that matches the message type processes the message:
+### Empty receiver
+
+This receiver specifically handles internal messages with no contents, i.e., the `null{:tact}` body. Note that as a function, it's own body doesn't have to be empty.
+
+```tact
+contract Emptiness() {
+    // This receiver handles `null` (empty) message bodies of internal messages.
+    receive() {
+        // Although you can use this receiver for anything,
+        // it's most common to utilize it for deployments and forward excess funds
+        // from the incoming message back to the sender's address.
+        cashback(sender());
+    }
+}
+```
+
+### Text receivers
+
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+There are two kinds of text receivers:
+
+* `receive("..."){:tact}` — the exact text receiver that handles specific string comments with the maximum length of 123 bytes
+* `receive(str: String){:tact}` — the catch-all string receiver that handles arbitrary string comments
+
+Processing and distinguishing text receivers, e.g., the comment receiver `receive("..."){:tact}` and the string receiver `receive(str: String){:tact}`, costs significantly more gas than [processing binary ones](#binary-receivers), such as `receive(){:tact}` or `receive(msg: MyMessage){:tact}`. Thus, it is recommended to [prefer binary receivers to text receivers](/book/gas-best-practices#prefer-binary-receivers-to-text-receivers).
+
+```tact
+contract CertainMD() {
+    receive("time changes everything") {
+        message(MessageParameters {
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue,
+            body: "Doing things changes things. Not doing things leaves things exactly as they were".asComment(),
+        });
+    }
+
+    receive(str: String) {
+        message(MessageParameters {
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue,
+            body: "Do I get bonus points if I act like I care?".asComment(),
+        });
+    }
+}
+```
+
+### Binary receivers
+
+If the message body starts with a recognized [opcode](/book/structs-and-messages#message-opcodes) of 4 non-zero bytes, that internal message will be handled with a corresponding binary receiver `receive(msg: MessageStruct){:tact}` or the catch-all slice receiver `receive(msg: Slice){:tact}`, if there is no binary receiver for that opcode.
+
+```tact
+// This message struct overrides its unique id (opcode) with 411,
+// which allows message bodies that start with such opcodes
+// to be recognized and handled by the respective binary receiver function.
+message(411) HandleMe {}
+
+contract Handler() {
+    receive(msg: HandleMe) {
+        let body = inMsg();
+        body.preloadUint(32) == HandleMe.opcode(); // true
+    }
+}
+```
+
+## Wildcard parameters
+
+Naming the parameter of a receiver function with an underscore `_{:tact}` makes its value considered unused and discarded. This is useful when you don't need to inspect the message received and only want it to convey a specific opcode.
+
+```tact
+message(42) UniverseCalls {}
+
+contract Example() {
+    receive(_: UniverseCalls) {
+        // Got a message with opcode 42
+        UniverseCalls.opcode(); // 42
+    }
+}
+```
+
+Read more about other common function aspects: [Commonalities on the Functions page](/book/functions#commonalities).
+
+## Processing order
+
+All receiver functions are processed in the order they are listed below. The first receiver that matches the message type processes the message:
 
 * `receive(){:tact}` - called when an empty message is sent to the contract
 * `receive("message"){:tact}` - called when a text message with a specific comment is sent to the contract (maximum `"message"{:tact}` length is 123 bytes)
@@ -48,20 +138,155 @@ contract MyContract {
 
 In a contract, the order of declaration of receivers has no effect on how receivers process messages. Hence, changing the order of receivers in the above contract produces an equivalent contract.
 
-Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then when a message with the comment `"message"{:tact}` arrives, it will be processed by `receive(str: String){:tact}`.
+Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then when a message with the comment `"message"{:tact}` arrives, it will be processed by `receive(str: String){:tact}`. yet, the message with an empty comment `""{:tact}` will be processed by the empty body receiver, `receive(){:tact}`.
 
-Note that the receiver `receive(msg: Slice){:tact}` acts as a fallback that catches all messages that did not match previous receivers in the execution order list.
+Note that the receiver `receive(msg: Slice){:tact}` acts as a fallback that catches all messages that did not match previous receivers in the execution order list. If there is no receiver to process a message type and the fallback receiver `receive(msg: Slice){:tact}` is not declared, the transaction will fail with exit code [130](/book/exit-codes/#130).
 
-If there is no receiver to process a message type and the fallback receiver `receive(msg: Slice){:tact}` is not declared, the transaction will fail with exit code [130](/book/exit-codes/#130).
+## Incoming funds
 
-Naming the parameter of a receiver function with an underscore `_{:tact}` makes its value considered unused and discarded. This is useful when you don't need to inspect the message received and only want it to convey a specific opcode:
+Receivers accept all incoming funds by default. That is, without explicitly sending a message that will refund spare Toncoin with the [`cashback(){:tact}`](/ref/core-send#cashback) function, the contract will keep all the incoming message value.
 
 ```tact
-message(42) UniverseCalls {}
+contract ToCashOrNotToCash() {
+    receive() {
+        // Forward the remaining value in the
+        // incoming message back to the sender.
+        cashback(sender());
+    }
 
-contract Example {
-    receive(_: UniverseCalls) {
-        // Got a Message with opcode 42
+    receive(_: Greed) {
+        // Unlike the previous one, this receiver does not return surplus Toncoin,
+        // and keeps all the incoming message value minus necessary fees.
+    }
+}
+
+message Greed {}
+```
+
+To check the amount of Toncoin (native coins) the incoming message carries with it, you can use the [`context(){:tact}`](/ref/core-contextstate#context) function and access the `value` field of its resulting [struct](/book/structs-and-messages#structs). Note, however, that the exact value by which the balance will be increased will be less than `context().value{:tact}` since the [compute fee](https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#computation-fees) for contract execution will be deducted from this value.
+
+```tact /context\(\).value/
+contract WalletV4(
+    // ...contract variables...
+) {
+    // ...
+    receive(msg: PluginRequestFunds) {
+        require(
+            myBalance() - context().value >= msg.amount,
+            "The balance is too low to fulfill the plugin request!",
+        );
+        // ...
+    }
+}
+
+message(0x706c7567) PluginRequestFunds {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    extra: Cell?;
+}
+```
+
+## Carry-value pattern
+
+Contracts cannot call each other's [getters](/book/functions#get) or retrieve data from other contracts synchronously. If you were to send the current values of the state variables to another contract, they would almost always become stale by the time the message carrying them is processed at the destination.
+
+To circumvent that, use the carry-value pattern, which involves passing state or data along the chain of required operations rather than attempting to store and retrieve the data in a synchronous fashion. Instead of querying data, each contract in the message chain receives some input, processes it, and passes the result or the new payload to the next contract in the sequence of sent messages. This way, messages work as signals to perform certain actions on or with the sent data.
+
+For example, upon receiving a message request to perform a [Jetton](/cookbook/jettons) transfer from the current owner to the target user's [Jetton Wallet](/cookbook/jettons#jetton-wallet-contract), Jetton Wallet contracts ensure the validity of the request from the standpoint of their current state. If everything is fine, they modify their token balance and always send the deployment message, regardless of whether the target Jetton Wallet exists or not.
+
+That is because it is impossible to obtain confirmation of the contract deployment synchronously. At the same time, sending a deployment message means attaching the [`StateInit{:tact}`](/book/expressions#initof) code and data of the future contract to the regular message and letting the TON Blockchain itself figure out whether the target contract is deployed or not, and discarding that `init` bundle if the destination contract is already deployed.
+
+```tact
+/// Child contract per each holder of N amount of given Jetton (token)
+contract JettonWallet(
+    /// Balance in Jettons.
+    balance: Int as coins,
+
+    /// Address of the user's wallet which owns this JettonWallet, and messages
+    /// from whom should be recognized and fully processed.
+    owner: Address,
+
+    /// Address of the main minting contract,
+    /// which deployed this Jetton wallet for the specific user's wallet.
+    master: Address,
+) {
+    /// Registers a binary receiver of the JettonTransfer message body.
+    receive(msg: JettonTransfer) {
+        // ...prior checks and update of the `self.balance`...
+
+        // Transfers Jetton from the current owner to the target user's JettonWallet.
+        // If that wallet does not exist, it is deployed on-chain in the same transfer.
+        deploy(DeployParameters {
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: JettonTransferInternal{
+                queryId: msg.queryId, // Int as uint64
+                amount: msg.amount, // Int as coins
+                sender: self.owner, // Address
+                responseDestination: msg.responseDestination, // Address?
+                forwardTonAmount: msg.forwardTonAmount, // Int as coins
+                forwardPayload: msg.forwardPayload, // Slice as remaining
+            }.toCell(),
+            // Notice that we do not need to explicitly specify the target address,
+            // because it will be computed on the fly from the initial package.
+            //
+            // The `msg.destination` is the regular wallet address of the new owner
+            // of those Jettons and not the future address of the target Jetton Wallet itself.
+            init: initOf JettonWallet(0, msg.destination, self.master),
+        });
+    }
+}
+```
+
+## Contract storage handling
+
+Blockchain keeps each smart contract's code and data in its state. After receiving a message, the contract's storage data is loaded, and once processing in the receiver is complete, a new state of the contract is saved.
+
+The loads and stores are managed by Tact, which implicitly adds relevant code during compilation. That way, the user only needs to think of using receivers to handle message bodies.
+
+As Tact writes relevant code to automatically save the contract's state after the end of each receiver's logic, you can safely skip some of the steps in your code and jump to the end of processing the receiver with the [`return{:tact}` statement](/book/statements#return).
+
+```tact {5}
+contract GreedyCashier(owner: Address) {
+    receive() {
+        // Stop the execution if the message is not from an `owner`.
+        if (sender() != self.owner) {
+            return;
+        }
+        // Otherwise, forward excesses back to the sender.
+        cashback(sender());
+    }
+}
+```
+
+If the Tact compiler can deduce that a certain receiver does not modify the contract's state, then the storage-saving logic is omitted, and some extra gas is saved as a result.
+
+Furthermore, to make an early exit from the receiver without saving the new contract's state, use the [`throw(0){:tact}`](/ref/core-debug#throw) idiom. It will immediately and successfully terminate the execution of the compute phase of the contract and skip the code generated by Tact to save the contract's state. Conversely, changes to data made before calling `throw(){:tact}` in with this function will be lost unless you manually save them beforehand.
+
+That said, when using the `throw(0){:tact}` idiom, make sure to double-check and test cover your every move so that the contract's data won't become corrupt or inadvertently gone.
+
+```tact {18-20}
+// This function manually saves contract data Cell
+asm fun customSetData(data: Cell) { c4 POP }
+
+contract WalletV4(
+    seqno: Int as uint32,
+    // ...other parameters...
+) {
+    // ...
+    external(_: Slice) {
+        // ...various prior checks...
+
+        acceptMessage();
+        self.seqno += 1;
+
+        // Manually saving the contract's state
+        customSetData(self.toCell());
+
+        // And halting the transaction to prevent a secondary save implicitly
+        // added by Tact after the main execution logic of the receiver
+        throw(0);
     }
 }
 ```

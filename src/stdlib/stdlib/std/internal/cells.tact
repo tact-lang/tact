@@ -1432,7 +1432,7 @@ struct DataSize {
 ///
 /// Computes and returns the number of distinct cells, bits and refs in the `Cell` by using a depth-first search (DFS) algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of gas. If `self` is `null`, returns `DataSize` with all fields set to 0.
 ///
-/// The results are packed into a `DataSize` Struct consisting of:
+/// The results are packed into a `DataSize` struct consisting of:
 /// * `cells: Int`, the total number of nested cells, including the starting one
 /// * `bits: Int`, the total number of bits in all nested cells, including the starting one
 /// * `refs: Int`, the total number of refs in all nested cells, including the starting one
@@ -1468,7 +1468,7 @@ asm extends fun computeDataSize(self: Cell?, maxCells: Int): DataSize { CDATASIZ
 ///
 /// Similar to `Cell.computeDataSize()`, but doesn't take into account the cell that contains the `Slice` itself. However, accounts for its bits and refs.
 ///
-/// The results are packed into a `DataSize` Struct consisting of:
+/// The results are packed into a `DataSize` struct consisting of:
 /// * `cells: Int`, the total number of nested cells, including the starting one
 /// * `bits: Int`, the total number of bits in all nested cells, including the starting one
 /// * `refs: Int`, the total number of refs in all nested cells, including the starting one

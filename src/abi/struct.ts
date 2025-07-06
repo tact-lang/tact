@@ -13,6 +13,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "toCell",
         {
             name: "toCell",
+            isStatic: false,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError("toCell() expects no arguments", ref);
@@ -44,7 +45,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")})`;
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}, begin_cell())`;
             },
         },
     ],
@@ -52,6 +53,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "fromCell",
         {
             name: "fromCell",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
                     throwCompilationError(
@@ -111,6 +113,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "opcode",
         {
             name: "opcode",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 const [arg] = args;
                 if (typeof arg === "undefined" || args.length !== 1) {
@@ -165,6 +168,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "toSlice",
         {
             name: "toSlice",
+            isStatic: false,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
                     throwCompilationError(
@@ -202,7 +206,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}).begin_parse()`;
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}, begin_cell()).begin_parse()`;
             },
         },
     ],
@@ -210,6 +214,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         "fromSlice",
         {
             name: "fromSlice",
+            isStatic: true,
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
                     throwCompilationError(
@@ -221,14 +226,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg1 = args[1]!;
                 if (arg0.kind !== "ref") {
                     throwCompilationError(
-                        "fromSlice() is implemented only for struct types",
+                        "fromSlice() is implemented only for struct/contract types",
                         ref,
                     );
                 }
                 const tp = getType(ctx, arg0.name);
                 if (tp.kind !== "struct") {
                     throwCompilationError(
-                        "fromSlice() is implemented only for struct types",
+                        "fromSlice() is implemented only for struct/contract types",
                         ref,
                     );
                 }
@@ -251,7 +256,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg1 = args[1]!;
                 if (arg0.kind !== "ref") {
                     throwCompilationError(
-                        "fromSlice() is implemented only for struct types",
+                        "fromSlice() is implemented only for struct/contract types",
                         ref,
                     );
                 }

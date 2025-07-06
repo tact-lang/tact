@@ -11,7 +11,7 @@ To use this library, import `@stdlib/dns`:
 import "@stdlib/dns";
 ```
 
-## Structs
+## Structures
 
 ### DNSResolveResult
 
@@ -145,7 +145,7 @@ fun dnsResolveWallet(address: Address): Cell {
 
 The trait `DNSResolver` provides two helper functions for DNS resolution:
 
-1. A [getter function](/book/functions#getter-functions) `dnsresolve(){:tact}`, which corresponds to its [FunC variant](https://docs.ton.org/develop/howto/subresolvers#dnsresolve-code).
+1. A [getter function](/book/functions#get) `dnsresolve(){:tact}`, which corresponds to its [FunC variant](https://docs.ton.org/develop/howto/subresolvers#dnsresolve-code).
 2. A virtual function `doResolveDNS(){:tact}`, which creates a struct [DNSResolveResult](#dnsresolveresult) from subdomain [`Slice{:tact}`][slice] bits.
 
 Source code:

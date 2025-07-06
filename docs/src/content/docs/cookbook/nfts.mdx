@@ -305,7 +305,7 @@ contract Example {
                 queryId: 42,
                 itemIndex: 42,
                 amount: ton("0.1"),
-                nftContent: beginCell().endCell() // FIXME: Replace with your content, usually generated off-chain
+                nftContent: beginCell().endCell(), // FIXME: Replace with your content, usually generated off-chain
             }.toCell(),
         });
     }
@@ -354,9 +354,15 @@ contract Example {
 ```tact
 /// https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 fun composeCollectionMetadata(
-    name: String,        // full name
-    description: String, // text description of the NFT
-    image: String,       // link to the image
+    // Full name
+    name: String,
+
+    // Text description of the collection
+    description: String,
+
+    // Link to the image
+    image: String,
+
     // There could be other data, see:
     // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 ): Cell {
@@ -366,7 +372,7 @@ fun composeCollectionMetadata(
     dict.set(sha256("image"), image.asMetadataCell());
 
     return beginCell()
-        .storeUint(0, 8)                // a null byte prefix
+        .storeUint(0, 8) //                a null byte prefix
         .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
         .endCell();
 }
@@ -399,9 +405,15 @@ inline extends fun asMetadataCell(self: String): Cell {
 ```tact
 /// https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 fun composeItemMetadata(
-    name: String,        // full name
-    description: String, // text description of the NFT
-    image: String,       // link to the image
+    // Full name
+    name: String,
+
+    // Text description of the NFT
+    description: String,
+
+    // Link to the image
+    image: String,
+
     // There could be other data, see:
     // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 ): Cell {
@@ -411,7 +423,7 @@ fun composeItemMetadata(
     dict.set(sha256("image"), image.asMetadataCell());
 
     return beginCell()
-        .storeUint(0, 8)                // a null byte prefix
+        .storeUint(0, 8) //                a null byte prefix
         .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
         .endCell();
 }

@@ -66,7 +66,7 @@ const golden: string[] = [
     `(((- $j'b) + $a) + $b)`,
     "null()",
     "($o + 1)",
-    `$A$_store_cell(($j'a, $j'b))`,
+    `$A$_store_cell(($j'a, $j'b), begin_cell())`,
 ];
 
 describe("writeExpression", () => {

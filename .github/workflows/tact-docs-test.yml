@@ -50,9 +50,13 @@ jobs:
           yarn install
           yarn build:fast
 
-      - name: Perform syntax and type checking of the Cookbook
+      - name: Perform syntax and type checking of Tact examples in the Cookbook
         working-directory: docs
         run: node scripts/typecheck-examples.js
+
+      - name: Check formatting of Tact examples in the Cookbook
+        working-directory: docs
+        run: node scripts/fmt-check-examples.js
 
       - name: Install dependencies
         working-directory: docs
@@ -66,6 +70,8 @@ jobs:
           output: "/dev/stdout"
           fail: true
           failIfEmpty: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # That way, when building the docs in the next step,
       # their link checker will be able to validate the links in stdlib

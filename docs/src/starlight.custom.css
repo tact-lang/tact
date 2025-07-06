@@ -34,6 +34,28 @@
 	--sl-color-black: #ffffff;
 }
 
+/*
+	Base inline code highlighting colors on the general mode/theme colors.
+	The value of those CSS variables are set
+	in the ./../inline-code-highlighting.js script for each target <span>.
+*/
+:root code:not(pre *)>span {
+	color: var(--shiki-dark);
+}
+
+:root[data-theme='light'] code:not(pre *)>span {
+	color: var(--shiki-light);
+}
+
+/*
+	This restores proper width on the index page,
+	which uses the `template: doc` in combination
+	with a hero element, sidebar, and a disabled ToC (table of contents)
+*/
+html[data-has-hero] {
+	--sl-content-width: 67.5rem;
+}
+
 /* Clip the right side of the view */
 .fifty {
 	clip-path: inset(0 0 0 50%);

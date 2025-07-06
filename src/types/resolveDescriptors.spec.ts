@@ -5,7 +5,7 @@ import {
     resolveDescriptors,
 } from "@/types/resolveDescriptors";
 import { resolveSignatures } from "@/types/resolveSignatures";
-import { loadCases } from "@/utils/loadCases";
+import { loadCases } from "@/utils/loadCases.infra";
 import { openContext, parseModules } from "@/context/store";
 import { featureEnable } from "@/config/features";
 import type { SrcInfo } from "@/grammar";
@@ -15,6 +15,24 @@ import { isSrcInfo } from "@/grammar/src-info";
 import { resolveStatements } from "@/types/resolveStatements";
 import { evalComptimeExpressions } from "@/types/evalComptimeExpressions";
 import type { Source } from "@/imports/source";
+import { attachment } from "@/test/allure/allure";
+import { ContentType } from "allure-js-commons";
+
+function setup(r: { code: string }) {
+    const Ast = getAstFactory();
+    attachment("Code", r.code, ContentType.TEXT);
+    const sources: Source[] = [
+        { code: r.code, path: "<unknown>", origin: "user" },
+    ];
+    let ctx = openContext(
+        new CompilerContext(),
+        sources,
+        [],
+        parseModules(sources, getParser(Ast)),
+    );
+    ctx = featureEnable(ctx, "external");
+    return { ctx, Ast };
+}
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
@@ -24,43 +42,21 @@ expect.addSnapshotSerializer({
 describe("resolveDescriptors", () => {
     for (const r of loadCases(__dirname + "/test/")) {
         it("should resolve descriptors for " + r.name, () => {
-            const Ast = getAstFactory();
-            const sources: Source[] = [
-                { code: r.code, path: "<unknown>", origin: "user" },
-            ];
-            let ctx = openContext(
-                new CompilerContext(),
-                sources,
-                [],
-                parseModules(sources, getParser(Ast)),
-            );
-            ctx = featureEnable(ctx, "external");
-            ctx = resolveDescriptors(ctx, Ast);
-            ctx = resolveSignatures(ctx, Ast);
-            expect(getAllTypes(ctx)).toMatchSnapshot();
-            expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
+            const { ctx, Ast } = setup(r);
+            const resolvedCtx = resolveDescriptors(ctx, Ast);
+            const finalCtx = resolveSignatures(resolvedCtx, Ast);
+            expect(getAllTypes(finalCtx)).toMatchSnapshot();
+            expect(getAllStaticFunctions(finalCtx)).toMatchSnapshot();
         });
     }
     for (const r of loadCases(__dirname + "/test-failed/")) {
         it("should fail descriptors for " + r.name, () => {
-            const Ast = getAstFactory();
-            const sources: Source[] = [
-                { code: r.code, path: "<unknown>", origin: "user" },
-            ];
-            let ctx = openContext(
-                new CompilerContext(),
-                sources,
-                [],
-                parseModules(sources, getParser(Ast)),
-            );
-            ctx = featureEnable(ctx, "external");
+            const { ctx, Ast } = setup(r);
             expect(() => {
-                ctx = resolveDescriptors(ctx, Ast);
-                // These following two lines are required for the test "const-eval-overflow"
-                // which must throw an integer overflow in a shift operator
-                ctx = resolveStatements(ctx);
-                evalComptimeExpressions(ctx, Ast);
-                ctx = resolveSignatures(ctx, Ast);
+                let c = resolveDescriptors(ctx, Ast);
+                c = resolveStatements(c);
+                evalComptimeExpressions(c, Ast);
+                resolveSignatures(c, Ast);
             }).toThrowErrorMatchingSnapshot();
         });
     }

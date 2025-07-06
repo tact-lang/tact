@@ -131,6 +131,8 @@ struct StdAddress {
     address: Int as uint256;
 }
 
+/// Deprecated since Tact 1.6.8. Any usages of this structure will be reported as an error.
+///
 /// Struct representing the address of variable length with signed 32-bit `workchain` ID and a `Slice` containing unsigned `address` in the specified `workchain`. Available since Tact 1.5.0.
 ///
 /// Variable-length addresses are intended for future extensions, and while validators must be ready to accept them in inbound messages, the standard (non-variable) addresses are used whenever possible.
@@ -146,7 +148,7 @@ struct VarAddress {
 
 /// Global function. Available since Tact 1.5.0.
 ///
-/// Converts a `slice` containing an address into the `StdAddress` Struct and returns it.
+/// Converts a `slice` containing an address into the `StdAddress` struct and returns it.
 ///
 /// ```tact
 /// fun example() {
@@ -170,7 +172,9 @@ asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 
 /// Global function. Available since Tact 1.5.0.
 ///
-/// Converts a `slice` containing an address of variable length into the `VarAddress` Struct and returns it.
+/// Deprecated since Tact 1.6.8. Any usages of this function will be reported as an error.
+///
+/// Converts a `slice` containing an address of variable length into the `VarAddress` struct and returns it.
 ///
 /// ```tact
 /// fun example() {

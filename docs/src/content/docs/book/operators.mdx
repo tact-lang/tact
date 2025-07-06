@@ -138,7 +138,15 @@ The unary double-exclamation mark (_non-null assertion_) operator `!!{:tact}` is
 
 ### Plus, `+` {#unary-plus}
 
-Although the unary plus sign operator `+{:tact}` is specified in the grammar of the Tact compiler, it only exists as a [binary operator](#binary-add).
+The unary plus sign operator `+{:tact}` is a prefix operator that does not alter the value it is applied to. Essentially, it works similar to an [identity function](https://en.wikipedia.org/wiki/Identity_function), but it can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = +2;
++ two;     // 2
++(+(+2));  // any number of applications gives back the original value, which is 2
+- + - two; // 2
++ - + two; // -2
+```
 
 ### Negate, `-` {#unary-negate}
 
@@ -419,8 +427,8 @@ Both operators can be applied to the following list of types and values:
 * [`Int{:tact}`][int]
 * [`Bool{:tact}`][bool]
 * [`Address{:tact}`][p]
-* [`Cell{:tact}`][cell], implicitly compared via [`.hash(){:tact}`](/ref/core-cells#cellhash)
-* [`Slice{:tact}`][slice], implicitly compared via [`.hash(){:tact}`](/ref/core-cells#slicehash)
+* [`Cell{:tact}`][cell], implicitly compared via [`Cell.hash(){:tact}`](/ref/core-cells#cellhash)
+* [`Slice{:tact}`][slice], implicitly compared via [`Slice.hash(){:tact}`](/ref/core-cells#slicehash)
 * [`String{:tact}`][p]
 * [`map<K, V>{:tact}`](/book/maps), but only if their key and value types are identical
 * [Optionals and `null{:tact}` value](/book/optionals)
@@ -470,7 +478,7 @@ nullable != anotherNullable; // true
 
 :::note
 
-  The binary equality `=={:tact}` and inequality `!={:tact}` operators implicitly compare [maps](/book/maps) by the hashes of their respective [cells][cell] via the [`.hash(){:tact}`](/ref/core-cells#cellhash) function. While this is acceptable in the majority of cases—since most map serializers behave identically to the serializer from TON Blockchain sources—it is still possible to obtain false-negative results if a map is serialized manually or if the serialization logic is modified in certain libraries.
+  The binary equality `=={:tact}` and inequality `!={:tact}` operators implicitly compare [maps](/book/maps) by the hashes of their respective [cells][cell] via the [`hash(){:tact}`](/ref/core-cells#cellhash) extension function. While this is acceptable in the majority of cases—since most map serializers behave identically to the serializer from TON Blockchain sources—it is still possible to obtain false-negative results if a map is serialized manually or if the serialization logic is modified in certain libraries.
 
   If you need to guarantee that compared maps are equal and are willing to pay significantly more gas, use the [`map.deepEquals(){:tact}`](/book/maps#deepequals) function.
 
@@ -613,7 +621,7 @@ true  ? (false ? 1 : 2) : 3; // 2
 
 ## Assignment, `=` {#assignment}
 
-The assignment operator `={:tact}` is used to assign a value to a variable or to a property of a [Message](/book/structs-and-messages#messages) or a [Struct](/book/structs-and-messages#structs). The assignment is a statement, and it does not return a value.
+The assignment operator `={:tact}` is used to assign a value to a variable or to a field of a [structure](/book/structs-and-messages). The assignment is a statement, and it does not return a value.
 
 ```tact
 let someVar: Int = 5;    // assignment operator = is used here...

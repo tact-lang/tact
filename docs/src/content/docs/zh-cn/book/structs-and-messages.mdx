@@ -119,8 +119,8 @@ message(0x7362d09c) TokenNotification {
   更深入的消息请参见：\
   [Convert received messages to `op` operations](/zh-cn/book/func#convert-received-messages-to-op-operations)\
   [Internal message body layout in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/internal-messages#internal-message-body)\
-  [Messages of the Jetton implementation in Tact](https://github.com/howardpen9/jetton-implementation-in-tact/blob/9eee917877a92af218002874a9f2bd3f9c619229/sources/messages.tact)\
-  [Jetton Standard in Tact on Tact-by-Example](https://tact-by-example.org/07-jetton-standard)
+  [Messages of the Jetton implementation in Tact](https://github.com/tact-lang/jetton/blob/3f02e1065b871cbab300e019f578c3fb0b19effa/src/contracts/base/messages.tact)\
+  [Common examples of working with Fungible Tokens (Jettons) in Tact](/zh-cn/cookbook/jettons)
 
 :::
 
@@ -279,7 +279,7 @@ message(0x2A) ArbitraryMessage {}
 
 fun lawTwo() {
     // Using 32 bits to store 42 just so this cellInst can be
-    // re-used for working with both ArbitraryStruct and ArbitraryMessage
+    // reused for working with both ArbitraryStruct and ArbitraryMessage
     let cellInst = beginCell().storeUint(42, 32).endCell();
 
     ArbitraryStruct.fromCell(cellInst).toCell();  // = cellInst

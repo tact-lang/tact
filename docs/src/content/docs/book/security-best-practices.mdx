@@ -11,7 +11,7 @@ For a deeper understanding, refer to the following resources:
 
 * [Smart contracts guidelines in TON Docs](https://docs.ton.org/v3/guidelines/smart-contracts/guidelines)
 * [Secure Smart Contract Programming in TON Docs](https://docs.ton.org/v3/guidelines/smart-contracts/security/secure-programming)
-* [FunC Security Best Practices in GitHub repo](https://github.com/slowmist/Toncoin-Smart-Contract-Security-Best-Practices/blob/main/README.md)
+* [Curated list of awesome TON security resources](https://github.com/Polaristow/awesome-ton-security/blob/main/README.md)
 
 In addition, consider reading the detailed article by CertiK, a Web3 smart contract auditor: [Secure Smart Contract Programming in Tact: Popular Mistakes in the TON Ecosystem](https://www.certik.com/resources/blog/secure-smart-contract-programming-in-tact-popular-mistakes-in-the-ton).
 
@@ -271,6 +271,7 @@ contract Sample(
 ) {
     external(msg: MsgWithSignedData) {
         require(msg.bundle.verifySignature(self.publicKey), "Invalid signature");
+        require(msg.seqno == self.seqno, "Invalid seqno");
         acceptMessage();
         self.seqno += 1;
         sendRawMessage(msg.rawMsg, 0);
@@ -506,7 +507,7 @@ contract Sample(
 
 ## Pulling data from another contract
 
-Contracts in the blockchain can reside in separate shards processed by another set of validators. This means that one contract cannot pull data from another contract. Specifically, no contract can call a [getter function](/book/functions#getter-functions) from another contract.
+Contracts in the blockchain can reside in separate shards processed by another set of validators. This means that one contract cannot pull data from another contract. Specifically, no contract can call a [getter function](/book/functions#get) from another contract.
 
 Thus, any on-chain communication is asynchronous and done by sending and receiving messages.
 
@@ -559,6 +560,12 @@ contract AnotherContract(
     receive() { cashback(sender()) }
 }
 ```
+
+## Pay attention to `safety` option set of `tact.config.json`
+
+The security of the Tact compiler can be hardened or slightly relaxed by tweaking the [`safety`](/book/config#options-safety) option set in the [`tact.config.json`](/book/config).
+
+Use those settings **wisely** — disabling them often gives performance boosts at the cost of runtime checks and reduced contract safety. On the flip side, enabling them would harden the contracts but make them a bit more expensive to execute.
 
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages

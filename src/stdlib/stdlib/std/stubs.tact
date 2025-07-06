@@ -246,15 +246,18 @@ fun crc32(str: String): Int;
 ///
 fun ton(value: String): Int;
 
-/// Pseudo-type that represents any Struct.
+/// Pseudo-type that represents any struct type.
 primitive AnyStruct;
 
 /// Pseudo-type that represents any Message.
 primitive AnyMessage;
 
-/// Extension function for any Struct type.
+/// Pseudo-type that represents any Contract.
+primitive AnyContract;
+
+/// Extension function for any struct type.
 ///
-/// Converts a `Cell` into the specified `Struct` and returns that `Struct`.
+/// Converts a `Cell` into the specified struct and returns that struct.
 ///
 /// ```tact
 /// struct GuessCoin {
@@ -271,7 +274,7 @@ primitive AnyMessage;
 ///     try {
 ///         coin = GuessCoin.fromCell(payload);
 ///     } catch (e) {
-///         dump("Cell payload doesn't match GuessCoin Struct!");
+///         dump("Cell payload doesn't match GuessCoin struct!");
 ///     }
 ///     return coin;
 /// }
@@ -280,7 +283,7 @@ primitive AnyMessage;
 /// #### Exit codes
 ///
 /// * 9: [Cell underflow] — Thrown when attempting to pass a `Cell` with a layout different
-///   from the specified `Struct` or to load more data than `Cell` contains.
+///   from the specified struct or to load more data than `Cell` contains.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells/#structfromcell
 ///
@@ -288,9 +291,9 @@ primitive AnyMessage;
 ///
 fun AnyStruct_fromCell(cell: Cell): S;
 
-/// Extension function for any Struct type.
+/// Extension function for any struct type.
 ///
-/// Converts a `Slice` into the specified `Struct` and returns that `Struct`.
+/// Converts a `Slice` into the specified struct and returns that struct.
 ///
 /// ```tact
 /// struct GuessCoin {
@@ -307,7 +310,7 @@ fun AnyStruct_fromCell(cell: Cell): S;
 ///     try {
 ///         coin = GuessCoin.fromSlice(payload);
 ///     } catch (e) {
-///         dump("Slice payload doesn't match GuessCoin Struct!");
+///         dump("Slice payload doesn't match GuessCoin struct!");
 ///     }
 ///     return coin;
 /// }
@@ -316,7 +319,7 @@ fun AnyStruct_fromCell(cell: Cell): S;
 /// #### Exit codes
 ///
 /// * 9: [Cell underflow] — Thrown when attempting to pass a `Slice` with a layout different
-///   from the specified `Struct` or to load more data than `Slice` contains.
+///   from the specified struct or to load more data than `Slice` contains.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells/#structfromslice
 ///
@@ -394,7 +397,83 @@ fun AnyMessage_fromCell(cell: Cell): M;
 ///
 fun AnyMessage_fromSlice(slice: Slice): M;
 
-/// Extension function for any Message type. Available since Tact 1.7.0.
+/// Extension function for any contract type. Available since Tact 1.6.13.
+///
+/// Converts a `Cell` into the specified contract struct and returns it.
+///
+/// ```tact
+/// contract GuessCoinContract {
+///     probably: Int as coins = 42;
+///     nothing: Int as coins = 27;
+///
+///     receive() { cashback(sender()) }
+/// }
+///
+/// fun directParse(payload: Cell): GuessCoinContract {
+///     return GuessCoinContract.fromCell(payload);
+/// }
+///
+/// fun cautiousParse(payload: Cell): GuessCoinContract? {
+///     let coin: GuessCoinContract? = null;
+///     try {
+///         coin = GuessCoinContract.fromCell(payload);
+///     } catch (e) {
+///         dump("Cell payload doesn't match GuessCoinContract struct!");
+///     }
+///     return coin;
+/// }
+/// ```
+///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when attempting to pass a `Cell` with a layout different
+///   from the specified contract or to load more data than `Cell` contains.
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#contractfromcell
+///
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+///
+fun AnyContract_fromCell(cell: Cell): C;
+
+/// Extension function for any contract type. Available since Tact 1.6.13.
+///
+/// Converts a `Slice` into the specified contract struct and returns it.
+///
+/// ```tact
+/// contract GuessCoinContract {
+///     probably: Int as coins = 42;
+///     nothing: Int as coins = 27;
+///
+///     receive() { cashback(sender()) }
+/// }
+///
+/// fun directParse(payload: Slice): GuessCoinContract {
+///     return GuessCoinContract.fromSlice(payload);
+/// }
+///
+/// fun cautiousParse(payload: Slice): GuessCoinContract? {
+///     let coin: GuessCoinContract? = null;
+///     try {
+///         coin = GuessCoinContract.fromSlice(payload);
+///     } catch (e) {
+///         dump("Slice payload doesn't match GuessCoinContract struct!");
+///     }
+///     return coin;
+/// }
+/// ```
+///
+/// #### Exit codes
+///
+/// * 9: [Cell underflow] — Thrown when attempting to pass a `Slice` with a layout different
+///   from the specified contract or to load more data than `Slice` contains.
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#contractfromslice
+///
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+///
+fun AnyContract_fromSlice(slice: Slice): C;
+
+/// Extension function for any Message type. Available since Tact 1.6.7.
 ///
 /// Returns the message opcode.
 ///
@@ -414,9 +493,9 @@ fun AnyMessage_fromSlice(slice: Slice): M;
 ///
 fun AnyMessage_opcode(): Int;
 
-/// Extension function for any Struct.
+/// Extension function for any struct type.
 ///
-/// Converts the Struct to a `Cell` and returns it.
+/// Converts the struct to a `Cell` and returns it.
 ///
 /// ```tact
 /// struct GuessCoin {
@@ -436,9 +515,9 @@ fun AnyMessage_opcode(): Int;
 ///
 extends fun toCell(self: AnyStruct): Cell;
 
-/// Extension function for any Struct. Available since Tact 1.5.0.
+/// Extension function for any struct type. Available since Tact 1.5.0.
 ///
-/// Converts the Struct to a `Slice` and returns it. Alias to `self.toCell().asSlice()`.
+/// Converts the struct to a `Slice` and returns it. Alias to `self.toCell().asSlice()`.
 ///
 /// ```tact
 /// struct GuessCoin {
@@ -502,6 +581,56 @@ extends fun toCell(self: AnyMessage): Cell;
 ///
 extends fun toSlice(self: AnyMessage): Slice;
 
+/// Extension function for any contract type. Available since Tact 1.6.12.
+///
+/// Converts the contract data to a `Cell` and returns it.
+///
+/// ```tact
+/// contract Example {
+///     probably: Int as coins = 42;
+///     nothing: Int as coins = 27;
+///
+///     get fun asCell(): Cell {
+///         return self.toCell();
+///     }
+/// }
+/// ```
+///
+/// If a contract doesn't use [contract parameters], the resulting `Cell`
+/// or `Slice` will contain a leading one bit representing the [lazy initialization bit].
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#contracttocell
+///
+/// [contract parameters]: https://docs.tact-lang.org/book/contracts#parameters
+/// [lazy initialization bit]: https://docs.tact-lang.org/book/functions/#init
+///
+extends fun toCell(self: AnyContract): Cell;
+
+/// Extension function for any contract type. Available since Tact 1.6.12.
+///
+/// Converts the contract data to a `Slice` and returns it. Alias to `self.toCell().asSlice()`.
+///
+/// ```tact
+/// contract Example {
+///     probably: Int as coins = 42;
+///     nothing: Int as coins = 27;
+///
+///     get fun asSlice(): Slice {
+///         return self.toSlice();
+///     }
+/// }
+/// ```
+///
+/// If a contract doesn't use [contract parameters], the resulting `Cell`
+/// or `Slice` will contain a leading one bit representing the [lazy initialization bit].
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#contracttoslice
+///
+/// [contract parameters]: https://docs.tact-lang.org/book/contracts#parameters
+/// [lazy initialization bit]: https://docs.tact-lang.org/book/functions/#init
+///
+extends fun toSlice(self: AnyContract): Slice;
+
 /// Creates an empty map of type `map<K, V>`, initially set to `null`.
 ///
 /// ```tact
@@ -537,14 +666,14 @@ extends fun get(self: map<K, V>, key: K): V?;
 ///
 /// See: https://docs.tact-lang.org/book/maps/#replace
 ///
-extends mutates fun replace(self: map<K, V>, key: K, val: V): Bool;
+extends mutates fun replace(self: map<K, V>, key: K, val: V?): Bool;
 
 /// Like `replace()`, but returns the old (pre-replacement) value
 /// on successful replacement and `null` otherwise.
 ///
 /// See: https://docs.tact-lang.org/book/maps/#replaceget
 ///
-extends mutates fun replaceGet(self: map<K, V>, key: K, val: V): V?;
+extends mutates fun replaceGet(self: map<K, V>, key: K, val: V?): V?;
 
 /// Deletes a single key-value pair (single entry) by its `key`
 /// from the map. Returns `true` in case of successful deletion and `false` otherwise.

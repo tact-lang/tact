@@ -99,7 +99,7 @@ contract MeSee {
 
 ### inMsg
 
-<Badge text="Available since Tact 1.7" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6.7" variant="tip" size="medium"/><p/>
 
 ```tact
 fun inMsg(): Slice;
@@ -310,21 +310,17 @@ let gas: Int = gasConsumed();
 
 ### nativeReserve
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+<Badge text="500+ gas" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun nativeReserve(amount: Int, mode: Int);
 ```
 
-Executes the native `RAWRESERVE` instruction with the specified amount and mode. The `RAWRESERVE` instruction creates an output action to reserve a specific amount of [nanoToncoin][nano] from the remaining balance of the account.
+Executes the [`RAWRESERVE`](https://docs.ton.org/v3/documentation/tvm/instructions#FB02) instruction with the specified `amount` and `mode`. It queues the reservation of the specific `amount` of [nanoToncoin][nano] from the remaining account balance per the given `mode`.
 
-The `RAWRESERVE` instruction takes two arguments:
-* `amount`: The number of [nanoToncoin][nano] to reserve.
-* `mode`: Determines the reservation behavior.
+The reservation action is queued to the _output action list_, which contains other actions such as [message sends](/book/send#outbound-message-processing). In fact, the `RAWRESERVE` instruction is roughly equivalent to creating an outbound message carrying the specified `amount` of nanoToncoin or `b - amount` of nanoToncoin, where `b` is the remaining balance, to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
 
-The `RAWRESERVE` instruction is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoin][nano] (or `b - amount` [nanoToncoin][nano], where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
-
-It is possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience, there's a set of constants you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+It is possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience, there is a set of constants you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on [base modes](#nativereserve-base-modes), [optional flags](#nativereserve-optional-flags), and how you can [combine them together](#nativereserve-combining-modes-with-flags).
 
 :::caution
 
@@ -366,6 +362,55 @@ nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
 //            amount of nanoToncoins to reserve
 ```
 
+### setData
+
+<Badge text="Available since Tact 1.7" variant="tip" size="medium"/>
+<Badge text="DANGEROUS" title="Applies irreversible modifications to the contract — use only when you know what you are doing!" variant="danger" size="medium"/><p/>
+
+```tact
+fun setData(data: Cell);
+```
+
+Replaces the current contract's state data [`Cell{:tact}`][cell] with the new `data`. It is useful only in exceptional cases, such as contract upgrades, data migrations, or when processing external messages with a catch-all [`Slice{:tact}`][slice] receiver for maximum efficiency. Otherwise, do **not** use this function, as it immediately and permanently overrides the state with no ability to recover, which can result in the loss of funds and partial or full corruption of the contract's data.
+
+:::caution
+
+  When using this function, make sure that all logical code branches within your receiver end with a call to the [`throw(0){:tact}`](/ref/core-debug#throw) function to terminate the execution of the contract early and prevent the automatic contract's data save implicitly added by Tact after the end of each receiver. Conversely, your manual changes to data made with this function will be lost.
+
+:::
+
+Usage example:
+
+```tact {13}
+contract WalletV4(
+    seqno: Int as uint32,
+    // ...other parameters...
+) {
+    // ...
+    external(_: Slice) {
+        // ...various prior checks...
+
+        acceptMessage();
+        self.seqno += 1;
+
+        // Manually saving the contract's state
+        setData(self.toCell());
+
+        // And halting the transaction to prevent a secondary save implicitly
+        // added by Tact after the main execution logic of the receiver
+        throw(0);
+    }
+}
+```
+
+:::note
+
+  Tact automatically saves the contract's state after the end of each receiver's logic even when `return{:tact}` statements are used for early termination. Thus, this function is almost never needed in regular contracts.
+
+  However, if you intend to use the `throw(0){:tact}` pattern to terminate the compute phase and save the state yourself or you want to replace the data when upgrading the contract, this function becomes useful. That said, make sure to double-check and test cover your every move such that the contract's data won't become corrupt or inadvertently gone.
+
+:::
+
 ### commit
 
 ```tact
@@ -376,9 +421,22 @@ Commits the current state of [registers][registers] `c4` (persistent data) and `
 
 Usage example:
 
-```tact {1}
-commit();  // now, transaction is considered "successful"
-throw(42); // and this won't fail it
+```tact {12}
+contract WalletV4(
+    seqno: Int as uint32,
+    // ...other parameters...
+) {
+    // ...
+    external(_: Slice) {
+        // ...various prior checks...
+
+        acceptMessage();
+        self.seqno += 1;
+        setData(self.toCell());
+        commit(); //  now, transaction is considered "successful"
+        throw(42); // and this won't fail it
+    }
+}
 ```
 
 ## Blockchain state

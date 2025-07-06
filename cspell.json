@@ -28,6 +28,8 @@
   "ignorePaths": [
     "*.boc",
     "*.fif",
+    "*.fc",
+    "_/",
     "**/*/output",
     "*.spec.ts.snap",
     "node_modules",
@@ -54,10 +56,21 @@
     "src/test/e2e-slow/map-property-tests/map-properties-key-value-types.ts",
     "src/test/e2e-slow/map-property-tests/build",
     "/docs",
-    "src/benchmarks/contracts/func/notcoin/stdlib-custom.fc",
-    "src/benchmarks/contracts/func/notcoin/gas.fc",
     "src/utils/change-case/*",
     "src/fmt/cst/cst-parser.ts",
-    "coverage"
+    "src/asm/text/convert.ts",
+    "src/asm/text/printer-gen.ts",
+    "src/asm/runtime/types.ts",
+    "src/asm/runtime/test/*",
+    "src/asm/runtime/stack-signatures-data.json",
+    "src/asm/runtime/stack-signatures-schema.ts",
+    "src/asm/runtime/stack-signatures-schema.json",
+    "src/asm/runtime/instr-gen.ts",
+    "src/asm/runtime/constructors.ts",
+    "src/asm/generator/*",
+    "coverage",
+    "coverage.html",
+    "coverage-*.html",
+    "allure-results/*"
   ]
 }
