@@ -3,6 +3,7 @@ import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
 import { throwCompilationError } from "@/error/errors";
 import { resolveLibrary } from "@/imports/resolveLibrary";
 import type { Language, Source } from "@/imports/source";
+import { relative } from "path";
 
 type ResolveImportsArgs = {
     readonly entrypoint: string;
@@ -48,8 +49,10 @@ export function resolveImports({
 
             // Check for duplicates within the current file
             if (resolvedPathsInCurrentFile.has(resolved.path)) {
+                const relativePath = relative(process.cwd(), resolved.path);
+                const relativeSourcePath = relative(process.cwd(), sourceFrom.path);
                 throwCompilationError(
-                    `Duplicate import of '${resolved.path}' in file '${sourceFrom.path}'`,
+                    `Duplicate import of '${relativePath}' in file '${relativeSourcePath}'`,
                     loc,
                 );
             }
