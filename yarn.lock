@@ -1426,12 +1426,14 @@
     chalk "^4.1.2"
     table "^6.9.0"
 
-"@ton/sandbox@^0.33.0":
-  version "0.33.0"
-  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.33.0.tgz#62efc1e8e0c5d7dcb8101a2709387e7c320839ea"
-  integrity sha512-hhPXaan9PNSGUY3NtG8g5e7lgzy81gh+pnp4dagvwFVp1F4iqfGXjIAYc0sTIT/UVIb1U64fTS+STbTgpXni1A==
+"@ton/sandbox@^0.35.0":
+  version "0.35.0"
+  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.35.0.tgz#baa1cdbf1602c8b1788af128f76540643e57006c"
+  integrity sha512-vjaPdwPlI95yG/nwg0ZF7hKmWR3TUkcHZdRfPYJ29oC5TgSvkUJwnuydKI72WnpBGX2JPk6GzL7yNJ37oLqiWA==
   dependencies:
+    "@vscode/debugadapter" "^1.68.0"
     chalk "^4.1.2"
+    fflate "^0.8.2"
     table "^6.9.0"
 
 "@ton/test-utils@^0.7.0":
@@ -1760,6 +1762,18 @@
   version "1.2.0"
   resolved "https://npm.dev-internal.org/@ungap/structured-clone/-/structured-clone-1.2.0.tgz"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
+
+"@vscode/debugadapter@^1.68.0":
+  version "1.68.0"
+  resolved "https://npm.dev-internal.org/@vscode/debugadapter/-/debugadapter-1.68.0.tgz#abb23463cb750ca4a6f0834c5d4db659258dc159"
+  integrity sha512-D6gk5Fw2y4FV8oYmltoXpj+VAZexxJFopN/mcZ6YcgzQE9dgq2L45Aj3GLxScJOD6GeLILcxJIaA8l3v11esGg==
+  dependencies:
+    "@vscode/debugprotocol" "1.68.0"
+
+"@vscode/debugprotocol@1.68.0":
+  version "1.68.0"
+  resolved "https://npm.dev-internal.org/@vscode/debugprotocol/-/debugprotocol-1.68.0.tgz#e558ba6affe1be7aff4ec824599f316b61d9a69d"
+  integrity sha512-2J27dysaXmvnfuhFGhfeuxfHRXunqNPxtBoR3koiTOA9rdxWNDTa1zIFLCFMSHJ9MPTPKFcBeblsyaCJCIlQxg==
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -3102,6 +3116,11 @@ fdir@^6.4.4:
   version "6.4.4"
   resolved "https://npm.dev-internal.org/fdir/-/fdir-6.4.4.tgz#1cfcf86f875a883e19a8fab53622cfe992e8d2f9"
   integrity sha512-1NZP+GK4GfuAv3PqKvxQRDMjdSRZjnkq7KfhlNrCNNlZ0ygQFpebfrnfnq/W7fpUnAv9aGWmY1zKx7FYL3gwhg==
+
+fflate@^0.8.2:
+  version "0.8.2"
+  resolved "https://npm.dev-internal.org/fflate/-/fflate-0.8.2.tgz#fc8631f5347812ad6028bbe4a2308b2792aa1dea"
+  integrity sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==
 
 figures@^3.0.0:
   version "3.2.0"
