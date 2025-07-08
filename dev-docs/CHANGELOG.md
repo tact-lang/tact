@@ -11,6 +11,7 @@ The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOC
 
 ### Code generation
 
+- Optimized opcode parsing for fallback and text receivers: PR [#3331](https://github.com/tact-lang/tact/pull/3331)
 - Reordered arguments of the `__tact_store_address_opt` function to optimize gas consumption: PR [#3333](https://github.com/tact-lang/tact/pull/3333)
 
 ### Standard Library

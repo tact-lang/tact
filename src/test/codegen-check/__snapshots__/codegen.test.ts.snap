@@ -577,10 +577,9 @@ _ %asSlice() method_id(68231) {
     
     ;; Handle bounced messages
     if (msg_bounced) { return (); }
-    int op = 0;
     int in_msg_length = slice_bits(in_msg);
+    int op = (in_msg_length >= 32) ? in_msg~load_uint(32) : 0;
     if (in_msg_length >= 32) {
-        op = in_msg~load_uint(32);
         ;; Receive Bin message
         if (op == 0x2) {
             var $m = empty_tuple();

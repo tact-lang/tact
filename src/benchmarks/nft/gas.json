@@ -199,6 +199,16 @@
         "deploy nft": "10299",
         "batch deploy nft": "650666"
       }
+    },
+    {
+      "label": "1.6.13 with optimized opcode parsing for fallback and text receivers",
+      "pr": "https://github.com/tact-lang/tact/pull/3331",
+      "gas": {
+        "transfer": "6907",
+        "get static data": "4388",
+        "deploy nft": "10263",
+        "batch deploy nft": "648848"
+      }
     }
   ]
 }
