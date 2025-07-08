@@ -16,11 +16,13 @@ The documentation changelog is kept separately: [CHANGELOG-DOCS](./CHANGELOG-DOC
 ### Standard Library
 
 - Added `setData()` function: PR [#3402](https://github.com/tact-lang/tact/pull/3402)
+- Improved gas efficiency for the `context().readForwardFee`: PR [#3457](https://github.com/tact-lang/tact/pull/3457)
 
 ### Release contributors
 
 - [skywardboundd](https://github.com/skywardboundd)
 - [Novus Nota](https://github.com/novusnota)
+- [Ludwintor](https://github.com/Ludwintor)
 
 ## [1.6.13] - 2025-05-29
 
