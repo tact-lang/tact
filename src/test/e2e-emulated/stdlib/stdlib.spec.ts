@@ -260,18 +260,30 @@ describe("stdlib", () => {
 
         expect(await contract.getMyCode()).toEqualCell(contract.init!.code);
 
-        const RandomMessage = Cell.fromBase64(
-            "te6ccuEBAQEAZwDOAMloAdbATUBllK0egYWU34F08lIun9zBwyu7UZQrueKKJgnXADfmsDtWQP5D/YkXX+XlULvs4HivRaKY38ftT2hS5yAAEE1v+YAGCCNaAABhF0kRG4TPMTmAapk7bYAAGEXSDt8BwKQrvKE=",
-        );
-        const res = await contract.getParseOriginalFwdFee(
-            RandomMessage.beginParse(),
-        );
-        expect(res).toBe(400000n);
-
         const varIntegers1 = await contract.getVarIntegers1();
         expect(varIntegers1).toBe(1234n); // 1000 + 200 + 30 + 4
 
         const varIntegers2 = await contract.getVarIntegers2();
         expect(varIntegers2).toBe(1234n); // 1000 + 200 + 30 + 4
+    });
+
+    it("should read forward fee inside receiver correctly", async () => {
+        const sendResult = await contract.send(
+            treasury.getSender(),
+            { value: toNano(1) },
+            { $$type: "ReadFwdFeeMsg" },
+        );
+        expect(sendResult.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasury.address,
+            success: true,
+            body: (body) => {
+                if (!body) return false;
+                const cs = body.beginParse();
+                const fwdFee = cs.loadCoins();
+                const expectedFwdFee = cs.loadCoins();
+                return fwdFee === expectedFwdFee;
+            },
+        });
     });
 });

@@ -189,6 +189,16 @@
         "wallet cells": "15",
         "wallet bits": "7756"
       }
+    },
+    {
+      "label": "1.6.13 with more efficient readForwardFee",
+      "pr": "https://github.com/tact-lang/tact/pull/3457",
+      "size": {
+        "minter cells": "27",
+        "minter bits": "13673",
+        "wallet cells": "14",
+        "wallet bits": "7516"
+      }
     }
   ]
 }
