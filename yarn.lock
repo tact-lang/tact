@@ -1427,9 +1427,9 @@
     table "^6.9.0"
 
 "@ton/sandbox@^0.35.0":
-  version "0.35.0"
-  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.35.0.tgz#baa1cdbf1602c8b1788af128f76540643e57006c"
-  integrity sha512-vjaPdwPlI95yG/nwg0ZF7hKmWR3TUkcHZdRfPYJ29oC5TgSvkUJwnuydKI72WnpBGX2JPk6GzL7yNJ37oLqiWA==
+  version "0.35.1"
+  resolved "https://npm.dev-internal.org/@ton/sandbox/-/sandbox-0.35.1.tgz#6b211b981c4088f9aa591b3cae9964b44e23300b"
+  integrity sha512-h7oYbCLWRxYNU6quNKyC0Ji4F1VOKTMzy758MxYFmVY+VmV95Bj6fECiQFS0+u4Qy6TEAePuoSnQxMHW3eqRbQ==
   dependencies:
     "@vscode/debugadapter" "^1.68.0"
     chalk "^4.1.2"
