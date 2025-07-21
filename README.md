@@ -11,9 +11,9 @@ Developed by [TON Studio](https://tonstudio.io), powered by the community — as
 
 Tact has undergone a comprehensive security audit by [Trail of Bits](https://www.trailofbits.com), a leading Web3 security firm.
 
-**[Try online!] • [Features] • [Security] • [Key resources] • [Installation] • [Community] • [Contributing]**
+**[Try it online] • [Features] • [Security] • [Key resources] • [Installation] • [Community] • [Contributing]**
 
-[Try online!]: https://ide.ton.org
+[Try it online]: https://ide.ton.org
 [Features]: #features
 [Security]: #security
 [Key resources]: #key-resources
@@ -41,7 +41,7 @@ The most prominent and distinctive features of Tact are:
 - Automatic routing of [internal, external, and bounced messages][recvfun].
 - Automatic handling of message types, including [binary, text, and fallback slices][recv].
 - No boilerplate functions for [sending messages] and deploying child contracts.
-- Reusable behaviors through [traits].
+- Reusable and composable behaviors using [traits], similar to interfaces or mixins.
 - Support for low-level programming with [`asm` functions][asmfun].
 - Generation of [single-file TypeScript wrappers] for convenient interactions with compiled contracts, which include:
   - Type definitions for [Structs] and [Messages] observable in the [compilation report].
