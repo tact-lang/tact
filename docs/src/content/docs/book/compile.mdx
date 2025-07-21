@@ -82,7 +82,10 @@ If you want to pin down a specific version of the compiler, run the following co
 
 :::caution
 
-  Do not mix different Node.js package managers in your projects. If you created the [Blueprint][bp] project with `npm`, stick to using `npm` for the rest of the commands — this will ensure that you don't get "File not found" errors or lock-file conflicts between different package managers.
+  Do not mix different Node.js package managers in your projects. 
+  **Always stick to one — using multiple will break things.** 
+
+  If you created the [Blueprint][bp] project with `npm`, stick to using `npm` for the rest of the commands — this will ensure that you don't get "File not found" errors or lock-file conflicts between different package managers.
 
   For example, using the `npm` package manager to install dependencies and then switching to `yarn` to build the contracts can lead to the following error message:
 
@@ -159,7 +162,7 @@ TL-B: `manually_specified_opcode#12345678  = ManuallySpecifiedOpcode`
 Signature: `ManuallySpecifiedOpcode{}`
 ```
 
-Here, `6dfea180` and `12345678`, specified after the `#` in the [constructor definitions](https://docs.ton.org/v3/documentation/data-formats/tlb/tl-b-language#constructors), are opcodes written in hexadecimal notation representing 32-bit unsigned integers. Thus, the automatically generated `6dfea180` opcode of the `GeneratedOpcode{:tact}` [Message][message] represents the decimal value 1845404032, and the manually provided `12345678` opcode of the `ManuallySpecifiedOpcode{:tact}` [Message][message] represents the decimal value 305419896, and **not** 12345678 as it might appear.
+Here, `6dfea180` and `12345678`, specified after the `#` in the [constructor definitions](https://docs.ton.org/v3/documentation/data-formats/tlb/tl-b-language#constructors), are opcodes written in hexadecimal notation representing 32-bit unsigned integers. Thus, the automatically generated `6dfea180` opcode of the `GeneratedOpcode{:tact}` [Message][message] represents the decimal value 1845404032, and the manually provided `12345678` opcode of the `ManuallySpecifiedOpcode{:tact}` [Message][message] represents the decimal value 305419896 — **not** 12345678, even though it looks like a decimal.
 
 #### Get methods {#getters}
 
