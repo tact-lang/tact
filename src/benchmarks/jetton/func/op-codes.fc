@@ -1,3 +1,4 @@
+;; https://github.com/ton-blockchain/token-contract/blob/f2253cb0f0e1ae0974d7dc0cef3a62cb6e19f806/ft/op-codes.fc
 int op::transfer() asm "0xf8a7ea5 PUSHINT";
 int op::transfer_notification() asm "0x7362d09c PUSHINT";
 int op::internal_transfer() asm "0x178d4519 PUSHINT";
