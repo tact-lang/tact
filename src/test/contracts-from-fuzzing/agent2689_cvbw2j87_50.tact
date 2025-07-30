@@ -1,0 +1,25 @@
+struct NestedSerializations {
+    foo: Int as int8;
+    bar: InnerSerial;
+}
+
+struct InnerSerial {
+    a: Int as uint8;
+    b: Int as int16;
+    c: Int as uint16;
+}
+
+contract StructSerializeNested {
+    s: NestedSerializations;
+
+    init() {
+        self.s = NestedSerializations{
+            foo: -128,
+            bar: InnerSerial{
+                a: 255,
+                b: -32768,
+                c: 65535,
+            },
+        };
+    }
+}

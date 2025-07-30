@@ -1,0 +1,9 @@
+contract OnlyOptParams(
+    a: Int?,
+    s: String?,
+    addr: Address?,
+    b: Bool?,
+    sl: Slice?,
+    bu: Builder?,
+    ce: Cell?,
+) {}

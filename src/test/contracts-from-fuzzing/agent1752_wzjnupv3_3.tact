@@ -1,0 +1,3 @@
+contract OptBoolNoDefault {
+    flag: Bool?;
+}

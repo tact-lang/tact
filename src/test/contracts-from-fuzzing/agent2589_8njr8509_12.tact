@@ -1,0 +1,12 @@
+contract LargeContractParams(
+    a: Int,
+    b: Bool,
+    c: String,
+    d: Cell,
+    e: Slice,
+    f: Builder,
+    g: Address,
+    h: Int?,
+    i: Bool?,
+    j: String?
+) {}

@@ -1,0 +1,5 @@
+contract TestContract {
+    s: Int as uint256 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+
+    init() {}
+}

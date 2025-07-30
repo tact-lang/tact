@@ -1,0 +1,61 @@
+contract ManyFields {
+    f1: Int;
+    f2: Bool;
+    f3: String;
+    f4: Int?;
+    f5: Bool?;
+    f6: String?;
+    f7: Int as uint8;
+    f8: Int as int16;
+    f9: Int as uint64;
+    f10: Int as int257;
+    f11: Bool = false;
+    f12: Int = 42;
+    f13: Int?;
+    f14: Bool?;
+    f15: String?;
+    f16: Int;
+    f17: Bool;
+    f18: String;
+    f19: Int?;
+    f20: Bool?;
+    f21: String?;
+    f22: Int as uint8;
+    f23: Int as int16;
+    f24: Int as uint64;
+    f25: Int as int257;
+    f26: Bool = true;
+    f27: Int = -1;
+    f28: Int?;
+    f29: Bool?;
+    f30: String?;
+
+    init() {
+        self.f1 = 1;
+        self.f2 = true;
+        self.f3 = "abc";
+        self.f4 = null;
+        self.f5 = false;
+        self.f6 = null;
+        self.f7 = 255;
+        self.f8 = -123;
+        self.f9 = 123456;
+        self.f10 = -789;
+        self.f13 = 100;
+        self.f14 = null;
+        self.f15 = "optional";
+        self.f16 = 88;
+        self.f17 = false;
+        self.f18 = "xyz";
+        self.f19 = null;
+        self.f20 = true;
+        self.f21 = null;
+        self.f22 = 254;
+        self.f23 = 321;
+        self.f24 = 654321;
+        self.f25 = 123;
+        self.f28 = null;
+        self.f29 = null;
+        self.f30 = null;
+    }
+}

@@ -1,0 +1,1 @@
+contract C { fun f(a: Int, b: map<Int, Int,>) { } }

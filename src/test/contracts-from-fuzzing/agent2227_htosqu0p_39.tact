@@ -1,0 +1,3 @@
+contract PersistentAddress(
+    addr: Address,
+) {}

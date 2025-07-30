@@ -1,0 +1,1 @@
+contract TrailingComma(a: Int,) {}

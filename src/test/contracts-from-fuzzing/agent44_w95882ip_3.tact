@@ -1,0 +1,16 @@
+struct Inner {
+    x: Int;
+    y: Int?;
+}
+
+contract TestContract {
+    point: Inner;
+
+    init() {
+        self.point = Inner{ x: 42, y: null };
+    }
+
+    receive() {
+        let xx = self.point.x;
+    }
+}

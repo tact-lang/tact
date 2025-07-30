@@ -1,0 +1,1 @@
+contract M { fun f(x: Int) { return } }

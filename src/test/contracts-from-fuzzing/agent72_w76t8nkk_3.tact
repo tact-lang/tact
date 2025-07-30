@@ -1,0 +1,6 @@
+contract A {
+  receive(
+  
+  ) {
+  }
+}

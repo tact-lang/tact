@@ -1,0 +1,1 @@
+contract OptionalInt { val: Int? = null; }

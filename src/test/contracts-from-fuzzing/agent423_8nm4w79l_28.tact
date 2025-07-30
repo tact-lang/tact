@@ -1,0 +1,1 @@
+contract Test { fun foo(_abc: Int): Int { return 1; } receive() {} }

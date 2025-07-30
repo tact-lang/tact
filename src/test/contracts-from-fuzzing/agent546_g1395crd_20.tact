@@ -1,0 +1,17 @@
+struct ABig {
+    x: Int; y: Int; z: Int; t: Int; u: Int;
+    v: Int; w: Int; q: Int; r: Int; s: Int;
+    m: Int; n: Int; o: Int; p: Int; k: Int;
+    l: Int; j: Int; h: Int; g: Int; f: Int;
+}
+
+contract WrapBigStruct {
+    data: ABig;
+
+    init() {
+        self.data = ABig{
+            x:1,y:2,z:3,t:4,u:5,v:6,w:7,q:8,r:9,s:10,
+            m:11,n:12,o:13,p:14,k:15,l:16,j:17,h:18,g:19,f:20
+        };
+    }
+}

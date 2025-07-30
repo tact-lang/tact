@@ -1,0 +1,3 @@
+contract TestText {
+    receive("hello") {}
+}

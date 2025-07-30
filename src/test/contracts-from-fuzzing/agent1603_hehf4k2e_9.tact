@@ -1,0 +1,22 @@
+contract LargeParameterList(
+    a: Int,
+    b: Bool,
+    c: Cell,
+    d: Builder,
+    e: Slice,
+    f: Address,
+    g: String,
+    h: Int?,
+    i: Bool?,
+    j: String?,
+    k: Int,
+    l: Bool,
+    m: Cell,
+    n: Builder,
+    o: Slice,
+    p: Address,
+    q: String,
+    r: Int?,
+    s: Bool?,
+    t: String?
+) {}

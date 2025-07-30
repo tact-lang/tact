@@ -1,0 +1,13 @@
+struct OptionalLayer {
+    a: Int?;
+    b: Bool?;
+    c: String?;
+}
+
+contract OptInside {
+    data: OptionalLayer;
+
+    init() {
+        self.data = OptionalLayer{ a: null, b: null, c: null };
+    }
+}

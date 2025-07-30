@@ -1,0 +1,1 @@
+contract Test { init ( x: Int, ) { let a = 1; } receive() {} }

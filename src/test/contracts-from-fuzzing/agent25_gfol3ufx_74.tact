@@ -1,0 +1,4 @@
+contract Test {
+    fun f(a: Int, ) {}
+    receive() {}
+}

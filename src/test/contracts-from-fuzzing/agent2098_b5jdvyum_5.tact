@@ -1,0 +1,3 @@
+contract OptFieldStorage {
+    foo: Int?;
+}

@@ -1,0 +1,1 @@
+fun semicolon_optional(): Int { return 1 }

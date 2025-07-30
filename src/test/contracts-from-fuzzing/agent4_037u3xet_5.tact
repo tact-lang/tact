@@ -1,0 +1,1 @@
+asm fun missingInstruction(): Int { 42 43 }

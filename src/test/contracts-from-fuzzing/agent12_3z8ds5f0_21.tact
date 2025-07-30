@@ -1,0 +1,1 @@
+contract C { fun a(b: Int, c: Int, ) {} }

@@ -1,0 +1,1 @@
+contract C{ get fun test(a: Int, ): Int { return a; } }

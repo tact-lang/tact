@@ -1,0 +1,6 @@
+contract Test {
+    // Empty message receiver
+    receive() {
+        // No action
+    }
+}

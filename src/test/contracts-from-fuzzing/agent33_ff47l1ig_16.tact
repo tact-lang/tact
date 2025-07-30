@@ -1,0 +1,1 @@
+primitive Inty; contract Test {}

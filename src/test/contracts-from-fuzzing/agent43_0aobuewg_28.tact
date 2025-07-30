@@ -1,0 +1,1 @@
+contract Test { get fun broken(x: Int,) : Int { return x; } }

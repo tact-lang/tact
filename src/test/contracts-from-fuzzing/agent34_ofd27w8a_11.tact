@@ -1,0 +1,17 @@
+struct SerializeStruct {
+    a: Int as uint8;
+    b: Int as int16;
+    c: Int as uint1; 
+}
+
+contract SerializeStructContract {
+    storage: SerializeStruct;
+
+    init() {
+        self.storage = SerializeStruct{
+            a: 255,
+            b: -32768,
+            c: 1
+        };
+    }
+}

@@ -1,0 +1,1 @@
+asm(-> 0) fun testArr(): Int { 42 PUSHINT }

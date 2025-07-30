@@ -1,0 +1,25 @@
+struct Deep1 { val: Int; }
+struct Deep2 { inner: Deep1; }
+struct Deep3 { inner: Deep2; }
+struct Deep4 { inner: Deep3; }
+struct Deep5 { inner: Deep4; }
+
+contract TestContract {
+    deep: Deep5;
+
+    init() {
+        self.deep = Deep5{
+            inner: Deep4{
+                inner: Deep3{
+                    inner: Deep2{
+                        inner: Deep1{
+                            val: 99
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    receive() {}
+}

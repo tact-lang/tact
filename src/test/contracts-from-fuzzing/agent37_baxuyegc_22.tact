@@ -1,0 +1,1 @@
+contract F { receive() {{ let x = 1; }} }

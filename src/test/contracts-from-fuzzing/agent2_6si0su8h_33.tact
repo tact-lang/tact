@@ -1,0 +1,4 @@
+fun f(): Int
+{
+    return 1;
+}

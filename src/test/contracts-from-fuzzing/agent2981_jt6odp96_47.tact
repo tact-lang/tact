@@ -1,0 +1,25 @@
+struct Level3 {
+    c: Int;
+}
+
+struct Level2 {
+    b: Level3;
+}
+
+struct Level1 {
+    a: Level2;
+}
+
+contract DeepNestRound2 {
+    field: Level1;
+
+    init() {
+        self.field = Level1{
+            a: Level2{
+                b: Level3{
+                    c: 7,
+                },
+            },
+        };
+    }
+}

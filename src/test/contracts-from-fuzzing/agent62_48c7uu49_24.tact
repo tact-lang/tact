@@ -1,0 +1,24 @@
+struct BigStruct {
+  f1:Int; f2:Int; f3:Int; f4:Int; f5:Int; f6:Int; f7:Int; f8:Int;
+  f9:Int; f10:Int; f11:Int; f12:Int; f13:Int; f14:Int; f15:Int; f16:Int;
+  f17:Int; f18:Int; f19:Int; f20:Int; f21:Int; f22:Int; f23:Int; f24:Int;
+  f25:Int; f26:Int; f27:Int; f28:Int; f29:Int; f30:Int; f31:Int; f32:Int;
+  f33:Int; f34:Int; f35:Int; f36:Int; f37:Int; f38:Int; f39:Int; f40:Int;
+  f41:Int; f42:Int; f43:Int; f44:Int; f45:Int; f46:Int; f47:Int; f48:Int;
+  f49:Int; f50:Int; f51:Int; f52:Int; f53:Int; f54:Int; f55:Int; f56:Int;
+  f57:Int; f58:Int; f59:Int; f60:Int; f61:Int; f62:Int; f63:Int; f64:Int;
+}
+
+contract Test23 {
+    b: BigStruct;
+    init() {
+        self.b = BigStruct{
+        f1:1,f2:2,f3:3,f4:4,f5:5,f6:6,f7:7,f8:8,f9:9,f10:10,f11:11,f12:12,
+        f13:13,f14:14,f15:15,f16:16,f17:17,f18:18,f19:19,f20:20,f21:21,f22:22,
+        f23:23,f24:24,f25:25,f26:26,f27:27,f28:28,f29:29,f30:30,f31:31,f32:32,
+        f33:33,f34:34,f35:35,f36:36,f37:37,f38:38,f39:39,f40:40,f41:41,f42:42,
+        f43:43,f44:44,f45:45,f46:46,f47:47,f48:48,f49:49,f50:50,f51:51,f52:52,
+        f53:53,f54:54,f55:55,f56:56,f57:57,f58:58,f59:59,f60:60,f61:61,f62:62,f63:63,f64:64
+        };
+    }
+}

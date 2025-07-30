@@ -1,0 +1,21 @@
+struct VariousInts {
+    a: Int as uint8;
+    b: Int as int16;
+    c: Int as uint64;
+    d: Int?;
+    e: Int?;
+}
+
+contract SerializationMix {
+    vi: VariousInts;
+
+    init() {
+        self.vi = VariousInts{
+            a: 255,
+            b: -32768,
+            c: 9223372036854775807,
+            d: null,
+            e: -100000
+        };
+    }
+}

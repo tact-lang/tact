@@ -1,0 +1,3 @@
+contract OptionalFieldTest {
+    maybe: Int?;
+}

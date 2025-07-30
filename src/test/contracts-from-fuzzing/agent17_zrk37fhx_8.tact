@@ -1,0 +1,65 @@
+contract LargeContract {
+    field0: Int;
+    field1: Int;
+    field2: Int;
+    field3: Int;
+    field4: Int;
+    field5: Int;
+    field6: Int;
+    field7: Int;
+    field8: Int;
+    field9: Int;
+    field10: Int;
+    field11: Int;
+    field12: Int;
+    field13: Int;
+    field14: Int;
+    field15: Int;
+    field16: Int;
+    field17: Int;
+    field18: Int;
+    field19: Int;
+    field20: Int;
+    field21: Int;
+    field22: Int;
+    field23: Int;
+    field24: Int;
+    field25: Int;
+    field26: Int;
+    field27: Int;
+    field28: Int;
+    field29: Int;
+
+    init() {
+        self.field0 = 0;
+        self.field1 = 1;
+        self.field2 = 2;
+        self.field3 = 3;
+        self.field4 = 4;
+        self.field5 = 5;
+        self.field6 = 6;
+        self.field7 = 7;
+        self.field8 = 8;
+        self.field9 = 9;
+        self.field10 = 10;
+        self.field11 = 11;
+        self.field12 = 12;
+        self.field13 = 13;
+        self.field14 = 14;
+        self.field15 = 15;
+        self.field16 = 16;
+        self.field17 = 17;
+        self.field18 = 18;
+        self.field19 = 19;
+        self.field20 = 20;
+        self.field21 = 21;
+        self.field22 = 22;
+        self.field23 = 23;
+        self.field24 = 24;
+        self.field25 = 25;
+        self.field26 = 26;
+        self.field27 = 27;
+        self.field28 = 28;
+        self.field29 = 29;
+    }
+}

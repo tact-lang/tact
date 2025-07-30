@@ -1,0 +1,1 @@
+contract Test { fun myFun(_hidden: Int, visible: Int, _: Int): Int { return 1; } }

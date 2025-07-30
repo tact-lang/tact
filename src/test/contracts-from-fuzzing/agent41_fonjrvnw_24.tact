@@ -1,0 +1,1 @@
+message(0x1234) NoBrackets { field: Int } contract Z { receive(){} }

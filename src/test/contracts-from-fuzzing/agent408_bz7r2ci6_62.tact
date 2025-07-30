@@ -1,0 +1,1 @@
+contract C { init(x: Int) {}}

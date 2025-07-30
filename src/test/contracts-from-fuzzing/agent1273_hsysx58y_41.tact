@@ -1,0 +1,3 @@
+contract OptionalPersistent {
+    maybeVal: Int?;
+}

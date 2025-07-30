@@ -1,0 +1,12 @@
+contract LargeParams(
+  a1:Int, b1:Bool,
+  a2:Int, b2:Bool,
+  a3:Int, b3:Bool,
+  a4:Int, b4:Bool,
+  a5:Int, b5:Bool,
+  a6:Int, b6:Bool,
+  a7:Int, b7:Bool,
+  a8:Int, b8:Bool,
+  a9:Int, b9:Bool,
+  a10:Int, b10:Bool,
+) {}

@@ -1,0 +1,3 @@
+contract OptInt {
+    val: Int?;
+}

@@ -1,0 +1,12 @@
+contract ParamsTest(
+    foo: Int,
+    bar: Bool,
+    baz: String,
+    qux: Cell,
+    addr: Address,
+    fooOpt: Int?,
+    barOpt: Bool?,
+    bazOpt: String?,
+    quxOpt: Cell?,
+    addrOpt: Address?
+) {}

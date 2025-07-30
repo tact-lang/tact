@@ -1,0 +1,1 @@
+contract Test { fun test() { if 1 > 2 {} else {} } }

@@ -1,0 +1,3 @@
+contract C {
+    const X: Int = 1
+}

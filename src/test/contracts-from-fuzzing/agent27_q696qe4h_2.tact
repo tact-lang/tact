@@ -1,0 +1,1 @@
+asm fun lowerCaseTest(): Int { 42 pushint }

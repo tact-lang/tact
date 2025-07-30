@@ -1,0 +1,24 @@
+struct One { a: Int }
+struct Two { b: Int }
+struct Three { c: Int }
+struct Four { d: Int }
+
+struct BigNest {
+  o: One;
+  t: Two;
+  th: Three;
+  f: Four;
+}
+
+contract Bigger {
+  s: BigNest;
+
+  init() {
+    self.s = BigNest{
+      o: One{a:1},
+      t: Two{b:2},
+      th: Three{c:3},
+      f: Four{d:4}
+    };
+  }
+}

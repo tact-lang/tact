@@ -1,0 +1,1 @@
+contract A() with B, {} trait B {}

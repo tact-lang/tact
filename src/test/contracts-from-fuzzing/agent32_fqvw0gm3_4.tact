@@ -1,0 +1,1 @@
+asm fun simpleAsm(): Int { DEPTH }

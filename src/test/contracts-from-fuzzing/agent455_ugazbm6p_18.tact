@@ -1,0 +1,1 @@
+@name(get_data) native native_name(): Int;

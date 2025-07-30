@@ -1,0 +1,1 @@
+contract Contract() { fun foo(abc: Int, ) {} }

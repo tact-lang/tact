@@ -1,0 +1,1 @@
+contract OptSlice { sliceVal: Slice? = null; }

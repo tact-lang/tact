@@ -1,0 +1,1 @@
+contract Test { fun abc() { let _: Int = 1; } }

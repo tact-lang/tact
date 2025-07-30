@@ -1,0 +1,22 @@
+contract TestContract(
+    p1: Int,
+    p2: Bool,
+    p3: String,
+    p4: Int?,
+    p5: Bool?,
+    p6: String?,
+    p7: Int,
+    p8: Bool,
+    p9: String,
+    p10: Int?,
+    p11: Bool?,
+    p12: String?,
+    p13: Int,
+    p14: Bool,
+    p15: String,
+    p16: Int?,
+    p17: Bool?,
+    p18: String?,
+) {
+    receive() {}
+}

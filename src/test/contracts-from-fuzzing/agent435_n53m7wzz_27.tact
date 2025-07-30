@@ -1,0 +1,3 @@
+contract UninitOpt {
+    optInt: Int?;
+}

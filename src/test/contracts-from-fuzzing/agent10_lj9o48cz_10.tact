@@ -1,0 +1,2 @@
+contract Next(a: Int,) {
+}

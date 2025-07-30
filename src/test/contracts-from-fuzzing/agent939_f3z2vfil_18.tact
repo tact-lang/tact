@@ -1,0 +1,10 @@
+contract TestContract(
+    x: Int,
+    flag: Bool,
+    note: String,
+    addr: Address,
+    y: Int,
+    flag2: Bool,
+    text: String,
+    addr2: Address,
+) {}

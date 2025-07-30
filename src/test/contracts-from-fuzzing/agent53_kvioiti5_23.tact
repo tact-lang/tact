@@ -1,0 +1,9 @@
+contract OptionalChain {
+    a: Int?;
+    b: Bool?;
+    c: Address?;
+
+    init() {
+        self.a=null; self.b=true; self.c=myAddress();
+    }
+}

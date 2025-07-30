@@ -1,0 +1,3 @@
+contract OptionalAbsentField {
+    x: Bool?;
+}

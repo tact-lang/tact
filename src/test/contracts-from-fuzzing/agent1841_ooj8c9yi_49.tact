@@ -1,0 +1,3 @@
+contract HasOptNull {
+    opt: Int?;
+}

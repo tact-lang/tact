@@ -1,0 +1,3 @@
+contract Test {
+    val: Int?;
+}

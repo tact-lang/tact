@@ -1,0 +1,5 @@
+contract EmptyParams() {
+    receive() {
+        // Nothing
+    }
+}

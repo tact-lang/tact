@@ -1,0 +1,15 @@
+struct InnerOpt {
+    i: Int?;
+}
+
+struct OuterOpt {
+    inner: InnerOpt?;
+}
+
+contract TestContract {
+    val: OuterOpt?;
+
+    init() {
+        self.val = null;
+    }
+}

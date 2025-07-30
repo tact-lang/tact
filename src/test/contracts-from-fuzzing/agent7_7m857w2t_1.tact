@@ -1,0 +1,1 @@
+asm fun basicAsm(): Int { 42 PUSHINT }

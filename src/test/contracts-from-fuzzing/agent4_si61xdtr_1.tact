@@ -1,0 +1,1 @@
+fun simple() : Int { return 42; }

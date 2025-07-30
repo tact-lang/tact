@@ -1,0 +1,1 @@
+contract A { fun test(x: Int, y: Int,) { } }

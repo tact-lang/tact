@@ -6,6 +6,10 @@ import * as assert from "assert";
 import { getAstFactory } from "@/ast/ast-helpers";
 
 const contractsDir = join(__dirname, "contracts");
+const contractsFromFuzzingDir = join(
+    __dirname,
+    "../test/contracts-from-fuzzing",
+);
 
 const stringify = (obj: unknown): string => {
     return JSON.stringify(obj, (key, value) =>
@@ -17,14 +21,17 @@ function trimTrailingCR(input: string): string {
     return input.replace(/\n+$/, "");
 }
 
-const contracts = fs
-    .readdirSync(contractsDir, { withFileTypes: true })
-    .flatMap((dentry) => {
+function getContractsFromDir(dir: string): readonly [string, string][] {
+    return fs.readdirSync(dir, { withFileTypes: true }).flatMap((dentry) => {
         if (!dentry.isFile()) {
             return [];
         }
-        return [[dentry.name, join(contractsDir, dentry.name)] as const];
+        return [[dentry.name, join(dir, dentry.name)] as const];
     });
+}
+
+const contracts = getContractsFromDir(contractsDir);
+const contractsFromFuzzing = getContractsFromDir(contractsFromFuzzingDir);
 
 describe.each(contracts)("%s", (_, path) => {
     it("shouldn't change proper formatting", () => {
@@ -39,7 +46,9 @@ describe.each(contracts)("%s", (_, path) => {
             `The formatted AST comparison failed for ${path}`,
         );
     });
+});
 
+describe.each(contracts.concat(contractsFromFuzzing))("%s", (_, path) => {
     it("shouldn't change AST", () => {
         const Ast = getAstFactory();
         const { parse } = getParser(Ast);

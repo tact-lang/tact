@@ -1,0 +1,1 @@
+contract A { fun f():Int { return 09; } }
