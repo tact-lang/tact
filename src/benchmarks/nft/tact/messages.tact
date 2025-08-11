@@ -82,7 +82,7 @@ message(0x8b771735) ReportStaticData {
 
 message(0x05138d91) OwnershipAssigned {
     queryId: Int as uint64;
-    newOwner: Address;
+    prevOwner: Address;
     forwardPayload: Slice;
 }
 

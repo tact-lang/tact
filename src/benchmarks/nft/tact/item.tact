@@ -74,7 +74,7 @@ contract NFTItem(
                 value: msg.forwardAmount,
                 body: OwnershipAssigned {
                     queryId: msg.queryId,
-                    newOwner: self.owner!!,
+                    prevOwner: self.owner!!,
                     forwardPayload: msg.forwardPayload,
                 }.toCell(),
                 mode: SendPayFwdFeesSeparately,
