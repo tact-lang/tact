@@ -7,6 +7,7 @@ const main = async () => {
 
     await allInFolderFunc(__dirname, `${__dirname}/../func/stdlib`, [
         "./**/func/**/*.fc",
+        "./**/func/**/*.func",
     ]);
 };
 
