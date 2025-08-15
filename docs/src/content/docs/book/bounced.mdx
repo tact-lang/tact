@@ -46,6 +46,32 @@ message TwoFields {
 }
 ```
 
+:::caution
+
+  To prevent potential issues, Tact only allows using the fields that wholly fit the limit. However, the blockchain views that limit as a truncation boundary and keeps the raw bits that fit the total 256-bit message limit in the original message body cell.
+
+  You can access that data by removing the concrete receiver and using the [fallback bounced message receiver](#fallback) instead. It will provide you the original, raw body of the received message as a [`Slice{:tact}`][slice].
+
+  ```tact
+  contract Bounce() {
+      bounced(rawMsg: Slice) {
+          let opcode = rawMsg.loadUint(32);
+          if (opcode == TooBigToFit.opcode()) {
+            // Now, you can obtain the truncated bits that did fit in the remaining
+            // 224 bits of the bounced message.
+            // Proceed with caution!
+            let truncatedData = rawMsg.preloadUint(224);
+          }
+      }
+  }
+
+  message TooBigToFit {
+      data: Int as uint225; // 1 bit is truncated, so the field could not be accessed directly
+  }
+  ```
+
+:::
+
 For gas optimization reasons, unrecognized bounced messages are ignored by Tact contracts and do not cause erroneous, non-zero [exit codes](/book/exit-codes). That is, if there is no relevant [`bounced(){:tact}` message receiver](#bounced-message-receiver) or no [fallback bounced receiver](#fallback), messages sent from the contract, rejected by their intended recipient and bounced back to the original contract will not be processed, apart from collecting their value and paying any related fees.
 
 This behavior is unlike the non-bounced messages such as regular internal or external messages, where if the contract does not handle the message, an error with [exit code 130](/book/exit-codes#130) is thrown: `Invalid incoming message`. Not throwing such errors for bounced messages is a common pattern on TON Blockchain, to which Tact adheres.
@@ -70,7 +96,7 @@ contract MyContract {
 
 ## Fallback bounced message receiver {#fallback}
 
-To process bounced messages manually, you can use a fallback catch-all definition that handles a raw [`Slice{:tact}`](/book/cells#slices) directly. Note that such a receiver will get **all** the bounced messages produced by your contract:
+To process bounced messages manually, you can use a fallback catch-all definition that handles a raw [`Slice{:tact}`][slice] directly. Note that such a receiver will get **all** the bounced messages produced by your contract:
 
 ```tact /rawMsg: Slice/
 contract MyContract {
@@ -87,3 +113,4 @@ On TON, bounced message bodies have a 32 bits prefix, where all bits are set, i.
 Bounced message receivers handle contract storage just as [internal message receivers](/book/receive#contract-storage-handling) do. In addition, the empty [`return{:tact}` statement](/book/statements#return) and the [`throw(0){:tact}`](/ref/core-debug#throw) patterns [work the same](/book/receive#contract-storage-handling).
 
 [message]: /book/structs-and-messages#messages
+[slice]: /book/cells#slices
