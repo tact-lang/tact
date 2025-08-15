@@ -66,12 +66,18 @@ contract MyContract {
 
 ## Fallback bounced message receiver {#fallback}
 
-To process bounced messages manually, you can use a fallback catch-all definition that handles a raw [`Slice{:tact}`](/book/cells#slices) directly. Note that such a receiver will get **all** the bounced messages produced by your contract:
+To process bounced messages manually, you can use a fallback catch-all definition that handles a raw [`Slice{:tact}`](/book/cells#slices) directly. Note that such a receiver handles all bounced messages that are not handled by [specific bounced message receivers](#bounced-message-receiver).
 
 ```tact /rawMsg: Slice/
-contract MyContract {
-    bounced(rawMsg: Slice) {
+contract MyContract() {
+    // Specific bounced message receiver
+    bounced(msg: bounced<MyMessage>) {
         // ...
+    }
+
+    // Fallback catch-all bounced message receiver
+    bounced(rawMsg: Slice) {
+        // Here, rawMsg can be anything, except for the bounced<MyMessage>
     }
 }
 ```
