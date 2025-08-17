@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## Doc: Next
 
+- Fixed the description of the fallback bounced message receiver: PR [#3471](https://github.com/tact-lang/tact/pull/3471)
 - Clarified the data layout of bounced messages: PR [#3472](https://github.com/tact-lang/tact/pull/3472)
 
 ## Doc: 2025-06
