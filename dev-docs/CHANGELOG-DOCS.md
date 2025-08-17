@@ -4,6 +4,10 @@ All notable changes to Tact documentation will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) but does not adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — the changes made are grouped by their respective milestones. If the change wasn't a part of the milestone but was made in the month associated with it, it will still be included.
 
+## Doc: Next
+
+- Fixed the description of the fallback bounced message receiver: PR [#3471](https://github.com/tact-lang/tact/pull/3471)
+
 ## Doc: 2025-06
 
 - Adjusted inline code tag highlighting to support global Starlight themes, and modified the One Light color theme to support proper highlighting of `keyword.operator.new` TextMate scopes: PR [#3346](https://github.com/tact-lang/tact/pull/3346)
