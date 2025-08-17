@@ -29,7 +29,7 @@ Since message fields are always laid out sequentially and no automatic rearrange
 
 All subsequent fields that exceed the limit will not be available in bounced message receivers. This also includes fields that fit only partially.
 
-If the first field does not wholly fit the 224-bit limit, none of the bounced message fields would be available. Therefore, prefer arranging the important fields that fit into the limit first.
+If the first field does not wholly conform to the 224-bit limit, none of the bounced message fields would be available. Therefore, to ensure access, prefer arranging the important fields first.
 
 ```tact
 contract Bounce() {
