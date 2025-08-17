@@ -48,7 +48,7 @@ message TwoFields {
 
 :::caution
 
-  To prevent potential issues, Tact only allows using the fields that wholly fit the limit. However, the blockchain views that limit as a truncation boundary and keeps the raw bits that fit the total 256-bit message limit in the original message body cell.
+  To prevent potential issues, Tact only allows using the fields that wholly fit the limit. However, the blockchain views that limit as a truncation boundary and keeps the raw bits that fit the [total 256-bit body limit](#caveats) in the original bounced message body cell.
 
   You can access that data by removing the concrete receiver and using the [fallback bounced message receiver](#fallback) instead. It will provide you the original, raw body of the received message as a [`Slice{:tact}`][slice].
 
