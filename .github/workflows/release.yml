@@ -1,0 +1,19 @@
+name: Bump version in dependency repositories
+
+on:
+  workflow_dispatch: {}
+  release:
+    types: [published]
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Send repository_dispatch to web-ide
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: tact-lang/web-ide
+          event-type: update
