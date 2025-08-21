@@ -1,0 +1,245 @@
+#include "stdlib-extended.func";
+
+;;; Store binary true b{1} into `builder` [b]
+builder store_true(builder b) asm "STONE";
+;;; Stores [x] binary zeroes into `builder` [b].
+builder store_zeroes(builder b, int x) asm "STZEROES";
+;;; Store `cell` [actions] to register c5 (out actions)
+() set_actions(cell actions) impure asm "c5 POP";
+
+const int op::internal_transfer = 0xae42e5a4;
+
+const int error::invalid_signature = 33;
+const int error::invalid_subwallet_id = 34;
+const int error::invalid_created_at = 35;
+const int error::already_executed = 36;
+const int error::invalid_message_to_send = 37;
+const int error::invalid_timeout = 38;
+
+const int KEY_SIZE = 13;
+const int SIGNATURE_SIZE = 512;
+const int PUBLIC_KEY_SIZE = 256;
+const int SUBWALLET_ID_SIZE = 32;
+const int TIMESTAMP_SIZE = 64;
+const int TIMEOUT_SIZE = 22; ;; 2^22 / 60 / 60 / 24 - up to ~48 days
+
+const int CELL_BITS_SIZE = 1023;
+const int BIT_NUMBER_SIZE = 10; ;; 2^10 = 1024
+
+() recv_internal(cell in_msg_full, slice in_msg_body) impure {
+    (int body_bits, int body_refs) = in_msg_body.slice_bits_refs();
+    ifnot ((body_refs == 1) & (body_bits == MSG_OP_SIZE + MSG_QUERY_ID_SIZE)) {
+        return (); ;; just accept TONs
+    }
+
+    slice in_msg_full_slice = in_msg_full.begin_parse();
+    int msg_flags = in_msg_full_slice~load_msg_flags();
+    if (msg_flags & 1) { ;; is bounced
+        return ();
+    }
+
+    slice sender_address = in_msg_full_slice~load_msg_addr();
+
+    ;; not from myself
+    if (~ sender_address.equal_slices_bits(my_address())) {
+        return ();  ;; just accept TONs
+    }
+
+    int op = in_msg_body~load_op();
+
+    if (op == op::internal_transfer) {
+        in_msg_body~skip_query_id();
+        cell actions = in_msg_body.preload_ref();
+        cell old_code = my_code();
+        set_actions(actions);
+        set_code(old_code); ;; prevent to change smart contract code
+        return ();
+    }
+}
+
+() recv_external(slice msg_body) impure {
+    cell msg_inner = msg_body~load_ref();
+    slice signature = msg_body~load_bits(SIGNATURE_SIZE);
+    msg_body.end_parse();
+    int msg_inner_hash = msg_inner.cell_hash();
+
+    slice data_slice = get_data().begin_parse();
+    int public_key = data_slice~load_uint(PUBLIC_KEY_SIZE);
+    int subwallet_id = data_slice~load_uint(SUBWALLET_ID_SIZE);
+    cell old_queries = data_slice~load_dict();
+    cell queries = data_slice~load_dict();
+    int last_clean_time = data_slice~load_uint(TIMESTAMP_SIZE);
+    int timeout = data_slice~load_uint(TIMEOUT_SIZE);
+    data_slice.end_parse();
+
+    if (last_clean_time < (now() - timeout)) {
+        (old_queries, queries) = (queries, null());
+        if (last_clean_time < (now() - (timeout * 2))) {
+            old_queries = null();
+        }
+        last_clean_time = now();
+    }
+
+    throw_unless(error::invalid_signature, check_signature(msg_inner_hash, signature, public_key));
+
+    slice msg_inner_slice = msg_inner.begin_parse();
+    int _subwallet_id = msg_inner_slice~load_uint(SUBWALLET_ID_SIZE);
+    cell message_to_send = msg_inner_slice~load_ref();
+    int send_mode = msg_inner_slice~load_uint(8);
+    int shift = msg_inner_slice~load_uint(KEY_SIZE);
+    int bit_number = msg_inner_slice~load_uint(BIT_NUMBER_SIZE);
+    int created_at = msg_inner_slice~load_uint(TIMESTAMP_SIZE);
+    int _timeout  = msg_inner_slice~load_uint(TIMEOUT_SIZE);
+    msg_inner_slice.end_parse();
+
+    throw_unless(error::invalid_subwallet_id, _subwallet_id == subwallet_id);
+    throw_unless(error::invalid_timeout, _timeout == timeout);
+
+    throw_unless(error::invalid_created_at, created_at > now() - timeout);
+    throw_unless(error::invalid_created_at, created_at <= now());
+
+    (cell value, int found) = old_queries.udict_get_ref?(KEY_SIZE, shift);
+    if (found) {
+        slice value_slice = value.begin_parse();
+        value_slice~skip_bits(bit_number);
+        throw_if(error::already_executed, value_slice.preload_int(1));
+    }
+
+    (cell value, int found) = queries.udict_get_ref?(KEY_SIZE, shift);
+    builder new_value = null();
+    if (found) {
+        slice value_slice = value.begin_parse();
+        (slice tail, slice head) = value_slice.load_bits(bit_number);
+        throw_if(error::already_executed, tail~load_int(1));
+        new_value = begin_cell().store_slice(head).store_true().store_slice(tail);
+    } else {
+        new_value = begin_cell().store_zeroes(bit_number).store_true().store_zeroes(CELL_BITS_SIZE - bit_number - 1);
+    }
+
+    accept_message();
+
+    queries~udict_set_ref(KEY_SIZE, shift, new_value.end_cell());
+
+    set_data(begin_cell()
+        .store_uint(public_key, PUBLIC_KEY_SIZE)
+        .store_uint(subwallet_id, SUBWALLET_ID_SIZE)
+        .store_dict(old_queries)
+        .store_dict(queries)
+        .store_uint(last_clean_time, TIMESTAMP_SIZE)
+        .store_uint(timeout, TIMEOUT_SIZE)
+        .end_cell());
+
+
+    commit();
+
+    ;; after commit, check the message to prevent an error in the action phase
+
+    slice message_slice = message_to_send.begin_parse();
+    {-
+       https://github.com/ton-blockchain/ton/blob/8a9ff339927b22b72819c5125428b70c406da631/crypto/block/block.tlb#L123C1-L124C33
+       currencies$_ grams:Grams other:ExtraCurrencyCollection = CurrencyCollection;
+       extra_currencies$_ dict:(HashmapE 32 (VarUInteger 32)) = ExtraCurrencyCollection;
+
+       https://github.com/ton-blockchain/ton/blob/8a9ff339927b22b72819c5125428b70c406da631/crypto/block/block.tlb#L135
+       int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+       src:MsgAddress dest:MsgAddressInt
+       value:CurrencyCollection ihr_fee:Grams fwd_fee:Grams
+       created_lt:uint64 created_at:uint32 = CommonMsgInfoRelaxed;
+
+      https://github.com/ton-blockchain/ton/blob/8a9ff339927b22b72819c5125428b70c406da631/crypto/block/block.tlb#L155
+      message$_ {X:Type} info:CommonMsgInfoRelaxed
+      init:(Maybe (Either StateInit ^StateInit))
+      body:(Either X ^X) = MessageRelaxed X;
+    -}
+
+    throw_if(error::invalid_message_to_send, message_slice~load_uint(1)); ;; int_msg_info$0
+    int msg_flags = message_slice~load_uint(3); ;; ihr_disabled:Bool bounce:Bool bounced:Bool
+    if (msg_flags & 1) { ;; is bounced
+        return ();
+    }
+    slice message_source_address = message_slice~load_msg_addr(); ;; src
+    throw_unless(error::invalid_message_to_send, is_address_none(message_source_address));
+    message_slice~load_msg_addr(); ;; dest
+    message_slice~load_coins(); ;; value.coins
+    message_slice = message_slice.skip_dict(); ;; value.other extra-currencies
+    message_slice~load_coins(); ;; ihr_fee
+    message_slice~load_coins(); ;; fwd_fee
+    message_slice~skip_bits(64 + 32); ;; created_lt:uint64 created_at:uint32
+    int maybe_state_init = message_slice~load_uint(1);
+    throw_if(error::invalid_message_to_send, maybe_state_init); ;; throw if state-init included (state-init not supported)
+    int either_body = message_slice~load_int(1);
+    if (either_body) {
+        message_slice~load_ref();
+        message_slice.end_parse();
+    }
+
+    ;; send message with IGNORE_ERRORS flag to ignore errors in the action phase
+
+    send_raw_message(message_to_send, send_mode | SEND_MODE_IGNORE_ERRORS);
+}
+
+
+int get_public_key() method_id {
+    return get_data().begin_parse().preload_uint(PUBLIC_KEY_SIZE);
+}
+
+int get_subwallet_id() method_id {
+    slice data_slice = get_data().begin_parse();
+    data_slice~skip_bits(PUBLIC_KEY_SIZE); ;; skip public_key
+    return data_slice.preload_uint(SUBWALLET_ID_SIZE);
+}
+
+int get_last_clean_time() method_id {
+    slice data_slice = get_data().begin_parse();
+    data_slice~skip_bits(PUBLIC_KEY_SIZE + SUBWALLET_ID_SIZE + 1 + 1); ;; skip: public_key, subwallet_id, old_queried, queries
+    return data_slice.preload_uint(TIMESTAMP_SIZE);
+}
+
+int get_timeout() method_id {
+    slice data_slice = get_data().begin_parse();
+    data_slice~skip_bits(PUBLIC_KEY_SIZE + SUBWALLET_ID_SIZE + 1 + 1 + TIMESTAMP_SIZE); ;; skip: public_key, subwallet_id, old_queried, queries, last_clean_time
+    return data_slice.preload_uint(TIMEOUT_SIZE);
+}
+
+int processed?(int query_id, int need_clean) method_id {
+    int shift = query_id >> BIT_NUMBER_SIZE;
+    int bit_number = query_id & CELL_BITS_SIZE;
+
+    slice data_slice = get_data().begin_parse();
+    data_slice~skip_bits(PUBLIC_KEY_SIZE + SUBWALLET_ID_SIZE); ;; skip: public_key, subwallet_id
+    cell old_queries = data_slice~load_dict();
+    cell queries = data_slice~load_dict();
+    int last_clean_time = data_slice~load_uint(TIMESTAMP_SIZE);
+    int timeout = data_slice~load_uint(TIMEOUT_SIZE);
+    data_slice.end_parse();
+
+    if (need_clean) {
+        if (last_clean_time < (now() - timeout)) {
+            (old_queries, queries) = (queries, null());
+            if (last_clean_time < (now() - (timeout * 2))) {
+                old_queries = null();
+            }
+            last_clean_time = now();
+        }
+    }
+
+    (cell value, int found) = old_queries.udict_get_ref?(KEY_SIZE, shift);
+    if (found) {
+        slice value_slice = value.begin_parse();
+        value_slice~skip_bits(bit_number);
+        if (value_slice.preload_int(1)) {
+            return TRUE;
+        }
+    }
+
+    (cell value, int found) = queries.udict_get_ref?(KEY_SIZE, shift);
+    if (found) {
+        slice value_slice = value.begin_parse();
+        value_slice~skip_bits(bit_number);
+        if (value_slice.preload_int(1)) {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}

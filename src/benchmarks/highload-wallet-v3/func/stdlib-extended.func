@@ -1,0 +1,241 @@
+;; CUSTOM:
+
+;; TVM UPGRADE 2023-07 https://docs.ton.org/learn/tvm-instructions/tvm-upgrade-2023-07
+;; In mainnet since 20 Dec 2023 https://t.me/tonblockchain/226
+
+;;; Creates an output action and returns a fee for creating a message. Mode has the same effect as in the case of SENDRAWMSG
+int send_message(cell msg, int mode) impure asm "SENDMSG";
+
+int gas_consumed() asm "GASCONSUMED";
+
+;; TVM V6 https://github.com/ton-blockchain/ton/blob/testnet/doc/GlobalVersions.md#version-6
+
+int get_compute_fee(int workchain, int gas_used) asm(gas_used workchain) "GETGASFEE";
+int get_storage_fee(int workchain, int seconds, int bits, int cells) asm(cells bits seconds workchain) "GETSTORAGEFEE";
+int get_forward_fee(int workchain, int bits, int cells) asm(cells bits workchain) "GETFORWARDFEE";
+int get_precompiled_gas_consumption() asm "GETPRECOMPILEDGAS";
+
+int get_simple_compute_fee(int workchain, int gas_used) asm(gas_used workchain) "GETGASFEESIMPLE";
+int get_simple_forward_fee(int workchain, int bits, int cells) asm(cells bits workchain) "GETFORWARDFEESIMPLE";
+int get_original_fwd_fee(int workchain, int fwd_fee) asm(fwd_fee workchain) "GETORIGINALFWDFEE";
+int my_storage_due() asm "DUEPAYMENT";
+
+tuple get_fee_configs() asm "UNPACKEDCONFIGTUPLE";
+
+;; BASIC
+
+const int TRUE = -1;
+const int FALSE = 0;
+
+const int MASTERCHAIN = -1;
+const int BASECHAIN = 0;
+
+;;; skip (Maybe ^Cell) from `slice` [s].
+(slice, ()) ~skip_maybe_ref(slice s) asm "SKIPOPTREF";
+
+(slice, int) ~load_bool(slice s) inline {
+    return s.load_int(1);
+}
+
+builder store_bool(builder b, int value) inline {
+    return b.store_int(value, 1);
+}
+
+;; ADDRESS NONE
+;; addr_none$00 = MsgAddressExt; https://github.com/ton-blockchain/ton/blob/8a9ff339927b22b72819c5125428b70c406da631/crypto/block/block.tlb#L100
+
+builder store_address_none(builder b) inline {
+    return b.store_uint(0, 2);
+}
+
+slice address_none() asm "<b 0 2 u, b> <s PUSHSLICE";
+
+int is_address_none(slice s) inline {
+    return s.preload_uint(2) == 0;
+}
+
+;; MESSAGE
+
+;; The message header info is organized as follows:
+
+;; https://github.com/ton-blockchain/ton/blob/8a9ff339927b22b72819c5125428b70c406da631/crypto/block/block.tlb#L126
+;; int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+;; src:MsgAddressInt dest:MsgAddressInt
+;; value:CurrencyCollection ihr_fee:Grams fwd_fee:Grams
+;; created_lt:uint64 created_at:uint32 = CommonMsgInfo;
+
+;; https://github.com/ton-blockchain/ton/blob/8a9ff339927b22b72819c5125428b70c406da631/crypto/block/block.tlb#L135
+;; int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+;; src:MsgAddress dest:MsgAddressInt
+;; value:CurrencyCollection ihr_fee:Grams fwd_fee:Grams
+;; created_lt:uint64 created_at:uint32 = CommonMsgInfoRelaxed;
+
+
+;; https://github.com/ton-blockchain/ton/blob/8a9ff339927b22b72819c5125428b70c406da631/crypto/block/block.tlb#L123C1-L124C33
+;; currencies$_ grams:Grams other:ExtraCurrencyCollection = CurrencyCollection;
+
+;; MSG FLAGS
+
+const int BOUNCEABLE = 0x18; ;; 0b011000 tag - 0, ihr_disabled - 1, bounce - 1, bounced - 0, src = adr_none$00
+const int NON_BOUNCEABLE = 0x10; ;; 0b010000 tag - 0, ihr_disabled - 1, bounce - 0, bounced - 0, src = adr_none$00
+
+;; store msg_flags and address none
+builder store_msg_flags_and_address_none(builder b, int msg_flags) inline {
+    return b.store_uint(msg_flags, 6);
+}
+
+;; load msg_flags only
+(slice, int) ~load_msg_flags(slice s) inline {
+    return s.load_uint(4);
+}
+;;; @param `msg_flags` - 4-bit
+int is_bounced(int msg_flags) inline {
+    return msg_flags & 1 == 1;
+}
+
+(slice, ()) ~skip_bounced_prefix(slice s) inline {
+    return (s.skip_bits(32), ()); ;; skip 0xFFFFFFFF prefix
+}
+
+;; after `grams:Grams` we have (1 + 4 + 4 + 64 + 32) zeroes - zeroed extracurrency, ihr_fee, fwd_fee, created_lt and created_at
+const int MSG_INFO_REST_BITS = 1 + 4 + 4 + 64 + 32;
+
+;; MSG
+
+;; https://github.com/ton-blockchain/ton/blob/8a9ff339927b22b72819c5125428b70c406da631/crypto/block/block.tlb#L155
+;; message$_ {X:Type} info:CommonMsgInfo
+;;  init:Maybe (Either StateInit ^StateInit)
+;;  body:(Either X ^X) = Message X;
+;;
+;;message$_ {X:Type} info:CommonMsgInfoRelaxed
+;;  init:(Maybe (Either StateInit ^StateInit))
+;;  body:(Either X ^X) = MessageRelaxed X;
+;;
+;;_ (Message Any) = MessageAny;
+
+;; if have StateInit (always place StateInit in ref):
+;; 0b11 for `Maybe (Either StateInit ^StateInit)` and 0b1 or 0b0 for `body:(Either X ^X)`
+
+const int MSG_WITH_STATE_INIT_AND_BODY_SIZE = MSG_INFO_REST_BITS + 1 + 1 + 1;
+const int MSG_HAVE_STATE_INIT = 4;
+const int MSG_STATE_INIT_IN_REF = 2;
+const int MSG_BODY_IN_REF = 1;
+
+;; if no StateInit:
+;; 0b0 for `Maybe (Either StateInit ^StateInit)` and 0b1 or 0b0 for `body:(Either X ^X)`
+
+const int MSG_ONLY_BODY_SIZE = MSG_INFO_REST_BITS + 1 + 1;
+
+builder store_statinit_ref_and_body_ref(builder b, cell state_init, cell body) inline {
+    return b
+        .store_uint(MSG_HAVE_STATE_INIT + MSG_STATE_INIT_IN_REF + MSG_BODY_IN_REF, MSG_WITH_STATE_INIT_AND_BODY_SIZE)
+        .store_ref(state_init)
+        .store_ref(body);
+}
+
+builder store_only_body_ref(builder b, cell body) inline {
+    return b
+        .store_uint(MSG_BODY_IN_REF, MSG_ONLY_BODY_SIZE)
+        .store_ref(body);
+}
+
+builder store_prefix_only_body(builder b) inline {
+    return b
+        .store_uint(0, MSG_ONLY_BODY_SIZE);
+}
+
+;; parse after sender_address
+(slice, int) ~retrieve_fwd_fee(slice in_msg_full_slice) inline {
+    in_msg_full_slice~load_msg_addr(); ;; skip dst
+    in_msg_full_slice~load_coins(); ;; skip value
+    in_msg_full_slice~skip_dict(); ;; skip extracurrency collection
+    in_msg_full_slice~load_coins(); ;; skip ihr_fee
+    int fwd_fee = in_msg_full_slice~load_coins();
+    return (in_msg_full_slice, fwd_fee);
+}
+
+;; MSG BODY
+
+;; According to the guideline, it is recommended to start the body of the internal message with uint32 op and uint64 query_id
+
+const int MSG_OP_SIZE = 32;
+const int MSG_QUERY_ID_SIZE = 64;
+
+(slice, int) ~load_op(slice s) inline {
+    return s.load_uint(MSG_OP_SIZE);
+}
+(slice, ()) ~skip_op(slice s) inline {
+    return (s.skip_bits(MSG_OP_SIZE), ());
+}
+builder store_op(builder b, int op) inline {
+    return b.store_uint(op, MSG_OP_SIZE);
+}
+
+(slice, int) ~load_query_id(slice s) inline {
+    return s.load_uint(MSG_QUERY_ID_SIZE);
+}
+(slice, ()) ~skip_query_id(slice s) inline {
+    return (s.skip_bits(MSG_QUERY_ID_SIZE), ());
+}
+builder store_query_id(builder b, int query_id) inline {
+    return b.store_uint(query_id, MSG_QUERY_ID_SIZE);
+}
+
+(slice, (int, int)) ~load_op_and_query_id(slice s) inline {
+    int op = s~load_op();
+    int query_id = s~load_query_id();
+    return (s, (op, query_id));
+}
+
+;; SEND MODES - https://docs.ton.org/tvm.pdf page 137, SENDRAWMSG
+
+;; For `send_raw_message` and `send_message`:
+
+;;; x = 0 is used for ordinary messages; the gas fees are deducted from the sending amount; action phases should NOT be ignored.
+const int SEND_MODE_REGULAR = 0;
+;;; +1 means that the sender wants to pay transfer fees separately.
+const int SEND_MODE_PAY_FEES_SEPARATELY = 1;
+;;; + 2 means that any errors arising while processing this message during the action phase should be ignored.
+const int SEND_MODE_IGNORE_ERRORS = 2;
+;;; + 32 means that the current account must be destroyed if its resulting balance is zero.
+const int SEND_MODE_DESTROY = 32;
+;;; x = 64 is used for messages that carry all the remaining value of the inbound message in addition to the value initially indicated in the new message.
+const int SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE = 64;
+;;; x = 128 is used for messages that are to carry all the remaining balance of the current smart contract (instead of the value originally indicated in the message).
+const int SEND_MODE_CARRY_ALL_BALANCE = 128;
+;;; in the case of action fail - bounce transaction. No effect if SEND_MODE_IGNORE_ERRORS (+2) is used. TVM UPGRADE 2023-07. https://docs.ton.org/learn/tvm-instructions/tvm-upgrade-2023-07#sending-messages
+const int SEND_MODE_BOUNCE_ON_ACTION_FAIL = 16;
+
+;; Only for `send_message`:
+
+;;; do not create an action, only estimate fee. TVM UPGRADE 2023-07. https://docs.ton.org/learn/tvm-instructions/tvm-upgrade-2023-07#sending-messages
+const int SEND_MODE_ESTIMATE_FEE_ONLY = 1024;
+
+;; Other modes affect the fee calculation as follows:
+;; +64 substitutes the entire balance of the incoming message as an outgoing value (slightly inaccurate, gas expenses that cannot be estimated before the computation is completed are not taken into account).
+;; +128 substitutes the value of the entire balance of the contract before the start of the computation phase (slightly inaccurate, since gas expenses that cannot be estimated before the completion of the computation phase are not taken into account).
+
+;; RESERVE MODES - https://docs.ton.org/tvm.pdf page 137, RAWRESERVE
+
+;;; Creates an output action which would reserve exactly x nanograms (if y = 0).
+const int RESERVE_REGULAR = 0;
+;;; Creates an output action which would reserve at most x nanograms (if y = 2).
+;;; Bit +2 in y means that the external action does not fail if the specified amount cannot be reserved; instead, all remaining balance is reserved.
+const int RESERVE_AT_MOST = 2;
+;;; in the case of action fail - bounce transaction. No effect if RESERVE_AT_MOST (+2) is used. TVM UPGRADE 2023-07. https://docs.ton.org/learn/tvm-instructions/tvm-upgrade-2023-07#sending-messages
+const int RESERVE_BOUNCE_ON_ACTION_FAIL = 16;
+
+;; TOKEN METADATA
+;; https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md
+
+;; Key is sha256 hash of string. Value is data encoded as described in "Data serialization" paragraph.
+;; Snake format - must be prefixed with 0x00 byte
+(cell, ()) ~set_token_snake_metadata_entry(cell content_dict, int key, slice value) impure {
+    content_dict~udict_set_ref(256, key, begin_cell().store_uint(0, 8).store_slice(value).end_cell());
+    return (content_dict, ());
+}
+
+;; On-chain content layout The first byte is 0x00 and the rest is key/value dictionary.
+cell create_token_onchain_metadata(cell content_dict) inline {
+    return begin_cell().store_uint(0, 8).store_dict(content_dict).end_cell();
+}
