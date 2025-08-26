@@ -1435,10 +1435,10 @@
     fflate "^0.8.2"
     table "^6.9.0"
 
-"@ton/test-utils@^0.7.0":
-  version "0.7.0"
-  resolved "https://npm.dev-internal.org/@ton/test-utils/-/test-utils-0.7.0.tgz#c70dd68f5155edfc68482ea1050fda73511f0c92"
-  integrity sha512-c0izUKncMqC+zKOHzILO1/l0gWKwCeEP1PtgtCvdPRiTE0WfDxeLEc1gMAl6DQOGeMoLD4Wv4HnR4R72v5Oagw==
+"@ton/test-utils@^0.11.0":
+  version "0.11.0"
+  resolved "https://npm.dev-internal.org/@ton/test-utils/-/test-utils-0.11.0.tgz#002ec16ce585f930ebdca3c93d20cde8aea6bc30"
+  integrity sha512-GFYUGsNdT+0xNU62aG+RG605sGYoLqLTEpfmR5TR2RjDZm+noDA50Dp0ImWGXBhD74/RrMKPaJ6KvzFgLC4vNg==
   dependencies:
     node-inspect-extracted "^2.0.0"
 
