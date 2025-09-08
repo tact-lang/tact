@@ -260,6 +260,7 @@ export default defineConfig({
 							collapsed: true,
 							autogenerate: { directory: 'cookbook/dexes' }
 						},
+						{ slug: 'cookbook/zk-proofs-on-tact' },
 					],
 				},
 				{
