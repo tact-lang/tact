@@ -92,11 +92,11 @@ This aligns perfectly with Jetton logic: deposit/withdrawal = adding/subtracting
 
 The token consists of several contracts:
 
-1. `ZkJettonMinter` — similar to [`JettonMinter`](/cookbook/jetton-master-contract):
+1. `ZkJettonMinter` — similar to [`JettonMinter`](/cookbook/jettons#jetton-master-contract):
   - The main token contract.
   - Allows minting tokens via the `Mint` message.
   - Inherits from `trait MintVerifier`.
-2. `ZkJettonWallet` — similar to [`JettonWallet`](/cookbook/jetton-wallet-contract):
+2. `ZkJettonWallet` — similar to [`JettonWallet`](/cookbook/jettons#jetton-wallet-contract):
   - Created for each user upon registration. Allows transferring tokens (`ZkJettonTransfer`) and receiving them (`ZkJettonTransferInternal`).
   - Inherits from `trait RegistrationVerifier` and `trait TransferVerifier`.
 
