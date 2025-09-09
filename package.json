@@ -113,7 +113,7 @@
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
     "@ton/sandbox": "^0.35.0",
-    "@ton/test-utils": "^0.7.0",
+    "@ton/test-utils": "^0.11.0",
     "@tonstudio/pgen": "^0.0.1",
     "@types/diff": "^7.0.0",
     "@types/glob": "^8.1.0",
