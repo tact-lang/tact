@@ -1,6 +1,7 @@
 Aksakov
 Aliaksandr
 alnum
+altbn
 Ashimine
 assgn
 astrojs
@@ -10,6 +11,7 @@ backdoor
 backdoors
 Bahdanau
 basechain
+binpower
 bitcode
 bitstring
 bitstrings
@@ -23,6 +25,8 @@ Cheatsheet
 cheatsheets
 Cheatsheets
 chksgn
+Circom
+circom
 cleanall
 CNFT
 codegen
@@ -30,6 +34,7 @@ compilables
 Compilables
 comptime
 Comptime
+cryptosystem
 CSBT
 Daniil
 Danil
@@ -66,14 +71,15 @@ funs
 Georgiy
 getsimpleforwardfee
 gettest
+Groth
 guarantor
 Gutarev
 hazyone
-Héctor
 hehe
 heisenbugs
 hippity
 Hoppity
+Héctor
 idict
 Ikko
 Ilya
@@ -111,6 +117,7 @@ llms
 logomark
 lordivash
 lparen
+Ludwintor
 lvalue
 lvalues
 Makhnev
@@ -144,19 +151,23 @@ Nowarp
 Offchain
 omelander
 Ovchinnikov
+Paillier
+paillier
 Parens
 Petr
 pgen
 pinst
 POSIX
 postpack
+powersoftau
 prando
+ptau
 quadtree
 quadtrees
 RANDU
-Reentrancy
 rangle
 rawslice
+Reentrancy
 reentrancy
 renamer
 replaceget
@@ -164,7 +175,6 @@ respecifying
 rparen
 rugpull
 rugpulled
-Sánchez
 sansx
 Satoshi
 sctx
@@ -177,6 +187,7 @@ shardchains
 shiki
 Shvetc
 skywardboundd
+snarkjs
 Stateinit
 statinit
 stdlib
@@ -194,6 +205,7 @@ subfolders
 subtyping
 subwallet
 supertypes
+Sánchez
 Tactina
 tactlang
 Tarjan
@@ -202,6 +214,7 @@ thetonstudio
 TIMELOCK
 timeouted
 Timeouted
+Tolk
 Toncoin
 Toncoins
 tonstudio
@@ -221,6 +234,7 @@ unixfs
 untypable
 varint
 varuint
+verificationkey
 verytactical
 viiii
 Viltrum
@@ -234,4 +248,3 @@ xpyctumo
 xtwitter
 yeehaw
 привет
-Ludwintor
