@@ -187,10 +187,7 @@ export default defineConfig({
 						{ slug: 'book/expressions' },
 						{ slug: 'book/statements' },
 						{ slug: 'book/constants' },
-						{
-							slug: 'book/functions',
-							badge: { variant: 'tip', text: 'new' },
-						},
+						{ slug: 'book/functions' },
 						{ slug: 'book/assembly-functions' },
 						{
 							label: 'Communication',
@@ -253,6 +250,10 @@ export default defineConfig({
 						{ slug: 'cookbook/jettons' },
 						{ slug: 'cookbook/nfts' },
 						{
+							slug: 'cookbook/zk-proofs',
+							badge: { variant: 'tip', text: 'new' },
+						},
+						{
 							label: 'Decentralized EXchanges (DEXes)',
 							translations: {
 								'zh-CN': '去中心化交易所（DEXes）',
@@ -260,7 +261,6 @@ export default defineConfig({
 							collapsed: true,
 							autogenerate: { directory: 'cookbook/dexes' }
 						},
-						{ slug: 'cookbook/zk-proofs-on-tact' },
 					],
 				},
 				{
@@ -357,5 +357,6 @@ export default defineConfig({
 		'/ecosystem/tools/misti': '/ecosystem/misti',
 		'/ref/core-common': '/ref/core-send',
 		'/ref/core-advanced': '/ref/core-contextstate',
+		'/cookbook/zk-proofs-on-tact': '/cookbook/zk-proofs',
 	},
 });
