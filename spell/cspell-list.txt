@@ -2,6 +2,7 @@ Aksakov
 Aliaksandr
 alnum
 altbn
+Arkworks
 Ashimine
 assgn
 astrojs
@@ -71,6 +72,7 @@ funs
 Georgiy
 getsimpleforwardfee
 gettest
+Gnark
 Groth
 guarantor
 Gutarev

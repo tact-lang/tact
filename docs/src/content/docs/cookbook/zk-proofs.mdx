@@ -9,15 +9,20 @@ import { Steps } from '@astrojs/starlight/components';
 
 This guide shows how to create, compile, and test Circom circuits and verify **ZK-proofs** on **TON Blockchain** using the **Tact** language and the **zk-SNARK Groth16** protocol.
 
-It demonstrates how to use the **[zkJetton](https://github.com/zkTokenTip/zkJetton)** repository to create a Jetton token in the TON blockchain, where user balances are hidden using homomorphic encryption and zero-knowledge proofs.
+It demonstrates how to use the **[zkJetton](https://github.com/zk-examples/zkJetton)** repository to create a Jetton token in the TON blockchain, where user balances are hidden using homomorphic encryption and zero-knowledge proofs.
 
-The zkJetton project combines the Jetton standard with ZK-proof verification inside Tact smart contracts. `zkJetton` is based on the pipeline **Circom → snarkjs → export-ton-verifier → Tact**, similar to the examples from [zk-ton-example](https://github.com/zkTokenTip/zk-ton-example).
+The zkJetton project combines the Jetton standard with ZK-proof verification inside Tact smart contracts. `zkJetton` is based on the pipeline **Circom → snarkjs → export-ton-verifier → Tact**, similar to the examples from [zk-ton-examples](https://github.com/zk-examples/zk-ton-examples).
 
 :::note
 
   This guide is also applicable to circuits written in [Noname](https://github.com/zksecurity/noname), since the `export-ton-verifier` library integrates with `snarkjs`, which in turn supports Noname.
 
-  You can also use [gnark](https://github.com/Consensys/gnark) circuits by importing a verification key compatible with `snarkjs`.
+  You can also use [gnark](https://github.com/Consensys/gnark) and [Arkworks](https://github.com/arkworks-rs) circuits by importing a verification key compatible with `snarkjs`.
+
+  Keys and proofs can be imported via:
+
+  * [gnark-to-snarkjs](https://github.com/mysteryon88/gnark-to-snarkjs)
+  * [ark-snarkjs](https://github.com/mysteryon88/ark-snarkjs)
 
 :::
 
@@ -71,7 +76,7 @@ This repository uses a simplified version of Jetton written in Tact. The code ha
   Alternatively, clone the finished project and install necessary dependencies:
 
   ```shell
-  git clone https://github.com/zkTokenTip/zkJetton.git
+  git clone https://github.com/zk-examples/zkJetton.git
   cd zkJetton
   npm install
   ```
@@ -320,8 +325,11 @@ This article was initially written by [mysteryon88](https://github.com/mysteryon
 
 ## Useful links
 
-- Token repository with hidden balances: [zkJetton](https://github.com/zkTokenTip/zkJetton)
-- Example repository: [zk-ton-example](https://github.com/zkTokenTip/zk-ton-example/)
+- Token repository with hidden balances: [zkJetton](https://github.com/zk-examples/zkJetton)
+- Example repository: [zk-ton-examples](https://github.com/zk-examples/zk-ton-examples/)
 - Verifier export library: [export-ton-verifier](https://github.com/mysteryon88/export-ton-verifier)
-- Circom: [docs.circom.io](https://docs.circom.io/)
 - SnarkJS: [iden3/snarkjs](https://github.com/iden3/snarkjs)
+- Circom: [docs.circom.io](https://docs.circom.io/)
+- Noname: [zksecurity/noname](https://github.com/zksecurity/noname)
+- Gnark: [Consensys/gnark](https://github.com/Consensys/gnark) 
+- Arkworks: [arkworks-rs](https://github.com/arkworks-rs)
