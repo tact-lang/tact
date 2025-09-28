@@ -3,6 +3,7 @@ import type { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
 import { throwCompilationError } from "@/error/errors";
 import { resolveLibrary } from "@/imports/resolveLibrary";
 import type { Language, Source } from "@/imports/source";
+import { relative } from "path";
 
 type ResolveImportsArgs = {
     readonly entrypoint: string;
@@ -24,6 +25,7 @@ export function resolveImports({
     const processed: Set<string> = new Set();
     const pending: Source[] = [];
     function processImports(sourceFrom: Source) {
+        const resolvedPathsInCurrentFile: Set<string> = new Set();
         const imp = parser.parseImports(sourceFrom);
         for (const { importPath, loc } of imp) {
             // Resolve library
@@ -44,6 +46,17 @@ export function resolveImports({
             if (imported[resolved.language].has(resolved.path)) {
                 continue;
             }
+
+            // Check for duplicates within the current file
+            if (resolvedPathsInCurrentFile.has(resolved.path)) {
+                const relativePath = relative(process.cwd(), resolved.path);
+                const relativeSourcePath = relative(process.cwd(), sourceFrom.path);
+                throwCompilationError(
+                    `Duplicate import of '${relativePath}' in file '${relativeSourcePath}'`,
+                    loc,
+                );
+            }
+            resolvedPathsInCurrentFile.add(resolved.path);
 
             // Load code
             const vfs = resolved.origin === "user" ? project : stdlib;
