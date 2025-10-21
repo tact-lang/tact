@@ -6,3 +6,4 @@ src/grammar/grammar.ts
 /grammar
 /docs
 src/asm/generator/instructions.ts
+**/*.tact

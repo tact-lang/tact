@@ -117,7 +117,7 @@ module.exports = {
     "@typescript-eslint/prefer-includes": "error",
     "@typescript-eslint/prefer-literal-enum-member": "error",
     "@typescript-eslint/prefer-nullish-coalescing": "error",
-    "@typescript-eslint/prefer-optional-chain": "error",
+    "@typescript-eslint/prefer-optional-chain": "off",
     "@typescript-eslint/prefer-string-starts-ends-with": "error",
     "require-await": "off",
     "@typescript-eslint/require-await": "error",
