@@ -70,6 +70,8 @@ jobs:
 
       - name: Forward compatibility tests
         run: |
+          # Don't proceed with failed commands on Windows
+          ${{ matrix.os == 'windows-latest' && '$ErrorActionPreference = "Stop"' || '' }}
           # Install dependencies and perform some steps of the build pipeline,
           # skipping the contract generation and the final `yarn build` step
           yarn install
