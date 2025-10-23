@@ -103,7 +103,7 @@ export function printError({
         displayLine(line, range, ansi),
     );
 
-    // Find first and lines lines with error message
+    // Find first and last lines with error message
     const firstLineNum = lines.findIndex((line) => line.hasInterval);
     const lastLineNum = lines.findLastIndex((line) => line.hasInterval);
     if (firstLineNum === -1 || lastLineNum === -1) {

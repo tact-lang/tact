@@ -34,9 +34,9 @@ exports[`benchmarks benchmark functions: gas used 1`] = `1979`;
 
 exports[`benchmarks benchmark log: gas used log 1`] = `1884n`;
 
-exports[`benchmarks benchmark readFwdFee: code size 1`] = `116`;
+exports[`benchmarks benchmark readFwdFee: code size 1`] = `106`;
 
-exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1968`;
+exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1828`;
 
 exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2154`;
 

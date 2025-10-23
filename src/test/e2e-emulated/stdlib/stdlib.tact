@@ -5,6 +5,9 @@ struct VarIntStruct {
     e: Int as varuint32;
 }
 
+message ReadFwdFeeMsg {
+}
+
 contract StdlibTest {
 
     v: Int = 0;
@@ -15,6 +18,20 @@ contract StdlibTest {
 
     receive() {
         // Deploy
+    }
+
+    receive(msg: ReadFwdFeeMsg) {
+        let cs = context().raw;
+        cs.loadAddress(); // dest
+        cs.loadCoins();   // value
+        cs.skipBits(1);   // skip extra
+        cs.loadCoins();   // ihr_fee
+        let cellFwdFee = cs.loadCoins(); // fwd_fee
+        let contextFwdFee = context().readForwardFee();
+        self.reply(beginCell()
+            .storeCoins(contextFwdFee)
+            .storeCoins(getOriginalFwdFee(cellFwdFee, false))
+            .endCell());
     }
 
     get fun sliceEmpty(sc: Slice): Bool {
@@ -103,18 +120,6 @@ contract StdlibTest {
     get fun skipAddress(c: Slice): Slice {
         c.skipAddress();
         return c;
-    }
-
-    get fun parseOriginalFwdFee(msg: Slice): Int {
-        msg.skipBits(4); //Skip tags
-        msg.loadAddress(); // Skip source
-        let ctx: Context = Context{
-            bounceable: false,
-            sender: myAddress(),
-            value: ton("1"),
-            raw: msg
-        };
-        return ctx.readForwardFee();
     }
 
     get fun builderDepth(bl: Builder): Int {

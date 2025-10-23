@@ -82,7 +82,7 @@
     },
     {
       "label": "1.6.6 with deployNFTItem outside contract",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2837",
       "size": {
         "collection cells": "43",
         "collection bits": "22786",
@@ -192,7 +192,7 @@
     },
     {
       "label": "1.6.11 with optimized send",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/3278",
       "size": {
         "collection cells": "39",
         "collection bits": "19604",
@@ -208,6 +208,16 @@
         "collection bits": "19524",
         "item cells": "10",
         "item bits": "5185"
+      }
+    },
+    {
+      "label": "1.6.13 with more efficient readForwardFee",
+      "pr": "https://github.com/tact-lang/tact/pull/3457",
+      "size": {
+        "collection cells": "41",
+        "collection bits": "19348",
+        "item cells": "11",
+        "item bits": "5097"
       }
     }
   ]
