@@ -106,7 +106,7 @@
     "@babel/generator": "^7.26.5",
     "@babel/parser": "^7.26.5",
     "@babel/types": "^7.26.5",
-    "@noble/hashes": "^1.7.2",
+    "@noble/hashes": "^2.0.1",
     "@swc/core": "^1.10.7",
     "@swc/jest": "^0.2.37",
     "@tact-lang/coverage": "^0.0.8",
