@@ -1450,6 +1450,7 @@ const guessExtension = (
 };
 
 const stdlibPrefix = "@stdlib/";
+const packagePrefix = "@";
 
 const parseImportString =
     (importText: string, loc: $.Loc): Handler<Ast.ImportPath> =>
@@ -1476,6 +1477,20 @@ const parseImportString =
             return {
                 path,
                 type: "stdlib",
+                language,
+            };
+        } else if (guessedPath.startsWith(packagePrefix)) {
+            // TODO: support non-scoped npm packages
+            // (@package-name instead of @scope/package-name)
+            const path = fromString(guessedPath);
+
+            if (path.stepsUp !== 0) {
+                ctx.err.importWithBackslash()(loc);
+            }
+
+            return {
+                path,
+                type: "package",
                 language,
             };
         } else if (
