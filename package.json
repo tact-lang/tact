@@ -118,7 +118,7 @@
     "@types/diff": "^7.0.0",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.12",
-    "@types/node": "^22.5.0",
+    "@types/node": "^24.9.1",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
     "allure-commandline": "^2.34.0",
