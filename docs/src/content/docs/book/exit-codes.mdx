@@ -402,9 +402,11 @@ This is done to prevent the resulting code ($-14$) from being produced artificia
 
 ```tact
 try {
+    // The exit code -14 can never be caught in try...catch,
+    // and it is always thrown for the whole contract
     repeat (pow(2, 31) - 1) {}
-} catch (exitCode) {
-    // exitCode is -14
+} catch (_) {
+    // This block will not be executed
 }
 ```
 
