@@ -47596,10 +47596,10 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
 exports[`resolveDescriptors should resolve descriptors for wildcard-function-param2 2`] = `[]`;
 
 exports[`resolveDescriptors should fail descriptors for struct-unsupported-serialization-format 1`] = `
-"<unknown>:9:5: Unsupported serialization format 'uint8' for type 'NestedData'
-  8 | contract Test {
-> 9 |     opt: NestedData? as uint8;
-          ^~~~~~~~~~~~~~~~~~~~~~~~~~
- 10 |     init() {
+"<unknown>:10:5: Unsupported serialization format "uint8" for type 'NestedData'
+   9 | contract Test {
+> 10 |     opt: NestedData? as uint8;
+           ^~~~~~~~~~~~~~~~~~~~~~~~~
+  11 |     init() {
 "
 `;
