@@ -250,7 +250,7 @@ export function resolveABIType({
                 };
             } else {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(as)}`,
+                    `Unsupported serialization format ${idTextErr(as)} for type '${idText(typeId)}'`,
                     loc,
                 );
             }
