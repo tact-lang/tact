@@ -121,7 +121,7 @@ trait BaseTrait {
     /// is sent with the `SendRemainingValue` (64) mode instead.
     ///
     /// > Note that `self.forward()` never sends additional nanoToncoins on top of what’s available on the balance.
-    /// > To be able to send more nanoToncoins with a single message, use the the `send` function.
+    /// > To be able to send more nanoToncoins with a single message, use the `send` function.
     ///
     /// See: https://docs.tact-lang.org/ref/core-base#self-forward
     ///
