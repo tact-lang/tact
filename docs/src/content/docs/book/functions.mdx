@@ -815,7 +815,7 @@ trait DeployableFilterV1 with Ownable {
     abstract fun specialFilter();
 
     // Receivers are inherited too,
-    // but they cannot defined be virtual or abstract
+    // but they cannot be defined virtual or abstract
     receive() { cashback(sender()) }
 }
 
