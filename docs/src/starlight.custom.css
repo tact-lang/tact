@@ -5,6 +5,12 @@
 
 /* Dark mode colors. */
 :root {
+	--tact-banner-height: clamp(2.5rem, calc(3.75rem - 3.5vw), 2.875rem);
+	--tact-banner-padding-block: 0.35rem;
+	--tact-banner-font-size: clamp(0.8125rem, calc(0.75rem + 0.25vw), 0.875rem);
+	--tact-banner-bg: #c62828;
+	--tact-banner-text: #ffffff;
+	--tact-banner-text-muted: #ffd6d6;
 	--sl-color-accent-low: #00234c;
 	--sl-color-accent: #0067c9;
 	--sl-color-accent-high: #a4ccff;
@@ -32,6 +38,37 @@
 	--sl-color-gray-6: #eceef2;
 	--sl-color-gray-7: #f5f6f8;
 	--sl-color-black: #ffffff;
+}
+
+html[data-theme] {
+	scroll-padding-top: calc(
+		1.5rem + var(--tact-banner-height) + var(--sl-nav-height) + var(--sl-mobile-toc-height)
+	);
+}
+
+starlight-menu-button button[aria-controls='starlight__sidebar'] {
+	top: calc(var(--tact-banner-height) + (var(--sl-nav-height) - var(--sl-menu-button-size)) / 2);
+}
+
+mobile-starlight-toc nav[aria-labelledby] {
+	top: calc(var(--tact-banner-height) + var(--sl-nav-height) - 1px);
+}
+
+mobile-starlight-toc .dropdown[class] {
+	max-height: calc(
+		85vh - var(--tact-banner-height) - var(--sl-nav-height) - var(--sl-mobile-toc-height)
+	);
+}
+
+@media (min-width: 72em) {
+	html[data-theme] {
+		scroll-padding-top: calc(1.5rem + var(--tact-banner-height) + var(--sl-nav-height));
+	}
+
+	html[data-theme] .right-sidebar {
+		top: var(--tact-banner-height);
+		height: calc(100vh - var(--tact-banner-height));
+	}
 }
 
 /*

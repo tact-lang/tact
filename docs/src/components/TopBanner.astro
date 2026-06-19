@@ -1,0 +1,36 @@
+<a class="top-banner" href="https://docs.ton.org/">
+	<span>Deprecated! Please, visit the new documentation at docs.ton.org</span>
+</a>
+
+<style>
+	.top-banner {
+		position: fixed;
+		z-index: var(--sl-z-index-navbar);
+		inset-block-start: 0;
+		inset-inline: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		height: var(--tact-banner-height);
+		padding: var(--tact-banner-padding-block) var(--sl-nav-pad-x);
+		border-bottom: 1px solid var(--sl-color-hairline-shade);
+		background: var(--tact-banner-bg);
+		color: var(--tact-banner-text);
+		font-size: var(--tact-banner-font-size);
+		font-weight: 600;
+		line-height: 1.35;
+		text-align: center;
+		text-decoration: none;
+	}
+
+	.top-banner span {
+		min-width: 0;
+	}
+
+	.top-banner:hover,
+	.top-banner:focus-visible {
+		color: var(--tact-banner-text-muted);
+		text-decoration: none;
+	}
+</style>
