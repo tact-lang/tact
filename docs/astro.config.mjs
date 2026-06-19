@@ -66,6 +66,10 @@ export default defineConfig({
 			// 'head' is auto-populated with SEO-friendly contents based on the page frontmatters
 			head: [
 				{
+					tag: "meta",
+					attrs: { name: "robots", content: "noindex, nofollow" },
+				},
+				{
 					// Google tag (gtag.js)
 					tag: "script",
 					attrs: { async: true, src: 'https://www.googletagmanager.com/gtag/js?id=G-ZJ3GZHJ0Z5' }
