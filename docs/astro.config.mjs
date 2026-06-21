@@ -103,6 +103,9 @@ export default defineConfig({
 				'./src/fonts/katex.fontfaces.css',
 				'./src/katex.min.css',
 			],
+			components: {
+				PageFrame: './src/components/PageFrame.astro',
+			},
 			plugins: [
 				starlightLinksValidator({
 					errorOnFallbackPages: false,
