@@ -1,3 +1,7 @@
+> [!CAUTION]
+> Tact is deprecated. Please learn the [Tolk language](https://docs.ton.org/tolk/overview) instead.
+> Pull requests are not accepted at the moment; please bring any problems or tasks to [issues](https://github.com/tact-lang/tact/issues).
+
 # Tact Language Compiler
 
 <div align="center">
