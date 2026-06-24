@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should fail on duplicate imports 1`] = `
+"../../../../duplicate-import.tact:2:1: Duplicate import of '../../../../duplicate-import-helper.tact' in file '../../../../duplicate-import.tact'
+  1 | import "./duplicate-import-helper";
+> 2 | import "./duplicate-import-helper";
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  3 | import "./duplicate-import-helper.tact";
+"
+`;
