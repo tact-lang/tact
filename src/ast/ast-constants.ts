@@ -70,6 +70,7 @@ export const astNumberBases = Object.freeze(
 const importTypesRecord: Record<Ast.ImportType, true> = {
     stdlib: true,
     relative: true,
+    package: true,
 };
 
 export const importTypes = Object.freeze(keys(importTypesRecord));
