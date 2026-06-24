@@ -8,7 +8,7 @@
         "approveTon": "7400",
         "cancelTon": "5311"
       },
-      "pr": "https://github.com/tact-lang/tact/pull/1390"
+      "pr": null
     },
     {
       "label": "1.5.4",
