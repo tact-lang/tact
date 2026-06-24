@@ -1,3 +1,4 @@
+;; https://github.com/OpenBuilders/notcoin-contract/blob/main/contracts/op-codes.fc
 ;; common
 
 const op::transfer = 0xf8a7ea5;

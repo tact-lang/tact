@@ -1,3 +1,4 @@
+;; https://github.com/ton-blockchain/wallet-contract-v5/blob/047852ac96a45a8ed418d18960fa6d621a667ed3/contracts/wallet_v5.fc
 const int error::signature_disabled = 132;
 const int error::invalid_seqno = 133;
 const int error::invalid_wallet_id = 134;
