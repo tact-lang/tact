@@ -1,0 +1,1 @@
+contract Test { fun f() { let x = 5 + + 2; } }

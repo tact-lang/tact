@@ -1,0 +1,3 @@
+contract OptionalNoInit {
+    val: Int?;
+}

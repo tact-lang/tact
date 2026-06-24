@@ -1,0 +1,12 @@
+contract ParamContract(
+    a: Int,
+    b: Bool,
+    c: Int?,
+    d: String?,
+    e: Bool?,
+    f: Address,
+    g: Cell,
+    h: Builder,
+    i: Slice,
+    j: String
+) {}

@@ -1,0 +1,3 @@
+contract ZeroFieldsInit {
+    init() {}
+}

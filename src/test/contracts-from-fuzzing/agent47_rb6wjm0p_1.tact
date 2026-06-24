@@ -1,0 +1,1 @@
+contract A { x: Int; init() { self.x = 1; } }

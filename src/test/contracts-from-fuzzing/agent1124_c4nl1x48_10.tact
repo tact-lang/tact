@@ -1,0 +1,3 @@
+contract OptionalPrimitiveField {
+    foo: Int?;
+}

@@ -1,0 +1,1 @@
+contract IntInit { count: Int = 0; }

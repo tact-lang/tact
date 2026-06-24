@@ -1,0 +1,1 @@
+contract T { fun foo(): Int { return 1 } }

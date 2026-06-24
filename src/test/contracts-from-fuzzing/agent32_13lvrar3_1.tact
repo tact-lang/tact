@@ -1,0 +1,5 @@
+const addr: Address = address("0:0000000000000000000000000000000000000000000000000000000000000000");
+
+contract Test {
+    receive() {}
+}

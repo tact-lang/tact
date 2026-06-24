@@ -1,0 +1,1 @@
+asm fun pushBoundary(): Int { -6 PUSHINT }

@@ -1,0 +1,5 @@
+contract Test {
+    fun test() {
+        return ;
+    }
+}

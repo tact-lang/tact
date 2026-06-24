@@ -1,0 +1,9 @@
+contract JustAddressFields {
+    a1: Address;
+    a2: Address;
+
+    init() {
+        self.a1 = myAddress();
+        self.a2 = myAddress();
+    }
+}

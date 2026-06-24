@@ -1,0 +1,5 @@
+contract EmptyParamTest() {
+    receive() {
+        // nothing
+    }
+}

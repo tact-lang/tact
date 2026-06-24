@@ -1,0 +1,1 @@
+contract X { fun f() : Int { return 5 } }

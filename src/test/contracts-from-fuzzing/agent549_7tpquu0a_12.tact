@@ -1,0 +1,13 @@
+contract ContractParamsTest(
+   intVal: Int,
+   boolVal: Bool,
+   strVal: String,
+   addrVal: Address,
+   cellVal: Cell,
+   sliceVal: Slice,
+   builderVal: Builder,
+   optInt: Int?,
+   optBool: Bool?,
+   optStr: String?,
+   optAddr: Address?
+) {}

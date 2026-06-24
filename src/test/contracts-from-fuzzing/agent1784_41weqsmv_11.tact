@@ -1,0 +1,19 @@
+struct S {
+    x: Int as int8;
+}
+
+contract TestContract {
+    s1: S;
+    s2: S;
+    s3: S;
+    s4: S;
+    s5: S;
+
+    init() {
+        self.s1 = S{x:1};
+        self.s2 = S{x:2};
+        self.s3 = S{x:3};
+        self.s4 = S{x:4};
+        self.s5 = S{x:5};
+    }
+}

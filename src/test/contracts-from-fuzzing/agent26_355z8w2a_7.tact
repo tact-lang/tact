@@ -1,0 +1,13 @@
+trait MyTrait {
+    virtual const FEE: Int = ton("1.0");
+}
+
+contract TestVirtualConstant with MyTrait {
+    override const FEE: Int = ton("0.5");
+
+    receive() {
+        if (self.FEE == ton("0.5")) {
+            return;
+        }
+    }
+}

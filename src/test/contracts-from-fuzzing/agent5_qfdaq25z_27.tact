@@ -1,0 +1,1 @@
+contract X { fun _abc() {} }

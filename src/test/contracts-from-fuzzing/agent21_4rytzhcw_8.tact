@@ -1,0 +1,12 @@
+contract ParamsTest(
+    a: Int,
+    b: Bool,
+    c: String,
+    d: Cell,
+    e: Address,
+    f: Int?,
+    g: Bool?,
+    h: String?,
+    i: Cell?,
+    j: Address?
+) {}

@@ -1,0 +1,16 @@
+contract ManyFields(
+    a: Int,
+    b: String,
+    c: Bool,
+    d: Cell,
+    e: Slice,
+    f: Builder,
+    g: Address,
+    h: Int?,
+    i: String?,
+    j: Bool?,
+    k: Cell?,
+    l: Slice?,
+    m: Builder?,
+    n: Address? 
+) {}

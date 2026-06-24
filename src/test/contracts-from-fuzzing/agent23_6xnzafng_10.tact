@@ -1,0 +1,1 @@
+contract A { fun foo(a: Int, b: Int, ): Int { return a + b; } receive() { self.foo(1,2); } }

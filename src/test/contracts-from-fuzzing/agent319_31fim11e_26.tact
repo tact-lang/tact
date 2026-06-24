@@ -1,0 +1,1 @@
+message(0x12345678) Msg { field: Int }

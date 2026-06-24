@@ -1,0 +1,1 @@
+contract AG { fun f() { let a = 5 } }

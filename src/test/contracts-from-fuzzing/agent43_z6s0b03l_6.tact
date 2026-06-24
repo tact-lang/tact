@@ -1,0 +1,1 @@
+contract C { fun foo(a: Int, ) {} }

@@ -1,0 +1,1 @@
+primitive X ; contract C { }

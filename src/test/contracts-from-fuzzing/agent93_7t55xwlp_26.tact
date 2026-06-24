@@ -1,0 +1,3 @@
+contract OptionalIntNoValue {
+    val: Int?;
+}

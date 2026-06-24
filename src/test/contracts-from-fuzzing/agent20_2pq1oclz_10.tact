@@ -1,0 +1,2 @@
+contract Foo { fun bar() { let s = "abc
+"; } }

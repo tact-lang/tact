@@ -1,0 +1,1 @@
+contract X { fun f() { let x: Int? = null; x!!; } }

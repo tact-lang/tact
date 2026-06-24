@@ -1,0 +1,1 @@
+@interface("test") contract Test {}

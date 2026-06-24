@@ -1,0 +1,10 @@
+contract Test(
+    foo: Int,
+    bar: Bool,
+    baz: Int?,
+    qux: String,
+    quux: String?,
+    corge: Bool?,
+    grault: Int,
+    garply: Int?,
+) {}

@@ -1,0 +1,1 @@
+contract TestContract() { fun test(): Int { return 5;}}

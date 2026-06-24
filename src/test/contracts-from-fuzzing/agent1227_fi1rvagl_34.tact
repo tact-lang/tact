@@ -1,0 +1,3 @@
+contract OptionalUnset {
+    x: Int?;
+}

@@ -1,0 +1,1 @@
+contract W { receive( "hi }" ) {} }

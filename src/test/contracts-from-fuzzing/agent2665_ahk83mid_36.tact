@@ -1,0 +1,3 @@
+contract ContractEmptyOptional {
+    opt: Int?;
+}

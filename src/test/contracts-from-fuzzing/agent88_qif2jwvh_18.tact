@@ -1,0 +1,1 @@
+contract X { fun foo() { if true { let a = 1 } } }

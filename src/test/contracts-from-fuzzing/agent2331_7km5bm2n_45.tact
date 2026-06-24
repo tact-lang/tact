@@ -1,0 +1,3 @@
+contract OkOptUnset {
+    maybe: Int?;
+}

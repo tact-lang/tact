@@ -1,0 +1,18 @@
+struct LongFields {
+    a1: Int; a2: Int; a3: Int; a4: Int; a5: Int;
+    a6: Int; a7: Int; a8: Int; a9: Int; a10: Int;
+    b1: Bool; b2: Bool; b3: Bool; b4: Bool; b5: Bool;
+    t1: String; t2: String; t3:String; t4:String; t5:String;
+}
+
+contract LongFieldsCtr {
+    rec: LongFields;
+
+    init() {
+        self.rec = LongFields{
+            a1:1,a2:2,a3:3,a4:4,a5:5,a6:6,a7:7,a8:8,a9:9,a10:10,
+            b1:true,b2:false,b3:true,b4:false,b5:true,
+            t1:"a", t2:"b", t3:"c", t4:"d", t5:"e"
+        };
+    }
+}

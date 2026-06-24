@@ -1,0 +1,9 @@
+contract OptionalBeforePrimitive {
+    a: String?;
+    b: Int;
+
+    init() {
+        self.a = null;
+        self.b = 42;
+    }
+}

@@ -1,0 +1,1 @@
+const A: Int = 10;

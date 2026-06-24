@@ -1,0 +1,1 @@
+contract Test { fun foo(a: Int):Int { return (1 + (2 * (3 - (4 / (5 % 6))))); } }

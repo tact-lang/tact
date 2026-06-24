@@ -1,0 +1,14 @@
+contract BigParams(
+  a: Int,
+  b: Bool,
+  c: Address,
+  d: String,
+  e: Int,
+  f: Bool,
+  g: Address,
+  h: String,
+  i: Int,
+  j: Bool,
+  k: Address,
+  l: String
+) {}

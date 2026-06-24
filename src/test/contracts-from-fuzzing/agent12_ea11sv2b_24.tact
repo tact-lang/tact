@@ -1,0 +1,1 @@
+contract Foo(a: Int, ) {}

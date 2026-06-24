@@ -1,0 +1,1 @@
+contract C { receive("msg") {} fun f(): Int { return 1; }}

@@ -1,0 +1,3 @@
+contract TestOptImplicit {
+    optionalInt: Int?;
+}

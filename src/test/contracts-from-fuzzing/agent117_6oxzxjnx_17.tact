@@ -1,0 +1,3 @@
+contract Test {
+    fun example() { { { } } }
+}

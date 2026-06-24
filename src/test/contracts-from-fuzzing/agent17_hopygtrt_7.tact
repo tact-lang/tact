@@ -1,0 +1,1 @@
+contract G (a: Int,) {}

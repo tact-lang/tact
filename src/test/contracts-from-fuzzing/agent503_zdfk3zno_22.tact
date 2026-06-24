@@ -1,0 +1,1 @@
+message S { a: Int }

@@ -1,0 +1,3 @@
+contract ShouldFail {
+    val: Int?;
+}

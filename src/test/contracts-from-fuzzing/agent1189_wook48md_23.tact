@@ -1,0 +1,1 @@
+contract StringField { text: String = "hello"; }

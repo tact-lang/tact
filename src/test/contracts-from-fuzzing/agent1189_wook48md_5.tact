@@ -1,0 +1,1 @@
+contract TwoFields { flag: Bool = true; count: Int = 42; }

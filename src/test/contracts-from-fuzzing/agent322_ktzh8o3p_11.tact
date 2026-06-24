@@ -1,0 +1,7 @@
+struct L3 { v: Int?; }
+struct L2 { l3: L3?; }
+struct L1 { l2: L2?; }
+
+contract NestedAllNullOptionals {
+    s: L1 = L1{ l2: null };
+}

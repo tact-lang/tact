@@ -1,0 +1,14 @@
+contract MixedParamTypes(
+    intVal: Int,
+    boolVal: Bool,
+    stringVal: String,
+    addrVal: Address,
+    cellVal: Cell,
+    sliceVal: Slice,
+    intOpt: Int?,
+    boolOpt: Bool?,
+    stringOpt: String?,
+    addrOpt: Address?,
+    cellOpt: Cell?,
+    sliceOpt: Slice?
+) {}

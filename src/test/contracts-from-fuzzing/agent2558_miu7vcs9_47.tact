@@ -1,0 +1,13 @@
+contract OptBefore {
+    a: Int?;
+    b: Int;
+    c: Bool?;
+    d: Bool;
+
+    init() {
+        self.a = null;
+        self.b = 1;
+        self.c = true;
+        self.d = false;
+    }
+}

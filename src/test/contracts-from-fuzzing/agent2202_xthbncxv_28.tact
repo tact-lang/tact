@@ -1,0 +1,2 @@
+@interface("iface")
+contract EmptyParams() {}

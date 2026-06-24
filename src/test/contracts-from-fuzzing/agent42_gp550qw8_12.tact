@@ -1,0 +1,1 @@
+contract Test { get fun data(): Int { return 1 } }

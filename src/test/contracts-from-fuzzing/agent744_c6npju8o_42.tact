@@ -1,0 +1,3 @@
+contract OptionalCellImplicitNull {
+    x: Cell?;
+}

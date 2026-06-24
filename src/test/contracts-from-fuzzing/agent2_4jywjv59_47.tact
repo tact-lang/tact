@@ -1,0 +1,1 @@
+message Name { val: Int }

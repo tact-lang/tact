@@ -1,0 +1,11 @@
+contract OptDefaults {
+    a: Int? = null;
+    b: Int? = null;
+    c: Bool? = null;
+
+    init() {
+        self.a = null;
+        self.b = null;
+        self.c = null;
+    }
+}

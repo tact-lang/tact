@@ -1,0 +1,3 @@
+contract OptionalParam(
+  counter: Int?,
+) {}

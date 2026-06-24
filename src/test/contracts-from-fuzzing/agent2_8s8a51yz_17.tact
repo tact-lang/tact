@@ -1,0 +1,1 @@
+contract Invalid() { fun foo(a: Int, b: Int,): Int { return 1; } }

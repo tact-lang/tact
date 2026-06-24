@@ -1,0 +1,1 @@
+contract Test { fun extends(a: Int): Int { return 1; } }

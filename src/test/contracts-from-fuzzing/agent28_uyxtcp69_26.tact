@@ -1,0 +1,3 @@
+contract CellParam(
+    optVal: Cell?,
+) {}

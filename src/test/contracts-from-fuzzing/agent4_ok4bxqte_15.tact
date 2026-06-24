@@ -1,0 +1,10 @@
+contract TestGetterOptional {
+    get fun testOptional(x: Int): Int? {
+        if (x > 0) {
+            return x;
+        } else {
+            return null;
+        }
+    }
+    receive () {}
+}

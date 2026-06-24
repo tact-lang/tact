@@ -1,0 +1,1 @@
+fun test(): map<Int, Int as uint32> { return emptyMap(); }

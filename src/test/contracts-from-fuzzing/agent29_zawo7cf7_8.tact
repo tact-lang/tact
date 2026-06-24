@@ -1,0 +1,1 @@
+primitive IntTest; contract C { receive() {} }

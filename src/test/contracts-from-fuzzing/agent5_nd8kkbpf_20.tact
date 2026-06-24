@@ -1,0 +1,1 @@
+contract Test { fun broken() { let x = 5 } receive() { } }

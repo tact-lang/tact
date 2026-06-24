@@ -1,0 +1,1 @@
+contract A { receive( ) {} } contract B { receive( ) {} }

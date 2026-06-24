@@ -1,0 +1,37 @@
+struct Rec1 {
+    a: Int;
+    b: Rec2;
+}
+
+struct Rec2 {
+    c: Int;
+    d: Rec3;
+}
+
+struct Rec3 {
+    e: Int;
+    f: Rec4;
+}
+
+struct Rec4 {
+    g: Int;
+}
+
+contract RecursiveDepth {
+    data: Rec1;
+
+    init() {
+        self.data = Rec1{
+            a:1,
+            b: Rec2{
+                c:2,
+                d: Rec3{
+                    e:3,
+                    f: Rec4{
+                        g:4
+                    }
+                }
+            }
+        };
+    }
+}

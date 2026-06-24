@@ -1,0 +1,7 @@
+contract TestCellsSlices {
+    receive() {
+        dump(emptyCell());  // Cell
+        dump(beginCell());  // Builder
+        dump(emptySlice()); // Slice
+    }
+}

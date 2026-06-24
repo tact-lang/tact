@@ -1,0 +1,23 @@
+contract LargeContractParams(
+    x1: Int,
+    x2: Int,
+    x3: Int,
+    x4: Int,
+    x5: Int,
+    x6: Int,
+    x7: Int,
+    x8: Int,
+    x9: Int,
+    x10: Int,
+    y1: String,
+    y2: String,
+    y3: String,
+    y4: String,
+    y5: String,
+    b1: Bool,
+    b2: Bool,
+    o1: Int?,
+    o2: String?,
+    o3: Bool?
+) {
+}

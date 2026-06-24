@@ -1,0 +1,9 @@
+contract MaxIntSizeTest {
+    minInt: Int as int257;
+    maxInt: Int as int257;
+
+    init() {
+        self.minInt = -0x8000000000000000000000000000000000000000000000000000000000000000;
+        self.maxInt =  0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+    }
+}

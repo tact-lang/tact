@@ -1,0 +1,29 @@
+contract WideContract {
+    a: Int;
+    b: Bool;
+    c: Address;
+    d: Cell;
+    e: Slice;
+    f: String;
+    g: Int?;
+    h: Bool?;
+    i: Address?;
+    j: Cell?;
+    k: Slice?;
+    l: String?;
+
+    init() {
+        self.a = 1;
+        self.b = true;
+        self.c = myAddress();
+        self.d = emptyCell();
+        self.e = emptyCell().asSlice();
+        self.f = "test";
+        self.g = null;
+        self.h = false;
+        self.i = null;
+        self.j = null;
+        self.k = null;
+        self.l = null;
+    }
+}

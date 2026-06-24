@@ -1,0 +1,3 @@
+contract UninitOptional {
+    f: Int?;
+}

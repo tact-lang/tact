@@ -1,0 +1,3 @@
+contract Test {
+    opt: Int?;
+}

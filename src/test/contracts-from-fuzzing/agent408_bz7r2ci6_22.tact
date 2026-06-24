@@ -1,0 +1,1 @@
+@interface("iface") trait Test{}

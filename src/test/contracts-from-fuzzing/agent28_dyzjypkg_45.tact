@@ -1,0 +1,1 @@
+contract C { fun f() { let _x = 5; } }

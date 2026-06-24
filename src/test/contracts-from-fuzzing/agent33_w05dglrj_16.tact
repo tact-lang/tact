@@ -1,0 +1,3 @@
+contract NoArgumentReceiver {
+    receive() {}
+}

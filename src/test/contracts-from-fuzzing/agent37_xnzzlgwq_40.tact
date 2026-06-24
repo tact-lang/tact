@@ -1,0 +1,1 @@
+asm fun asmFault(): Int { PUSHINT 10; DROP }

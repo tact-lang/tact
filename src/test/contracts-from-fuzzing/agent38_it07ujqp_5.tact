@@ -1,0 +1,1 @@
+contract Broken(x: Int,) { receive() {} }

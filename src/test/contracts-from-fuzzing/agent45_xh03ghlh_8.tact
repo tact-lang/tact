@@ -1,0 +1,1 @@
+contract A { receive("ping") { let a = 1 } }

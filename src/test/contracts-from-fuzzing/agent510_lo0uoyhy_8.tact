@@ -1,0 +1,3 @@
+contract NullableIntOnly {
+    val: Int?;
+}

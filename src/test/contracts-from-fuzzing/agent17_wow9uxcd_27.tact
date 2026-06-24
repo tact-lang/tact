@@ -1,0 +1,1 @@
+fun foo(param1: Int, param2: Int,) {}

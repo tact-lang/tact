@@ -1,0 +1,1 @@
+asm inline fun inlineTest(): Int { 100 PUSHINT }

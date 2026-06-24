@@ -1,0 +1,5 @@
+contract EmptyFields {
+    init() {
+        // nothing
+    }
+}

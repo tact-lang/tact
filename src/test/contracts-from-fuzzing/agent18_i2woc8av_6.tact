@@ -1,0 +1,1 @@
+contract Foo { fun bar(a:Int, /*comment*/ b:Int): Int { return 1; } }

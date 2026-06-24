@@ -1,0 +1,1 @@
+contract Q { fun foo(a: Int, ) {} } // trailing comma is allowed, so expected to be valid

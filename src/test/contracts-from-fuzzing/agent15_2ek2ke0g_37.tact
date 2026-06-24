@@ -1,0 +1,1 @@
+contract Test { fun example(a: Int) { let _ = 5; } }

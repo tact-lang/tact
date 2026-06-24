@@ -1,0 +1,1 @@
+trait traitName { fun foo(): Int { return 1; } }

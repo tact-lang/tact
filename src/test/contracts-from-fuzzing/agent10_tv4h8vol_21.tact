@@ -1,0 +1,4 @@
+contract EmptyBlock {
+    receive() {
+    }
+}

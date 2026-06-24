@@ -1,0 +1,1 @@
+asm fun noReturn(x: Int) { INC }

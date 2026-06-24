@@ -1,0 +1,2 @@
+@interface("hello")
+contract Test {}

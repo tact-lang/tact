@@ -1,0 +1,1 @@
+contract TestContract() { external("ping") { let x = 1; } }

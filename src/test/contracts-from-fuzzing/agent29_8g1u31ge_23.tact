@@ -1,0 +1,1 @@
+message Abc { x: Int; y: Int; }

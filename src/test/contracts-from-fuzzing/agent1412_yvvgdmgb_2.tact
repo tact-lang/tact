@@ -1,0 +1,65 @@
+contract WideFields {
+    f1: Int as uint8;
+    f2: Int as uint8;
+    f3: Int as uint8;
+    f4: Int as uint8;
+    f5: Int as uint8;
+    f6: Int as uint8;
+    f7: Int as uint8;
+    f8: Int as uint8;
+    f9: Int as uint8;
+    f10: Int as uint8;
+    f11: Int as uint8;
+    f12: Int as uint8;
+    f13: Int as uint8;
+    f14: Int as uint8;
+    f15: Int as uint8;
+    f16: Int as uint8;
+    f17: Int as uint8;
+    f18: Int as uint8;
+    f19: Int as uint8;
+    f20: Int as uint8;
+    f21: Int as uint8;
+    f22: Int as uint8;
+    f23: Int as uint8;
+    f24: Int as uint8;
+    f25: Int as uint8;
+    f26: Int as uint8;
+    f27: Int as uint8;
+    f28: Int as uint8;
+    f29: Int as uint8;
+    f30: Int as uint8;
+
+    init() {
+        self.f1 = 1;
+        self.f2 = 2;
+        self.f3 = 3;
+        self.f4 = 4;
+        self.f5 = 5;
+        self.f6 = 6;
+        self.f7 = 7;
+        self.f8 = 8;
+        self.f9 = 9;
+        self.f10 = 10;
+        self.f11 = 11;
+        self.f12 = 12;
+        self.f13 = 13;
+        self.f14 = 14;
+        self.f15 = 15;
+        self.f16 = 16;
+        self.f17 = 17;
+        self.f18 = 18;
+        self.f19 = 19;
+        self.f20 = 20;
+        self.f21 = 21;
+        self.f22 = 22;
+        self.f23 = 23;
+        self.f24 = 24;
+        self.f25 = 25;
+        self.f26 = 26;
+        self.f27 = 27;
+        self.f28 = 28;
+        self.f29 = 29;
+        self.f30 = 30;
+    }
+}

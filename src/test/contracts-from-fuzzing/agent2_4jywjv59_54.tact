@@ -1,0 +1,1 @@
+message M {} contract C {}

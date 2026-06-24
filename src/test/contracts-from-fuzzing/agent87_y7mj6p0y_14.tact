@@ -1,0 +1,5 @@
+contract TestReceiverVoid {
+    receive() {
+         return;
+    }
+}

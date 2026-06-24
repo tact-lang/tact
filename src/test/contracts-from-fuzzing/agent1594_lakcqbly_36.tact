@@ -1,0 +1,9 @@
+contract ParamOk(
+    x: Int,
+    y: Bool,
+    s: String,
+    a: Address,
+    c: Cell,
+    sl: Slice,
+    o: Int?
+) {}

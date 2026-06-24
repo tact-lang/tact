@@ -1,0 +1,1 @@
+primitive Foo; fun f(): Int { return 1; } primitive Bar;

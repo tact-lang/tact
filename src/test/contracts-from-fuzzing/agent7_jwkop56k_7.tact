@@ -1,0 +1,1 @@
+asm fun caseError(): Int { 42 int }

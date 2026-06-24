@@ -1,0 +1,1 @@
+asm fun wrongMyCode(): Cell { "PUSHINT" }

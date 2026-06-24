@@ -1,0 +1,3 @@
+contract DanglingOptional {
+    opt: Int?;
+}

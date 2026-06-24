@@ -1,0 +1,1 @@
+contract X { init() { } } trait Y { }

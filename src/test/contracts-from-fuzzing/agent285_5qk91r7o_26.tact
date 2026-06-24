@@ -1,0 +1,1 @@
+contract X { receive() { if 5 == 5 { let y = 2; } } }

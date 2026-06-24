@@ -1,0 +1,1 @@
+contract Test { fun add() : Int? { return 5; } }

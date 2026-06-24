@@ -1,0 +1,7 @@
+fun foo(): Int { return 1; }
+
+contract C {
+    receive() {
+        foo(    );
+    }
+}

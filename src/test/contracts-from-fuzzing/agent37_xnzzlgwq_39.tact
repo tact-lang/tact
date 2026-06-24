@@ -1,0 +1,1 @@
+asm fun asmReturn(): Int { PUSHINT 5 }

@@ -1,0 +1,1 @@
+contract C { receive() { dump("bad escape \\q"); } }

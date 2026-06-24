@@ -1,0 +1,1 @@
+asm fun extraPrimitive(): Int { 43 }

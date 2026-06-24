@@ -1,0 +1,14 @@
+contract ContractParamsStyle(
+    a: Int,
+    b: Bool,
+    s: String,
+    c: Cell,
+    sl: Slice,
+    addr: Address,
+    optInt: Int?,
+    optBool: Bool?,
+    optStr: String?,
+    optCell: Cell?,
+    optSlice: Slice?,
+    optAddr: Address?,
+) {}

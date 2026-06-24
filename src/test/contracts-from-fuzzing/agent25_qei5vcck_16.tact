@@ -1,0 +1,1 @@
+primitive Foo; contract Test{}

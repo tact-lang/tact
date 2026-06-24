@@ -1,0 +1,1 @@
+contract C { fun f(_: Int): Int { return 1; } }

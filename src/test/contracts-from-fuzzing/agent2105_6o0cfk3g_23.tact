@@ -1,0 +1,11 @@
+contract OptionalSerializationHints {
+    a: Int? as uint8;
+    b: Bool?;
+    c: String?;
+    
+    init() {
+        self.a = null;
+        self.b = null;
+        self.c = null;
+    }
+}

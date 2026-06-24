@@ -1,0 +1,9 @@
+contract ParamsManyOptionals(
+    a: Int?,
+    b: Int?,
+    c: Int?,
+    d: Bool?,
+    e: Bool?,
+    f: String?,
+    g: String?,
+) {}

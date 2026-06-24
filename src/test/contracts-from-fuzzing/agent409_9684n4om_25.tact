@@ -1,0 +1,1 @@
+fun f() { let x = 1 + (2 * (3 - 4)) / 5; } contract X { receive() { } } contract Y { receive() { } } contract Z { receive() { } }

@@ -1,0 +1,21 @@
+struct ManyOptions {
+    o1: Int?;
+    o2: Bool?;
+    o3: Address?;
+    o4: String?;
+    o5: Cell?;
+}
+
+contract TestContract {
+    data: ManyOptions;
+
+    init() {
+        self.data = ManyOptions{
+            o1: null,
+            o2: null,
+            o3: null,
+            o4: null,
+            o5: null
+        };
+    }
+}

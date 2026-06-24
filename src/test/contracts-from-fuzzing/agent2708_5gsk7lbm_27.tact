@@ -1,0 +1,1 @@
+contract OnlyParams(a: Int, b: Bool, s: String) {}

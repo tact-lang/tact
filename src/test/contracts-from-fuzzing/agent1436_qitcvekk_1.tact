@@ -1,0 +1,12 @@
+struct Point {
+    x: Int;
+    y: Int;
+}
+
+contract TestContract {
+    coords: Point;
+
+    init() {
+        self.coords = Point{ x: 1, y: 2 };
+    }
+}

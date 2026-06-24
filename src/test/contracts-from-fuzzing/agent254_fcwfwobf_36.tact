@@ -1,0 +1,1 @@
+contract A { fun foo() { repeat(1) {} } }

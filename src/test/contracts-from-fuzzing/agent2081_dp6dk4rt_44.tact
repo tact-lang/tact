@@ -1,0 +1,3 @@
+contract ParamsWithoutInit(
+    a: Int
+) {}

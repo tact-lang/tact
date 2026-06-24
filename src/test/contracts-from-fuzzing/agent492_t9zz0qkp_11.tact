@@ -1,0 +1,5 @@
+contract Test {
+    fun f() {
+        let _: Int = 5;
+    }
+}

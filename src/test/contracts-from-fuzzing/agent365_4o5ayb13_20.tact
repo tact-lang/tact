@@ -1,0 +1,1 @@
+contract Test { get fun foo() {} get fun bar() {} }

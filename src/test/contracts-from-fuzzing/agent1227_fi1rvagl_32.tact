@@ -1,0 +1,3 @@
+contract OptCell {
+    c: Cell?;
+}

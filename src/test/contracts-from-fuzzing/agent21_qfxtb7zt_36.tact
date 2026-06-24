@@ -1,0 +1,1 @@
+contract X { fun foo(a: Int, ) {} fun bar(b: Int, ) {} }

@@ -1,0 +1,3 @@
+contract AddrOpt {
+  recipient: Address?;
+}

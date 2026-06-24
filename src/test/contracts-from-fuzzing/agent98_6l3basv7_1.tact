@@ -1,0 +1,1 @@
+fun basic(): Int { return 42; }

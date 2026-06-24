@@ -1,0 +1,3 @@
+contract Z {
+fun f(a: Int,) {}
+}

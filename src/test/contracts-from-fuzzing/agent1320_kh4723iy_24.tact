@@ -1,0 +1,3 @@
+contract PersistStr {
+    text: String = "";
+}

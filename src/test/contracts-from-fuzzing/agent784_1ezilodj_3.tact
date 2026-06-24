@@ -1,0 +1,3 @@
+contract OptionalIntField {
+    foo: Int?;
+}

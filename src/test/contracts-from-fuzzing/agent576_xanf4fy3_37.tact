@@ -1,0 +1,3 @@
+contract ImplicitOptNull {
+    b: Bool?;
+}

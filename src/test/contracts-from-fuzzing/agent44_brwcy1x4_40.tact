@@ -1,0 +1,1 @@
+primitive NewType;primitive AnotherType;

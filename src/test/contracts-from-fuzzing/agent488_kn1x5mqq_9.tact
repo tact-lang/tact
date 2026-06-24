@@ -1,0 +1,9 @@
+contract TestContract(
+    i: Int,
+    b: Bool,
+    s: String,
+    ad: Address,
+    n: Int?,
+    sl: Slice,
+    c: Cell
+) {}

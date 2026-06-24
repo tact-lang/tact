@@ -1,0 +1,1 @@
+asm fun wrongQuotes(): Cell { "PUSHINT" }

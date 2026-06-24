@@ -1,0 +1,2 @@
+// /* nested /* comment
+contract Test {}
