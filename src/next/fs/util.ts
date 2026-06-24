@@ -1,19 +1,6 @@
 import { throwInternalCompilerError } from "@/error/errors";
+import { RelativePath } from "@/next/fs/path";
 import { repeat } from "@/utils/array";
-
-/**
- * Safe relative path
- */
-export type RelativePath = {
-    /**
-     * Number of "../" in front of path
-     */
-    readonly stepsUp: number;
-    /**
-     * /-separated strings that go after optional ../
-     */
-    readonly segments: readonly string[];
-};
 
 /**
  * Constructor for relative paths
@@ -52,9 +39,17 @@ export const asString = ({ stepsUp, segments }: RelativePath): string => {
 export const emptyPath = RelativePath(0, []);
 
 /**
+ * Parent path, equivalent to ".."
+ */
+export const parentPath = RelativePath(1, []);
+
+/**
  * Combine two relative paths
  */
-const appendPath = (left: RelativePath, right: RelativePath): RelativePath => {
+export const appendPath = (
+    left: RelativePath,
+    right: RelativePath,
+): RelativePath => {
     const delta = right.stepsUp - left.segments.length;
     return RelativePath(left.stepsUp + Math.max(0, delta), [
         ...left.segments.slice(0, Math.max(0, -delta)),

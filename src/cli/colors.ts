@@ -4,8 +4,8 @@ export const isColorSupported = () => {
     if (process.platform === "win32") {
         const [major, _, build] = release().split(".").map(Number);
         // Windows 10, Build 10586+
-        return (
-            (major && major > 10) || (major === 10 && build && build >= 10586)
+        return Boolean(
+            (major && major > 10) || (major === 10 && build && build >= 10586),
         );
     }
     if (process.stdout.isTTY && process.env.TERM !== "dumb") {

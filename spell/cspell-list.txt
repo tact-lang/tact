@@ -85,6 +85,7 @@ Héctor
 idict
 Ikko
 Ilya
+implicits
 infixl
 infixr
 initof
@@ -188,6 +189,7 @@ seti
 shardchains
 shiki
 Shvetc
+Signedness
 skywardboundd
 snarkjs
 Stateinit
