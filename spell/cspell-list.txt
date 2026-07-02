@@ -171,6 +171,7 @@ rangle
 rawslice
 Reentrancy
 reentrancy
+Reentrancy
 renamer
 replaceget
 respecifying
@@ -234,6 +235,7 @@ uninit
 Uninit
 unixfs
 untypable
+utime
 varint
 varuint
 verificationkey
